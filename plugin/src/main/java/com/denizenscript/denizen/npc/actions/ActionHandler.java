@@ -7,9 +7,9 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizencore.events.OldEventManager;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
@@ -32,7 +32,7 @@ public class ActionHandler {
     }
 
 
-    public String doAction(String actionName, dNPC npc, dPlayer player, AssignmentScriptContainer assignment, Map<String, dObject> context) {
+    public String doAction(String actionName, dNPC npc, dPlayer player, AssignmentScriptContainer assignment, Map<String, ObjectTag> context) {
 
         if (context == null) {
             context = new HashMap<>();
@@ -69,7 +69,7 @@ public class ActionHandler {
 
         OldEventManager.OldEventContextSource oecs = new OldEventManager.OldEventContextSource();
         oecs.contexts = context;
-        oecs.contexts.put("event_header", new Element(actionName));
+        oecs.contexts.put("event_header", new ElementTag(actionName));
         queue.setContextSource(oecs);
 
         // Start the queue!

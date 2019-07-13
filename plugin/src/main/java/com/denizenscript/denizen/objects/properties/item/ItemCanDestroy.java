@@ -5,8 +5,8 @@ import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dMaterial;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.Material;
@@ -17,11 +17,11 @@ import java.util.stream.Collectors;
 
 public class ItemCanDestroy implements Property {
 
-    public static boolean describes(dObject item) {
+    public static boolean describes(ObjectTag item) {
         return item instanceof dItem;
     }
 
-    public static ItemCanDestroy getFrom(dObject item) {
+    public static ItemCanDestroy getFrom(ObjectTag item) {
         if (!describes(item)) {
             return null;
         }
@@ -45,11 +45,11 @@ public class ItemCanDestroy implements Property {
 
     dItem item;
 
-    private dList getMaterials() {
+    private ListTag getMaterials() {
         ItemStack itemStack = item.getItemStack();
         List<Material> materials = CustomNBT.getNBTMaterials(itemStack, CustomNBT.KEY_CAN_DESTROY);
         if (materials != null && !materials.isEmpty()) {
-            dList list = new dList();
+            ListTag list = new ListTag();
             for (Material material : materials) {
                 list.addObject(new dMaterial(material));
             }
@@ -67,14 +67,14 @@ public class ItemCanDestroy implements Property {
 
         // <--[tag]
         // @attribute <i@item.can_destroy>
-        // @returns dList(dMaterial)
+        // @returns ListTag(dMaterial)
         // @group properties
         // @mechanism dItem.can_destroy
         // @description
         // Returns a list of materials this item can destroy while in adventure mode, if any.
         // -->
         if (attribute.startsWith("can_destroy")) {
-            dList materials = getMaterials();
+            ListTag materials = getMaterials();
             if (materials != null) {
                 return materials.getAttribute(attribute.fulfill(1));
             }
@@ -85,7 +85,7 @@ public class ItemCanDestroy implements Property {
 
     @Override
     public String getPropertyString() {
-        dList materials = getMaterials();
+        ListTag materials = getMaterials();
         return materials != null ? materials.identify() : null;
     }
 
@@ -100,7 +100,7 @@ public class ItemCanDestroy implements Property {
         // <--[mechanism]
         // @object dItem
         // @name can_destroy
-        // @input dList(dMaterial)
+        // @input ListTag(dMaterial)
         // @description
         // Sets the materials this item can destroy while in adventure mode.
         // Leave empty to remove this property.
@@ -116,7 +116,7 @@ public class ItemCanDestroy implements Property {
             ItemStack itemStack = item.getItemStack();
 
             if (mechanism.hasValue()) {
-                List<Material> materials = mechanism.valueAsType(dList.class).filter(dMaterial.class, mechanism.context)
+                List<Material> materials = mechanism.valueAsType(ListTag.class).filter(dMaterial.class, mechanism.context)
                         .stream().map(dMaterial::getMaterial).collect(Collectors.toList());
                 itemStack = CustomNBT.setNBTMaterials(itemStack, CustomNBT.KEY_CAN_DESTROY, materials);
             }

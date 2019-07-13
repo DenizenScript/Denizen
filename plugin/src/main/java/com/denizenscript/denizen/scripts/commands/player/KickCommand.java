@@ -4,9 +4,9 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
@@ -51,11 +51,11 @@ public class KickCommand extends AbstractCommand {
             }
             else if (arg.matchesPrefix("targets", "target", "players")
                     || arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
+                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
             }
         }
 
-        scriptEntry.defaultObject("reason", new Element("Kicked."));
+        scriptEntry.defaultObject("reason", new ElementTag("Kicked."));
 
         if (!scriptEntry.hasObject("targets")) {
             throw new InvalidArgumentsException("Must specify target(s).");
@@ -66,7 +66,7 @@ public class KickCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        Element reason = scriptEntry.getElement("reason");
+        ElementTag reason = scriptEntry.getElement("reason");
         List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
 
         if (scriptEntry.dbCallShouldDebug()) {

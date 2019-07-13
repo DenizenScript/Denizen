@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObject {
+public class dNPC implements ObjectTag, Adjustable, InventoryHolder, EntityFormObject {
 
     // <--[language]
     // @name dNPC
@@ -372,7 +372,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         return npc.getTrait(TriggerTrait.class);
     }
 
-    public String action(String actionName, dPlayer player, Map<String, dObject> context) {
+    public String action(String actionName, dPlayer player, Map<String, ObjectTag> context) {
         if (getCitizen() != null) {
             if (getCitizen().hasTrait(AssignmentTrait.class))
             // Return the result from the ActionHandler
@@ -456,7 +456,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
 
         // Defined in dEntity
         if (attribute.startsWith("is_npc")) {
-            return new Element(true).getAttribute(attribute.fulfill(1));
+            return new ElementTag(true).getAttribute(attribute.fulfill(1));
         }
 
         // Defined in dEntity
@@ -472,41 +472,41 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
 
         // <--[tag]
         // @attribute <n@npc.has_nickname>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns true if the NPC has a nickname.
         // -->
         if (attribute.startsWith("has_nickname")) {
             NPC citizen = getCitizen();
-            return new Element(citizen.hasTrait(NicknameTrait.class) && citizen.getTrait(NicknameTrait.class).hasNickname())
+            return new ElementTag(citizen.hasTrait(NicknameTrait.class) && citizen.getTrait(NicknameTrait.class).hasNickname())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <n@npc.name.nickname>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the NPC's display name.
         // -->
         if (attribute.startsWith("name.nickname")) {
-            return new Element(getCitizen().hasTrait(NicknameTrait.class) ? getCitizen().getTrait(NicknameTrait.class)
+            return new ElementTag(getCitizen().hasTrait(NicknameTrait.class) ? getCitizen().getTrait(NicknameTrait.class)
                     .getNickname() : getName()).getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <n@npc.name>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the name of the NPC.
         // -->
         if (attribute.startsWith("name")) {
-            return new Element(getName())
+            return new ElementTag(getName())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <n@npc.list_traits>
-        // @returns dList
+        // @returns ListTag
         // @description
         // Returns a list of all of the NPC's traits.
         // -->
@@ -515,12 +515,12 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
             for (Trait trait : getCitizen().getTraits()) {
                 list.add(trait.getName());
             }
-            return new dList(list).getAttribute(attribute.fulfill(1));
+            return new ListTag(list).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <n@npc.has_trait[<trait>]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the NPC has a specified trait.
         // -->
@@ -528,7 +528,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
             if (attribute.hasContext(1)) {
                 Class<? extends Trait> trait = CitizensAPI.getTraitFactory().getTraitClass(attribute.getContext(1));
                 if (trait != null) {
-                    return new Element(getCitizen().hasTrait(trait))
+                    return new ElementTag(getCitizen().hasTrait(trait))
                             .getAttribute(attribute.fulfill(1));
                 }
             }
@@ -536,33 +536,33 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
 
         // <--[tag]
         // @attribute <n@npc.pushable>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the NPC is pushable.
         // -->
         if (attribute.startsWith("pushable") || attribute.startsWith("is_pushable")) {
-            return new Element(getPushableTrait().isPushable()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getPushableTrait().isPushable()).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <n@npc.has_trigger[<trigger>]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the NPC has a specified trigger.
         // -->
         if (attribute.startsWith("has_trigger")
                 && attribute.hasContext(1)) {
             if (!getCitizen().hasTrait(TriggerTrait.class)) {
-                return new Element(false).getAttribute(attribute.fulfill(1));
+                return new ElementTag(false).getAttribute(attribute.fulfill(1));
             }
             TriggerTrait trait = getCitizen().getTrait(TriggerTrait.class);
-            return new Element(trait.hasTrigger(attribute.getContext(1)))
+            return new ElementTag(trait.hasTrigger(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <n@npc.anchor.list>
-        // @returns dList
+        // @returns ListTag
         // @description
         // Returns a list of anchor names currently assigned to the NPC.
         // -->
@@ -572,17 +572,17 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
             for (Anchor anchor : getCitizen().getTrait(Anchors.class).getAnchors()) {
                 list.add(anchor.getName());
             }
-            return new dList(list).getAttribute(attribute.fulfill(2));
+            return new ListTag(list).getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <n@npc.has_anchors>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the NPC has anchors assigned.
         // -->
         if (attribute.startsWith("has_anchors")) {
-            return (new Element(getCitizen().getTrait(Anchors.class).getAnchors().size() > 0))
+            return (new ElementTag(getCitizen().getTrait(Anchors.class).getAnchors().size() > 0))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -603,7 +603,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
 
         // <--[tag]
         // @attribute <n@npc.has_flag[<flag_name>]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns true if the NPC has the specified flag, otherwise returns false.
         // -->
@@ -615,12 +615,12 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
             else {
                 return null;
             }
-            return new Element(FlagManager.npcHasFlag(this, flag_name)).getAttribute(attribute.fulfill(1));
+            return new ElementTag(FlagManager.npcHasFlag(this, flag_name)).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <n@npc.flag[<flag_name>]>
-        // @returns Flag dList
+        // @returns Flag ListTag
         // @description
         // Returns the specified flag from the NPC.
         // -->
@@ -634,33 +634,33 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
             }
             if (attribute.getAttribute(2).equalsIgnoreCase("is_expired")
                     || attribute.startsWith("isexpired")) {
-                return new Element(!FlagManager.npcHasFlag(this, flag_name))
+                return new ElementTag(!FlagManager.npcHasFlag(this, flag_name))
                         .getAttribute(attribute.fulfill(2));
             }
             if (attribute.getAttribute(2).equalsIgnoreCase("size") && !FlagManager.npcHasFlag(this, flag_name)) {
-                return new Element(0).getAttribute(attribute.fulfill(2));
+                return new ElementTag(0).getAttribute(attribute.fulfill(2));
             }
             if (FlagManager.npcHasFlag(this, flag_name)) {
                 FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager()
                         .getNPCFlag(getId(), flag_name);
-                return new dList(flag.toString(), true, flag.values())
+                return new ListTag(flag.toString(), true, flag.values())
                         .getAttribute(attribute.fulfill(1));
             }
-            return new Element(identify()).getAttribute(attribute);
+            return new ElementTag(identify()).getAttribute(attribute);
         }
 
         // <--[tag]
         // @attribute <n@npc.list_flags[(regex:)<search>]>
-        // @returns dList
+        // @returns ListTag
         // @description
         // Returns a list of an NPC's flag names, with an optional search for
         // names containing a certain pattern.
         // -->
         if (attribute.startsWith("list_flags")) {
-            dList allFlags = new dList(DenizenAPI.getCurrentInstance().flagManager().listNPCFlags(getId()));
-            dList searchFlags = null;
+            ListTag allFlags = new ListTag(DenizenAPI.getCurrentInstance().flagManager().listNPCFlags(getId()));
+            ListTag searchFlags = null;
             if (!allFlags.isEmpty() && attribute.hasContext(1)) {
-                searchFlags = new dList();
+                searchFlags = new ListTag();
                 String search = attribute.getContext(1);
                 if (search.startsWith("regex:")) {
                     try {
@@ -690,7 +690,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
 
         // <--[tag]
         // @attribute <n@npc.constant[<constant_name>]>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the specified constant from the NPC.
         // -->
@@ -698,7 +698,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
             if (attribute.hasContext(1)) {
                 if (getCitizen().hasTrait(ConstantsTrait.class)
                         && getCitizen().getTrait(ConstantsTrait.class).getConstant(attribute.getContext(1)) != null) {
-                    return new Element(getCitizen().getTrait(ConstantsTrait.class)
+                    return new ElementTag(getCitizen().getTrait(ConstantsTrait.class)
                             .getConstant(attribute.getContext(1))).getAttribute(attribute.fulfill(1));
                 }
                 else {
@@ -709,13 +709,13 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
 
         // <--[tag]
         // @attribute <n@npc.has_pose[<name>]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns true if the NPC has the specified pose, otherwise returns false.
         // -->
         if (attribute.startsWith("has_pose")) {
             if (attribute.hasContext(1)) {
-                return new Element(getCitizen().getTrait(Poses.class).hasPose(attribute.getContext(1)))
+                return new ElementTag(getCitizen().getTrait(Poses.class).hasPose(attribute.getContext(1)))
                         .getAttribute(attribute.fulfill(1));
             }
             else {
@@ -743,46 +743,46 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
 
         // <--[tag]
         // @attribute <n@npc.is_sneaking>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the NPC is currently sneaking. Only works for player-type NPCs.
         // -->
         if (attribute.startsWith("is_sneaking")
                 && isSpawned() && getEntity() instanceof Player) {
-            return new Element(((Player) getEntity()).isSneaking())
+            return new ElementTag(((Player) getEntity()).isSneaking())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <n@npc.is_engaged>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the NPC is currently engaged.
         // See <@link command engage>
         // -->
         if (attribute.startsWith("engaged") || attribute.startsWith("is_engaged")) {
-            return new Element(isEngaged()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(isEngaged()).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <n@npc.invulnerable>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the NPC is currently invulnerable.
         // See <@link command vulnerable>
         // -->
         if (attribute.startsWith("invulnerable") || attribute.startsWith("vulnerable")) {
-            return new Element(getCitizen().data().get(NPC.DEFAULT_PROTECTED_METADATA, true)).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getCitizen().data().get(NPC.DEFAULT_PROTECTED_METADATA, true)).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <n@npc.id>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the NPC's ID number.
         // -->
         if (attribute.startsWith("id")) {
-            return new Element(getId()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getId()).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -801,23 +801,23 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
                 return player.getAttribute(attribute.fulfill(1));
             }
             else {
-                return new Element(owner).getAttribute(attribute.fulfill(1));
+                return new ElementTag(owner).getAttribute(attribute.fulfill(1));
             }
         }
 
         // <--[tag]
         // @attribute <n@npc.has_skin>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns whether the NPC has a custom skinskin.
         // -->
         if (attribute.startsWith("has_skin")) {
-            return new Element(getCitizen().data().has(NPC.PLAYER_SKIN_UUID_METADATA)).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getCitizen().data().has(NPC.PLAYER_SKIN_UUID_METADATA)).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <n@npc.skin_blob>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the NPC's custom skin blob, if any.
         // -->
@@ -828,19 +828,19 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
                 if (getCitizen().data().has(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA)) {
                     sign = ";" + getCitizen().data().get(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA).toString();
                 }
-                return new Element(tex + sign).getAttribute(attribute.fulfill(1));
+                return new ElementTag(tex + sign).getAttribute(attribute.fulfill(1));
             }
         }
 
         // <--[tag]
         // @attribute <n@npc.skin>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the NPC's custom skin, if any.
         // -->
         if (attribute.startsWith("skin")) {
             if (getCitizen().data().has(NPC.PLAYER_SKIN_UUID_METADATA)) {
-                return new Element(getCitizen().data().get(NPC.PLAYER_SKIN_UUID_METADATA).toString()).getAttribute(attribute.fulfill(1));
+                return new ElementTag(getCitizen().data().get(NPC.PLAYER_SKIN_UUID_METADATA).toString()).getAttribute(attribute.fulfill(1));
             }
         }
 
@@ -856,27 +856,27 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
 
         // <--[tag]
         // @attribute <n@npc.is_spawned>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the NPC is spawned.
         // -->
         if (attribute.startsWith("is_spawned")) {
-            return new Element(isSpawned()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(isSpawned()).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <n@npc.is_protected>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the NPC is protected.
         // -->
         if (attribute.startsWith("is_protected")) {
-            return new Element(getCitizen().isProtected()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getCitizen().isProtected()).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <n@npc.lookclose>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns the NPC's "lookclose" mechanism.getValue().
         // -->
@@ -887,9 +887,9 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
                 // LookClose.toString() returns "LookClose{" + enabled + "}"
                 String lookclose = citizen.getTrait(LookClose.class).toString();
                 lookclose = lookclose.substring(10, lookclose.length() - 1);
-                return new Element(Boolean.valueOf(lookclose)).getAttribute(attribute.fulfill(1));
+                return new ElementTag(Boolean.valueOf(lookclose)).getAttribute(attribute.fulfill(1));
             }
-            return new Element(false).getAttribute(attribute.fulfill(1));
+            return new ElementTag(false).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -912,25 +912,25 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         // Returns whether the NPC teleports when it is stuck.
         // -->
         if (attribute.startsWith("teleport_on_stuck")) {
-            return new Element(getNavigator().getDefaultParameters().stuckAction() == TeleportStuckAction.INSTANCE)
+            return new ElementTag(getNavigator().getDefaultParameters().stuckAction() == TeleportStuckAction.INSTANCE)
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <n@npc.has_script>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns true if the NPC has an assignment script.
         // -->
         if (attribute.startsWith("has_script")) {
             NPC citizen = getCitizen();
-            return new Element(citizen.hasTrait(AssignmentTrait.class) && citizen.getTrait(AssignmentTrait.class).hasAssignment())
+            return new ElementTag(citizen.hasTrait(AssignmentTrait.class) && citizen.getTrait(AssignmentTrait.class).hasAssignment())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <n@npc.script>
-        // @returns dScript
+        // @returns ScriptTag
         // @description
         // Returns the NPC's assigned script.
         // -->
@@ -940,95 +940,95 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
                 return null;
             }
             else {
-                return new dScript(citizen.getTrait(AssignmentTrait.class).getAssignment().getName())
+                return new ScriptTag(citizen.getTrait(AssignmentTrait.class).getAssignment().getName())
                         .getAttribute(attribute.fulfill(1));
             }
         }
 
         // <--[tag]
         // @attribute <n@npc.navigator.is_navigating>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the NPC is currently navigating.
         // -->
         if (attribute.startsWith("navigator.is_navigating")) {
-            return new Element(getNavigator().isNavigating()).getAttribute(attribute.fulfill(2));
+            return new ElementTag(getNavigator().isNavigating()).getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <n@npc.navigator.speed>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the current speed of the NPC.
         // -->
         if (attribute.startsWith("navigator.speed")) {
-            return new Element(getNavigator().getLocalParameters().speed())
+            return new ElementTag(getNavigator().getLocalParameters().speed())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <n@npc.navigator.range>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the maximum pathfinding range.
         // -->
         if (attribute.startsWith("navigator.range")) {
-            return new Element(getNavigator().getLocalParameters().range())
+            return new ElementTag(getNavigator().getLocalParameters().range())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <n@npc.navigator.attack_range>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the maximum attack range.
         // -->
         if (attribute.startsWith("navigator.attack_range")) {
-            return new Element(getNavigator().getLocalParameters().attackRange())
+            return new ElementTag(getNavigator().getLocalParameters().attackRange())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <n@npc.navigator.attack_strategy>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the NPC's attack strategy.
         // -->
         if (attribute.startsWith("navigator.attack_strategy")) {
-            return new Element(getNavigator().getLocalParameters().attackStrategy().toString())
+            return new ElementTag(getNavigator().getLocalParameters().attackStrategy().toString())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <n@npc.navigator.speed_modifier>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the NPC movement speed modifier.
         // -->
         if (attribute.startsWith("navigator.speed_modifier")) {
-            return new Element(getNavigator().getLocalParameters().speedModifier())
+            return new ElementTag(getNavigator().getLocalParameters().speedModifier())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <n@npc.navigator.base_speed>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the base navigation speed.
         // -->
         if (attribute.startsWith("navigator.base_speed")) {
-            return new Element(getNavigator().getLocalParameters().baseSpeed())
+            return new ElementTag(getNavigator().getLocalParameters().baseSpeed())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <n@npc.navigator.avoid_water>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the NPC will avoid water.
         // -->
         if (attribute.startsWith("navigator.avoid_water")) {
-            return new Element(getNavigator().getLocalParameters().avoidWater())
+            return new ElementTag(getNavigator().getLocalParameters().avoidWater())
                     .getAttribute(attribute.fulfill(2));
         }
 
@@ -1046,25 +1046,25 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
 
         // <--[tag]
         // @attribute <n@npc.navigator.is_fighting>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the NPC is in combat.
         // -->
         if (attribute.startsWith("navigator.is_fighting")) {
-            return new Element(getNavigator().getEntityTarget() != null && getNavigator().getEntityTarget().isAggressive())
+            return new ElementTag(getNavigator().getEntityTarget() != null && getNavigator().getEntityTarget().isAggressive())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <n@npc.navigator.target_type>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the entity type of the target.
         // -->
         if (attribute.startsWith("navigator.target_type"))
         // TODO: IMPROVE
         {
-            return new Element(getNavigator().getTargetType() == null ? "null"
+            return new ElementTag(getNavigator().getTargetType() == null ? "null"
                     : getNavigator().getTargetType().toString())
                     .getAttribute(attribute.fulfill(2));
         }
@@ -1083,13 +1083,13 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
 
         // <--[tag]
         // @attribute <n@npc.type>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Always returns 'NPC' for dNPC objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         if (attribute.startsWith("type")) {
-            return new Element("NPC").getAttribute(attribute.fulfill(1));
+            return new ElementTag("NPC").getAttribute(attribute.fulfill(1));
         }
 
         String returned = CoreUtilities.autoPropertyTag(this, attribute);
@@ -1099,7 +1099,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
 
         return (getEntity() != null
                 ? new dEntity(this).getAttribute(attribute)
-                : new Element(identify()).getAttribute(attribute));
+                : new ElementTag(identify()).getAttribute(attribute));
 
     }
 
@@ -1121,8 +1121,8 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         // @tags
         // <n@npc.script>
         // -->
-        if (mechanism.matches("set_assignment") && mechanism.requireObject(dScript.class)) {
-            getAssignmentTrait().setAssignment(mechanism.valueAsType(dScript.class).getName(), null);
+        if (mechanism.matches("set_assignment") && mechanism.requireObject(ScriptTag.class)) {
+            getAssignmentTrait().setAssignment(mechanism.valueAsType(ScriptTag.class).getName(), null);
         }
 
         // <--[mechanism]

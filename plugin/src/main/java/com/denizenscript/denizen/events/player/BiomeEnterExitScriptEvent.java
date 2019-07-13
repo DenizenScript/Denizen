@@ -4,8 +4,8 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -47,8 +47,8 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
 
     public dLocation from;
     public dLocation to;
-    public Element old_biome;
-    public Element new_biome;
+    public ElementTag old_biome;
+    public ElementTag new_biome;
     public PlayerMoveEvent event;
 
     @Override
@@ -85,7 +85,7 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("to")) {
             return to;
         }
@@ -105,8 +105,8 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
     public void onPlayerEntersExitsBiome(PlayerMoveEvent event) {
         from = new dLocation(event.getFrom());
         to = new dLocation(event.getTo());
-        old_biome = new Element(from.getBlock().getBiome().name());
-        new_biome = new Element(to.getBlock().getBiome().name());
+        old_biome = new ElementTag(from.getBlock().getBiome().name());
+        new_biome = new ElementTag(to.getBlock().getBiome().name());
         if (old_biome.identify().equals(new_biome.identify())) {
             return;
         }

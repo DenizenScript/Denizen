@@ -3,8 +3,8 @@ package com.denizenscript.denizen.events.entity;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -89,12 +89,12 @@ public class EntityGlideScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return entity;
         }
         else if (name.equals("state")) {
-            return new Element(state);
+            return new ElementTag(state);
         }
         return super.getContext(name);
     }

@@ -2,7 +2,7 @@ package com.denizenscript.denizen.tags.core;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.TagRunnable;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -23,7 +23,7 @@ public class ParseTags {
     public void parseTags(ReplaceableTagEvent event) {
         // <--[tag]
         // @attribute <parse:<text to parse>>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the text with any tags in it parsed.
         // WARNING: THIS TAG IS DANGEROUS TO USE, DO NOT USE IT UNLESS
@@ -34,7 +34,7 @@ public class ParseTags {
                 Debug.echoError("Escape tag '" + event.raw_tag + "' does not have a value!");
                 return;
             }
-            dObject read = TagManager.tagObject(TagManager.cleanOutputFully(event.getValue()), event.getContext());
+            ObjectTag read = TagManager.tagObject(TagManager.cleanOutputFully(event.getValue()), event.getContext());
             event.setReplacedObject(CoreUtilities.autoAttrib(read, event.getAttributes().fulfill(1)));
         }
     }

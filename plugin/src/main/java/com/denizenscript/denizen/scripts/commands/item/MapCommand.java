@@ -10,9 +10,9 @@ import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dWorld;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dScript;
+import com.denizenscript.denizencore.objects.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -71,11 +71,11 @@ public class MapCommand extends AbstractCommand {
                     && arg.matchesPrefix("r", "reset")
                     && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("reset-loc", arg.asType(dLocation.class));
-                scriptEntry.addObject("reset", new Element(true));
+                scriptEntry.addObject("reset", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("reset")
                     && arg.matches("reset")) {
-                scriptEntry.addObject("reset", new Element(true));
+                scriptEntry.addObject("reset", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("image")
                     && arg.matchesPrefix("i", "img", "image")) {
@@ -83,7 +83,7 @@ public class MapCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("resize")
                     && arg.matches("resize")) {
-                scriptEntry.addObject("resize", new Element(true));
+                scriptEntry.addObject("resize", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("width")
                     && arg.matchesPrefix("width")
@@ -97,8 +97,8 @@ public class MapCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("script")
                     && arg.matchesPrefix("s", "script")
-                    && arg.matchesArgumentType(dScript.class)) {
-                scriptEntry.addObject("script", arg.asType(dScript.class));
+                    && arg.matchesArgumentType(ScriptTag.class)) {
+                scriptEntry.addObject("script", arg.asType(ScriptTag.class));
             }
             else if (!scriptEntry.hasObject("x-value")
                     && arg.matchesPrefix("x")
@@ -128,25 +128,25 @@ public class MapCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify a valid action to perform!");
         }
 
-        scriptEntry.defaultObject("reset", new Element(false)).defaultObject("resize", new Element(false))
-                .defaultObject("x-value", new Element(0)).defaultObject("y-value", new Element(0));
+        scriptEntry.defaultObject("reset", new ElementTag(false)).defaultObject("resize", new ElementTag(false))
+                .defaultObject("x-value", new ElementTag(0)).defaultObject("y-value", new ElementTag(0));
 
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        Element id = scriptEntry.getElement("map-id");
+        ElementTag id = scriptEntry.getElement("map-id");
         dWorld create = scriptEntry.getdObject("new");
-        Element reset = scriptEntry.getElement("reset");
+        ElementTag reset = scriptEntry.getElement("reset");
         dLocation resetLoc = scriptEntry.getdObject("reset-loc");
-        Element image = scriptEntry.getElement("image");
-        dScript script = scriptEntry.getdObject("script");
-        Element resize = scriptEntry.getElement("resize");
-        Element width = scriptEntry.getElement("width");
-        Element height = scriptEntry.getElement("height");
-        Element x = scriptEntry.getElement("x-value");
-        Element y = scriptEntry.getElement("y-value");
+        ElementTag image = scriptEntry.getElement("image");
+        ScriptTag script = scriptEntry.getdObject("script");
+        ElementTag resize = scriptEntry.getElement("resize");
+        ElementTag width = scriptEntry.getElement("width");
+        ElementTag height = scriptEntry.getElement("height");
+        ElementTag x = scriptEntry.getElement("x-value");
+        ElementTag y = scriptEntry.getElement("y-value");
 
         if (scriptEntry.dbCallShouldDebug()) {
 
@@ -160,7 +160,7 @@ public class MapCommand extends AbstractCommand {
         MapView map = null;
         if (create != null) {
             map = Bukkit.getServer().createMap(create.getWorld());
-            scriptEntry.addObject("created_map", new Element(map.getId()));
+            scriptEntry.addObject("created_map", new ElementTag(map.getId()));
         }
         else if (id != null) {
             map = Bukkit.getServer().getMap((short) id.asInt());

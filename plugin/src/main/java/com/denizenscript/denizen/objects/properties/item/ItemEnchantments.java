@@ -2,10 +2,10 @@ package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -17,12 +17,12 @@ import java.util.*;
 
 public class ItemEnchantments implements Property {
 
-    public static boolean describes(dObject item) {
+    public static boolean describes(ObjectTag item) {
         // Technically, all items can hold enchants.
         return item instanceof dItem;
     }
 
-    public static ItemEnchantments getFrom(dObject _item) {
+    public static ItemEnchantments getFrom(ObjectTag _item) {
         if (!describes(_item)) {
             return null;
         }
@@ -55,20 +55,20 @@ public class ItemEnchantments implements Property {
 
         // <--[tag]
         // @attribute <i@item.is_enchanted>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @mechanism dItem.enchantments
         // @group properties
         // @description
         // Returns whether the item has any enchantments.
         // -->
         if (attribute.startsWith("is_enchanted")) {
-            return new Element(getEnchantments().size() > 0)
+            return new ElementTag(getEnchantments().size() > 0)
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <i@item.enchantments.with_levels>
-        // @returns dList
+        // @returns ListTag
         // @mechanism dItem.enchantments
         // @group properties
         // @description
@@ -82,14 +82,14 @@ public class ItemEnchantments implements Property {
                 for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
                     enchants.add(enchantment.getKey().getName() + "," + enchantment.getValue());
                 }
-                return new dList(enchants)
+                return new ListTag(enchants)
                         .getAttribute(attribute.fulfill(2));
             }
         }
 
         // <--[tag]
         // @attribute <i@item.enchantments.levels>
-        // @returns dList
+        // @returns ListTag
         // @mechanism dItem.enchantments
         // @group properties
         // @description
@@ -102,14 +102,14 @@ public class ItemEnchantments implements Property {
                 for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
                     enchants.add(String.valueOf(enchantment.getValue()));
                 }
-                return new dList(enchants)
+                return new ListTag(enchants)
                         .getAttribute(attribute.fulfill(2));
             }
         }
 
         // <--[tag]
         // @attribute <i@item.enchantments.level[<name>]>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @mechanism dItem.enchantments
         // @group properties
         // @description
@@ -121,18 +121,18 @@ public class ItemEnchantments implements Property {
             if (enchantments.size() > 0) {
                 for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
                     if (enchantment.getKey().getName().equalsIgnoreCase(attribute.getContext(2))) {
-                        return new Element(enchantment.getValue())
+                        return new ElementTag(enchantment.getValue())
                                 .getAttribute(attribute.fulfill(2));
                     }
                 }
             }
-            return new Element(0)
+            return new ElementTag(0)
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <i@item.enchantments>
-        // @returns dList
+        // @returns ListTag
         // @mechanism dItem.enchantments
         // @group properties
         // @description
@@ -145,7 +145,7 @@ public class ItemEnchantments implements Property {
                 for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
                     enchants.add(enchantment.getKey().getName());
                 }
-                return new dList(enchants)
+                return new ListTag(enchants)
                         .getAttribute(attribute.fulfill(1));
             }
         }
@@ -203,7 +203,7 @@ public class ItemEnchantments implements Property {
             HashSet<String> names = null;
             if (mechanism.hasValue()) {
                 names = new HashSet<>();
-                for (String ench : mechanism.valueAsType(dList.class)) {
+                for (String ench : mechanism.valueAsType(ListTag.class)) {
                     names.add(CoreUtilities.toLowerCase(ench));
                 }
             }
@@ -228,7 +228,7 @@ public class ItemEnchantments implements Property {
         // <--[mechanism]
         // @object dItem
         // @name enchantments
-        // @input dList
+        // @input ListTag
         // @description
         // Sets the item's enchantments.
         // For a list of valid enchantment names, refer to <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html>
@@ -239,7 +239,7 @@ public class ItemEnchantments implements Property {
         // -->
 
         if (mechanism.matches("enchantments")) {
-            for (String enchant : mechanism.valueAsType(dList.class)) {
+            for (String enchant : mechanism.valueAsType(ListTag.class)) {
                 if (!enchant.contains(",")) {
                     Debug.echoError("Invalid enchantment format, use name,level|...");
                 }

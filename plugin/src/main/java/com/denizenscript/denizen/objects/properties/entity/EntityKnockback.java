@@ -1,20 +1,20 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.entity.Arrow;
 
 public class EntityKnockback implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity && ((dEntity) entity).getBukkitEntity() instanceof Arrow;
     }
 
-    public static EntityKnockback getFrom(dObject entity) {
+    public static EntityKnockback getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -57,7 +57,7 @@ public class EntityKnockback implements Property {
     }
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -69,14 +69,14 @@ public class EntityKnockback implements Property {
 
         // <--[tag]
         // @attribute <e@entity.knockback>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @mechanism dEntity.knockback
         // @group properties
         // @description
         // If the entity is an arrow or trident, returns the knockback strength of the arrow/trident.
         // -->
         if (attribute.startsWith("knockback")) {
-            return new Element(((Arrow) arrow.getBukkitEntity()).getKnockbackStrength())
+            return new ElementTag(((Arrow) arrow.getBukkitEntity()).getKnockbackStrength())
                     .getAttribute(attribute.fulfill(1));
         }
 

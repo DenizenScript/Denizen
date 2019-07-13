@@ -4,9 +4,9 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.entity.EntityType;
@@ -14,12 +14,12 @@ import org.bukkit.inventory.meta.SpawnEggMeta;
 
 public class ItemSpawnEgg implements Property {
 
-    public static boolean describes(dObject item) {
+    public static boolean describes(ObjectTag item) {
         return item instanceof dItem
                 && ((dItem) item).getItemStack().getItemMeta() instanceof SpawnEggMeta;
     }
 
-    public static ItemSpawnEgg getFrom(dObject _item) {
+    public static ItemSpawnEgg getFrom(ObjectTag _item) {
         if (!describes(_item)) {
             return null;
         }
@@ -56,7 +56,7 @@ public class ItemSpawnEgg implements Property {
 
         // <--[tag]
         // @attribute <i@item.spawn_id>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @group properties
         // @mechanism dItem.spawn_id
         // @description
@@ -66,20 +66,20 @@ public class ItemSpawnEgg implements Property {
         // -->
         if ((attribute.startsWith("spawn_id") || attribute.startsWith("spawn_egg_entity"))
                 && getEntityType() != null) {
-            return new Element(getEntityType().getTypeId())
+            return new ElementTag(getEntityType().getTypeId())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <i@item.spawn_type>
-        // @returns Element
+        // @returns ElementTag
         // @group properties
         // @mechanism dItem.spawn_type
         // @description
         // Returns the spawn egg's entity type.
         // -->
         if (attribute.startsWith("spawn_type") && getEntityType() != null) {
-            return new Element(getEntityType().name())
+            return new ElementTag(getEntityType().name())
                     .getAttribute(attribute.fulfill(1));
         }
 

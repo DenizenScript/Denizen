@@ -4,10 +4,10 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -18,12 +18,12 @@ import java.util.UUID;
 
 public class ItemSkullskin implements Property {
 
-    public static boolean describes(dObject item) {
+    public static boolean describes(ObjectTag item) {
         return item instanceof dItem
                 && ((dItem) item).getItemStack().getItemMeta() instanceof SkullMeta;
     }
 
-    public static ItemSkullskin getFrom(dObject _item) {
+    public static ItemSkullskin getFrom(ObjectTag _item) {
         if (!describes(_item)) {
             return null;
         }
@@ -56,7 +56,7 @@ public class ItemSkullskin implements Property {
 
         // <--[tag]
         // @attribute <i@item.skin>
-        // @returns Element
+        // @returns ElementTag
         // @mechanism dItem.skull_skin
         // @group properties
         // @description
@@ -65,7 +65,7 @@ public class ItemSkullskin implements Property {
         // -->
         // <--[tag]
         // @attribute <i@item.skin.full>
-        // @returns Element|Element
+        // @returns ElementTag|Element
         // @mechanism dItem.skull_skin
         // @group properties
         // @description
@@ -79,9 +79,9 @@ public class ItemSkullskin implements Property {
             if (skin != null) {
                 attribute = attribute.fulfill(1);
                 if (attribute.startsWith("full")) {
-                    return new Element(skin).getAttribute(attribute.fulfill(1));
+                    return new ElementTag(skin).getAttribute(attribute.fulfill(1));
                 }
-                return new Element(CoreUtilities.split(skin, '|').get(0)).getAttribute(attribute);
+                return new ElementTag(CoreUtilities.split(skin, '|').get(0)).getAttribute(attribute);
             }
             else {
                 Debug.echoError("This skull item does not have a skin set!");
@@ -90,7 +90,7 @@ public class ItemSkullskin implements Property {
 
         // <--[tag]
         // @attribute <i@item.has_skin>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @mechanism dItem.skull_skin
         // @group properties
         // @description
@@ -98,7 +98,7 @@ public class ItemSkullskin implements Property {
         // (Only for human 'skull_item's)
         // -->
         if (attribute.startsWith("has_skin")) {
-            return new Element(getPropertyString() != null)
+            return new ElementTag(getPropertyString() != null)
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -139,9 +139,9 @@ public class ItemSkullskin implements Property {
         // @input Element(|Element(|Element))
         // @description
         // Sets the player skin on a skull_item.
-        // The first Element is a UUID.
-        // Optionally, use the second Element for the skin texture cache.
-        // Optionally, use the third Element for a player name.
+        // The first ElementTag is a UUID.
+        // Optionally, use the second ElementTag for the skin texture cache.
+        // Optionally, use the third ElementTag for a player name.
         // @tags
         // <i@item.skin>
         // <i@item.skin.full>
@@ -151,7 +151,7 @@ public class ItemSkullskin implements Property {
             if (!isCorrectDurability()) {
                 item.getItemStack().setDurability((short) 3);
             }
-            dList list = mechanism.valueAsType(dList.class);
+            ListTag list = mechanism.valueAsType(ListTag.class);
             String idString = list.get(0);
             String texture = null;
             if (list.size() > 1) {

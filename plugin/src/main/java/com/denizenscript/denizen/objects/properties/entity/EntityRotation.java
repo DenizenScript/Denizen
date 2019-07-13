@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -14,7 +14,7 @@ import org.bukkit.entity.Hanging;
 public class EntityRotation implements Property {
 
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         if (!(entity instanceof dEntity)) {
             return false;
         }
@@ -22,7 +22,7 @@ public class EntityRotation implements Property {
                 || ((dEntity) entity).getBukkitEntityType() == EntityType.ITEM_FRAME;
     }
 
-    public static EntityRotation getFrom(dObject entity) {
+    public static EntityRotation getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -75,7 +75,7 @@ public class EntityRotation implements Property {
 
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -87,7 +87,7 @@ public class EntityRotation implements Property {
 
         // <--[tag]
         // @attribute <e@entity.rotation>
-        // @returns Element
+        // @returns ElementTag
         // @mechanism dEntity.rotiation
         // @group properties
         // @description
@@ -95,7 +95,7 @@ public class EntityRotation implements Property {
         // Currently, only Hanging-type entities can have rotations.
         // -->
         if (attribute.startsWith("rotation")) {
-            return new Element(CoreUtilities.toLowerCase(getRotation().name()))
+            return new ElementTag(CoreUtilities.toLowerCase(getRotation().name()))
                     .getAttribute(attribute.fulfill(1));
         }
 

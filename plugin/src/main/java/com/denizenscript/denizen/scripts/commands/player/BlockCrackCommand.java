@@ -8,9 +8,9 @@ import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Location;
@@ -60,7 +60,7 @@ public class BlockCrackCommand extends AbstractCommand {
 
             if (arg.matchesPrefix("players")
                     && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("players", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
+                scriptEntry.addObject("players", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
             }
             else if (arg.matchesPrefix("progress")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
@@ -70,7 +70,7 @@ public class BlockCrackCommand extends AbstractCommand {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
             else if (arg.matches("stack")) {
-                scriptEntry.addObject("stack", new Element(true));
+                scriptEntry.addObject("stack", new ElementTag(true));
             }
             else {
                 arg.reportUnhandled();
@@ -87,7 +87,7 @@ public class BlockCrackCommand extends AbstractCommand {
         }
 
         scriptEntry.defaultObject("players", Collections.singletonList(Utilities.getEntryPlayer(scriptEntry)))
-                .defaultObject("stack", new Element(false));
+                .defaultObject("stack", new ElementTag(false));
     }
 
     private static class IntHolder {
@@ -102,9 +102,9 @@ public class BlockCrackCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("players");
-        Element progress = scriptEntry.getElement("progress");
+        ElementTag progress = scriptEntry.getElement("progress");
         dLocation location = scriptEntry.getdObject("location");
-        Element stack = scriptEntry.getElement("stack");
+        ElementTag stack = scriptEntry.getElement("stack");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

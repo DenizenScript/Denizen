@@ -7,9 +7,9 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.npc.DenizenNPCHelper;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
@@ -264,9 +264,9 @@ public class AssignmentTrait extends Trait {
         }
         EntityDamageEvent event = deathEvent.getEntity().getLastDamageCause();
         String deathCause = event == null ? "unknown" : CoreUtilities.toLowerCase(event.getCause().toString()).replace('_', ' ');
-        Map<String, dObject> context = new HashMap<>();
-        context.put("damage", new Element(event == null ? 0 : event.getDamage()));
-        context.put("death_cause", new Element(deathCause));
+        Map<String, ObjectTag> context = new HashMap<>();
+        context.put("damage", new ElementTag(event == null ? 0 : event.getDamage()));
+        context.put("death_cause", new ElementTag(deathCause));
         dPlayer player = null;
         if (event instanceof EntityDamageByEntityEvent) {
             Entity killerEntity = ((EntityDamageByEntityEvent) event).getDamager();

@@ -8,8 +8,8 @@ import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizencore.events.OldEventManager;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -39,11 +39,11 @@ public class BukkitWorldScriptHelper implements Listener {
                 .registerEvents(this, DenizenAPI.getCurrentInstance());
     }
 
-    public static String doEvents(List<String> events, dNPC npc, dPlayer player, Map<String, dObject> context) {
+    public static String doEvents(List<String> events, dNPC npc, dPlayer player, Map<String, ObjectTag> context) {
         return doEvents(events, npc, player, context, false);
     }
 
-    public static String doEvents(List<String> events, dNPC npc, dPlayer player, Map<String, dObject> context, boolean useids) {
+    public static String doEvents(List<String> events, dNPC npc, dPlayer player, Map<String, ObjectTag> context, boolean useids) {
         List<String> determ;
         if (useids) {
             determ = OldEventManager.doEvents(events, new BukkitScriptEntryData(player, npc), context, true);
@@ -125,9 +125,9 @@ public class BukkitWorldScriptHelper implements Listener {
 
             if (!current_time.containsKey(currentWorld.identifySimple())
                     || current_time.get(currentWorld.identifySimple()) != hour) {
-                Map<String, dObject> context = new HashMap<>();
+                Map<String, ObjectTag> context = new HashMap<>();
 
-                context.put("time", new Element(hour));
+                context.put("time", new ElementTag(hour));
                 context.put("world", currentWorld);
 
                 doEvents(Arrays.asList
@@ -212,13 +212,13 @@ public class BukkitWorldScriptHelper implements Listener {
     // <context.inventory> returns the dInventory (the 'top' inventory, regardless of which slot was clicked).
     // <context.clicked_inventory> returns the dInventory that was clicked in.
     // <context.cursor_item> returns the item the Player is clicking with.
-    // <context.click> returns an Element with the name of the click type. Click type list: <@link url http://bit.ly/2IjY198>
-    // <context.slot_type> returns an Element with the name of the slot type that was clicked.
-    // <context.slot> returns an Element with the number of the slot that was clicked.
-    // <context.raw_slot> returns an Element with the raw number of the slot that was clicked.
+    // <context.click> returns an ElementTag with the name of the click type. Click type list: <@link url http://bit.ly/2IjY198>
+    // <context.slot_type> returns an ElementTag with the name of the slot type that was clicked.
+    // <context.slot> returns an ElementTag with the number of the slot that was clicked.
+    // <context.raw_slot> returns an ElementTag with the raw number of the slot that was clicked.
     // <context.is_shift_click> returns true if 'shift' was used while clicking.
     // <context.action> returns the inventory_action. See <@link language Inventory Actions>.
-    // <context.hotbar_button> returns an Element of the button pressed as a number, or 0 if no number button was pressed.
+    // <context.hotbar_button> returns an ElementTag of the button pressed as a number, or 0 if no number button was pressed.
     //
     // @Determine
     // "CANCELLED" to stop the player from clicking.
@@ -230,7 +230,7 @@ public class BukkitWorldScriptHelper implements Listener {
 
         // TODO: make this a script event...
 
-        Map<String, dObject> context = new HashMap<>();
+        Map<String, ObjectTag> context = new HashMap<>();
         dItem item = new dItem(Material.AIR);
         dItem holding;
 
@@ -356,16 +356,16 @@ public class BukkitWorldScriptHelper implements Listener {
 
         context.put("item", item);
         context.put("inventory", inventory);
-        context.put("click", new Element(click));
-        context.put("slot_type", new Element(slotType));
-        context.put("slot", new Element(event.getSlot() + 1));
-        context.put("raw_slot", new Element(event.getRawSlot() + 1));
+        context.put("click", new ElementTag(click));
+        context.put("slot_type", new ElementTag(slotType));
+        context.put("slot", new ElementTag(event.getSlot() + 1));
+        context.put("raw_slot", new ElementTag(event.getRawSlot() + 1));
         if (event.getClickedInventory() != null) {
             context.put("clicked_inventory", dInventory.mirrorBukkitInventory(event.getClickedInventory()));
         }
-        context.put("is_shift_click", new Element(event.isShiftClick()));
-        context.put("action", new Element(event.getAction().name()));
-        context.put("hotbar_button", new Element(event.getHotbarButton() + 1));
+        context.put("is_shift_click", new ElementTag(event.isShiftClick()));
+        context.put("action", new ElementTag(event.getAction().name()));
+        context.put("hotbar_button", new ElementTag(event.getHotbarButton() + 1));
 
         String determination = doEvents(events, null, player, context, true);
 

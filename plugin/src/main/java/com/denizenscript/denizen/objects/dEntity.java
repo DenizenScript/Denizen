@@ -39,7 +39,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class dEntity implements dObject, Adjustable, EntityFormObject {
+public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
 
     // <--[language]
     // @name dEntity
@@ -137,7 +137,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
     //    OBJECT FETCHER
     ////////////////
 
-    public static dEntity getEntityFor(dObject object, TagContext context) {
+    public static dEntity getEntityFor(ObjectTag object, TagContext context) {
         if (object instanceof dEntity) {
             return (dEntity) object;
         }
@@ -533,11 +533,11 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
     }
 
     /**
-     * Get the dObject that most accurately describes this entity,
+     * Get the ObjectTag that most accurately describes this entity,
      * useful for automatically saving dEntities to contexts as
      * dNPCs and dPlayers
      *
-     * @return The dObject
+     * @return The ObjectTag
      */
 
     public EntityFormObject getDenizenObject() {
@@ -765,9 +765,9 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
      * @return the entity's equipment
      */
 
-    public dList getEquipment() {
+    public ListTag getEquipment() {
         ItemStack[] equipment = getLivingEntity().getEquipment().getArmorContents();
-        dList equipmentList = new dList();
+        ListTag equipmentList = new ListTag();
         for (ItemStack item : equipment) {
             equipmentList.add(new dItem(item).identify());
         }
@@ -983,7 +983,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             }
 
             for (Mechanism mechanism : mechanisms) {
-                safeAdjust(new Mechanism(new Element(mechanism.getName()), mechanism.getValue(), mechanism.context));
+                safeAdjust(new Mechanism(new ElementTag(mechanism.getName()), mechanism.getValue(), mechanism.context));
             }
             mechanisms.clear();
         }
@@ -1118,7 +1118,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
 
     /////////////////////
-    //  dObject Methods
+    //  ObjectTag Methods
     ///////////////////
 
     private String prefix = "Entity";
@@ -1312,7 +1312,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
         if (entity == null && entity_type == null) {
             if (npc != null) {
-                return new Element(identify()).getAttribute(attribute);
+                return new ElementTag(identify()).getAttribute(attribute);
             }
             Debug.echoError("dEntity has returned null.");
             return null;
@@ -1320,13 +1320,13 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <e@entity.type>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Always returns 'Entity' for dEntity objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         if (attribute.startsWith("type")) {
-            return new Element("Entity").getAttribute(attribute.fulfill(1));
+            return new ElementTag("Entity").getAttribute(attribute.fulfill(1));
         }
 
         /////////////////////
@@ -1335,55 +1335,55 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <e@entity.entity_type>
-        // @returns Element
+        // @returns ElementTag
         // @group data
         // @description
         // Returns the type of the entity.
         // -->
         if (attribute.startsWith("entity_type")) {
-            return new Element(entity_type.getName()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(entity_type.getName()).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.is_spawned>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group data
         // @description
         // Returns whether the entity is spawned.
         // -->
         if (attribute.startsWith("is_spawned")) {
-            return new Element(isSpawned())
+            return new ElementTag(isSpawned())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.eid>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @group data
         // @description
         // Returns the entity's temporary server entity ID.
         // -->
         if (attribute.startsWith("eid")) {
-            return new Element(entity.getEntityId())
+            return new ElementTag(entity.getEntityId())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.uuid>
-        // @returns Element
+        // @returns ElementTag
         // @group data
         // @description
         // Returns the permanent unique ID of the entity.
         // Works with offline players.
         // -->
         if (attribute.startsWith("uuid")) {
-            return new Element(getUUID().toString())
+            return new ElementTag(getUUID().toString())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.scriptname>
-        // @returns Element
+        // @returns ElementTag
         // @group data
         // @description
         // Returns the name of the entity script that spawned this entity, if any.
@@ -1392,13 +1392,13 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             if (entityScript == null) {
                 return null;
             }
-            return new Element(entityScript)
+            return new ElementTag(entityScript)
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.has_flag[<flag_name>]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns true if the entity has the specified flag, otherwise returns false.
         // -->
@@ -1414,12 +1414,12 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
                 Debug.echoError("Reading flag for PLAYER or NPC as if it were an ENTITY!");
                 return null;
             }
-            return new Element(FlagManager.entityHasFlag(this, flag_name)).getAttribute(attribute.fulfill(1));
+            return new ElementTag(FlagManager.entityHasFlag(this, flag_name)).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.flag[<flag_name>]>
-        // @returns Flag dList
+        // @returns Flag ListTag
         // @description
         // Returns the specified flag from the entity.
         // -->
@@ -1437,31 +1437,31 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             }
             if (attribute.getAttribute(2).equalsIgnoreCase("is_expired")
                     || attribute.startsWith("isexpired")) {
-                return new Element(!FlagManager.entityHasFlag(this, flag_name))
+                return new ElementTag(!FlagManager.entityHasFlag(this, flag_name))
                         .getAttribute(attribute.fulfill(2));
             }
             if (attribute.getAttribute(2).equalsIgnoreCase("size") && !FlagManager.entityHasFlag(this, flag_name)) {
-                return new Element(0).getAttribute(attribute.fulfill(2));
+                return new ElementTag(0).getAttribute(attribute.fulfill(2));
             }
             if (FlagManager.entityHasFlag(this, flag_name)) {
                 FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager().getEntityFlag(this, flag_name);
-                return new dList(flag.toString(), true, flag.values()).getAttribute(attribute.fulfill(1));
+                return new ListTag(flag.toString(), true, flag.values()).getAttribute(attribute.fulfill(1));
             }
-            return new Element(identify()).getAttribute(attribute);
+            return new ElementTag(identify()).getAttribute(attribute);
         }
 
         // <--[tag]
         // @attribute <e@entity.list_flags[(regex:)<search>]>
-        // @returns dList
+        // @returns ListTag
         // @description
         // Returns a list of an entity's flag names, with an optional search for
         // names containing a certain pattern.
         // -->
         if (attribute.startsWith("list_flags")) {
-            dList allFlags = new dList(DenizenAPI.getCurrentInstance().flagManager().listEntityFlags(this));
-            dList searchFlags = null;
+            ListTag allFlags = new ListTag(DenizenAPI.getCurrentInstance().flagManager().listEntityFlags(this));
+            ListTag searchFlags = null;
             if (!allFlags.isEmpty() && attribute.hasContext(1)) {
-                searchFlags = new dList();
+                searchFlags = new ListTag();
                 String search = attribute.getContext(1);
                 if (search.startsWith("regex:")) {
                     try {
@@ -1494,7 +1494,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         }
 
         if (entity == null) {
-            return new Element(identify()).getAttribute(attribute);
+            return new ElementTag(identify()).getAttribute(attribute);
         }
         // Only spawned entities past this point!
 
@@ -1505,7 +1505,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <e@entity.custom_id>
-        // @returns dScript/Element
+        // @returns ScriptTag/Element
         // @group data
         // @description
         // If the entity has a script ID, returns the dScript of that ID.
@@ -1513,18 +1513,18 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (attribute.startsWith("custom_id")) {
             if (CustomNBT.hasCustomNBT(getLivingEntity(), "denizen-script-id")) {
-                return new dScript(CustomNBT.getCustomNBT(getLivingEntity(), "denizen-script-id"))
+                return new ScriptTag(CustomNBT.getCustomNBT(getLivingEntity(), "denizen-script-id"))
                         .getAttribute(attribute.fulfill(1));
             }
             else {
-                return new Element(entity.getType().name())
+                return new ElementTag(entity.getType().name())
                         .getAttribute(attribute.fulfill(1));
             }
         }
 
         // <--[tag]
         // @attribute <e@entity.name>
-        // @returns Element
+        // @returns ElementTag
         // @group data
         // @description
         // Returns the name of the entity.
@@ -1532,7 +1532,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // Works with offline players.
         // -->
         if (attribute.startsWith("name")) {
-            return new Element(getName()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getName()).getAttribute(attribute.fulfill(1));
         }
 
 
@@ -1575,18 +1575,18 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <e@entity.has_saddle>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group inventory
         // @description
         // If the entity s a pig or horse, returns whether it has a saddle equipped.
         // -->
         if (attribute.startsWith("has_saddle")) {
             if (getLivingEntity().getType() == EntityType.HORSE) {
-                return new Element(((Horse) getLivingEntity()).getInventory().getSaddle().getType() == Material.SADDLE)
+                return new ElementTag(((Horse) getLivingEntity()).getInventory().getSaddle().getType() == Material.SADDLE)
                         .getAttribute(attribute.fulfill(1));
             }
             else if (getLivingEntity().getType() == EntityType.PIG) {
-                return new Element(((Pig) getLivingEntity()).hasSaddle())
+                return new ElementTag(((Pig) getLivingEntity()).hasSaddle())
                         .getAttribute(attribute.fulfill(1));
             }
         }
@@ -1619,13 +1619,13 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <e@entity.is_trading>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the villager entity is trading.
         // -->
         if (attribute.startsWith("is_trading")) {
             if (entity instanceof Merchant) {
-                return new Element(((Merchant) entity).isTrading()).getAttribute(attribute.fulfill(1));
+                return new ElementTag(((Merchant) entity).isTrading()).getAttribute(attribute.fulfill(1));
             }
         }
 
@@ -1682,7 +1682,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <e@entity.can_see[<entity>]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group location
         // @description
         // Returns whether the entity can see the specified other entity (has an uninterrupted line-of-sight).
@@ -1691,7 +1691,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             if (isLivingEntity() && attribute.hasContext(1) && dEntity.matches(attribute.getContext(1))) {
                 dEntity toEntity = dEntity.valueOf(attribute.getContext(1));
                 if (toEntity != null && toEntity.isSpawned()) {
-                    return new Element(getLivingEntity().hasLineOfSight(toEntity.getBukkitEntity())).getAttribute(attribute.fulfill(1));
+                    return new ElementTag(getLivingEntity().hasLineOfSight(toEntity.getBukkitEntity())).getAttribute(attribute.fulfill(1));
                 }
             }
         }
@@ -1710,14 +1710,14 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <e@entity.eye_height>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group location
         // @description
         // Returns the height of the entity's eyes above its location.
         // -->
         if (attribute.startsWith("eye_height")) {
             if (isLivingEntity()) {
-                return new Element(getLivingEntity().getEyeHeight())
+                return new ElementTag(getLivingEntity().getEyeHeight())
                         .getAttribute(attribute.fulfill(1));
             }
         }
@@ -1749,7 +1749,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             set.add(Material.AIR);
             attribute = attribute.fulfill(2);
             if (attribute.startsWith("ignore") && attribute.hasContext(1)) {
-                List<dMaterial> ignoreList = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class, attribute.context);
+                List<dMaterial> ignoreList = ListTag.valueOf(attribute.getContext(1)).filter(dMaterial.class, attribute.context);
                 for (dMaterial material : ignoreList) {
                     set.add(material.getMaterial());
                 }
@@ -1786,13 +1786,13 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <e@entity.body_yaw>
-        // @returns Element(Decimal)
+        // @returns ElementTag(Decimal)
         // @group location
         // @description
         // Returns the entity's body yaw (separate from head yaw).
         // -->
         if (attribute.startsWith("body_yaw")) {
-            return new Element(NMSHandler.getInstance().getEntityHelper().getBaseYaw(entity))
+            return new ElementTag(NMSHandler.getInstance().getEntityHelper().getBaseYaw(entity))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1828,14 +1828,14 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <e@entity.can_pickup_items>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group attributes
         // @description
         // Returns whether the entity can pick up items.
         // -->
         if (attribute.startsWith("can_pickup_items")) {
             if (isLivingEntity()) {
-                return new Element(getLivingEntity().getCanPickupItems())
+                return new ElementTag(getLivingEntity().getCanPickupItems())
                         .getAttribute(attribute.fulfill(1));
             }
         }
@@ -1854,37 +1854,37 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <e@entity.fall_distance>
-        // @returns Element(Decimal)
+        // @returns ElementTag(Decimal)
         // @group attributes
         // @description
         // Returns how far the entity has fallen.
         // -->
         if (attribute.startsWith("fall_distance")) {
-            return new Element(entity.getFallDistance())
+            return new ElementTag(entity.getFallDistance())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.fire_time>
-        // @returns Duration
+        // @returns DurationTag
         // @group attributes
         // @description
         // Returns the duration for which the entity will remain on fire
         // -->
         if (attribute.startsWith("fire_time")) {
-            return new Duration(entity.getFireTicks() / 20)
+            return new DurationTag(entity.getFireTicks() / 20)
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.on_fire>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group attributes
         // @description
         // Returns whether the entity is currently ablaze or not.
         // -->
         if (attribute.startsWith("on_fire")) {
-            return new Element(entity.getFireTicks() > 0).getAttribute(attribute.fulfill(1));
+            return new ElementTag(entity.getFireTicks() > 0).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -1903,7 +1903,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <e@entity.passengers>
-        // @returns dList(dEntity)
+        // @returns ListTag(dEntity)
         // @group attributes
         // @description
         // Returns a list of the entity's passengers, if any.
@@ -1913,7 +1913,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             for (Entity ent : entity.getPassengers()) {
                 passengers.add(new dEntity(ent));
             }
-            return new dList(passengers).getAttribute(attribute.fulfill(1));
+            return new ListTag(passengers).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -1991,122 +1991,122 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <e@entity.can_breed>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group attributes
         // @description
         // Returns whether the animal entity is capable of mating with another of its kind.
         // -->
         if (attribute.startsWith("can_breed")) {
-            return new Element(((Ageable) getLivingEntity()).canBreed())
+            return new ElementTag(((Ageable) getLivingEntity()).canBreed())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.breeding>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group attributes
         // @description
         // Returns whether the animal entity is trying to with another of its kind.
         // -->
         if (attribute.startsWith("breeding") || attribute.startsWith("is_breeding")) {
-            return new Element(NMSHandler.getInstance().getEntityHelper().isBreeding((Animals) getLivingEntity()))
+            return new ElementTag(NMSHandler.getInstance().getEntityHelper().isBreeding((Animals) getLivingEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.has_passenger>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group attributes
         // @description
         // Returns whether the entity has a passenger.
         // -->
         if (attribute.startsWith("has_passenger")) {
-            return new Element(!entity.isEmpty())
+            return new ElementTag(!entity.isEmpty())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.is_empty>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group attributes
         // @description
         // Returns whether the entity does not have a passenger.
         // -->
         if (attribute.startsWith("empty") || attribute.startsWith("is_empty")) {
-            return new Element(entity.isEmpty())
+            return new ElementTag(entity.isEmpty())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.is_inside_vehicle>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group attributes
         // @description
         // Returns whether the entity is inside a vehicle.
         // -->
         if (attribute.startsWith("inside_vehicle") || attribute.startsWith("is_inside_vehicle")) {
-            return new Element(entity.isInsideVehicle())
+            return new ElementTag(entity.isInsideVehicle())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.is_leashed>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group attributes
         // @description
         // Returns whether the entity is leashed.
         // -->
         if (attribute.startsWith("leashed") || attribute.startsWith("is_leashed")) {
-            return new Element(isLivingEntity() && getLivingEntity().isLeashed())
+            return new ElementTag(isLivingEntity() && getLivingEntity().isLeashed())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.is_sheared>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group attributes
         // @description
         // Returns whether a sheep is sheared.
         // -->
         if (attribute.startsWith("is_sheared") && getBukkitEntity() instanceof Sheep) {
-            return new Element(((Sheep) getBukkitEntity()).isSheared())
+            return new ElementTag(((Sheep) getBukkitEntity()).isSheared())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.is_on_ground>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group attributes
         // @description
         // Returns whether the entity is supported by a block.
         // -->
         if (attribute.startsWith("on_ground") || attribute.startsWith("is_on_ground")) {
-            return new Element(entity.isOnGround())
+            return new ElementTag(entity.isOnGround())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.is_persistent>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group attributes
         // @description
         // Returns whether the entity will not be removed completely when far away from players.
         // -->
         if (attribute.startsWith("persistent") || attribute.startsWith("is_persistent")) {
-            return new Element(isLivingEntity() && !getLivingEntity().getRemoveWhenFarAway())
+            return new ElementTag(isLivingEntity() && !getLivingEntity().getRemoveWhenFarAway())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.is_collidable>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @mechanism collidable
         // @group attributes
         // @description
         // Returns whether the entity is collidable.
         // -->
         if (attribute.startsWith("is_collidable")) {
-            return new Element(getLivingEntity().isCollidable())
+            return new ElementTag(getLivingEntity().isCollidable())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -2124,90 +2124,90 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <e@entity.last_damage.amount>
-        // @returns Element(Decimal)
+        // @returns ElementTag(Decimal)
         // @group attributes
         // @description
         // Returns the amount of the last damage taken by the entity.
         // -->
         if (attribute.startsWith("last_damage.amount")) {
-            return new Element(getLivingEntity().getLastDamage())
+            return new ElementTag(getLivingEntity().getLastDamage())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <e@entity.last_damage.cause>
-        // @returns Element
+        // @returns ElementTag
         // @group attributes
         // @description
         // Returns the cause of the last damage taken by the entity.
         // -->
         if (attribute.startsWith("last_damage.cause")
                 && entity.getLastDamageCause() != null) {
-            return new Element(entity.getLastDamageCause().getCause().name())
+            return new ElementTag(entity.getLastDamageCause().getCause().name())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <e@entity.last_damage.duration>
-        // @returns Duration
+        // @returns DurationTag
         // @mechanism dEntity.no_damage_duration
         // @group attributes
         // @description
         // Returns the duration of the last damage taken by the entity.
         // -->
         if (attribute.startsWith("last_damage.duration")) {
-            return new Duration((long) getLivingEntity().getNoDamageTicks())
+            return new DurationTag((long) getLivingEntity().getNoDamageTicks())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <e@entity.last_damage.max_duration>
-        // @returns Duration
+        // @returns DurationTag
         // @mechanism dEntity.max_no_damage_duration
         // @group attributes
         // @description
         // Returns the maximum duration of the last damage taken by the entity.
         // -->
         if (attribute.startsWith("last_damage.max_duration")) {
-            return new Duration((long) getLivingEntity().getMaximumNoDamageTicks())
+            return new DurationTag((long) getLivingEntity().getMaximumNoDamageTicks())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <e@entity.oxygen.max>
-        // @returns Duration
+        // @returns DurationTag
         // @group attributes
         // @description
         // Returns the maximum duration of oxygen the entity can have.
         // Works with offline players.
         // -->
         if (attribute.startsWith("oxygen.max")) {
-            return new Duration((long) getLivingEntity().getMaximumAir())
+            return new DurationTag((long) getLivingEntity().getMaximumAir())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.oxygen>
-        // @returns Duration
+        // @returns DurationTag
         // @group attributes
         // @description
         // Returns the duration of oxygen the entity has left.
         // Works with offline players.
         // -->
         if (attribute.startsWith("oxygen")) {
-            return new Duration((long) getLivingEntity().getRemainingAir())
+            return new DurationTag((long) getLivingEntity().getRemainingAir())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.remove_when_far>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group attributes
         // @description
         // Returns whether the entity despawns when away from players.
         // -->
         if (attribute.startsWith("remove_when_far")) {
-            return new Element(getLivingEntity().getRemoveWhenFarAway())
+            return new ElementTag(getLivingEntity().getRemoveWhenFarAway())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -2231,38 +2231,38 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <e@entity.time_lived>
-        // @returns Duration
+        // @returns DurationTag
         // @group attributes
         // @description
         // Returns how long the entity has lived.
         // -->
         if (attribute.startsWith("time_lived")) {
-            return new Duration(entity.getTicksLived() / 20)
+            return new DurationTag(entity.getTicksLived() / 20)
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.pickup_delay>
-        // @returns Duration
+        // @returns DurationTag
         // @group attributes
         // @description
         // Returns how long before the item-type entity can be picked up by a player.
         // -->
         if ((attribute.startsWith("pickup_delay") || attribute.startsWith("pickupdelay"))
                 && getBukkitEntity() instanceof Item) {
-            return new Duration(((Item) getBukkitEntity()).getPickupDelay() * 20).getAttribute(attribute.fulfill(1));
+            return new DurationTag(((Item) getBukkitEntity()).getPickupDelay() * 20).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.is_in_block>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group attributes
         // @description
         // Returns whether or not the arrow/trident entity is in a block.
         // -->
         if (attribute.startsWith("is_in_block")) {
             if (getBukkitEntity() instanceof Arrow) {
-                return new Element(((Arrow) getBukkitEntity()).isInBlock()).getAttribute(attribute.fulfill(1));
+                return new ElementTag(((Arrow) getBukkitEntity()).isInBlock()).getAttribute(attribute.fulfill(1));
             }
             return null;
         }
@@ -2286,40 +2286,40 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <e@entity.gliding>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @mechanism dEntity.gliding
         // @group attributes
         // @description
         // Returns whether this entity is gliding.
         // -->
         if (attribute.startsWith("gliding")) {
-            return new Element(getLivingEntity().isGliding())
+            return new ElementTag(getLivingEntity().isGliding())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.swimming>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @mechanism dEntity.swimming
         // @group attributes
         // @description
         // Returns whether this entity is swimming.
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && attribute.startsWith("swimming")) {
-            return new Element(getLivingEntity().isSwimming())
+            return new ElementTag(getLivingEntity().isSwimming())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.glowing>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @mechanism dEntity.glowing
         // @group attributes
         // @description
         // Returns whether this entity is glowing.
         // -->
         if (attribute.startsWith("glowing")) {
-            return new Element(getBukkitEntity().isGlowing())
+            return new ElementTag(getBukkitEntity().isGlowing())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -2329,74 +2329,74 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <e@entity.is_living>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group data
         // @description
         // Returns whether the entity is a living entity.
         // -->
         if (attribute.startsWith("is_living")) {
-            return new Element(isLivingEntity())
+            return new ElementTag(isLivingEntity())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.is_monster>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group data
         // @description
         // Returns whether the entity is a hostile monster.
         // -->
         if (attribute.startsWith("is_monster")) {
-            return new Element(getBukkitEntity() instanceof Monster)
+            return new ElementTag(getBukkitEntity() instanceof Monster)
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.is_mob>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group data
         // @description
         // Returns whether the entity is a mob (Not a player or NPC).
         // -->
         if (attribute.startsWith("is_mob")) {
-            return new Element(!isPlayer() && !isNPC() && isLivingEntity())
+            return new ElementTag(!isPlayer() && !isNPC() && isLivingEntity())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.is_npc>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group data
         // @description
         // Returns whether the entity is a Citizens NPC.
         // -->
         if (attribute.startsWith("is_npc")) {
-            return new Element(isCitizensNPC())
+            return new ElementTag(isCitizensNPC())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.is_player>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group data
         // @description
         // Returns whether the entity is a player.
         // Works with offline players.
         // -->
         if (attribute.startsWith("is_player")) {
-            return new Element(isPlayer())
+            return new ElementTag(isPlayer())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.is_projectile>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group data
         // @description
         // Returns whether the entity is a projectile.
         // -->
         if (attribute.startsWith("is_projectile")) {
-            return new Element(isProjectile())
+            return new ElementTag(isProjectile())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -2406,7 +2406,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <e@entity.tameable>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group properties
         // @description
         // Returns whether the entity is tameable.
@@ -2415,13 +2415,13 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <@link tag e@entity.is_tamed>, and <@link tag e@entity.owner>
         // -->
         if (attribute.startsWith("tameable") || attribute.startsWith("is_tameable")) {
-            return new Element(EntityTame.describes(this))
+            return new ElementTag(EntityTame.describes(this))
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.ageable>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group properties
         // @description
         // Returns whether the entity is ageable.
@@ -2431,13 +2431,13 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // and <@link tag e@entity.is_age_locked>
         // -->
         if (attribute.startsWith("ageable") || attribute.startsWith("is_ageable")) {
-            return new Element(EntityAge.describes(this))
+            return new ElementTag(EntityAge.describes(this))
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.colorable>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group properties
         // @description
         // Returns whether the entity can be colored.
@@ -2445,57 +2445,57 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <@link mechanism dEntity.color> and <@link tag e@entity.color>
         // -->
         if (attribute.startsWith("colorable") || attribute.startsWith("is_colorable")) {
-            return new Element(EntityColor.describes(this))
+            return new ElementTag(EntityColor.describes(this))
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.experience>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @group properties
         // @description
         // Returns the experience value of this experience orb entity.
         // -->
         if (attribute.startsWith("experience") && getBukkitEntity() instanceof ExperienceOrb) {
-            return new Element(((ExperienceOrb) getBukkitEntity()).getExperience())
+            return new ElementTag(((ExperienceOrb) getBukkitEntity()).getExperience())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.fuse_ticks>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @group properties
         // @description
         // Returns the number of ticks until the explosion of the primed TNT.
         // -->
         if (attribute.startsWith("fuse_ticks") && getBukkitEntity() instanceof TNTPrimed) {
-            return new Element(((TNTPrimed) getBukkitEntity()).getFuseTicks())
+            return new ElementTag(((TNTPrimed) getBukkitEntity()).getFuseTicks())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.dragon_phase>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @group properties
         // @description
         // Returns the phase an EnderDragon is currently in.
         // Valid phases: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EnderDragon.Phase.html>
         // -->
         if (attribute.startsWith("dragon_phase") && getBukkitEntity() instanceof EnderDragon) {
-            return new Element(((EnderDragon) getLivingEntity()).getPhase().name())
+            return new ElementTag(((EnderDragon) getLivingEntity()).getPhase().name())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.describe>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group properties
         // @description
         // Returns the entity's full description, including all properties.
         // -->
         if (attribute.startsWith("describe")) {
             String escript = getEntityScript();
-            return new Element("e@" + (escript != null && escript.length() > 0 ? escript : getEntityType().getLowercaseName())
+            return new ElementTag("e@" + (escript != null && escript.length() > 0 ? escript : getEntityType().getLowercaseName())
                     + PropertyParser.getPropertiesString(this))
                     .getAttribute(attribute.fulfill(1));
         }
@@ -2505,7 +2505,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             return returned;
         }
 
-        return new Element(identify()).getAttribute(attribute);
+        return new ElementTag(identify()).getAttribute(attribute);
     }
 
     private ArrayList<Mechanism> mechanisms = new ArrayList<>();
@@ -2585,13 +2585,13 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("attach_to")) {
             if (mechanism.hasValue()) {
-                dList list = mechanism.valueAsType(dList.class);
+                ListTag list = mechanism.valueAsType(ListTag.class);
                 Vector offset = null;
                 boolean rotateWith = true;
                 if (list.size() > 1) {
                     offset = dLocation.valueOf(list.get(1)).toVector();
                     if (list.size() > 2) {
-                        rotateWith = new Element(list.get(2)).asBoolean();
+                        rotateWith = new ElementTag(list.get(2)).asBoolean();
                     }
                 }
                 NMSHandler.getInstance().forceAttachMove(entity, dEntity.valueOf(list.get(0)).getBukkitEntity(), offset, rotateWith);
@@ -2675,8 +2675,8 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // @tags
         // <e@entity.fire_time>
         // -->
-        if (mechanism.matches("fire_time") && mechanism.requireObject(Duration.class)) {
-            entity.setFireTicks(mechanism.valueAsType(Duration.class).getTicksAsInt());
+        if (mechanism.matches("fire_time") && mechanism.requireObject(DurationTag.class)) {
+            entity.setFireTicks(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -2725,7 +2725,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object dEntity
         // @name passengers
-        // @input dList(dEntity)
+        // @input ListTag(dEntity)
         // @description
         // Sets the passengers of this entity.
         // @tags
@@ -2734,7 +2734,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("passengers")) {
             entity.eject();
-            for (dEntity ent : mechanism.valueAsType(dList.class).filter(dEntity.class, mechanism.context)) {
+            for (dEntity ent : mechanism.valueAsType(ListTag.class).filter(dEntity.class, mechanism.context)) {
                 if (ent.isSpawned() && comparesTo(ent) != 1) {
                     entity.addPassenger(ent.getBukkitEntity());
                 }
@@ -2764,8 +2764,8 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // @tags
         // <e@entity.time_lived>
         // -->
-        if (mechanism.matches("time_lived") && mechanism.requireObject(Duration.class)) {
-            entity.setTicksLived(mechanism.valueAsType(Duration.class).getTicksAsInt());
+        if (mechanism.matches("time_lived") && mechanism.requireObject(DurationTag.class)) {
+            entity.setTicksLived(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -2944,8 +2944,8 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.last_damage.duration>
         // <e@entity.last_damage.max_duration>
         // -->
-        if (mechanism.matches("no_damage_duration") && mechanism.requireObject(Duration.class)) {
-            getLivingEntity().setNoDamageTicks(mechanism.valueAsType(Duration.class).getTicksAsInt());
+        if (mechanism.matches("no_damage_duration") && mechanism.requireObject(DurationTag.class)) {
+            getLivingEntity().setNoDamageTicks(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -2958,8 +2958,8 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.last_damage.duration>
         // <e@entity.last_damage.max_duration>
         // -->
-        if (mechanism.matches("max_no_damage_duration") && mechanism.requireObject(Duration.class)) {
-            getLivingEntity().setMaximumNoDamageTicks(mechanism.valueAsType(Duration.class).getTicksAsInt());
+        if (mechanism.matches("max_no_damage_duration") && mechanism.requireObject(DurationTag.class)) {
+            getLivingEntity().setMaximumNoDamageTicks(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -3023,8 +3023,8 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.pickup_delay>
         // -->
         if ((mechanism.matches("pickup_delay") || mechanism.matches("pickupdelay")) &&
-                getBukkitEntity() instanceof Item && mechanism.requireObject(Duration.class)) {
-            ((Item) getBukkitEntity()).setPickupDelay(mechanism.valueAsType(Duration.class).getTicksAsInt());
+                getBukkitEntity() instanceof Item && mechanism.requireObject(DurationTag.class)) {
+            ((Item) getBukkitEntity()).setPickupDelay(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
         // <--[mechanism]

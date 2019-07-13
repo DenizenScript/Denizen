@@ -6,7 +6,7 @@ import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.objects.dWorld;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -98,9 +98,9 @@ public class PermissionCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        Element action = scriptEntry.getElement("action");
-        Element permission = scriptEntry.getElement("permission");
-        Element group = scriptEntry.getElement("group");
+        ElementTag action = scriptEntry.getElement("action");
+        ElementTag permission = scriptEntry.getElement("permission");
+        ElementTag group = scriptEntry.getElement("group");
         dWorld world = (dWorld) scriptEntry.getObject("world");
 
         // Report to dB

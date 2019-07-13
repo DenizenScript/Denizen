@@ -8,7 +8,7 @@ import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -60,7 +60,7 @@ public class FishCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("stop")
                     && arg.matches("stop")) {
-                scriptEntry.addObject("stop", new Element(true));
+                scriptEntry.addObject("stop", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("percent")
                     && arg.matchesPrefix("catchpercent", "percent", "chance", "c")
@@ -74,9 +74,9 @@ public class FishCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify a valid location!");
         }
 
-        scriptEntry.defaultObject("catch", new Element("NONE"))
-                .defaultObject("stop", new Element(false))
-                .defaultObject("percent", new Element(65));
+        scriptEntry.defaultObject("catch", new ElementTag("NONE"))
+                .defaultObject("stop", new ElementTag(false))
+                .defaultObject("percent", new ElementTag(65));
 
         if (!Utilities.entryHasNPC(scriptEntry) || !Utilities.getEntryNPC(scriptEntry).isSpawned()) {
             throw new InvalidArgumentsException("This command requires a linked and spawned NPC!");
@@ -88,9 +88,9 @@ public class FishCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         dLocation location = scriptEntry.getdObject("location");
-        Element catchtype = scriptEntry.getElement("catch");
-        Element stop = scriptEntry.getElement("stop");
-        Element percent = scriptEntry.getElement("percent");
+        ElementTag catchtype = scriptEntry.getElement("catch");
+        ElementTag stop = scriptEntry.getElement("stop");
+        ElementTag percent = scriptEntry.getElement("percent");
 
         dNPC npc = Utilities.getEntryNPC(scriptEntry);
         FishingTrait trait = npc.getFishingTrait();

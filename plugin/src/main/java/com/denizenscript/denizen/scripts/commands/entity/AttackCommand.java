@@ -6,7 +6,7 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.ai.Navigator;
@@ -74,8 +74,7 @@ public class AttackCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)
                     && !arg.matchesPrefix("target", "t")) {
-                // Entity dList arg
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();

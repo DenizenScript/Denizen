@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -14,7 +14,7 @@ import org.bukkit.entity.ZombieVillager;
 public class EntityProfession implements Property {
 
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         if (!(entity instanceof dEntity)) {
             return false;
         }
@@ -23,7 +23,7 @@ public class EntityProfession implements Property {
                 || ((dEntity) entity).getBukkitEntityType() == EntityType.ZOMBIE_VILLAGER;
     }
 
-    public static EntityProfession getFrom(dObject entity) {
+    public static EntityProfession getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -84,7 +84,7 @@ public class EntityProfession implements Property {
 
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -96,7 +96,7 @@ public class EntityProfession implements Property {
 
         // <--[tag]
         // @attribute <e@entity.profession>
-        // @returns Element
+        // @returns ElementTag
         // @mechanism dEntity.profession
         // @group properties
         // @description
@@ -105,7 +105,7 @@ public class EntityProfession implements Property {
         // For the list of possible professions, refer to <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Villager.Profession.html>
         // -->
         if (attribute.startsWith("profession")) {
-            return new Element(CoreUtilities.toLowerCase(getProfession().name()))
+            return new ElementTag(CoreUtilities.toLowerCase(getProfession().name()))
                     .getAttribute(attribute.fulfill(1));
         }
 

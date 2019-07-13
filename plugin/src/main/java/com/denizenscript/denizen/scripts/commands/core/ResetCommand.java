@@ -46,11 +46,11 @@ public class ResetCommand extends AbstractCommand {
             else if (arg.matches("saves") && !scriptEntry.hasObject("type")) {
                 scriptEntry.addObject("type", Type.SAVES);
             }
-            else if (arg.matchesArgumentType(dScript.class)) {
-                scriptEntry.addObject("script", arg.asType(dScript.class));
+            else if (arg.matchesArgumentType(ScriptTag.class)) {
+                scriptEntry.addObject("script", arg.asType(ScriptTag.class));
             }
             else if (arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("players", arg.asType(dList.class));
+                scriptEntry.addObject("players", arg.asType(ListTag.class));
             }
             // TODO: Reset NPCs option too!
 
@@ -74,17 +74,17 @@ public class ResetCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         // We allow players to be a single player or multiple players
-        dObject player = scriptEntry.getdObject("players");
-        dList players;
+        ObjectTag player = scriptEntry.getdObject("players");
+        ListTag players;
         if (player instanceof dPlayer) {
-            players = new dList(player.identify());
+            players = new ListTag(player.identify());
         }
         else {
             players = scriptEntry.getdObject("players");
         }
 
         Type type = (Type) scriptEntry.getObject("type");
-        dScript script = scriptEntry.getdObject("script");
+        ScriptTag script = scriptEntry.getdObject("script");
 
         if (scriptEntry.dbCallShouldDebug()) {
 
@@ -97,7 +97,7 @@ public class ResetCommand extends AbstractCommand {
 
         // Deal with GLOBAL_COOLDOWN reset first, since there's no player/players involved
         if (type == Type.GLOBAL_COOLDOWN) {
-            CooldownCommand.setCooldown(null, Duration.ZERO, script.getName(), true);
+            CooldownCommand.setCooldown(null, DurationTag.ZERO, script.getName(), true);
             return;
         }
 
@@ -109,7 +109,7 @@ public class ResetCommand extends AbstractCommand {
 
                 switch (type) {
                     case PLAYER_COOLDOWN:
-                        CooldownCommand.setCooldown(resettable, Duration.ZERO, script.getName(), false);
+                        CooldownCommand.setCooldown(resettable, DurationTag.ZERO, script.getName(), false);
                         return;
 
                     case SAVES:

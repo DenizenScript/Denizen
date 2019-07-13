@@ -7,7 +7,7 @@ import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Duration;
+import com.denizenscript.denizencore.objects.DurationTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -68,9 +68,9 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
 
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
-            if (arg.matchesArgumentType(Duration.class)
+            if (arg.matchesArgumentType(DurationTag.class)
                     && !scriptEntry.hasObject("duration")) {
-                scriptEntry.addObject("duration", arg.asType(Duration.class));
+                scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
             else if (arg.matchesArgumentType(dLocation.class)
                     && !scriptEntry.hasObject("location")) {
@@ -95,7 +95,7 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
         }
 
         if (!scriptEntry.hasObject("duration")) {
-            scriptEntry.addObject("duration", Duration.valueOf("1m"));
+            scriptEntry.addObject("duration", DurationTag.valueOf("1m"));
         }
     }
 
@@ -127,7 +127,7 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
     public void execute(ScriptEntry scriptEntry) {
 
         dItem item = (dItem) scriptEntry.getObject("item");
-        Duration duration = (Duration) scriptEntry.getObject("duration");
+        DurationTag duration = (DurationTag) scriptEntry.getObject("duration");
         dLocation location = (dLocation) scriptEntry.getObject("location");
 
         if (scriptEntry.dbCallShouldDebug()) {

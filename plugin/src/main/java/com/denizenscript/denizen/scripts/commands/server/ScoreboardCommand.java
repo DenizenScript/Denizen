@@ -6,9 +6,9 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Bukkit;
@@ -135,17 +135,17 @@ public class ScoreboardCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("viewers")
                     && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("viewers", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
+                scriptEntry.addObject("viewers", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
             }
         }
 
-        scriptEntry.defaultObject("action", new Element("add"));
-        scriptEntry.defaultObject("id", new Element("main"));
-        scriptEntry.defaultObject("criteria", new Element("dummy"));
-        scriptEntry.defaultObject("displayslot", new Element("sidebar"));
+        scriptEntry.defaultObject("action", new ElementTag("add"));
+        scriptEntry.defaultObject("id", new ElementTag("main"));
+        scriptEntry.defaultObject("criteria", new ElementTag("dummy"));
+        scriptEntry.defaultObject("displayslot", new ElementTag("sidebar"));
     }
 
     public static OfflinePlayer getOfflinePlayer(String name) {
@@ -163,16 +163,16 @@ public class ScoreboardCommand extends AbstractCommand {
         // Get objects
 
         List<dPlayer> viewers = (List<dPlayer>) scriptEntry.getObject("viewers");
-        dList lines = scriptEntry.hasObject("lines") ?
-                dList.valueOf(scriptEntry.getElement("lines").asString()) :
-                new dList();
+        ListTag lines = scriptEntry.hasObject("lines") ?
+                ListTag.valueOf(scriptEntry.getElement("lines").asString()) :
+                new ListTag();
 
-        Element action = scriptEntry.getElement("action");
-        Element id = scriptEntry.getElement("id");
-        Element objective = scriptEntry.getElement("objective");
-        Element criteria = scriptEntry.getElement("criteria");
-        Element score = scriptEntry.getElement("score");
-        Element displaySlot = scriptEntry.getElement("displayslot");
+        ElementTag action = scriptEntry.getElement("action");
+        ElementTag id = scriptEntry.getElement("id");
+        ElementTag objective = scriptEntry.getElement("objective");
+        ElementTag criteria = scriptEntry.getElement("criteria");
+        ElementTag score = scriptEntry.getElement("score");
+        ElementTag displaySlot = scriptEntry.getElement("displayslot");
         Action act = Action.valueOf(action.asString().toUpperCase());
 
         // Report to dB
@@ -246,7 +246,7 @@ public class ScoreboardCommand extends AbstractCommand {
                     // If we've gotten this far, but the score is null,
                     // use a score of 0
                     if (score == null) {
-                        score = new Element(0);
+                        score = new ElementTag(0);
                     }
 
                     // Set all the score lines in the scoreboard, creating fake players

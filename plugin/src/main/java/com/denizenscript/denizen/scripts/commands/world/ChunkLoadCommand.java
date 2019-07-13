@@ -10,8 +10,8 @@ import com.denizenscript.denizen.objects.dChunk;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Duration;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.DurationTag;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -84,7 +84,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
             if (arg.matchesEnum(Action.values())
                     && !scriptEntry.hasObject("action")) {
-                scriptEntry.addObject("action", new Element(arg.getValue().toUpperCase()));
+                scriptEntry.addObject("action", new ElementTag(arg.getValue().toUpperCase()));
                 if (arg.getValue().equalsIgnoreCase("removeall")) {
                     scriptEntry.addObject("location", new dLocation(Bukkit.getWorlds().get(0), 0, 0, 0));
                 }
@@ -97,9 +97,9 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                     && !scriptEntry.hasObject("location")) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
-            else if (arg.matchesArgumentType(Duration.class)
+            else if (arg.matchesArgumentType(DurationTag.class)
                     && !scriptEntry.hasObject("duration")) {
-                scriptEntry.addObject("duration", arg.asType(Duration.class));
+                scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
             else {
                 arg.reportUnhandled();
@@ -111,20 +111,20 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
         }
 
         if (!scriptEntry.hasObject("action")) {
-            scriptEntry.addObject("action", new Element("ADD"));
+            scriptEntry.addObject("action", new ElementTag("ADD"));
         }
 
         if (!scriptEntry.hasObject("duration")) {
-            scriptEntry.addObject("duration", new Duration(0));
+            scriptEntry.addObject("duration", new DurationTag(0));
         }
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
         // Get objects
-        Element action = scriptEntry.getElement("action");
+        ElementTag action = scriptEntry.getElement("action");
         dLocation chunkloc = (dLocation) scriptEntry.getObject("location");
-        Duration length = (Duration) scriptEntry.getObject("duration");
+        DurationTag length = (DurationTag) scriptEntry.getObject("duration");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

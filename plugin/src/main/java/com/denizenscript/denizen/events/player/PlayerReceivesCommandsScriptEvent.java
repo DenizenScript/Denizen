@@ -4,8 +4,8 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -26,10 +26,10 @@ public class PlayerReceivesCommandsScriptEvent extends BukkitScriptEvent impleme
     // @Triggers when the list of available server commands is sent to the player for tab completion.
     //
     // @Context
-    // <context.commands> returns a dList of received commands.
+    // <context.commands> returns a ListTag of received commands.
     //
     // @Determine
-    // dList to set the player's available commands. NOTE: It is not possible to add entries to the command list, only remove them.
+    // ListTag to set the player's available commands. NOTE: It is not possible to add entries to the command list, only remove them.
     //
     // -->
 
@@ -61,7 +61,7 @@ public class PlayerReceivesCommandsScriptEvent extends BukkitScriptEvent impleme
         String lower = CoreUtilities.toLowerCase(determination);
         if (determination.length() > 0 && !isDefaultDetermination(determination)) {
             commands.clear();
-            commands.addAll(dList.valueOf(determination));
+            commands.addAll(ListTag.valueOf(determination));
             return true;
         }
         return super.applyDetermination(container, determination);
@@ -73,9 +73,9 @@ public class PlayerReceivesCommandsScriptEvent extends BukkitScriptEvent impleme
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("commands")) {
-            dList list = new dList();
+            ListTag list = new ListTag();
             list.addAll(commands);
             return list;
         }

@@ -5,9 +5,9 @@ import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dMaterial;
 import com.denizenscript.denizen.objects.dWorld;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.block.BlockState;
@@ -34,9 +34,9 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
     // @Context
     // <context.world> returns the dWorld the structure grew in.
     // <context.location> returns the dLocation the structure grew at.
-    // <context.structure> returns an Element of the structure's type.
-    // <context.blocks> returns a dList of all block locations to be modified.
-    // <context.new_materials> returns a dList of the new block materials, to go with <context.blocks>.
+    // <context.structure> returns an ElementTag of the structure's type.
+    // <context.blocks> returns a ListTag of all block locations to be modified.
+    // <context.new_materials> returns a ListTag of the new block materials, to go with <context.blocks>.
     //
     // -->
 
@@ -47,9 +47,9 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
     public static StructureGrowsScriptEvent instance;
     public dWorld world;
     public dLocation location;
-    public Element structure;
-    public dList blocks;
-    public dList new_materials;
+    public ElementTag structure;
+    public ListTag blocks;
+    public ListTag new_materials;
     public StructureGrowEvent event;
 
     @Override
@@ -89,7 +89,7 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("world")) {
             return world;
         }
@@ -112,9 +112,9 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
     public void onStructureGrow(StructureGrowEvent event) {
         world = new dWorld(event.getWorld());
         location = new dLocation(event.getLocation());
-        structure = new Element(event.getSpecies().name());
-        blocks = new dList();
-        new_materials = new dList();
+        structure = new ElementTag(event.getSpecies().name());
+        blocks = new ListTag();
+        new_materials = new ListTag();
         for (BlockState block : event.getBlocks()) {
             blocks.add(new dLocation(block.getLocation()).identify());
             new_materials.add(new dMaterial(block.getType(), block.getRawData()).identify());

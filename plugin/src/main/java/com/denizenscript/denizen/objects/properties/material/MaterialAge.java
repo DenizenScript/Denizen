@@ -2,22 +2,22 @@ package com.denizenscript.denizen.objects.properties.material;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dMaterial;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.block.data.Ageable;
 
 public class MaterialAge implements Property {
 
-    public static boolean describes(dObject material) {
+    public static boolean describes(ObjectTag material) {
         return material instanceof dMaterial
                 && ((dMaterial) material).hasModernData()
                 && ((dMaterial) material).getModernData().data instanceof Ageable;
     }
 
-    public static MaterialAge getFrom(dObject _material) {
+    public static MaterialAge getFrom(ObjectTag _material) {
         if (!describes(_material)) {
             return null;
         }
@@ -50,25 +50,25 @@ public class MaterialAge implements Property {
 
         // <--[tag]
         // @attribute <m@material.maximum_age>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @group properties
         // @description
         // Returns the maximum age for an ageable material.
         // -->
         if (attribute.startsWith("maximum_age") || attribute.startsWith("maximum_plant_growth")) {
-            return new Element(getMax()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getMax()).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <m@material.age>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @mechanism dMaterial.age
         // @group properties
         // @description
         // Returns the current age for an ageable material.
         // -->
         if (attribute.startsWith("age") || attribute.startsWith("plant_growth")) {
-            return new Element(getCurrent()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getCurrent()).getAttribute(attribute.fulfill(1));
         }
 
         return null;

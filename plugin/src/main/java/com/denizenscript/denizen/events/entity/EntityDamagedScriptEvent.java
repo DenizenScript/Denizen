@@ -4,9 +4,9 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -50,7 +50,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     // @Context
     // <context.entity> returns the dEntity that was damaged.
     // <context.damager> returns the dEntity damaging the other entity, if any.
-    // <context.cause> returns the an Element of reason the entity was damaged - see <@link language damage cause> for causes.
+    // <context.cause> returns the an ElementTag of reason the entity was damaged - see <@link language damage cause> for causes.
     // <context.damage> returns an Element(Decimal) of the amount of damage dealt.
     // <context.final_damage> returns an Element(Decimal) of the amount of damage dealt, after armor is calculated.
     // <context.projectile> returns a dEntity of the projectile, if one caused the event.
@@ -72,9 +72,9 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     public static EntityDamagedScriptEvent instance;
 
     public dEntity entity;
-    public Element cause;
-    public Element damage;
-    public Element final_damage;
+    public ElementTag cause;
+    public ElementTag damage;
+    public ElementTag final_damage;
     public dEntity damager;
     public dEntity projectile;
     public dItem held;
@@ -130,7 +130,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (ArgumentHelper.matchesDouble(determination)) {
-            damage = new Element(ArgumentHelper.getDoubleFrom(determination));
+            damage = new ElementTag(ArgumentHelper.getDoubleFrom(determination));
             return true;
         }
         return super.applyDetermination(container, determination);
@@ -143,7 +143,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return entity.getDenizenObject();
         }
@@ -165,7 +165,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
         else if (name.startsWith("damage_")) {
             for (EntityDamageEvent.DamageModifier dm : EntityDamageEvent.DamageModifier.values()) {
                 if (name.equals("damage_" + CoreUtilities.toLowerCase(dm.name()))) {
-                    return new Element(event.getDamage(dm));
+                    return new ElementTag(event.getDamage(dm));
                 }
             }
         }
@@ -175,9 +175,9 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     @EventHandler
     public void onEntityDamaged(EntityDamageEvent event) {
         entity = new dEntity(event.getEntity());
-        damage = new Element(event.getDamage());
-        final_damage = new Element(event.getFinalDamage());
-        cause = new Element(CoreUtilities.toLowerCase(event.getCause().name()));
+        damage = new ElementTag(event.getDamage());
+        final_damage = new ElementTag(event.getFinalDamage());
+        cause = new ElementTag(CoreUtilities.toLowerCase(event.getCause().name()));
         damager = null;
         projectile = null;
         held = null;

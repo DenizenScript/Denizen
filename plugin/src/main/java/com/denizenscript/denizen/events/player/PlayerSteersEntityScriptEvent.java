@@ -4,8 +4,8 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -41,10 +41,10 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
     public boolean enabled;
     public dEntity entity;
     public dPlayer player;
-    public Element sideways;
-    public Element forward;
-    public Element jump;
-    public Element dismount;
+    public ElementTag sideways;
+    public ElementTag forward;
+    public ElementTag jump;
+    public ElementTag dismount;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
@@ -86,7 +86,7 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return entity;
         }

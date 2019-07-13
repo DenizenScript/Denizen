@@ -4,8 +4,8 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dMaterial;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
@@ -31,7 +31,7 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
     // <context.material> returns the dMaterial of the block that was set on fire.
     // <context.entity> returns the dEntity of the entity that ignited the block.
     // <context.origin_location> returns the dLocation of the fire block that ignited this block.
-    // <context.cause> returns an Element of the cause of the event: ENDER_CRYSTAL, EXPLOSION, FIREBALL, FLINT_AND_STEEL, LAVA, or SPREAD.
+    // <context.cause> returns an ElementTag of the cause of the event: ENDER_CRYSTAL, EXPLOSION, FIREBALL, FLINT_AND_STEEL, LAVA, or SPREAD.
     //
     // -->
 
@@ -44,7 +44,7 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
     public dMaterial material;
     public dEntity entity;
     public dLocation origin_location;
-    public Element cause;
+    public ElementTag cause;
     public BlockIgniteEvent event;
 
     @Override
@@ -75,7 +75,7 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("location")) {
             return location;
         }
@@ -106,7 +106,7 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
         if (event.getIgnitingBlock() != null) { // TODO: Why would this be null?
             origin_location = new dLocation(event.getIgnitingBlock().getLocation());
         }
-        cause = new Element(event.getCause().toString());
+        cause = new ElementTag(event.getCause().toString());
         this.event = event;
         fire(event);
     }

@@ -15,9 +15,9 @@ import com.denizenscript.denizen.objects.properties.material.*;
 import com.denizenscript.denizen.objects.properties.trade.*;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dScript;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ScriptTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 
@@ -25,10 +25,10 @@ public class PropertyRegistry {
 
     public static void registermainProperties() {
         // register properties that add Bukkit code to core objects
-        PropertyParser.registerProperty(BukkitScriptProperties.class, dScript.class);
+        PropertyParser.registerProperty(BukkitScriptProperties.class, ScriptTag.class);
         PropertyParser.registerProperty(BukkitQueueProperties.class, ScriptQueue.class);
-        PropertyParser.registerProperty(BukkitElementProperties.class, Element.class);
-        PropertyParser.registerProperty(BukkitListProperties.class, dList.class);
+        PropertyParser.registerProperty(BukkitElementProperties.class, ElementTag.class);
+        PropertyParser.registerProperty(BukkitListProperties.class, ListTag.class);
 
         // register core dEntity properties
         PropertyParser.registerProperty(EntityAge.class, dEntity.class);

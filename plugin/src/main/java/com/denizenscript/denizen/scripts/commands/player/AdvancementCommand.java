@@ -9,9 +9,9 @@ import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -85,21 +85,21 @@ public class AdvancementCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("create")
                     && arg.matches("create")) {
-                scriptEntry.addObject("create", new Element(true)); // unused, just to be explicit
+                scriptEntry.addObject("create", new ElementTag(true)); // unused, just to be explicit
             }
             else if (!scriptEntry.hasObject("delete")
                     && arg.matches("delete", "remove")) {
-                scriptEntry.addObject("delete", new Element(true));
+                scriptEntry.addObject("delete", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("grant")
                     && arg.matchesPrefix("grant", "give", "g")
                     && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("grant", arg.asType(dList.class));
+                scriptEntry.addObject("grant", arg.asType(ListTag.class));
             }
             else if (!scriptEntry.hasObject("revoke")
                     && arg.matchesPrefix("revoke", "take", "r")
                     && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("revoke", arg.asType(dList.class));
+                scriptEntry.addObject("revoke", arg.asType(ListTag.class));
             }
             else if (!scriptEntry.hasObject("icon")
                     && arg.matchesPrefix("icon", "i")
@@ -158,15 +158,15 @@ public class AdvancementCommand extends AbstractCommand {
         }
 
         scriptEntry.defaultObject("icon", new dItem(Material.AIR));
-        scriptEntry.defaultObject("title", new Element(""));
-        scriptEntry.defaultObject("description", new Element(""));
-        scriptEntry.defaultObject("background", new Element("minecraft:textures/gui/advancements/backgrounds/stone.png"));
-        scriptEntry.defaultObject("frame", new Element("TASK"));
-        scriptEntry.defaultObject("toast", new Element(true));
-        scriptEntry.defaultObject("announce", new Element(true));
-        scriptEntry.defaultObject("hidden", new Element(false));
-        scriptEntry.defaultObject("x", new Element(0f));
-        scriptEntry.defaultObject("y", new Element(0f));
+        scriptEntry.defaultObject("title", new ElementTag(""));
+        scriptEntry.defaultObject("description", new ElementTag(""));
+        scriptEntry.defaultObject("background", new ElementTag("minecraft:textures/gui/advancements/backgrounds/stone.png"));
+        scriptEntry.defaultObject("frame", new ElementTag("TASK"));
+        scriptEntry.defaultObject("toast", new ElementTag(true));
+        scriptEntry.defaultObject("announce", new ElementTag(true));
+        scriptEntry.defaultObject("hidden", new ElementTag(false));
+        scriptEntry.defaultObject("x", new ElementTag(0f));
+        scriptEntry.defaultObject("y", new ElementTag(0f));
     }
 
     public static final Map<NamespacedKey, Advancement> customRegistered = new HashMap<>();
@@ -174,21 +174,21 @@ public class AdvancementCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        Element id = scriptEntry.getElement("id");
-        Element parent = scriptEntry.getElement("parent");
-        Element delete = scriptEntry.getElement("delete");
-        dList grant = scriptEntry.getdObject("grant");
-        dList revoke = scriptEntry.getdObject("revoke");
+        ElementTag id = scriptEntry.getElement("id");
+        ElementTag parent = scriptEntry.getElement("parent");
+        ElementTag delete = scriptEntry.getElement("delete");
+        ListTag grant = scriptEntry.getdObject("grant");
+        ListTag revoke = scriptEntry.getdObject("revoke");
         dItem icon = scriptEntry.getdObject("icon");
-        Element title = scriptEntry.getElement("title");
-        Element description = scriptEntry.getElement("description");
-        Element background = scriptEntry.getElement("background");
-        Element frame = scriptEntry.getElement("frame");
-        Element toast = scriptEntry.getElement("toast");
-        Element announce = scriptEntry.getElement("announce");
-        Element hidden = scriptEntry.getElement("hidden");
-        Element x = scriptEntry.getElement("x");
-        Element y = scriptEntry.getElement("y");
+        ElementTag title = scriptEntry.getElement("title");
+        ElementTag description = scriptEntry.getElement("description");
+        ElementTag background = scriptEntry.getElement("background");
+        ElementTag frame = scriptEntry.getElement("frame");
+        ElementTag toast = scriptEntry.getElement("toast");
+        ElementTag announce = scriptEntry.getElement("announce");
+        ElementTag hidden = scriptEntry.getElement("hidden");
+        ElementTag x = scriptEntry.getElement("x");
+        ElementTag y = scriptEntry.getElement("y");
 
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, name, id.debug() + (parent != null ? parent.debug() : "")

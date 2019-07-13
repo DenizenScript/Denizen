@@ -6,8 +6,8 @@ import com.denizenscript.denizen.nms.util.BoundingBox;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 
@@ -18,11 +18,11 @@ import java.util.UUID;
 
 public class EntityBoundingBox implements Property {
 
-    public static boolean describes(dObject object) {
+    public static boolean describes(ObjectTag object) {
         return object instanceof dEntity;
     }
 
-    public static EntityBoundingBox getFrom(dObject object) {
+    public static EntityBoundingBox getFrom(ObjectTag object) {
         if (!describes(object)) {
             return null;
         }
@@ -58,9 +58,9 @@ public class EntityBoundingBox implements Property {
 
     dEntity entity;
 
-    private dList getBoundingBox() {
+    private ListTag getBoundingBox() {
         BoundingBox boundingBox = NMSHandler.getInstance().getEntityHelper().getBoundingBox(entity.getBukkitEntity());
-        dList list = new dList();
+        ListTag list = new ListTag();
         list.add(new dLocation(boundingBox.getLow().toLocation(entity.getWorld())).identify());
         list.add(new dLocation(boundingBox.getHigh().toLocation(entity.getWorld())).identify());
         return list;
@@ -94,7 +94,7 @@ public class EntityBoundingBox implements Property {
 
         // <--[tag]
         // @attribute <e@entity.bounding_box>
-        // @returns dList(dLocation)
+        // @returns ListTag(dLocation)
         // @mechanism dEntity.bounding_box
         // @group properties
         // @description
@@ -113,7 +113,7 @@ public class EntityBoundingBox implements Property {
         // <--[mechanism]
         // @object dEntity
         // @name bounding_box
-        // @input dList(dLocation)
+        // @input ListTag(dLocation)
         // @description
         // Changes the collision bounding box of the entity in the format "<low>|<high>", essentially a cuboid with decimals.
         // @tags
@@ -125,7 +125,7 @@ public class EntityBoundingBox implements Property {
                 // TODO: Allow editing NPC boxes properly?
                 return;
             }
-            List<dLocation> locations = mechanism.valueAsType(dList.class).filter(dLocation.class, mechanism.context);
+            List<dLocation> locations = mechanism.valueAsType(ListTag.class).filter(dLocation.class, mechanism.context);
             if (locations.size() == 2) {
                 BoundingBox boundingBox = new BoundingBox(locations.get(0).toVector(), locations.get(1).toVector());
                 NMSHandler.getInstance().getEntityHelper().setBoundingBox(entity.getBukkitEntity(), boundingBox);

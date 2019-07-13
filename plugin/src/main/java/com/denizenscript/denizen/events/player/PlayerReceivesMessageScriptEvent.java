@@ -3,8 +3,8 @@ package com.denizenscript.denizen.events.player;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -24,13 +24,13 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
     // @Triggers when a player receives any chat message from the server.
     //
     // @Context
-    // <context.message> returns an Element of the message.
-    // <context.raw_json> returns an Element of the raw JSON used for the message.
+    // <context.message> returns an ElementTag of the message.
+    // <context.raw_json> returns an ElementTag of the raw JSON used for the message.
     // <context.system_message> returns true if the message is a system message (not player chat).
     //
     // @Determine
-    // "MESSAGE:" + Element to change the message.
-    // "RAW_JSON:" + Element to change the JSON used for the message.
+    // "MESSAGE:" + ElementTag to change the message.
+    // "RAW_JSON:" + ElementTag to change the JSON used for the message.
     //
     // -->
 
@@ -39,9 +39,9 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
     }
 
     public static PlayerReceivesMessageScriptEvent instance;
-    public Element message;
-    public Element rawJson;
-    public Element system;
+    public ElementTag message;
+    public ElementTag rawJson;
+    public ElementTag system;
     public dPlayer player;
 
     public boolean messageModified;
@@ -78,12 +78,12 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
     public boolean applyDetermination(ScriptContainer container, String determination) {
         String lower = CoreUtilities.toLowerCase(determination);
         if (lower.startsWith("message:")) {
-            message = new Element(determination.substring("message:".length()));
+            message = new ElementTag(determination.substring("message:".length()));
             messageModified = true;
             return true;
         }
         if (lower.startsWith("raw_json:")) {
-            rawJson = new Element(determination.substring("raw_json:".length()));
+            rawJson = new ElementTag(determination.substring("raw_json:".length()));
             rawJsonModified = true;
             return true;
         }
@@ -96,7 +96,7 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("message")) {
             return message;
         }

@@ -7,7 +7,7 @@ import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
@@ -93,7 +93,7 @@ public class AnnounceCommand extends AbstractCommand {
                 scriptEntry.addObject("format", format);
             }
             else if (!scriptEntry.hasObject("text")) {
-                scriptEntry.addObject("text", new Element(arg.raw_value));
+                scriptEntry.addObject("text", new ElementTag(arg.raw_value));
             }
 
         }
@@ -110,10 +110,10 @@ public class AnnounceCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
         // Fetch objects
-        Element text = scriptEntry.getElement("text");
+        ElementTag text = scriptEntry.getElement("text");
         AnnounceType type = (AnnounceType) scriptEntry.getObject("type");
         FormatScriptContainer format = (FormatScriptContainer) scriptEntry.getObject("format");
-        Element flag = scriptEntry.getElement("flag");
+        ElementTag flag = scriptEntry.getElement("flag");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {

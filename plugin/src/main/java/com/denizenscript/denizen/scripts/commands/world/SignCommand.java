@@ -10,9 +10,9 @@ import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.block.Block;
@@ -72,7 +72,7 @@ public class SignCommand extends AbstractCommand {
                 scriptEntry.addObject("direction", arg.asElement());
             }
             else if (!scriptEntry.hasObject("text")) {
-                scriptEntry.addObject("text", arg.asType(dList.class));
+                scriptEntry.addObject("text", arg.asType(ListTag.class));
             }
             else {
                 arg.reportUnhandled();
@@ -90,7 +90,7 @@ public class SignCommand extends AbstractCommand {
         }
 
         // Default to AUTOMATIC
-        scriptEntry.defaultObject("type", new Element(Type.AUTOMATIC.name()));
+        scriptEntry.defaultObject("type", new ElementTag(Type.AUTOMATIC.name()));
     }
 
     public void setWallSign(Block sign, BlockFace bf) {
@@ -112,9 +112,9 @@ public class SignCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) {
 
         // Get objects
-        String direction = scriptEntry.hasObject("direction") ? ((Element) scriptEntry.getObject("direction")).asString() : null;
-        Element typeElement = scriptEntry.getElement("type");
-        dList text = (dList) scriptEntry.getObject("text");
+        String direction = scriptEntry.hasObject("direction") ? ((ElementTag) scriptEntry.getObject("direction")).asString() : null;
+        ElementTag typeElement = scriptEntry.getElement("type");
+        ListTag text = (ListTag) scriptEntry.getObject("text");
         dLocation location = (dLocation) scriptEntry.getObject("location");
 
         // Report to dB

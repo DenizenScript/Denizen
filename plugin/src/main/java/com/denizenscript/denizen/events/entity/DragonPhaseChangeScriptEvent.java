@@ -3,8 +3,8 @@ package com.denizenscript.denizen.events.entity;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -31,11 +31,11 @@ public class DragonPhaseChangeScriptEvent extends BukkitScriptEvent implements L
     //
     // @Context
     // <context.entity> returns the dEntity of the dragon.
-    // <context.new_phase> returns an Element of the dragon's new phase. Phases: <@see link https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EnderDragonChangePhaseEvent.html>
-    // <context.old_phase> returns an Element of the dragon's old phase. Can be any phase or 'null' in some cases.
+    // <context.new_phase> returns an ElementTag of the dragon's new phase. Phases: <@see link https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EnderDragonChangePhaseEvent.html>
+    // <context.old_phase> returns an ElementTag of the dragon's old phase. Can be any phase or 'null' in some cases.
     //
     // @Determine
-    // Element to change the dragon's new phase.
+    // ElementTag to change the dragon's new phase.
     //
     // -->
 
@@ -96,15 +96,15 @@ public class DragonPhaseChangeScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return entity.getDenizenObject();
         }
         else if (name.equals("old_phase")) {
-            return new Element(event.getCurrentPhase() == null ? "null" : event.getCurrentPhase().name());
+            return new ElementTag(event.getCurrentPhase() == null ? "null" : event.getCurrentPhase().name());
         }
         else if (name.equals("new_phase")) {
-            return new Element(event.getNewPhase().name());
+            return new ElementTag(event.getNewPhase().name());
         }
         return super.getContext(name);
     }

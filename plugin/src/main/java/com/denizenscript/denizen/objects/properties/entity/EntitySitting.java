@@ -1,21 +1,21 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.entity.Sittable;
 
 public class EntitySitting implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity
                 && ((dEntity) entity).getBukkitEntity() instanceof Sittable;
     }
 
-    public static EntitySitting getFrom(dObject entity) {
+    public static EntitySitting getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -61,7 +61,7 @@ public class EntitySitting implements Property {
     }
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -73,14 +73,14 @@ public class EntitySitting implements Property {
 
         // <--[tag]
         // @attribute <e@entity.sitting>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @mechanism dEntity.sitting
         // @group properties
         // @description
         // If the entity is a wolf, cat, or parrot, returns whether the animal is sitting.
         // -->
         if (attribute.startsWith("sitting")) {
-            return new Element(((Sittable) entity.getBukkitEntity()).isSitting())
+            return new ElementTag(((Sittable) entity.getBukkitEntity()).isSitting())
                     .getAttribute(attribute.fulfill(1));
         }
 

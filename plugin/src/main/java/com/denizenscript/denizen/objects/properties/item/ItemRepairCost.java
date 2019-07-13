@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -11,12 +11,12 @@ import org.bukkit.inventory.meta.Repairable;
 
 public class ItemRepairCost implements Property {
 
-    public static boolean describes(dObject item) {
+    public static boolean describes(ObjectTag item) {
         return item instanceof dItem
                 && ((dItem) item).getItemStack().getItemMeta() instanceof Repairable;
     }
 
-    public static ItemRepairCost getFrom(dObject _item) {
+    public static ItemRepairCost getFrom(ObjectTag _item) {
         if (!describes(_item)) {
             return null;
         }
@@ -49,7 +49,7 @@ public class ItemRepairCost implements Property {
 
         // <--[tag]
         // @attribute <i@item.repair_cost>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @mechanism dItem.repair_cost
         // @group properties
         // @description
@@ -57,7 +57,7 @@ public class ItemRepairCost implements Property {
         // Note that zero indicates no repair cost.
         // -->
         if (attribute.startsWith("repair_cost")) {
-            return new Element(((Repairable) item.getItemStack().getItemMeta()).getRepairCost())
+            return new ElementTag(((Repairable) item.getItemStack().getItemMeta()).getRepairCost())
                     .getAttribute(attribute.fulfill(1));
         }
 

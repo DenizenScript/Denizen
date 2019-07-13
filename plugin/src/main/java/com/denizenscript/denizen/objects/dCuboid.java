@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
+public class dCuboid implements ObjectTag, Cloneable, Notable, Adjustable {
 
     // <--[language]
     // @name dCuboid
@@ -114,7 +114,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // Match location formats
 
         // Split values
-        dList positions = dList.valueOf(string.replace("cu@", ""));
+        ListTag positions = ListTag.valueOf(string.replace("cu@", ""));
 
         // If there's a | and the first two points look like locations, assume it's a valid location-list constructor.
         if (positions.size() > 1
@@ -273,7 +273,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     public List<LocationPair> pairs = new ArrayList<>();
 
     // Only put dMaterials in filter.
-    ArrayList<dObject> filter = new ArrayList<>();
+    ArrayList<ObjectTag> filter = new ArrayList<>();
 
     /**
      * Construct the cuboid without adding pairs
@@ -348,11 +348,11 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         return this;
     }
 
-    public dList getShell() {
+    public ListTag getShell() {
         int max = Settings.blockTagsMaxBlocks();
         int index = 0;
 
-        dList list = new dList();
+        ListTag list = new ListTag();
 
         for (LocationPair pair : pairs) {
             dLocation low = pair.low;
@@ -394,7 +394,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         return list;
     }
 
-    public dList getOutline() {
+    public ListTag getOutline() {
 
         //    +-----2
         //   /|    /|
@@ -405,7 +405,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         int max = Settings.blockTagsMaxBlocks();
         int index = 0;
 
-        dList list = new dList();
+        ListTag list = new ListTag();
 
         for (LocationPair pair : pairs) {
 
@@ -498,7 +498,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     }
 
 
-    public dList getBlocks() {
+    public ListTag getBlocks() {
         return getBlocks(null);
     }
 
@@ -515,9 +515,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         return false;
     }
 
-    public dList getBlocks(List<dMaterial> materials) {
+    public ListTag getBlocks(List<dMaterial> materials) {
         List<dLocation> locs = getBlocks_internal(materials);
-        dList list = new dList();
+        ListTag list = new ListTag();
         for (dLocation loc : locs) {
             list.add(loc.identify());
         }
@@ -546,7 +546,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                         }
                         if (!filter.isEmpty()) { // TODO: Should 'filter' exist?
                             // Check filter
-                            for (dObject material : filter) {
+                            for (ObjectTag material : filter) {
                                 if (((dMaterial) material).matchesBlock(loc.getBlock())) {
                                     if (matchesMaterialList(loc, materials)) {
                                         list.add(loc);
@@ -638,7 +638,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                                 .add(x, y, z));
                         if (!filter.isEmpty()) {
                             // Check filter
-                            for (dObject material : filter) {
+                            for (ObjectTag material : filter) {
                                 if (loc.getBlock().getType().name().equalsIgnoreCase(((dMaterial) material)
                                         .getMaterial().name())) {
                                     list.add(loc);
@@ -662,22 +662,22 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     }
 
 
-    public dList getSpawnableBlocks() {
+    public ListTag getSpawnableBlocks() {
         return getSpawnableBlocks(null);
     }
 
     /**
-     * Returns a dList of dLocations with 2 vertical blocks of air
+     * Returns a ListTag of dLocations with 2 vertical blocks of air
      * that are safe for players and similar entities to spawn in,
      * but ignoring blocks in midair
      *
-     * @return The dList
+     * @return The ListTag
      */
 
-    public dList getSpawnableBlocks(List<dMaterial> mats) {
+    public ListTag getSpawnableBlocks(List<dMaterial> mats) {
         int max = Settings.blockTagsMaxBlocks();
         dLocation loc;
-        dList list = new dList();
+        ListTag list = new ListTag();
         int index = 0;
 
         BlockHelper blockHelper = NMSHandler.getInstance().getBlockHelper();
@@ -770,7 +770,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     }
 
     /////////////////////
-    // dObject
+    // ObjectTag
     ////////////////////
 
 
@@ -847,7 +847,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
 
     /////////////////////
-    // dObject Tag Management
+    // ObjectTag Tag Management
     /////////////////////
 
 
@@ -855,7 +855,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <cu@cuboid.blocks[<material>|...]>
-        // @returns dList(dLocation)
+        // @returns ListTag(dLocation)
         // @description
         // Returns each block location within the dCuboid.
         // Optionally, specify a list of materials to only return locations
@@ -863,13 +863,13 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // -->
         registerTag("blocks", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 if (attribute.hasContext(1)) {
-                    return new dList(((dCuboid) object).getBlocks(dList.valueOf(attribute.getContext(1)).filter(dMaterial.class, attribute.context)))
+                    return new ListTag(((dCuboid) object).getBlocks(ListTag.valueOf(attribute.getContext(1)).filter(dMaterial.class, attribute.context)))
                             .getAttribute(attribute.fulfill(1));
                 }
                 else {
-                    return new dList(((dCuboid) object).getBlocks())
+                    return new ListTag(((dCuboid) object).getBlocks())
                             .getAttribute(attribute.fulfill(1));
                 }
             }
@@ -878,21 +878,21 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <cu@cuboid.members_size>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the number of cuboids defined in the dCuboid.
         // -->
         registerTag("members_size", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dCuboid) object).pairs.size())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dCuboid) object).pairs.size())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <cu@cuboid.spawnable_blocks[<Material>|...]>
-        // @returns dList(dLocation)
+        // @returns ListTag(dLocation)
         // @description
         // Returns each dLocation within the dCuboid that is
         // safe for players or similar entities to spawn in.
@@ -901,13 +901,13 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // -->
         registerTag("spawnable_blocks", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 if (attribute.hasContext(1)) {
-                    return new dList(((dCuboid) object).getSpawnableBlocks(dList.valueOf(attribute.getContext(1)).filter(dMaterial.class, attribute.context)))
+                    return new ListTag(((dCuboid) object).getSpawnableBlocks(ListTag.valueOf(attribute.getContext(1)).filter(dMaterial.class, attribute.context)))
                             .getAttribute(attribute.fulfill(1));
                 }
                 else {
-                    return new dList(((dCuboid) object).getSpawnableBlocks())
+                    return new ListTag(((dCuboid) object).getSpawnableBlocks())
                             .getAttribute(attribute.fulfill(1));
                 }
             }
@@ -916,13 +916,13 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <cu@cuboid.shell>
-        // @returns dList(dLocation)
+        // @returns ListTag(dLocation)
         // @description
         // Returns each block location on the shell of the dCuboid.
         // -->
         registerTag("shell", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 return ((dCuboid) object).getShell()
                         .getAttribute(attribute.fulfill(1));
             }
@@ -930,13 +930,13 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <cu@cuboid.outline>
-        // @returns dList(dLocation)
+        // @returns ListTag(dLocation)
         // @description
         // Returns each block location on the outline of the dCuboid.
         // -->
         registerTag("outline", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 return ((dCuboid) object).getOutline()
                         .getAttribute(attribute.fulfill(1));
             }
@@ -945,27 +945,27 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <cu@cuboid.filter>
-        // @returns dList(dLocation)
+        // @returns ListTag(dLocation)
         // @description
         // Returns the block locations from the dCuboid's filter.
         // -->
         registerTag("filter", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new dList(((dCuboid) object).filter)
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ListTag(((dCuboid) object).filter)
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <cu@cuboid.intersects[<cuboid>]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether this cuboid and another intersect.
         // -->
         registerTag("intersects", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag cu@cuboid.intersects[...] must have a value.");
                     return null;
@@ -977,7 +977,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     for (LocationPair pair : ((dCuboid) object).pairs) {
                         for (LocationPair pair2 : cub2.pairs) {
                             if (!pair.low.getWorld().getName().equalsIgnoreCase(pair2.low.getWorld().getName())) {
-                                return new Element("false").getAttribute(attribute.fulfill(1));
+                                return new ElementTag("false").getAttribute(attribute.fulfill(1));
                             }
                             if (pair2.low.getX() <= pair.high.getX()
                                     && pair2.low.getY() <= pair.high.getY()
@@ -990,7 +990,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                             }
                         }
                     }
-                    return new Element(intersects).getAttribute(attribute.fulfill(1));
+                    return new ElementTag(intersects).getAttribute(attribute.fulfill(1));
                 }
                 return null;
             }
@@ -998,31 +998,31 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <cu@cuboid.contains_location[<location>]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether this cuboid contains a location.
         // -->
         registerTag("contains_location", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag cu@cuboid.contains_location[...] must have a value.");
                     return null;
                 }
                 dLocation loc = dLocation.valueOf(attribute.getContext(1));
-                return new Element(((dCuboid) object).isInsideCuboid(loc)).getAttribute(attribute.fulfill(1));
+                return new ElementTag(((dCuboid) object).isInsideCuboid(loc)).getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <cu@cuboid.is_within[<cuboid>]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether this cuboid is fully inside another cuboid.
         // -->
         registerTag("is_within", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag cu@cuboid.is_within[...] must have a value.");
                     return null;
@@ -1037,7 +1037,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                                 if (com.denizenscript.denizencore.utilities.debugging.Debug.verbose) {
                                     Debug.log("Worlds don't match!");
                                 }
-                                return new Element("false").getAttribute(attribute.fulfill(1));
+                                return new ElementTag("false").getAttribute(attribute.fulfill(1));
                             }
                             if (pair2.low.getX() >= pair.low.getX()
                                     && pair2.low.getY() >= pair.low.getY()
@@ -1054,7 +1054,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                             break;
                         }
                     }
-                    return new Element(contains).getAttribute(attribute.fulfill(1));
+                    return new ElementTag(contains).getAttribute(attribute.fulfill(1));
                 }
                 return null;
             }
@@ -1062,15 +1062,15 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <cu@cuboid.list_members>
-        // @returns dList(dCuboid)
+        // @returns ListTag(dCuboid)
         // @description
         // Returns a list of all sub-cuboids in this dCuboid (for cuboids that contain multiple sub-cuboids).
         // -->
         registerTag("list_members", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 List<LocationPair> pairs = ((dCuboid) object).pairs;
-                dList list = new dList();
+                ListTag list = new ListTag();
                 for (LocationPair pair : pairs) {
                     list.addObject(new dCuboid(pair.low, pair.high));
                 }
@@ -1086,7 +1086,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // -->
         registerTag("get", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag cu@cuboid.get[...] must have a value.");
                     return null;
@@ -1115,7 +1115,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // -->
         registerTag("set", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag cu@cuboid.set[...] must have a value.");
                     return null;
@@ -1162,7 +1162,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // -->
         registerTag("center", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 LocationPair pair;
                 if (!attribute.hasContext(1)) {
                     pair = ((dCuboid) object).pairs.get(0);
@@ -1187,17 +1187,17 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <cu@cuboid.volume>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the volume of the cuboid.
         // Effectively equivalent to: (size.x * size.y * size.z).
         // -->
         registerTag("volume", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 LocationPair pair = ((dCuboid) object).pairs.get(0);
                 Location base = pair.high.clone().subtract(pair.low.clone()).add(1, 1, 1);
-                return new Element(base.getX() * base.getY() * base.getZ()).getAttribute(attribute.fulfill(1));
+                return new ElementTag(base.getX() * base.getY() * base.getZ()).getAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1210,7 +1210,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // -->
         registerTag("size", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 LocationPair pair;
                 if (!attribute.hasContext(1)) {
                     pair = ((dCuboid) object).pairs.get(0);
@@ -1238,7 +1238,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // -->
         registerTag("max", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     return ((dCuboid) object).pairs.get(0).high.getAttribute(attribute.fulfill(1));
                 }
@@ -1263,7 +1263,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // -->
         registerTag("min", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     return ((dCuboid) object).pairs.get(0).low.getAttribute(attribute.fulfill(1));
                 }
@@ -1288,7 +1288,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // -->
         registerTag("include", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag cu@cuboid.include[...] must have a value.");
                     return null;
@@ -1333,7 +1333,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // -->
         registerTag("include_x", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag cu@cuboid.include_x[...] must have a value.");
                     return null;
@@ -1364,7 +1364,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // -->
         registerTag("include_y", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag cu@cuboid.include_y[...] must have a value.");
                     return null;
@@ -1395,7 +1395,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // -->
         registerTag("include_z", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag cu@cuboid.include_z[...] must have a value.");
                     return null;
@@ -1429,7 +1429,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // -->
         registerTag("with_min", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag cu@cuboid.with_min[...] must have a value.");
                     return null;
@@ -1451,7 +1451,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // -->
         registerTag("with_max", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag cu@cuboid.with_max[...] must have a value.");
                     return null;
@@ -1464,33 +1464,33 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <cu@cuboid.list_players>
-        // @returns dList(dPlayer)
+        // @returns ListTag(dPlayer)
         // @description
         // Gets a list of all players currently within the dCuboid.
         // -->
         registerTag("list_players", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 ArrayList<dPlayer> players = new ArrayList<>();
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (((dCuboid) object).isInsideCuboid(player.getLocation())) {
                         players.add(dPlayer.mirrorBukkitPlayer(player));
                     }
                 }
-                return new dList(players).getAttribute(attribute.fulfill(1));
+                return new ListTag(players).getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <cu@cuboid.list_npcs>
-        // @returns dList(dNPC)
+        // @returns ListTag(dNPC)
         // @description
         // Gets a list of all NPCs currently within the dCuboid.
         // -->
         if (Depends.citizens != null) {
             registerTag("list_npcs", new TagRunnable() {
                 @Override
-                public String run(Attribute attribute, dObject object) {
+                public String run(Attribute attribute, ObjectTag object) {
                     ArrayList<dNPC> npcs = new ArrayList<>();
                     for (NPC npc : CitizensAPI.getNPCRegistry()) {
                         dNPC dnpc = dNPC.mirrorCitizensNPC(npc);
@@ -1498,25 +1498,25 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                             npcs.add(dnpc);
                         }
                     }
-                    return new dList(npcs).getAttribute(attribute.fulfill(1));
+                    return new ListTag(npcs).getAttribute(attribute.fulfill(1));
                 }
             });
         }
 
         // <--[tag]
         // @attribute <cu@cuboid.list_entities[<entity>|...]>
-        // @returns dList(dEntity)
+        // @returns ListTag(dEntity)
         // @description
         // Gets a list of all entities currently within the dCuboid, with
         // an optional search parameter for the entity type.
         // -->
         registerTag("list_entities", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 ArrayList<dEntity> entities = new ArrayList<>();
-                dList types = new dList();
+                ListTag types = new ListTag();
                 if (attribute.hasContext(1)) {
-                    types = dList.valueOf(attribute.getContext(1));
+                    types = ListTag.valueOf(attribute.getContext(1));
                 }
                 for (Entity ent : ((dCuboid) object).getWorld().getEntities()) {
                     dEntity current = new dEntity(ent);
@@ -1534,39 +1534,39 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                         }
                     }
                 }
-                return new dList(entities).getAttribute(attribute.fulfill(1));
+                return new ListTag(entities).getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <cu@cuboid.list_living_entities>
-        // @returns dList(dEntity)
+        // @returns ListTag(dEntity)
         // @description
         // Gets a list of all living entities currently within the dCuboid.
         // -->
         registerTag("list_living_entities", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 ArrayList<dEntity> entities = new ArrayList<>();
                 for (Entity ent : ((dCuboid) object).getWorld().getLivingEntities()) {
                     if (ent.isValid() && ((dCuboid) object).isInsideCuboid(ent.getLocation()) && !dEntity.isCitizensNPC(ent)) {
                         entities.add(new dEntity(ent));
                     }
                 }
-                return new dList(entities).getAttribute(attribute.fulfill(1));
+                return new ListTag(entities).getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <cu@cuboid.list_chunks>
-        // @returns dList(dChunk)
+        // @returns ListTag(dChunk)
         // @description
         // Gets a list of all chunks entirely within the dCuboid.
         // -->
         registerTag("list_chunks", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                dList chunks = new dList();
+            public String run(Attribute attribute, ObjectTag object) {
+                ListTag chunks = new ListTag();
                 dCuboid obj = (dCuboid) object;
                 for (LocationPair pair : obj.pairs) {
                     int minY = pair.low.getBlockY();
@@ -1590,14 +1590,14 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <cu@cuboid.list_partial_chunks>
-        // @returns dList(dChunk)
+        // @returns ListTag(dChunk)
         // @description
         // Gets a list of all chunks partially or entirely within the dCuboid.
         // -->
         registerTag("list_partial_chunks", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                dList chunks = new dList();
+            public String run(Attribute attribute, ObjectTag object) {
+                ListTag chunks = new ListTag();
                 for (LocationPair pair : ((dCuboid) object).pairs) {
                     dChunk minChunk = new dChunk(pair.low);
                     dChunk maxChunk = new dChunk(pair.high);
@@ -1613,47 +1613,47 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <cu@cuboid.notable_name>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Gets the name of a Notable dCuboid. If the cuboid isn't noted,
         // this is null.
         // -->
         registerTag("notable_name", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 String notname = NotableManager.getSavedId((dCuboid) object);
                 if (notname == null) {
                     return null;
                 }
-                return new Element(notname).getAttribute(attribute.fulfill(1));
+                return new ElementTag(notname).getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <cu@cuboid.full>
-        // @returns Element
+        // @returns ElementTag
         // @group conversion
         // @description
         // Returns a full reusable identification for this cuboid, with extra, generally useless data.
         // -->
         registerTag("full", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dCuboid) object).identifyFull()).getAttribute(attribute.fulfill(1));
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dCuboid) object).identifyFull()).getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <cu@cuboid.type>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Always returns 'Cuboid' for dCuboid objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         registerTag("type", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element("Cuboid").getAttribute(attribute.fulfill(1));
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag("Cuboid").getAttribute(attribute.fulfill(1));
             }
         });
     }
@@ -1668,7 +1668,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     }
 
     /////////////////////
-    // dObject Attributes
+    // ObjectTag Attributes
     /////////////////////
 
     @Override
@@ -1693,7 +1693,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             return returned;
         }
 
-        return new Element(identify()).getAttribute(attribute);
+        return new ElementTag(identify()).getAttribute(attribute);
     }
 
     public void applyProperty(Mechanism mechanism) {
@@ -1723,7 +1723,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             int comma = value.indexOf(',');
             int member = 1;
             if (comma > 0) {
-                member = new Element(value.substring(0, comma)).asInt();
+                member = new ElementTag(value.substring(0, comma)).asInt();
             }
             dCuboid subCuboid = dCuboid.valueOf(comma == -1 ? value : value.substring(comma + 1));
             if (member < 1) {

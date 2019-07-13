@@ -7,8 +7,8 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -53,9 +53,9 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
     }
 
     public static PlayerEquipsArmorScriptEvent instance;
-    public Element equipType;
-    public Element armorType;
-    public Element reason;
+    public ElementTag equipType;
+    public ElementTag armorType;
+    public ElementTag reason;
     public dItem armor;
     public dPlayer player;
 
@@ -109,7 +109,7 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("armor")) {
             return armor;
         }
@@ -156,9 +156,9 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
     }
 
     private void fireEquipsEvent(Player bukkitPlayer, String type, ItemStack newItem, String reasonString) {
-        equipType = new Element("equips");
-        armorType = new Element(type);
-        reason = new Element(reasonString);
+        equipType = new ElementTag("equips");
+        armorType = new ElementTag(type);
+        reason = new ElementTag(reasonString);
         armor = new dItem(newItem);
         player = dPlayer.mirrorBukkitPlayer(bukkitPlayer);
         cancelled = false;
@@ -166,9 +166,9 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
     }
 
     private void fireUnequipsEvent(Player bukkitPlayer, String type, ItemStack oldItem, String reasonString) {
-        equipType = new Element("unequips");
-        armorType = new Element(type);
-        reason = new Element(reasonString);
+        equipType = new ElementTag("unequips");
+        armorType = new ElementTag(type);
+        reason = new ElementTag(reasonString);
         armor = new dItem(oldItem);
         player = dPlayer.mirrorBukkitPlayer(bukkitPlayer);
         cancelled = false;

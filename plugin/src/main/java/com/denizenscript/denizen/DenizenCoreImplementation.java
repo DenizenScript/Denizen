@@ -13,7 +13,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizencore.DenizenImplementation;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
@@ -237,16 +237,16 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     }
 
     @Override
-    public dList valueOfFlagdList(String string) {
+    public ListTag valueOfFlagListTag(String string) {
         FlagManager.Flag flag = DenizenAPI.getCurrentInstance().getFlag(string);
         if (flag == null) {
             return null;
         }
-        return new dList(flag.toString(), true, flag.values());
+        return new ListTag(flag.toString(), true, flag.values());
     }
 
     @Override
-    public boolean matchesFlagdList(String arg) {
+    public boolean matchesFlagListTag(String arg) {
         boolean flag = false;
         if (arg.startsWith("fl")) {
             if (arg.indexOf('[') == 2) {
@@ -343,7 +343,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
             outcome = dMaterial.matches(comparable);
         }
         else if (comparedto.equalsIgnoreCase("materiallist")) {
-            outcome = dList.valueOf(comparable).containsObjectsFrom(dMaterial.class);
+            outcome = ListTag.valueOf(comparable).containsObjectsFrom(dMaterial.class);
         }
         else if (comparedto.equalsIgnoreCase("entity")) {
             outcome = dEntity.matches(comparable);

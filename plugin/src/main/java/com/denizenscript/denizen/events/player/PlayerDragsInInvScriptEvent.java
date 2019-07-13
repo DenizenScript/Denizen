@@ -7,8 +7,8 @@ import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -38,8 +38,8 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
     // <context.item> returns the dItem the player has dragged.
     // <context.inventory> returns the dInventory (the 'top' inventory, regardless of which slot was clicked).
     // <context.clicked_inventory> returns the dInventory that was clicked in.
-    // <context.slots> returns a dList of the slot numbers dragged through.
-    // <context.raw_slots> returns a dList of the raw slot numbers dragged through.
+    // <context.slots> returns a ListTag of the slot numbers dragged through.
+    // <context.raw_slots> returns a ListTag of the raw slot numbers dragged through.
     //
     // -->
 
@@ -93,19 +93,19 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("inventory")) {
             return dInv;
         }
         else if (name.equals("slots")) {
-            dList slots = new dList();
+            ListTag slots = new ListTag();
             for (Integer slot : event.getInventorySlots()) {
                 slots.add(String.valueOf(slot + 1));
             }
             return slots;
         }
         else if (name.equals("raw_slots")) {
-            dList raw_slots = new dList();
+            ListTag raw_slots = new ListTag();
             for (Integer raw_slot : event.getRawSlots()) {
                 raw_slots.add(String.valueOf(raw_slot + 1));
             }

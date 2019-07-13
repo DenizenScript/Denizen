@@ -5,9 +5,9 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dScript;
+import com.denizenscript.denizencore.objects.ScriptTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
@@ -68,19 +68,19 @@ public class EntityScriptContainer extends ScriptContainer {
         try {
             if (contains("ENTITY_TYPE")) {
                 String entityType = TagManager.tag((getString("ENTITY_TYPE", "")), new BukkitTagContext
-                        (player, npc, false, null, shouldDebug(), new dScript(this)));
+                        (player, npc, false, null, shouldDebug(), new ScriptTag(this)));
                 entity = dEntity.valueOf(entityType);
             }
             else {
                 throw new Exception("Missing entity_type argument!");
             }
 
-            TagContext context = new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this));
+            TagContext context = new BukkitTagContext(player, npc, false, null, shouldDebug(), new ScriptTag(this));
             Set<StringHolder> strings = getConfigurationSection("").getKeys(false);
             for (StringHolder string : strings) {
                 if (!string.low.equals("entity_type") && !string.low.equals("type") && !string.low.equals("debug") && !string.low.equals("custom")) {
                     String value = TagManager.tag((getString(string.low, "")), context);
-                    entity.safeAdjust(new Mechanism(new Element(string.low), new Element(value), context));
+                    entity.safeAdjust(new Mechanism(new ElementTag(string.low), new ElementTag(value), context));
                 }
             }
 

@@ -1,20 +1,20 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemCustomModel implements Property {
 
-    public static boolean describes(dObject item) {
+    public static boolean describes(ObjectTag item) {
         return item instanceof dItem;
     }
 
-    public static ItemCustomModel getFrom(dObject _item) {
+    public static ItemCustomModel getFrom(ObjectTag _item) {
         if (!describes(_item)) {
             return null;
         }
@@ -47,7 +47,7 @@ public class ItemCustomModel implements Property {
 
         // <--[tag]
         // @attribute <i@item.has_custom_model_data>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @mechanism dItem.custom_model_data
         // @group properties
         // @description
@@ -55,13 +55,13 @@ public class ItemCustomModel implements Property {
         // Also see <@link tag i@item.custom_model_data>.
         // -->
         if (attribute.startsWith("has_custom_model_data")) {
-            return new Element(item.getItemStack().getItemMeta().hasCustomModelData())
+            return new ElementTag(item.getItemStack().getItemMeta().hasCustomModelData())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <i@item.custom_model_data>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @mechanism dItem.custom_model_data
         // @group properties
         // @description
@@ -71,7 +71,7 @@ public class ItemCustomModel implements Property {
         // -->
         if (attribute.startsWith("custom_model_data")) {
             if (item.getItemStack().getItemMeta().hasCustomModelData()) {
-                return new Element(item.getItemStack().getItemMeta().getCustomModelData())
+                return new ElementTag(item.getItemStack().getItemMeta().getCustomModelData())
                         .getAttribute(attribute.fulfill(1));
             }
         }

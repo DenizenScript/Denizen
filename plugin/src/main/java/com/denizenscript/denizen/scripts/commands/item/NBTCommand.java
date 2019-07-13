@@ -5,7 +5,7 @@ import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -51,8 +51,8 @@ public class NBTCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("key")
                     && arg.raw_value.split(":", 2).length == 2) {
                 String[] flagArgs = arg.raw_value.split(":", 2);
-                scriptEntry.addObject("key", new Element(flagArgs[0]));
-                scriptEntry.addObject("value", new Element(flagArgs[1]));
+                scriptEntry.addObject("key", new ElementTag(flagArgs[0]));
+                scriptEntry.addObject("value", new ElementTag(flagArgs[1]));
             }
             else if (!scriptEntry.hasObject("item")
                     && arg.matchesArgumentType(dItem.class)) {
@@ -77,8 +77,8 @@ public class NBTCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         dItem item = scriptEntry.getdObject("item");
-        Element key = scriptEntry.getElement("key");
-        Element value = scriptEntry.getElement("value");
+        ElementTag key = scriptEntry.getElement("key");
+        ElementTag value = scriptEntry.getElement("value");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

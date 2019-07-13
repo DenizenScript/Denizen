@@ -3,8 +3,8 @@ package com.denizenscript.denizen.objects.properties.entity;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.Material;
@@ -13,12 +13,12 @@ import org.bukkit.inventory.ItemStack;
 
 public class EntityEquipment implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity
                 && ((dEntity) entity).getBukkitEntity() instanceof LivingEntity;
     }
 
-    public static EntityEquipment getFrom(dObject entity) {
+    public static EntityEquipment getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -62,7 +62,7 @@ public class EntityEquipment implements Property {
 
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -149,10 +149,10 @@ public class EntityEquipment implements Property {
 
         // <--[tag]
         // @attribute <e@entity.equipment>
-        // @returns dList
+        // @returns ListTag
         // @group inventory
         // @description
-        // Returns a dList containing the entity's equipment.
+        // Returns a ListTag containing the entity's equipment.
         // Output list is boots|leggings|chestplate|helmet
         // -->
         else if (attribute.startsWith("equipment")) {
@@ -168,7 +168,7 @@ public class EntityEquipment implements Property {
         // <--[mechanism]
         // @object dEntity
         // @name equipment
-        // @input dList(dItem)
+        // @input ListTag(dItem)
         // @description
         // Sets the entity's worn equipment.
         // Input list is boots|leggings|chestplate|helmet
@@ -176,7 +176,7 @@ public class EntityEquipment implements Property {
         // <e@entity.equipment>
         // -->
         if (mechanism.matches("equipment")) {
-            dList list = dList.valueOf(mechanism.getValue().asString());
+            ListTag list = ListTag.valueOf(mechanism.getValue().asString());
             ItemStack[] stacks = new ItemStack[list.size()];
             for (int i = 0; i < list.size(); i++) {
                 stacks[i] = dItem.valueOf(list.get(i), mechanism.context).getItemStack();

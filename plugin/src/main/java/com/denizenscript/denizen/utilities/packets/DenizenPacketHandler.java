@@ -14,7 +14,7 @@ import com.denizenscript.denizen.scripts.commands.player.GlowCommand;
 import com.denizenscript.denizen.scripts.commands.server.ExecuteCommand;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -37,7 +37,7 @@ public class DenizenPacketHandler implements PacketHandler {
             public void run() {
                 ResourcePackStatusScriptEvent event = ResourcePackStatusScriptEvent.instance;
                 // TODO: get hash on server?... last sent hash? event.hash = new Element(hash);
-                event.status = new Element(resourcePackStatus.getStatus());
+                event.status = new ElementTag(resourcePackStatus.getStatus());
                 event.player = dPlayer.mirrorBukkitPlayer(player);
                 event.fire();
             }
@@ -54,10 +54,10 @@ public class DenizenPacketHandler implements PacketHandler {
                             PlayerSteersEntityScriptEvent event = PlayerSteersEntityScriptEvent.instance;
                             event.player = dPlayer.mirrorBukkitPlayer(player);
                             event.entity = player.isInsideVehicle() ? new dEntity(player.getVehicle()) : null;
-                            event.sideways = new Element(steerVehicle.getLeftwardInput());
-                            event.forward = new Element(steerVehicle.getForwardInput());
-                            event.jump = new Element(steerVehicle.getJumpInput());
-                            event.dismount = new Element(steerVehicle.getDismountInput());
+                            event.sideways = new ElementTag(steerVehicle.getLeftwardInput());
+                            event.forward = new ElementTag(steerVehicle.getForwardInput());
+                            event.jump = new ElementTag(steerVehicle.getJumpInput());
+                            event.dismount = new ElementTag(steerVehicle.getDismountInput());
                             event.cancelled = false;
                             event.fire();
                             return event.cancelled;
@@ -86,9 +86,9 @@ public class DenizenPacketHandler implements PacketHandler {
                 public Boolean call() throws Exception {
                     int pos = chat.getPosition();
                     if (pos != 2) {
-                        event.message = new Element(chat.getMessage());
-                        event.rawJson = new Element(chat.getRawJson());
-                        event.system = new Element(pos == 1);
+                        event.message = new ElementTag(chat.getMessage());
+                        event.rawJson = new ElementTag(chat.getRawJson());
+                        event.system = new ElementTag(pos == 1);
                         event.messageModified = false;
                         event.rawJsonModified = false;
                         event.player = dPlayer.mirrorBukkitPlayer(player);

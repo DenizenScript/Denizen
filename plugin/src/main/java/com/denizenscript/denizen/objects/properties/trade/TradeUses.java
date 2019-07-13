@@ -1,19 +1,19 @@
 package com.denizenscript.denizen.objects.properties.trade;
 
 import com.denizenscript.denizen.objects.dTrade;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 
 public class TradeUses implements Property {
 
-    public static boolean describes(dObject recipe) {
+    public static boolean describes(ObjectTag recipe) {
         return recipe instanceof dTrade;
     }
 
-    public static TradeUses getFrom(dObject recipe) {
+    public static TradeUses getFrom(ObjectTag recipe) {
         if (!describes(recipe)) {
             return null;
         }
@@ -52,13 +52,13 @@ public class TradeUses implements Property {
 
         // <--[tag]
         // @attribute <trade@trade.uses>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @mechanism dTrade.uses
         // @description
         // Returns how many times the trade has been used.
         // -->
         if (attribute.startsWith("uses")) {
-            return new Element(recipe.getRecipe().getUses()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(recipe.getRecipe().getUses()).getAttribute(attribute.fulfill(1));
         }
 
         return null;

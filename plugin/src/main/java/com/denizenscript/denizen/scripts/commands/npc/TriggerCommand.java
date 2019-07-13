@@ -6,8 +6,8 @@ import com.denizenscript.denizen.npc.traits.TriggerTrait;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Duration;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.DurationTag;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -48,8 +48,8 @@ public class TriggerCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("cooldown")
                     && arg.matchesPrefix("cooldown", "c")
-                    && arg.matchesArgumentType(Duration.class)) {
-                scriptEntry.addObject("cooldown", arg.asType(Duration.class));
+                    && arg.matchesArgumentType(DurationTag.class)) {
+                scriptEntry.addObject("cooldown", arg.asType(DurationTag.class));
             }
             else if (!scriptEntry.hasObject("radius")
                     && arg.matchesPrefix("radius", "r")
@@ -77,7 +77,7 @@ public class TriggerCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("toggle")) {
-            scriptEntry.addObject("toggle", new Element("TOGGLE"));
+            scriptEntry.addObject("toggle", new ElementTag("TOGGLE"));
         }
 
         if (!Utilities.entryHasNPC(scriptEntry) && !scriptEntry.hasObject("npc")) {
@@ -89,10 +89,10 @@ public class TriggerCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        Element toggle = scriptEntry.getElement("toggle");
-        Element trigger = scriptEntry.getElement("trigger");
-        Element radius = scriptEntry.getElement("radius");
-        Duration cooldown = (Duration) scriptEntry.getObject("cooldown");
+        ElementTag toggle = scriptEntry.getElement("toggle");
+        ElementTag trigger = scriptEntry.getElement("trigger");
+        ElementTag radius = scriptEntry.getElement("radius");
+        DurationTag cooldown = (DurationTag) scriptEntry.getObject("cooldown");
         dNPC npc = scriptEntry.hasObject("npc") ? (dNPC) scriptEntry.getObject("npc") : Utilities.getEntryNPC(scriptEntry);
 
         if (scriptEntry.dbCallShouldDebug()) {

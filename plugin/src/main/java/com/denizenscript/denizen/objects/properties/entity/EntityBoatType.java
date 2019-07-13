@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.TreeSpecies;
@@ -12,11 +12,11 @@ import org.bukkit.entity.EntityType;
 
 public class EntityBoatType implements Property {
 
-    public static boolean describes(dObject object) {
+    public static boolean describes(ObjectTag object) {
         return object instanceof dEntity && ((dEntity) object).getBukkitEntityType() == EntityType.BOAT;
     }
 
-    public static EntityBoatType getFrom(dObject object) {
+    public static EntityBoatType getFrom(ObjectTag object) {
         if (!describes(object)) {
             return null;
         }
@@ -66,7 +66,7 @@ public class EntityBoatType implements Property {
 
         // <--[tag]
         // @attribute <e@entity.boat_type>
-        // @returns Element
+        // @returns ElementTag
         // @mechanism dEntity.boat_type
         // @group properties
         // @description
@@ -74,7 +74,7 @@ public class EntityBoatType implements Property {
         // Valid wood types: GENERIC, REDWOOD, BIRCH, JUNGLE, ACACIA, DARK_OAK.
         // -->
         if (attribute.startsWith("boat_type")) {
-            return new Element(((Boat) entity.getBukkitEntity()).getWoodType().name())
+            return new ElementTag(((Boat) entity.getBukkitEntity()).getWoodType().name())
                     .getAttribute(attribute.fulfill(1));
         }
 

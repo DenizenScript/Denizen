@@ -3,7 +3,7 @@ package com.denizenscript.denizen.tags;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.BukkitScriptEntryData;
-import com.denizenscript.denizencore.objects.dScript;
+import com.denizenscript.denizencore.objects.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.tags.TagContext;
@@ -12,7 +12,7 @@ public class BukkitTagContext extends TagContext {
     public final dPlayer player;
     public final dNPC npc;
 
-    public BukkitTagContext(dPlayer player, dNPC npc, boolean instant, ScriptEntry entry, boolean debug, dScript script) {
+    public BukkitTagContext(dPlayer player, dNPC npc, boolean instant, ScriptEntry entry, boolean debug, ScriptTag script) {
         super(instant, debug, entry, script);
         this.player = player;
         this.npc = npc;

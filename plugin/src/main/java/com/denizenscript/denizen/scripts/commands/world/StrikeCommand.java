@@ -4,7 +4,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -48,7 +48,7 @@ public class StrikeCommand extends AbstractCommand {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
             else if (arg.matches("no_damage") || arg.matches("nodamage")) {
-                scriptEntry.addObject("damage", new Element(false));
+                scriptEntry.addObject("damage", new ElementTag(false));
             }
             else {
                 arg.reportUnhandled();
@@ -61,7 +61,7 @@ public class StrikeCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Missing location argument!");
         }
 
-        scriptEntry.defaultObject("damage", new Element(true));
+        scriptEntry.defaultObject("damage", new ElementTag(true));
     }
 
     @Override

@@ -4,8 +4,8 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -35,7 +35,7 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
     // <context.entity> returns the dEntity.
     // <context.origin> returns the dLocation the entity teleported from.
     // <context.destination> returns the dLocation the entity teleported to.
-    // <context.cause> returns an Element of the teleport cause. Can be:
+    // <context.cause> returns an ElementTag of the teleport cause. Can be:
     // COMMAND, END_PORTAL, ENDER_PEARL, NETHER_PORTAL, PLUGIN, END_GATEWAY, CHORUS_FRUIT, SPECTATE, UNKNOWN, or ENTITY_TELEPORT
     //
     // @Determine
@@ -124,7 +124,7 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("origin")) {
             return from;
         }
@@ -135,7 +135,7 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
             return entity.getDenizenObject();
         }
         else if (name.equals("cause")) {
-            return new Element(cause);
+            return new ElementTag(cause);
         }
         return super.getContext(name);
     }

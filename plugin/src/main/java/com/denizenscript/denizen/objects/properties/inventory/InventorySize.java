@@ -1,20 +1,20 @@
 package com.denizenscript.denizen.objects.properties.inventory;
 
 import com.denizenscript.denizen.objects.dInventory;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 
 public class InventorySize implements Property {
 
-    public static boolean describes(dObject inventory) {
+    public static boolean describes(ObjectTag inventory) {
         // All inventories should have a size
         return inventory instanceof dInventory;
     }
 
-    public static InventorySize getFrom(dObject inventory) {
+    public static InventorySize getFrom(ObjectTag inventory) {
         if (!describes(inventory)) {
             return null;
         }
@@ -73,7 +73,7 @@ public class InventorySize implements Property {
 
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -85,14 +85,14 @@ public class InventorySize implements Property {
 
         // <--[tag]
         // @attribute <in@inventory.size>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @group properties
         // @mechanism dInventory.size
         // @description
         // Return the number of slots in the inventory.
         // -->
         if (attribute.startsWith("size")) {
-            return new Element(getSize())
+            return new ElementTag(getSize())
                     .getAttribute(attribute.fulfill(1));
         }
 

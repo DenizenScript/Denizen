@@ -89,9 +89,9 @@ public class WorldBorderCommand extends AbstractCommand {
                 scriptEntry.addObject("current_size", arg.asElement());
             }
             else if (!scriptEntry.hasObject("duration")
-                    && arg.matchesArgumentType(Duration.class)
+                    && arg.matchesArgumentType(DurationTag.class)
                     && arg.matchesPrefix("duration")) {
-                scriptEntry.addObject("duration", arg.asType(Duration.class));
+                scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
             else if (!scriptEntry.hasObject("warningdistance")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)
@@ -99,9 +99,9 @@ public class WorldBorderCommand extends AbstractCommand {
                 scriptEntry.addObject("warningdistance", arg.asElement());
             }
             else if (!scriptEntry.hasObject("warningtime")
-                    && arg.matchesArgumentType(Duration.class)
+                    && arg.matchesArgumentType(DurationTag.class)
                     && arg.matchesPrefix("warningtime")) {
-                scriptEntry.addObject("warningtime", arg.asType(Duration.class));
+                scriptEntry.addObject("warningtime", arg.asType(DurationTag.class));
             }
             else if (!scriptEntry.hasObject("world")
                     && arg.matchesArgumentType(dWorld.class)) {
@@ -109,11 +109,11 @@ public class WorldBorderCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("players")
                     && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("players", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
+                scriptEntry.addObject("players", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("reset")
                     && arg.matches("reset")) {
-                scriptEntry.addObject("reset", new Element("true"));
+                scriptEntry.addObject("reset", new ElementTag("true"));
             }
             else {
                 arg.reportUnhandled();
@@ -135,8 +135,8 @@ public class WorldBorderCommand extends AbstractCommand {
 
         // fill in default arguments if necessary
 
-        scriptEntry.defaultObject("duration", new Duration(0));
-        scriptEntry.defaultObject("reset", new Element("false"));
+        scriptEntry.defaultObject("duration", new DurationTag(0));
+        scriptEntry.defaultObject("reset", new ElementTag("false"));
     }
 
     @Override
@@ -145,14 +145,14 @@ public class WorldBorderCommand extends AbstractCommand {
         dWorld world = (dWorld) scriptEntry.getObject("world");
         List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("players");
         dLocation center = (dLocation) scriptEntry.getObject("center");
-        Element size = scriptEntry.getElement("size");
-        Element currSize = scriptEntry.getElement("current_size");
-        Element damage = scriptEntry.getElement("damage");
-        Element damagebuffer = scriptEntry.getElement("damagebuffer");
-        Duration duration = scriptEntry.getdObject("duration");
-        Element warningdistance = scriptEntry.getElement("warningdistance");
-        Duration warningtime = scriptEntry.getdObject("warningtime");
-        Element reset = scriptEntry.getdObject("reset");
+        ElementTag size = scriptEntry.getElement("size");
+        ElementTag currSize = scriptEntry.getElement("current_size");
+        ElementTag damage = scriptEntry.getElement("damage");
+        ElementTag damagebuffer = scriptEntry.getElement("damagebuffer");
+        DurationTag duration = scriptEntry.getdObject("duration");
+        ElementTag warningdistance = scriptEntry.getElement("warningdistance");
+        DurationTag warningtime = scriptEntry.getdObject("warningtime");
+        ElementTag reset = scriptEntry.getdObject("reset");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

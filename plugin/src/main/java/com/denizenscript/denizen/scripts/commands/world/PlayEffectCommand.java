@@ -8,9 +8,9 @@ import com.denizenscript.denizen.nms.abstracts.ParticleHelper;
 import com.denizenscript.denizen.nms.interfaces.Particle;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -89,10 +89,10 @@ public class PlayEffectCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentList(dLocation.class)) {
                 if (arg.matchesOnePrefix("at")) {
-                    scriptEntry.addObject("no_offset", new Element(true));
+                    scriptEntry.addObject("no_offset", new ElementTag(true));
                 }
 
-                scriptEntry.addObject("location", arg.asType(dList.class).filter(dLocation.class, scriptEntry));
+                scriptEntry.addObject("location", arg.asType(ListTag.class).filter(dLocation.class, scriptEntry));
                 continue;
             }
             else if (!scriptEntry.hasObject("effect") &&
@@ -192,7 +192,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     && arg.matchesArgumentList(dPlayer.class)
                     && arg.matchesPrefix("targets", "target", "t")) {
 
-                scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
+                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
@@ -203,9 +203,9 @@ public class PlayEffectCommand extends AbstractCommand {
         scriptEntry.defaultObject("location",
                 Utilities.entryHasNPC(scriptEntry) && Utilities.getEntryNPC(scriptEntry).isSpawned() ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getLocation()) : null,
                 Utilities.entryHasPlayer(scriptEntry) && Utilities.getEntryPlayer(scriptEntry).isOnline() ? Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getLocation()) : null);
-        scriptEntry.defaultObject("data", new Element(0));
-        scriptEntry.defaultObject("radius", new Element(15));
-        scriptEntry.defaultObject("qty", new Element(1));
+        scriptEntry.defaultObject("data", new ElementTag(0));
+        scriptEntry.defaultObject("radius", new ElementTag(15));
+        scriptEntry.defaultObject("qty", new ElementTag(1));
         scriptEntry.defaultObject("offset", new dLocation(null, 0.5, 0.5, 0.5));
 
         // Check to make sure required arguments have been filled
@@ -234,13 +234,13 @@ public class PlayEffectCommand extends AbstractCommand {
         dItem iconcrack = scriptEntry.getdObject("iconcrack");
         dMaterial blockcrack = scriptEntry.getdObject("blockcrack");
         dMaterial blockdust = scriptEntry.getdObject("blockdust");
-        Element radius = scriptEntry.getElement("radius");
-        Element data = scriptEntry.getElement("data");
-        Element qty = scriptEntry.getElement("qty");
-        Element no_offset = scriptEntry.getElement("no_offset");
+        ElementTag radius = scriptEntry.getElement("radius");
+        ElementTag data = scriptEntry.getElement("data");
+        ElementTag qty = scriptEntry.getElement("qty");
+        ElementTag no_offset = scriptEntry.getElement("no_offset");
         boolean should_offset = no_offset == null || !no_offset.asBoolean();
         dLocation offset = scriptEntry.getdObject("offset");
-        Element special_data = scriptEntry.getElement("special_data");
+        ElementTag special_data = scriptEntry.getElement("special_data");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
@@ -313,7 +313,7 @@ public class PlayEffectCommand extends AbstractCommand {
                             Debug.echoError(scriptEntry.getResidingQueue(), "Missing required special data for particle: " + particleEffect.getName());
                         }
                         else if (clazz == org.bukkit.Particle.DustOptions.class) {
-                            dList dataList = dList.valueOf(special_data.asString());
+                            ListTag dataList = ListTag.valueOf(special_data.asString());
                             if (dataList.size() != 2) {
                                 Debug.echoError(scriptEntry.getResidingQueue(), "DustOptions special_data must have 2 list entries for particle: " + particleEffect.getName());
                             }

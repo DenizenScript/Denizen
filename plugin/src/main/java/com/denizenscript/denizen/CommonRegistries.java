@@ -8,41 +8,41 @@ import com.denizenscript.denizencore.objects.ObjectFetcher;
 public class CommonRegistries {
 
     // <--[language]
-    // @name dObjects
+    // @name ObjectTags
     // @group Object System
     // @description
-    // dObjects are a system put into place by Denizen that make working with things, or 'objects',
+    // ObjectTags are a system put into place by Denizen that make working with things, or 'objects',
     // in Minecraft and Denizen easier. Many parts of scripts will require some kind of object as an
-    // argument, identifier/type, or such as in world events, part of an event name. The dObjects notation
+    // argument, identifier/type, or such as in world events, part of an event name. The ObjectTags notation
     // system helps both you and Denizen know what type of objects are being referenced and worked with.
     //
-    // So when should you use dObjects? In arguments, event names, replaceable tags, configs, flags, and
+    // So when should you use ObjectTags? In arguments, event names, replaceable tags, configs, flags, and
     // more! If you're just a beginner, you've probably been using them without even realizing it!
     //
-    // dObject is a broader term for a 'type' of object that more specifically represents something,
+    // ObjectTag is a broader term for a 'type' of object that more specifically represents something,
     // such as a dLocation or dScript, often times just referred to as a 'location' or 'script'. Denizen
     // employs many object types that you should be familiar with. You'll notice that many times objects
     // are reference with their 'dObject notation' which is in the format of 'x@', the x being the specific
     // notation of an object type. Example: player objects use the p@ notation, and locations use l@.
     // The use of this notation is encouraged, but not always required.
     //
-    // Let's take the tag system, for example. It uses the dObjects system pretty heavily. For instance,
-    // every time you use <player.name> or <npc.id>, you're using a dObject, which brings us to a simple
+    // Let's take the tag system, for example. It uses the ObjectTags system pretty heavily. For instance,
+    // every time you use <player.name> or <npc.id>, you're using a ObjectTag, which brings us to a simple
     // clarification: Why <player.name> and not <p@player.name>? That's because Denizen allows Players,
     // NPCs and other 'in-context objects' to be linked to certain scripts. In short, <player> already
     // contains a reference to a specific player, such as the player that died in a world event 'on player dies'.
     // <p@player.name> would incorrectly reference the player named 'player', however this format is often
     // used to help with usage of a tag, simply indicating 'any player object'.
     //
-    // dObjects can be used to CREATE new instances of objects, too! Though not all types allow 'new'
+    // ObjectTags can be used to CREATE new instances of objects, too! Though not all types allow 'new'
     // objects to be created, many do, such as dItems. With the use of tags, it's easy to reference a specific
     // item, say -- an item in the Player's hand -- items are also able to use a constructor to make a new item,
     // and say, drop it in the world. Take the case of the command/usage '- drop i@diamond_ore'. The item object
     // used is a brand new diamond_ore, which is then dropped by the command to a location of your choice -- just
     // specify an additional location argument.
     //
-    // There's a great deal more to learn about dObjects, so be sure to check out each object type for more
-    // specific information. While all dObjects share some features, many contain goodies on top of that!
+    // There's a great deal more to learn about ObjectTags, so be sure to check out each object type for more
+    // specific information. While all ObjectTags share some features, many contain goodies on top of that!
     //
     // Here's an overview of each object type that is implemented by the Denizen core:
     //
@@ -135,7 +135,7 @@ public class CommonRegistries {
     // | object notation: trade@    can reference unique objects: no      can be notable: no
     // |   trade@trade - represents a generic, customizable merchant trade to be used with merchant trade properties (See <@link language Merchant Trades>)
     //
-    // + ----- dList -------+
+    // + ----- ListTag -------+
     // | object notation: li@  can reference unique objects: yes  can be notable: no
     // | constructors: ( <>'s represent non-static information and are not literal)
     // |   li@<items|...> - fetches a new list with the elements specified, separated by a pipe (|) character
@@ -156,7 +156,7 @@ public class CommonRegistries {
     // | constructors: ( <>'s represent non-static information and are not literal)
     // |   pl@<plugin_name> - fetches the plugin with the specified name
     //
-    // + ----- Element ------+
+    // + ----- ElementTag ------+
     // | object notation: el@   can reference unique objects: no      can be notable: no
     // | constructors: ( <>'s represent non-static information and are not literal)
     // |   el@<value> - fetches an element with the specified value

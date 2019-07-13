@@ -3,9 +3,9 @@ package com.denizenscript.denizen.events.entity;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -47,8 +47,8 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
 
     public static EntityHealsScriptEvent instance;
     public dEntity entity;
-    public Element amount;
-    public Element reason;
+    public ElementTag amount;
+    public ElementTag reason;
     public EntityRegainHealthEvent event;
 
     @Override
@@ -83,7 +83,7 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (ArgumentHelper.matchesInteger(determination)) {
-            amount = new Element(ArgumentHelper.getDoubleFrom(determination));
+            amount = new ElementTag(ArgumentHelper.getDoubleFrom(determination));
             return true;
         }
         return super.applyDetermination(container, determination);
@@ -96,7 +96,7 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return entity;
         }
@@ -112,8 +112,8 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
     @EventHandler
     public void onEntityHeals(EntityRegainHealthEvent event) {
         entity = new dEntity(event.getEntity());
-        amount = new Element(event.getAmount());
-        reason = new Element(event.getRegainReason().toString());
+        amount = new ElementTag(event.getAmount());
+        reason = new ElementTag(event.getRegainReason().toString());
         this.event = event;
         fire(event);
         event.setAmount(amount.asDouble());

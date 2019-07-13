@@ -227,10 +227,10 @@ public class FlagManager {
         //
         // @Triggers when a flag is cleared
         // @Context
-        // <context.owner> returns an Element of the flag owner's object.
-        // <context.name> returns an Element of the flag name.
-        // <context.type> returns an Element of the flag type.
-        // <context.old_value> returns an Element of the flag's previous value.
+        // <context.owner> returns an ElementTag of the flag owner's object.
+        // <context.name> returns an ElementTag of the flag name.
+        // <context.type> returns an ElementTag of the flag type.
+        // <context.old_value> returns an ElementTag of the flag's previous value.
         //
         // -->
 
@@ -240,9 +240,9 @@ public class FlagManager {
         public void clear() {
             String OldOwner = flagOwner;
             String OldName = flagName;
-            dObject OldValue = FlagSmartEvent.isActive() ? (value.size() > 1
+            ObjectTag OldValue = FlagSmartEvent.isActive() ? (value.size() > 1
                     ? value.asList()
-                    : value.size() == 1 ? new Element(value.get(0).asString()) : new Element("null")) : null;
+                    : value.size() == 1 ? new ElementTag(value.get(0).asString()) : new ElementTag("null")) : null;
 
             denizen.getSaves().set(flagPath, null);
             denizen.getSaves().set(flagPath + "-expiration", null);
@@ -252,7 +252,7 @@ public class FlagManager {
             if (FlagSmartEvent.isActive()) {
                 List<String> world_script_events = new ArrayList<>();
 
-                Map<String, dObject> context = new HashMap<>();
+                Map<String, ObjectTag> context = new HashMap<>();
                 dPlayer player = null;
                 if (dPlayer.matches(OldOwner)) {
                     player = dPlayer.valueOf(OldOwner);
@@ -276,9 +276,9 @@ public class FlagManager {
                 world_script_events.add(type + " flag cleared");
                 world_script_events.add(type + " flag " + OldName + " cleared");
 
-                context.put("owner", new Element(OldOwner));
-                context.put("name", new Element(OldName));
-                context.put("type", new Element(type));
+                context.put("owner", new ElementTag(OldOwner));
+                context.put("name", new ElementTag(OldName));
+                context.put("type", new ElementTag(type));
                 context.put("old_value", OldValue);
 
                 world_script_events.add("flag cleared");
@@ -370,7 +370,7 @@ public class FlagManager {
          */
         public int split(Object obj) {
             checkExpired();
-            dList split = dList.valueOf(obj.toString());
+            ListTag split = ListTag.valueOf(obj.toString());
             if (split.size() > 0) {
                 value.mustBeList();
                 for (String val : split) {
@@ -387,7 +387,7 @@ public class FlagManager {
 
         public int splitNew(Object obj) {
             checkExpired();
-            dList split = dList.valueOf(obj.toString());
+            ListTag split = ListTag.valueOf(obj.toString());
             if (split.size() > 0) {
                 value.mustBeList();
                 value.values.clear();
@@ -510,10 +510,10 @@ public class FlagManager {
         //
         // @Triggers when a flag is changed
         // @Context
-        // <context.owner> returns an Element of the flag owner's object.
-        // <context.name> returns an Element of the flag name.
-        // <context.type> returns an Element of the flag type.
-        // <context.old_value> returns an Element of the flag's previous value.
+        // <context.owner> returns an ElementTag of the flag owner's object.
+        // <context.name> returns an ElementTag of the flag name.
+        // <context.type> returns an ElementTag of the flag type.
+        // <context.old_value> returns an ElementTag of the flag's previous value.
         //
         // -->
 
@@ -525,11 +525,11 @@ public class FlagManager {
         public void save() {
             String oldOwner = flagOwner;
             String oldName = flagName;
-            dObject oldValue = null;
+            ObjectTag oldValue = null;
             if (FlagSmartEvent.isActive()) {
-                dList oldValueList = value.asList();
+                ListTag oldValueList = value.asList();
                 oldValue = oldValueList.size() > 1 ? oldValueList
-                        : oldValueList.size() == 1 ? new Element(oldValueList.get(0)) : new Element("null");
+                        : oldValueList.size() == 1 ? new ElementTag(oldValueList.get(0)) : new ElementTag("null");
             }
 
             if (value.values != null) {
@@ -543,7 +543,7 @@ public class FlagManager {
             if (FlagSmartEvent.isActive()) {
                 List<String> world_script_events = new ArrayList<>();
 
-                Map<String, dObject> context = new HashMap<>();
+                Map<String, ObjectTag> context = new HashMap<>();
                 dPlayer player = null;
                 if (dPlayer.matches(oldOwner)) {
                     player = dPlayer.valueOf(oldOwner);
@@ -574,9 +574,9 @@ public class FlagManager {
                 world_script_events.add(type + " flag changed");
                 world_script_events.add(type + " flag " + oldName + " changed");
 
-                context.put("owner", new Element(oldOwner));
-                context.put("name", new Element(oldName));
-                context.put("type", new Element(type));
+                context.put("owner", new ElementTag(oldOwner));
+                context.put("name", new ElementTag(oldName));
+                context.put("type", new ElementTag(type));
                 context.put("old_value", oldValue);
 
                 world_script_events.add("flag changed");
@@ -611,10 +611,10 @@ public class FlagManager {
         //
         // @Triggers when a flag expires
         // @Context
-        // <context.owner> returns an Element of the flag owner's object.
-        // <context.name> returns an Element of the flag name.
-        // <context.type> returns an Element of the flag type.
-        // <context.old_value> returns an Element of the flag's previous value.
+        // <context.owner> returns an ElementTag of the flag owner's object.
+        // <context.name> returns an ElementTag of the flag name.
+        // <context.type> returns an ElementTag of the flag type.
+        // <context.old_value> returns an ElementTag of the flag's previous value.
         //
         // -->
 
@@ -629,9 +629,9 @@ public class FlagManager {
                 if (expiration > 1 && expiration < DenizenCore.currentTimeMillis) {
                     String oldOwner = flagOwner;
                     String oldName = flagName;
-                    dObject oldValue = FlagSmartEvent.isActive() ? (value.size() > 1
+                    ObjectTag oldValue = FlagSmartEvent.isActive() ? (value.size() > 1
                             ? value.asList()
-                            : value.size() == 1 ? new Element(value.get(0).asString()) : new Element("null")) : null;
+                            : value.size() == 1 ? new ElementTag(value.get(0).asString()) : new ElementTag("null")) : null;
                     denizen.getSaves().set(flagPath + "-expiration", null);
                     denizen.getSaves().set(flagPath, null);
                     valid = false;
@@ -640,7 +640,7 @@ public class FlagManager {
                     if (FlagSmartEvent.isActive()) {
                         List<String> world_script_events = new ArrayList<>();
 
-                        Map<String, dObject> context = new HashMap<>();
+                        Map<String, ObjectTag> context = new HashMap<>();
                         dPlayer player = null;
                         if (dPlayer.matches(oldOwner)) {
                             player = dPlayer.valueOf(oldOwner);
@@ -671,9 +671,9 @@ public class FlagManager {
                         world_script_events.add(type + " flag expires");
                         world_script_events.add(type + " flag " + oldName + " expires");
 
-                        context.put("owner", new Element(oldOwner));
-                        context.put("name", new Element(oldName));
-                        context.put("type", new Element(type));
+                        context.put("owner", new ElementTag(oldOwner));
+                        context.put("name", new ElementTag(oldName));
+                        context.put("type", new ElementTag(type));
                         context.put("old_value", oldValue);
 
                         world_script_events.add("flag expires");
@@ -687,8 +687,8 @@ public class FlagManager {
             return false;
         }
 
-        public Duration expiration() {
-            return new Duration((expiration - DenizenCore.currentTimeMillis) / 1000.0);
+        public DurationTag expiration() {
+            return new DurationTag((expiration - DenizenCore.currentTimeMillis) / 1000.0);
         }
 
         /**
@@ -765,7 +765,7 @@ public class FlagManager {
          * @param value  the value specified for the action
          * @param index  the flag index, null if none
          */
-        public void doAction(Action action, Element value, Integer index) {
+        public void doAction(Action action, ElementTag value, Integer index) {
 
             String val = (value != null ? value.asString() : null);
 
@@ -972,27 +972,27 @@ public class FlagManager {
          * contained as a dScript list. If the value doesn't
          * exist, "" is returned.
          */
-        public dList asList() {
+        public ListTag asList() {
             if (values == null) {
-                dList toReturn = new dList();
+                ListTag toReturn = new ListTag();
                 if (size != 0) {
                     toReturn.add(firstValue);
                 }
                 return toReturn;
             }
-            return new dList(values);
+            return new ListTag(values);
         }
 
-        public dList asList(String prefix) {
+        public ListTag asList(String prefix) {
             if (values == null) {
-                dList toReturn = new dList();
+                ListTag toReturn = new ListTag();
                 toReturn.setPrefix(prefix);
                 if (size != 0) {
                     toReturn.add(firstValue);
                 }
                 return toReturn;
             }
-            return new dList(values, prefix);
+            return new ListTag(values, prefix);
         }
 
         /**

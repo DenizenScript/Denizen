@@ -1,22 +1,22 @@
 package com.denizenscript.denizen.objects.properties.material;
 
 import com.denizenscript.denizen.objects.dMaterial;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.block.data.Bisected;
 
 public class MaterialHalf implements Property {
 
-    public static boolean describes(dObject material) {
+    public static boolean describes(ObjectTag material) {
         return material instanceof dMaterial
                 && ((dMaterial) material).hasModernData()
                 && ((dMaterial) material).getModernData().data instanceof Bisected;
     }
 
-    public static MaterialHalf getFrom(dObject _material) {
+    public static MaterialHalf getFrom(ObjectTag _material) {
         if (!describes(_material)) {
             return null;
         }
@@ -49,7 +49,7 @@ public class MaterialHalf implements Property {
 
         // <--[tag]
         // @attribute <m@material.half>
-        // @returns Element
+        // @returns ElementTag
         // @mechanism dMaterial.half
         // @group properties
         // @description
@@ -57,7 +57,7 @@ public class MaterialHalf implements Property {
         // Output is "BOTTOM" or "TOP".
         // -->
         if (attribute.startsWith("half")) {
-            return new Element(getBisected().getHalf().name()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getBisected().getHalf().name()).getAttribute(attribute.fulfill(1));
         }
 
         return null;

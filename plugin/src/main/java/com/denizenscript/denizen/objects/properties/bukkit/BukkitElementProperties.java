@@ -6,9 +6,9 @@ import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.tags.Attribute;
@@ -19,21 +19,21 @@ import java.nio.charset.StandardCharsets;
 
 public class BukkitElementProperties implements Property {
 
-    public static boolean describes(dObject element) {
-        return element instanceof Element;
+    public static boolean describes(ObjectTag element) {
+        return element instanceof ElementTag;
     }
 
-    public static BukkitElementProperties getFrom(dObject element) {
+    public static BukkitElementProperties getFrom(ObjectTag element) {
         if (!describes(element)) {
             return null;
         }
         else {
-            return new BukkitElementProperties((Element) element);
+            return new BukkitElementProperties((ElementTag) element);
         }
     }
 
 
-    private BukkitElementProperties(Element element) {
+    private BukkitElementProperties(ElementTag element) {
         this.element = element;
     }
 
@@ -48,13 +48,13 @@ public class BukkitElementProperties implements Property {
     public static final String[] handledMechs = new String[] {
     }; // None
 
-    Element element;
+    ElementTag element;
 
     @Override
     public String getAttribute(Attribute attribute) {
 
         // <--[tag]
-        // @attribute <el@element.as_chunk>
+        // @attribute <ElementTag.as_chunk>
         // @returns dChunk
         // @group conversion
         // @description
@@ -62,7 +62,7 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("aschunk")
                 || attribute.startsWith("as_chunk")) {
-            dObject object = Element.handleNull(element.asString(), dChunk.valueOf(element.asString(),
+            ObjectTag object = ElementTag.handleNull(element.asString(), dChunk.valueOf(element.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "dChunk", attribute.hasAlternative());
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));
@@ -70,7 +70,7 @@ public class BukkitElementProperties implements Property {
         }
 
         // <--[tag]
-        // @attribute <el@element.as_color>
+        // @attribute <ElementTag.as_color>
         // @returns dColor
         // @group conversion
         // @description
@@ -78,7 +78,7 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("ascolor")
                 || attribute.startsWith("as_color")) {
-            dObject object = Element.handleNull(element.asString(), dColor.valueOf(element.asString(),
+            ObjectTag object = ElementTag.handleNull(element.asString(), dColor.valueOf(element.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "dColor", attribute.hasAlternative());
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));
@@ -86,7 +86,7 @@ public class BukkitElementProperties implements Property {
         }
 
         // <--[tag]
-        // @attribute <el@element.as_cuboid>
+        // @attribute <ElementTag.as_cuboid>
         // @returns dCuboid
         // @group conversion
         // @description
@@ -94,7 +94,7 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("ascuboid")
                 || attribute.startsWith("as_cuboid")) {
-            dObject object = Element.handleNull(element.asString(), dCuboid.valueOf(element.asString(),
+            ObjectTag object = ElementTag.handleNull(element.asString(), dCuboid.valueOf(element.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "dCuboid", attribute.hasAlternative());
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));
@@ -102,7 +102,7 @@ public class BukkitElementProperties implements Property {
         }
 
         // <--[tag]
-        // @attribute <el@element.as_entity>
+        // @attribute <ElementTag.as_entity>
         // @returns dEntity
         // @group conversion
         // @description
@@ -110,7 +110,7 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("asentity")
                 || attribute.startsWith("as_entity")) {
-            dObject object = Element.handleNull(element.asString(), dEntity.valueOf(element.asString(),
+            ObjectTag object = ElementTag.handleNull(element.asString(), dEntity.valueOf(element.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "dEntity", attribute.hasAlternative());
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));
@@ -118,7 +118,7 @@ public class BukkitElementProperties implements Property {
         }
 
         // <--[tag]
-        // @attribute <el@element.as_inventory>
+        // @attribute <ElementTag.as_inventory>
         // @returns dInventory
         // @group conversion
         // @description
@@ -126,7 +126,7 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("asinventory")
                 || attribute.startsWith("as_inventory")) {
-            dObject object = Element.handleNull(element.asString(), dInventory.valueOf(element.asString(),
+            ObjectTag object = ElementTag.handleNull(element.asString(), dInventory.valueOf(element.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "dInventory", attribute.hasAlternative());
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));
@@ -134,7 +134,7 @@ public class BukkitElementProperties implements Property {
         }
 
         // <--[tag]
-        // @attribute <el@element.as_item>
+        // @attribute <ElementTag.as_item>
         // @returns dItem
         // @group conversion
         // @description
@@ -143,7 +143,7 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("asitem")
                 || attribute.startsWith("as_item")) {
-            dObject object = Element.handleNull(element.asString(), dItem.valueOf(element.asString(),
+            ObjectTag object = ElementTag.handleNull(element.asString(), dItem.valueOf(element.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "dItem", attribute.hasAlternative());
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));
@@ -151,7 +151,7 @@ public class BukkitElementProperties implements Property {
         }
 
         // <--[tag]
-        // @attribute <el@element.as_location>
+        // @attribute <ElementTag.as_location>
         // @returns dLocation
         // @group conversion
         // @description
@@ -159,7 +159,7 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("aslocation")
                 || attribute.startsWith("as_location")) {
-            dObject object = Element.handleNull(element.asString(), dLocation.valueOf(element.asString(),
+            ObjectTag object = ElementTag.handleNull(element.asString(), dLocation.valueOf(element.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "dLocation", attribute.hasAlternative());
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));
@@ -167,7 +167,7 @@ public class BukkitElementProperties implements Property {
         }
 
         // <--[tag]
-        // @attribute <el@element.as_material>
+        // @attribute <ElementTag.as_material>
         // @returns dMaterial
         // @group conversion
         // @description
@@ -175,7 +175,7 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("asmaterial")
                 || attribute.startsWith("as_material")) {
-            dObject object = Element.handleNull(element.asString(), dMaterial.valueOf(element.asString(),
+            ObjectTag object = ElementTag.handleNull(element.asString(), dMaterial.valueOf(element.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "dMaterial", attribute.hasAlternative());
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));
@@ -183,7 +183,7 @@ public class BukkitElementProperties implements Property {
         }
 
         // <--[tag]
-        // @attribute <el@element.as_npc>
+        // @attribute <ElementTag.as_npc>
         // @returns dNPC
         // @group conversion
         // @description
@@ -191,7 +191,7 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("asnpc")
                 || attribute.startsWith("as_npc")) {
-            dObject object = Element.handleNull(element.asString(), dNPC.valueOf(element.asString(),
+            ObjectTag object = ElementTag.handleNull(element.asString(), dNPC.valueOf(element.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "dNPC", attribute.hasAlternative());
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));
@@ -199,7 +199,7 @@ public class BukkitElementProperties implements Property {
         }
 
         // <--[tag]
-        // @attribute <el@element.as_player>
+        // @attribute <ElementTag.as_player>
         // @returns dPlayer
         // @group conversion
         // @description
@@ -207,7 +207,7 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("asplayer")
                 || attribute.startsWith("as_player")) {
-            dObject object = Element.handleNull(element.asString(), dPlayer.valueOf(element.asString(),
+            ObjectTag object = ElementTag.handleNull(element.asString(), dPlayer.valueOf(element.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "dPlayer", attribute.hasAlternative());
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));
@@ -215,7 +215,7 @@ public class BukkitElementProperties implements Property {
         }
 
         // <--[tag]
-        // @attribute <el@element.as_world>
+        // @attribute <ElementTag.as_world>
         // @returns dWorld
         // @group conversion
         // @description
@@ -223,7 +223,7 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("asworld")
                 || attribute.startsWith("as_world")) {
-            dObject object = Element.handleNull(element.asString(), dWorld.valueOf(element.asString(),
+            ObjectTag object = ElementTag.handleNull(element.asString(), dWorld.valueOf(element.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "dWorld", attribute.hasAlternative());
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));
@@ -231,7 +231,7 @@ public class BukkitElementProperties implements Property {
         }
 
         // <--[tag]
-        // @attribute <el@element.as_plugin>
+        // @attribute <ElementTag.as_plugin>
         // @returns dPlugin
         // @group conversion
         // @description
@@ -239,7 +239,7 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("asplugin")
                 || attribute.startsWith("as_plugin")) {
-            dObject object = Element.handleNull(element.asString(), dPlugin.valueOf(element.asString(),
+            ObjectTag object = ElementTag.handleNull(element.asString(), dPlugin.valueOf(element.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "dPlugin", attribute.hasAlternative());
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));
@@ -247,19 +247,19 @@ public class BukkitElementProperties implements Property {
         }
 
         // <--[tag]
-        // @attribute <el@element.last_color>
-        // @returns Element
+        // @attribute <ElementTag.last_color>
+        // @returns ElementTag
         // @group text checking
         // @description
         // Returns the ChatColors used last in an element.
         // -->
         if (attribute.startsWith("last_color")) {
-            return new Element(ChatColor.getLastColors(element.asString())).getAttribute(attribute.fulfill(1));
+            return new ElementTag(ChatColor.getLastColors(element.asString())).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
-        // @attribute <el@element.format[<script>]>
-        // @returns Element
+        // @attribute <ElementTag.format[<script>]>
+        // @returns ElementTag
         // @group text manipulation
         // @description
         // Returns the text re-formatted according to a format script.
@@ -272,7 +272,7 @@ public class BukkitElementProperties implements Property {
                 return null;
             }
             else {
-                return new Element(format.getFormattedText(element.asString(),
+                return new ElementTag(format.getFormattedText(element.asString(),
                         attribute.getScriptEntry() != null ? ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getNPC() : null,
                         attribute.getScriptEntry() != null ? ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer() : null))
                         .getAttribute(attribute.fulfill(1));
@@ -280,19 +280,19 @@ public class BukkitElementProperties implements Property {
         }
 
         // <--[tag]
-        // @attribute <el@element.strip_color>
-        // @returns Element
+        // @attribute <ElementTag.strip_color>
+        // @returns ElementTag
         // @group text manipulation
         // @description
         // Returns the element with all color encoding stripped.
         // -->
         if (attribute.startsWith("strip_color")) {
-            return new Element(ChatColor.stripColor(element.asString())).getAttribute(attribute.fulfill(1));
+            return new ElementTag(ChatColor.stripColor(element.asString())).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
-        // @attribute <el@element.parse_color[<prefix>]>
-        // @returns Element
+        // @attribute <ElementTag.parse_color[<prefix>]>
+        // @returns ElementTag
         // @group text manipulation
         // @description
         // Returns the element with all color codes parsed.
@@ -303,29 +303,29 @@ public class BukkitElementProperties implements Property {
             if (attribute.hasContext(1)) {
                 prefix = attribute.getContext(1).charAt(0);
             }
-            return new Element(ChatColor.translateAlternateColorCodes(prefix, element.asString()))
+            return new ElementTag(ChatColor.translateAlternateColorCodes(prefix, element.asString()))
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
-        // @attribute <el@element.to_itemscript_hash>
-        // @returns Element
+        // @attribute <ElementTag.to_itemscript_hash>
+        // @returns ElementTag
         // @group conversion
         // @description
         // Shortens the element down to an itemscript hash ID, made of invisible color codes.
         // -->
         if (attribute.startsWith("to_itemscript_hash")) {
-            return new Element(ItemScriptHelper.createItemScriptID(element.asString()))
+            return new ElementTag(ItemScriptHelper.createItemScriptID(element.asString()))
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
-        // @attribute <el@element.to_secret_colors>
-        // @returns Element
+        // @attribute <ElementTag.to_secret_colors>
+        // @returns ElementTag
         // @group conversion
         // @description
         // Hides the element's text in invisible color codes.
-        // Inverts <@link tag el@element.from_secret_colors>.
+        // Inverts <@link tag ElementTag.from_secret_colors>.
         // -->
         if (attribute.startsWith("to_secret_colors")) {
             String text = element.asString();
@@ -335,22 +335,22 @@ public class BukkitElementProperties implements Property {
             for (int i = 0; i < hex.length(); i++) {
                 colors.append(ChatColor.COLOR_CHAR).append(hex.charAt(i));
             }
-            return new Element(colors.toString())
+            return new ElementTag(colors.toString())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
-        // @attribute <el@element.from_secret_colors>
-        // @returns Element
+        // @attribute <ElementTag.from_secret_colors>
+        // @returns ElementTag
         // @group conversion
         // @description
         // Un-hides the element's text from invisible color codes back to normal text.
-        // Inverts <@link tag el@element.to_secret_colors>.
+        // Inverts <@link tag ElementTag.to_secret_colors>.
         // -->
         if (attribute.startsWith("from_secret_colors")) {
             String text = element.asString().replace(String.valueOf(ChatColor.COLOR_CHAR), "");
             byte[] bytes = DatatypeConverter.parseHexBinary(text);
-            return new Element(new String(bytes, StandardCharsets.UTF_8))
+            return new ElementTag(new String(bytes, StandardCharsets.UTF_8))
                     .getAttribute(attribute.fulfill(1));
         }
 

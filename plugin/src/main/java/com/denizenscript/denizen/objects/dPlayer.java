@@ -42,7 +42,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-public class dPlayer implements dObject, Adjustable, EntityFormObject {
+public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
 
 
     // <--[language]
@@ -582,7 +582,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
 
     /////////////////////
-    //   dObject Methods
+    //   ObjectTag Methods
     /////////////////
 
     private String prefix = "Player";
@@ -646,7 +646,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
         // Defined in dEntity
         if (attribute.startsWith("is_player")) {
-            return new Element(true).getAttribute(attribute.fulfill(1));
+            return new ElementTag(true).getAttribute(attribute.fulfill(1));
         }
 
         /////////////////////
@@ -655,20 +655,20 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <p@player.chat_history_list>
-        // @returns dList
+        // @returns ListTag
         // @description
         // Returns a list of the last 10 things the player has said, less
         // if the player hasn't said all that much.
         // Works with offline players.
         // -->
         if (attribute.startsWith("chat_history_list")) {
-            return new dList(PlayerTags.playerChatHistory.get(getPlayerEntity().getUniqueId()))
+            return new ListTag(PlayerTags.playerChatHistory.get(getPlayerEntity().getUniqueId()))
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.chat_history[#]>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the last thing the player said.
         // If a number is specified, returns an earlier thing the player said.
@@ -687,13 +687,13 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             if (messages.size() < x || x < 1) {
                 return null;
             }
-            return new Element(messages.get(x - 1))
+            return new ElementTag(messages.get(x - 1))
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.flag[<flag_name>]>
-        // @returns Flag dList
+        // @returns Flag ListTag
         // @description
         // Returns the specified flag from the player.
         // Works with offline players.
@@ -702,46 +702,46 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             String flag_name = attribute.getContext(1);
             if (attribute.getAttribute(2).equalsIgnoreCase("is_expired")
                     || attribute.startsWith("isexpired")) {
-                return new Element(!FlagManager.playerHasFlag(this, flag_name))
+                return new ElementTag(!FlagManager.playerHasFlag(this, flag_name))
                         .getAttribute(attribute.fulfill(2));
             }
             if (attribute.getAttribute(2).equalsIgnoreCase("size") && !FlagManager.playerHasFlag(this, flag_name)) {
-                return new Element(0).getAttribute(attribute.fulfill(2));
+                return new ElementTag(0).getAttribute(attribute.fulfill(2));
             }
             if (FlagManager.playerHasFlag(this, flag_name)) {
                 FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager()
                         .getPlayerFlag(this, flag_name);
-                return new dList(flag.toString(), true, flag.values())
+                return new ListTag(flag.toString(), true, flag.values())
                         .getAttribute(attribute.fulfill(1));
             }
-            return new Element(identify()).getAttribute(attribute);
+            return new ElementTag(identify()).getAttribute(attribute);
         }
 
         // <--[tag]
         // @attribute <p@player.has_flag[<flag_name>]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns true if the Player has the specified flag, otherwise returns false.
         // Works with offline players.
         // -->
         if (attribute.startsWith("has_flag") && attribute.hasContext(1)) {
             String flag_name = attribute.getContext(1);
-            return new Element(FlagManager.playerHasFlag(this, flag_name)).getAttribute(attribute.fulfill(1));
+            return new ElementTag(FlagManager.playerHasFlag(this, flag_name)).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.list_flags[(regex:)<search>]>
-        // @returns dList
+        // @returns ListTag
         // @description
         // Returns a list of a player's flag names, with an optional search for
         // names containing a certain pattern.
         // Works with offline players.
         // -->
         if (attribute.startsWith("list_flags")) {
-            dList allFlags = new dList(DenizenAPI.getCurrentInstance().flagManager().listPlayerFlags(this));
-            dList searchFlags = null;
+            ListTag allFlags = new ListTag(DenizenAPI.getCurrentInstance().flagManager().listPlayerFlags(this));
+            ListTag searchFlags = null;
             if (!allFlags.isEmpty() && attribute.hasContext(1)) {
-                searchFlags = new dList();
+                searchFlags = new ListTag();
                 String search = attribute.getContext(1);
                 if (search.startsWith("regex:")) {
                     try {
@@ -779,13 +779,13 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             if (attribute.hasContext(1)) {
                 try {
                     outcome = DenizenAPI.getCurrentInstance().getSaves().getString("Players." + getName() + ".Scripts."
-                            + dScript.valueOf(attribute.getContext(1)).getName() + ".Current Step");
+                            + ScriptTag.valueOf(attribute.getContext(1)).getName() + ".Current Step");
                 }
                 catch (Exception e) {
                     outcome = "null";
                 }
             }
-            return new Element(outcome).getAttribute(attribute.fulfill(1));
+            return new ElementTag(outcome).getAttribute(attribute.fulfill(1));
         }
 
 
@@ -795,7 +795,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <p@player.money>
-        // @returns Element(Decimal)
+        // @returns ElementTag(Decimal)
         // @plugin Vault
         // @description
         // Returns the amount of money the player has with the registered Economy system.
@@ -808,43 +808,43 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
                 // <--[tag]
                 // @attribute <p@player.money.formatted>
-                // @returns Element
+                // @returns ElementTag
                 // @plugin Vault
                 // @description
                 // Returns the formatted form of the player's money balance in the registered Economy system.
                 // -->
                 if (attribute.startsWith("money.formatted")) {
-                    return new Element(Depends.economy.format(Depends.economy.getBalance(getOfflinePlayer())))
+                    return new ElementTag(Depends.economy.format(Depends.economy.getBalance(getOfflinePlayer())))
                             .getAttribute(attribute.fulfill(2));
                 }
 
                 // <--[tag]
                 // @attribute <p@player.money.currency_singular>
-                // @returns Element
+                // @returns ElementTag
                 // @plugin Vault
                 // @description
                 // Returns the name of a single piece of currency - For example: Dollar
                 // (Only if supported by the registered Economy system.)
                 // -->
                 if (attribute.startsWith("money.currency_singular")) {
-                    return new Element(Depends.economy.currencyNameSingular())
+                    return new ElementTag(Depends.economy.currencyNameSingular())
                             .getAttribute(attribute.fulfill(2));
                 }
 
                 // <--[tag]
                 // @attribute <p@player.money.currency>
-                // @returns Element
+                // @returns ElementTag
                 // @plugin Vault
                 // @description
                 // Returns the name of multiple pieces of currency - For example: Dollars
                 // (Only if supported by the registered Economy system.)
                 // -->
                 if (attribute.startsWith("money.currency")) {
-                    return new Element(Depends.economy.currencyNamePlural())
+                    return new ElementTag(Depends.economy.currencyNamePlural())
                             .getAttribute(attribute.fulfill(2));
                 }
 
-                return new Element(Depends.economy.getBalance(getOfflinePlayer()))
+                return new ElementTag(Depends.economy.getBalance(getOfflinePlayer()))
                         .getAttribute(attribute.fulfill(1));
 
             }
@@ -899,10 +899,10 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                 }
             }
             else {
-                dList list = dList.getListFor(attribute.getContextObject(1));
+                ListTag list = ListTag.getListFor(attribute.getContextObject(1));
                 for (Entity entity : entities) {
                     if (entity instanceof LivingEntity) {
-                        for (dObject obj : list.objectForms) {
+                        for (ObjectTag obj : list.objectForms) {
                             boolean valid = false;
                             dEntity filterEntity = null;
                             if (obj instanceof dEntity) {
@@ -981,7 +981,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
         // workaround for <e@entity.list_effects>
         if (attribute.startsWith("list_effects")) {
-            dList effects = new dList();
+            ListTag effects = new ListTag();
             for (PotionEffect effect : getPlayerEntity().getActivePotionEffects()) {
                 effects.add(effect.getType().getName() + "," + effect.getAmplifier() + "," + effect.getDuration() + "t");
             }
@@ -996,7 +996,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     players.add(player.getName());
                 }
-                return new dList(players).getAttribute(attribute.fulfill(2));
+                return new ListTag(players).getAttribute(attribute.fulfill(2));
             }
             else if (attribute.startsWith("list.offline")) {
                 for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
@@ -1004,13 +1004,13 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                         players.add("p@" + player.getUniqueId().toString());
                     }
                 }
-                return new dList(players).getAttribute(attribute.fulfill(2));
+                return new ListTag(players).getAttribute(attribute.fulfill(2));
             }
             else {
                 for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                     players.add("p@" + player.getUniqueId().toString());
                 }
-                return new dList(players).getAttribute(attribute.fulfill(1));
+                return new ListTag(players).getAttribute(attribute.fulfill(1));
             }
         }
 
@@ -1022,34 +1022,34 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         if (attribute.startsWith("name") && !isOnline())
         // This can be parsed later with more detail if the player is online, so only check for offline.
         {
-            return new Element(getName()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getName()).getAttribute(attribute.fulfill(1));
         }
         else if (attribute.startsWith("uuid") && !isOnline())
         // This can be parsed later with more detail if the player is online, so only check for offline.
         {
-            return new Element(offlinePlayer.getUniqueId().toString()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(offlinePlayer.getUniqueId().toString()).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.type>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Always returns 'Player' for dPlayer objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         if (attribute.startsWith("type")) {
-            return new Element("Player").getAttribute(attribute.fulfill(1));
+            return new ElementTag("Player").getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.save_name>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the ID used to save the player in Denizen's saves.yml file.
         // Works with offline players.
         // -->
         if (attribute.startsWith("save_name")) {
-            return new Element(getSaveName()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getSaveName()).getAttribute(attribute.fulfill(1));
         }
 
 
@@ -1092,21 +1092,21 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <p@player.item_cooldown[<material>]>
-        // @returns Duration
+        // @returns DurationTag
         // @description
         // Returns the cooldown duration remaining on player's material.
         // -->
         if (attribute.startsWith("item_cooldown")) {
-            dMaterial mat = new Element(attribute.getContext(1)).asType(dMaterial.class, attribute.context);
+            dMaterial mat = new ElementTag(attribute.getContext(1)).asType(dMaterial.class, attribute.context);
             if (mat != null) {
-                return new Duration((long) getPlayerEntity().getCooldown(mat.getMaterial()))
+                return new DurationTag((long) getPlayerEntity().getCooldown(mat.getMaterial()))
                         .getAttribute(attribute.fulfill(1));
             }
         }
 
         // <--[tag]
         // @attribute <p@player.first_played>
-        // @returns Duration
+        // @returns DurationTag
         // @description
         // Returns the millisecond time of when the player first logged on to this server.
         // Works with offline players.
@@ -1114,78 +1114,78 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         if (attribute.startsWith("first_played")) {
             attribute = attribute.fulfill(1);
             if (attribute.startsWith("milliseconds") || attribute.startsWith("in_milliseconds")) {
-                return new Element(getOfflinePlayer().getFirstPlayed())
+                return new ElementTag(getOfflinePlayer().getFirstPlayed())
                         .getAttribute(attribute.fulfill(1));
             }
-            return new Duration(getOfflinePlayer().getFirstPlayed() / 50)
+            return new DurationTag(getOfflinePlayer().getFirstPlayed() / 50)
                     .getAttribute(attribute);
         }
 
         // <--[tag]
         // @attribute <p@player.has_played_before>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player has played before.
         // Works with offline players.
         // Note: This will just always return true.
         // -->
         if (attribute.startsWith("has_played_before")) {
-            return new Element(true)
+            return new ElementTag(true)
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.absorption_health>
-        // @returns Element(Decimal)
+        // @returns ElementTag(Decimal)
         // @description
         // Returns the player's absorption health.
         // @mechanism dPlayer.absorption_health
         // -->
         if (attribute.startsWith("absorption_health")) {
-            return new Element(NMSHandler.getInstance().getPlayerHelper().getAbsorption(getPlayerEntity()))
+            return new ElementTag(NMSHandler.getInstance().getPlayerHelper().getAbsorption(getPlayerEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.health.is_scaled>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player's health bar is currently being scaled.
         // -->
         if (attribute.startsWith("health.is_scaled")) {
-            return new Element(getPlayerEntity().isHealthScaled())
+            return new ElementTag(getPlayerEntity().isHealthScaled())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <p@player.health.scale>
-        // @returns Element(Decimal)
+        // @returns ElementTag(Decimal)
         // @description
         // Returns the current scale for the player's health bar
         // -->
         if (attribute.startsWith("health.scale")) {
-            return new Element(getPlayerEntity().getHealthScale())
+            return new ElementTag(getPlayerEntity().getHealthScale())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <p@player.exhaustion>
-        // @returns Element(Decimal)
+        // @returns ElementTag(Decimal)
         // @description
         // Returns how fast the food level drops (exhaustion).
         // -->
         if (attribute.startsWith("exhaustion")) {
-            return new Element(getPlayerEntity().getExhaustion())
+            return new ElementTag(getPlayerEntity().getExhaustion())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // Handle dEntity oxygen tags here to allow getting them when the player is offline
         if (attribute.startsWith("oxygen.max")) {
-            return new Duration((long) getMaximumAir()).getAttribute(attribute.fulfill(2));
+            return new DurationTag((long) getMaximumAir()).getAttribute(attribute.fulfill(2));
         }
 
         if (attribute.startsWith("oxygen")) {
-            return new Duration((long) getRemainingAir()).getAttribute(attribute.fulfill(1));
+            return new DurationTag((long) getRemainingAir()).getAttribute(attribute.fulfill(1));
         }
 
         // Same with health tags
@@ -1198,75 +1198,75 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             if (attribute.hasContext(2)) {
                 maxHealth = attribute.getIntContext(2);
             }
-            return new Element((getPlayerEntity().getHealth() / maxHealth) * 100)
+            return new ElementTag((getPlayerEntity().getHealth() / maxHealth) * 100)
                     .getAttribute(attribute.fulfill(2));
         }
 
         if (attribute.startsWith("health.max")) {
-            return new Element(getMaxHealth()).getAttribute(attribute.fulfill(2));
+            return new ElementTag(getMaxHealth()).getAttribute(attribute.fulfill(2));
         }
 
         if (attribute.matches("health")) {
-            return new Element(getHealth()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getHealth()).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.is_banned>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player is banned.
         // -->
         if (attribute.startsWith("is_banned")) {
             BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(getName());
             if (ban == null) {
-                return new Element(false).getAttribute(attribute.fulfill(1));
+                return new ElementTag(false).getAttribute(attribute.fulfill(1));
             }
             else if (ban.getExpiration() == null) {
-                return new Element(true).getAttribute(attribute.fulfill(1));
+                return new ElementTag(true).getAttribute(attribute.fulfill(1));
             }
-            return new Element(ban.getExpiration().after(new Date())).getAttribute(attribute.fulfill(1));
+            return new ElementTag(ban.getExpiration().after(new Date())).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.is_online>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player is currently online.
         // Works with offline players (returns false in that case).
         // -->
         if (attribute.startsWith("is_online")) {
-            return new Element(isOnline()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(isOnline()).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.is_op>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player is a full server operator.
         // Works with offline players.
         // @mechanism dPlayer.is_op
         // -->
         if (attribute.startsWith("is_op")) {
-            return new Element(getOfflinePlayer().isOp())
+            return new ElementTag(getOfflinePlayer().isOp())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.is_whitelisted>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player is whitelisted.
         // Works with offline players.
         // @mechanism dPlayer.is_whitelisted
         // -->
         if (attribute.startsWith("is_whitelisted")) {
-            return new Element(getOfflinePlayer().isWhitelisted())
+            return new ElementTag(getOfflinePlayer().isWhitelisted())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.last_played>
-        // @returns Duration
+        // @returns DurationTag
         // @description
         // Returns the datestamp of when the player was last seen in duration.
         // Works with offline players.
@@ -1275,23 +1275,23 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             attribute = attribute.fulfill(1);
             if (attribute.startsWith("milliseconds") || attribute.startsWith("in_milliseconds")) {
                 if (isOnline()) {
-                    return new Element(System.currentTimeMillis())
+                    return new ElementTag(System.currentTimeMillis())
                             .getAttribute(attribute.fulfill(1));
                 }
-                return new Element(getOfflinePlayer().getLastPlayed())
+                return new ElementTag(getOfflinePlayer().getLastPlayed())
                         .getAttribute(attribute.fulfill(1));
             }
             if (isOnline()) {
-                return new Duration(System.currentTimeMillis() / 50)
+                return new DurationTag(System.currentTimeMillis() / 50)
                         .getAttribute(attribute);
             }
-            return new Duration(getOfflinePlayer().getLastPlayed() / 50)
+            return new DurationTag(getOfflinePlayer().getLastPlayed() / 50)
                     .getAttribute(attribute);
         }
 
         // <--[tag]
         // @attribute <p@player.groups>
-        // @returns dList
+        // @returns ListTag
         // @description
         // Returns a list of all groups the player is in.
         // May work with offline players, depending on permission plugin.
@@ -1303,7 +1303,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                 }
                 return null;
             }
-            dList list = new dList();
+            ListTag list = new ListTag();
             // TODO: optionally specify world
             for (String group : Depends.permissions.getGroups()) {
                 if (Depends.permissions.playerInGroup(null, offlinePlayer, group)) {
@@ -1322,46 +1322,46 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
             // <--[tag]
             // @attribute <p@player.ban_info.expiration>
-            // @returns Duration
+            // @returns DurationTag
             // @description
             // Returns the expiration of the player's ban, if they are banned.
             // Potentially can be null.
             // -->
             if (attribute.startsWith("expiration") && ban.getExpiration() != null) {
-                return new Duration(ban.getExpiration().getTime() / 50)
+                return new DurationTag(ban.getExpiration().getTime() / 50)
                         .getAttribute(attribute.fulfill(1));
             }
 
             // <--[tag]
             // @attribute <p@player.ban_info.reason>
-            // @returns Element
+            // @returns ElementTag
             // @description
             // Returns the reason for the player's ban, if they are banned.
             // -->
             else if (attribute.startsWith("reason")) {
-                return new Element(ban.getReason())
+                return new ElementTag(ban.getReason())
                         .getAttribute(attribute.fulfill(1));
             }
 
             // <--[tag]
             // @attribute <p@player.ban_info.created>
-            // @returns Duration
+            // @returns DurationTag
             // @description
             // Returns when the player's ban was created, if they are banned.
             // -->
             else if (attribute.startsWith("created")) {
-                return new Duration(ban.getCreated().getTime() / 50)
+                return new DurationTag(ban.getCreated().getTime() / 50)
                         .getAttribute(attribute.fulfill(1));
             }
 
             // <--[tag]
             // @attribute <p@player.ban_info.source>
-            // @returns Element
+            // @returns ElementTag
             // @description
             // Returns the source of the player's ban, if they are banned.
             // -->
             else if (attribute.startsWith("source")) {
-                return new Element(ban.getSource())
+                return new ElementTag(ban.getSource())
                         .getAttribute(attribute.fulfill(1));
             }
 
@@ -1370,7 +1370,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <p@player.in_group[<group_name>]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player is in the specified group.
         // This requires an online player - if the player may be offline, consider using
@@ -1388,7 +1388,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
             // <--[tag]
             // @attribute <p@player.in_group[<group_name>].global>
-            // @returns Element(Boolean)
+            // @returns ElementTag(Boolean)
             // @description
             // Returns whether the player has the group with no regard to the
             // player's current world.
@@ -1398,13 +1398,13 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
             // Non-world specific permission
             if (attribute.getAttribute(2).startsWith("global")) {
-                return new Element(Depends.permissions.playerInGroup((World) null, getName(), group)) // TODO: Vault UUID support?
+                return new ElementTag(Depends.permissions.playerInGroup((World) null, getName(), group)) // TODO: Vault UUID support?
                         .getAttribute(attribute.fulfill(2));
             }
 
             // <--[tag]
             // @attribute <p@player.in_group[<group_name>].world[<world>]>
-            // @returns Element(Boolean)
+            // @returns ElementTag(Boolean)
             // @description
             // Returns whether the player has the group in regards to a specific world.
             // (Works with offline players)
@@ -1413,20 +1413,20 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
             // Permission in certain world
             else if (attribute.getAttribute(2).startsWith("world")) {
-                return new Element(Depends.permissions.playerInGroup(attribute.getContext(2), getName(), group)) // TODO: Vault UUID support?
+                return new ElementTag(Depends.permissions.playerInGroup(attribute.getContext(2), getName(), group)) // TODO: Vault UUID support?
                         .getAttribute(attribute.fulfill(2));
             }
 
             // Permission in current world
             else if (isOnline()) {
-                return new Element(Depends.permissions.playerInGroup(getPlayerEntity(), group))
+                return new ElementTag(Depends.permissions.playerInGroup(getPlayerEntity(), group))
                         .getAttribute(attribute.fulfill(1));
             }
         }
 
         // <--[tag]
         // @attribute <p@player.has_permission[permission.node]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player has the specified node.
         // (Requires the player to be online)
@@ -1438,7 +1438,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
             // <--[tag]
             // @attribute <p@player.has_permission[permission.node].global>
-            // @returns Element(Boolean)
+            // @returns ElementTag(Boolean)
             // @description
             // Returns whether the player has the specified node, regardless of world.
             // (Works with offline players)
@@ -1454,13 +1454,13 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                     return null;
                 }
 
-                return new Element(Depends.permissions.has((World) null, getName(), permission)) // TODO: Vault UUID support?
+                return new ElementTag(Depends.permissions.has((World) null, getName(), permission)) // TODO: Vault UUID support?
                         .getAttribute(attribute.fulfill(2));
             }
 
             // <--[tag]
             // @attribute <p@player.has_permission[permission.node].world[<world name>]>
-            // @returns Element(Boolean)
+            // @returns ElementTag(Boolean)
             // @description
             // Returns whether the player has the specified node in regards to the
             // specified world.
@@ -1477,13 +1477,13 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                     return null;
                 }
 
-                return new Element(Depends.permissions.has(attribute.getContext(2), getName(), permission)) // TODO: Vault UUID support?
+                return new ElementTag(Depends.permissions.has(attribute.getContext(2), getName(), permission)) // TODO: Vault UUID support?
                         .getAttribute(attribute.fulfill(2));
             }
 
             // Permission in current world
             else if (isOnline()) {
-                return new Element(getPlayerEntity().hasPermission(permission))
+                return new ElementTag(getPlayerEntity().hasPermission(permission))
                         .getAttribute(attribute.fulfill(1));
             }
         }
@@ -1527,7 +1527,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                 return returned;
             }
 
-            return new Element(identify()).getAttribute(attribute);
+            return new ElementTag(identify()).getAttribute(attribute);
         }
 
         // <--[tag]
@@ -1544,13 +1544,13 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <p@player.selected_trade_index>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the index of the trade the player is currently viewing, if any.
         // -->
         if (attribute.startsWith("selected_trade_index")) {
             if (getPlayerEntity().getOpenInventory().getTopInventory() instanceof MerchantInventory) {
-                return new Element(((MerchantInventory) getPlayerEntity().getOpenInventory().getTopInventory())
+                return new ElementTag(((MerchantInventory) getPlayerEntity().getOpenInventory().getTopInventory())
                         .getSelectedRecipeIndex() + 1).getAttribute(attribute.fulfill(1));
             }
         }
@@ -1586,18 +1586,18 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <p@player.item_in_hand.slot>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the slot location of the player's selected item.
         // -->
         if (attribute.startsWith("item_in_hand.slot")) {
-            return new Element(getPlayerEntity().getInventory().getHeldItemSlot() + 1)
+            return new ElementTag(getPlayerEntity().getInventory().getHeldItemSlot() + 1)
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <p@player.sidebar.lines>
-        // @returns dList
+        // @returns ListTag
         // @description
         // Returns the current lines set on the player's Sidebar via the Sidebar command.
         // -->
@@ -1606,12 +1606,12 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             if (sidebar == null) {
                 return null;
             }
-            return new dList(sidebar.getLinesText()).getAttribute(attribute.fulfill(2));
+            return new ListTag(sidebar.getLinesText()).getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <p@player.sidebar.title>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the current title set on the player's Sidebar via the Sidebar command.
         // -->
@@ -1620,12 +1620,12 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             if (sidebar == null) {
                 return null;
             }
-            return new Element(sidebar.getTitle()).getAttribute(attribute.fulfill(2));
+            return new ElementTag(sidebar.getTitle()).getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <p@player.sidebar.scores>
-        // @returns dList
+        // @returns ListTag
         // @description
         // Returns the current scores set on the player's Sidebar via the Sidebar command,
         // in the same order as <@link tag p@player.sidebar.lines>.
@@ -1635,7 +1635,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             if (sidebar == null) {
                 return null;
             }
-            dList scores = new dList();
+            ListTag scores = new ListTag();
             for (int score : sidebar.getScores()) {
                 scores.add(String.valueOf(score));
             }
@@ -1644,13 +1644,13 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <p@player.skin_blob>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the player's current skin blob.
         // @mechanism dPlayer.skin_blob
         // -->
         if (attribute.startsWith("skin_blob")) {
-            return new Element(NMSHandler.getInstance().getProfileEditor().getPlayerSkinBlob(getPlayerEntity()))
+            return new ElementTag(NMSHandler.getInstance().getProfileEditor().getPlayerSkinBlob(getPlayerEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1659,19 +1659,19 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
             // <--[tag]
             // @attribute <p@player.attack_cooldown.duration>
-            // @returns Duration
+            // @returns DurationTag
             // @description
             // Returns the amount of time that passed since the start of the attack cooldown.
             // -->
             if (attribute.startsWith("duration")) {
-                return new Duration((long) NMSHandler.getInstance().getPlayerHelper()
+                return new DurationTag((long) NMSHandler.getInstance().getPlayerHelper()
                         .ticksPassedDuringCooldown(getPlayerEntity())).getAttribute(attribute.fulfill(1));
             }
 
 
             // <--[tag]
             // @attribute <p@player.attack_cooldown.max_duration>
-            // @returns Duration
+            // @returns DurationTag
             // @description
             // Returns the maximum amount of time that can pass before the player's main hand has returned
             // to its original place after the cooldown has ended.
@@ -1679,21 +1679,21 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             // cooldown progress.
             // -->
             else if (attribute.startsWith("max_duration")) {
-                return new Duration((long) NMSHandler.getInstance().getPlayerHelper()
+                return new DurationTag((long) NMSHandler.getInstance().getPlayerHelper()
                         .getMaxAttackCooldownTicks(getPlayerEntity())).getAttribute(attribute.fulfill(1));
             }
 
 
             // <--[tag]
             // @attribute <p@player.attack_cooldown.percent>
-            // @returns Element(Decimal)
+            // @returns ElementTag(Decimal)
             // @description
             // Returns the progress of the attack cooldown. 0 means that the attack cooldown has just
             // started, while 100 means that the attack cooldown has finished.
             // NOTE: This may not match exactly with the clientside attack cooldown indicator.
             // -->
             else if (attribute.startsWith("percent")) {
-                return new Element(NMSHandler.getInstance().getPlayerHelper()
+                return new ElementTag(NMSHandler.getInstance().getPlayerHelper()
                         .getAttackCooldownPercent(getPlayerEntity()) * 100).getAttribute(attribute.fulfill(1));
             }
 
@@ -1744,7 +1744,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <p@player.ip>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the player's IP address host name.
         // -->
@@ -1753,71 +1753,71 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             attribute = attribute.fulfill(1);
             // <--[tag]
             // @attribute <p@player.ip.address_only>
-            // @returns Element
+            // @returns ElementTag
             // @description
             // Returns the player's IP address.
             // -->
             if (attribute.startsWith("address_only")) {
-                return new Element(getPlayerEntity().getAddress().toString())
+                return new ElementTag(getPlayerEntity().getAddress().toString())
                         .getAttribute(attribute.fulfill(1));
             }
             String host = getPlayerEntity().getAddress().getHostName();
             // <--[tag]
             // @attribute <p@player.ip.address>
-            // @returns Element
+            // @returns ElementTag
             // @description
             // Returns the player's IP address.
             // -->
             if (attribute.startsWith("address")) {
-                return new Element(getPlayerEntity().getAddress().toString())
+                return new ElementTag(getPlayerEntity().getAddress().toString())
                         .getAttribute(attribute.fulfill(1));
             }
-            return new Element(host)
+            return new ElementTag(host)
                     .getAttribute(attribute);
         }
 
         // <--[tag]
         // @attribute <p@player.name.display>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the display name of the player, which may contain
         // prefixes and suffixes, colors, etc.
         // -->
         if (attribute.startsWith("name.display")) {
-            return new Element(getPlayerEntity().getDisplayName())
+            return new ElementTag(getPlayerEntity().getDisplayName())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <p@player.name.list>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the name of the player as shown in the player list.
         // -->
         if (attribute.startsWith("name.list")) {
-            return new Element(getPlayerEntity().getPlayerListName())
+            return new ElementTag(getPlayerEntity().getPlayerListName())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <p@player.nameplate>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the displayed text in the nameplate of the player.
         // -->
         if (attribute.startsWith("nameplate")) {
-            return new Element(NMSHandler.getInstance().getProfileEditor().getPlayerName(getPlayerEntity()))
+            return new ElementTag(NMSHandler.getInstance().getProfileEditor().getPlayerName(getPlayerEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.name>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the name of the player.
         // -->
         if (attribute.startsWith("name")) {
-            return new Element(getName()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getName()).getAttribute(attribute.fulfill(1));
         }
 
         /////////////////////
@@ -1839,7 +1839,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <p@player.chunk_loaded[<chunk>]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player has the chunk loaded on their client.
         // -->
@@ -1848,7 +1848,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             if (chunk == null) {
                 return null;
             }
-            return new Element(hasChunkLoaded(chunk.getChunk())).getAttribute(attribute.fulfill(1));
+            return new ElementTag(hasChunkLoaded(chunk.getChunk())).getAttribute(attribute.fulfill(1));
         }
 
 
@@ -1858,30 +1858,30 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <p@player.can_fly>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player is allowed to fly.
         // @mechanism dPlayer.can_fly
         // -->
         if (attribute.startsWith("can_fly") || attribute.startsWith("allowed_flight")) {
-            return new Element(getPlayerEntity().getAllowFlight())
+            return new ElementTag(getPlayerEntity().getAllowFlight())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.fly_speed>
-        // @returns Element(Decimal)
+        // @returns ElementTag(Decimal)
         // @description
         // Returns the speed the player can fly at.
         // -->
         if (attribute.startsWith("fly_speed")) {
-            return new Element(getPlayerEntity().getFlySpeed())
+            return new ElementTag(getPlayerEntity().getFlySpeed())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.food_level.formatted>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns a 'formatted' value of the player's current food level.
         // May be 'starving', 'famished', 'parched, 'hungry' or 'healthy'.
@@ -1893,47 +1893,47 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             }
             int foodLevel = getFoodLevel();
             if (foodLevel / maxHunger < .10) {
-                return new Element("starving").getAttribute(attribute.fulfill(2));
+                return new ElementTag("starving").getAttribute(attribute.fulfill(2));
             }
             else if (foodLevel / maxHunger < .40) {
-                return new Element("famished").getAttribute(attribute.fulfill(2));
+                return new ElementTag("famished").getAttribute(attribute.fulfill(2));
             }
             else if (foodLevel / maxHunger < .75) {
-                return new Element("parched").getAttribute(attribute.fulfill(2));
+                return new ElementTag("parched").getAttribute(attribute.fulfill(2));
             }
             else if (foodLevel / maxHunger < 1) {
-                return new Element("hungry").getAttribute(attribute.fulfill(2));
+                return new ElementTag("hungry").getAttribute(attribute.fulfill(2));
             }
             else {
-                return new Element("healthy").getAttribute(attribute.fulfill(2));
+                return new ElementTag("healthy").getAttribute(attribute.fulfill(2));
             }
         }
 
         // <--[tag]
         // @attribute <p@player.saturation>
-        // @returns Element(Decimal)
+        // @returns ElementTag(Decimal)
         // @description
         // Returns the current saturation of the player.
         // -->
         if (attribute.startsWith("saturation")) {
-            return new Element(getPlayerEntity().getSaturation())
+            return new ElementTag(getPlayerEntity().getSaturation())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.food_level>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the current food level of the player.
         // -->
         if (attribute.startsWith("food_level")) {
-            return new Element(getFoodLevel())
+            return new ElementTag(getFoodLevel())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.gamemode>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the name of the gamemode the player is currently set to.
         // -->
@@ -1941,98 +1941,98 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             attribute = attribute.fulfill(1);
             // <--[tag]
             // @attribute <p@player.gamemode.id>
-            // @returns Element(Number)
+            // @returns ElementTag(Number)
             // @description
             // Returns the gamemode ID of the player. 0 = survival, 1 = creative, 2 = adventure, 3 = spectator
             // -->
             if (attribute.startsWith("id")) {
-                return new Element(getPlayerEntity().getGameMode().getValue())
+                return new ElementTag(getPlayerEntity().getGameMode().getValue())
                         .getAttribute(attribute.fulfill(1));
             }
-            return new Element(getPlayerEntity().getGameMode().name())
+            return new ElementTag(getPlayerEntity().getGameMode().name())
                     .getAttribute(attribute);
         }
 
         // <--[tag]
         // @attribute <p@player.is_blocking>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player is currently blocking.
         // -->
         if (attribute.startsWith("is_blocking")) {
-            return new Element(getPlayerEntity().isBlocking())
+            return new ElementTag(getPlayerEntity().isBlocking())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.ping>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the player's current ping.
         // -->
         if (attribute.startsWith("ping")) {
-            return new Element(NMSHandler.getInstance().getPlayerHelper().getPing(getPlayerEntity()))
+            return new ElementTag(NMSHandler.getInstance().getPlayerHelper().getPing(getPlayerEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.is_flying>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player is currently flying.
         // -->
         if (attribute.startsWith("is_flying")) {
-            return new Element(getPlayerEntity().isFlying())
+            return new ElementTag(getPlayerEntity().isFlying())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.is_sleeping>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player is currently sleeping.
         // -->
         if (attribute.startsWith("is_sleeping")) {
-            return new Element(getPlayerEntity().isSleeping())
+            return new ElementTag(getPlayerEntity().isSleeping())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.is_sneaking>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player is currently sneaking.
         // -->
         if (attribute.startsWith("is_sneaking")) {
-            return new Element(getPlayerEntity().isSneaking())
+            return new ElementTag(getPlayerEntity().isSneaking())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.is_sprinting>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player is currently sprinting.
         // -->
         if (attribute.startsWith("is_sprinting")) {
-            return new Element(getPlayerEntity().isSprinting())
+            return new ElementTag(getPlayerEntity().isSprinting())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.has_achievement[<achievement>]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player has the specified achievement.
         // -->
         if (attribute.startsWith("has_achievement")) {
             Achievement ach = Achievement.valueOf(attribute.getContext(1).toUpperCase());
-            return new Element(getPlayerEntity().hasAchievement(ach)).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getPlayerEntity().hasAchievement(ach)).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.statistic[<statistic>]>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the player's current value for the specified statistic.
         // -->
@@ -2044,20 +2044,20 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
             // <--[tag]
             // @attribute <p@player.statistic[<statistic>].qualifier[<material>/<entity>]>
-            // @returns Element(Number)
+            // @returns ElementTag(Number)
             // @description
             // Returns the player's current value for the specified statistic, with the
             // specified qualifier, which can be either an entity or material.
             // -->
             if (attribute.getAttribute(2).startsWith("qualifier")) {
-                dObject obj = ObjectFetcher.pickObjectFor(attribute.getContext(2), attribute.context);
+                ObjectTag obj = ObjectFetcher.pickObjectFor(attribute.getContext(2), attribute.context);
                 try {
                     if (obj instanceof dMaterial) {
-                        return new Element(getPlayerEntity().getStatistic(statistic, ((dMaterial) obj).getMaterial()))
+                        return new ElementTag(getPlayerEntity().getStatistic(statistic, ((dMaterial) obj).getMaterial()))
                                 .getAttribute(attribute.fulfill(2));
                     }
                     else if (obj instanceof dEntity) {
-                        return new Element(getPlayerEntity().getStatistic(statistic, ((dEntity) obj).getBukkitEntityType()))
+                        return new ElementTag(getPlayerEntity().getStatistic(statistic, ((dEntity) obj).getBukkitEntityType()))
                                 .getAttribute(attribute.fulfill(2));
                     }
                     else {
@@ -2070,7 +2070,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                 }
             }
             try {
-                return new Element(getPlayerEntity().getStatistic(statistic)).getAttribute(attribute.fulfill(1));
+                return new ElementTag(getPlayerEntity().getStatistic(statistic)).getAttribute(attribute.fulfill(1));
             }
             catch (Exception e) {
                 Debug.echoError("Invalid statistic: " + statistic + " for this player!");
@@ -2080,42 +2080,42 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <p@player.time_asleep>
-        // @returns Duration
+        // @returns DurationTag
         // @description
         // Returns the time the player has been asleep.
         // -->
         if (attribute.startsWith("time_asleep")) {
-            return new Duration(getPlayerEntity().getSleepTicks() / 20)
+            return new DurationTag(getPlayerEntity().getSleepTicks() / 20)
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.time>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the time the player is currently experiencing. This time could differ from
         // the time that the rest of the world is currently experiencing if a 'time' or 'freeze_time'
         // mechanism is being used on the player.
         // -->
         if (attribute.startsWith("time")) {
-            return new Element(getPlayerEntity().getPlayerTime())
+            return new ElementTag(getPlayerEntity().getPlayerTime())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.walk_speed>
-        // @returns Element(Decimal)
+        // @returns ElementTag(Decimal)
         // @description
         // Returns the speed the player can walk at.
         // -->
         if (attribute.startsWith("walk_speed")) {
-            return new Element(getPlayerEntity().getWalkSpeed())
+            return new ElementTag(getPlayerEntity().getWalkSpeed())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <p@player.weather>
-        // @returns Element
+        // @returns ElementTag
         // @mechanism dPlayer.weather
         // @description
         // Returns the type of weather the player is experiencing. This will be different
@@ -2125,7 +2125,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (attribute.startsWith("weather")) {
             if (getPlayerEntity().getPlayerWeather() != null) {
-                return new Element(getPlayerEntity().getPlayerWeather().name())
+                return new ElementTag(getPlayerEntity().getPlayerWeather().name())
                         .getAttribute(attribute.fulfill(1));
             }
             else {
@@ -2135,45 +2135,45 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <p@player.xp.level>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the number of XP levels the player has.
         // -->
         if (attribute.startsWith("xp.level")) {
-            return new Element(getPlayerEntity().getLevel())
+            return new ElementTag(getPlayerEntity().getLevel())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <p@player.xp.to_next_level>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the amount of XP needed to get to the next level.
         // -->
         if (attribute.startsWith("xp.to_next_level")) {
-            return new Element(getPlayerEntity().getExpToLevel())
+            return new ElementTag(getPlayerEntity().getExpToLevel())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <p@player.xp.total>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the total amount of experience points.
         // -->
         if (attribute.startsWith("xp.total")) {
-            return new Element(getPlayerEntity().getTotalExperience())
+            return new ElementTag(getPlayerEntity().getTotalExperience())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <p@player.xp>
-        // @returns Element(Decimal)
+        // @returns ElementTag(Decimal)
         // @description
         // Returns the percentage of experience points to the next level.
         // -->
         if (attribute.startsWith("xp")) {
-            return new Element(getPlayerEntity().getExp() * 100)
+            return new ElementTag(getPlayerEntity().getExp() * 100)
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -2181,7 +2181,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
             // <--[tag]
             // @attribute <p@player.chat_prefix>
-            // @returns Element
+            // @returns ElementTag
             // @plugin Vault
             // @description
             // Returns the player's chat prefix.
@@ -2194,12 +2194,12 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                 if (prefix == null) {
                     return null;
                 }
-                return new Element(prefix).getAttribute(attribute.fulfill(1));
+                return new ElementTag(prefix).getAttribute(attribute.fulfill(1));
             }
 
             // <--[tag]
             // @attribute <p@player.chat_suffix>
-            // @returns Element
+            // @returns ElementTag
             // @plugin Vault
             // @description
             // Returns the player's chat suffix.
@@ -2212,7 +2212,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                 if (suffix == null) {
                     return null;
                 }
-                return new Element(suffix).getAttribute(attribute.fulfill(1));
+                return new ElementTag(suffix).getAttribute(attribute.fulfill(1));
             }
         }
 
@@ -2492,9 +2492,9 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <p@player.attack_cooldown.max_duration>
         // <p@player.attack_cooldown.percent_done>
         // -->
-        if (mechanism.matches("attack_cooldown") && mechanism.requireObject(Duration.class)) {
+        if (mechanism.matches("attack_cooldown") && mechanism.requireObject(DurationTag.class)) {
             NMSHandler.getInstance().getPlayerHelper().setAttackCooldown(getPlayerEntity(),
-                    mechanism.getValue().asType(Duration.class).getTicksAsInt());
+                    mechanism.getValue().asType(DurationTag.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -2832,15 +2832,15 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("hide_entity")) {
             if (!mechanism.getValue().asString().isEmpty()) {
-                String[] split = mechanism.getValue().asString().split("[\\|" + dList.internal_escape + "]", 2);
-                if (split.length > 0 && new Element(split[0]).matchesType(dEntity.class)) {
+                String[] split = mechanism.getValue().asString().split("[\\|" + ListTag.internal_escape + "]", 2);
+                if (split.length > 0 && new ElementTag(split[0]).matchesType(dEntity.class)) {
                     dEntity entity = mechanism.valueAsType(dEntity.class);
                     if (!entity.isSpawned()) {
                         Debug.echoError("Can't hide the unspawned entity '" + split[0] + "'!");
                     }
-                    else if (split.length > 1 && new Element(split[1]).isBoolean()) {
+                    else if (split.length > 1 && new ElementTag(split[1]).isBoolean()) {
                         NMSHandler.getInstance().getEntityHelper().hideEntity(getPlayerEntity(), entity.getBukkitEntity(),
-                                new Element(split[1]).asBoolean());
+                                new ElementTag(split[1]).asBoolean());
                     }
                     else {
                         NMSHandler.getInstance().getEntityHelper().hideEntity(getPlayerEntity(), entity.getBukkitEntity(), false);
@@ -2872,9 +2872,9 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("show_boss_bar")) {
             if (!mechanism.getValue().asString().isEmpty()) {
-                String[] split = mechanism.getValue().asString().split("[\\|" + dList.internal_escape + "]", 2);
-                if (split.length == 2 && new Element(split[0]).isDouble()) {
-                    BossBarHelper.showSimpleBossBar(getPlayerEntity(), split[1], new Element(split[0]).asDouble() * (1.0 / 200.0));
+                String[] split = mechanism.getValue().asString().split("[\\|" + ListTag.internal_escape + "]", 2);
+                if (split.length == 2 && new ElementTag(split[0]).isDouble()) {
+                    BossBarHelper.showSimpleBossBar(getPlayerEntity(), split[1], new ElementTag(split[0]).asDouble() * (1.0 / 200.0));
                 }
                 else {
                     BossBarHelper.showSimpleBossBar(getPlayerEntity(), split[0], 1.0);
@@ -2900,15 +2900,15 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("fake_experience")) {
             if (!mechanism.getValue().asString().isEmpty()) {
-                String[] split = mechanism.getValue().asString().split("[\\|" + dList.internal_escape + "]", 2);
-                if (split.length > 0 && new Element(split[0]).isFloat()) {
-                    if (split.length > 1 && new Element(split[1]).isInt()) {
+                String[] split = mechanism.getValue().asString().split("[\\|" + ListTag.internal_escape + "]", 2);
+                if (split.length > 0 && new ElementTag(split[0]).isFloat()) {
+                    if (split.length > 1 && new ElementTag(split[1]).isInt()) {
                         NMSHandler.getInstance().getPacketHelper().showExperience(getPlayerEntity(),
-                                new Element(split[0]).asFloat(), new Element(split[1]).asInt());
+                                new ElementTag(split[0]).asFloat(), new ElementTag(split[1]).asInt());
                     }
                     else {
                         NMSHandler.getInstance().getPacketHelper().showExperience(getPlayerEntity(),
-                                new Element(split[0]).asFloat(), getPlayerEntity().getLevel());
+                                new ElementTag(split[0]).asFloat(), getPlayerEntity().getLevel());
                     }
                 }
                 else {
@@ -2938,20 +2938,20 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("fake_health")) {
             if (!mechanism.getValue().asString().isEmpty()) {
-                String[] split = mechanism.getValue().asString().split("[\\|" + dList.internal_escape + "]", 3);
-                if (split.length > 0 && new Element(split[0]).isFloat()) {
-                    if (split.length > 1 && new Element(split[1]).isInt()) {
-                        if (split.length > 2 && new Element(split[2]).isFloat()) {
-                            NMSHandler.getInstance().getPacketHelper().showHealth(getPlayerEntity(), new Element(split[0]).asFloat(),
-                                    new Element(split[1]).asInt(), new Element(split[2]).asFloat());
+                String[] split = mechanism.getValue().asString().split("[\\|" + ListTag.internal_escape + "]", 3);
+                if (split.length > 0 && new ElementTag(split[0]).isFloat()) {
+                    if (split.length > 1 && new ElementTag(split[1]).isInt()) {
+                        if (split.length > 2 && new ElementTag(split[2]).isFloat()) {
+                            NMSHandler.getInstance().getPacketHelper().showHealth(getPlayerEntity(), new ElementTag(split[0]).asFloat(),
+                                    new ElementTag(split[1]).asInt(), new ElementTag(split[2]).asFloat());
                         }
                         else {
-                            NMSHandler.getInstance().getPacketHelper().showHealth(getPlayerEntity(), new Element(split[0]).asFloat(),
-                                    new Element(split[1]).asInt(), getPlayerEntity().getSaturation());
+                            NMSHandler.getInstance().getPacketHelper().showHealth(getPlayerEntity(), new ElementTag(split[0]).asFloat(),
+                                    new ElementTag(split[1]).asInt(), getPlayerEntity().getSaturation());
                         }
                     }
                     else {
-                        NMSHandler.getInstance().getPacketHelper().showHealth(getPlayerEntity(), new Element(split[0]).asFloat(),
+                        NMSHandler.getInstance().getPacketHelper().showHealth(getPlayerEntity(), new ElementTag(split[0]).asFloat(),
                                 getPlayerEntity().getFoodLevel(), getPlayerEntity().getSaturation());
                     }
                 }
@@ -2979,12 +2979,12 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("fake_equipment")) {
             if (!mechanism.getValue().asString().isEmpty()) {
-                String[] split = mechanism.getValue().asString().split("[\\|" + dList.internal_escape + "]", 3);
-                if (split.length > 0 && new Element(split[0]).matchesType(dEntity.class)) {
+                String[] split = mechanism.getValue().asString().split("[\\|" + ListTag.internal_escape + "]", 3);
+                if (split.length > 0 && new ElementTag(split[0]).matchesType(dEntity.class)) {
                     String slot = split.length > 1 ? split[1].toUpperCase() : null;
-                    if (split.length > 1 && (new Element(slot).matchesEnum(EquipmentSlot.values())
+                    if (split.length > 1 && (new ElementTag(slot).matchesEnum(EquipmentSlot.values())
                             || slot.equals("MAIN_HAND") || slot.equals("BOOTS"))) {
-                        if (split.length > 2 && new Element(split[2]).matchesType(dItem.class)) {
+                        if (split.length > 2 && new ElementTag(split[2]).matchesType(dItem.class)) {
                             if (slot.equals("MAIN_HAND")) {
                                 slot = "HAND";
                             }
@@ -2992,9 +2992,9 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                                 slot = "FEET";
                             }
                             NMSHandler.getInstance().getPacketHelper().showEquipment(getPlayerEntity(),
-                                    new Element(split[0]).asType(dEntity.class, mechanism.context).getLivingEntity(),
+                                    new ElementTag(split[0]).asType(dEntity.class, mechanism.context).getLivingEntity(),
                                     EquipmentSlot.valueOf(slot),
-                                    new Element(split[2]).asType(dItem.class, mechanism.context).getItemStack());
+                                    new ElementTag(split[2]).asType(dItem.class, mechanism.context).getItemStack());
                         }
                         else if (split.length > 2) {
                             Debug.echoError("'" + split[2] + "' is not a valid dItem!");
@@ -3005,7 +3005,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                     }
                     else {
                         NMSHandler.getInstance().getPacketHelper().resetEquipment(getPlayerEntity(),
-                                new Element(split[0]).asType(dEntity.class, mechanism.context).getLivingEntity());
+                                new ElementTag(split[0]).asType(dEntity.class, mechanism.context).getLivingEntity());
                     }
                 }
                 else {
@@ -3152,7 +3152,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("tab_list_info")) {
             if (!mechanism.getValue().asString().isEmpty()) {
-                String[] split = mechanism.getValue().asString().split("[\\|" + dList.internal_escape + "]", 2);
+                String[] split = mechanism.getValue().asString().split("[\\|" + ListTag.internal_escape + "]", 2);
                 if (split.length > 0) {
                     String header = split[0];
                     String footer = "";
@@ -3179,9 +3179,9 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("sign_update")) {
             if (!mechanism.getValue().asString().isEmpty()) {
-                String[] split = mechanism.getValue().asString().split("[\\|" + dList.internal_escape + "]", 2);
+                String[] split = mechanism.getValue().asString().split("[\\|" + ListTag.internal_escape + "]", 2);
                 if (dLocation.matches(split[0]) && split.length > 1) {
-                    dList lines = dList.valueOf(split[1]);
+                    ListTag lines = ListTag.valueOf(split[1]);
                     getPlayerEntity().sendSignChange(dLocation.valueOf(split[0]), lines.toArray(4));
                 }
                 else {
@@ -3205,7 +3205,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("banner_update")) {
             if (mechanism.getValue().asString().length() > 0) {
-                String[] split = mechanism.getValue().asString().split("[\\|" + dList.internal_escape + "]");
+                String[] split = mechanism.getValue().asString().split("[\\|" + ListTag.internal_escape + "]");
                 List<org.bukkit.block.banner.Pattern> patterns = new ArrayList<>();
                 if (split.length > 2) {
                     List<String> splitList;

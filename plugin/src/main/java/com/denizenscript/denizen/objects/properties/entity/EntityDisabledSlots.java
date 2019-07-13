@@ -3,10 +3,10 @@ package com.denizenscript.denizen.objects.properties.entity;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -17,11 +17,11 @@ import java.util.*;
 
 public class EntityDisabledSlots implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.ARMOR_STAND;
     }
 
-    public static EntityDisabledSlots getFrom(dObject entity) {
+    public static EntityDisabledSlots getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -63,9 +63,9 @@ public class EntityDisabledSlots implements Property {
         }
     }
 
-    private dList getDisabledSlots() {
+    private ListTag getDisabledSlots() {
         Map<EquipmentSlot, Set<Action>> map = CustomNBT.getDisabledSlots(dentity.getBukkitEntity());
-        dList list = new dList();
+        ListTag list = new ListTag();
         for (Map.Entry<EquipmentSlot, Set<Action>> entry : map.entrySet()) {
             for (Action action : entry.getValue()) {
                 list.add(CoreUtilities.toLowerCase(entry.getKey().name() + "/" + action.name()));
@@ -80,7 +80,7 @@ public class EntityDisabledSlots implements Property {
 
     @Override
     public String getPropertyString() {
-        dList list = getDisabledSlots();
+        ListTag list = getDisabledSlots();
         return list.isEmpty() ? null : list.identify();
     }
 
@@ -90,7 +90,7 @@ public class EntityDisabledSlots implements Property {
     }
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -102,7 +102,7 @@ public class EntityDisabledSlots implements Property {
 
         // <--[tag]
         // @attribute <e@entity.disabled_slots.raw>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @mechanism dEntity.disabled_slots_raw
         // @group properties
         // @description
@@ -110,13 +110,13 @@ public class EntityDisabledSlots implements Property {
         // See <@link url https://minecraft.gamepedia.com/Armor_Stand/ED>
         // -->
         if (attribute.startsWith("disabled_slots.raw")) {
-            return new Element(CustomNBT.getCustomIntNBT(dentity.getBukkitEntity(), CustomNBT.KEY_DISABLED_SLOTS))
+            return new ElementTag(CustomNBT.getCustomIntNBT(dentity.getBukkitEntity(), CustomNBT.KEY_DISABLED_SLOTS))
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <e@entity.disabled_slots>
-        // @returns dList
+        // @returns ListTag
         // @mechanism dEntity.disabled_slots
         // @group properties
         // @description
@@ -150,7 +150,7 @@ public class EntityDisabledSlots implements Property {
         // <--[mechanism]
         // @object dEntity
         // @name disabled_slots
-        // @input dList
+        // @input ListTag
         // @description
         // Sets the disabled slots of an armor stand in the form li@slot(/action)|...
         // Optionally include an action to disable specific interactions (defaults to ALL).
@@ -169,7 +169,7 @@ public class EntityDisabledSlots implements Property {
                 return;
             }
 
-            dList list = mechanism.valueAsType(dList.class);
+            ListTag list = mechanism.valueAsType(ListTag.class);
             Map<EquipmentSlot, Set<Action>> map = new HashMap<>();
 
             for (String string : list) {

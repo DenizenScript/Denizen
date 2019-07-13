@@ -3,9 +3,9 @@ package com.denizenscript.denizen.events.entity;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
@@ -28,8 +28,8 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
     //
     // @Context
     // <context.entity> returns the dEntity.
-    // <context.radius> returns an Element of the explosion's radius.
-    // <context.fire> returns an Element with a value of "true" if the explosion will create fire and "false" otherwise.
+    // <context.radius> returns an ElementTag of the explosion's radius.
+    // <context.fire> returns an ElementTag with a value of "true" if the explosion will create fire and "false" otherwise.
     // -->
 
     public EntityExplosionPrimesScriptEvent() {
@@ -82,15 +82,15 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return entity;
         }
         else if (name.equals("radius")) {
-            return new Element(radius);
+            return new ElementTag(radius);
         }
         else if (name.equals("fire")) {
-            return new Element(fire);
+            return new ElementTag(fire);
         }
         return super.getContext(name);
     }

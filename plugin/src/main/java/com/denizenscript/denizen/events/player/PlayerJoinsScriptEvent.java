@@ -4,8 +4,8 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.dPlayer;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -25,10 +25,10 @@ public class PlayerJoinsScriptEvent extends BukkitScriptEvent implements Listene
     // @Triggers when a player joins the server.
     //
     // @Context
-    // <context.message> returns an Element of the join message.
+    // <context.message> returns an ElementTag of the join message.
     //
     // @Determine
-    // Element to change the join message.
+    // ElementTag to change the join message.
     // "NONE" to cancel the join message.
     //
     // -->
@@ -74,9 +74,9 @@ public class PlayerJoinsScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("message")) {
-            return new Element(message);
+            return new ElementTag(message);
         }
         return super.getContext(name);
     }

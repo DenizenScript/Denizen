@@ -6,9 +6,9 @@ import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dScript;
+import com.denizenscript.denizencore.objects.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.tags.TagManager;
@@ -168,7 +168,7 @@ public class ItemScriptContainer extends ScriptContainer {
             if (contains("DEBUG")) {
                 debug = Boolean.valueOf(getString("DEBUG"));
             }
-            BukkitTagContext context = new BukkitTagContext(player, npc, false, null, debug, new dScript(this));
+            BukkitTagContext context = new BukkitTagContext(player, npc, false, null, debug, new ScriptTag(this));
             // Check validity of material
             if (contains("MATERIAL")) {
                 String material = TagManager.tag(getString("MATERIAL"), context);
@@ -188,7 +188,7 @@ public class ItemScriptContainer extends ScriptContainer {
                 YamlConfiguration mechs = getConfigurationSection("MECHANISMS");
                 for (StringHolder key : mechs.getKeys(false)) {
                     String val = TagManager.tag(mechs.getString(key.str), context);
-                    stack.safeAdjust(new Mechanism(new Element(key.low), new Element(val), context));
+                    stack.safeAdjust(new Mechanism(new ElementTag(key.low), new ElementTag(val), context));
                 }
             }
 

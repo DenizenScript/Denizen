@@ -3,10 +3,10 @@ package com.denizenscript.denizen.objects.properties.item;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.core.EscapeTags;
@@ -20,11 +20,11 @@ import java.util.List;
  */
 public class ItemAttributeNBT implements Property {
 
-    public static boolean describes(dObject item) {
+    public static boolean describes(ObjectTag item) {
         return item instanceof dItem;
     }
 
-    public static ItemAttributeNBT getFrom(dObject item) {
+    public static ItemAttributeNBT getFrom(ObjectTag item) {
         if (!describes(item)) {
             return null;
         }
@@ -56,7 +56,7 @@ public class ItemAttributeNBT implements Property {
 
         // <--[tag]
         // @attribute <i@item.nbt_attributes>
-        // @returns dList
+        // @returns ListTag
         // @group properties
         // @mechanism dItem.nbt_attributes
         // @description
@@ -69,10 +69,10 @@ public class ItemAttributeNBT implements Property {
         return null;
     }
 
-    public dList getList() {
+    public ListTag getList() {
         ItemStack itemStack = item.getItemStack();
         List<CustomNBT.AttributeReturn> nbtKeys = CustomNBT.getAttributes(itemStack);
-        dList list = new dList();
+        ListTag list = new ListTag();
         if (nbtKeys != null) {
             for (CustomNBT.AttributeReturn atr : nbtKeys) {
                 list.add(EscapeTags.escape(atr.attr) + "/" + EscapeTags.escape(atr.slot) + "/" + atr.op + "/" + atr.amt);
@@ -83,7 +83,7 @@ public class ItemAttributeNBT implements Property {
 
     @Override
     public String getPropertyString() {
-        dList list = getList();
+        ListTag list = getList();
         if (!list.isEmpty()) {
             return list.identify();
         }
@@ -101,7 +101,7 @@ public class ItemAttributeNBT implements Property {
         // <--[mechanism]
         // @object dItem
         // @name nbt_attributes
-        // @input dList
+        // @input ListTag
         // @description
         // Sets the Denizen NBT attributes for this item in the format li@attribute/slot/op/amount|...
         // Attribute is text ( http://minecraft.gamepedia.com/Attribute ), slot is the name of the slot,
@@ -114,15 +114,15 @@ public class ItemAttributeNBT implements Property {
                 Debug.echoError("Cannot apply NBT to AIR!");
                 return;
             }
-            dList list = mechanism.valueAsType(dList.class);
+            ListTag list = mechanism.valueAsType(ListTag.class);
             ItemStack itemStack = item.getItemStack();
             itemStack = CustomNBT.clearNBT(itemStack, CustomNBT.KEY_ATTRIBUTES);
             for (String string : list) {
                 String[] split = string.split("/");
                 String attribute = EscapeTags.unEscape(split[0]);
                 String slot = EscapeTags.unEscape(split[1]);
-                int op = new Element(split[2]).asInt();
-                double amt = new Element(split[3]).asDouble();
+                int op = new ElementTag(split[2]).asInt();
+                double amt = new ElementTag(split[3]).asDouble();
                 itemStack = CustomNBT.addAttribute(itemStack, attribute, slot, op, amt);
             }
             item.setItemStack(itemStack);

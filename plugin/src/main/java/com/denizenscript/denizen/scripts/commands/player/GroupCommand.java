@@ -6,7 +6,7 @@ import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.objects.dWorld;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -92,9 +92,9 @@ public class GroupCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        Element action = scriptEntry.getElement("action");
+        ElementTag action = scriptEntry.getElement("action");
         dWorld world = (dWorld) scriptEntry.getObject("world");
-        Element group = scriptEntry.getElement("group");
+        ElementTag group = scriptEntry.getElement("group");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {

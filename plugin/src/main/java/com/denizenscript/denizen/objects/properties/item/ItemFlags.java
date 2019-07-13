@@ -2,8 +2,8 @@ package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.Material;
@@ -13,12 +13,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemFlags implements Property {
 
-    public static boolean describes(dObject item) {
+    public static boolean describes(ObjectTag item) {
         // All items can have flags
         return item instanceof dItem && ((dItem) item).getItemStack().getType() != Material.AIR;
     }
 
-    public static ItemFlags getFrom(dObject _item) {
+    public static ItemFlags getFrom(ObjectTag _item) {
         if (!describes(_item)) {
             return null;
         }
@@ -40,8 +40,8 @@ public class ItemFlags implements Property {
         item = _item;
     }
 
-    public dList flags() {
-        dList output = new dList();
+    public ListTag flags() {
+        ListTag output = new ListTag();
         ItemStack itemStack = item.getItemStack();
         if (itemStack.hasItemMeta()) {
             for (ItemFlag flag : itemStack.getItemMeta().getItemFlags()) {
@@ -62,7 +62,7 @@ public class ItemFlags implements Property {
 
         // <--[tag]
         // @attribute <i@item.flags>
-        // @returns dList
+        // @returns ListTag
         // @mechanism dItem.flags
         // @group properties
         // @description
@@ -81,7 +81,7 @@ public class ItemFlags implements Property {
 
     @Override
     public String getPropertyString() {
-        dList flags = flags();
+        ListTag flags = flags();
         if (flags.size() > 0) {
             return flags().identify();
         }
@@ -101,7 +101,7 @@ public class ItemFlags implements Property {
         // <--[mechanism]
         // @object dItem
         // @name flags
-        // @input dList
+        // @input ListTag
         // @description
         // Sets the item's meta flag set.
         // @tags
@@ -111,7 +111,7 @@ public class ItemFlags implements Property {
         if (mechanism.matches("flags")) {
             ItemMeta meta = item.getItemStack().getItemMeta();
             meta.removeItemFlags(ItemFlag.values());
-            dList new_flags = mechanism.valueAsType(dList.class);
+            ListTag new_flags = mechanism.valueAsType(ListTag.class);
             for (String str : new_flags) {
                 meta.addItemFlags(ItemFlag.valueOf(str.toUpperCase()));
             }

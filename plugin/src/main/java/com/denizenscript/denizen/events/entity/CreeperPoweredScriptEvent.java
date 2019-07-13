@@ -2,8 +2,8 @@ package com.denizenscript.denizen.events.entity;
 
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
@@ -26,7 +26,7 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
     // @Context
     // <context.entity> returns the dEntity of the creeper.
     // <context.lightning> returns the dEntity of the lightning.
-    // <context.cause> returns an Element of the cause for the creeper being powered.
+    // <context.cause> returns an ElementTag of the cause for the creeper being powered.
     //
     // -->
 
@@ -37,7 +37,7 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
     public static CreeperPoweredScriptEvent instance;
     public dEntity lightning;
     public dEntity entity;
-    public Element cause;
+    public ElementTag cause;
     public CreeperPowerEvent event;
 
     @Override
@@ -72,7 +72,7 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return entity;
         }
@@ -89,7 +89,7 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
     public void onCreeperPowered(CreeperPowerEvent event) {
         lightning = new dEntity(event.getLightning());
         entity = new dEntity(event.getEntity());
-        cause = new Element(event.getCause().name());
+        cause = new ElementTag(event.getCause().name());
         this.event = event;
         fire(event);
     }

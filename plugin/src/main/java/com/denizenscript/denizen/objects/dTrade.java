@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 
-public class dTrade implements dObject, Adjustable {
+public class dTrade implements ObjectTag, Adjustable {
 
     // <--[language]
     // @name Merchant Trades
@@ -23,7 +23,7 @@ public class dTrade implements dObject, Adjustable {
     // Merchant trades are the parts of a special merchant inventory that is typically viewed by right clicking
     // a villager entity. Any number of trades can fit in a single merchant inventory.
     //
-    // Trades are represented by 'trade@trade' dObjects.
+    // Trades are represented by 'trade@trade' ObjectTags.
     //
     // The properties that can be used to customize a merchant trade are:
     //
@@ -157,7 +157,7 @@ public class dTrade implements dObject, Adjustable {
             return returned;
         }
 
-        return new Element(identify()).getAttribute(attribute);
+        return new ElementTag(identify()).getAttribute(attribute);
     }
 
     public void applyProperty(Mechanism mechanism) {

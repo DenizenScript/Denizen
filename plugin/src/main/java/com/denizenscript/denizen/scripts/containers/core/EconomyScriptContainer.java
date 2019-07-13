@@ -4,9 +4,9 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dScript;
+import com.denizenscript.denizencore.objects.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
@@ -97,14 +97,14 @@ public class EconomyScriptContainer extends ScriptContainer {
                 return null;
             }
             return TagManager.tag(value, new BukkitTagContext(player == null ? null : new dPlayer(player),
-                    null, false, null, backingScript.shouldDebug(), new dScript(backingScript)));
+                    null, false, null, backingScript.shouldDebug(), new ScriptTag(backingScript)));
         }
 
         public String runSubScript(String pathName, OfflinePlayer player, double amount) {
             List<ScriptEntry> entries = backingScript.getEntries(new BukkitScriptEntryData(new dPlayer(player), null), pathName);
             InstantQueue queue = new InstantQueue(backingScript.getName());
             queue.addEntries(entries);
-            queue.addDefinition("amount", new Element(amount));
+            queue.addDefinition("amount", new ElementTag(amount));
             queue.start();
             if (queue.determinations != null && queue.determinations.size() > 0) {
                 return queue.determinations.get(0);

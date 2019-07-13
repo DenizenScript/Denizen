@@ -5,7 +5,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -74,16 +74,16 @@ public class OxygenCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify a valid amount!");
         }
 
-        scriptEntry.defaultObject("type", new Element("REMAINING")).defaultObject("mode", new Element("SET"));
+        scriptEntry.defaultObject("type", new ElementTag("REMAINING")).defaultObject("mode", new ElementTag("SET"));
 
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        Element type = scriptEntry.getElement("type");
-        Element mode = scriptEntry.getElement("mode");
-        Element amount = scriptEntry.getElement("amount");
+        ElementTag type = scriptEntry.getElement("type");
+        ElementTag mode = scriptEntry.getElement("mode");
+        ElementTag amount = scriptEntry.getElement("amount");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

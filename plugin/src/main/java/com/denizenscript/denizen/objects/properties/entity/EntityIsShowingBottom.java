@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.entity.EnderCrystal;
@@ -11,11 +11,11 @@ import org.bukkit.entity.EntityType;
 
 public class EntityIsShowingBottom implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.ENDER_CRYSTAL;
     }
 
-    public static EntityIsShowingBottom getFrom(dObject entity) {
+    public static EntityIsShowingBottom getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -63,7 +63,7 @@ public class EntityIsShowingBottom implements Property {
     }
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -75,14 +75,14 @@ public class EntityIsShowingBottom implements Property {
 
         // <--[tag]
         // @attribute <e@entity.is_showing_bottom>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @mechanism dEntity.is_showing_bottom
         // @group properties
         // @description
         // If the entity is an ender crystal, returns whether the ender crystal has its bottom showing.
         // -->
         if (attribute.startsWith("is_showing_bottom")) {
-            return new Element(((EnderCrystal) dentity.getBukkitEntity()).isShowingBottom())
+            return new ElementTag(((EnderCrystal) dentity.getBukkitEntity()).isShowingBottom())
                     .getAttribute(attribute.fulfill(1));
         }
 

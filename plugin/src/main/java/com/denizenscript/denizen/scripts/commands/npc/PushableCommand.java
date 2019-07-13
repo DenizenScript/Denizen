@@ -6,8 +6,8 @@ import com.denizenscript.denizen.npc.traits.PushableTrait;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Duration;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.DurationTag;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -50,8 +50,8 @@ public class PushableCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("delay")
                     && arg.matchesPrefix("delay", "d")
-                    && arg.matchesArgumentType(Duration.class)) {
-                scriptEntry.addObject("delay", arg.asType(Duration.class));
+                    && arg.matchesArgumentType(DurationTag.class)) {
+                scriptEntry.addObject("delay", arg.asType(DurationTag.class));
             }
             else if (!scriptEntry.hasObject("return")
                     && arg.matchesPrefix("return", "r")
@@ -72,12 +72,12 @@ public class PushableCommand extends AbstractCommand {
         }
         PushableTrait trait = denizenNPC.getPushableTrait();
 
-        Element state = scriptEntry.getElement("state");
-        Duration delay = scriptEntry.getdObject("delay");
-        Element returnable = scriptEntry.getElement("return");
+        ElementTag state = scriptEntry.getElement("state");
+        DurationTag delay = scriptEntry.getdObject("delay");
+        ElementTag returnable = scriptEntry.getElement("return");
 
         if (state == null && delay == null && returnable == null) {
-            state = new Element("TOGGLE");
+            state = new ElementTag("TOGGLE");
         }
 
         if (scriptEntry.dbCallShouldDebug()) {

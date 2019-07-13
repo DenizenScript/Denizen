@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.commands.world;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -94,21 +94,21 @@ public class CreateWorldCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("worldtype")) {
-            scriptEntry.addObject("worldtype", new Element("NORMAL"));
+            scriptEntry.addObject("worldtype", new ElementTag("NORMAL"));
         }
 
-        scriptEntry.defaultObject("environment", new Element("NORMAL"));
+        scriptEntry.defaultObject("environment", new ElementTag("NORMAL"));
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        Element worldName = scriptEntry.getElement("world_name");
-        Element generator = scriptEntry.getElement("generator");
-        Element worldType = scriptEntry.getElement("worldtype");
-        Element environment = scriptEntry.getElement("environment");
-        Element copy_from = scriptEntry.getElement("copy_from");
-        Element seed = scriptEntry.getElement("seed");
+        ElementTag worldName = scriptEntry.getElement("world_name");
+        ElementTag generator = scriptEntry.getElement("generator");
+        ElementTag worldType = scriptEntry.getElement("worldtype");
+        ElementTag environment = scriptEntry.getElement("environment");
+        ElementTag copy_from = scriptEntry.getElement("copy_from");
+        ElementTag seed = scriptEntry.getElement("seed");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

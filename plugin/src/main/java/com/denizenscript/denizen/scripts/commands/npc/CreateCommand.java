@@ -63,7 +63,7 @@ public class CreateCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("traits")
                     && arg.matchesPrefix("t", "trait", "traits")) {
-                scriptEntry.addObject("traits", arg.asType(dList.class));
+                scriptEntry.addObject("traits", arg.asType(ListTag.class));
             }
             else {
                 arg.reportUnhandled();
@@ -81,10 +81,10 @@ public class CreateCommand extends AbstractCommand {
     @Override
     public void execute(final ScriptEntry scriptEntry) {
 
-        Element name = (Element) scriptEntry.getObject("name");
+        ElementTag name = (ElementTag) scriptEntry.getObject("name");
         dEntity type = (dEntity) scriptEntry.getObject("entity_type");
         dLocation loc = (dLocation) scriptEntry.getObject("spawn_location");
-        dList traits = (dList) scriptEntry.getObject("traits");
+        ListTag traits = (ListTag) scriptEntry.getObject("traits");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

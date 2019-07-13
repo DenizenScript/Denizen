@@ -11,9 +11,9 @@ import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Location;
@@ -61,7 +61,7 @@ public class FlyCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("destinations")
                     && arg.matchesPrefix("destination", "destinations", "d")) {
 
-                scriptEntry.addObject("destinations", arg.asType(dList.class).filter(dLocation.class, scriptEntry));
+                scriptEntry.addObject("destinations", arg.asType(ListTag.class).filter(dLocation.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("controller")
                     && arg.matchesArgumentType(dPlayer.class)
@@ -78,7 +78,7 @@ public class FlyCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
 
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("rotationthreshold")
                     && arg.matchesPrefix("rotationthreshold", "rotation", "r")
@@ -102,8 +102,8 @@ public class FlyCommand extends AbstractCommand {
                 Utilities.entryHasNPC(scriptEntry) ? Utilities.getEntryNPC(scriptEntry).getLocation() : null);
 
         // Use a default speed and rotation threshold if they are not specified
-        scriptEntry.defaultObject("speed", new Element(1.2));
-        scriptEntry.defaultObject("rotationThreshold", new Element(15));
+        scriptEntry.defaultObject("speed", new ElementTag(1.2));
+        scriptEntry.defaultObject("rotationThreshold", new ElementTag(15));
 
         // Check to make sure required arguments have been filled
         if (!scriptEntry.hasObject("entities")) {
@@ -182,8 +182,8 @@ public class FlyCommand extends AbstractCommand {
             }
         }
 
-        final double speed = ((Element) scriptEntry.getObject("speed")).asDouble();
-        final float rotationThreshold = ((Element) scriptEntry.getObject("rotationthreshold")).asFloat();
+        final double speed = ((ElementTag) scriptEntry.getObject("speed")).asDouble();
+        final float rotationThreshold = ((ElementTag) scriptEntry.getObject("rotationthreshold")).asFloat();
         boolean cancel = scriptEntry.hasObject("cancel");
 
         // Report to dB

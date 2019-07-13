@@ -3,7 +3,7 @@ package com.denizenscript.denizen.utilities;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import org.bukkit.Color;
 import org.bukkit.entity.Entity;
@@ -71,7 +71,7 @@ public class Conversion {
 
     /**
      * Gets a dInventory from an Object, which can be a
-     * dEntity, dLocation, dInventory, or a dList of dItems
+     * dEntity, dLocation, dInventory, or a ListTag of dItems
      *
      * @param arg An argument to parse
      * @return The dInventory retrieved by parsing the argument
@@ -92,7 +92,7 @@ public class Conversion {
             }
         }
         else if (arg.matchesArgumentList(dItem.class)) {
-            List<dItem> list = dList.valueOf(string).filter(dItem.class, scriptEntry);
+            List<dItem> list = ListTag.valueOf(string).filter(dItem.class, scriptEntry);
             ItemStack[] items = convertItems(list).toArray(new ItemStack[list.size()]);
             dInventory inventory = new dInventory(Math.max(dInventory.maxSlots, (items.length / 9) * 9 + 9));
             inventory.setContents(items);

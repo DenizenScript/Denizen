@@ -8,8 +8,8 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.npc.DenizenNPCHelper;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import net.citizensnpcs.api.command.exception.CommandException;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
@@ -210,7 +210,7 @@ public class TriggerTrait extends Trait implements Listener {
     }
 
 
-    public TriggerContext trigger(AbstractTrigger triggerClass, dPlayer player, Map<String, dObject> context) {
+    public TriggerContext trigger(AbstractTrigger triggerClass, dPlayer player, Map<String, ObjectTag> context) {
 
         String trigger_type = triggerClass.getName();
 
@@ -227,7 +227,7 @@ public class TriggerTrait extends Trait implements Listener {
         if (EngageCommand.getEngaged(npc)) {
 
             // Put the trigger_type into context
-            context.put("trigger_type", new Element(trigger_type));
+            context.put("trigger_type", new ElementTag(trigger_type));
 
             //
             // On Unavailable Action

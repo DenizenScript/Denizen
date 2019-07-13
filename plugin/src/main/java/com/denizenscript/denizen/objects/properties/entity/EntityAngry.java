@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.entity.EntityType;
@@ -12,12 +12,12 @@ import org.bukkit.entity.Wolf;
 
 public class EntityAngry implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity && (((dEntity) entity).getBukkitEntityType() == EntityType.WOLF
                 || ((dEntity) entity).getBukkitEntityType() == EntityType.PIG_ZOMBIE);
     }
 
-    public static EntityAngry getFrom(dObject entity) {
+    public static EntityAngry getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -76,7 +76,7 @@ public class EntityAngry implements Property {
     }
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -88,7 +88,7 @@ public class EntityAngry implements Property {
 
         // <--[tag]
         // @attribute <e@entity.angry>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @mechanism dEntity.angry
         // @group properties
         // @description
@@ -96,11 +96,11 @@ public class EntityAngry implements Property {
         // -->
         if (attribute.startsWith("angry")) {
             if (entity.getBukkitEntityType() == EntityType.WOLF) {
-                return new Element(((Wolf) entity.getBukkitEntity()).isAngry())
+                return new ElementTag(((Wolf) entity.getBukkitEntity()).isAngry())
                         .getAttribute(attribute.fulfill(1));
             }
             else if (entity.getBukkitEntityType() == EntityType.PIG_ZOMBIE) {
-                return new Element(((PigZombie) entity.getBukkitEntity()).isAngry())
+                return new ElementTag(((PigZombie) entity.getBukkitEntity()).isAngry())
                         .getAttribute(attribute.fulfill(1));
             }
         }

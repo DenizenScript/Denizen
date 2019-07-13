@@ -9,7 +9,7 @@ import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
@@ -73,7 +73,7 @@ public class MountCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
                 // Entity arg
-                entities = arg.asType(dList.class).filter(dEntity.class, scriptEntry);
+                entities = arg.asType(ListTag.class).filter(dEntity.class, scriptEntry);
                 scriptEntry.addObject("entities", entities);
             }
             else {
@@ -134,7 +134,7 @@ public class MountCommand extends AbstractCommand {
             Position.dismount(Conversion.convertEntities(entities));
         }
 
-        dList entityList = new dList();
+        ListTag entityList = new ListTag();
         entityList.addObjects((List) entities);
         scriptEntry.addObject("mounted_entities", entityList);
     }

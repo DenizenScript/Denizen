@@ -5,9 +5,9 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.scoreboard.Scoreboard;
@@ -58,27 +58,27 @@ public class TeamCommand extends AbstractCommand {
             }
             else if (arg.matchesPrefix("name")
                     && !scriptEntry.hasObject("name")) {
-                Element nameElement = arg.asElement();
+                ElementTag nameElement = arg.asElement();
                 name = nameElement.asString();
                 scriptEntry.addObject("name", nameElement);
             }
             else if (arg.matchesPrefix("add")
                     && !scriptEntry.hasObject("add")) {
-                scriptEntry.addObject("add", arg.asType(dList.class));
+                scriptEntry.addObject("add", arg.asType(ListTag.class));
             }
             else if (arg.matchesPrefix("remove")
                     && !scriptEntry.hasObject("remove")) {
-                scriptEntry.addObject("remove", arg.asType(dList.class));
+                scriptEntry.addObject("remove", arg.asType(ListTag.class));
             }
             else if (arg.matchesPrefix("prefix")
                     && !scriptEntry.hasObject("prefix")) {
-                Element prefixElement = arg.asElement();
+                ElementTag prefixElement = arg.asElement();
                 prefix = prefixElement.asString();
                 scriptEntry.addObject("prefix", prefixElement);
             }
             else if (arg.matchesPrefix("suffix")
                     && !scriptEntry.hasObject("suffix")) {
-                Element suffixElement = arg.asElement();
+                ElementTag suffixElement = arg.asElement();
                 suffix = suffixElement.asString();
                 scriptEntry.addObject("suffix", suffixElement);
             }
@@ -98,18 +98,18 @@ public class TeamCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Prefixes and suffixes must be 16 characters or less!");
         }
 
-        scriptEntry.defaultObject("id", new Element("main"));
+        scriptEntry.defaultObject("id", new ElementTag("main"));
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        Element id = scriptEntry.getElement("id");
-        Element name = scriptEntry.getElement("name");
-        dList add = scriptEntry.getdObject("add");
-        dList remove = scriptEntry.getdObject("remove");
-        Element prefix = scriptEntry.getElement("prefix");
-        Element suffix = scriptEntry.getElement("suffix");
+        ElementTag id = scriptEntry.getElement("id");
+        ElementTag name = scriptEntry.getElement("name");
+        ListTag add = scriptEntry.getdObject("add");
+        ListTag remove = scriptEntry.getdObject("remove");
+        ElementTag prefix = scriptEntry.getElement("prefix");
+        ElementTag suffix = scriptEntry.getElement("suffix");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

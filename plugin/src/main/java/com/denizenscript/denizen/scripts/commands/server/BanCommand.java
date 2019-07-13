@@ -90,18 +90,18 @@ public class BanCommand extends AbstractCommand {
                 scriptEntry.addObject("action", arg.asElement());
             }
             else if (!scriptEntry.hasObject("addresses") && arg.matchesPrefix("addresses", "address")) {
-                scriptEntry.addObject("addresses", arg.asType(dList.class));
+                scriptEntry.addObject("addresses", arg.asType(ListTag.class));
             }
             else if (!scriptEntry.hasObject("targets") && (arg.matchesPrefix("targets", "target")
                     || arg.matchesArgumentList(dPlayer.class))) {
-                scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
+                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("reason") && arg.matchesPrefix("reason")) {
                 scriptEntry.addObject("reason", arg.asElement());
             }
             else if (!scriptEntry.hasObject("duration") && (arg.matchesPrefix("duration", "time", "d", "expiration")
-                    || arg.matchesArgumentType(Duration.class))) {
-                scriptEntry.addObject("duration", arg.asType(Duration.class));
+                    || arg.matchesArgumentType(DurationTag.class))) {
+                scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
             else if (!scriptEntry.hasObject("source") && arg.matchesPrefix("source")) {
                 scriptEntry.addObject("source", arg.asElement());
@@ -111,16 +111,16 @@ public class BanCommand extends AbstractCommand {
             }
         }
 
-        scriptEntry.defaultObject("action", new Element("add"))
-                .defaultObject("reason", new Element("Banned."))
-                .defaultObject("source", new Element("(Unknown)"));
+        scriptEntry.defaultObject("action", new ElementTag("add"))
+                .defaultObject("reason", new ElementTag("Banned."))
+                .defaultObject("source", new ElementTag("(Unknown)"));
 
         if (Actions.valueOf(scriptEntry.getObject("action").toString().toUpperCase()) == null) {
             throw new IllegalArgumentException("Invalid action specified.");
         }
 
         if ((!scriptEntry.hasObject("targets") || ((List<dPlayer>) scriptEntry.getObject("targets")).isEmpty())
-                && (!scriptEntry.hasObject("addresses") || ((List<Element>) scriptEntry.getObject("addresses")).isEmpty())) {
+                && (!scriptEntry.hasObject("addresses") || ((List<ElementTag>) scriptEntry.getObject("addresses")).isEmpty())) {
             throw new IllegalArgumentException("Must specify a valid target or address!");
         }
 
@@ -128,16 +128,16 @@ public class BanCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-        Element action = scriptEntry.getElement("action");
+        ElementTag action = scriptEntry.getElement("action");
         List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
-        dList addresses = (dList) scriptEntry.getObject("addresses");
-        Element reason = scriptEntry.getElement("reason");
-        Duration duration = scriptEntry.getdObject("duration");
-        Element source = scriptEntry.getElement("source");
+        ListTag addresses = (ListTag) scriptEntry.getObject("addresses");
+        ElementTag reason = scriptEntry.getElement("reason");
+        DurationTag duration = scriptEntry.getdObject("duration");
+        ElementTag source = scriptEntry.getElement("source");
 
         Date expiration = null;
         if (duration != null && duration.getTicks() != 0) {
-            expiration = new Date(new Duration(System.currentTimeMillis() / 50 + duration.getTicks()).getTicks() * 50);
+            expiration = new Date(new DurationTag(System.currentTimeMillis() / 50 + duration.getTicks()).getTicks() * 50);
         }
 
         if (scriptEntry.dbCallShouldDebug()) {

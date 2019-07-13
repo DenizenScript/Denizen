@@ -4,7 +4,7 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizencore.DenizenCore;
-import com.denizenscript.denizencore.objects.Duration;
+import com.denizenscript.denizencore.objects.DurationTag;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -83,7 +83,7 @@ public class DebugSubmit extends Thread {
             uc.getOutputStream().write(("postid=pastetext&pastetype=log"
                     + "&response=micro&v=100&pastetitle=Denizen+Debug+Logs+From+" + URLEncoder.encode(Bukkit.getServer().getMotd().replace(ChatColor.COLOR_CHAR, (char) 0x01))
                     + "&pastecontents=" + URLEncoder.encode("Java Version: " + System.getProperty("java.version")
-                    + "\nUp-time: " + new Duration((System.currentTimeMillis() - Denizen.startTime) / 50).formatted()
+                    + "\nUp-time: " + new DurationTag((System.currentTimeMillis() - Denizen.startTime) / 50).formatted()
                     + "\nCraftBukkit Version: " + Bukkit.getServer().getVersion()
                     + "\nDenizen Version: Core: " + DenizenCore.VERSION + ", CraftBukkit: " + DenizenAPI.getCurrentInstance().coreImplementation.getImplementationVersion()
                     + "\nActive Plugins (" + pluginCount + "): " + pluginlist.substring(0, pluginlist.length() - 2)

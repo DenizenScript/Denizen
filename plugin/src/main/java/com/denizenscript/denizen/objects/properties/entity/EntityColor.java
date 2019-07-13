@@ -6,10 +6,10 @@ import com.denizenscript.denizen.utilities.entity.ParrotHelper;
 import com.denizenscript.denizen.utilities.entity.RabbitType;
 import com.denizenscript.denizen.utilities.entity.ShulkerHelper;
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -19,7 +19,7 @@ import org.bukkit.entity.*;
 public class EntityColor implements Property {
 
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         if (!(entity instanceof dEntity)) {
             return false;
         }
@@ -34,7 +34,7 @@ public class EntityColor implements Property {
                 type == EntityType.SHULKER;
     }
 
-    public static EntityColor getFrom(dObject entity) {
+    public static EntityColor getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -112,7 +112,7 @@ public class EntityColor implements Property {
 
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     // <--[language]
@@ -156,7 +156,7 @@ public class EntityColor implements Property {
 
         // <--[tag]
         // @attribute <e@entity.color>
-        // @returns Element
+        // @returns ElementTag
         // @mechanism dEntity.color
         // @group properties
         // @description
@@ -171,7 +171,7 @@ public class EntityColor implements Property {
         // For sheep, wolf, and shulker entities, see <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/DyeColor.html>
         // -->
         if (attribute.startsWith("color")) {
-            return new Element(CoreUtilities.toLowerCase(getColor()))
+            return new ElementTag(CoreUtilities.toLowerCase(getColor()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -203,12 +203,12 @@ public class EntityColor implements Property {
             EntityType type = colored.getBukkitEntityType();
 
             if (type == EntityType.HORSE) {
-                dList horse_info = mechanism.valueAsType(dList.class);
-                if (horse_info.size() > 0 && new Element(horse_info.get(0)).matchesEnum(Horse.Color.values())) {
+                ListTag horse_info = mechanism.valueAsType(ListTag.class);
+                if (horse_info.size() > 0 && new ElementTag(horse_info.get(0)).matchesEnum(Horse.Color.values())) {
                     ((Horse) colored.getBukkitEntity())
                             .setColor(Horse.Color.valueOf(horse_info.get(0).toUpperCase()));
                 }
-                if (horse_info.size() > 1 && new Element(horse_info.get(1)).matchesEnum(Horse.Style.values())) {
+                if (horse_info.size() > 1 && new ElementTag(horse_info.get(1)).matchesEnum(Horse.Style.values())) {
                     ((Horse) colored.getBukkitEntity())
                             .setStyle(Horse.Style.valueOf(horse_info.get(1).toUpperCase()));
                 }

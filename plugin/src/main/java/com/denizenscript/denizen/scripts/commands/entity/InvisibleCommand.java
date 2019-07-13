@@ -6,7 +6,7 @@ import com.denizenscript.denizen.npc.traits.InvisibleTrait;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -75,7 +75,7 @@ public class InvisibleCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("state")) {
-            scriptEntry.addObject("state", new Element("TRUE"));
+            scriptEntry.addObject("state", new ElementTag("TRUE"));
         }
 
         if (!scriptEntry.hasObject("target") || !((dEntity) scriptEntry.getdObject("target")).isValid()) {
@@ -86,7 +86,7 @@ public class InvisibleCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
         // Get objects
-        Element state = scriptEntry.getElement("state");
+        ElementTag state = scriptEntry.getElement("state");
         dEntity target = (dEntity) scriptEntry.getObject("target");
 
         // Report to dB

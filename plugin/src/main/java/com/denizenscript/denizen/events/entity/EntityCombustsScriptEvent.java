@@ -4,10 +4,10 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Duration;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.DurationTag;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -96,12 +96,12 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return entity;
         }
         else if (name.equals("duration")) {
-            return new Duration(burntime);
+            return new DurationTag(burntime);
         }
         else if (name.equals("source")) {
             if (event instanceof EntityCombustByEntityEvent) {
@@ -116,12 +116,12 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
         }
         else if (name.equals("source_type")) {
             if (event instanceof EntityCombustByEntityEvent) {
-                return new Element("ENTITY");
+                return new ElementTag("ENTITY");
             }
             else if (event instanceof EntityCombustByBlockEvent) {
-                return new Element("LOCATION");
+                return new ElementTag("LOCATION");
             }
-            return new Element("NONE");
+            return new ElementTag("NONE");
         }
         return super.getContext(name);
     }

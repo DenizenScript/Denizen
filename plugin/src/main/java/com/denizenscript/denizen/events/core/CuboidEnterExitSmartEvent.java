@@ -7,9 +7,9 @@ import com.denizenscript.denizen.scripts.containers.core.BukkitWorldScriptHelper
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.events.OldSmartEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -206,7 +206,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
 
         if (!exits.isEmpty()) {
             if (broad_detection) {
-                dList cuboid_context = new dList();
+                ListTag cuboid_context = new ListTag();
                 for (dCuboid cuboid : exits) {
                     cuboid_context.add(cuboid.identify());
                 }
@@ -215,7 +215,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
                 }
             }
             for (dCuboid cuboid : exits) {
-                if (Fire(event, new dList(cuboid.identify()), "player exits " + cuboid.identifySimple(), cause)) {
+                if (Fire(event, new ListTag(cuboid.identify()), "player exits " + cuboid.identifySimple(), cause)) {
                     return;
                 }
             }
@@ -223,7 +223,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
 
         if (!enters.isEmpty()) {
             if (broad_detection) {
-                dList cuboid_context = new dList();
+                ListTag cuboid_context = new ListTag();
                 for (dCuboid cuboid : enters) {
                     cuboid_context.add(cuboid.identify());
                 }
@@ -232,7 +232,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
                 }
             }
             for (dCuboid cuboid : enters) {
-                if (Fire(event, new dList(cuboid.identify()), "player enters " + cuboid.identifySimple(), cause)) {
+                if (Fire(event, new ListTag(cuboid.identify()), "player enters " + cuboid.identifySimple(), cause)) {
                     return;
                 }
             }
@@ -244,13 +244,13 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
     /**
      * Fires world events for the Cuboid Enter/Exit Smart Event.
      */
-    private boolean Fire(PlayerMoveEvent event, dList cuboids, String EventName, String cause) {
+    private boolean Fire(PlayerMoveEvent event, ListTag cuboids, String EventName, String cause) {
         List<String> events = new ArrayList<>();
-        Map<String, dObject> context = new HashMap<>();
+        Map<String, ObjectTag> context = new HashMap<>();
         context.put("from", new dLocation(event.getFrom()));
         context.put("to", new dLocation(event.getTo()));
         context.put("cuboids", cuboids);
-        context.put("cause", new Element(cause));
+        context.put("cause", new ElementTag(cause));
         events.add(EventName);
 
         String determination = BukkitWorldScriptHelper.doEvents(events,

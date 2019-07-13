@@ -4,25 +4,25 @@ import com.denizenscript.denizen.scripts.commands.core.CooldownCommand;
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptHelper;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.dPlayer;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
-import com.denizenscript.denizencore.objects.dScript;
+import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.ScriptTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 
 public class BukkitScriptProperties implements Property {
 
-    public static boolean describes(dObject script) {
-        return script instanceof dScript;
+    public static boolean describes(ObjectTag script) {
+        return script instanceof ScriptTag;
     }
 
-    public static BukkitScriptProperties getFrom(dObject script) {
+    public static BukkitScriptProperties getFrom(ObjectTag script) {
         if (!describes(script)) {
             return null;
         }
         else {
-            return new BukkitScriptProperties((dScript) script);
+            return new BukkitScriptProperties((ScriptTag) script);
         }
     }
 
@@ -33,11 +33,11 @@ public class BukkitScriptProperties implements Property {
     public static final String[] handledMechs = new String[] {
     }; // None
 
-    private BukkitScriptProperties(dScript script) {
+    private BukkitScriptProperties(ScriptTag script) {
         this.script = script;
     }
 
-    dScript script;
+    ScriptTag script;
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -47,8 +47,8 @@ public class BukkitScriptProperties implements Property {
         }
 
         // <--[tag]
-        // @attribute <s@script.cooled_down[<player>]>
-        // @returns Element(Boolean)
+        // @attribute <ScriptTag.cooled_down[<player>]>
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the script is currently cooled down for the player. Any global
         // cooldown present on the script will also be taken into account. Not specifying a player will result in
@@ -58,7 +58,7 @@ public class BukkitScriptProperties implements Property {
             dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
                     : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
             if (player != null && player.isValid()) {
-                return new Element(CooldownCommand.checkCooldown(player, script.getContainer().getName()))
+                return new ElementTag(CooldownCommand.checkCooldown(player, script.getContainer().getName()))
                         .getAttribute(attribute.fulfill(1));
             }
             else {
@@ -67,8 +67,8 @@ public class BukkitScriptProperties implements Property {
         }
 
         // <--[tag]
-        // @attribute <s@script.cooldown[<player>]>
-        // @returns Duration
+        // @attribute <ScriptTag.cooldown[<player>]>
+        // @returns DurationTag
         // @description
         // Returns the time left for the player to cooldown for the script.
         // -->
@@ -82,8 +82,8 @@ public class BukkitScriptProperties implements Property {
 
 
         // <--[tag]
-        // @attribute <s@script.step[<player>]>
-        // @returns Element
+        // @attribute <ScriptTag.step[<player>]>
+        // @returns ElementTag
         // @description
         // Returns the name of a script step that the player is currently on.
         // Must be an INTERACT script.
@@ -93,7 +93,7 @@ public class BukkitScriptProperties implements Property {
                     : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
 
             if (player != null && player.isValid()) {
-                return new Element(InteractScriptHelper.getCurrentStep(player, script.getContainer().getName()))
+                return new ElementTag(InteractScriptHelper.getCurrentStep(player, script.getContainer().getName()))
                         .getAttribute(attribute.fulfill(1));
             }
         }

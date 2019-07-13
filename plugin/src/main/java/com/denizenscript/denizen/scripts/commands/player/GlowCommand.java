@@ -6,9 +6,9 @@ import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.CitizensAPI;
@@ -66,7 +66,7 @@ public class GlowCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("glowing")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Boolean)) {
@@ -77,7 +77,7 @@ public class GlowCommand extends AbstractCommand {
             }
         }
 
-        scriptEntry.defaultObject("glowing", new Element("true"));
+        scriptEntry.defaultObject("glowing", new ElementTag("true"));
 
         if (!Utilities.entryHasPlayer(scriptEntry)) {
             throw new InvalidArgumentsException("Must have a valid player link!");
@@ -92,7 +92,7 @@ public class GlowCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         final ArrayList<dEntity> entities = (ArrayList<dEntity>) scriptEntry.getObject("entities");
-        Element glowing = scriptEntry.getElement("glowing");
+        ElementTag glowing = scriptEntry.getElement("glowing");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

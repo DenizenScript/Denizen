@@ -3,7 +3,7 @@ package com.denizenscript.denizen.objects.properties.trade;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dTrade;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.inventory.ItemStack;
@@ -11,11 +11,11 @@ import org.bukkit.inventory.MerchantRecipe;
 
 public class TradeResult implements Property {
 
-    public static boolean describes(dObject recipe) {
+    public static boolean describes(ObjectTag recipe) {
         return recipe instanceof dTrade;
     }
 
-    public static TradeResult getFrom(dObject recipe) {
+    public static TradeResult getFrom(ObjectTag recipe) {
         if (!describes(recipe)) {
             return null;
         }

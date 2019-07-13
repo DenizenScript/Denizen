@@ -9,8 +9,8 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dScript;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ScriptTag;
 import com.denizenscript.denizencore.tags.TagManager;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -63,7 +63,7 @@ public class ItemScriptHelper implements Listener {
             // Process all tags in list
             for (int n = 0; n < recipeList.size(); n++) {
                 recipeList.set(n, TagManager.tag(recipeList.get(n), new BukkitTagContext(container.player, container.npc,
-                        false, null, Debug.shouldDebug(container), new dScript(container))));
+                        false, null, Debug.shouldDebug(container), new ScriptTag(container))));
             }
 
             // Store every ingredient in a List
@@ -99,12 +99,12 @@ public class ItemScriptHelper implements Listener {
             String string = entry.getValue();
 
             String list = TagManager.tag(string, new BukkitTagContext(container.player, container.npc,
-                    false, null, Debug.shouldDebug(container), new dScript(container)));
+                    false, null, Debug.shouldDebug(container), new ScriptTag(container)));
 
             List<dItem> ingredients = new ArrayList<>();
 
             boolean shouldRegister = true;
-            for (String element : dList.valueOf(list)) {
+            for (String element : ListTag.valueOf(list)) {
                 dItem ingredient = dItem.valueOf(element.replaceAll("[iImM]@", ""), container);
                 if (ingredient == null) {
                     Debug.echoError("Invalid dItem ingredient, shapeless recipe will not be registered for item script '"
@@ -270,7 +270,7 @@ public class ItemScriptHelper implements Listener {
                 PlayerCraftsItemScriptEvent scriptEvent = PlayerCraftsItemScriptEvent.instance;
                 scriptEvent.inventory = inventory;
                 scriptEvent.result = new dItem(inventory.getResult());
-                dList recipeList = new dList();
+                ListTag recipeList = new ListTag();
                 for (ItemStack item : inventory.getMatrix()) {
                     if (item != null) {
                         recipeList.add(new dItem(item.clone()).identify());
@@ -405,7 +405,7 @@ public class ItemScriptHelper implements Listener {
 
                         // Proceed only if the result was not null
                         if (result != null) {
-                            dList recipeList = new dList();
+                            ListTag recipeList = new ListTag();
                             for (ItemStack item : matrix) {
                                 if (item != null) {
                                     recipeList.add(new dItem(item).identify());

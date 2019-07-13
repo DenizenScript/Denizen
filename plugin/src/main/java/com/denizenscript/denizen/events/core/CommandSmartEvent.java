@@ -8,10 +8,10 @@ import com.denizenscript.denizen.scripts.containers.core.BukkitWorldScriptHelper
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.events.OldSmartEvent;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
@@ -61,7 +61,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
             if (m.matches()) {
                 String cmd = m.group(2);
                 if (cmd != null) {
-                    dList split = dList.valueOf(cmd);
+                    ListTag split = ListTag.valueOf(cmd);
                     for (String str : split) {
                         cmds.add(new CommandHandlerData(CoreUtilities.toLowerCase(str), cmd));
                     }
@@ -119,7 +119,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
     // @Context
     // <context.command> returns the command name as an Element.
     // <context.raw_args> returns any args used as an Element.
-    // <context.args> returns a dList of the arguments.
+    // <context.args> returns a ListTag of the arguments.
     // <context.server> returns true if the command was run from the console.
     // <context.command_block_location> returns the command block's location (if the command was run from one).
     // <context.command_minecart> returns the dEntity of the command minecart (if the command was run from one).
@@ -130,7 +130,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
     // -->
     @EventHandler
     public void playerCommandPreprocess(PlayerCommandPreprocessEvent event) {
-        Map<String, dObject> context = new HashMap<>();
+        Map<String, ObjectTag> context = new HashMap<>();
 
         String message = event.getMessage();
         String command = message.split(" ")[0].replace("/", "").toUpperCase();
@@ -144,7 +144,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
         // Look for cuboids that contain the block's location
         List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getPlayer().getLocation());
 
-        dList cuboid_context = new dList();
+        ListTag cuboid_context = new ListTag();
         List<String> cuboidEvents = new ArrayList<>();
         for (dCuboid cuboid : cuboids) {
             for (String str : events) {
@@ -162,12 +162,12 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
         List<String> args = Arrays.asList(ArgumentHelper.buildArgs(message.split(" ").length > 1 ? message.split(" ", 2)[1] : ""));
 
         // Fill context
-        context.put("args", new dList(args));
-        context.put("parsed_args", new dList(args));
-        context.put("command", new Element(command));
-        context.put("raw_args", new Element((message.split(" ").length > 1
+        context.put("args", new ListTag(args));
+        context.put("parsed_args", new ListTag(args));
+        context.put("command", new ElementTag(command));
+        context.put("raw_args", new ElementTag((message.split(" ").length > 1
                 ? message.split(" ", 2)[1] : "")));
-        context.put("server", new Element(false));
+        context.put("server", new ElementTag(false));
         String determination;
 
         // Run any event scripts and get the determination.
@@ -188,7 +188,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
             return;
         }
 
-        Map<String, dObject> context = new HashMap<>();
+        Map<String, ObjectTag> context = new HashMap<>();
 
         String message = event.getCommand();
         String command = event.getCommand().split(" ")[0].replace("/", "").toUpperCase();
@@ -202,11 +202,11 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
         List<String> parsed_args = Arrays.asList(ArgumentHelper.buildArgs(event.getCommand().split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : ""));
 
         // Fill context
-        context.put("args", new dList(args));
-        context.put("parsed_args", new dList(parsed_args));
-        context.put("command", new Element(command));
-        context.put("raw_args", new Element((message.split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : "")));
-        context.put("server", new Element(true));
+        context.put("args", new ListTag(args));
+        context.put("parsed_args", new ListTag(parsed_args));
+        context.put("command", new ElementTag(command));
+        context.put("raw_args", new ElementTag((message.split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : "")));
+        context.put("server", new ElementTag(true));
 
         CommandSender sender = event.getSender();
         if (sender instanceof BlockCommandSender) {

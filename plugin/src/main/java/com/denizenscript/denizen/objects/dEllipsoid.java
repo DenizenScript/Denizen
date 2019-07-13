@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class dEllipsoid implements dObject, Notable {
+public class dEllipsoid implements ObjectTag, Notable {
 
     // <--[language]
     // @name dEllipsoid
@@ -129,17 +129,17 @@ public class dEllipsoid implements dObject, Notable {
 
     private dLocation size;
 
-    public dList getBlocks() {
+    public ListTag getBlocks() {
         return getBlocks(null);
     }
 
-    public dList getBlocks(List<dMaterial> materials) {
+    public ListTag getBlocks(List<dMaterial> materials) {
         List<dLocation> initial = new dCuboid(new Location(loc.getWorld(),
                 loc.getX() - size.getX(), loc.getY() - size.getY(), loc.getZ() - size.getZ()),
                 new Location(loc.getWorld(),
                         loc.getX() + size.getX(), loc.getY() + size.getY(), loc.getZ() + size.getZ()))
                 .getBlocks_internal(materials);
-        dList list = new dList();
+        ListTag list = new ListTag();
         for (dLocation loc : initial) {
             if (contains(loc)) {
                 list.add(loc.identify());
@@ -241,7 +241,7 @@ public class dEllipsoid implements dObject, Notable {
     }
 
     @Override
-    public dObject setPrefix(String prefix) {
+    public ObjectTag setPrefix(String prefix) {
         if (prefix != null) {
             this.prefix = prefix;
         }
@@ -252,7 +252,7 @@ public class dEllipsoid implements dObject, Notable {
 
         // <--[tag]
         // @attribute <ellipsoid@ellipsoid.blocks[<material>|...]>
-        // @returns dList(dLocation)
+        // @returns ListTag(dLocation)
         // @description
         // Returns each block location within the dEllipsoid.
         // Optionally, specify a list of materials to only return locations
@@ -260,13 +260,13 @@ public class dEllipsoid implements dObject, Notable {
         // -->
         registerTag("blocks", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 if (attribute.hasContext(1)) {
-                    return new dList(((dEllipsoid) object).getBlocks(dList.valueOf(attribute.getContext(1)).filter(dMaterial.class, attribute.context)))
+                    return new ListTag(((dEllipsoid) object).getBlocks(ListTag.valueOf(attribute.getContext(1)).filter(dMaterial.class, attribute.context)))
                             .getAttribute(attribute.fulfill(1));
                 }
                 else {
-                    return new dList(((dEllipsoid) object).getBlocks())
+                    return new ListTag(((dEllipsoid) object).getBlocks())
                             .getAttribute(attribute.fulfill(1));
                 }
             }
@@ -281,7 +281,7 @@ public class dEllipsoid implements dObject, Notable {
         // -->
         registerTag("location", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 return ((dEllipsoid) object).loc.getAttribute(attribute.fulfill(1));
             }
         });
@@ -294,22 +294,22 @@ public class dEllipsoid implements dObject, Notable {
         // -->
         registerTag("size", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 return ((dEllipsoid) object).size.getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <ellipsoid@ellipsoid.type>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Always returns 'Ellipsoid' for dEllipsoid objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         registerTag("type", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element("Ellipsoid").getAttribute(attribute.fulfill(1));
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag("Ellipsoid").getAttribute(attribute.fulfill(1));
             }
         });
     }
@@ -342,7 +342,7 @@ public class dEllipsoid implements dObject, Notable {
             return returned;
         }
 
-        return new Element(identify()).getAttribute(attribute);
+        return new ElementTag(identify()).getAttribute(attribute);
     }
 
 }

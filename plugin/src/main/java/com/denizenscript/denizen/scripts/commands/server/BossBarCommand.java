@@ -5,9 +5,9 @@ import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -96,7 +96,7 @@ public class BossBarCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("flags")
                     && arg.matchesPrefix("flags", "flag", "f")
                     && arg.matchesEnumList(BarFlag.values())) {
-                scriptEntry.addObject("flags", arg.asType(dList.class));
+                scriptEntry.addObject("flags", arg.asType(ListTag.class));
             }
             else if (!scriptEntry.hasObject("action")
                     && arg.matchesEnum(Action.values())) {
@@ -105,7 +105,7 @@ public class BossBarCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("players")
                     && arg.matchesPrefix("players")
                     && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("players", arg.asType(dList.class));
+                scriptEntry.addObject("players", arg.asType(ListTag.class));
             }
             else if (!scriptEntry.hasObject("id")) {
                 scriptEntry.addObject("id", arg.asElement());
@@ -123,14 +123,14 @@ public class BossBarCommand extends AbstractCommand {
                 && !scriptEntry.hasObject("players")) {
             BukkitScriptEntryData data = (BukkitScriptEntryData) scriptEntry.entryData;
             if (data.hasPlayer() && data.getPlayer().isOnline()) {
-                scriptEntry.addObject("players", new dList(Collections.singleton(data.getPlayer().identify())));
+                scriptEntry.addObject("players", new ListTag(Collections.singleton(data.getPlayer().identify())));
             }
             else {
                 throw new InvalidArgumentsException("Must specify valid player(s)!");
             }
         }
 
-        scriptEntry.defaultObject("action", new Element("CREATE"));
+        scriptEntry.defaultObject("action", new ElementTag("CREATE"));
     }
 
     public final static Map<String, BossBar> bossBarMap = new HashMap<>();
@@ -138,14 +138,14 @@ public class BossBarCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        Element id = scriptEntry.getElement("id");
-        Element action = scriptEntry.getElement("action");
-        dList players = scriptEntry.getdObject("players");
-        Element title = scriptEntry.getElement("title");
-        Element progress = scriptEntry.getElement("progress");
-        Element color = scriptEntry.getElement("color");
-        Element style = scriptEntry.getElement("style");
-        dList flags = scriptEntry.getdObject("flags");
+        ElementTag id = scriptEntry.getElement("id");
+        ElementTag action = scriptEntry.getElement("action");
+        ListTag players = scriptEntry.getdObject("players");
+        ElementTag title = scriptEntry.getElement("title");
+        ElementTag progress = scriptEntry.getElement("progress");
+        ElementTag color = scriptEntry.getElement("color");
+        ElementTag style = scriptEntry.getElement("style");
+        ListTag flags = scriptEntry.getdObject("flags");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

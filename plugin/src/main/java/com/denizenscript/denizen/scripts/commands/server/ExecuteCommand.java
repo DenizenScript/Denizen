@@ -8,9 +8,9 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -65,32 +65,32 @@ public class ExecuteCommand extends AbstractCommand {
                 if (!Utilities.entryHasPlayer(scriptEntry)) {
                     throw new InvalidArgumentsException("Must have a Player link when using AS_PLAYER.");
                 }
-                scriptEntry.addObject("type", new Element("AS_PLAYER"));
+                scriptEntry.addObject("type", new ElementTag("AS_PLAYER"));
             }
             else if (arg.matches("ASOPPLAYER", "ASOP", "AS_OP", "AS_OP_PLAYER", "OP")
                     && !scriptEntry.hasObject("type")) {
                 if (!Utilities.entryHasPlayer(scriptEntry)) {
                     throw new InvalidArgumentsException("Must have a Player link when using AS_OP.");
                 }
-                scriptEntry.addObject("type", new Element("AS_OP"));
+                scriptEntry.addObject("type", new ElementTag("AS_OP"));
             }
             else if (arg.matches("ASNPC", "AS_NPC", "NPC")
                     && !scriptEntry.hasObject("type")) {
                 if (!Utilities.entryHasNPC(scriptEntry)) {
                     throw new InvalidArgumentsException("Must have a NPC link when using AS_NPC.");
                 }
-                scriptEntry.addObject("type", new Element("AS_NPC"));
+                scriptEntry.addObject("type", new ElementTag("AS_NPC"));
             }
             else if (arg.matches("ASSERVER", "AS_SERVER", "SERVER")
                     && !scriptEntry.hasObject("type")) {
-                scriptEntry.addObject("type", new Element("AS_SERVER"));
+                scriptEntry.addObject("type", new ElementTag("AS_SERVER"));
             }
             else if (!scriptEntry.hasObject("silent")
                     && arg.matches("silent")) {
-                scriptEntry.addObject("silent", new Element("true"));
+                scriptEntry.addObject("silent", new ElementTag("true"));
             }
             else if (!scriptEntry.hasObject("command")) {
-                scriptEntry.addObject("command", new Element(arg.raw_value));
+                scriptEntry.addObject("command", new ElementTag(arg.raw_value));
             }
             else {
                 arg.reportUnhandled();
@@ -105,16 +105,16 @@ public class ExecuteCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Missing command text!");
         }
 
-        scriptEntry.defaultObject("silent", new Element("false"));
+        scriptEntry.defaultObject("silent", new ElementTag("false"));
 
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        Element cmd = scriptEntry.getElement("command");
-        Element type = scriptEntry.getElement("type");
-        Element silent = scriptEntry.getElement("silent");
+        ElementTag cmd = scriptEntry.getElement("command");
+        ElementTag type = scriptEntry.getElement("type");
+        ElementTag silent = scriptEntry.getElement("silent");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
@@ -212,7 +212,7 @@ public class ExecuteCommand extends AbstractCommand {
                 ServerCommandEvent sce = new ServerCommandEvent(dcs, command);
                 Bukkit.getPluginManager().callEvent(sce);
                 DenizenAPI.getCurrentInstance().getServer().dispatchCommand(dcs, sce.getCommand());
-                scriptEntry.addObject("output", new dList(dcs.getOutput()));
+                scriptEntry.addObject("output", new ListTag(dcs.getOutput()));
                 break;
         }
     }

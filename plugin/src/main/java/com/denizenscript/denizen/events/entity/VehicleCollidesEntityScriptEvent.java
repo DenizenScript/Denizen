@@ -4,8 +4,8 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -100,7 +100,7 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("vehicle")) {
             return vehicle;
         }
@@ -108,7 +108,7 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
             return entity;
         }
         else if (name.equals("pickup")) {
-            return new Element(!pickup_cancel);
+            return new ElementTag(!pickup_cancel);
         }
         return super.getContext(name);
     }

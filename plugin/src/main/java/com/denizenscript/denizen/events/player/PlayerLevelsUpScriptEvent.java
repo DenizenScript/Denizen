@@ -4,9 +4,9 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -26,8 +26,8 @@ public class PlayerLevelsUpScriptEvent extends BukkitScriptEvent implements List
     // @Triggers when a player levels up.
     //
     // @Context
-    // <context.new_level> returns an Element of the player's new level.
-    // <context.old_level> returns an Element of the player's old level.
+    // <context.new_level> returns an ElementTag of the player's new level.
+    // <context.old_level> returns an ElementTag of the player's old level.
     //
     // -->
 
@@ -85,12 +85,12 @@ public class PlayerLevelsUpScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("level") || name.equals("new_level")) {
-            return new Element(new_level);
+            return new ElementTag(new_level);
         }
         else if (name.equals("old_level")) {
-            return new Element(old_level);
+            return new ElementTag(old_level);
         }
         return super.getContext(name);
     }

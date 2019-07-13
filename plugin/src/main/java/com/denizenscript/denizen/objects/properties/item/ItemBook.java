@@ -3,11 +3,11 @@ package com.denizenscript.denizen.objects.properties.item;
 import com.denizenscript.denizen.utilities.MaterialCompat;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.core.EscapeTags;
@@ -20,12 +20,12 @@ import java.util.ArrayList;
 
 public class ItemBook implements Property {
 
-    public static boolean describes(dObject item) {
+    public static boolean describes(ObjectTag item) {
         Material material = ((dItem) item).getItemStack().getType();
         return (material == Material.WRITTEN_BOOK || material == MaterialCompat.WRITABLE_BOOK);
     }
 
-    public static ItemBook getFrom(dObject _item) {
+    public static ItemBook getFrom(ObjectTag _item) {
         if (!describes(_item)) {
             return null;
         }
@@ -64,67 +64,67 @@ public class ItemBook implements Property {
 
                 // <--[tag]
                 // @attribute <i@item.book.author>
-                // @returns Element
+                // @returns ElementTag
                 // @mechanism dItem.book
                 // @group properties
                 // @description
                 // Returns the author of the book.
                 // -->
                 if (attribute.startsWith("author")) {
-                    return new Element(bookInfo.getAuthor())
+                    return new ElementTag(bookInfo.getAuthor())
                             .getAttribute(attribute.fulfill(1));
                 }
 
                 // <--[tag]
                 // @attribute <i@item.book.title>
-                // @returns Element
+                // @returns ElementTag
                 // @mechanism dItem.book
                 // @group properties
                 // @description
                 // Returns the title of the book.
                 // -->
                 if (attribute.startsWith("title")) {
-                    return new Element(bookInfo.getTitle())
+                    return new ElementTag(bookInfo.getTitle())
                             .getAttribute(attribute.fulfill(1));
                 }
             }
 
             // <--[tag]
             // @attribute <i@item.book.page_count>
-            // @returns Element(Number)
+            // @returns ElementTag(Number)
             // @mechanism dItem.book
             // @group properties
             // @description
             // Returns the number of pages in the book.
             // -->
             if (attribute.startsWith("page_count")) {
-                return new Element(bookInfo.getPageCount())
+                return new ElementTag(bookInfo.getPageCount())
                         .getAttribute(attribute.fulfill(1));
             }
 
             // <--[tag]
             // @attribute <i@item.book.page[<#>]>
-            // @returns Element
+            // @returns ElementTag
             // @mechanism dItem.book
             // @group properties
             // @description
             // Returns the page specified from the book as an element.
             // -->
             if ((attribute.startsWith("page") || attribute.startsWith("get_page")) && attribute.hasContext(1) && ArgumentHelper.matchesInteger(attribute.getContext(1))) {
-                return new Element(bookInfo.getPage(attribute.getIntContext(1)))
+                return new ElementTag(bookInfo.getPage(attribute.getIntContext(1)))
                         .getAttribute(attribute.fulfill(1));
             }
 
             // <--[tag]
             // @attribute <i@item.book.raw_page[<#>]>
-            // @returns Element
+            // @returns ElementTag
             // @mechanism dItem.book
             // @group properties
             // @description
             // Returns the page specified from the book as an element containing raw JSON.
             // -->
             if ((attribute.startsWith("raw_page") || attribute.startsWith("get_raw_page")) && attribute.hasContext(1) && ArgumentHelper.matchesInteger(attribute.getContext(1))) {
-                return new Element(ComponentSerializer.toString(bookInfo.spigot().getPage(attribute.getIntContext(1))))
+                return new ElementTag(ComponentSerializer.toString(bookInfo.spigot().getPage(attribute.getIntContext(1))))
                         .getAttribute(attribute.fulfill(1));
             }
 
@@ -134,34 +134,34 @@ public class ItemBook implements Property {
                 for (String page : bookInfo.getPages()) {
                     output.append(EscapeTags.escape(page)).append("|");
                 }
-                return new dList(output.length() > 0 ?
+                return new ListTag(output.length() > 0 ?
                         output.substring(0, output.length() - 1) : output.toString())
                         .getAttribute(attribute.fulfill(2));
             }
 
             // <--[tag]
             // @attribute <i@item.book.pages>
-            // @returns dList
+            // @returns ListTag
             // @mechanism dItem.book
             // @group properties
             // @description
-            // Returns the plain-text pages of the book as a dList.
+            // Returns the plain-text pages of the book as a ListTag.
             // -->
             if (attribute.startsWith("pages")) {
-                return new dList(bookInfo.getPages())
+                return new ListTag(bookInfo.getPages())
                         .getAttribute(attribute.fulfill(1));
             }
 
             // <--[tag]
             // @attribute <i@item.book.raw_pages>
-            // @returns dList
+            // @returns ListTag
             // @mechanism dItem.book
             // @group properties
             // @description
-            // Returns the pages of the book as a dList of raw JSON.
+            // Returns the pages of the book as a ListTag of raw JSON.
             // -->
             if (attribute.startsWith("raw_pages")) {
-                dList output = new dList();
+                ListTag output = new ListTag();
                 for (BaseComponent[] page : bookInfo.spigot().getPages()) {
                     output.add(ComponentSerializer.toString(page));
                 }
@@ -170,7 +170,7 @@ public class ItemBook implements Property {
 
             // <--[tag]
             // @attribute <i@item.book>
-            // @returns Element
+            // @returns ElementTag
             // @mechanism dItem.book
             // @group properties
             // @description
@@ -184,7 +184,7 @@ public class ItemBook implements Property {
             if (output == null) {
                 output = "null";
             }
-            return new Element(output)
+            return new ElementTag(output)
                     .getAttribute(attribute);
         }
 
@@ -228,7 +228,7 @@ public class ItemBook implements Property {
         // <--[mechanism]
         // @object dItem
         // @name book_raw_pages
-        // @input dList
+        // @input ListTag
         // @description
         // Changes the raw JSON pages of a book item.
         // See <@link language Property Escaping>
@@ -240,7 +240,7 @@ public class ItemBook implements Property {
 
         if (mechanism.matches("book_raw_pages")) {
             BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
-            dList data = mechanism.valueAsType(dList.class);
+            ListTag data = mechanism.valueAsType(ListTag.class);
             ArrayList<BaseComponent[]> newPages = new ArrayList<>();
             for (String str : data) {
                 newPages.add(ComponentSerializer.parse(EscapeTags.unEscape(str)));
@@ -252,7 +252,7 @@ public class ItemBook implements Property {
         // <--[mechanism]
         // @object dItem
         // @name book_pages
-        // @input dList
+        // @input ListTag
         // @description
         // Changes the plain-text pages of a book item.
         // See <@link language Property Escaping>
@@ -264,7 +264,7 @@ public class ItemBook implements Property {
 
         if (mechanism.matches("book_pages")) {
             BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
-            dList data = mechanism.valueAsType(dList.class);
+            ListTag data = mechanism.valueAsType(ListTag.class);
             ArrayList<String> newPages = new ArrayList<>();
             for (String str : data) {
                 newPages.add(EscapeTags.unEscape(str));
@@ -336,7 +336,7 @@ public class ItemBook implements Property {
 
         if (mechanism.matches("book")) {
             BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
-            dList data = mechanism.valueAsType(dList.class);
+            ListTag data = mechanism.valueAsType(ListTag.class);
             if (data.size() < 2) {
                 Debug.echoError("Invalid book input!");
             }

@@ -115,15 +115,15 @@ public class InventoryCommand extends AbstractCommand {
 
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
-            // Check for a dList of actions
+            // Check for a ListTag of actions
             if (!scriptEntry.hasObject("actions")
                     && arg.matchesEnumList(Action.values())) {
-                scriptEntry.addObject("actions", arg.asType(dList.class).filter(Action.values()));
+                scriptEntry.addObject("actions", arg.asType(ListTag.class).filter(Action.values()));
                 isAdjust = arg.toString().equalsIgnoreCase("adjust");
             }
 
             // Check for an origin, which can be a dInventory, dEntity, dLocation
-            // or a dList of dItems
+            // or a ListTag of dItems
             else if (!scriptEntry.hasObject("origin")
                     && arg.matchesPrefix("origin", "o", "source", "items", "item", "i", "from", "f")
                     && (arg.matchesArgumentTypes(dInventory.class, dEntity.class, dLocation.class)
@@ -148,7 +148,7 @@ public class InventoryCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("mechanism")
                     && isAdjust) {
                 if (arg.hasPrefix()) {
-                    scriptEntry.addObject("mechanism", new Element(arg.getPrefix().getValue()));
+                    scriptEntry.addObject("mechanism", new ElementTag(arg.getPrefix().getValue()));
                     scriptEntry.addObject("mechanism_value", arg.asElement());
                 }
                 else {
@@ -174,7 +174,7 @@ public class InventoryCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Inventory adjust must have an explicit slot!");
         }
 
-        scriptEntry.defaultObject("slot", new Element(1));
+        scriptEntry.defaultObject("slot", new ElementTag(1));
 
         scriptEntry.defaultObject("destination",
                 Utilities.entryHasPlayer(scriptEntry) ?
@@ -196,9 +196,9 @@ public class InventoryCommand extends AbstractCommand {
         dInventory origin = originentry != null ? originentry.getValue() : null;
         AbstractMap.SimpleEntry<Integer, dInventory> destinationentry = (AbstractMap.SimpleEntry<Integer, dInventory>) scriptEntry.getObject("destination");
         dInventory destination = destinationentry.getValue();
-        Element slot = scriptEntry.getElement("slot");
-        Element mechanism = scriptEntry.getElement("mechanism");
-        Element mechanismValue = scriptEntry.getElement("mechanism_value");
+        ElementTag slot = scriptEntry.getElement("slot");
+        ElementTag mechanism = scriptEntry.getElement("mechanism");
+        ElementTag mechanismValue = scriptEntry.getElement("mechanism_value");
 
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),

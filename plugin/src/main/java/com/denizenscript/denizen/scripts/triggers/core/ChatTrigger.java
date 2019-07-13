@@ -12,9 +12,9 @@ import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.commands.queue.DetermineCommand;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -105,7 +105,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
     //
     // @Determine
     // "CANCELLED" to stop the player from chatting.
-    // Element to change the message.
+    // ElementTag to change the message.
     //
     // -->
     public ChatContext process(Player player, String message) {
@@ -174,8 +174,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // Denizen should be good to interact with. Let's get the script.
         InteractScriptContainer script = npc.getInteractScript(denizenPlayer, ChatTrigger.class);
 
-        Map<String, dObject> context = new HashMap<>();
-        context.put("message", new Element(message));
+        Map<String, ObjectTag> context = new HashMap<>();
+        context.put("message", new ElementTag(message));
 
         //
         // Fire the Actions!
@@ -307,7 +307,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                             regexId = entry.getKey();
                             regexMessage = triggerText.replace(matcher.group(), m.group());
                             Debug.log("entry value: " + triggerText + "  keyword: " + keyword + "  m.group: " + m.group() + "  matcher.group: " + matcher.group());
-                            context.put("keyword", new Element(m.group()));
+                            context.put("keyword", new ElementTag(m.group()));
                             if (replace != null) {
                                 regexMessage = replace;
                             }
@@ -319,7 +319,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                                 id = entry.getKey();
                                 replacementText = triggerText.replace("/", "");
                                 matched = true;
-                                context.put("keyword", new Element(subkeyword));
+                                context.put("keyword", new ElementTag(subkeyword));
                                 if (replace != null) {
                                     replacementText = replace;
                                 }

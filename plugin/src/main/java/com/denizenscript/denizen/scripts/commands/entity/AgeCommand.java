@@ -5,9 +5,9 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.properties.entity.EntityAge;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
@@ -57,7 +57,7 @@ public class AgeCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("agetype")
                     && arg.matchesEnum(AgeType.values())) {
@@ -69,7 +69,7 @@ public class AgeCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("lock")
                     && arg.matches("lock")) {
-                scriptEntry.addObject("lock", new Element(true));
+                scriptEntry.addObject("lock", new ElementTag(true));
             }
             else {
                 arg.reportUnhandled();
@@ -82,7 +82,7 @@ public class AgeCommand extends AbstractCommand {
         }
 
         // Use default age if one is not specified
-        scriptEntry.defaultObject("age", new Element(1));
+        scriptEntry.defaultObject("age", new ElementTag(1));
 
     }
 

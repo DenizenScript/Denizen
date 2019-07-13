@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class dColor implements dObject {
+public class dColor implements ObjectTag {
 
     // <--[language]
     // @name dColor
@@ -212,7 +212,7 @@ public class dColor implements dObject {
     }
 
     @Override
-    public dObject setPrefix(String prefix) {
+    public ObjectTag setPrefix(String prefix) {
         if (prefix != null) {
             this.prefix = prefix;
         }
@@ -223,122 +223,122 @@ public class dColor implements dObject {
 
         // <--[tag]
         // @attribute <co@color.red>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the red value of this color.
         // -->
         registerTag("red", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dColor) object).color.getRed()).getAttribute(attribute.fulfill(1));
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dColor) object).color.getRed()).getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <co@color.green>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the green value of this color.
         // -->
         registerTag("green", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dColor) object).color.getGreen()).getAttribute(attribute.fulfill(1));
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dColor) object).color.getGreen()).getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <co@color.blue>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the blue value of this color.
         // -->
         registerTag("blue", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dColor) object).color.getBlue()).getAttribute(attribute.fulfill(1));
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dColor) object).color.getBlue()).getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <co@color.rgb>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the RGB value of this color.
         // EG, 255,0,255
         // -->
         registerTag("rgb", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 Color color = ((dColor) object).color;
-                return new Element(color.getRed() + "," + color.getGreen() + "," + color.getBlue()).getAttribute(attribute.fulfill(1));
+                return new ElementTag(color.getRed() + "," + color.getGreen() + "," + color.getBlue()).getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <co@color.hue>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the hue value of this color.
         // -->
         registerTag("hue", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dColor) object).ToHSB()[0]).getAttribute(attribute.fulfill(1));
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dColor) object).ToHSB()[0]).getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <co@color.saturation>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the saturation value of this color.
         // -->
         registerTag("saturation", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dColor) object).ToHSB()[1]).getAttribute(attribute.fulfill(1));
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dColor) object).ToHSB()[1]).getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <co@color.brightness>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the brightness value of this color.
         // -->
         registerTag("brightness", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dColor) object).ToHSB()[2]).getAttribute(attribute.fulfill(1));
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dColor) object).ToHSB()[2]).getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <co@color.hsv>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the HSV value of this color.
         // EG, 100,100,255
         // -->
         registerTag("hsv", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 int[] HSV = ((dColor) object).ToHSB();
-                return new Element(HSV[1] + "," + HSV[1] + "," + HSV[2]).getAttribute(attribute.fulfill(1));
+                return new ElementTag(HSV[1] + "," + HSV[1] + "," + HSV[2]).getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <co@color.name>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the name of this color (or red,green,blue if none).
         // -->
         registerTag("name", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(object.identify().substring(3)).getAttribute(attribute.fulfill(1));
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(object.identify().substring(3)).getAttribute(attribute.fulfill(1));
             }
         });
 
@@ -350,9 +350,9 @@ public class dColor implements dObject {
         // -->
         registerTag("mix", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
-                    Debug.echoError("The tag li@list.insert[...] must have a value.");
+                    Debug.echoError("The tag ListTag.insert[...] must have a value.");
                     return null;
                 }
                 dColor mixed_with = dColor.valueOf(attribute.getContext(1));
@@ -374,7 +374,7 @@ public class dColor implements dObject {
         // -->
         registerTag("to_particle_offset", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 Color valid = ((dColor) object).color;
                 if (valid.asRGB() == 0) {
                     valid = Color.fromRGB(1, 0, 0);
@@ -386,15 +386,15 @@ public class dColor implements dObject {
 
         // <--[tag]
         // @attribute <co@color.type>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Always returns 'Color' for dColor objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         registerTag("type", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element("Color").getAttribute(attribute.fulfill(1));
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag("Color").getAttribute(attribute.fulfill(1));
             }
         });
 
@@ -427,7 +427,7 @@ public class dColor implements dObject {
             return returned;
         }
 
-        return new Element(identify()).getAttribute(attribute);
+        return new ElementTag(identify()).getAttribute(attribute);
     }
 
     int[] ToHSB() {

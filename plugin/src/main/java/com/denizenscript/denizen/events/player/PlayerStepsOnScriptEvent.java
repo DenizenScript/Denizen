@@ -4,8 +4,8 @@ import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -84,7 +84,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("location")) {
             return location;
         }
@@ -96,7 +96,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
         }
         else if (name.equals("cuboids")) {
             Debug.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
-            dList cuboids = new dList();
+            ListTag cuboids = new ListTag();
             for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
                 cuboids.add(cuboid.identifySimple());
             }

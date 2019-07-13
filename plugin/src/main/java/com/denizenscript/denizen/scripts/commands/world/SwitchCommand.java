@@ -67,15 +67,15 @@ public class SwitchCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("locations") &&
                     arg.matchesArgumentList(dLocation.class)) {
-                scriptEntry.addObject("locations", arg.asType(dList.class));
+                scriptEntry.addObject("locations", arg.asType(ListTag.class));
             }
             else if (!scriptEntry.hasObject("duration") &&
-                    arg.matchesArgumentType(Duration.class)) {
-                scriptEntry.addObject("duration", arg.asType(Duration.class));
+                    arg.matchesArgumentType(DurationTag.class)) {
+                scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
             else if (!scriptEntry.hasObject("state") &&
                     arg.matchesEnum(SwitchState.values())) {
-                scriptEntry.addObject("switchstate", new Element(arg.getValue().toUpperCase()));
+                scriptEntry.addObject("switchstate", new ElementTag(arg.getValue().toUpperCase()));
             }
             else {
                 arg.reportUnhandled();
@@ -86,14 +86,14 @@ public class SwitchCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify a location!");
         }
 
-        scriptEntry.defaultObject("duration", new Duration(0));
-        scriptEntry.defaultObject("switchstate", new Element("TOGGLE"));
+        scriptEntry.defaultObject("duration", new DurationTag(0));
+        scriptEntry.defaultObject("switchstate", new ElementTag("TOGGLE"));
     }
 
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-        final dList interactLocations = scriptEntry.getdObject("locations");
-        long duration = ((Duration) scriptEntry.getObject("duration")).getTicks();
+        final ListTag interactLocations = scriptEntry.getdObject("locations");
+        long duration = ((DurationTag) scriptEntry.getObject("duration")).getTicks();
         final SwitchState switchState = SwitchState.valueOf(scriptEntry.getElement("switchstate").asString());
 
         final Player player = Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getPlayerEntity() : null;

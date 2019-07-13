@@ -2,20 +2,20 @@ package com.denizenscript.denizen.objects.properties.inventory;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dInventory;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 
 public class InventoryTitle implements Property {
 
-    public static boolean describes(dObject inventory) {
+    public static boolean describes(ObjectTag inventory) {
         // All inventories could possibly have a title
         return inventory instanceof dInventory;
     }
 
-    public static InventoryTitle getFrom(dObject inventory) {
+    public static InventoryTitle getFrom(ObjectTag inventory) {
         if (!describes(inventory)) {
             return null;
         }
@@ -87,14 +87,14 @@ public class InventoryTitle implements Property {
 
         // <--[tag]
         // @attribute <in@inventory.title>
-        // @returns Element
+        // @returns ElementTag
         // @group properties
         // @mechanism dInventory.title
         // @description
         // Returns the title of the inventory.
         // -->
         if (attribute.startsWith("title")) {
-            return new Element(getTitle()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getTitle()).getAttribute(attribute.fulfill(1));
         }
 
         return null;

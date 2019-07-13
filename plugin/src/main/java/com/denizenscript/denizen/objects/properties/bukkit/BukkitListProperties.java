@@ -3,29 +3,29 @@ package com.denizenscript.denizen.objects.properties.bukkit;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dPlayer;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 
 public class BukkitListProperties implements Property {
-    public static boolean describes(dObject list) {
-        return list instanceof dList;
+    public static boolean describes(ObjectTag list) {
+        return list instanceof ListTag;
     }
 
-    public static BukkitListProperties getFrom(dObject list) {
+    public static BukkitListProperties getFrom(ObjectTag list) {
         if (!describes(list)) {
             return null;
         }
         else {
-            return new BukkitListProperties((dList) list);
+            return new BukkitListProperties((ListTag) list);
         }
     }
 
 
-    private BukkitListProperties(dList list) {
+    private BukkitListProperties(ListTag list) {
         this.list = list;
     }
 
@@ -35,21 +35,21 @@ public class BukkitListProperties implements Property {
 
     public static final String[] handledMechs = new String[] {
     }; // None
-    dList list;
+    ListTag list;
 
     @Override
     public String getAttribute(Attribute attribute) {
 
         // <--[tag]
-        // @attribute <li@list.formatted>
-        // @returns Element
+        // @attribute <ListTag.formatted>
+        // @returns ElementTag
         // @description
         // Returns the list in a human-readable format.
         // EG, a list of "n@3|p@bob|potato" will return "GuardNPC, bob, and potato".
         // -->
         if (attribute.startsWith("formatted")) {
             if (list.isEmpty()) {
-                return new Element("").getAttribute(attribute.fulfill(1));
+                return new ElementTag("").getAttribute(attribute.fulfill(1));
             }
             StringBuilder dScriptArg = new StringBuilder();
 
@@ -84,13 +84,13 @@ public class BukkitListProperties implements Property {
                 }
             }
 
-            return new Element(dScriptArg.toString().substring(0, dScriptArg.length() - 2))
+            return new ElementTag(dScriptArg.toString().substring(0, dScriptArg.length() - 2))
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <fl@flag_name.expiration>
-        // @returns Duration
+        // @returns DurationTag
         // @description
         // Returns a Duration of the time remaining on the flag, if it
         // has an expiration.

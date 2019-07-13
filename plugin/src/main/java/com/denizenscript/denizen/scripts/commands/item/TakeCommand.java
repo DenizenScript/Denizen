@@ -9,9 +9,9 @@ import com.denizenscript.denizen.objects.dInventory;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Material;
@@ -90,7 +90,7 @@ public class TakeCommand extends AbstractCommand {
                     && !scriptEntry.hasObject("items")
                     && arg.matchesPrefix("bycover")) {
                 scriptEntry.addObject("type", Type.BYCOVER);
-                scriptEntry.addObject("cover", arg.asType(dList.class));
+                scriptEntry.addObject("cover", arg.asType(ListTag.class));
             }
             else if (!scriptEntry.hasObject("type")
                     && !scriptEntry.hasObject("items")
@@ -107,7 +107,7 @@ public class TakeCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("items")
                     && !scriptEntry.hasObject("type")
                     && arg.matchesArgumentList(dItem.class)) {
-                scriptEntry.addObject("items", dList.valueOf(arg.raw_value.replace("item:", "")).filter(dItem.class, scriptEntry));
+                scriptEntry.addObject("items", ListTag.valueOf(arg.raw_value.replace("item:", "")).filter(dItem.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("inventory")
                     && arg.matchesPrefix("f", "from")
@@ -126,7 +126,7 @@ public class TakeCommand extends AbstractCommand {
         }
 
         scriptEntry.defaultObject("type", Type.ITEM)
-                .defaultObject("qty", new Element(1));
+                .defaultObject("qty", new ElementTag(1));
 
         Type type = (Type) scriptEntry.getObject("type");
 
@@ -148,12 +148,12 @@ public class TakeCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         dInventory inventory = (dInventory) scriptEntry.getObject("inventory");
-        Element qty = scriptEntry.getElement("qty");
-        Element displayname = scriptEntry.getElement("displayname");
+        ElementTag qty = scriptEntry.getElement("qty");
+        ElementTag displayname = scriptEntry.getElement("displayname");
         dItem scriptitem = scriptEntry.getdObject("scriptitem");
-        Element slot = scriptEntry.getElement("slot");
-        dList titleAuthor = scriptEntry.getdObject("cover");
-        Element nbtKey = scriptEntry.getElement("nbt_key");
+        ElementTag slot = scriptEntry.getElement("slot");
+        ListTag titleAuthor = scriptEntry.getdObject("cover");
+        ElementTag nbtKey = scriptEntry.getElement("nbt_key");
         Type type = (Type) scriptEntry.getObject("type");
 
         Object items_object = scriptEntry.getObject("items");

@@ -2,18 +2,18 @@ package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 
 public class EntityBodyArrows implements Property {
-    public static boolean describes(dObject object) {
+    public static boolean describes(ObjectTag object) {
         return object instanceof dEntity && ((dEntity) object).isLivingEntity();
     }
 
-    public static EntityBodyArrows getFrom(dObject object) {
+    public static EntityBodyArrows getFrom(ObjectTag object) {
         if (!describes(object)) {
             return null;
         }
@@ -73,7 +73,7 @@ public class EntityBodyArrows implements Property {
 
         // <--[tag]
         // @attribute <e@entity.body_arrows>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @mechanism dEntity.body_arrows
         // @group properties
         // @description
@@ -81,7 +81,7 @@ public class EntityBodyArrows implements Property {
         // Note: Body arrows will only be visible for players or player-type npcs.
         // -->
         if (attribute.startsWith("body_arrows")) {
-            return new Element(getBodyArrows())
+            return new ElementTag(getBodyArrows())
                     .getAttribute(attribute.fulfill(1));
         }
 

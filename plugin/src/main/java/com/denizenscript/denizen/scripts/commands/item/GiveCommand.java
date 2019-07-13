@@ -9,9 +9,9 @@ import com.denizenscript.denizen.objects.dInventory;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Material;
@@ -69,7 +69,7 @@ public class GiveCommand extends AbstractCommand {
                     && arg.matchesPrefix("q", "qty", "quantity")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
                 scriptEntry.addObject("qty", arg.asElement());
-                scriptEntry.addObject("set_quantity", new Element(true));
+                scriptEntry.addObject("set_quantity", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("type")
                     && arg.matches("money", "coins")) {
@@ -81,16 +81,16 @@ public class GiveCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("engrave")
                     && arg.matches("engrave")) {
-                scriptEntry.addObject("engrave", new Element(true));
+                scriptEntry.addObject("engrave", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("unlimit_stack_size")
                     && arg.matches("unlimit_stack_size")) {
-                scriptEntry.addObject("unlimit_stack_size", new Element(true));
+                scriptEntry.addObject("unlimit_stack_size", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("items")
                     && !scriptEntry.hasObject("type")
                     && (arg.matchesArgumentList(dItem.class) || arg.startsWith("item:"))) {
-                scriptEntry.addObject("items", dList.valueOf(arg.raw_value.startsWith("item:") ?
+                scriptEntry.addObject("items", ListTag.valueOf(arg.raw_value.startsWith("item:") ?
                         arg.raw_value.substring("item:".length()) : arg.raw_value).filter(dItem.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("inventory")
@@ -109,10 +109,10 @@ public class GiveCommand extends AbstractCommand {
         }
 
         scriptEntry.defaultObject("type", Type.ITEM)
-                .defaultObject("engrave", new Element(false))
-                .defaultObject("unlimit_stack_size", new Element(false))
-                .defaultObject("qty", new Element(1))
-                .defaultObject("slot", new Element(1));
+                .defaultObject("engrave", new ElementTag(false))
+                .defaultObject("unlimit_stack_size", new ElementTag(false))
+                .defaultObject("qty", new ElementTag(1))
+                .defaultObject("slot", new ElementTag(1));
 
         Type type = (Type) scriptEntry.getObject("type");
 
@@ -133,12 +133,12 @@ public class GiveCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        Element engrave = scriptEntry.getElement("engrave");
-        Element unlimit_stack_size = scriptEntry.getElement("unlimit_stack_size");
+        ElementTag engrave = scriptEntry.getElement("engrave");
+        ElementTag unlimit_stack_size = scriptEntry.getElement("unlimit_stack_size");
         dInventory inventory = (dInventory) scriptEntry.getObject("inventory");
-        Element qty = scriptEntry.getElement("qty");
+        ElementTag qty = scriptEntry.getElement("qty");
         Type type = (Type) scriptEntry.getObject("type");
-        Element slot = scriptEntry.getElement("slot");
+        ElementTag slot = scriptEntry.getElement("slot");
 
         Object items_object = scriptEntry.getObject("items");
         List<dItem> items = null;

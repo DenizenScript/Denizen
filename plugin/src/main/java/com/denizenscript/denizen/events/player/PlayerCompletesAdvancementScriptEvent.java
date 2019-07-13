@@ -3,8 +3,8 @@ package com.denizenscript.denizen.events.player;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -34,7 +34,7 @@ public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent imp
     }
 
     public static PlayerCompletesAdvancementScriptEvent instance;
-    public dList criteria;
+    public ListTag criteria;
     public PlayerAdvancementDoneEvent event;
 
     @Override
@@ -64,7 +64,7 @@ public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent imp
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("criteria")) {
             return criteria;
         }
@@ -74,7 +74,7 @@ public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent imp
     @EventHandler
     public void onPlayerCompletesAdvancement(PlayerAdvancementDoneEvent event) {
         // Should this not fire if it's a 'fake' advancement created by Denizen?
-        criteria = new dList();
+        criteria = new ListTag();
         criteria.addAll(event.getAdvancement().getCriteria());
         this.event = event;
         fire(event);

@@ -51,20 +51,20 @@ public class TitleCommand extends AbstractCommand {
                 scriptEntry.addObject("subtitle", arg.asElement());
             }
             else if (arg.matchesPrefix("fade_in")
-                    && arg.matchesArgumentType(Duration.class)) {
-                scriptEntry.addObject("fade_in", arg.asType(Duration.class));
+                    && arg.matchesArgumentType(DurationTag.class)) {
+                scriptEntry.addObject("fade_in", arg.asType(DurationTag.class));
             }
             else if (arg.matchesPrefix("stay")
-                    && arg.matchesArgumentType(Duration.class)) {
-                scriptEntry.addObject("stay", arg.asType(Duration.class));
+                    && arg.matchesArgumentType(DurationTag.class)) {
+                scriptEntry.addObject("stay", arg.asType(DurationTag.class));
             }
             else if (arg.matchesPrefix("fade_out")
-                    && arg.matchesArgumentType(Duration.class)) {
-                scriptEntry.addObject("fade_out", arg.asType(Duration.class));
+                    && arg.matchesArgumentType(DurationTag.class)) {
+                scriptEntry.addObject("fade_out", arg.asType(DurationTag.class));
             }
             else if (arg.matchesPrefix("targets", "target")
                     && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
+                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
             }
 
         }
@@ -73,8 +73,8 @@ public class TitleCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must have a title or subtitle!");
         }
 
-        scriptEntry.defaultObject("fade_in", new Duration(1)).defaultObject("stay", new Duration(3))
-                .defaultObject("fade_out", new Duration(1))
+        scriptEntry.defaultObject("fade_in", new DurationTag(1)).defaultObject("stay", new DurationTag(3))
+                .defaultObject("fade_out", new DurationTag(1))
                 .defaultObject("targets", Arrays.asList(Utilities.getEntryPlayer(scriptEntry)));
 
     }
@@ -82,11 +82,11 @@ public class TitleCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        Element title = scriptEntry.getElement("title");
-        Element subtitle = scriptEntry.getElement("subtitle");
-        Duration fade_in = scriptEntry.getdObject("fade_in");
-        Duration stay = scriptEntry.getdObject("stay");
-        Duration fade_out = scriptEntry.getdObject("fade_out");
+        ElementTag title = scriptEntry.getElement("title");
+        ElementTag subtitle = scriptEntry.getElement("subtitle");
+        DurationTag fade_in = scriptEntry.getdObject("fade_in");
+        DurationTag stay = scriptEntry.getdObject("stay");
+        DurationTag fade_out = scriptEntry.getdObject("fade_out");
         List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
 
         if (scriptEntry.dbCallShouldDebug()) {

@@ -4,8 +4,8 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.properties.entity.EntityPotionEffects;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -112,27 +112,27 @@ public class EntityPotionEffectScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return entity.getDenizenObject();
         }
         else if (name.equals("cause")) {
-            return new Element(event.getCause().name());
+            return new ElementTag(event.getCause().name());
         }
         else if (name.equals("action")) {
-            return new Element(event.getAction().name());
+            return new ElementTag(event.getAction().name());
         }
         else if (name.equals("effect_type")) {
-            return new Element(event.getModifiedType().getName());
+            return new ElementTag(event.getModifiedType().getName());
         }
         else if (name.equals("override")) {
-            return new Element(event.isOverride());
+            return new ElementTag(event.isOverride());
         }
         else if (name.equals("new_effect") && event.getNewEffect() != null) {
-            return new Element(EntityPotionEffects.stringify(event.getNewEffect()));
+            return new ElementTag(EntityPotionEffects.stringify(event.getNewEffect()));
         }
         else if (name.equals("old_effect") && event.getOldEffect() != null) {
-            return new Element(EntityPotionEffects.stringify(event.getOldEffect()));
+            return new ElementTag(EntityPotionEffects.stringify(event.getOldEffect()));
         }
         return super.getContext(name);
     }

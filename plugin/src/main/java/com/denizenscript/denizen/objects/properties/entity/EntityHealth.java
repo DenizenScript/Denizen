@@ -3,9 +3,9 @@ package com.denizenscript.denizen.objects.properties.entity;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.npc.traits.HealthTrait;
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -14,12 +14,12 @@ import java.util.List;
 
 public class EntityHealth implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity
                 && ((dEntity) entity).isLivingEntity();
     }
 
-    public static EntityHealth getFrom(dObject entity) {
+    public static EntityHealth getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -67,25 +67,25 @@ public class EntityHealth implements Property {
             maxHealth = attribute.getIntContext(2);
         }
         if ((float) entity.getLivingEntity().getHealth() / maxHealth < .10) {
-            return new Element("dying").getAttribute(attribute.fulfill(2));
+            return new ElementTag("dying").getAttribute(attribute.fulfill(2));
         }
         else if ((float) entity.getLivingEntity().getHealth() / maxHealth < .40) {
-            return new Element("seriously wounded").getAttribute(attribute.fulfill(2));
+            return new ElementTag("seriously wounded").getAttribute(attribute.fulfill(2));
         }
         else if ((float) entity.getLivingEntity().getHealth() / maxHealth < .75) {
-            return new Element("injured").getAttribute(attribute.fulfill(2));
+            return new ElementTag("injured").getAttribute(attribute.fulfill(2));
         }
         else if ((float) entity.getLivingEntity().getHealth() / maxHealth < 1) {
-            return new Element("scraped").getAttribute(attribute.fulfill(2));
+            return new ElementTag("scraped").getAttribute(attribute.fulfill(2));
         }
         else {
-            return new Element("healthy").getAttribute(attribute.fulfill(2));
+            return new ElementTag("healthy").getAttribute(attribute.fulfill(2));
         }
     }
 
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -97,7 +97,7 @@ public class EntityHealth implements Property {
 
         // <--[tag]
         // @attribute <e@entity.health.formatted>
-        // @returns Element
+        // @returns ElementTag
         // @group attributes
         // @description
         // Returns a formatted value of the player's current health level.
@@ -109,19 +109,19 @@ public class EntityHealth implements Property {
 
         // <--[tag]
         // @attribute <e@entity.health.max>
-        // @returns Element(Decimal)
+        // @returns ElementTag(Decimal)
         // @group attributes
         // @description
         // Returns the maximum health of the entity.
         // -->
         if (attribute.startsWith("health.max")) {
-            return new Element(entity.getLivingEntity().getMaxHealth())
+            return new ElementTag(entity.getLivingEntity().getMaxHealth())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <e@entity.health.percentage>
-        // @returns Element(Decimal)
+        // @returns ElementTag(Decimal)
         // @group attributes
         // @description
         // Returns the entity's current health as a percentage.
@@ -131,19 +131,19 @@ public class EntityHealth implements Property {
             if (attribute.hasContext(2)) {
                 maxHealth = attribute.getIntContext(2);
             }
-            return new Element((entity.getLivingEntity().getHealth() / maxHealth) * 100)
+            return new ElementTag((entity.getLivingEntity().getHealth() / maxHealth) * 100)
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <e@entity.health>
-        // @returns Element(Decimal)
+        // @returns ElementTag(Decimal)
         // @group attributes
         // @description
         // Returns the current health of the entity.
         // -->
         if (attribute.startsWith("health")) {
-            return new Element(entity.getLivingEntity().getHealth())
+            return new ElementTag(entity.getLivingEntity().getHealth())
                     .getAttribute(attribute.fulfill(1));
         }
 

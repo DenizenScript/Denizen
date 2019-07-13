@@ -4,8 +4,8 @@ import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.tags.core.EscapeTags;
@@ -34,12 +34,12 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     //
     // @Context
     // <context.location> returns the dLocation of the sign.
-    // <context.new> returns the new sign text as a dList.
-    // <context.old> returns the old sign text as a dList.
+    // <context.new> returns the new sign text as a ListTag.
+    // <context.old> returns the old sign text as a ListTag.
     // <context.material> returns the dMaterial of the sign.
     //
     // @Determine
-    // dList to change the lines (Uses escaping, see <@link language Property Escaping>)
+    // ListTag to change the lines (Uses escaping, see <@link language Property Escaping>)
     //
     // -->
 
@@ -49,10 +49,10 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
 
     public static PlayerChangesSignScriptEvent instance;
     public dLocation location;
-    public dList new_sign;
-    public dList old_sign;
+    public ListTag new_sign;
+    public ListTag old_sign;
     public dMaterial material;
-    public dList new_text;
+    public ListTag new_text;
     public SignChangeEvent event;
 
     @Override
@@ -88,7 +88,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (determination.length() > 0 && !isDefaultDetermination(determination)) {
-            new_text = dList.valueOf(determination);
+            new_text = ListTag.valueOf(determination);
             return true;
         }
         return super.applyDetermination(container, determination);
@@ -100,7 +100,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("location")) {
             return location;
         }
@@ -115,7 +115,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
         }
         else if (name.equals("cuboids")) {
             Debug.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
-            dList cuboids = new dList();
+            ListTag cuboids = new ListTag();
             for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
                 cuboids.add(cuboid.identifySimple());
             }
@@ -136,8 +136,8 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
         Sign sign = (Sign) state;
         material = new dMaterial(event.getBlock());
         location = new dLocation(event.getBlock().getLocation());
-        old_sign = new dList(Arrays.asList(sign.getLines()));
-        new_sign = new dList(Arrays.asList(event.getLines()));
+        old_sign = new ListTag(Arrays.asList(sign.getLines()));
+        new_sign = new ListTag(Arrays.asList(event.getLines()));
         new_text = null;
         this.event = event;
         fire(event);

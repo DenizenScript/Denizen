@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.entity.EntityType;
@@ -11,11 +11,11 @@ import org.bukkit.entity.PigZombie;
 
 public class EntityAnger implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.PIG_ZOMBIE;
     }
 
-    public static EntityAnger getFrom(dObject entity) {
+    public static EntityAnger getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -58,7 +58,7 @@ public class EntityAnger implements Property {
     }
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -70,7 +70,7 @@ public class EntityAnger implements Property {
 
         // <--[tag]
         // @attribute <e@entity.anger>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @mechanism dEntity.anger
         // @group properties
         // @description
@@ -78,7 +78,7 @@ public class EntityAnger implements Property {
         // -->
         if (attribute.startsWith("anger")) {
             if (entity.getBukkitEntityType() == EntityType.PIG_ZOMBIE) {
-                return new Element(((PigZombie) entity.getBukkitEntity()).getAnger())
+                return new ElementTag(((PigZombie) entity.getBukkitEntity()).getAnger())
                         .getAttribute(attribute.fulfill(1));
             }
         }

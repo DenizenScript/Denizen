@@ -2,9 +2,9 @@ package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.entity.Boat;
@@ -13,7 +13,7 @@ import org.bukkit.entity.Minecart;
 
 public class EntitySpeed implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         if (!(entity instanceof dEntity)) {
             return false;
         }
@@ -34,7 +34,7 @@ public class EntitySpeed implements Property {
         }
     }
 
-    public static EntitySpeed getFrom(dObject entity) {
+    public static EntitySpeed getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -76,14 +76,14 @@ public class EntitySpeed implements Property {
         return "speed";
     }
 
-    public Element getSpeed() {
+    public ElementTag getSpeed() {
         if (entity.isLivingEntity()) {
-            return new Element(NMSHandler.getInstance().getEntityHelper().getSpeed(entity.getBukkitEntity()));
+            return new ElementTag(NMSHandler.getInstance().getEntityHelper().getSpeed(entity.getBukkitEntity()));
         }
         else {
             EntityType entityType = entity.getBukkitEntityType();
             if (entityType == EntityType.BOAT) {
-                return new Element(((Boat) entity.getBukkitEntity()).getMaxSpeed());
+                return new ElementTag(((Boat) entity.getBukkitEntity()).getMaxSpeed());
             }
             else if (entityType == EntityType.MINECART
                     || entityType == EntityType.MINECART_CHEST
@@ -92,15 +92,15 @@ public class EntitySpeed implements Property {
                     || entityType == EntityType.MINECART_HOPPER
                     || entityType == EntityType.MINECART_MOB_SPAWNER
                     || entityType == EntityType.MINECART_TNT) {
-                return new Element(((Minecart) entity.getBukkitEntity()).getMaxSpeed());
+                return new ElementTag(((Minecart) entity.getBukkitEntity()).getMaxSpeed());
             }
         }
-        return new Element(0.0);
+        return new ElementTag(0.0);
     }
 
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -112,7 +112,7 @@ public class EntitySpeed implements Property {
 
         // <--[tag]
         // @attribute <e@entity.speed>
-        // @returns Element(Decimal)
+        // @returns ElementTag(Decimal)
         // @mechanism dEntity.speed
         // @group attributes
         // @description

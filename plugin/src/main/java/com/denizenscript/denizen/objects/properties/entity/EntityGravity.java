@@ -1,19 +1,19 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 
 public class EntityGravity implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity;
     }
 
-    public static EntityGravity getFrom(dObject entity) {
+    public static EntityGravity getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -61,7 +61,7 @@ public class EntityGravity implements Property {
     }
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -73,14 +73,14 @@ public class EntityGravity implements Property {
 
         // <--[tag]
         // @attribute <e@entity.gravity>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @mechanism dEntity.gravity
         // @group properties
         // @description
         // Returns whether the entity has gravity.
         // -->
         if (attribute.startsWith("gravity")) {
-            return new Element(dentity.getBukkitEntity().hasGravity())
+            return new ElementTag(dentity.getBukkitEntity().hasGravity())
                     .getAttribute(attribute.fulfill(1));
         }
 

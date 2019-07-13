@@ -9,9 +9,9 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.Holdable;
@@ -69,7 +69,7 @@ public class MidiCommand extends AbstractCommand implements Holdable {
             }
             else if (!scriptEntry.hasObject("entities") &&
                     arg.matchesArgumentList(dEntity.class)) {
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("volume") &&
                     arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double) &&
@@ -89,7 +89,7 @@ public class MidiCommand extends AbstractCommand implements Holdable {
                     path = path + ".mid";
                 }
 
-                scriptEntry.addObject("file", new Element(path));
+                scriptEntry.addObject("file", new ElementTag(path));
             }
             else {
                 arg.reportUnhandled();
@@ -108,7 +108,7 @@ public class MidiCommand extends AbstractCommand implements Holdable {
                     (Utilities.entryHasNPC(scriptEntry) ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null));
         }
 
-        scriptEntry.defaultObject("tempo", new Element(1)).defaultObject("volume", new Element(10));
+        scriptEntry.defaultObject("tempo", new ElementTag(1)).defaultObject("volume", new ElementTag(10));
     }
 
     @SuppressWarnings("unchecked")

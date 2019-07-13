@@ -5,8 +5,8 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dWorld;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Duration;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.DurationTag;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -58,8 +58,8 @@ public class TimeCommand extends AbstractCommand {
                 scriptEntry.addObject("type", arg.asElement());
             }
             else if (!scriptEntry.hasObject("value")
-                    && arg.matchesArgumentType(Duration.class)) {
-                scriptEntry.addObject("value", arg.asType(Duration.class));
+                    && arg.matchesArgumentType(DurationTag.class)) {
+                scriptEntry.addObject("value", arg.asType(DurationTag.class));
             }
             else if (!scriptEntry.hasObject("world")
                     && arg.matchesArgumentType(dWorld.class)) {
@@ -86,7 +86,7 @@ public class TimeCommand extends AbstractCommand {
                                     new dWorld(Utilities.getEntryPlayer(scriptEntry).getWorld()) : null));
         }
 
-        scriptEntry.defaultObject("type", new Element("GLOBAL"));
+        scriptEntry.defaultObject("type", new ElementTag("GLOBAL"));
 
         if (!scriptEntry.hasObject("world")) {
             throw new InvalidArgumentsException("Must specify a valid world!");
@@ -96,9 +96,9 @@ public class TimeCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
         // Fetch objects
-        Duration value = (Duration) scriptEntry.getObject("value");
+        DurationTag value = (DurationTag) scriptEntry.getObject("value");
         dWorld world = (dWorld) scriptEntry.getObject("world");
-        Element type_element = scriptEntry.getElement("type");
+        ElementTag type_element = scriptEntry.getElement("type");
         Type type = Type.valueOf(type_element.asString().toUpperCase());
 
         // Report to dB

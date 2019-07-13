@@ -1,21 +1,21 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.entity.Explosive;
 
 public class EntityExplosionFire implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity
                 && ((dEntity) entity).getBukkitEntity() instanceof Explosive;
     }
 
-    public static EntityExplosionFire getFrom(dObject entity) {
+    public static EntityExplosionFire getFrom(ObjectTag entity) {
         return describes(entity) ? new EntityExplosionFire((dEntity) entity) : null;
     }
 
@@ -56,7 +56,7 @@ public class EntityExplosionFire implements Property {
     }
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -68,14 +68,14 @@ public class EntityExplosionFire implements Property {
 
         // <--[tag]
         // @attribute <e@entity.explosion_fire>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @mechanism dEntity.explosion_fire
         // @group properties
         // @description
         // If this entity is explosive, returns whether its explosion creates fire.
         // -->
         if (attribute.startsWith("explosion_fire")) {
-            return new Element(isIncendiary())
+            return new ElementTag(isIncendiary())
                     .getAttribute(attribute.fulfill(1));
         }
 

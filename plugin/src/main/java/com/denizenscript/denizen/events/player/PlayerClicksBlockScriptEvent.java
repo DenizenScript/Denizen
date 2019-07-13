@@ -4,8 +4,8 @@ import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -38,8 +38,8 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     // <context.item> returns the dItem the player is clicking with.
     // <context.location> returns the dLocation the player is clicking on.
     // <context.relative> returns a dLocation of the air block in front of the clicked block.
-    // <context.click_type> returns an Element of the Spigot API click type <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/block/Action.html>.
-    // <context.hand> returns an Element of the used hand.
+    // <context.click_type> returns an ElementTag of the Spigot API click type <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/block/Action.html>.
+    // <context.hand> returns an ElementTag of the used hand.
     //
     // -->
 
@@ -51,8 +51,8 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     PlayerInteractEvent event;
     dItem item;
     dLocation location;
-    Element click_type;
-    Element hand;
+    ElementTag click_type;
+    ElementTag hand;
     dLocation relative;
     dMaterial blockMaterial;
 
@@ -185,7 +185,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("item")) {
             return item;
         }
@@ -210,11 +210,11 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
             return;
         }
         blockMaterial = event.hasBlock() ? new dMaterial(event.getClickedBlock()) : new dMaterial(Material.AIR);
-        hand = new Element(event.getHand().name());
+        hand = new ElementTag(event.getHand().name());
         item = new dItem(event.getItem());
         location = event.hasBlock() ? new dLocation(event.getClickedBlock().getLocation()) : null;
         relative = event.hasBlock() ? new dLocation(event.getClickedBlock().getRelative(event.getBlockFace()).getLocation()) : null;
-        click_type = new Element(event.getAction().name());
+        click_type = new ElementTag(event.getAction().name());
         cancelled = event.isCancelled() && event.useItemInHand() == Event.Result.DENY; // Spigot is dumb!
         this.event = event;
         wasCancellationAltered = false;

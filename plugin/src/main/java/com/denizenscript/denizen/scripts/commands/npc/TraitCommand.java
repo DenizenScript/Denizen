@@ -4,7 +4,7 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -43,10 +43,10 @@ public class TraitCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("state")
                     && arg.matchesPrefix("state", "s")
                     && arg.matchesEnum(Toggle.values())) {
-                scriptEntry.addObject("state", new Element(arg.getValue().toUpperCase()));
+                scriptEntry.addObject("state", new ElementTag(arg.getValue().toUpperCase()));
             }
             else if (!scriptEntry.hasObject("trait")) {
-                scriptEntry.addObject("trait", new Element(arg.getValue()));
+                scriptEntry.addObject("trait", new ElementTag(arg.getValue()));
             }
 
         }
@@ -59,15 +59,15 @@ public class TraitCommand extends AbstractCommand {
             throw new InvalidArgumentsException("This command requires a linked NPC!");
         }
 
-        scriptEntry.defaultObject("state", new Element("TOGGLE"));
+        scriptEntry.defaultObject("state", new ElementTag("TOGGLE"));
 
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        Element toggle = scriptEntry.getElement("state");
-        Element traitName = scriptEntry.getElement("trait");
+        ElementTag toggle = scriptEntry.getElement("state");
+        ElementTag traitName = scriptEntry.getElement("trait");
         NPC npc = Utilities.getEntryNPC(scriptEntry).getCitizen();
 
         if (scriptEntry.dbCallShouldDebug()) {

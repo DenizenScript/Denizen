@@ -2,8 +2,8 @@ package com.denizenscript.denizen.events.entity;
 
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
@@ -26,7 +26,7 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
     //
     // @Context
     // <context.entity> returns the dEntity.
-    // <context.reason> returns an Element of the reason for the unleashing.
+    // <context.reason> returns an ElementTag of the reason for the unleashing.
     // Reasons include DISTANCE, HOLDER_GONE, PLAYER_UNLEASH, and UNKNOWN
     //
     // @NPC when the entity being unleashed is an NPC.
@@ -39,7 +39,7 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
 
     public static EntityUnleashedScriptEvent instance;
     public dEntity entity;
-    public Element reason;
+    public ElementTag reason;
     public EntityUnleashEvent event;
 
 
@@ -78,7 +78,7 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return entity;
         }
@@ -91,7 +91,7 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
     @EventHandler
     public void onEntityUnleashed(EntityUnleashEvent event) {
         entity = new dEntity(event.getEntity());
-        reason = new Element(event.getReason().toString());
+        reason = new ElementTag(event.getReason().toString());
         this.event = event;
         fire(event);
     }

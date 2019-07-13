@@ -1,10 +1,10 @@
 package com.denizenscript.denizen.objects.properties.material;
 
 import com.denizenscript.denizen.objects.dMaterial;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.block.BlockFace;
@@ -12,13 +12,13 @@ import org.bukkit.block.data.Directional;
 
 public class MaterialDirectional implements Property {
 
-    public static boolean describes(dObject material) {
+    public static boolean describes(ObjectTag material) {
         return material instanceof dMaterial
                 && ((dMaterial) material).hasModernData()
                 && ((dMaterial) material).getModernData().data instanceof Directional;
     }
 
-    public static MaterialDirectional getFrom(dObject _material) {
+    public static MaterialDirectional getFrom(ObjectTag _material) {
         if (!describes(_material)) {
             return null;
         }
@@ -51,7 +51,7 @@ public class MaterialDirectional implements Property {
 
         // <--[tag]
         // @attribute <m@material.valid_directions>
-        // @returns Element
+        // @returns ElementTag
         // @mechanism dMaterial.direction
         // @group properties
         // @description
@@ -59,7 +59,7 @@ public class MaterialDirectional implements Property {
         // See also <@link tag m@matereial.direction>
         // -->
         if (attribute.startsWith("valid_directions")) {
-            dList toReturn = new dList();
+            ListTag toReturn = new ListTag();
             for (BlockFace face : getDirectional().getFaces()) {
                 toReturn.add(face.name());
             }
@@ -68,7 +68,7 @@ public class MaterialDirectional implements Property {
 
         // <--[tag]
         // @attribute <m@material.direction>
-        // @returns Element
+        // @returns ElementTag
         // @mechanism dMaterial.direction
         // @group properties
         // @description
@@ -76,7 +76,7 @@ public class MaterialDirectional implements Property {
         // Output is a direction name like "NORTH".
         // -->
         if (attribute.startsWith("direction")) {
-            return new Element(getDirectional().getFacing().name()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getDirectional().getFacing().name()).getAttribute(attribute.fulfill(1));
         }
 
         return null;

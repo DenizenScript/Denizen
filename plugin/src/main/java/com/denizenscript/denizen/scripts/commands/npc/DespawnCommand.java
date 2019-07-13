@@ -6,7 +6,7 @@ import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.event.DespawnReason;
@@ -49,7 +49,7 @@ public class DespawnCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("npcs")
                     && arg.matchesArgumentList(dNPC.class)) {
-                scriptEntry.addObject("npcs", arg.asType(dList.class).filter(dNPC.class, scriptEntry));
+                scriptEntry.addObject("npcs", arg.asType(ListTag.class).filter(dNPC.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();

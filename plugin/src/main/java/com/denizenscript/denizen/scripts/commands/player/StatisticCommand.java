@@ -7,9 +7,9 @@ import com.denizenscript.denizen.objects.dMaterial;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Material;
@@ -55,7 +55,7 @@ public class StatisticCommand extends AbstractCommand {
             else if (arg.matchesPrefix("players")
                     && !scriptEntry.hasObject("players")
                     && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("players", arg.asType(dList.class));
+                scriptEntry.addObject("players", arg.asType(ListTag.class));
                 specified_players = true;
             }
             else if (!scriptEntry.hasObject("statistic")
@@ -88,7 +88,7 @@ public class StatisticCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("amount")) {
-            scriptEntry.addObject("amount", new Element(1));
+            scriptEntry.addObject("amount", new ElementTag(1));
         }
 
         Statistic.Type type = Statistic.valueOf(scriptEntry.getElement("statistic").asString().toUpperCase()).getType();
@@ -102,7 +102,7 @@ public class StatisticCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("players") && Utilities.entryHasPlayer(scriptEntry) && !specified_players) {
-            scriptEntry.addObject("players", new dList(Utilities.getEntryPlayer(scriptEntry).identify()));
+            scriptEntry.addObject("players", new ListTag(Utilities.getEntryPlayer(scriptEntry).identify()));
         }
 
         if (!scriptEntry.hasObject("players")) {
@@ -114,10 +114,10 @@ public class StatisticCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        Element action = scriptEntry.getElement("action");
-        dList players = scriptEntry.getdObject("players");
-        Element statistic = scriptEntry.getElement("statistic");
-        Element amount = scriptEntry.getElement("amount");
+        ElementTag action = scriptEntry.getElement("action");
+        ListTag players = scriptEntry.getdObject("players");
+        ElementTag statistic = scriptEntry.getElement("statistic");
+        ElementTag amount = scriptEntry.getElement("amount");
         dMaterial material = scriptEntry.getdObject("material");
         dEntity entity = scriptEntry.getdObject("entity");
 

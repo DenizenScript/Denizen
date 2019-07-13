@@ -5,9 +5,9 @@ import com.denizenscript.denizen.DenizenCoreImplementation;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizencore.events.OldEventManager;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
-import com.denizenscript.denizencore.objects.dScript;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.CommandExecuter;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -128,7 +128,7 @@ public class Debug {
 
     /**
      * Used by Commands to report how the supplied arguments were parsed.
-     * Should be supplied a concatenated String with aH.debugObject() or dObject.debug() of all
+     * Should be supplied a concatenated String with aH.debugObject() or ObjectTag.debug() of all
      * applicable objects used by the Command.
      *
      * @param caller the object calling this debug
@@ -242,7 +242,7 @@ public class Debug {
         if (source == null) {
             source = CommandExecuter.currentQueue;
         }
-        dScript script = null;
+        ScriptTag script = null;
         if (source != null && source.getEntries().size() > 0 && source.getEntries().get(0).getScript() != null) {
             script = source.getEntries().get(0).getScript();
         }
@@ -251,8 +251,8 @@ public class Debug {
         }
         if (throwErrorEvent) {
             throwErrorEvent = false;
-            Map<String, dObject> context = new HashMap<>();
-            context.put("message", new Element(message));
+            Map<String, ObjectTag> context = new HashMap<>();
+            context.put("message", new ElementTag(message));
             if (source != null) {
                 context.put("queue", source);
             }
@@ -326,13 +326,13 @@ public class Debug {
         }
         if (throwErrorEvent) {
             throwErrorEvent = false;
-            Map<String, dObject> context = new HashMap<>();
+            Map<String, ObjectTag> context = new HashMap<>();
             Throwable thrown = ex;
             if (ex.getCause() != null) {
                 thrown = ex.getCause();
             }
-            context.put("message", new Element(thrown.getMessage()));
-            context.put("type", new Element(thrown.getClass().getSimpleName()));
+            context.put("message", new ElementTag(thrown.getMessage()));
+            context.put("type", new ElementTag(thrown.getClass().getSimpleName()));
             context.put("queue", source);
             ScriptEntry entry = (source != null ? source.getLastEntryExecuted() : null);
             List<String> Determinations = OldEventManager.doEvents(Arrays.asList("server generates exception"),
@@ -371,7 +371,7 @@ public class Debug {
                 ex = ex.getCause();
                 first = false;
             }
-            dScript script = null;
+            ScriptTag script = null;
             if (source != null && source.getEntries().size() > 0 && source.getEntries().get(0).getScript() != null) {
                 script = source.getEntries().get(0).getScript();
             }

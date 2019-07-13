@@ -5,7 +5,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.entity.EntityType;
@@ -15,11 +15,11 @@ import org.bukkit.inventory.meta.FireworkMeta;
 
 public class EntityFirework implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.FIREWORK;
     }
 
-    public static EntityFirework getFrom(dObject entity) {
+    public static EntityFirework getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -64,7 +64,7 @@ public class EntityFirework implements Property {
     }
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override

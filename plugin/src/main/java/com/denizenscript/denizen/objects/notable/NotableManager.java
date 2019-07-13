@@ -5,7 +5,7 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.Note;
 import com.denizenscript.denizencore.tags.core.EscapeTags;
@@ -113,7 +113,7 @@ public class NotableManager {
         typeTracker.remove(CoreUtilities.toLowerCase(id));
     }
 
-    public static <T extends dObject> List<T> getAllType(Class<T> type) {
+    public static <T extends ObjectTag> List<T> getAllType(Class<T> type) {
         List<T> objects = new ArrayList<>();
         for (Map.Entry<String, Notable> notable : notableObjects.entrySet()) {
             // dB.log(notable.toString());
@@ -137,7 +137,7 @@ public class NotableManager {
         // Find each type of notable
         for (String key : DenizenAPI.getCurrentInstance().notableManager().getNotables().getKeys(false)) {
 
-            Class<? extends dObject> clazz = reverse_objects.get(key);
+            Class<? extends ObjectTag> clazz = reverse_objects.get(key);
 
             ConfigurationSection section = DenizenAPI.getCurrentInstance().notableManager().getNotables()
                     .getConfigurationSection(key);

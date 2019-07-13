@@ -1,19 +1,19 @@
 package com.denizenscript.denizen.objects.properties.trade;
 
 import com.denizenscript.denizen.objects.dTrade;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 
 public class TradeHasXp implements Property {
 
-    public static boolean describes(dObject recipe) {
+    public static boolean describes(ObjectTag recipe) {
         return recipe instanceof dTrade;
     }
 
-    public static TradeHasXp getFrom(dObject recipe) {
+    public static TradeHasXp getFrom(ObjectTag recipe) {
         if (!describes(recipe)) {
             return null;
         }
@@ -52,13 +52,13 @@ public class TradeHasXp implements Property {
 
         // <--[tag]
         // @attribute <trade@trade.has_xp>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @mechanism dTrade.has_xp
         // @description
         // Returns whether the trade has an experience reward.
         // -->
         if (attribute.startsWith("has_xp")) {
-            return new Element(recipe.getRecipe().hasExperienceReward()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(recipe.getRecipe().hasExperienceReward()).getAttribute(attribute.fulfill(1));
         }
 
         return null;

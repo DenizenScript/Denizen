@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.entity.Creeper;
@@ -11,11 +11,11 @@ import org.bukkit.entity.EntityType;
 
 public class EntityMaxFuseTicks implements Property {
 
-    public static boolean describes(dObject object) {
+    public static boolean describes(ObjectTag object) {
         return object instanceof dEntity && ((dEntity) object).getBukkitEntityType() == EntityType.CREEPER;
     }
 
-    public static EntityMaxFuseTicks getFrom(dObject object) {
+    public static EntityMaxFuseTicks getFrom(ObjectTag object) {
         if (!describes(object)) {
             return null;
         }
@@ -66,14 +66,14 @@ public class EntityMaxFuseTicks implements Property {
 
         // <--[tag]
         // @attribute <e@entity.max_fuse_ticks>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @mechanism dEntity.max_fuse_ticks
         // @group properties
         // @description
         // Returns the default number of ticks until the creeper explodes when primed (NOT the time remaining if already primed).
         // -->
         if (attribute.startsWith("max_fuse_ticks")) {
-            return new Element(((Creeper) entity.getBukkitEntity()).getMaxFuseTicks())
+            return new ElementTag(((Creeper) entity.getBukkitEntity()).getMaxFuseTicks())
                     .getAttribute(attribute.fulfill(1));
         }
 

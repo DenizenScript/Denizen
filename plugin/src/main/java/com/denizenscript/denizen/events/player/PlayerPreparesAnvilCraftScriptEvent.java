@@ -6,9 +6,9 @@ import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -33,7 +33,7 @@ import org.bukkit.inventory.AnvilInventory;
 // <context.inventory> returns the dInventory of the anvil inventory.
 // <context.item> returns the dItem to be crafted.
 // <context.repair_cost> returns an Element(Number) of the repair cost.
-// <context.new_name> returns an Element of the new name.
+// <context.new_name> returns an ElementTag of the new name.
 //
 // @Determine
 // Element(Number) to set the repair cost.
@@ -52,8 +52,8 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
     public dItem result;
     public AnvilInventory inventory;
     public dPlayer player;
-    public Element repairCost;
-    public Element newName;
+    public ElementTag repairCost;
+    public ElementTag newName;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
@@ -80,7 +80,7 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (ArgumentHelper.matchesInteger(determination)) {
-            repairCost = new Element(determination);
+            repairCost = new ElementTag(determination);
             return true;
         }
         else if (dItem.matches(determination)) {
@@ -99,7 +99,7 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("item")) {
             return result;
         }
@@ -125,8 +125,8 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
             return;
         }
         inventory = event.getInventory();
-        repairCost = new Element(inventory.getRepairCost());
-        newName = new Element(inventory.getRenameText());
+        repairCost = new ElementTag(inventory.getRepairCost());
+        newName = new ElementTag(inventory.getRenameText());
         result = new dItem(event.getResult());
         this.player = dEntity.getPlayerFrom(humanEntity);
         this.resultChanged = false;

@@ -7,9 +7,9 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
@@ -42,7 +42,7 @@ public class FollowCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
             if (!scriptEntry.hasObject("stop") &&
                     arg.matches("STOP")) {
-                scriptEntry.addObject("stop", new Element(true));
+                scriptEntry.addObject("stop", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("lead") &&
                     arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double) &&
@@ -56,7 +56,7 @@ public class FollowCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("allow_wander") &&
                     arg.matches("allow_wander")) {
-                scriptEntry.addObject("allow_wander", new Element(true));
+                scriptEntry.addObject("allow_wander", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("speed") &&
                     arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Percentage) &&
@@ -66,7 +66,7 @@ public class FollowCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("entities") &&
                     arg.matchesPrefix("followers", "follower") &&
                     arg.matchesArgumentList(dEntity.class)) {
-                scriptEntry.addObject("entities", arg.asType(dList.class));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class));
             }
             else if (!scriptEntry.hasObject("target") &&
                     arg.matchesArgumentType(dEntity.class)) {
@@ -90,22 +90,22 @@ public class FollowCommand extends AbstractCommand {
             }
             else {
                 scriptEntry.addObject("entities",
-                        new dList(Utilities.getEntryNPC(scriptEntry).identify()));
+                        new ListTag(Utilities.getEntryNPC(scriptEntry).identify()));
             }
         }
 
-        scriptEntry.defaultObject("stop", new Element(false)).defaultObject("allow_wander", new Element(false));
+        scriptEntry.defaultObject("stop", new ElementTag(false)).defaultObject("allow_wander", new ElementTag(false));
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
         // Get objects
-        Element stop = scriptEntry.getElement("stop");
-        Element lead = scriptEntry.getElement("lead");
-        Element maxRange = scriptEntry.getElement("max");
-        Element allowWander = scriptEntry.getElement("allow_wander");
-        Element speed = scriptEntry.getElement("speed");
-        dList entities = scriptEntry.getdObject("entities");
+        ElementTag stop = scriptEntry.getElement("stop");
+        ElementTag lead = scriptEntry.getElement("lead");
+        ElementTag maxRange = scriptEntry.getElement("max");
+        ElementTag allowWander = scriptEntry.getElement("allow_wander");
+        ElementTag speed = scriptEntry.getElement("speed");
+        ListTag entities = scriptEntry.getdObject("entities");
         dEntity target = scriptEntry.getdObject("target");
 
         // Report to dB

@@ -3,8 +3,8 @@ package com.denizenscript.denizen.objects.properties.item;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.core.EscapeTags;
@@ -16,13 +16,13 @@ import java.util.Arrays;
 
 public class ItemSignContents implements Property {
 
-    public static boolean describes(dObject item) {
+    public static boolean describes(ObjectTag item) {
         return item instanceof dItem
                 && ((dItem) item).getItemStack().getItemMeta() instanceof BlockStateMeta
                 && ((BlockStateMeta) ((dItem) item).getItemStack().getItemMeta()).getBlockState() instanceof Sign;
     }
 
-    public static ItemSignContents getFrom(dObject _item) {
+    public static ItemSignContents getFrom(ObjectTag _item) {
         if (!describes(_item)) {
             return null;
         }
@@ -40,8 +40,8 @@ public class ItemSignContents implements Property {
     };
 
 
-    private dList getSignContents() {
-        return new dList(Arrays.asList(((Sign) ((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()).getLines()));
+    private ListTag getSignContents() {
+        return new ListTag(Arrays.asList(((Sign) ((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()).getLines()));
     }
 
     private ItemSignContents(dItem _item) {
@@ -59,7 +59,7 @@ public class ItemSignContents implements Property {
 
         // <--[tag]
         // @attribute <i@item.sign_contents>
-        // @returns dList
+        // @returns ListTag
         // @mechanism dItem.sign_contents
         // @group properties
         // @description
@@ -94,7 +94,7 @@ public class ItemSignContents implements Property {
         // <--[mechanism]
         // @object dItem
         // @name sign_contents
-        // @input dList
+        // @input ListTag
         // @description
         // Sets the contents of a sign item.
         // @tags
@@ -108,7 +108,7 @@ public class ItemSignContents implements Property {
             for (int i = 0; i < 4; i++) {
                 sign.setLine(i, "");
             }
-            dList list = mechanism.valueAsType(dList.class);
+            ListTag list = mechanism.valueAsType(ListTag.class);
             if (list.size() > 4) {
                 Debug.echoError("Sign can only hold four lines!");
             }

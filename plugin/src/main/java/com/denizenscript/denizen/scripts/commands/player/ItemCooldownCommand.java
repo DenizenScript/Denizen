@@ -6,9 +6,9 @@ import com.denizenscript.denizen.objects.dMaterial;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Duration;
+import com.denizenscript.denizencore.objects.DurationTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
@@ -46,13 +46,13 @@ public class ItemCooldownCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("materials")
                     && (arg.matchesArgumentType(dMaterial.class)
-                    || arg.matchesArgumentType(dList.class))) {
-                scriptEntry.addObject("materials", arg.asType(dList.class).filter(dMaterial.class, scriptEntry));
+                    || arg.matchesArgumentType(ListTag.class))) {
+                scriptEntry.addObject("materials", arg.asType(ListTag.class).filter(dMaterial.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesPrefix("d", "duration")
-                    && arg.matchesArgumentType(Duration.class)) {
-                scriptEntry.addObject("duration", arg.asType(Duration.class));
+                    && arg.matchesArgumentType(DurationTag.class)) {
+                scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
             else {
                 arg.reportUnhandled();
@@ -63,14 +63,14 @@ public class ItemCooldownCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Missing materials argument!");
         }
 
-        scriptEntry.defaultObject("duration", new Duration(1));
+        scriptEntry.defaultObject("duration", new DurationTag(1));
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
         ArrayList<dMaterial> materials = (ArrayList<dMaterial>) scriptEntry.getObject("materials");
-        Duration duration = scriptEntry.getdObject("duration");
+        DurationTag duration = scriptEntry.getdObject("duration");
         dPlayer player = Utilities.getEntryPlayer(scriptEntry);
 
         if (player == null) {

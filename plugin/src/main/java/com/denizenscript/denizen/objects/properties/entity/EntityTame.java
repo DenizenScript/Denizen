@@ -3,10 +3,10 @@ package com.denizenscript.denizen.objects.properties.entity;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dPlayer;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.OfflinePlayer;
@@ -15,12 +15,12 @@ import org.bukkit.entity.Tameable;
 public class EntityTame implements Property {
 
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity &&
                 ((dEntity) entity).getBukkitEntity() instanceof Tameable;
     }
 
-    public static EntityTame getFrom(dObject entity) {
+    public static EntityTame getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -75,7 +75,7 @@ public class EntityTame implements Property {
 
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -87,14 +87,14 @@ public class EntityTame implements Property {
 
         // <--[tag]
         // @attribute <e@entity.is_tamed>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @mechanism dEntity.tame
         // @group properties
         // @description
         // Returns whether the entity has been tamed.
         // -->
         if (attribute.startsWith("is_tamed")) {
-            return new Element(((Tameable) entity.getBukkitEntity()).isTamed())
+            return new ElementTag(((Tameable) entity.getBukkitEntity()).isTamed())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -135,19 +135,19 @@ public class EntityTame implements Property {
         // -->
 
         if (mechanism.matches("tame")) {
-            dList list = mechanism.valueAsType(dList.class);
+            ListTag list = mechanism.valueAsType(ListTag.class);
             if (list.size() == 0) {
                 Debug.echoError("Missing value for 'tame' mechanism!");
                 return;
             }
-            if (new Element(list.get(0)).isBoolean()) {
+            if (new ElementTag(list.get(0)).isBoolean()) {
                 ((Tameable) entity.getBukkitEntity()).setTamed(mechanism.getValue().asBoolean());
             }
             else {
                 Debug.echoError("Invalid boolean value!");
             }
-            if (list.size() > 1 && new Element(list.get(1)).matchesType(dPlayer.class)) {
-                ((Tameable) entity.getBukkitEntity()).setOwner(new Element(list.get(1)).asType(dPlayer.class, mechanism.context).getOfflinePlayer());
+            if (list.size() > 1 && new ElementTag(list.get(1)).matchesType(dPlayer.class)) {
+                ((Tameable) entity.getBukkitEntity()).setOwner(new ElementTag(list.get(1)).asType(dPlayer.class, mechanism.context).getOfflinePlayer());
             }
         }
 

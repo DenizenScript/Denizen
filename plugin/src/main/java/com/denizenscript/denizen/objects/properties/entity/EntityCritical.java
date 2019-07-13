@@ -1,20 +1,20 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.entity.Arrow;
 
 public class EntityCritical implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity && ((dEntity) entity).getBukkitEntity() instanceof Arrow;
     }
 
-    public static EntityCritical getFrom(dObject entity) {
+    public static EntityCritical getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -62,7 +62,7 @@ public class EntityCritical implements Property {
     }
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -74,14 +74,14 @@ public class EntityCritical implements Property {
 
         // <--[tag]
         // @attribute <e@entity.critical>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @mechanism dEntity.critical
         // @group properties
         // @description
         // If the entity is an arrow or trident, returns whether the arrow/trident is critical.
         // -->
         if (attribute.startsWith("critical")) {
-            return new Element(((Arrow) critical.getBukkitEntity()).isCritical())
+            return new ElementTag(((Arrow) critical.getBukkitEntity()).isCritical())
                     .getAttribute(attribute.fulfill(1));
         }
 

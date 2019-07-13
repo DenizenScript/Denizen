@@ -2,19 +2,19 @@ package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 
 public class EntitySilent implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity;
     }
 
-    public static EntitySilent getFrom(dObject entity) {
+    public static EntitySilent getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -58,7 +58,7 @@ public class EntitySilent implements Property {
 
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -70,13 +70,13 @@ public class EntitySilent implements Property {
 
         // <--[tag]
         // @attribute <e@entity.silent>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group attributes
         // @description
         // Returns whether the entity is silent. (Plays no sounds)
         // -->
         if (attribute.startsWith("silent")) {
-            return new Element(NMSHandler.getInstance().getEntityHelper().isSilent(entity.getBukkitEntity()))
+            return new ElementTag(NMSHandler.getInstance().getEntityHelper().isSilent(entity.getBukkitEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 

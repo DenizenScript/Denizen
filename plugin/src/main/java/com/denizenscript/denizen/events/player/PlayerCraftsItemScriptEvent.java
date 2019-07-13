@@ -6,8 +6,8 @@ import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -35,7 +35,7 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
     // @Context
     // <context.inventory> returns the dInventory of the crafting inventory.
     // <context.item> returns the dItem to be crafted.
-    // <context.recipe> returns a dList of dItems in the recipe.
+    // <context.recipe> returns a ListTag of dItems in the recipe.
     //
     // @Determine
     // dItem to change the item that is crafted.
@@ -49,7 +49,7 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
     public static PlayerCraftsItemScriptEvent instance;
     public boolean resultChanged;
     public dItem result;
-    public dList recipe;
+    public ListTag recipe;
     public CraftingInventory inventory;
     public dPlayer player;
 
@@ -92,7 +92,7 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("item")) {
             return result;
         }
@@ -117,7 +117,7 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
         }
         inventory = event.getInventory();
         result = new dItem(eRecipe.getResult());
-        recipe = new dList();
+        recipe = new ListTag();
         for (ItemStack itemStack : inventory.getMatrix()) {
             if (itemStack != null) {
                 recipe.add(new dItem(itemStack).identify());

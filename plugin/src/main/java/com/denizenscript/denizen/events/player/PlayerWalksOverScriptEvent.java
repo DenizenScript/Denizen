@@ -6,8 +6,8 @@ import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -30,7 +30,7 @@ public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Lis
     // @Triggers when a player walks over a notable location.
     //
     // @Context
-    // <context.notable> returns an Element of the notable location's name.
+    // <context.notable> returns an ElementTag of the notable location's name.
     //
     // -->
 
@@ -69,9 +69,9 @@ public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("notable")) {
-            return new Element(notable);
+            return new ElementTag(notable);
         }
         return super.getContext(name);
     }

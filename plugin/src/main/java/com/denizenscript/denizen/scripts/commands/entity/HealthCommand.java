@@ -6,9 +6,9 @@ import com.denizenscript.denizen.npc.traits.HealthTrait;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
@@ -75,7 +75,7 @@ public class HealthCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("target")
                     && arg.matchesArgumentList(dEntity.class)) {
-                scriptEntry.addObject("target", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("target", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("action")
                     && arg.matchesPrefix("state")) {
@@ -105,8 +105,8 @@ public class HealthCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        Element qty = scriptEntry.getElement("qty");
-        Element action = scriptEntry.getElement("action");
+        ElementTag qty = scriptEntry.getElement("qty");
+        ElementTag action = scriptEntry.getElement("action");
         List<dEntity> targets = (List<dEntity>) scriptEntry.getObject("target");
 
         if (scriptEntry.dbCallShouldDebug()) {
@@ -122,7 +122,7 @@ public class HealthCommand extends AbstractCommand {
         }
 
         if (action == null) {
-            action = new Element(true);
+            action = new ElementTag(true);
         }
 
         for (dEntity target : targets) {

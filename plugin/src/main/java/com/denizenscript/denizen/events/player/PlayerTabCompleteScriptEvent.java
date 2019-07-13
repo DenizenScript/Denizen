@@ -3,9 +3,9 @@ package com.denizenscript.denizen.events.player;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -36,7 +36,7 @@ public class PlayerTabCompleteScriptEvent extends BukkitScriptEvent implements L
     // <context.server> returns true if the tab completion was triggered from the console.
     //
     // @Determine
-    // dList to set the list of available tab completions.
+    // ListTag to set the list of available tab completions.
     //
     // @Player when the tab completion is done by a player.
     //
@@ -49,7 +49,7 @@ public class PlayerTabCompleteScriptEvent extends BukkitScriptEvent implements L
     public static PlayerTabCompleteScriptEvent instance;
     public TabCompleteEvent event;
     public String buffer;
-    public dList completions;
+    public ListTag completions;
     public CommandSender sender;
 
     public String getCommand() {
@@ -84,7 +84,7 @@ public class PlayerTabCompleteScriptEvent extends BukkitScriptEvent implements L
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (determination.length() > 0 && !isDefaultDetermination(determination)) {
-            completions = dList.valueOf(determination);
+            completions = ListTag.valueOf(determination);
             return true;
         }
         return super.applyDetermination(container, determination);
@@ -96,21 +96,21 @@ public class PlayerTabCompleteScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("buffer")) {
-            return new Element(buffer);
+            return new ElementTag(buffer);
         }
         else if (name.equals("command")) {
-            return new Element(getCommand());
+            return new ElementTag(getCommand());
         }
         else if (name.equals("current_arg")) {
-            return new Element(getCurrentArg());
+            return new ElementTag(getCurrentArg());
         }
         else if (name.equals("completions")) {
             return completions;
         }
         else if (name.equals("server")) {
-            return new Element(sender instanceof ConsoleCommandSender);
+            return new ElementTag(sender instanceof ConsoleCommandSender);
         }
         return super.getContext(name);
     }
@@ -118,7 +118,7 @@ public class PlayerTabCompleteScriptEvent extends BukkitScriptEvent implements L
     @EventHandler
     public void onTabComplete(TabCompleteEvent event) {
         buffer = event.getBuffer();
-        completions = new dList(event.getCompletions());
+        completions = new ListTag(event.getCompletions());
         sender = event.getSender();
         this.event = event;
         fire(event);

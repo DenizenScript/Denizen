@@ -7,9 +7,9 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dWorld;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Bukkit;
@@ -57,7 +57,7 @@ public class RemoveCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("region")
                     && arg.matchesPrefix("region", "r")) {
@@ -94,7 +94,7 @@ public class RemoveCommand extends AbstractCommand {
         // Get objects
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         dWorld world = (dWorld) scriptEntry.getObject("world");
-        Element region = (Element) scriptEntry.getObject("region");
+        ElementTag region = (ElementTag) scriptEntry.getObject("region");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {

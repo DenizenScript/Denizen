@@ -1,20 +1,20 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 
 public class ItemQuantity implements Property {
 
-    public static boolean describes(dObject item) {
+    public static boolean describes(ObjectTag item) {
         // all items can have a quantity
         return item instanceof dItem;
     }
 
-    public static ItemQuantity getFrom(dObject _item) {
+    public static ItemQuantity getFrom(ObjectTag _item) {
         if (!describes(_item)) {
             return null;
         }
@@ -47,27 +47,27 @@ public class ItemQuantity implements Property {
 
         // <--[tag]
         // @attribute <i@item.quantity>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @mechanism dItem.quantity
         // @group properties
         // @description
         // Returns the number of items in the dItem's itemstack.
         // -->
         if (attribute.startsWith("quantity") || attribute.startsWith("qty")) {
-            return new Element(item.getItemStack().getAmount())
+            return new ElementTag(item.getItemStack().getAmount())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <i@item.max_stack>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @group properties
         // @description
         // Returns the max number of this item possible in a single stack of this type.
         // For use with <@link tag i@item.quantity> and <@link mechanism dItem.quantity>.
         // -->
         if (attribute.startsWith("max_stack")) {
-            return new Element(item.getItemStack().getMaxStackSize())
+            return new ElementTag(item.getItemStack().getMaxStackSize())
                     .getAttribute(attribute.fulfill(1));
         }
 

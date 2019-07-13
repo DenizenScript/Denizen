@@ -14,14 +14,14 @@ public class NoteCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Note
-    // @Syntax note [<Notable dObject>/remove] [as:<name>]
+    // @Syntax note [<Notable ObjectTag>/remove] [as:<name>]
     // @Required 2
     // @Short Adds or removes a notable object.
     // @Group core
     //
     // @Description
     // Add or remove a notable object that can be referenced in events or scripts.
-    // Notable objects are "permanent" versions of other dObjects. (See: <@link language dObject>)
+    // Notable objects are "permanent" versions of other ObjectTags. (See: <@link language ObjectTag>)
     // Notable objects keep their properties when added.
     //
     // @Tags
@@ -60,7 +60,7 @@ public class NoteCommand extends AbstractCommand {
                 scriptEntry.addObject("object", arg.getValue());
             }
             else if (arg.matches("remove")) {
-                scriptEntry.addObject("remove", new Element(true));
+                scriptEntry.addObject("remove", new ElementTag(true));
             }
             else {
                 arg.reportUnhandled();
@@ -74,7 +74,7 @@ public class NoteCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify a fetchable-object to note.");
         }
         if (!scriptEntry.hasObject("remove")) {
-            scriptEntry.addObject("remove", new Element(false));
+            scriptEntry.addObject("remove", new ElementTag(false));
         }
 
     }
@@ -83,8 +83,8 @@ public class NoteCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         String object = (String) scriptEntry.getObject("object");
-        Element id = scriptEntry.getElement("id");
-        Element remove = scriptEntry.getElement("remove");
+        ElementTag id = scriptEntry.getElement("id");
+        ElementTag remove = scriptEntry.getElement("remove");
 
         if (scriptEntry.dbCallShouldDebug()) {
 
@@ -111,7 +111,7 @@ public class NoteCommand extends AbstractCommand {
             return;
         }
 
-        dObject arg;
+        ObjectTag arg;
         try {
 
             if (!ObjectFetcher.checkMatch(object_class, object)) {

@@ -54,15 +54,15 @@ public class ShowFakeCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        dList locations = new dList();
-        dList entities = new dList();
+        ListTag locations = new ListTag();
+        ListTag entities = new ListTag();
         boolean added_entities = false;
 
         // Iterate through arguments
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (arg.matchesPrefix("to", "players")) {
-                for (String entity : dList.valueOf(arg.getValue())) {
+                for (String entity : ListTag.valueOf(arg.getValue())) {
                     if (dPlayer.matches(entity)) {
                         entities.add(entity);
                     }
@@ -70,11 +70,11 @@ public class ShowFakeCommand extends AbstractCommand {
                 added_entities = true; // TODO: handle lists properly
             }
             else if (arg.matchesArgumentList(dMaterial.class)) {
-                scriptEntry.addObject("materials", arg.asType(dList.class));
+                scriptEntry.addObject("materials", arg.asType(ListTag.class));
             }
             else if (locations.isEmpty()
-                    && arg.matchesArgumentType(dList.class)) {
-                for (String item : dList.valueOf(arg.getValue())) {
+                    && arg.matchesArgumentType(ListTag.class)) {
+                for (String item : ListTag.valueOf(arg.getValue())) {
                     if (dLocation.matches(item)) {
                         locations.add(item);
                     }
@@ -85,11 +85,11 @@ public class ShowFakeCommand extends AbstractCommand {
                 locations.add(arg.getValue());
             }
             else if (arg.matchesPrefix("d", "duration")
-                    && arg.matchesArgumentType(Duration.class)) {
-                scriptEntry.addObject("duration", arg.asType(Duration.class));
+                    && arg.matchesArgumentType(DurationTag.class)) {
+                scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
             else if (arg.matches("cancel")) {
-                scriptEntry.addObject("cancel", new Element(true));
+                scriptEntry.addObject("cancel", new ElementTag(true));
             }
             else {
                 arg.reportUnhandled();
@@ -121,18 +121,18 @@ public class ShowFakeCommand extends AbstractCommand {
         scriptEntry.addObject("entities", entities);
         scriptEntry.addObject("locations", locations);
 
-        scriptEntry.defaultObject("duration", new Duration(10)).defaultObject("cancel", new Element(false));
+        scriptEntry.defaultObject("duration", new DurationTag(10)).defaultObject("cancel", new ElementTag(false));
     }
 
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        Duration duration = scriptEntry.getdObject("duration");
-        dList material_list = scriptEntry.getdObject("materials");
-        dList list = scriptEntry.getdObject("locations");
-        dList players = scriptEntry.getdObject("entities");
-        Element cancel = scriptEntry.getElement("cancel");
+        DurationTag duration = scriptEntry.getdObject("duration");
+        ListTag material_list = scriptEntry.getdObject("materials");
+        ListTag list = scriptEntry.getdObject("locations");
+        ListTag players = scriptEntry.getdObject("entities");
+        ElementTag cancel = scriptEntry.getElement("cancel");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

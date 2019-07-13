@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.entity.EntityType;
@@ -12,12 +12,12 @@ import org.bukkit.entity.Horse;
 public class EntityJumpStrength implements Property {
 
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity &&
                 ((dEntity) entity).getBukkitEntityType() == EntityType.HORSE;
     }
 
-    public static EntityJumpStrength getFrom(dObject entity) {
+    public static EntityJumpStrength getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -61,7 +61,7 @@ public class EntityJumpStrength implements Property {
 
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -73,14 +73,14 @@ public class EntityJumpStrength implements Property {
 
         // <--[tag]
         // @attribute <e@entity.jump_strength>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @mechanism dEntity.jump_strength
         // @group properties
         // @description
         // Returns the power of a horse's jump.
         // -->
         if (attribute.startsWith("jump_strength")) {
-            return new Element(((Horse) entity.getBukkitEntity()).getJumpStrength())
+            return new ElementTag(((Horse) entity.getBukkitEntity()).getJumpStrength())
                     .getAttribute(attribute.fulfill(1));
         }
 

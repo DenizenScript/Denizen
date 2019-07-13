@@ -2,20 +2,20 @@ package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.entity.Arrow;
 
 public class EntityArrowDamage implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity && ((dEntity) entity).getBukkitEntity() instanceof Arrow;
     }
 
-    public static EntityArrowDamage getFrom(dObject entity) {
+    public static EntityArrowDamage getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -56,7 +56,7 @@ public class EntityArrowDamage implements Property {
     }
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -68,7 +68,7 @@ public class EntityArrowDamage implements Property {
 
         // <--[tag]
         // @attribute <e@entity.damage>
-        // @returns Element(Decimal)
+        // @returns ElementTag(Decimal)
         // @mechanism dEntity.damage
         // @group properties
         // @description
@@ -76,7 +76,7 @@ public class EntityArrowDamage implements Property {
         // NOTE: The actual damage dealt by the arrow/trident may be different depending on the projectile's flight speed.
         // -->
         if (attribute.startsWith("damage")) {
-            return new Element(NMSHandler.getInstance().getEntityHelper().getArrowDamage(dentity.getBukkitEntity()))
+            return new ElementTag(NMSHandler.getInstance().getEntityHelper().getArrowDamage(dentity.getBukkitEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 

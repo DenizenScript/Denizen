@@ -3,10 +3,10 @@ package com.denizenscript.denizen.objects.properties.item;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.core.EscapeTags;
@@ -17,11 +17,11 @@ import java.util.List;
 
 public class ItemNBT implements Property {
 
-    public static boolean describes(dObject item) {
+    public static boolean describes(ObjectTag item) {
         return item instanceof dItem;
     }
 
-    public static ItemNBT getFrom(dObject item) {
+    public static ItemNBT getFrom(ObjectTag item) {
         if (!describes(item)) {
             return null;
         }
@@ -54,41 +54,41 @@ public class ItemNBT implements Property {
 
         // <--[tag]
         // @attribute <i@item.has_nbt[<key>]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group properties
         // @description
         // Returns whether this item has the specified NBT key.
         // -->
         if (attribute.startsWith("has_nbt")) {
-            return new Element(CustomNBT.hasCustomNBT(item.getItemStack(), attribute.getContext(1), CustomNBT.KEY_DENIZEN))
+            return new ElementTag(CustomNBT.hasCustomNBT(item.getItemStack(), attribute.getContext(1), CustomNBT.KEY_DENIZEN))
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <i@item.nbt_keys>
-        // @returns dList
+        // @returns ListTag
         // @group properties
         // @description
-        // Returns all of this item's NBT keys as a dList.
+        // Returns all of this item's NBT keys as a ListTag.
         // -->
         if (attribute.startsWith("nbt_keys")) {
-            return new dList(CustomNBT.listNBT(item.getItemStack(), CustomNBT.KEY_DENIZEN))
+            return new ListTag(CustomNBT.listNBT(item.getItemStack(), CustomNBT.KEY_DENIZEN))
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <i@item.nbt[<key>]>
-        // @returns Element
+        // @returns ElementTag
         // @mechanism dItem.nbt
         // @group properties
         // @description
-        // Returns the value of this item's NBT key as an Element as best it can.
+        // Returns the value of this item's NBT key as an ElementTag as best it can.
         // If no key is specified, returns the full list of NBT key/value pairs (valid for input to nbt mechanism).
         // See also <@link language property escaping>.
         // -->
         if (attribute.matches("nbt")) {
             if (!attribute.hasContext(1)) {
-                dList list = getNBTDataList();
+                ListTag list = getNBTDataList();
                 if (list == null) {
                     return null;
                 }
@@ -98,18 +98,18 @@ public class ItemNBT implements Property {
             if (res == null) {
                 return null;
             }
-            return new Element(res)
+            return new ElementTag(res)
                     .getAttribute(attribute.fulfill(1));
         }
 
         return null;
     }
 
-    public dList getNBTDataList() {
+    public ListTag getNBTDataList() {
         ItemStack itemStack = item.getItemStack();
         List<String> nbtKeys = CustomNBT.listNBT(itemStack, CustomNBT.KEY_DENIZEN);
         if (nbtKeys != null && !nbtKeys.isEmpty()) {
-            dList list = new dList();
+            ListTag list = new ListTag();
             for (String key : nbtKeys) {
                 list.add(EscapeTags.escape(key) + "/" + EscapeTags.escape(CustomNBT.getCustomNBT(itemStack, key, CustomNBT.KEY_DENIZEN)));
             }
@@ -120,7 +120,7 @@ public class ItemNBT implements Property {
 
     @Override
     public String getPropertyString() {
-        dList list = getNBTDataList();
+        ListTag list = getNBTDataList();
         if (list == null) {
             return null;
         }
@@ -138,7 +138,7 @@ public class ItemNBT implements Property {
         // <--[mechanism]
         // @object dItem
         // @name remove_nbt
-        // @input dList
+        // @input ListTag
         // @description
         // Removes the Denizen NBT keys specified, or all Denizen NBT if no value is given.
         // @tags
@@ -154,7 +154,7 @@ public class ItemNBT implements Property {
             ItemStack itemStack = item.getItemStack();
             List<String> list;
             if (mechanism.hasValue()) {
-                list = mechanism.valueAsType(dList.class);
+                list = mechanism.valueAsType(ListTag.class);
             }
             else {
                 list = CustomNBT.listNBT(itemStack, CustomNBT.KEY_DENIZEN);
@@ -168,7 +168,7 @@ public class ItemNBT implements Property {
         // <--[mechanism]
         // @object dItem
         // @name nbt
-        // @input dList
+        // @input ListTag
         // @description
         // Sets the Denizen NBT for this item in the format li@key/value|key/value...
         // See also <@link language property escaping>.
@@ -182,7 +182,7 @@ public class ItemNBT implements Property {
                 Debug.echoError("Cannot apply NBT to AIR!");
                 return;
             }
-            dList list = mechanism.valueAsType(dList.class);
+            ListTag list = mechanism.valueAsType(ListTag.class);
             ItemStack itemStack = item.getItemStack();
             for (String string : list) {
                 String[] split = string.split("/", 2);

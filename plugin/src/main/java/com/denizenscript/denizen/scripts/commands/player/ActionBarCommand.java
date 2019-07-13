@@ -8,9 +8,9 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -64,10 +64,10 @@ public class ActionBarCommand extends AbstractCommand {
             }
             if (arg.matchesPrefix("targets", "target")
                     && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
+                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("text")) {
-                scriptEntry.addObject("text", new Element(TagManager.cleanOutputFully(arg.raw_value)));
+                scriptEntry.addObject("text", new ElementTag(TagManager.cleanOutputFully(arg.raw_value)));
             }
         }
 
@@ -94,7 +94,7 @@ public class ActionBarCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        Element text = scriptEntry.getElement("text");
+        ElementTag text = scriptEntry.getElement("text");
         FormatScriptContainer format = (FormatScriptContainer) scriptEntry.getObject("format");
 
         List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
@@ -105,7 +105,7 @@ public class ActionBarCommand extends AbstractCommand {
 
         }
         if (format != null) {
-            text = new Element(format.getFormattedText(scriptEntry));
+            text = new ElementTag(format.getFormattedText(scriptEntry));
         }
 
         for (dPlayer player : targets) {

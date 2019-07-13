@@ -6,9 +6,9 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -67,12 +67,12 @@ public class NarrateCommand extends AbstractCommand {
             // Add players to target list
             else if (!scriptEntry.hasObject("targets")
                     && arg.matchesPrefix("target", "targets", "t")) {
-                scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
+                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
             }
 
             // Use raw_value as to not accidentally strip a value before any :'s.
             else if (!scriptEntry.hasObject("text")) {
-                scriptEntry.addObject("text", new Element(TagManager.cleanOutputFully(arg.raw_value)));
+                scriptEntry.addObject("text", new ElementTag(TagManager.cleanOutputFully(arg.raw_value)));
             }
             else {
                 arg.reportUnhandled();

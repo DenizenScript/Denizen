@@ -8,9 +8,9 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -74,7 +74,7 @@ public class FireworkCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("type")
                     && arg.matches("random")) {
-                scriptEntry.addObject("type", new Element(FireworkEffect.Type.values()[CoreUtilities.getRandom().nextInt(FireworkEffect.Type.values().length)].name()));
+                scriptEntry.addObject("type", new ElementTag(FireworkEffect.Type.values()[CoreUtilities.getRandom().nextInt(FireworkEffect.Type.values().length)].name()));
             }
             else if (!scriptEntry.hasObject("type")
                     && arg.matchesEnum(FireworkEffect.Type.values())) {
@@ -95,12 +95,12 @@ public class FireworkCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("primary")
                     && arg.matchesPrefix("primary")
                     && arg.matchesArgumentList(dColor.class)) {
-                scriptEntry.addObject("primary", arg.asType(dList.class).filter(dColor.class, scriptEntry));
+                scriptEntry.addObject("primary", arg.asType(ListTag.class).filter(dColor.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("fade")
                     && arg.matchesPrefix("fade")
                     && arg.matchesArgumentList(dColor.class)) {
-                scriptEntry.addObject("fade", arg.asType(dList.class).filter(dColor.class, scriptEntry));
+                scriptEntry.addObject("fade", arg.asType(ListTag.class).filter(dColor.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
@@ -112,8 +112,8 @@ public class FireworkCommand extends AbstractCommand {
                 Utilities.entryHasNPC(scriptEntry) ? Utilities.getEntryNPC(scriptEntry).getLocation() : null,
                 Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getLocation() : null);
 
-        scriptEntry.defaultObject("type", new Element("ball"));
-        scriptEntry.defaultObject("power", new Element(1));
+        scriptEntry.defaultObject("type", new ElementTag("ball"));
+        scriptEntry.defaultObject("power", new ElementTag(1));
         scriptEntry.defaultObject("primary", Arrays.asList(dColor.valueOf("yellow")));
     }
 
@@ -126,8 +126,8 @@ public class FireworkCommand extends AbstractCommand {
                 (dLocation) scriptEntry.getObject("location") :
                 Utilities.getEntryNPC(scriptEntry).getLocation();
 
-        Element type = (Element) scriptEntry.getObject("type");
-        Element power = (Element) scriptEntry.getObject("power");
+        ElementTag type = (ElementTag) scriptEntry.getObject("type");
+        ElementTag power = (ElementTag) scriptEntry.getObject("power");
         boolean flicker = scriptEntry.hasObject("flicker");
         boolean trail = scriptEntry.hasObject("trail");
         List<dColor> primary = (List<dColor>) scriptEntry.getObject("primary");

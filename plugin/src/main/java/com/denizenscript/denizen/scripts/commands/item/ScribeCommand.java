@@ -9,7 +9,7 @@ import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dScript;
+import com.denizenscript.denizencore.objects.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
@@ -143,8 +143,8 @@ public class ScribeCommand extends AbstractCommand {
                 scriptEntry.addObject("action", BookAction.valueOf(arg.getValue().toUpperCase()));
             }
             else if (!scriptEntry.hasObject("script")
-                    && arg.matchesArgumentType(dScript.class)) {
-                scriptEntry.addObject("script", arg.asType(dScript.class));
+                    && arg.matchesArgumentType(ScriptTag.class)) {
+                scriptEntry.addObject("script", arg.asType(ScriptTag.class));
             }
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class)) {
@@ -177,7 +177,7 @@ public class ScribeCommand extends AbstractCommand {
         // Retrieve objects from ScriptEntry
         BookAction action = (BookAction) scriptEntry.getObject("action");
         dItem book = (dItem) scriptEntry.getObject("item");
-        dScript script = (dScript) scriptEntry.getObject("script");
+        ScriptTag script = (ScriptTag) scriptEntry.getObject("script");
         dLocation location = (dLocation) scriptEntry.getObject("location");
 
         BookScriptContainer bookScript = (BookScriptContainer) script.getContainer();
@@ -258,7 +258,7 @@ public class ScribeCommand extends AbstractCommand {
     public void paragraph(ReplaceableTagEvent e) {
         // <--[tag]
         // @attribute <p>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns a paragraph, for use in books.
         // -->
@@ -266,7 +266,7 @@ public class ScribeCommand extends AbstractCommand {
             e.setReplaced("\n \u00A7r \n");
             // <--[tag]
             // @attribute <n>
-            // @returns Element
+            // @returns ElementTag
             // @description
             // Returns a newline symbol, for use in books.
             // -->

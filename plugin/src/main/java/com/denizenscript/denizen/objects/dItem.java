@@ -40,7 +40,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class dItem implements dObject, Notable, Adjustable {
+public class dItem implements ObjectTag, Notable, Adjustable {
 
     // <--[language]
     // @name dItem
@@ -247,7 +247,7 @@ public class dItem implements dObject, Notable, Adjustable {
             return false;
         }
 
-        // All dObjects should 'match' if there is a proper
+        // All ObjectTags should 'match' if there is a proper
         // ObjectFetcher identifier
         if (CoreUtilities.toLowerCase(arg).startsWith("i@")) {
             return true;
@@ -691,18 +691,18 @@ public class dItem implements dObject, Notable, Adjustable {
 
         registerTag("id", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 Debug.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
-                return new Element(((dItem) object).getItemStack().getType().getId())
+                return new ElementTag(((dItem) object).getItemStack().getType().getId())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         registerTag("data", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 Debug.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
-                return new Element(((dItem) object).getItemStack().getData().getData())
+                return new ElementTag(((dItem) object).getItemStack().getData().getData())
                         .getAttribute(attribute.fulfill(1));
             }
         });
@@ -716,7 +716,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // -->
         registerTag("with", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("i@item.with[...] tag must have an input mechanism list.");
                 }
@@ -728,7 +728,7 @@ public class dItem implements dObject, Notable, Adjustable {
                         Debug.echoError("Invalid property string '" + properties.get(i) + "'!");
                     }
                     else {
-                        item.safeApplyProperty(new Mechanism(new Element(data.get(0)), new Element((data.get(1)).replace('‑', ';')), attribute.context));
+                        item.safeApplyProperty(new Mechanism(new ElementTag(data.get(0)), new ElementTag((data.get(1)).replace('‑', ';')), attribute.context));
                     }
                 }
                 return item.getAttribute(attribute.fulfill(1));
@@ -737,7 +737,7 @@ public class dItem implements dObject, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <i@item.repairable>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group properties
         // @description
         // Returns whether the item can be repaired.
@@ -747,15 +747,15 @@ public class dItem implements dObject, Notable, Adjustable {
         // -->
         registerTag("repairable", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(ItemDurability.describes(object))
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(ItemDurability.describes(object))
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <i@item.is_crop>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group properties
         // @description
         // Returns whether the item is a growable crop.
@@ -764,15 +764,15 @@ public class dItem implements dObject, Notable, Adjustable {
         // -->
         registerTag("is_crop", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(ItemPlantgrowth.describes(object))
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(ItemPlantgrowth.describes(object))
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <i@item.is_book>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group properties
         // @description
         // Returns whether the item is considered an editable book.
@@ -784,15 +784,15 @@ public class dItem implements dObject, Notable, Adjustable {
         // -->
         registerTag("is_book", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(ItemBook.describes(object))
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(ItemBook.describes(object))
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <i@item.is_colorable>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group properties
         // Returns whether the item can have a custom color.
         // If this returns true, it will enable access to:
@@ -800,23 +800,23 @@ public class dItem implements dObject, Notable, Adjustable {
         // -->
         registerTag("is_colorable", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(ItemColor.describes(object))
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(ItemColor.describes(object))
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         registerTag("is_dyeable", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(ItemColor.describes(object))
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(ItemColor.describes(object))
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <i@item.is_firework>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group properties
         // Returns whether the item is a firework.
         // If this returns true, it will enable access to:
@@ -824,15 +824,15 @@ public class dItem implements dObject, Notable, Adjustable {
         // -->
         registerTag("is_firework", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(ItemFirework.describes(object))
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(ItemFirework.describes(object))
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <i@item.has_inventory>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group properties
         // Returns whether the item has an inventory.
         // If this returns true, it will enable access to:
@@ -840,15 +840,15 @@ public class dItem implements dObject, Notable, Adjustable {
         // -->
         registerTag("has_inventory", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(ItemInventory.describes(object))
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(ItemInventory.describes(object))
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <i@item.is_lockable>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group properties
         // Returns whether the item is lockable.
         // If this returns true, it will enable access to:
@@ -856,8 +856,8 @@ public class dItem implements dObject, Notable, Adjustable {
         // -->
         registerTag("is_lockable", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(ItemLock.describes(object))
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(ItemLock.describes(object))
                         .getAttribute(attribute.fulfill(1));
             }
         });
@@ -872,7 +872,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // -->
         registerTag("material", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 dItem item = (dItem) object;
                 if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) &&
                         item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof BlockStateMeta) {
@@ -885,7 +885,7 @@ public class dItem implements dObject, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <i@item.json>
-        // @returns Element
+        // @returns ElementTag
         // @group conversion
         // @description
         // Returns the item converted to a raw JSON object with one layer of escaping for network transmission.
@@ -896,31 +896,31 @@ public class dItem implements dObject, Notable, Adjustable {
         // -->
         registerTag("json", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(NMSHandler.getInstance().getItemHelper().getJsonString(((dItem) object).item))
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(NMSHandler.getInstance().getItemHelper().getJsonString(((dItem) object).item))
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <i@item.bukkit_serial>
-        // @returns Element
+        // @returns ElementTag
         // @group conversion
         // @description
         // Returns a YAML text section representing the Bukkit serialization of the item, under subkey "item".
         // -->
         registerTag("bukkit_serial", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 YamlConfiguration config = new YamlConfiguration();
                 config.set("item", ((dItem) object).getItemStack());
-                return new Element(config.saveToString()).getAttribute(attribute.fulfill(1));
+                return new ElementTag(config.saveToString()).getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <i@item.full>
-        // @returns Element
+        // @returns ElementTag
         // @group conversion
         // @description
         // Returns a full reusable item identification for this item, with extra, generally useless data.
@@ -928,54 +928,54 @@ public class dItem implements dObject, Notable, Adjustable {
         // -->
         registerTag("full", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dItem) object).getFullString()).getAttribute(attribute.fulfill(1));
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dItem) object).getFullString()).getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <i@item.simple>
-        // @returns Element
+        // @returns ElementTag
         // @group conversion
         // @description
         // Returns a simple reusable item identification for this item, with minimal extra data.
         // -->
         registerTag("simple", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dItem) object).identifySimple()).getAttribute(attribute.fulfill(1));
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dItem) object).identifySimple()).getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <i@item.notable_name>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Gets the name of a Notable dItem. If the item isn't noted,
         // this is null.
         // -->
         registerTag("notable_name", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 String notname = NotableManager.getSavedId((dItem) object);
                 if (notname == null) {
                     return null;
                 }
-                return new Element(notname).getAttribute(attribute.fulfill(1));
+                return new ElementTag(notname).getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <i@item.type>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Always returns 'Item' for dItem objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         registerTag("type", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element("Item").getAttribute(attribute.fulfill(1));
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag("Item").getAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1018,7 +1018,7 @@ public class dItem implements dObject, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <i@item.formatted>
-        // @returns Element
+        // @returns ElementTag
         // @group formatting
         // @description
         // Returns the formatted material name of the item to be used in a sentence.
@@ -1032,18 +1032,18 @@ public class dItem implements dObject, Notable, Adjustable {
             String id = CoreUtilities.toLowerCase(getMaterial().realName()).replace('_', ' ');
 
             if (id.equals("air")) {
-                return new Element("nothing")
+                return new ElementTag("nothing")
                         .getAttribute(attribute.fulfill(1));
             }
 
             if (id.equals("ice") || id.equals("dirt")) {
-                return new Element(id)
+                return new ElementTag(id)
                         .getAttribute(attribute.fulfill(1));
             }
 
             if (getItemStack().getAmount() > 1) {
                 if (id.equals("cactus")) {
-                    return new Element("cactuses")
+                    return new ElementTag("cactuses")
                             .getAttribute(attribute.fulfill(1));
                 }
 
@@ -1056,46 +1056,46 @@ public class dItem implements dObject, Notable, Adjustable {
 
                 if (id.equals("rotten flesh") || id.equals("cooked fish")
                         || id.equals("raw fish") || id.endsWith("s")) {
-                    return new Element(id)
+                    return new ElementTag(id)
                             .getAttribute(attribute.fulfill(1));
                 }
                 if (id.endsWith("y")) {
-                    return new Element(id.substring(0, id.length() - 1) + "ies")
+                    return new ElementTag(id.substring(0, id.length() - 1) + "ies")
                             .getAttribute(attribute.fulfill(1));  // ex: lily -> lilies
                 }
                 if (id.endsWith("sh") || id.endsWith("ch")) {
-                    return new Element(id + "es")
+                    return new ElementTag(id + "es")
                             .getAttribute(attribute.fulfill(1));
                 }
                 // else
-                return new Element(id + "s")
+                return new ElementTag(id + "s")
                         .getAttribute(attribute.fulfill(1)); // iron sword -> iron swords
 
             }
             else {
                 if (id.equals("cactus")) {
-                    return new Element("a cactus").getAttribute(attribute.fulfill(1));
+                    return new ElementTag("a cactus").getAttribute(attribute.fulfill(1));
                 }
                 if (id.endsWith("s")) {
-                    return new Element(id).getAttribute(attribute.fulfill(1));
+                    return new ElementTag(id).getAttribute(attribute.fulfill(1));
                 }
 
                 if (id.endsWith(" off")) {
-                    return new Element("a " + id.substring(0, id.length() - 4))
+                    return new ElementTag("a " + id.substring(0, id.length() - 4))
                             .getAttribute(attribute.fulfill(1));
                 }
                 if (id.endsWith(" on")) {
-                    return new Element("a " + id.substring(0, id.length() - 3))
+                    return new ElementTag("a " + id.substring(0, id.length() - 3))
                             .getAttribute(attribute.fulfill(1));
                 }
 
                 if (id.startsWith("a") || id.startsWith("e") || id.startsWith("i")
                         || id.startsWith("o") || id.startsWith("u")) {
-                    return new Element("an " + id)
+                    return new ElementTag("an " + id)
                             .getAttribute(attribute.fulfill(1));// ex: emerald -> an emerald
                 }
                 // else
-                return new Element("a " + id)
+                return new ElementTag("a " + id)
                         .getAttribute(attribute.fulfill(1));// ex: diamond -> a diamond
             }
         }
@@ -1105,7 +1105,7 @@ public class dItem implements dObject, Notable, Adjustable {
             return returned;
         }
 
-        return new Element(identify()).getAttribute(attribute);
+        return new ElementTag(identify()).getAttribute(attribute);
     }
 
 

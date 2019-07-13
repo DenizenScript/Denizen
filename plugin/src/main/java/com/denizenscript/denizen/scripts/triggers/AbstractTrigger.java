@@ -7,7 +7,7 @@ import com.denizenscript.denizen.npc.traits.TriggerTrait;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.events.OldEventManager;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.queues.core.TimedQueue;
 import com.denizenscript.denizencore.utilities.debugging.Debug.DebugElement;
@@ -79,7 +79,7 @@ public abstract class AbstractTrigger {
         return parse(npc, player, script, id, null);
     }
 
-    public boolean parse(dNPC npc, dPlayer player, InteractScriptContainer script, String id, Map<String, dObject> context) {
+    public boolean parse(dNPC npc, dPlayer player, InteractScriptContainer script, String id, Map<String, ObjectTag> context) {
         if (npc == null || player == null || script == null) {
             return false;
         }

@@ -3,9 +3,9 @@ package com.denizenscript.denizen.objects.properties.entity;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.npc.traits.InvisibleTrait;
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import net.citizensnpcs.api.CitizensAPI;
@@ -14,12 +14,12 @@ import org.bukkit.entity.EntityType;
 
 public class EntityVisible implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity &&
                 ((dEntity) entity).getBukkitEntityType() == EntityType.ARMOR_STAND;
     }
 
-    public static EntityVisible getFrom(dObject entity) {
+    public static EntityVisible getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -69,7 +69,7 @@ public class EntityVisible implements Property {
 
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -81,13 +81,13 @@ public class EntityVisible implements Property {
 
         // <--[tag]
         // @attribute <e@entity.visible>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group attributes
         // @description
         // Returns whether the armor stand is visible.
         // -->
         if (attribute.startsWith("visible")) {
-            return new Element(stand.isVisible()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(stand.isVisible()).getAttribute(attribute.fulfill(1));
         }
 
 

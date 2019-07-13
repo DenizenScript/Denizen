@@ -114,7 +114,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
             if (!scriptEntry.hasObject("type")
                     && arg.matchesEnum(Type.values())) {
-                scriptEntry.addObject("type", new Element(arg.raw_value.toUpperCase()));
+                scriptEntry.addObject("type", new ElementTag(arg.raw_value.toUpperCase()));
             }
             else if (!scriptEntry.hasObject("name")
                     && arg.matchesPrefix("name")) {
@@ -138,11 +138,11 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             }
             else if (!scriptEntry.hasObject("delayed")
                     && arg.matches("delayed")) {
-                scriptEntry.addObject("delayed", new Element("true"));
+                scriptEntry.addObject("delayed", new ElementTag("true"));
             }
             else if (!scriptEntry.hasObject("noair")
                     && arg.matches("noair")) {
-                scriptEntry.addObject("noair", new Element("true"));
+                scriptEntry.addObject("noair", new ElementTag("true"));
             }
             else {
                 arg.reportUnhandled();
@@ -162,12 +162,12 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     @Override
     public void execute(final ScriptEntry scriptEntry) {
 
-        Element angle = scriptEntry.getElement("angle");
-        Element type = scriptEntry.getElement("type");
-        Element name = scriptEntry.getElement("name");
-        Element filename = scriptEntry.getElement("filename");
-        Element noair = scriptEntry.getElement("noair");
-        Element delayed = scriptEntry.getElement("delayed");
+        ElementTag angle = scriptEntry.getElement("angle");
+        ElementTag type = scriptEntry.getElement("type");
+        ElementTag name = scriptEntry.getElement("name");
+        ElementTag filename = scriptEntry.getElement("filename");
+        ElementTag noair = scriptEntry.getElement("noair");
+        ElementTag delayed = scriptEntry.getElement("delayed");
         dLocation location = scriptEntry.getdObject("location");
         dCuboid cuboid = scriptEntry.getdObject("cuboid");
 
@@ -364,12 +364,12 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
         // <--[tag]
         // @attribute <schematic.list>
-        // @returns dList
+        // @returns ListTag
         // @description
         // Returns a list of all loaded schematics.
         // -->
         if (attribute.startsWith("list")) {
-            event.setReplaced(new dList(schematics.keySet()).getAttribute(attribute.fulfill(1)));
+            event.setReplaced(new ListTag(schematics.keySet()).getAttribute(attribute.fulfill(1)));
         }
 
         if (id == null) {
@@ -379,7 +379,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         if (!schematics.containsKey(id)) {
             // Meta below
             if (attribute.startsWith("exists")) {
-                event.setReplaced(new Element(false)
+                event.setReplaced(new ElementTag(false)
                         .getAttribute(attribute.fulfill(1)));
                 return;
             }
@@ -396,48 +396,48 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
         // <--[tag]
         // @attribute <schematic[<name>].exists>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the schematic exists.
         // -->
         if (attribute.startsWith("exists")) {
-            event.setReplaced(new Element(true)
+            event.setReplaced(new ElementTag(true)
                     .getAttribute(attribute.fulfill(1)));
             return;
         }
 
         // <--[tag]
         // @attribute <schematic[<name>].height>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the height (Y) of the schematic.
         // -->
         if (attribute.startsWith("height")) {
-            event.setReplaced(new Element(set.y_length)
+            event.setReplaced(new ElementTag(set.y_length)
                     .getAttribute(attribute.fulfill(1)));
             return;
         }
 
         // <--[tag]
         // @attribute <schematic[<name>].length>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the length (Z) of the schematic.
         // -->
         if (attribute.startsWith("length")) {
-            event.setReplaced(new Element(set.z_height)
+            event.setReplaced(new ElementTag(set.z_height)
                     .getAttribute(attribute.fulfill(1)));
             return;
         }
 
         // <--[tag]
         // @attribute <schematic[<name>].width>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the width (X) of the schematic.
         // -->
         if (attribute.startsWith("width")) {
-            event.setReplaced(new Element(set.x_width)
+            event.setReplaced(new ElementTag(set.x_width)
                     .getAttribute(attribute.fulfill(1)));
             return;
         }
@@ -472,12 +472,12 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
         // <--[tag]
         // @attribute <schematic[<name>].blocks>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the number of blocks in the schematic.
         // -->
         if (attribute.startsWith("blocks")) {
-            event.setReplaced(new Element(set.blocks.size())
+            event.setReplaced(new ElementTag(set.blocks.size())
                     .getAttribute(attribute.fulfill(1)));
             return;
         }

@@ -11,9 +11,9 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.Holdable;
@@ -65,7 +65,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
             }
             else if (!scriptEntry.hasObject("auto_range")
                     && arg.matches("auto_range")) {
-                scriptEntry.addObject("auto_range", new Element(true));
+                scriptEntry.addObject("auto_range", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("radius")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
@@ -74,7 +74,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
             }
             else if (!scriptEntry.hasObject("stop")
                     && arg.matches("stop")) {
-                scriptEntry.addObject("stop", new Element(true));
+                scriptEntry.addObject("stop", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class)) {
@@ -82,7 +82,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
             }
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
@@ -108,7 +108,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
             }
         }
 
-        scriptEntry.defaultObject("stop", new Element(false));
+        scriptEntry.defaultObject("stop", new ElementTag(false));
     }
 
 
@@ -118,10 +118,10 @@ public class WalkCommand extends AbstractCommand implements Holdable {
         // Fetch required objects
 
         dLocation loc = (dLocation) scriptEntry.getObject("location");
-        Element speed = scriptEntry.getElement("speed");
-        Element auto_range = scriptEntry.getElement("auto_range");
-        Element radius = scriptEntry.getElement("radius");
-        Element stop = scriptEntry.getElement("stop");
+        ElementTag speed = scriptEntry.getElement("speed");
+        ElementTag auto_range = scriptEntry.getElement("auto_range");
+        ElementTag radius = scriptEntry.getElement("radius");
+        ElementTag stop = scriptEntry.getElement("stop");
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         final dLocation lookat = scriptEntry.getdObject("lookat");
 

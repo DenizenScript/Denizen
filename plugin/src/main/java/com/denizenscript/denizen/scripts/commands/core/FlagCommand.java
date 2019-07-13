@@ -111,11 +111,11 @@ public class FlagCommand extends AbstractCommand implements Listener {
             // specified amount of time
             if (!scriptEntry.hasObject("duration")
                     && arg.matchesPrefix("duration", "d")
-                    && arg.matchesArgumentType(Duration.class)) {
-                scriptEntry.addObject("duration", arg.asType(Duration.class));
+                    && arg.matchesArgumentType(DurationTag.class)) {
+                scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
 
-            // Also allow attached dObjects to be specified...
+            // Also allow attached ObjectTags to be specified...
             else if (!scriptEntry.hasObject("flag_target")
                     && arg.matches("npc", "denizen")) {
                 specified_target = true;
@@ -125,7 +125,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
             else if (!scriptEntry.hasObject("flag_target")
                     && arg.matches("global", "server")) {
                 specified_target = true;
-                scriptEntry.addObject("flag_target", new Element("server"));
+                scriptEntry.addObject("flag_target", new ElementTag("server"));
 
             }
             else if (!scriptEntry.hasObject("flag_target")
@@ -172,7 +172,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
             else if (!scriptEntry.hasObject("flag_name") &&
                     arg.raw_value.split(":", 3).length == 1) {
                 scriptEntry.addObject("action", FlagManager.Action.SET_BOOLEAN);
-                scriptEntry.addObject("value", new Element(true));
+                scriptEntry.addObject("value", new ElementTag(true));
                 scriptEntry.addObject("flag_name", arg.asElement());
             }
 
@@ -181,28 +181,28 @@ public class FlagCommand extends AbstractCommand implements Listener {
                     arg.raw_value.split(":", 3).length == 2) {
 
                 String[] flagArgs = arg.raw_value.split(":", 2);
-                scriptEntry.addObject("flag_name", new Element(flagArgs[0].toUpperCase()));
+                scriptEntry.addObject("flag_name", new ElementTag(flagArgs[0].toUpperCase()));
 
                 if (flagArgs[1].equals("++") || flagArgs[1].equals("+")) {
                     scriptEntry.addObject("action", FlagManager.Action.INCREASE);
-                    scriptEntry.addObject("value", new Element(1));
+                    scriptEntry.addObject("value", new ElementTag(1));
                 }
                 else if (flagArgs[1].equals("--") || flagArgs[1].equals("-")) {
                     scriptEntry.addObject("action", FlagManager.Action.DECREASE);
-                    scriptEntry.addObject("value", new Element(1));
+                    scriptEntry.addObject("value", new ElementTag(1));
                 }
                 else if (flagArgs[1].equals("!")) {
                     scriptEntry.addObject("action", FlagManager.Action.DELETE);
-                    scriptEntry.addObject("value", new Element(false));
+                    scriptEntry.addObject("value", new ElementTag(false));
                 }
                 else if (flagArgs[1].equals("<-")) {
                     scriptEntry.addObject("action", FlagManager.Action.REMOVE);
-                    scriptEntry.addObject("value", new Element(false));
+                    scriptEntry.addObject("value", new ElementTag(false));
                 }
                 else {
                     // No ACTION, we're just setting a value...
                     scriptEntry.addObject("action", FlagManager.Action.SET_VALUE);
-                    scriptEntry.addObject("value", new Element(flagArgs[1]));
+                    scriptEntry.addObject("value", new ElementTag(flagArgs[1]));
                 }
             }
 
@@ -210,7 +210,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
             else if (!scriptEntry.hasObject("flag_name") &&
                     arg.raw_value.split(":", 3).length == 3) {
                 String[] flagArgs = arg.raw_value.split(":", 3);
-                scriptEntry.addObject("flag_name", new Element(flagArgs[0].toUpperCase()));
+                scriptEntry.addObject("flag_name", new ElementTag(flagArgs[0].toUpperCase()));
 
                 if (flagArgs[1].equals("->")) {
                     scriptEntry.addObject("action", FlagManager.Action.INSERT);
@@ -238,11 +238,11 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 }
                 else {
                     scriptEntry.addObject("action", FlagManager.Action.SET_VALUE);
-                    scriptEntry.addObject("value", new Element(arg.raw_value.split(":", 2)[1]));
+                    scriptEntry.addObject("value", new ElementTag(arg.raw_value.split(":", 2)[1]));
                     continue;
                 }
 
-                scriptEntry.addObject("value", new Element(flagArgs[2]));
+                scriptEntry.addObject("value", new ElementTag(flagArgs[2]));
             }
             else {
                 arg.reportUnhandled();
@@ -268,11 +268,11 @@ public class FlagCommand extends AbstractCommand implements Listener {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        dObject flag_target = scriptEntry.getdObject("flag_target");
-        Duration duration = (Duration) scriptEntry.getObject("duration");
+        ObjectTag flag_target = scriptEntry.getdObject("flag_target");
+        DurationTag duration = (DurationTag) scriptEntry.getObject("duration");
         FlagManager.Action action = (FlagManager.Action) scriptEntry.getObject("action");
-        Element value = scriptEntry.getElement("value");
-        Element name = scriptEntry.getElement("flag_name");
+        ElementTag value = scriptEntry.getElement("value");
+        ElementTag name = scriptEntry.getElement("flag_name");
 
         int index = -1;
 
@@ -285,7 +285,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
             catch (Exception e) {
                 index = -1;
             }
-            name = Element.valueOf(name.asString().split("\\[")[0]);
+            name = ElementTag.valueOf(name.asString().split("\\[")[0]);
         }
 
         // Send information to debugger
@@ -300,7 +300,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
         Flag flag;
 
         // Returns existing flag (if existing), or a new flag if not
-        if (flag_target instanceof Element) {
+        if (flag_target instanceof ElementTag) {
             flag = DenizenAPI.getCurrentInstance().flagManager().getGlobalFlag(name.asString());
         }
         else if (flag_target instanceof dPlayer) {

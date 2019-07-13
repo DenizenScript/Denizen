@@ -8,9 +8,9 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Duration;
+import com.denizenscript.denizencore.objects.DurationTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -55,14 +55,14 @@ public class LookCommand extends AbstractCommand {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
             else if (!scriptEntry.hasObject("duration")
-                    && arg.matchesArgumentType(Duration.class)
+                    && arg.matchesArgumentType(DurationTag.class)
                     && arg.matchesPrefix("duration", "d")) {
-                scriptEntry.addObject("duration", arg.asType(Duration.class));
+                scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
                 // Entity arg
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
@@ -86,7 +86,7 @@ public class LookCommand extends AbstractCommand {
 
         final dLocation loc = (dLocation) scriptEntry.getObject("location");
         final List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-        final Duration duration = (Duration) scriptEntry.getObject("duration");
+        final DurationTag duration = (DurationTag) scriptEntry.getObject("duration");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

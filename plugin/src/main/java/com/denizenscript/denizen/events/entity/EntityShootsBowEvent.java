@@ -40,7 +40,7 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
     // <context.force> returns the force of the shot.
     //
     // @Determine
-    // dList(dEntity) to change the projectile(s) being shot.
+    // ListTag(dEntity) to change the projectile(s) being shot.
     //
     // @Player when the entity that shot the bow is a player.
     //
@@ -97,7 +97,7 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
             cancelled = true;
 
             // Get the list of entities
-            List<dEntity> newProjectiles = dList.valueOf(determination).filter(dEntity.class, container);
+            List<dEntity> newProjectiles = ListTag.valueOf(determination).filter(dEntity.class, container);
             // Go through all the entities, spawning/teleporting them
             for (dEntity newProjectile : newProjectiles) {
                 newProjectile.spawnAt(entity.getEyeLocation()
@@ -132,12 +132,12 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return entity;
         }
         else if (name.equals("force")) {
-            return new Element(force);
+            return new ElementTag(force);
         }
         else if (name.equals("bow")) {
             return bow;

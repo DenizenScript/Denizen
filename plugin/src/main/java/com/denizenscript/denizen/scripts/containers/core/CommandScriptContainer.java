@@ -6,9 +6,9 @@ import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.events.OldEventManager;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
-import com.denizenscript.denizencore.objects.dScript;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
@@ -87,7 +87,7 @@ public class CommandScriptContainer extends ScriptContainer {
     //   - determine <player.is_op||<context.server>>
     //
     //   # The procedure-based script that will run when a player uses tab completion to
-    //   # predict words. This should return a dList of words that the player can tab through,
+    //   # predict words. This should return a ListTag of words that the player can tab through,
     //   # based on the arguments they have already typed. Leaving this node out will result
     //   # in using Bukkit's built-in tab completion.
     //   # Available context:  <context.args> returns a list of input arguments.
@@ -132,12 +132,12 @@ public class CommandScriptContainer extends ScriptContainer {
         // Without this, "line<n>line"s brief description would be "lin", because who doesn't like
         // random cutoff-
         return TagManager.tag((getString("DESCRIPTION", "")).replace("\n", " \n"), new BukkitTagContext
-                (null, null, false, null, false, new dScript(this)));
+                (null, null, false, null, false, new ScriptTag(this)));
     }
 
     public String getUsage() {
         return TagManager.tag((getString("USAGE", "")), new BukkitTagContext
-                (null, null, false, null, false, new dScript(this)));
+                (null, null, false, null, false, new ScriptTag(this)));
     }
 
     public List<String> getAliases() {
@@ -153,7 +153,7 @@ public class CommandScriptContainer extends ScriptContainer {
         return getString("PERMISSION MESSAGE");
     }
 
-    public ScriptQueue runCommandScript(dPlayer player, dNPC npc, Map<String, dObject> context) {
+    public ScriptQueue runCommandScript(dPlayer player, dNPC npc, Map<String, ObjectTag> context) {
         ScriptQueue queue = new InstantQueue(getName()).addEntries(getBaseEntries(
                 new BukkitScriptEntryData(player, npc)));
         if (context != null) {
@@ -165,7 +165,7 @@ public class CommandScriptContainer extends ScriptContainer {
         return queue;
     }
 
-    public boolean runAllowedHelpProcedure(dPlayer player, dNPC npc, Map<String, dObject> context) {
+    public boolean runAllowedHelpProcedure(dPlayer player, dNPC npc, Map<String, ObjectTag> context) {
         List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(player, npc), "ALLOWED HELP");
 
         ScriptQueue queue = new InstantQueue(getName()).addEntries(entries);
@@ -178,7 +178,7 @@ public class CommandScriptContainer extends ScriptContainer {
         return queue.determinations != null && queue.determinations.size() > 0 && queue.determinations.get(0).equalsIgnoreCase("true");
     }
 
-    public List<String> runTabCompleteProcedure(dPlayer player, dNPC npc, Map<String, dObject> context) {
+    public List<String> runTabCompleteProcedure(dPlayer player, dNPC npc, Map<String, ObjectTag> context) {
         List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(player, npc), "TAB COMPLETE");
 
         ScriptQueue queue = new InstantQueue(getName()).addEntries(entries);
@@ -189,7 +189,7 @@ public class CommandScriptContainer extends ScriptContainer {
         }
         queue.start();
         if (queue.determinations != null && queue.determinations.size() > 0) {
-            return dList.getListFor(queue.determinations.getObject(0));
+            return ListTag.getListFor(queue.determinations.getObject(0));
         }
         else {
             return new ArrayList<>();

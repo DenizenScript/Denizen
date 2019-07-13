@@ -3,7 +3,7 @@ package com.denizenscript.denizen.objects.properties.item;
 import com.denizenscript.denizen.objects.dColor;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.Color;
@@ -13,7 +13,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 
 public class ItemColor implements Property {
 
-    public static boolean describes(dObject item) {
+    public static boolean describes(ObjectTag item) {
         // Leather armor and potions
         return item instanceof dItem
                 && (((dItem) item).getItemStack().getType() == Material.LEATHER_BOOTS
@@ -25,7 +25,7 @@ public class ItemColor implements Property {
                 || ((dItem) item).getItemStack().getType() == Material.LINGERING_POTION);
     }
 
-    public static ItemColor getFrom(dObject _item) {
+    public static ItemColor getFrom(ObjectTag _item) {
         if (!describes(_item)) {
             return null;
         }

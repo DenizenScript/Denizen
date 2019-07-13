@@ -5,8 +5,8 @@ import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -31,7 +31,7 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
     //
     // @Context
     // <context.egg> returns the dEntity of the egg.
-    // <context.is_hatching> returns an Element with a value of "true" if the egg will hatch and "false" otherwise.
+    // <context.is_hatching> returns an ElementTag with a value of "true" if the egg will hatch and "false" otherwise.
     //
     // @Determine
     // dEntity to set the type of the hatching entity.
@@ -88,9 +88,9 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("is_hatching")) {
-            return new Element(is_hatching);
+            return new ElementTag(is_hatching);
         }
         else if (name.equals("egg")) {
             return egg;

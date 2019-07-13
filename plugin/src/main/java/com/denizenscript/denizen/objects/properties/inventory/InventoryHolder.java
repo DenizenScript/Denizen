@@ -2,10 +2,10 @@ package com.denizenscript.denizen.objects.properties.inventory;
 
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.depends.Depends;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
-import com.denizenscript.denizencore.objects.dScript;
+import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.ScriptTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import net.citizensnpcs.api.CitizensAPI;
@@ -20,12 +20,12 @@ import org.bukkit.inventory.Inventory;
 
 public class InventoryHolder implements Property {
 
-    public static boolean describes(dObject inventory) {
+    public static boolean describes(ObjectTag inventory) {
         // All inventories should have a holder
         return inventory instanceof dInventory;
     }
 
-    public static InventoryHolder getFrom(dObject inventory) {
+    public static InventoryHolder getFrom(ObjectTag inventory) {
         if (!describes(inventory)) {
             return null;
         }
@@ -45,14 +45,14 @@ public class InventoryHolder implements Property {
     /////////////
 
     dInventory inventory;
-    dObject holder;
+    ObjectTag holder;
 
     public InventoryHolder(dInventory inventory) {
         this.inventory = inventory;
         this.holder = getHolder();
     }
 
-    public dObject getHolder() {
+    public ObjectTag getHolder() {
         if (inventory.getInventory() == null) {
             return null;
         }
@@ -61,8 +61,8 @@ public class InventoryHolder implements Property {
             return dPlayer.valueOf(inventory.getIdHolder());
         }
         else if (inventory.getIdType() != null && inventory.getIdType().equalsIgnoreCase("script")
-                && dScript.matches(inventory.getIdHolder())) {
-            return dScript.valueOf(inventory.getIdHolder());
+                && ScriptTag.matches(inventory.getIdHolder())) {
+            return ScriptTag.valueOf(inventory.getIdHolder());
         }
         org.bukkit.inventory.InventoryHolder holder = inventory.getInventory().getHolder();
 
@@ -87,7 +87,7 @@ public class InventoryHolder implements Property {
             }
         }
         else {
-            return new Element(inventory.getIdHolder());
+            return new ElementTag(inventory.getIdHolder());
         }
 
         return null;
@@ -127,7 +127,7 @@ public class InventoryHolder implements Property {
         inventory.setInventory(location.getBukkitInventory());
     }
 
-    public void setHolder(Element element) {
+    public void setHolder(ElementTag element) {
         if (element.matchesEnum(InventoryType.values())) {
             inventory.setInventory(Bukkit.getServer().createInventory(null,
                     InventoryType.valueOf(element.asString().toUpperCase())));
@@ -157,7 +157,7 @@ public class InventoryHolder implements Property {
 
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -169,7 +169,7 @@ public class InventoryHolder implements Property {
 
         // <--[tag]
         // @attribute <in@inventory.id_holder>
-        // @returns dObject
+        // @returns ObjectTag
         // @group properties
         // @mechanism dInventory.holder
         // @description
@@ -192,7 +192,7 @@ public class InventoryHolder implements Property {
         // <--[mechanism]
         // @object dInventory
         // @name holder
-        // @input dObject
+        // @input ObjectTag
         // @description
         // Changes the holder of the dInventory, therefore completely reconfiguring
         // the inventory to that of the holder.

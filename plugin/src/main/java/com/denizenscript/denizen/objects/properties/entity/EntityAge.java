@@ -2,10 +2,10 @@ package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import net.citizensnpcs.api.npc.NPC;
@@ -15,7 +15,7 @@ import org.bukkit.entity.Zombie;
 
 public class EntityAge implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         if (!(entity instanceof dEntity)) {
             return false;
         }
@@ -24,7 +24,7 @@ public class EntityAge implements Property {
                 || (((dEntity) entity).getBukkitEntity() instanceof Zombie);
     }
 
-    public static EntityAge getFrom(dObject entity) {
+    public static EntityAge getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -134,7 +134,7 @@ public class EntityAge implements Property {
 
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -146,40 +146,40 @@ public class EntityAge implements Property {
 
         // <--[tag]
         // @attribute <e@entity.age>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @mechanism dEntity.age
         // @group properties
         // @description
         // If the entity is ageable, returns the entity's age number (-24000 to 0)
         // -->
         if (attribute.startsWith("age")) {
-            return new Element(getAge())
+            return new ElementTag(getAge())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.is_age_locked>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @mechanism dEntity.age_lock
         // @group properties
         // @description
         // If the entity is ageable, returns whether the entity is age locked.
         // -->
         if (attribute.startsWith("is_age_locked")) {
-            return new Element(getLock())
+            return new ElementTag(getLock())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <e@entity.is_baby>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @mechanism dEntity.age
         // @group properties
         // @description
         // If the entity is ageable, returns whether the entity is a baby.
         // -->
         if (attribute.startsWith("is_baby")) {
-            return new Element(isBaby())
+            return new ElementTag(isBaby())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -228,7 +228,7 @@ public class EntityAge implements Property {
         // -->
 
         if (mechanism.matches("age")) {
-            dList list = mechanism.valueAsType(dList.class);
+            ListTag list = mechanism.valueAsType(ListTag.class);
             if (list.size() == 0) {
                 Debug.echoError("Missing value for 'age' mechanism!");
                 return;
@@ -239,8 +239,8 @@ public class EntityAge implements Property {
             else if (list.get(0).equalsIgnoreCase("adult")) {
                 setBaby(false);
             }
-            else if (new Element(list.get(0)).isInt()) {
-                setAge(new Element(list.get(0)).asInt());
+            else if (new ElementTag(list.get(0)).isInt()) {
+                setAge(new ElementTag(list.get(0)).asInt());
             }
             if (list.size() > 1 && list.get(1).equalsIgnoreCase("locked")) {
                 setLock(true);

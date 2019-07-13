@@ -3,22 +3,22 @@ package com.denizenscript.denizen.objects.properties.item;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.Material;
 
 public class ItemApple implements Property {
 
-    public static boolean describes(dObject item) {
+    public static boolean describes(ObjectTag item) {
         return item instanceof dItem
                 && ((((dItem) item).getItemStack().getType() == Material.GOLDEN_APPLE)
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && ((dItem) item).getItemStack().getType() == Material.ENCHANTED_GOLDEN_APPLE));
     }
 
-    public static ItemApple getFrom(dObject _item) {
+    public static ItemApple getFrom(ObjectTag _item) {
         if (!describes(_item)) {
             return null;
         }
@@ -51,7 +51,7 @@ public class ItemApple implements Property {
 
         // <--[tag]
         // @attribute <i@item.apple_enchanted>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group properties
         // @mechanism dItem.apple_enchanted
         // @description
@@ -60,10 +60,10 @@ public class ItemApple implements Property {
         // -->
         if (attribute.startsWith("apple_enchanted")) {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-                return new Element(item.getItemStack().getType() == Material.ENCHANTED_GOLDEN_APPLE)
+                return new ElementTag(item.getItemStack().getType() == Material.ENCHANTED_GOLDEN_APPLE)
                         .getAttribute(attribute.fulfill(1));
             }
-            return new Element(item.getItemStack().getDurability() == 1)
+            return new ElementTag(item.getItemStack().getDurability() == 1)
                     .getAttribute(attribute.fulfill(1));
         }
 

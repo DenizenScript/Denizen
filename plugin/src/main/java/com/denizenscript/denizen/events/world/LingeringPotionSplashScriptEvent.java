@@ -4,8 +4,8 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.AreaEffectCloud;
@@ -43,9 +43,9 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
     public static LingeringPotionSplashScriptEvent instance;
     public LingeringPotionSplashEvent event;
     public dLocation location;
-    public Element duration;
+    public ElementTag duration;
     public dEntity entity;
-    public Element radius;
+    public ElementTag radius;
     public dItem item;
 
     @Override
@@ -85,7 +85,7 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("location")) {
             return location;
         }
@@ -108,10 +108,10 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
     public void onLingeringPotionSplash(LingeringPotionSplashEvent event) {
         AreaEffectCloud cloud = event.getAreaEffectCloud();
         item = new dItem(event.getEntity().getItem());
-        duration = new Element(cloud.getDuration());
+        duration = new ElementTag(cloud.getDuration());
         entity = new dEntity(event.getEntity());
         location = entity.getLocation();
-        radius = new Element(cloud.getRadius());
+        radius = new ElementTag(cloud.getRadius());
         this.event = event;
         fire(event);
     }

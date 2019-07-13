@@ -57,7 +57,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
     // Optionally, add 'no_rotate' to prevent the shoot command from rotating launched entities.
     //
     // @Tags
-    // <entry[saveName].shot_entities> returns a dList of entities that were shot.
+    // <entry[saveName].shot_entities> returns a ListTag of entities that were shot.
     //
     // @Usage
     // Use to shoot an arrow from the NPC to perfectly hit the player.
@@ -118,9 +118,9 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                 scriptEntry.addObject("speed", arg.asElement());
             }
             else if (!scriptEntry.hasObject("script")
-                    && (arg.matchesArgumentType(dScript.class)
+                    && (arg.matchesArgumentType(ScriptTag.class)
                     || arg.matchesPrefix("script"))) {
-                scriptEntry.addObject("script", arg.asType(dScript.class));
+                scriptEntry.addObject("script", arg.asType(ScriptTag.class));
             }
             else if (!scriptEntry.hasObject("shooter")
                     && arg.matchesArgumentType(dEntity.class)
@@ -130,7 +130,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
 
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
             }
 
             // Don't document this argument; it is for debug purposes only
@@ -147,10 +147,10 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
             }
             else if (!scriptEntry.hasObject("no_rotate")
                     && arg.matches("no_rotate")) {
-                scriptEntry.addObject("no_rotate", new Element(true));
+                scriptEntry.addObject("no_rotate", new ElementTag(true));
             }
             else if (arg.matchesPrefix("def", "define", "context")) {
-                scriptEntry.addObject("definitions", arg.asType(dList.class));
+                scriptEntry.addObject("definitions", arg.asType(ListTag.class));
             }
             else {
                 arg.reportUnhandled();
@@ -166,7 +166,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                     Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getDenizenEntity() : null);
         }
 
-        scriptEntry.defaultObject("height", new Element(3));
+        scriptEntry.defaultObject("height", new ElementTag(3));
 
         // Check to make sure required arguments have been filled
 
@@ -208,14 +208,14 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         }
 
         final List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-        final dScript script = (dScript) scriptEntry.getObject("script");
-        final dList definitions = (dList) scriptEntry.getObject("definitions");
+        final ScriptTag script = (ScriptTag) scriptEntry.getObject("script");
+        final ListTag definitions = (ListTag) scriptEntry.getObject("definitions");
         dEntity shooter = (dEntity) scriptEntry.getObject("shooter");
 
-        Element height = scriptEntry.getElement("height");
-        Element gravity = scriptEntry.getElement("gravity");
-        Element speed = scriptEntry.getElement("speed");
-        Element spread = scriptEntry.getElement("spread");
+        ElementTag height = scriptEntry.getElement("height");
+        ElementTag gravity = scriptEntry.getElement("gravity");
+        ElementTag speed = scriptEntry.getElement("speed");
+        ElementTag spread = scriptEntry.getElement("spread");
 
         dLocation lead = (dLocation) scriptEntry.getObject("lead");
 
@@ -235,10 +235,10 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                     (definitions != null ? definitions.debug() : ""));
         }
 
-        // Keep a dList of entities that can be called using <entry[name].shot_entities>
+        // Keep a ListTag of entities that can be called using <entry[name].shot_entities>
         // later in the script queue
 
-        final dList entityList = new dList();
+        final ListTag entityList = new ListTag();
 
         // Go through all the entities, spawning/teleporting and rotating them
         for (dEntity entity : entities) {
@@ -278,7 +278,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         final dEntity lastEntity = entities.get(entities.size() - 1);
 
         if (gravity == null) {
-            gravity = new Element(lastEntity.getEntityType().getGravity());
+            gravity = new ElementTag(lastEntity.getEntityType().getGravity());
         }
 
         if (speed == null) {
@@ -373,7 +373,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                         queue.addDefinition("last_entity", lastEntity.identify());
 
                         // Handle hit_entities definition
-                        dList hitEntities = new dList();
+                        ListTag hitEntities = new ListTag();
                         for (dEntity entity : entities) {
                             if (arrows.containsKey(entity.getUUID())) {
                                 dEntity hit = arrows.get(entity.getUUID());

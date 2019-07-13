@@ -3,10 +3,10 @@ package com.denizenscript.denizen.objects.properties.item;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.core.EscapeTags;
@@ -17,12 +17,12 @@ import java.util.List;
 
 public class ItemLore implements Property {
 
-    public static boolean describes(dObject item) {
+    public static boolean describes(ObjectTag item) {
         // Technically, all items can hold lore
         return item instanceof dItem;
     }
 
-    public static ItemLore getFrom(dObject _item) {
+    public static ItemLore getFrom(ObjectTag _item) {
         if (!describes(_item)) {
             return null;
         }
@@ -62,17 +62,17 @@ public class ItemLore implements Property {
         // deprecated in favor of .escape_contents
         if (attribute.startsWith("lore.escaped")) {
             if (hasLore()) {
-                return new Element(getPropertyString()).getAttribute(attribute.fulfill(2));
+                return new ElementTag(getPropertyString()).getAttribute(attribute.fulfill(2));
             }
         }
 
         // <--[tag]
         // @attribute <i@item.lore>
-        // @returns dList
+        // @returns ListTag
         // @mechanism dItem.lore
         // @group properties
         // @description
-        // Returns lore as a dList. Excludes the custom-script-id lore.
+        // Returns lore as a ListTag. Excludes the custom-script-id lore.
         // To get that information, use <i@item.scriptname>.
         // -->
         if (attribute.startsWith("lore")) {
@@ -84,20 +84,20 @@ public class ItemLore implements Property {
                         loreList.add(itemLore);
                     }
                 }
-                return new dList(loreList).getAttribute(attribute.fulfill(1));
+                return new ListTag(loreList).getAttribute(attribute.fulfill(1));
             }
         }
 
         // <--[tag]
         // @attribute <i@item.has_lore>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @mechanism dItem.lore
         // @group properties
         // @description
         // Returns whether the item has lore set on it.
         // -->
         if (attribute.startsWith("has_lore")) {
-            return new Element(hasLore())
+            return new ElementTag(hasLore())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -133,7 +133,7 @@ public class ItemLore implements Property {
         // <--[mechanism]
         // @object dItem
         // @name lore
-        // @input dList
+        // @input ListTag
         // @description
         // Sets the item's lore.
         // See <@link language Property Escaping>
@@ -143,7 +143,7 @@ public class ItemLore implements Property {
 
         if (mechanism.matches("lore")) {
             ItemMeta meta = item.getItemStack().getItemMeta();
-            dList lore = mechanism.valueAsType(dList.class);
+            ListTag lore = mechanism.valueAsType(ListTag.class);
             if (item.isItemscript()) {
                 if (!Settings.packetInterception()) {
                     lore.add(0, ItemScriptHelper.createItemScriptID(item.getScriptName()));

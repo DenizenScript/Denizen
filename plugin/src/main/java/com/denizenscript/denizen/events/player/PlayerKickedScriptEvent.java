@@ -5,9 +5,9 @@ import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizencore.objects.Duration;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.DurationTag;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -28,13 +28,13 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
     // @Triggers when a player is kicked from the server.
     //
     // @Context
-    // <context.message> returns an Element of the kick message sent to all players.
-    // <context.reason> returns an Element of the kick reason.
+    // <context.message> returns an ElementTag of the kick message sent to all players.
+    // <context.reason> returns an ElementTag of the kick reason.
     // <context.flying> returns whether the player is being automatically kicked for flying.
     //
     // @Determine
-    // "MESSAGE:" + Element to change the kick message.
-    // "REASON:" + Element to change the kick reason.
+    // "MESSAGE:" + ElementTag to change the kick message.
+    // "REASON:" + ElementTag to change the kick reason.
     // "FLY_COOLDOWN:" + Duration to cancel the automatic fly kick and set its next cooldown.
     //
     // -->
@@ -45,8 +45,8 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
 
     public static PlayerKickedScriptEvent instance;
     public dPlayer player;
-    public Element message;
-    public Element reason;
+    public ElementTag message;
+    public ElementTag reason;
     public PlayerKickEvent event;
 
     public boolean isFlying() {
@@ -75,15 +75,15 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
     public boolean applyDetermination(ScriptContainer container, String determination) {
         String lower = CoreUtilities.toLowerCase(determination);
         if (lower.startsWith("message:")) {
-            message = new Element(lower.substring("message:".length()));
+            message = new ElementTag(lower.substring("message:".length()));
             return true;
         }
         else if (lower.startsWith("reason:")) {
-            reason = new Element(lower.substring("reason:".length()));
+            reason = new ElementTag(lower.substring("reason:".length()));
             return true;
         }
         else if (lower.startsWith("fly_cooldown:")) {
-            Duration duration = Duration.valueOf(lower.substring("fly_cooldown:".length()));
+            DurationTag duration = DurationTag.valueOf(lower.substring("fly_cooldown:".length()));
             if (duration != null) {
                 NMSHandler.getInstance().getPlayerHelper().setFlyKickCooldown(player.getPlayerEntity(), (int) duration.getTicks());
                 cancelled = true;
@@ -99,7 +99,7 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("message")) {
             return message;
         }
@@ -107,7 +107,7 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
             return reason;
         }
         else if (name.equals("flying")) {
-            return new Element(isFlying());
+            return new ElementTag(isFlying());
         }
         return super.getContext(name);
     }
@@ -118,8 +118,8 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
             return;
         }
         player = dPlayer.mirrorBukkitPlayer(event.getPlayer());
-        message = new Element(event.getLeaveMessage());
-        reason = new Element(event.getReason());
+        message = new ElementTag(event.getLeaveMessage());
+        reason = new ElementTag(event.getReason());
         this.event = event;
         fire(event);
         event.setLeaveMessage(message.asString());

@@ -2,8 +2,8 @@ package com.denizenscript.denizen.events.world;
 
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
@@ -29,7 +29,7 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
     // <context.new_current> returns what the redstone power level is becoming.
     //
     // @Determine
-    // Element (Number) set the current value to a specific value.
+    // ElementTag (Number) set the current value to a specific value.
     //
     // -->
 
@@ -40,8 +40,8 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
     public static RedstoneScriptEvent instance;
 
     public dLocation location;
-    public Element old_current;
-    public Element new_current;
+    public ElementTag old_current;
+    public ElementTag new_current;
     public BlockRedstoneEvent event;
 
     @Override
@@ -62,7 +62,7 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        Element power = new Element(determination);
+        ElementTag power = new ElementTag(determination);
         if (power.isInt()) {
             new_current = power;
             return true;
@@ -71,7 +71,7 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("location")) {
             return location;
         }
@@ -87,8 +87,8 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
     @EventHandler
     public void onBlockRedstone(BlockRedstoneEvent event) {
         location = new dLocation(event.getBlock().getLocation());
-        old_current = new Element(event.getOldCurrent());
-        new_current = new Element(event.getNewCurrent());
+        old_current = new ElementTag(event.getOldCurrent());
+        new_current = new ElementTag(event.getNewCurrent());
         this.event = event;
         fire(event);
         event.setNewCurrent(new_current.asInt());

@@ -3,7 +3,7 @@ package com.denizenscript.denizen.objects.properties.entity;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.entity.EntityType;
@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class EntityPotion implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         if (!(entity instanceof dEntity)) {
             return false;
         }
@@ -20,7 +20,7 @@ public class EntityPotion implements Property {
         return ((dEntity) entity).getBukkitEntityType() == EntityType.SPLASH_POTION;
     }
 
-    public static EntityPotion getFrom(dObject entity) {
+    public static EntityPotion getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -81,7 +81,7 @@ public class EntityPotion implements Property {
 
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override

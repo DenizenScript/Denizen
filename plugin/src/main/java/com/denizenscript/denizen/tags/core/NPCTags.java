@@ -11,9 +11,9 @@ import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.npc.traits.AssignmentTrait;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.events.OldEventManager;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
@@ -278,9 +278,9 @@ public class NPCTags implements Listener {
 
         dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
 
-        Map<String, dObject> context = new HashMap<>();
+        Map<String, ObjectTag> context = new HashMap<>();
 
-        context.put("action", new Element(event.getAction() == TeleportStuckAction.INSTANCE ? "teleport" : "none"));
+        context.put("action", new ElementTag(event.getAction() == TeleportStuckAction.INSTANCE ? "teleport" : "none"));
 
         // Do world script event 'On NPC stuck'
         if (NPCNavigationSmartEvent.IsActive()) {

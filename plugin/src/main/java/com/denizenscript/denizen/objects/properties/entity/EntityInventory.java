@@ -5,20 +5,20 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dInventory;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.inventory.InventoryHolder;
 
 public class EntityInventory implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity
                 && ((dEntity) entity).getBukkitEntity() instanceof InventoryHolder;
     }
 
-    public static EntityInventory getFrom(dObject entity) {
+    public static EntityInventory getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -62,7 +62,7 @@ public class EntityInventory implements Property {
 
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -99,7 +99,7 @@ public class EntityInventory implements Property {
         // <--[mechanism]
         // @object dEntity
         // @name inventory_contents
-        // @input dList(dItem)
+        // @input ListTag(dItem)
         // @description
         // Clears the entity's inventory and sets it's item list to match the input.
         // @tags
@@ -107,7 +107,7 @@ public class EntityInventory implements Property {
         // <in@inventory.list_contents>
         // -->
         if (mechanism.matches("inventory_contents")) {
-            dList list = dList.valueOf(mechanism.getValue().asString());
+            ListTag list = ListTag.valueOf(mechanism.getValue().asString());
             dInventory inv = entity.getInventory();
             inv.clear();
             int i = 0;

@@ -11,9 +11,9 @@ import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.tags.TagContext;
@@ -137,7 +137,7 @@ public class SidebarCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("per_player")
                     && arg.matches("per_player")) {
-                scriptEntry.addObject("per_player", new Element(true));
+                scriptEntry.addObject("per_player", new ElementTag(true));
             }
         }
 
@@ -154,26 +154,26 @@ public class SidebarCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify value(s) when setting scores!");
         }
 
-        scriptEntry.addObject("action", new Element(action.name()));
+        scriptEntry.addObject("action", new ElementTag(action.name()));
 
         BukkitScriptEntryData entryData = (BukkitScriptEntryData) scriptEntry.entryData;
-        scriptEntry.defaultObject("per_player", new Element(false))
-                .defaultObject("players", new Element(entryData.hasPlayer() ? entryData.getPlayer().identify() : "li@"));
+        scriptEntry.defaultObject("per_player", new ElementTag(false))
+                .defaultObject("players", new ElementTag(entryData.hasPlayer() ? entryData.getPlayer().identify() : "li@"));
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        Element action = scriptEntry.getElement("action");
-        Element elTitle = scriptEntry.getElement("title");
-        Element elScores = scriptEntry.getElement("scores");
-        Element elValue = scriptEntry.getElement("value");
-        Element elIncrement = scriptEntry.getElement("increment");
-        Element elStart = scriptEntry.getElement("start");
-        Element elPlayers = scriptEntry.getElement("players");
-        Element elPerPlayer = scriptEntry.getElement("per_player");
+        ElementTag action = scriptEntry.getElement("action");
+        ElementTag elTitle = scriptEntry.getElement("title");
+        ElementTag elScores = scriptEntry.getElement("scores");
+        ElementTag elValue = scriptEntry.getElement("value");
+        ElementTag elIncrement = scriptEntry.getElement("increment");
+        ElementTag elStart = scriptEntry.getElement("start");
+        ElementTag elPlayers = scriptEntry.getElement("players");
+        ElementTag elPerPlayer = scriptEntry.getElement("per_player");
 
-        dList players = dList.valueOf(TagManager.tag(elPlayers.asString(), new BukkitTagContext(scriptEntry, false)));
+        ListTag players = ListTag.valueOf(TagManager.tag(elPlayers.asString(), new BukkitTagContext(scriptEntry, false)));
         boolean per_player = elPerPlayer.asBoolean();
 
         String perTitle = null;
@@ -182,11 +182,11 @@ public class SidebarCommand extends AbstractCommand {
         String perIncrement = null;
         String perStart = null;
 
-        Element title = null;
-        dList scores = null;
-        dList value = null;
-        Element increment = null;
-        Element start = null;
+        ElementTag title = null;
+        ListTag scores = null;
+        ListTag value = null;
+        ElementTag increment = null;
+        ElementTag start = null;
 
         String debug;
 
@@ -215,19 +215,19 @@ public class SidebarCommand extends AbstractCommand {
         else {
             BukkitTagContext context = (BukkitTagContext) DenizenCore.getImplementation().getTagContextFor(scriptEntry, false);
             if (elTitle != null) {
-                title = new Element(TagManager.tag(elTitle.asString(), context));
+                title = new ElementTag(TagManager.tag(elTitle.asString(), context));
             }
             if (elScores != null) {
-                scores = dList.valueOf(TagManager.tag(elScores.asString(), context));
+                scores = ListTag.valueOf(TagManager.tag(elScores.asString(), context));
             }
             if (elValue != null) {
-                value = dList.valueOf(TagManager.tag(elValue.asString(), context));
+                value = ListTag.valueOf(TagManager.tag(elValue.asString(), context));
             }
             if (elIncrement != null) {
-                increment = new Element(TagManager.tag(elIncrement.asString(), context));
+                increment = new ElementTag(TagManager.tag(elIncrement.asString(), context));
             }
             if (elStart != null) {
-                start = new Element(TagManager.tag(elStart.asString(), context));
+                start = new ElementTag(TagManager.tag(elStart.asString(), context));
             }
             debug = (title != null ? title.debug() : "") +
                     (scores != null ? ArgumentHelper.debugObj("scores", scores) : "") +
@@ -256,9 +256,9 @@ public class SidebarCommand extends AbstractCommand {
                     if (per_player) {
                         TagContext context = new BukkitTagContext(player, Utilities.getEntryNPC(scriptEntry),
                                 false, scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
-                        value = dList.valueOf(TagManager.tag(perValue, context));
+                        value = ListTag.valueOf(TagManager.tag(perValue, context));
                         if (perScores != null) {
-                            scores = dList.valueOf(TagManager.tag(perScores, context));
+                            scores = ListTag.valueOf(TagManager.tag(perScores, context));
                         }
                     }
                     try {
@@ -293,10 +293,10 @@ public class SidebarCommand extends AbstractCommand {
                         TagContext context = new BukkitTagContext(player, Utilities.getEntryNPC(scriptEntry),
                                 false, scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
                         if (perValue != null) {
-                            value = dList.valueOf(TagManager.tag(perValue, context));
+                            value = ListTag.valueOf(TagManager.tag(perValue, context));
                         }
                         if (perScores != null) {
-                            scores = dList.valueOf(TagManager.tag(perScores, context));
+                            scores = ListTag.valueOf(TagManager.tag(perScores, context));
                         }
                     }
                     if (scores != null) {
@@ -351,19 +351,19 @@ public class SidebarCommand extends AbstractCommand {
                         TagContext context = new BukkitTagContext(player, Utilities.getEntryNPC(scriptEntry),
                                 false, scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
                         if (perValue != null) {
-                            value = dList.valueOf(TagManager.tag(perValue, context));
+                            value = ListTag.valueOf(TagManager.tag(perValue, context));
                         }
                         if (perScores != null) {
-                            scores = dList.valueOf(TagManager.tag(perScores, context));
+                            scores = ListTag.valueOf(TagManager.tag(perScores, context));
                         }
                         if (perStart != null) {
-                            start = new Element(TagManager.tag(perStart, context));
+                            start = new ElementTag(TagManager.tag(perStart, context));
                         }
                         if (perIncrement != null) {
-                            increment = new Element(TagManager.tag(perIncrement, context));
+                            increment = new ElementTag(TagManager.tag(perIncrement, context));
                         }
                         if (perTitle != null) {
-                            title = new Element(TagManager.tag(perTitle, context));
+                            title = new ElementTag(TagManager.tag(perTitle, context));
                         }
                     }
                     if (value != null) {

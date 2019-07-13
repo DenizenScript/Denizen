@@ -36,7 +36,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class dInventory implements dObject, Notable, Adjustable {
+public class dInventory implements ObjectTag, Notable, Adjustable {
 
     // <--[language]
     // @name dInventory
@@ -341,7 +341,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (arg.contains("[")) {
             tid = arg.substring(0, arg.indexOf('['));
         }
-        if (new Element(tid).matchesEnum(InventoryType.values())) {
+        if (new ElementTag(tid).matchesEnum(InventoryType.values())) {
             return true;
         }
 
@@ -728,7 +728,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
     }
 
-    public dList getEquipment() {
+    public ListTag getEquipment() {
         ItemStack[] equipment = null;
         if (inventory instanceof PlayerInventory) {
             equipment = ((PlayerInventory) inventory).getArmorContents();
@@ -739,7 +739,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (equipment == null) {
             return null;
         }
-        dList equipmentList = new dList();
+        ListTag equipmentList = new ListTag();
         for (ItemStack item : equipment) {
             equipmentList.add(new dItem(item).identify());
         }
@@ -762,7 +762,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         inventory.setContents(contents);
     }
 
-    public void setContents(dList list, TagContext context) {
+    public void setContents(ListTag list, TagContext context) {
         int size;
         if (inventory == null) {
             size = (int) Math.ceil(list.size() / 9.0) * 9;
@@ -1296,7 +1296,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     }
 
     ////////////////////////
-    //  dObject Methods
+    //  ObjectTag Methods
     /////////////////////
 
     private String prefix = getObjectType();
@@ -1372,7 +1372,7 @@ public class dInventory implements dObject, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <in@inventory.empty_slots>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the number of empty slots in an inventory.
         // -->
@@ -1391,17 +1391,17 @@ public class dInventory implements dObject, Notable, Adjustable {
                 dummyInv = new dInventory(inventory);
             }
             int full = dummyInv.count(null, true);
-            return new Element(dummyInv.getSize() - full).getAttribute(attribute.fulfill(1));
+            return new ElementTag(dummyInv.getSize() - full).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <in@inventory.can_fit[<item>|...]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the inventory can fit an item.
         // -->
         if (attribute.startsWith("can_fit") && attribute.hasContext(1)) {
-            List<dItem> items = dList.valueOf(attribute.getContext(1)).filter(dItem.class, attribute.getScriptEntry());
+            List<dItem> items = ListTag.valueOf(attribute.getContext(1)).filter(dItem.class, attribute.getScriptEntry());
             if (items == null || items.isEmpty()) {
                 return null;
             }
@@ -1420,7 +1420,7 @@ public class dInventory implements dObject, Notable, Adjustable {
 
             // <--[tag]
             // @attribute <in@inventory.can_fit[<item>].count>
-            // @returns Element(Number)
+            // @returns ElementTag(Number)
             // @description
             // Returns the total count of how many times an item can fit into an inventory.
             // -->
@@ -1434,12 +1434,12 @@ public class dInventory implements dObject, Notable, Adjustable {
                 if (leftovers.size() > 0) {
                     result += leftovers.get(0).getAmount();
                 }
-                return new Element(totalCount - result).getAttribute(attribute.fulfill(attribs));
+                return new ElementTag(totalCount - result).getAttribute(attribute.fulfill(attribs));
             }
 
             // <--[tag]
             // @attribute <in@inventory.can_fit[<item>].quantity[<#>]>
-            // @returns Element(Boolean)
+            // @returns ElementTag(Boolean)
             // @description
             // Returns whether the inventory can fit a certain quantity of an item.
             // -->
@@ -1455,10 +1455,10 @@ public class dInventory implements dObject, Notable, Adjustable {
             for (dItem itm : items) {
                 List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, true, itm.getItemStack());
                 if (!leftovers.isEmpty()) {
-                    return new Element(false).getAttribute(attribute.fulfill(attribs));
+                    return new ElementTag(false).getAttribute(attribute.fulfill(attribs));
                 }
             }
-            return new Element(true).getAttribute(attribute.fulfill(attribs));
+            return new ElementTag(true).getAttribute(attribute.fulfill(attribs));
         }
 
         // <--[tag]
@@ -1500,7 +1500,7 @@ public class dInventory implements dObject, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <in@inventory.is_empty>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the inventory is empty.
         // -->
@@ -1512,12 +1512,12 @@ public class dInventory implements dObject, Notable, Adjustable {
                     break;
                 }
             }
-            return new Element(empty).getAttribute(attribute.fulfill(1));
+            return new ElementTag(empty).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <in@inventory.is_full>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the inventory is completely full.
         // -->
@@ -1532,12 +1532,12 @@ public class dInventory implements dObject, Notable, Adjustable {
                     break;
                 }
             }
-            return new Element(full).getAttribute(attribute.fulfill(1));
+            return new ElementTag(full).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <in@inventory.contains.display[(strict:)<element>]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the inventory contains an item with the specified display
         // name. Use 'strict:' in front of the search element to ensure the display
@@ -1559,7 +1559,7 @@ public class dInventory implements dObject, Notable, Adjustable {
 
             // <--[tag]
             // @attribute <in@inventory.contains.display[(strict:)<element>].quantity[<#>]>
-            // @returns Element(Boolean)
+            // @returns ElementTag(Boolean)
             // @description
             // Returns whether the inventory contains a certain quantity of an item with the
             // specified display name. Use 'strict:' in front of the search element to ensure
@@ -1614,12 +1614,12 @@ public class dInventory implements dObject, Notable, Adjustable {
                 }
             }
 
-            return new Element(found_items >= qty).getAttribute(attribute.fulfill(attribs));
+            return new ElementTag(found_items >= qty).getAttribute(attribute.fulfill(attribs));
         }
 
         // <--[tag]
         // @attribute <in@inventory.contains.lore[(strict:)<element>|...]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the inventory contains an item with the specified lore.
         // Use 'strict:' in front of the search elements to ensure all lore lines
@@ -1636,13 +1636,13 @@ public class dInventory implements dObject, Notable, Adjustable {
             if (search_string.length() == 0) {
                 return null;
             }
-            dList lore = dList.valueOf(search_string);
+            ListTag lore = ListTag.valueOf(search_string);
             int qty = 1;
             int attribs = 2;
 
             // <--[tag]
             // @attribute <in@inventory.contains.lore[(strict:)<element>|...].quantity[<#>]>
-            // @returns Element(Boolean)
+            // @returns ElementTag(Boolean)
             // @description
             // Returns whether the inventory contains a certain quantity of an item
             // with the specified lore. Use 'strict:' in front of the search elements
@@ -1706,12 +1706,12 @@ public class dInventory implements dObject, Notable, Adjustable {
                 }
             }
 
-            return new Element(found_items >= qty).getAttribute(attribute.fulfill(attribs));
+            return new ElementTag(found_items >= qty).getAttribute(attribute.fulfill(attribs));
         }
 
         // <--[tag]
         // @attribute <in@inventory.contains.scriptname[<scriptname>]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the inventory contains an item with the specified scriptname.
         // -->
@@ -1722,7 +1722,7 @@ public class dInventory implements dObject, Notable, Adjustable {
 
             // <--[tag]
             // @attribute <in@inventory.contains.scriptname[<scriptname>].quantity[<#>]>
-            // @returns Element(Boolean)
+            // @returns ElementTag(Boolean)
             // @description
             // Returns whether the inventory contains a certain quantity of an item with the specified scriptname.
             // -->
@@ -1744,12 +1744,12 @@ public class dInventory implements dObject, Notable, Adjustable {
                 }
             }
 
-            return new Element(found_items >= qty).getAttribute(attribute.fulfill(attribs));
+            return new ElementTag(found_items >= qty).getAttribute(attribute.fulfill(attribs));
         }
 
         // <--[tag]
         // @attribute <in@inventory.contains.nbt[<key>]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the inventory contains an item with the specified key.
         // -->
@@ -1760,7 +1760,7 @@ public class dInventory implements dObject, Notable, Adjustable {
 
             // <--[tag]
             // @attribute <in@inventory.contains.nbt[<key>].quantity[<#>]>
-            // @returns Element(Boolean)
+            // @returns ElementTag(Boolean)
             // @description
             // Returns whether the inventory contains a certain quantity of an item with the specified key.
             // -->
@@ -1782,12 +1782,12 @@ public class dInventory implements dObject, Notable, Adjustable {
                 }
             }
 
-            return new Element(found_items >= qty).getAttribute(attribute.fulfill(attribs));
+            return new ElementTag(found_items >= qty).getAttribute(attribute.fulfill(attribs));
         }
 
         // <--[tag]
         // @attribute <in@inventory.contains.material[<material>]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the inventory contains an item with the specified material.
         // -->
@@ -1799,7 +1799,7 @@ public class dInventory implements dObject, Notable, Adjustable {
 
             // <--[tag]
             // @attribute <in@inventory.contains.material[<material>].quantity[<#>]>
-            // @returns Element(Boolean)
+            // @returns ElementTag(Boolean)
             // @description
             // Returns whether the inventory contains a certain quantity of an item with the
             // specified material.
@@ -1822,17 +1822,17 @@ public class dInventory implements dObject, Notable, Adjustable {
                 }
             }
 
-            return new Element(found_items >= qty).getAttribute(attribute.fulfill(attribs));
+            return new ElementTag(found_items >= qty).getAttribute(attribute.fulfill(attribs));
         }
 
         // <--[tag]
         // @attribute <in@inventory.contains_any[<item>|...]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the inventory contains any of the specified items.
         // -->
         if (attribute.startsWith("contains_any") && attribute.hasContext(1)) {
-            dList list = dList.valueOf(attribute.getContext(1));
+            ListTag list = ListTag.valueOf(attribute.getContext(1));
             if (list.isEmpty()) {
                 return null;
             }
@@ -1841,7 +1841,7 @@ public class dInventory implements dObject, Notable, Adjustable {
 
             // <--[tag]
             // @attribute <in@inventory.contains_any[<item>|...].quantity[<#>]>
-            // @returns Element(Boolean)
+            // @returns ElementTag(Boolean)
             // @description
             // Returns whether the inventory contains a certain quantity of any of the specified items.
             // -->
@@ -1854,21 +1854,21 @@ public class dInventory implements dObject, Notable, Adjustable {
             if (!contains.isEmpty()) {
                 for (dItem item : contains) {
                     if (containsItem(item, qty)) {
-                        return new Element(true).getAttribute(attribute.fulfill(attribs));
+                        return new ElementTag(true).getAttribute(attribute.fulfill(attribs));
                     }
                 }
             }
-            return new Element(false).getAttribute(attribute.fulfill(attribs));
+            return new ElementTag(false).getAttribute(attribute.fulfill(attribs));
         }
 
         // <--[tag]
         // @attribute <in@inventory.contains[<item>|...]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the inventory contains all of the specified items.
         // -->
         if (attribute.startsWith("contains") && attribute.hasContext(1)) {
-            dList list = dList.valueOf(attribute.getContext(1));
+            ListTag list = ListTag.valueOf(attribute.getContext(1));
             if (list.isEmpty()) {
                 return null;
             }
@@ -1877,7 +1877,7 @@ public class dInventory implements dObject, Notable, Adjustable {
 
             // <--[tag]
             // @attribute <in@inventory.contains[<item>|...].quantity[<#>]>
-            // @returns Element(Boolean)
+            // @returns ElementTag(Boolean)
             // @description
             // Returns whether the inventory contains a certain quantity of all of the specified items.
             // -->
@@ -1890,29 +1890,29 @@ public class dInventory implements dObject, Notable, Adjustable {
             if (contains.size() == list.size()) {
                 for (dItem item : contains) {
                     if (!containsItem(item, qty)) {
-                        return new Element(false).getAttribute(attribute.fulfill(attribs));
+                        return new ElementTag(false).getAttribute(attribute.fulfill(attribs));
                     }
                 }
-                return new Element(true).getAttribute(attribute.fulfill(attribs));
+                return new ElementTag(true).getAttribute(attribute.fulfill(attribs));
             }
-            return new Element(false).getAttribute(attribute.fulfill(attribs));
+            return new ElementTag(false).getAttribute(attribute.fulfill(attribs));
         }
 
         // <--[tag]
         // @attribute <in@inventory.first_empty>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the location of the first empty slot.
         // Returns -1 if the inventory is full.
         // -->
         if (attribute.startsWith("first_empty")) {
             int val = firstEmpty(0);
-            return new Element(val >= 0 ? (val + 1) : -1).getAttribute(attribute.fulfill(1));
+            return new ElementTag(val >= 0 ? (val + 1) : -1).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <in@inventory.find.material[<material>]>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the location of the first slot that contains the material.
         // Returns -1 if there's no match.
@@ -1931,12 +1931,12 @@ public class dInventory implements dObject, Notable, Adjustable {
                     break;
                 }
             }
-            return new Element(slot).getAttribute(attribute.fulfill(2));
+            return new ElementTag(slot).getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <in@inventory.find.scriptname[<item>]>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the location of the first slot that contains the item
         // with the specified script name.
@@ -1957,12 +1957,12 @@ public class dInventory implements dObject, Notable, Adjustable {
                     break;
                 }
             }
-            return new Element(slot).getAttribute(attribute.fulfill(2));
+            return new ElementTag(slot).getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <in@inventory.find_imperfect[<item>]>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the location of the first slot that contains the item.
         // Returns -1 if there's no match.
@@ -1985,12 +1985,12 @@ public class dInventory implements dObject, Notable, Adjustable {
                     }
                 }
             }
-            return new Element(slot).getAttribute(attribute.fulfill(1));
+            return new ElementTag(slot).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <in@inventory.find[<item>]>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the location of the first slot that contains the item.
         // Returns -1 if there's no match.
@@ -2011,22 +2011,22 @@ public class dInventory implements dObject, Notable, Adjustable {
                     }
                 }
             }
-            return new Element(slot).getAttribute(attribute.fulfill(1));
+            return new ElementTag(slot).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <in@inventory.id_type>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns Denizen's type ID for this inventory. (player, location, etc.)
         // -->
         if (attribute.startsWith("id_type")) {
-            return new Element(idType).getAttribute(attribute.fulfill(1));
+            return new ElementTag(idType).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <in@inventory.notable_name>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Gets the name of a Notable dInventory. If the inventory isn't noted,
         // this is null.
@@ -2036,7 +2036,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             if (notname == null) {
                 return null;
             }
-            return new Element(notname).getAttribute(attribute.fulfill(1));
+            return new ElementTag(notname).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -2055,30 +2055,30 @@ public class dInventory implements dObject, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <in@inventory.quantity.scriptname[<script>]>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the combined quantity of itemstacks that have the specified script name.
         // -->
         if (attribute.startsWith("quantity.scriptname") && attribute.hasContext(2)) {
-            return new Element(countByScriptName(attribute.getContext(2)))
+            return new ElementTag(countByScriptName(attribute.getContext(2)))
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <in@inventory.quantity.material[<material>]>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the combined quantity of itemstacks that have the specified material.
         // -->
         if (attribute.startsWith("quantity.material")
                 && attribute.hasContext(2) && dMaterial.matches(attribute.getContext(2))) {
-            return new Element(countByMaterial(dMaterial.valueOf(attribute.getContext(2)).getMaterial()))
+            return new ElementTag(countByMaterial(dMaterial.valueOf(attribute.getContext(2)).getMaterial()))
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
         // @attribute <in@inventory.quantity[<item>]>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the combined quantity of itemstacks that match an item if
         // one is specified, or the combined quantity of all itemstacks
@@ -2086,31 +2086,31 @@ public class dInventory implements dObject, Notable, Adjustable {
         // -->
         if (attribute.startsWith("quantity") || attribute.startsWith("qty")) {
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
-                return new Element(count // TODO: Handle no-script-entry cases
+                return new ElementTag(count // TODO: Handle no-script-entry cases
                         (dItem.valueOf(attribute.getContext(1), attribute.context).getItemStack(), false))
                         .getAttribute(attribute.fulfill(1));
             }
             else {
-                return new Element(count(null, false))
+                return new ElementTag(count(null, false))
                         .getAttribute(attribute.fulfill(1));
             }
         }
 
         // <--[tag]
         // @attribute <in@inventory.stacks[<item>]>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the number of itemstacks that match an item if one is
         // specified, or the number of all itemstacks if one is not.
         // -->
         if (attribute.startsWith("stacks")) {
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
-                return new Element(count // TODO: Handle no-script-entry cases
+                return new ElementTag(count // TODO: Handle no-script-entry cases
                         (dItem.valueOf(attribute.getContext(1), attribute.context).getItemStack(), true))
                         .getAttribute(attribute.fulfill(1));
             }
             else {
-                return new Element(count(null, true))
+                return new ElementTag(count(null, true))
                         .getAttribute(attribute.fulfill(1));
             }
         }
@@ -2124,7 +2124,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (attribute.startsWith("slot")
                 && attribute.hasContext(1)
                 && ArgumentHelper.matchesInteger(attribute.getContext(1))) {
-            int slot = new Element(attribute.getContext(1)).asInt() - 1;
+            int slot = new ElementTag(attribute.getContext(1)).asInt() - 1;
             if (slot < 0) {
                 slot = 0;
             }
@@ -2137,23 +2137,23 @@ public class dInventory implements dObject, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <in@inventory.inventory_type>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the type of the inventory (e.g. "PLAYER", "CRAFTING", "HORSE").
         // -->
         if (attribute.startsWith("inventory_type")) {
-            return new Element(inventory instanceof HorseInventory ? "HORSE" : getInventory().getType().name())
+            return new ElementTag(inventory instanceof HorseInventory ? "HORSE" : getInventory().getType().name())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <in@inventory.equipment>
-        // @returns dList(dItem)
+        // @returns ListTag(dItem)
         // @description
         // Returns the equipment of an inventory.
         // -->
         if (attribute.startsWith("equipment")) {
-            dList equipment = getEquipment();
+            ListTag equipment = getEquipment();
             if (equipment == null) {
                 return null;
             }
@@ -2165,12 +2165,12 @@ public class dInventory implements dObject, Notable, Adjustable {
 
             // <--[tag]
             // @attribute <in@inventory.matrix>
-            // @returns dList(dItem)
+            // @returns ListTag(dItem)
             // @description
             // Returns the dItems currently in a crafting inventory's matrix.
             // -->
             if (attribute.startsWith("matrix")) {
-                dList recipeList = new dList();
+                ListTag recipeList = new ListTag();
                 for (ItemStack item : craftingInventory.getMatrix()) {
                     if (item != null) {
                         recipeList.add(new dItem(item).identify());
@@ -2199,13 +2199,13 @@ public class dInventory implements dObject, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <in@inventory.type>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Always returns 'Inventory' for dInventory objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         if (attribute.startsWith("type")) {
-            return new Element("Inventory").getAttribute(attribute.fulfill(1));
+            return new ElementTag("Inventory").getAttribute(attribute.fulfill(1));
         }
 
         String returned = CoreUtilities.autoPropertyTag(this, attribute);
@@ -2213,7 +2213,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             return returned;
         }
 
-        return new Element(identify()).getAttribute(attribute);
+        return new ElementTag(identify()).getAttribute(attribute);
     }
 
     private ArrayList<Mechanism> mechanisms = new ArrayList<>();
@@ -2242,16 +2242,16 @@ public class dInventory implements dObject, Notable, Adjustable {
         // <--[mechanism]
         // @object dInventory
         // @name matrix
-        // @input dList(dItem)
+        // @input ListTag(dItem)
         // @description
         // Sets the items in the matrix slots of this crafting inventory.
         // @tags
         // <in@inventory.matrix>
         // -->
-        if (mechanism.matches("matrix") && mechanism.requireObject(dList.class)) {
+        if (mechanism.matches("matrix") && mechanism.requireObject(ListTag.class)) {
             if (inventory instanceof CraftingInventory) {
                 CraftingInventory craftingInventory = (CraftingInventory) inventory;
-                List<dItem> items = mechanism.valueAsType(dList.class).filter(dItem.class, mechanism.context);
+                List<dItem> items = mechanism.valueAsType(ListTag.class).filter(dItem.class, mechanism.context);
                 ItemStack[] itemStacks = new ItemStack[9];
                 for (int i = 0; i < 9 && i < items.size(); i++) {
                     itemStacks[i] = items.get(i).getItemStack();

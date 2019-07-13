@@ -3,9 +3,9 @@ package com.denizenscript.denizen.objects.properties.entity;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.entity.Phantom;
@@ -13,14 +13,14 @@ import org.bukkit.entity.Slime;
 
 public class EntitySize implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity &&
                 (((dEntity) entity).getBukkitEntity() instanceof Slime
                         || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)
                         && ((dEntity) entity).getBukkitEntity() instanceof Phantom));
     }
 
-    public static EntitySize getFrom(dObject entity) {
+    public static EntitySize getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -67,7 +67,7 @@ public class EntitySize implements Property {
 
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -79,7 +79,7 @@ public class EntitySize implements Property {
 
         // <--[tag]
         // @attribute <e@entity.size>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @mechanism dEntity.size
         // @group properties
         // @description
@@ -87,10 +87,10 @@ public class EntitySize implements Property {
         // -->
         if (attribute.startsWith("size")) {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && entity.getBukkitEntity() instanceof Phantom) {
-                return new Element(((Phantom) entity.getBukkitEntity()).getSize())
+                return new ElementTag(((Phantom) entity.getBukkitEntity()).getSize())
                         .getAttribute(attribute.fulfill(1));
             }
-            return new Element(((Slime) entity.getBukkitEntity()).getSize())
+            return new ElementTag(((Slime) entity.getBukkitEntity()).getSize())
                     .getAttribute(attribute.fulfill(1));
         }
 

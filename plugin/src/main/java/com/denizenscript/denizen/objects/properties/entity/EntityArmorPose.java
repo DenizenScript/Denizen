@@ -4,8 +4,8 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -17,12 +17,12 @@ import java.util.Iterator;
 
 public class EntityArmorPose implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity
                 && ((dEntity) entity).getBukkitEntityType() == EntityType.ARMOR_STAND;
     }
 
-    public static EntityArmorPose getFrom(dObject entity) {
+    public static EntityArmorPose getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -64,9 +64,9 @@ public class EntityArmorPose implements Property {
         return "armor_pose";
     }
 
-    private dList getPoseList() {
+    private ListTag getPoseList() {
         ArmorStand armorStand = (ArmorStand) entity.getBukkitEntity();
-        dList list = new dList();
+        ListTag list = new ListTag();
         for (PosePart posePart : PosePart.values()) {
             list.add(CoreUtilities.toLowerCase(posePart.name()));
             list.add(fromEulerAngle(posePart.getAngle(armorStand)).identify());
@@ -75,7 +75,7 @@ public class EntityArmorPose implements Property {
     }
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -87,7 +87,7 @@ public class EntityArmorPose implements Property {
 
         // <--[tag]
         // @attribute <e@entity.armor_pose_list>
-        // @returns dList
+        // @returns ListTag
         // @group attributes
         // @description
         // Returns a list of all poses and angles for the armor stand in the
@@ -131,7 +131,7 @@ public class EntityArmorPose implements Property {
         // <--[mechanism]
         // @object dEntity
         // @name armor_pose
-        // @input dList
+        // @input ListTag
         // @description
         // Sets the angle for various parts of the armor stand in the
         // format: PART|ANGLE|...
@@ -144,7 +144,7 @@ public class EntityArmorPose implements Property {
         // -->
         if (mechanism.matches("armor_pose")) {
             ArmorStand armorStand = (ArmorStand) entity.getBukkitEntity();
-            dList list = mechanism.valueAsType(dList.class);
+            ListTag list = mechanism.valueAsType(ListTag.class);
             Iterator<String> iterator = list.iterator();
             while (iterator.hasNext()) {
                 String name = iterator.next();

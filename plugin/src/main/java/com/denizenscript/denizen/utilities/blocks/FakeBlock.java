@@ -4,7 +4,7 @@ import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dMaterial;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizencore.objects.Duration;
+import com.denizenscript.denizencore.objects.DurationTag;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -32,7 +32,7 @@ public class FakeBlock {
         this.location = location;
     }
 
-    public static void showFakeBlockTo(List<dPlayer> players, dLocation location, dMaterial material, Duration duration) {
+    public static void showFakeBlockTo(List<dPlayer> players, dLocation location, dMaterial material, DurationTag duration) {
         for (dPlayer player : players) {
             if (!player.isOnline() || !player.isValid()) {
                 continue;

@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class dWorld implements dObject, Adjustable {
+public class dWorld implements ObjectTag, Adjustable {
 
 
     /////////////////////
@@ -191,7 +191,7 @@ public class dWorld implements dObject, Adjustable {
     }
 
     @Override
-    public dObject setPrefix(String prefix) {
+    public ObjectTag setPrefix(String prefix) {
         this.prefix = prefix;
         return this;
     }
@@ -204,53 +204,53 @@ public class dWorld implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <w@world.entities>
-        // @returns dList(dEntity)
+        // @returns ListTag(dEntity)
         // @description
         // Returns a list of entities in this world.
         // -->
         registerTag("entities", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 ArrayList<dEntity> entities = new ArrayList<>();
 
                 for (Entity entity : ((dWorld) object).getWorld().getEntities()) {
                     entities.add(new dEntity(entity));
                 }
 
-                return new dList(entities)
+                return new ListTag(entities)
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.living_entities>
-        // @returns dList(dEntity)
+        // @returns ListTag(dEntity)
         // @description
         // Returns a list of living entities in this world.
         // -->
         registerTag("living_entities", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 ArrayList<dEntity> entities = new ArrayList<>();
 
                 for (Entity entity : ((dWorld) object).getWorld().getLivingEntities()) {
                     entities.add(new dEntity(entity));
                 }
 
-                return new dList(entities)
+                return new ListTag(entities)
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.players>
-        // @returns dList(dPlayer)
+        // @returns ListTag(dPlayer)
         // @description
         // Returns a list of online players in this world.
         // -->
         registerTag("players", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 ArrayList<dPlayer> players = new ArrayList<>();
 
                 for (Player player : ((dWorld) object).getWorld().getPlayers()) {
@@ -259,20 +259,20 @@ public class dWorld implements dObject, Adjustable {
                     }
                 }
 
-                return new dList(players)
+                return new ListTag(players)
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.spawned_npcs>
-        // @returns dList(dNPC)
+        // @returns ListTag(dNPC)
         // @description
         // Returns a list of spawned NPCs in this world.
         // -->
         registerTag("spawned_npcs", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 ArrayList<dNPC> npcs = new ArrayList<>();
 
                 World thisWorld = ((dWorld) object).getWorld();
@@ -283,20 +283,20 @@ public class dWorld implements dObject, Adjustable {
                     }
                 }
 
-                return new dList(npcs)
+                return new ListTag(npcs)
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.npcs>
-        // @returns dList(dNPC)
+        // @returns ListTag(dNPC)
         // @description
         // Returns a list of all NPCs in this world.
         // -->
         registerTag("npcs", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 ArrayList<dNPC> npcs = new ArrayList<>();
 
                 World thisWorld = ((dWorld) object).getWorld();
@@ -311,7 +311,7 @@ public class dWorld implements dObject, Adjustable {
                     }
                 }
 
-                return new dList(npcs)
+                return new ListTag(npcs)
                         .getAttribute(attribute.fulfill(1));
             }
         });
@@ -323,28 +323,28 @@ public class dWorld implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <w@world.can_generate_structures>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the world will generate structures.
         // -->
         registerTag("can_generate_structures", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dWorld) object).getWorld().canGenerateStructures())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dWorld) object).getWorld().canGenerateStructures())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.loaded_chunks>
-        // @returns dList(dChunk)
+        // @returns ListTag(dChunk)
         // @description
         // Returns a list of all the currently loaded chunks.
         // -->
         registerTag("loaded_chunks", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                dList chunks = new dList();
+            public String run(Attribute attribute, ObjectTag object) {
+                ListTag chunks = new ListTag();
                 for (Chunk ent : ((dWorld) object).getWorld().getLoadedChunks()) {
                     chunks.add(new dChunk(ent).identify());
                 }
@@ -360,7 +360,7 @@ public class dWorld implements dObject, Adjustable {
         // -->
         registerTag("random_loaded_chunk", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 int random = CoreUtilities.getRandom().nextInt(((dWorld) object).getWorld().getLoadedChunks().length);
                 return new dChunk(((dWorld) object).getWorld().getLoadedChunks()[random])
                         .getAttribute(attribute.fulfill(1));
@@ -369,14 +369,14 @@ public class dWorld implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <w@world.sea_level>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the level of the sea.
         // -->
         registerTag("sea_level", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dWorld) object).getWorld().getSeaLevel())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dWorld) object).getWorld().getSeaLevel())
                         .getAttribute(attribute.fulfill(1));
             }
         });
@@ -389,7 +389,7 @@ public class dWorld implements dObject, Adjustable {
         // -->
         registerTag("spawn_location", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 return new dLocation(((dWorld) object).getWorld().getSpawnLocation())
                         .getAttribute(attribute.fulfill(1));
             }
@@ -397,15 +397,15 @@ public class dWorld implements dObject, Adjustable {
 
         // <-- [tag]
         // @attribute <w@world.world_type>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the world type of the world.
         // Can return any enum from: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/WorldType.html>
         // -->
         registerTag("world_type", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dWorld) object).getWorld().getWorldType().getName())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dWorld) object).getWorld().getWorldType().getName())
                         .getAttribute(attribute.fulfill(1));
             }
         });
@@ -417,28 +417,28 @@ public class dWorld implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <w@world.name>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the name of the world.
         // -->
         registerTag("name", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dWorld) object).getWorld().getName())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dWorld) object).getWorld().getName())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.seed>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the world seed.
         // -->
         registerTag("seed", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dWorld) object).getWorld().getSeed())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dWorld) object).getWorld().getSeed())
                         .getAttribute(attribute.fulfill(1));
             }
         });
@@ -450,182 +450,182 @@ public class dWorld implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <w@world.allows_animals>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether animals can spawn in this world.
         // -->
         registerTag("allows_animals", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dWorld) object).getWorld().getAllowAnimals())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dWorld) object).getWorld().getAllowAnimals())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.allows_monsters>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether monsters can spawn in this world.
         // -->
         registerTag("allows_monsters", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dWorld) object).getWorld().getAllowMonsters())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dWorld) object).getWorld().getAllowMonsters())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.allows_pvp>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether player versus player combat is allowed in this world.
         // -->
         registerTag("allows_pvp", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dWorld) object).getWorld().getPVP())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dWorld) object).getWorld().getPVP())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.auto_save>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the world automatically saves.
         // -->
         registerTag("auto_save", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dWorld) object).getWorld().isAutoSave())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dWorld) object).getWorld().isAutoSave())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.ambient_spawn_limit>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the number of ambient mobs that can spawn in a chunk in this world.
         // -->
         registerTag("ambient_spawn_limit", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dWorld) object).getWorld().getAmbientSpawnLimit())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dWorld) object).getWorld().getAmbientSpawnLimit())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.animal_spawn_limit>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the number of animals that can spawn in a chunk in this world.
         // -->
         registerTag("animal_spawn_limit", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dWorld) object).getWorld().getAnimalSpawnLimit())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dWorld) object).getWorld().getAnimalSpawnLimit())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.monster_spawn_limit>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the number of monsters that can spawn in a chunk in this world.
         // -->
         registerTag("monster_spawn_limit", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dWorld) object).getWorld().getMonsterSpawnLimit())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dWorld) object).getWorld().getMonsterSpawnLimit())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.water_animal_spawn_limit>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the number of water animals that can spawn in a chunk in this world.
         // -->
         registerTag("water_animal_spawn_limit", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dWorld) object).getWorld().getWaterAnimalSpawnLimit())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dWorld) object).getWorld().getWaterAnimalSpawnLimit())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.difficulty>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the name of the difficulty level.
         // -->
         registerTag("difficulty", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dWorld) object).getWorld().getDifficulty().name())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dWorld) object).getWorld().getDifficulty().name())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.keep_spawn>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the world's spawn area should be kept loaded into memory.
         // -->
         registerTag("keep_spawn", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dWorld) object).getWorld().getKeepSpawnInMemory())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dWorld) object).getWorld().getKeepSpawnInMemory())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.max_height>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the maximum height of this world.
         // -->
         registerTag("max_height", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dWorld) object).getWorld().getMaxHeight())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dWorld) object).getWorld().getMaxHeight())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.ticks_per_animal_spawn>
-        // @returns Duration
+        // @returns DurationTag
         // @description
         // Returns the world's ticks per animal spawn mechanism.getValue().
         // -->
         registerTag("ticks_per_animal_spawn", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Duration(((dWorld) object).getWorld().getTicksPerAnimalSpawns())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new DurationTag(((dWorld) object).getWorld().getTicksPerAnimalSpawns())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.ticks_per_monster_spawn>
-        // @returns Duration
+        // @returns DurationTag
         // @description
         // Returns the world's ticks per monster spawn mechanism.getValue().
         // -->
         registerTag("ticks_per_monster_spawn", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Duration(((dWorld) object).getWorld().getTicksPerMonsterSpawns())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new DurationTag(((dWorld) object).getWorld().getTicksPerMonsterSpawns())
                         .getAttribute(attribute.fulfill(1));
             }
         });
@@ -636,40 +636,40 @@ public class dWorld implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <w@world.time>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the relative in-game time of this world.
         // -->
         registerTag("time", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 attribute = attribute.fulfill(1);
 
                 // <--[tag]
                 // @attribute <w@world.time.duration>
-                // @returns Durations
+                // @returns DurationTags
                 // @description
                 // Returns the relative in-game time of this world as a duration.
                 // -->
                 if (attribute.startsWith("duration")) {
-                    return new Duration(((dWorld) object).getWorld().getTime())
+                    return new DurationTag(((dWorld) object).getWorld().getTime())
                             .getAttribute(attribute.fulfill(1));
                 }
 
                 // <--[tag]
                 // @attribute <w@world.time.full>
-                // @returns Duration
+                // @returns DurationTag
                 // @description
                 // Returns the in-game time of this world.
                 // -->
                 else if (attribute.startsWith("full")) {
-                    return new Element(((dWorld) object).getWorld().getFullTime())
+                    return new ElementTag(((dWorld) object).getWorld().getFullTime())
                             .getAttribute(attribute.fulfill(1));
                 }
 
                 // <--[tag]
                 // @attribute <w@world.time.period>
-                // @returns Element
+                // @returns ElementTag
                 // @description
                 // Returns the time as 'day', 'night', 'dawn', or 'dusk'.
                 // -->
@@ -691,24 +691,24 @@ public class dWorld implements dObject, Adjustable {
                         period = "day";
                     }
 
-                    return new Element(period).getAttribute(attribute.fulfill(1));
+                    return new ElementTag(period).getAttribute(attribute.fulfill(1));
                 }
                 else {
-                    return new Element(((dWorld) object).getWorld().getTime()).getAttribute(attribute);
+                    return new ElementTag(((dWorld) object).getWorld().getTime()).getAttribute(attribute);
                 }
             }
         });
 
         // <--[tag]
         // @attribute <w@world.moon_phase>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the current phase of the moon, as an integer from 1 to 8.
         // -->
         registerTag("moon_phase", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element((int) ((((dWorld) object).getWorld().getFullTime() / 24000) % 8) + 1)
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag((int) ((((dWorld) object).getWorld().getFullTime() / 24000) % 8) + 1)
                         .getAttribute(attribute.fulfill(1));
             }
         });
@@ -720,86 +720,86 @@ public class dWorld implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <w@world.has_storm>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether there is currently a storm in this world.
         // ie, whether it is raining. To check for thunder, use <@link tag w@world.thundering>.
         // -->
         registerTag("has_storm", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dWorld) object).getWorld().hasStorm())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dWorld) object).getWorld().hasStorm())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.thunder_duration>
-        // @returns Duration
+        // @returns DurationTag
         // @description
         // Returns the duration of thunder.
         // -->
         registerTag("thunder_duration", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Duration((long) ((dWorld) object).getWorld().getThunderDuration())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new DurationTag((long) ((dWorld) object).getWorld().getThunderDuration())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.thundering>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether it is currently thundering in this world.
         // -->
         registerTag("thundering", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dWorld) object).getWorld().isThundering())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dWorld) object).getWorld().isThundering())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.weather_duration>
-        // @returns Duration
+        // @returns DurationTag
         // @description
         // Returns the duration of storms.
         // -->
         registerTag("weather_duration", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Duration((long) ((dWorld) object).getWorld().getWeatherDuration())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new DurationTag((long) ((dWorld) object).getWorld().getWeatherDuration())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.environment>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the environment of the world: NORMAL, NETHER, or THE_END.
         // -->
         registerTag("environment", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dWorld) object).getWorld().getEnvironment().name())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dWorld) object).getWorld().getEnvironment().name())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.type>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Always returns 'World' for dWorld objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         registerTag("type", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element("World").getAttribute(attribute.fulfill(1));
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag("World").getAttribute(attribute.fulfill(1));
             }
         });
 
@@ -809,14 +809,14 @@ public class dWorld implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <w@world.border_size>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // returns the size of the world border in this world.
         // -->
         registerTag("border_size", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dWorld) object).getWorld().getWorldBorder().getSize())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dWorld) object).getWorld().getWorldBorder().getSize())
                         .getAttribute(attribute.fulfill(1));
             }
         });
@@ -829,7 +829,7 @@ public class dWorld implements dObject, Adjustable {
         // -->
         registerTag("border_center", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 return new dLocation(((dWorld) object).getWorld().getWorldBorder().getCenter())
                         .getAttribute(attribute.fulfill(1));
             }
@@ -837,56 +837,56 @@ public class dWorld implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <w@world.border_damage>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // returns the size of the world border in this world.
         // -->
         registerTag("border_damage", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dWorld) object).getWorld().getWorldBorder().getDamageAmount())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dWorld) object).getWorld().getWorldBorder().getDamageAmount())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.border_damage_buffer>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // returns the damage buffer of the world border in this world.
         // -->
         registerTag("border_damage_buffer", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dWorld) object).getWorld().getWorldBorder().getDamageBuffer())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dWorld) object).getWorld().getWorldBorder().getDamageBuffer())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.border_warning_distance>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // returns the warning distance of the world border in this world.
         // -->
         registerTag("border_warning_distance", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dWorld) object).getWorld().getWorldBorder().getWarningDistance())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dWorld) object).getWorld().getWorldBorder().getWarningDistance())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <w@world.border_warning_time>
-        // @returns Duration
+        // @returns DurationTag
         // @description
         // returns warning time of the world border in this world as a duration.
         // -->
         registerTag("border_warning_time", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Duration(((dWorld) object).getWorld().getWorldBorder().getWarningTime())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new DurationTag(((dWorld) object).getWorld().getWorldBorder().getWarningTime())
                         .getAttribute(attribute.fulfill(1));
             }
         });
@@ -924,7 +924,7 @@ public class dWorld implements dObject, Adjustable {
             return returned;
         }
 
-        return new Element(identify()).getAttribute(attribute);
+        return new ElementTag(identify()).getAttribute(attribute);
     }
 
 
@@ -1142,8 +1142,8 @@ public class dWorld implements dObject, Adjustable {
         // @tags
         // <w@world.thunder_duration>
         // -->
-        if (mechanism.matches("thunder_duration") && mechanism.requireObject(Duration.class)) {
-            getWorld().setThunderDuration(mechanism.valueAsType(Duration.class).getTicksAsInt());
+        if (mechanism.matches("thunder_duration") && mechanism.requireObject(DurationTag.class)) {
+            getWorld().setThunderDuration(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -1168,8 +1168,8 @@ public class dWorld implements dObject, Adjustable {
         // @tags
         // <w@world.ticks_per_animal_spawns>
         // -->
-        if (mechanism.matches("ticks_per_animal_spawns") && mechanism.requireObject(Duration.class)) {
-            getWorld().setTicksPerAnimalSpawns(mechanism.valueAsType(Duration.class).getTicksAsInt());
+        if (mechanism.matches("ticks_per_animal_spawns") && mechanism.requireObject(DurationTag.class)) {
+            getWorld().setTicksPerAnimalSpawns(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -1181,8 +1181,8 @@ public class dWorld implements dObject, Adjustable {
         // @tags
         // <w@world.ticks_per_monster_spawns>
         // -->
-        if (mechanism.matches("ticks_per_monster_spawns") && mechanism.requireObject(Duration.class)) {
-            getWorld().setTicksPerMonsterSpawns(mechanism.valueAsType(Duration.class).getTicksAsInt());
+        if (mechanism.matches("ticks_per_monster_spawns") && mechanism.requireObject(DurationTag.class)) {
+            getWorld().setTicksPerMonsterSpawns(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -1234,8 +1234,8 @@ public class dWorld implements dObject, Adjustable {
         // @tags
         // <w@world.weather_duration>
         // -->
-        if (mechanism.matches("weather_duration") && mechanism.requireObject(Duration.class)) {
-            getWorld().setWeatherDuration(mechanism.valueAsType(Duration.class).getTicksAsInt());
+        if (mechanism.matches("weather_duration") && mechanism.requireObject(DurationTag.class)) {
+            getWorld().setWeatherDuration(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);

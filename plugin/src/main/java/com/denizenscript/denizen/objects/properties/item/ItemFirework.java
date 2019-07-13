@@ -2,10 +2,10 @@ package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.Color;
@@ -19,13 +19,13 @@ import java.util.List;
 
 public class ItemFirework implements Property {
 
-    public static boolean describes(dObject item) {
+    public static boolean describes(ObjectTag item) {
         return item instanceof dItem
                 && ((((dItem) item).getItemStack().getItemMeta() instanceof FireworkMeta)
                 || (((dItem) item).getItemStack().getItemMeta() instanceof FireworkEffectMeta));
     }
 
-    public static ItemFirework getFrom(dObject _item) {
+    public static ItemFirework getFrom(ObjectTag _item) {
         if (!describes(_item)) {
             return null;
         }
@@ -49,9 +49,9 @@ public class ItemFirework implements Property {
 
     dItem item;
 
-    public dList getFireworkData() {
+    public ListTag getFireworkData() {
         List<FireworkEffect> effects;
-        dList list = new dList();
+        ListTag list = new ListTag();
         if (item.getItemStack().getItemMeta() instanceof FireworkMeta) {
             effects = ((FireworkMeta) item.getItemStack().getItemMeta()).getEffects();
             int power = ((FireworkMeta) item.getItemStack().getItemMeta()).getPower();
@@ -86,7 +86,7 @@ public class ItemFirework implements Property {
 
         // <--[tag]
         // @attribute <i@item.firework>
-        // @returns dList
+        // @returns ListTag
         // @group properties
         // @mechanism dItem.firework
         // @description
@@ -103,7 +103,7 @@ public class ItemFirework implements Property {
 
     @Override
     public String getPropertyString() {
-        dList data = getFireworkData();
+        ListTag data = getFireworkData();
         return data.size() > 0 ? data.identify() : null;
     }
 
@@ -118,7 +118,7 @@ public class ItemFirework implements Property {
         // <--[mechanism]
         // @object dItem
         // @name firework
-        // @input dList
+        // @input ListTag
         // @description
         // Sets the firework's settings.
         // Each item in the list is formatted as: TRAIL,FLICKER,TYPE,RED,GREEN,BLUE,RED,GREEN,BLUE
@@ -129,26 +129,26 @@ public class ItemFirework implements Property {
         // -->
 
         if (mechanism.matches("firework")) {
-            dList fireworks = mechanism.valueAsType(dList.class);
+            ListTag fireworks = mechanism.valueAsType(ListTag.class);
             ItemMeta meta = item.getItemStack().getItemMeta();
             for (String effect : fireworks) {
                 String[] data = effect.split(",");
                 if (data.length == 9) {
                     FireworkEffect.Builder builder = FireworkEffect.builder();
-                    builder.trail(new Element(data[0]).asBoolean());
-                    builder.flicker(new Element(data[1]).asBoolean());
-                    if (new Element(data[2]).matchesEnum(FireworkEffect.Type.values())) {
+                    builder.trail(new ElementTag(data[0]).asBoolean());
+                    builder.flicker(new ElementTag(data[1]).asBoolean());
+                    if (new ElementTag(data[2]).matchesEnum(FireworkEffect.Type.values())) {
                         builder.with(FireworkEffect.Type.valueOf(data[2].toUpperCase()));
                     }
                     else {
                         Debug.echoError("Invalid firework type '" + data[2] + "'");
                     }
-                    builder.withColor(Color.fromRGB(new Element(data[3]).asInt(),
-                            new Element(data[4]).asInt(),
-                            new Element(data[5]).asInt()));
-                    builder.withFade(Color.fromRGB(new Element(data[6]).asInt(),
-                            new Element(data[7]).asInt(),
-                            new Element(data[8]).asInt()));
+                    builder.withColor(Color.fromRGB(new ElementTag(data[3]).asInt(),
+                            new ElementTag(data[4]).asInt(),
+                            new ElementTag(data[5]).asInt()));
+                    builder.withFade(Color.fromRGB(new ElementTag(data[6]).asInt(),
+                            new ElementTag(data[7]).asInt(),
+                            new ElementTag(data[8]).asInt()));
 
                     FireworkEffect built = builder.build();
                     if (meta instanceof FireworkMeta) {
@@ -160,7 +160,7 @@ public class ItemFirework implements Property {
                 }
                 else if (data.length == 1) {
                     if (meta instanceof FireworkMeta) {
-                        ((FireworkMeta) meta).setPower(new Element(data[0]).asInt());
+                        ((FireworkMeta) meta).setPower(new ElementTag(data[0]).asInt());
                     }
                     else {
                         Debug.echoError("Cannot set the power of a firework effect!");

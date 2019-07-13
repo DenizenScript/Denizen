@@ -5,7 +5,7 @@ import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
@@ -13,11 +13,11 @@ import com.denizenscript.denizencore.tags.Attribute;
 
 public class BukkitQueueProperties implements Property {
 
-    public static boolean describes(dObject script) {
+    public static boolean describes(ObjectTag script) {
         return script instanceof ScriptQueue;
     }
 
-    public static BukkitQueueProperties getFrom(dObject queue) {
+    public static BukkitQueueProperties getFrom(ObjectTag queue) {
         if (!describes(queue)) {
             return null;
         }

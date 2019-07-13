@@ -5,10 +5,10 @@ import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -32,13 +32,13 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
     // @Triggers when an entity explodes.
     //
     // @Context
-    // <context.blocks> returns a dList of blocks that the entity blew up.
+    // <context.blocks> returns a ListTag of blocks that the entity blew up.
     // <context.entity> returns the dEntity that exploded.
     // <context.location> returns the dLocation the entity blew up at.
     // <context.strength> returns an Element(Decimal) of the strength of the explosion.
     //
     // @Determine
-    // dList(dLocation) to set a new lists of blocks that are to be affected by the explosion.
+    // ListTag(dLocation) to set a new lists of blocks that are to be affected by the explosion.
     // Element(Decimal) to change the strength of the explosion.
     //
     // -->
@@ -49,7 +49,7 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
 
     public static EntityExplodesScriptEvent instance;
     public dEntity entity;
-    public dList blocks;
+    public ListTag blocks;
     public dLocation location;
     public float strength;
     private Boolean blockSet;
@@ -86,10 +86,10 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
             strength = ArgumentHelper.getFloatFrom(determination);
             return true;
         }
-        if (dList.matches(determination)) {
-            blocks = new dList();
+        if (ListTag.matches(determination)) {
+            blocks = new ListTag();
             blockSet = true;
-            for (String loc : dList.valueOf(determination)) {
+            for (String loc : ListTag.valueOf(determination)) {
                 dLocation location = dLocation.valueOf(loc);
                 if (location == null) {
                     Debug.echoError("Invalid location '" + loc + "' check [" + getName() + "]: '  for " + container.getName());
@@ -110,7 +110,7 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return entity;
         }
@@ -121,7 +121,7 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
             return blocks;
         }
         else if (name.equals("strength")) {
-            return new Element(strength);
+            return new ElementTag(strength);
         }
         return super.getContext(name);
     }
@@ -131,7 +131,7 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
         entity = new dEntity(event.getEntity());
         location = new dLocation(event.getLocation());
         strength = event.getYield();
-        blocks = new dList();
+        blocks = new ListTag();
         blockSet = false;
         for (Block block : event.blockList()) {
             blocks.add(new dLocation(block.getLocation()).identify());

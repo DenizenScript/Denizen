@@ -4,8 +4,8 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Entity;
@@ -29,7 +29,7 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Context
     // <context.potion> returns a dItem of the potion that broke open.
-    // <context.entities> returns a dList of effected entities.
+    // <context.entities> returns a ListTag of effected entities.
     // <context.location> returns the dLocation the splash potion broke open at.
     // <context.entity> returns a dEntity of the splash potion.
     //
@@ -41,7 +41,7 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
 
     public static PotionSplashScriptEvent instance;
     public dItem potion;
-    public dList entities;
+    public ListTag entities;
     public dLocation location;
     public dEntity entity;
     public PotionSplashEvent event;
@@ -70,7 +70,7 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return entity;
         }
@@ -91,7 +91,7 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
         entity = new dEntity(event.getEntity());
         potion = new dItem(event.getPotion().getItem());
         location = new dLocation(entity.getLocation());
-        entities = new dList();
+        entities = new ListTag();
         for (Entity e : event.getAffectedEntities()) {
             entities.add(new dEntity(e).identify());
         }

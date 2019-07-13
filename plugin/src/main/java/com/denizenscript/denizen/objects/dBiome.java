@@ -13,7 +13,7 @@ import org.bukkit.entity.EntityType;
 import java.util.HashMap;
 import java.util.List;
 
-public class dBiome implements dObject, Adjustable {
+public class dBiome implements ObjectTag, Adjustable {
 
     // <--[language]
     // @name dBiome
@@ -143,7 +143,7 @@ public class dBiome implements dObject, Adjustable {
     }
 
     @Override
-    public dObject setPrefix(String prefix) {
+    public ObjectTag setPrefix(String prefix) {
         if (prefix != null) {
             this.prefix = prefix;
         }
@@ -155,54 +155,54 @@ public class dBiome implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <b@biome.downfall_type>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns this biome's downfall type for when a world has weather.
         // This can be RAIN, SNOW, or NONE.
         // -->
         registerTag("downfall_type", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(CoreUtilities.toLowerCase(((dBiome) object).biome.getDownfallType().name()))
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(CoreUtilities.toLowerCase(((dBiome) object).biome.getDownfallType().name()))
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <b@biome.humidity>
-        // @returns Element(Decimal)
+        // @returns ElementTag(Decimal)
         // @description
         // Returns the humidity of this biome.
         // -->
         registerTag("humidity", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dBiome) object).biome.getHumidity())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dBiome) object).biome.getHumidity())
                         .getAttribute(attribute.fulfill(1));
             }
         });
         // <--[tag]
         // @attribute <b@biome.temperature>
-        // @returns Element(Decimal)
+        // @returns ElementTag(Decimal)
         // @description
         // Returns the temperature of this biome.
         // -->
         registerTag("temperature", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dBiome) object).biome.getTemperature())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dBiome) object).biome.getTemperature())
                         .getAttribute(attribute.fulfill(1));
             }
         });
         // <--[tag]
         // @attribute <b@biome.spawnable_entities>
-        // @returns dList(dEntity)
+        // @returns ListTag(dEntity)
         // @description
         // Returns all entities that spawn naturally in this biome.
         // -->
         registerTag("spawnable_entities", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 attribute = attribute.fulfill(1);
                 BiomeNMS biome = ((dBiome) object).biome;
 
@@ -211,7 +211,7 @@ public class dBiome implements dObject, Adjustable {
 
                 // <--[tag]
                 // @attribute <b@biome.spawnable_entities.ambient>
-                // @returns dList(dEntity)
+                // @returns ListTag(dEntity)
                 // @description
                 // Returns the entities that spawn naturally in ambient locations.
                 // Default examples: BAT
@@ -222,7 +222,7 @@ public class dBiome implements dObject, Adjustable {
 
                 // <--[tag]
                 // @attribute <b@biome.spawnable_entities.creatures>
-                // @returns dList(dEntity)
+                // @returns ListTag(dEntity)
                 // @description
                 // Returns the entities that spawn naturally in creature locations.
                 // Default examples: PIG, COW, CHICKEN...
@@ -233,7 +233,7 @@ public class dBiome implements dObject, Adjustable {
 
                 // <--[tag]
                 // @attribute <b@biome.spawnable_entities.monsters>
-                // @returns dList(dEntity)
+                // @returns ListTag(dEntity)
                 // @description
                 // Returns the entities that spawn naturally in monster locations.
                 // Default examples: CREEPER, ZOMBIE, SKELETON...
@@ -244,7 +244,7 @@ public class dBiome implements dObject, Adjustable {
 
                 // <--[tag]
                 // @attribute <b@biome.spawnable_entities.water>
-                // @returns dList(dEntity)
+                // @returns ListTag(dEntity)
                 // @description
                 // Returns the entities that spawn naturally in underwater locations.
                 // Default examples: SQUID
@@ -257,7 +257,7 @@ public class dBiome implements dObject, Adjustable {
                     hasAttribute = false;
                 }
 
-                dList list = new dList();
+                ListTag list = new ListTag();
                 for (EntityType entityType : entityTypes) {
                     list.add(entityType.name());
                 }
@@ -267,15 +267,15 @@ public class dBiome implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <b@biome.type>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Always returns 'Biome' for dBiome objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         registerTag("type", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element("Biome").getAttribute(attribute.fulfill(1));
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag("Biome").getAttribute(attribute.fulfill(1));
             }
         });
     }
@@ -306,7 +306,7 @@ public class dBiome implements dObject, Adjustable {
             return tr.run(attribute, this);
         }
 
-        return new Element(identify()).getAttribute(attribute);
+        return new ElementTag(identify()).getAttribute(attribute);
     }
 
     @Override

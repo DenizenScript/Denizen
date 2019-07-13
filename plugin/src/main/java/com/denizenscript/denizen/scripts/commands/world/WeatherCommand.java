@@ -5,7 +5,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dWorld;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -92,7 +92,7 @@ public class WeatherCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
         // Fetch objects
-        Value value = Value.valueOf(((Element) scriptEntry.getObject("value"))
+        Value value = Value.valueOf(((ElementTag) scriptEntry.getObject("value"))
                 .asString().toUpperCase());
         dWorld world = (dWorld) scriptEntry.getObject("world");
         Type type = scriptEntry.hasObject("type") ?

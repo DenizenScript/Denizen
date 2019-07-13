@@ -6,9 +6,9 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -59,7 +59,7 @@ public class SpawnCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
 
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class)) {
@@ -109,7 +109,7 @@ public class SpawnCommand extends AbstractCommand {
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         dLocation location = (dLocation) scriptEntry.getObject("location");
         dEntity target = (dEntity) scriptEntry.getObject("target");
-        Element spread = scriptEntry.getElement("spread");
+        ElementTag spread = scriptEntry.getElement("spread");
         boolean persistent = scriptEntry.hasObject("persistent");
 
         // Report to dB
@@ -121,10 +121,10 @@ public class SpawnCommand extends AbstractCommand {
                     (persistent ? ArgumentHelper.debugObj("persistent", "true") : ""));
         }
 
-        // Keep a dList of entities that can be called using <entry[name].spawned_entities>
+        // Keep a ListTag of entities that can be called using <entry[name].spawned_entities>
         // later in the script queue
 
-        dList entityList = new dList();
+        ListTag entityList = new ListTag();
 
         // Go through all the entities and spawn them or teleport them,
         // then set their targets if applicable

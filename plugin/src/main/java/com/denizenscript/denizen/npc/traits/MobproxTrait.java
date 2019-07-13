@@ -4,7 +4,7 @@ import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import net.citizensnpcs.api.event.NPCTraitCommandAttachEvent;
 import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.ChatColor;
@@ -110,7 +110,7 @@ public class MobproxTrait extends Trait {
     //
     // -->
     private void callAction(String act, Entity ent) {
-        Map<String, dObject> context = new HashMap<>();
+        Map<String, ObjectTag> context = new HashMap<>();
         context.put("entity", new dEntity(ent));
         dnpc.action("mob " + act + " proximity", null, context);
         dnpc.action(ent.getType().name() + " " + act + " proximity", null, context);

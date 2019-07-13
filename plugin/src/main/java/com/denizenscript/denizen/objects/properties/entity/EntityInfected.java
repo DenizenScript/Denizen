@@ -2,9 +2,9 @@ package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import net.citizensnpcs.api.npc.NPC;
@@ -15,7 +15,7 @@ import org.bukkit.entity.ZombieVillager;
 
 public class EntityInfected implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         if (!(entity instanceof dEntity)) {
             return false;
         }
@@ -24,7 +24,7 @@ public class EntityInfected implements Property {
                 || ((dEntity) entity).getBukkitEntityType() == EntityType.VILLAGER;
     }
 
-    public static EntityInfected getFrom(dObject entity) {
+    public static EntityInfected getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -100,7 +100,7 @@ public class EntityInfected implements Property {
 
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -112,7 +112,7 @@ public class EntityInfected implements Property {
 
         if (attribute.startsWith("is_infected")) {
             Debug.echoError("Different infection types are represented by different entity types. Please remove usage of the 'is_infected' tag.");
-            return new Element(isInfected())
+            return new ElementTag(isInfected())
                     .getAttribute(attribute.fulfill(1));
         }
 

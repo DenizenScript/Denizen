@@ -2,8 +2,8 @@ package com.denizenscript.denizen.events.world;
 
 import com.denizenscript.denizen.objects.dWorld;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
@@ -24,7 +24,7 @@ public class WeatherChangesScriptEvent extends BukkitScriptEvent implements List
     //
     // @Context
     // <context.world> returns the dWorld the weather changed in.
-    // <context.weather> returns an Element with the name of the new weather. (rain or clear).
+    // <context.weather> returns an ElementTag with the name of the new weather. (rain or clear).
     //
     // -->
 
@@ -34,7 +34,7 @@ public class WeatherChangesScriptEvent extends BukkitScriptEvent implements List
 
     public static WeatherChangesScriptEvent instance;
     public dWorld world;
-    public Element weather;
+    public ElementTag weather;
     public WeatherChangeEvent event;
 
     @Override
@@ -66,7 +66,7 @@ public class WeatherChangesScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("world")) {
             return world;
         }
@@ -79,7 +79,7 @@ public class WeatherChangesScriptEvent extends BukkitScriptEvent implements List
     @EventHandler
     public void onWeatherChanges(WeatherChangeEvent event) {
         world = new dWorld(event.getWorld());
-        weather = new Element(event.toWeatherState() ? "rains" : "clears");
+        weather = new ElementTag(event.toWeatherState() ? "rains" : "clears");
         this.event = event;
         fire(event);
     }

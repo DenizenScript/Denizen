@@ -40,7 +40,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     //
     // @Determine
     // "NOTHING" to make the block drop no items.
-    // dList(dItem) to make the block drop a specified list of items.
+    // ListTag(dItem) to make the block drop a specified list of items.
     // Element(Number) to set the amount of xp to drop.
     //
     // -->
@@ -52,7 +52,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     public static PlayerBreaksBlockScriptEvent instance;
     public dLocation location;
     public dMaterial material;
-    public Element xp;
+    public ElementTag xp;
     public BlockBreakEvent event;
 
     @Override
@@ -100,7 +100,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
             cancelled = true;
             block.setType(Material.AIR);
 
-            for (dItem newItem : dList.valueOf(determination).filter(dItem.class, container)) {
+            for (dItem newItem : ListTag.valueOf(determination).filter(dItem.class, container)) {
                 block.getWorld().dropItemNaturally(block.getLocation(), newItem.getItemStack()); // Drop each item
             }
         }
@@ -116,7 +116,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("location")) {
             return location;
         }
@@ -125,7 +125,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         }
         else if (name.equals("cuboids")) {
             Debug.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
-            dList cuboids = new dList();
+            ListTag cuboids = new ListTag();
             for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
                 cuboids.add(cuboid.identifySimple());
             }
@@ -144,7 +144,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         }
         material = new dMaterial(event.getBlock());
         location = new dLocation(event.getBlock().getLocation());
-        xp = new Element(event.getExpToDrop());
+        xp = new ElementTag(event.getExpToDrop());
         this.event = event;
         fire(event);
         event.setExpToDrop(xp.asInt());

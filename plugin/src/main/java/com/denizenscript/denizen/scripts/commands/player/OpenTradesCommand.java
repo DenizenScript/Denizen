@@ -7,9 +7,9 @@ import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.objects.dTrade;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Bukkit;
@@ -62,7 +62,7 @@ public class OpenTradesCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("trades")
                     && !scriptEntry.hasObject("entity")
                     && arg.matchesArgumentList(dTrade.class)) {
-                scriptEntry.addObject("trades", arg.asType(dList.class).filter(dTrade.class, scriptEntry));
+                scriptEntry.addObject("trades", arg.asType(ListTag.class).filter(dTrade.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("trades")
                     && !scriptEntry.hasObject("entity")
@@ -74,7 +74,7 @@ public class OpenTradesCommand extends AbstractCommand {
             }
             else if (arg.matchesPrefix("players")
                     && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("players", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
+                scriptEntry.addObject("players", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
@@ -86,7 +86,7 @@ public class OpenTradesCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify a villager entity or a list of trades for the player(s) to trade with!");
         }
 
-        scriptEntry.defaultObject("title", new Element(""))
+        scriptEntry.defaultObject("title", new ElementTag(""))
                 .defaultObject("players", Arrays.asList(Utilities.getEntryPlayer(scriptEntry)));
 
     }

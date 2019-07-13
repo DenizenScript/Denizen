@@ -8,9 +8,9 @@ import com.denizenscript.denizen.objects.dMaterial;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.Holdable;
@@ -90,7 +90,7 @@ public class BreakCommand extends AbstractCommand implements Holdable {
             }
         }
 
-        scriptEntry.defaultObject("radius", new Element(2));
+        scriptEntry.defaultObject("radius", new ElementTag(2));
 
     }
 
@@ -110,9 +110,9 @@ public class BreakCommand extends AbstractCommand implements Holdable {
 
         final dLocation location = (dLocation) scriptEntry.getObject("location");
         final dNPC npc = (dNPC) scriptEntry.getObject("npc");
-        Element radius = scriptEntry.getElement("radius");
+        ElementTag radius = scriptEntry.getElement("radius");
 
-        final HashMap<String, dObject> context = new HashMap<>();
+        final HashMap<String, ObjectTag> context = new HashMap<>();
         dMaterial material = new dMaterial(location.getBlock());
         context.put("location", location);
         context.put("material", material);

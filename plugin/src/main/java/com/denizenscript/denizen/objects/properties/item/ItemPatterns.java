@@ -4,8 +4,8 @@ import com.denizenscript.denizen.utilities.MaterialCompat;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -24,7 +24,7 @@ import java.util.List;
 
 public class ItemPatterns implements Property {
 
-    public static boolean describes(dObject item) {
+    public static boolean describes(ObjectTag item) {
         if (item instanceof dItem) {
             Material material = ((dItem) item).getItemStack().getType();
             return MaterialCompat.isBannerOrShield(material);
@@ -32,7 +32,7 @@ public class ItemPatterns implements Property {
         return false;
     }
 
-    public static ItemPatterns getFrom(dObject item) {
+    public static ItemPatterns getFrom(ObjectTag item) {
         if (!describes(item)) {
             return null;
         }
@@ -56,8 +56,8 @@ public class ItemPatterns implements Property {
 
     dItem item;
 
-    private dList listPatterns() {
-        dList list = new dList();
+    private ListTag listPatterns() {
+        ListTag list = new ListTag();
         for (Pattern pattern : getPatterns()) {
             list.add(pattern.getColor().name() + "/" + pattern.getPattern().name());
         }
@@ -111,7 +111,7 @@ public class ItemPatterns implements Property {
 
         // <--[tag]
         // @attribute <i@item.patterns>
-        // @returns dList
+        // @returns ListTag
         // @group properties
         // @mechanism dItem.patterns
         // @description
@@ -130,7 +130,7 @@ public class ItemPatterns implements Property {
 
     @Override
     public String getPropertyString() {
-        dList list = listPatterns();
+        ListTag list = listPatterns();
         if (list.isEmpty()) {
             return null;
         }
@@ -148,7 +148,7 @@ public class ItemPatterns implements Property {
         // <--[mechanism]
         // @object dItem
         // @name patterns
-        // @input dList
+        // @input ListTag
         // @description
         // Changes the patterns of a banner. Input must be in the form
         // "li@COLOR/PATTERN|COLOR/PATTERN" etc.
@@ -161,7 +161,7 @@ public class ItemPatterns implements Property {
 
         if (mechanism.matches("patterns")) {
             List<Pattern> patterns = new ArrayList<>();
-            dList list = mechanism.valueAsType(dList.class);
+            ListTag list = mechanism.valueAsType(ListTag.class);
             List<String> split;
             for (String string : list) {
                 try {

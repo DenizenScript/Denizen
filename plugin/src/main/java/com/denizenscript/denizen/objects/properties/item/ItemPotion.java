@@ -6,10 +6,10 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.ItemHelper;
 import com.denizenscript.denizen.objects.dColor;
 import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -24,7 +24,7 @@ import org.bukkit.potion.PotionType;
 
 public class ItemPotion implements Property {
 
-    public static boolean describes(dObject item) {
+    public static boolean describes(ObjectTag item) {
         return item instanceof dItem
                 && (((dItem) item).getItemStack().getType() == Material.POTION
                 || ((dItem) item).getItemStack().getType() == Material.SPLASH_POTION
@@ -32,7 +32,7 @@ public class ItemPotion implements Property {
                 || ((dItem) item).getItemStack().getType() == Material.TIPPED_ARROW);
     }
 
-    public static ItemPotion getFrom(dObject _item) {
+    public static ItemPotion getFrom(ObjectTag _item) {
         if (!describes(_item)) {
             return null;
         }
@@ -66,7 +66,7 @@ public class ItemPotion implements Property {
             return null;
         }
         PotionMeta meta = (PotionMeta) item.getItemStack().getItemMeta();
-        dList effects = new dList();
+        ListTag effects = new ListTag();
         effects.add(meta.getBasePotionData().getType()
                 + "," + meta.getBasePotionData().isUpgraded()
                 + "," + meta.getBasePotionData().isExtended()
@@ -105,7 +105,7 @@ public class ItemPotion implements Property {
 
         // <--[tag]
         // @attribute <i@item.potion_base>
-        // @returns Element
+        // @returns ElementTag
         // @mechanism dItem.potion_effects
         // @group properties
         // @description
@@ -114,7 +114,7 @@ public class ItemPotion implements Property {
         // -->
         if (attribute.startsWith("potion_base") && item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof PotionMeta) {
             PotionMeta meta = ((PotionMeta) item.getItemStack().getItemMeta());
-            return new Element(meta.getBasePotionData().getType().name() + "," + (meta.getBasePotionData().isUpgraded() ? 2 : 1)
+            return new ElementTag(meta.getBasePotionData().getType().name() + "," + (meta.getBasePotionData().isUpgraded() ? 2 : 1)
                     + "," + meta.getBasePotionData().isExtended() + "," + (item.getItemStack().getType() == Material.SPLASH_POTION)
                     + (meta.hasColor() ? "," + new dColor(meta.getColor()).identify() : "")
             ).getAttribute(attribute.fulfill(1));
@@ -122,13 +122,13 @@ public class ItemPotion implements Property {
 
         // <--[tag]
         // @attribute <i@item.has_potion_effect>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @mechanism dItem.potion
         // @description
         // Returns whether the potion has a potion effect.
         // -->
         if (attribute.startsWith("has_potion_effect")) {
-            return new Element(has)
+            return new ElementTag(has)
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -146,53 +146,53 @@ public class ItemPotion implements Property {
 
                 // <--[tag]
                 // @attribute <i@item.potion_effect[<#>].is_splash>
-                // @returns Element(Boolean)
+                // @returns ElementTag(Boolean)
                 // @mechanism dItem.potion_effects
                 // @group properties
                 // @description
                 // Returns whether the potion is a splash potion.
                 // -->
                 if (attribute.startsWith("is_splash")) {
-                    return new Element(item.getItemStack().getType() == Material.SPLASH_POTION)
+                    return new ElementTag(item.getItemStack().getType() == Material.SPLASH_POTION)
                             .getAttribute(attribute.fulfill(1));
                 }
 
                 // <--[tag]
                 // @attribute <i@item.potion_effect[<#>].is_extended>
-                // @returns Element(Boolean)
+                // @returns ElementTag(Boolean)
                 // @mechanism dItem.potion_effects
                 // @group properties
                 // @description
                 // Returns whether the potion effect is extended.
                 // -->
                 if (attribute.startsWith("is_extended")) {
-                    return new Element(meta.getBasePotionData().isExtended())
+                    return new ElementTag(meta.getBasePotionData().isExtended())
                             .getAttribute(attribute.fulfill(1));
                 }
 
                 // <--[tag]
                 // @attribute <i@item.potion_effect[<#>].level>
-                // @returns Element(Number)
+                // @returns ElementTag(Number)
                 // @mechanism dItem.potion_effects
                 // @group properties
                 // @description
                 // Returns the potion effect's level.
                 // -->
                 if (attribute.startsWith("level")) {
-                    return new Element(meta.getBasePotionData().isUpgraded() ? 2 : 1)
+                    return new ElementTag(meta.getBasePotionData().isUpgraded() ? 2 : 1)
                             .getAttribute(attribute.fulfill(1));
                 }
 
                 // <--[tag]
                 // @attribute <i@item.potion_effect[<#>].is_ambient>
-                // @returns Element(Boolean)
+                // @returns ElementTag(Boolean)
                 // @mechanism dItem.potion_effects
                 // @group properties
                 // @description
                 // Returns whether the potion effect is ambient.
                 // -->
                 if (attribute.startsWith("is_ambient")) {
-                    return new Element(meta.getCustomEffects().get(potN).isAmbient())
+                    return new ElementTag(meta.getCustomEffects().get(potN).isAmbient())
                             .getAttribute(attribute.fulfill(1));
                 }
 
@@ -216,76 +216,76 @@ public class ItemPotion implements Property {
 
                 // <--[tag]
                 // @attribute <i@item.potion_effect[<#>].icon>
-                // @returns Element(Boolean)
+                // @returns ElementTag(Boolean)
                 // @mechanism dItem.potion_effects
                 // @group properties
                 // @description
                 // Returns whether the potion effect shows an icon.
                 // -->
                 if (attribute.startsWith("icon") && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-                    return new Element(meta.getCustomEffects().get(potN).hasIcon()).getAttribute(attribute.fulfill(1));
+                    return new ElementTag(meta.getCustomEffects().get(potN).hasIcon()).getAttribute(attribute.fulfill(1));
                 }
 
                 // <--[tag]
                 // @attribute <i@item.potion_effect[<#>].has_particles>
-                // @returns Element(Boolean)
+                // @returns ElementTag(Boolean)
                 // @mechanism dItem.potion_effects
                 // @group properties
                 // @description
                 // Returns whether the potion effect has particles.
                 // -->
                 if (attribute.startsWith("has_particles")) {
-                    return new Element(meta.getCustomEffects().get(potN).hasParticles())
+                    return new ElementTag(meta.getCustomEffects().get(potN).hasParticles())
                             .getAttribute(attribute.fulfill(1));
                 }
 
                 // <--[tag]
                 // @attribute <i@item.potion_effect[<#>].duration>
-                // @returns Element(Number)
+                // @returns ElementTag(Number)
                 // @mechanism dItem.potion_effects
                 // @group properties
                 // @description
                 // Returns the duration in ticks of the potion.
                 // -->
                 if (attribute.startsWith("duration")) {
-                    return new Element(meta.getCustomEffects().get(potN).getDuration())
+                    return new ElementTag(meta.getCustomEffects().get(potN).getDuration())
                             .getAttribute(attribute.fulfill(1));
                 }
 
                 // <--[tag]
                 // @attribute <i@item.potion_effect[<#>].amplifier>
-                // @returns Element(Number)
+                // @returns ElementTag(Number)
                 // @mechanism dItem.potion_effects
                 // @group properties
                 // @description
                 // Returns the amplifier level of the potion effect.
                 // -->
                 if (attribute.startsWith("amplifier")) {
-                    return new Element(meta.getCustomEffects().get(potN).getAmplifier())
+                    return new ElementTag(meta.getCustomEffects().get(potN).getAmplifier())
                             .getAttribute(attribute.fulfill(1));
                 }
 
                 // <--[tag]
                 // @attribute <i@item.potion_effect[<#>].type>
-                // @returns Element
+                // @returns ElementTag
                 // @mechanism dItem.potion_effects
                 // @group properties
                 // @description
                 // Returns the type of the potion effect.
                 // -->
                 if (attribute.startsWith("type")) {
-                    return new Element(meta.getCustomEffects().get(potN).getType().getName())
+                    return new ElementTag(meta.getCustomEffects().get(potN).getType().getName())
                             .getAttribute(attribute.fulfill(1));
                 }
 
                 if (attribute.startsWith("data")) {
-                    return new Element(0)
+                    return new ElementTag(0)
                             .getAttribute(attribute.fulfill(1));
                 }
 
                 // <--[tag]
                 // @attribute <i@item.potion_effect[<#>]>
-                // @returns Element
+                // @returns ElementTag
                 // @mechanism dItem.potion_effects
                 // @group properties
                 // @warning Don't use this directly, use its sub-tags!
@@ -293,7 +293,7 @@ public class ItemPotion implements Property {
                 // Returns the potion effect on this item.
                 // In the format Effect,Level,Extended,Splash
                 // -->
-                return new Element(meta.getBasePotionData().getType().name() + "," + (meta.getBasePotionData().isUpgraded() ? 2 : 1)
+                return new ElementTag(meta.getBasePotionData().getType().name() + "," + (meta.getBasePotionData().isUpgraded() ? 2 : 1)
                         + "," + meta.getBasePotionData().isExtended() + "," + (item.getItemStack().getType() == Material.SPLASH_POTION))
                         .getAttribute(attribute);
             }
@@ -308,7 +308,7 @@ public class ItemPotion implements Property {
         // <--[mechanism]
         // @object dItem
         // @name potion_effects
-        // @input dList
+        // @input ListTag
         // @description
         // Sets the potion's potion effect(s).
         // Input is a formed like: Effect,Upgraded,Extended(,Color)|Type,Amplifier,Duration,Ambient,Particles(,Icon)|...
@@ -327,7 +327,7 @@ public class ItemPotion implements Property {
         // <server.list_potion_effects>
         // -->
         if (mechanism.matches("potion_effects")) {
-            dList data = mechanism.valueAsType(dList.class);
+            ListTag data = mechanism.valueAsType(ListTag.class);
             String[] d1 = data.get(0).split(",");
             PotionMeta meta = (PotionMeta) item.getItemStack().getItemMeta();
             meta.setBasePotionData(new PotionData(PotionType.valueOf(d1[0].toUpperCase()),
@@ -343,15 +343,15 @@ public class ItemPotion implements Property {
                 PotionEffectType type = PotionEffectType.getByName(d2[0].toUpperCase());
                 // NOTE: amplifier and duration are swapped around in the input format
                 // as compared to the PotionEffect constructor!
-                int duration = new Element(d2[2]).asInt();
-                int amplifier = new Element(d2[1]).asInt();
-                boolean ambient = new Element(d2[3]).asBoolean();
-                boolean particles = new Element(d2[4]).asBoolean();
+                int duration = new ElementTag(d2[2]).asInt();
+                int amplifier = new ElementTag(d2[1]).asInt();
+                boolean ambient = new ElementTag(d2[3]).asBoolean();
+                boolean particles = new ElementTag(d2[4]).asBoolean();
                 Color color = null;
                 boolean icon = false;
                 if (d2.length > 5) {
                     if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-                        Element check = new Element(d2[5]);
+                        ElementTag check = new ElementTag(d2[5]);
                         if (check.isBoolean()) {
                             icon = check.asBoolean();
                         }
@@ -382,9 +382,9 @@ public class ItemPotion implements Property {
                 }
             }
             else {
-                Element data1 = new Element(data[1]);
-                Element data2 = new Element(data[2]);
-                Element data3 = new Element(data[3]);
+                ElementTag data1 = new ElementTag(data[1]);
+                ElementTag data2 = new ElementTag(data[2]);
+                ElementTag data3 = new ElementTag(data[3]);
                 PotionType type;
                 try {
                     type = PotionType.valueOf(data[0].toUpperCase());

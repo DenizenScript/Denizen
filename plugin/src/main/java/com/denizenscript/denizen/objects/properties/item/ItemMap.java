@@ -3,9 +3,9 @@ package com.denizenscript.denizen.objects.properties.item;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.Material;
@@ -15,12 +15,12 @@ public class ItemMap implements Property {
 
     public static Material MAP_MATERIAL = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? Material.FILLED_MAP : Material.MAP;
 
-    public static boolean describes(dObject item) {
+    public static boolean describes(ObjectTag item) {
         return item instanceof dItem
                 && (((dItem) item).getItemStack().getType() == MAP_MATERIAL);
     }
 
-    public static ItemMap getFrom(dObject _item) {
+    public static ItemMap getFrom(ObjectTag _item) {
         if (!describes(_item)) {
             return null;
         }
@@ -53,7 +53,7 @@ public class ItemMap implements Property {
 
         // <--[tag]
         // @attribute <i@item.map>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @group properties
         // @mechanism dItem.map
         // @description
@@ -63,7 +63,7 @@ public class ItemMap implements Property {
             if (!hasMapId()) {
                 return null;
             }
-            return new Element(getMapId())
+            return new ElementTag(getMapId())
                     .getAttribute(attribute.fulfill(1));
         }
 

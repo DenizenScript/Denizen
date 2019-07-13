@@ -6,9 +6,9 @@ import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -47,7 +47,7 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
     public static PlayerMendsItemScriptEvent instance;
     public dItem item;
     public dEntity experienceOrb;
-    public Element repairAmount;
+    public ElementTag repairAmount;
     public PlayerItemMendEvent event;
     public dLocation location;
 
@@ -77,7 +77,7 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (ArgumentHelper.matchesInteger(determination)) {
-            repairAmount = new Element(determination);
+            repairAmount = new ElementTag(determination);
             return true;
         }
         return super.applyDetermination(container, determination);
@@ -89,7 +89,7 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("item")) {
             return item;
         }
@@ -110,7 +110,7 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
         item = new dItem(event.getItem());
         experienceOrb = new dEntity(event.getExperienceOrb());
         location = new dLocation(event.getPlayer().getLocation());
-        repairAmount = new Element(event.getRepairAmount());
+        repairAmount = new ElementTag(event.getRepairAmount());
         this.event = event;
         fire(event);
         event.setRepairAmount(repairAmount.asInt());

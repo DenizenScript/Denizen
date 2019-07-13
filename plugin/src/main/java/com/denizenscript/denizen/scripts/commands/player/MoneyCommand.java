@@ -5,9 +5,9 @@ import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -75,14 +75,14 @@ public class MoneyCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("players") && arg.matchesPrefix("to", "from", "players", "player") &&
                     arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("players", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
+                scriptEntry.addObject("players", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
             }
         }
 
-        scriptEntry.defaultObject("quantity", new Element(1));
+        scriptEntry.defaultObject("quantity", new ElementTag(1));
 
         if (!scriptEntry.hasObject("players")) {
             if (!Utilities.entryHasPlayer(scriptEntry)) {
@@ -100,8 +100,8 @@ public class MoneyCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-        Element action = scriptEntry.getElement("action");
-        Element quantity = scriptEntry.getElement("quantity");
+        ElementTag action = scriptEntry.getElement("action");
+        ElementTag quantity = scriptEntry.getElement("quantity");
         List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("players");
 
         if (scriptEntry.dbCallShouldDebug()) {

@@ -8,9 +8,9 @@ import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Sound;
@@ -83,7 +83,7 @@ public class AnimateChestCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("players")
                     && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("players", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
+                scriptEntry.addObject("players", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
@@ -96,11 +96,11 @@ public class AnimateChestCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("action")) {
-            scriptEntry.addObject("action", new Element("OPEN"));
+            scriptEntry.addObject("action", new ElementTag("OPEN"));
         }
 
         if (!scriptEntry.hasObject("sound")) {
-            scriptEntry.addObject("sound", new Element(true));
+            scriptEntry.addObject("sound", new ElementTag(true));
         }
 
         if (!scriptEntry.hasObject("players")) {
@@ -118,8 +118,8 @@ public class AnimateChestCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         dLocation location = (dLocation) scriptEntry.getObject("location");
-        Element action = scriptEntry.getElement("action");
-        Element sound = scriptEntry.getElement("sound");
+        ElementTag action = scriptEntry.getElement("action");
+        ElementTag sound = scriptEntry.getElement("sound");
         List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("players");
 
         if (scriptEntry.dbCallShouldDebug()) {

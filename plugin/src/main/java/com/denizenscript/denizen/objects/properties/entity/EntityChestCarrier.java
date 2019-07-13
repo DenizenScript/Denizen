@@ -2,20 +2,20 @@ package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 
 public class EntityChestCarrier implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity
                 && NMSHandler.getInstance().getEntityHelper().isChestedHorse(((dEntity) entity).getBukkitEntity());
     }
 
-    public static EntityChestCarrier getFrom(dObject entity) {
+    public static EntityChestCarrier getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -58,7 +58,7 @@ public class EntityChestCarrier implements Property {
     }
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -70,14 +70,14 @@ public class EntityChestCarrier implements Property {
 
         // <--[tag]
         // @attribute <e@entity.carries_chest>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @mechanism dEntity.carries_chest
         // @group properties
         // @description
         // If the entity is a horse, returns whether it is carrying a chest.
         // -->
         if (attribute.startsWith("carries_chest")) {
-            return new Element(NMSHandler.getInstance().getEntityHelper().isCarryingChest(entity.getBukkitEntity()))
+            return new ElementTag(NMSHandler.getInstance().getEntityHelper().isCarryingChest(entity.getBukkitEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 

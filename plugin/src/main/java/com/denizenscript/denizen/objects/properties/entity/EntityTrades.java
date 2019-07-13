@@ -3,8 +3,8 @@ package com.denizenscript.denizen.objects.properties.entity;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dTrade;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.inventory.Merchant;
@@ -14,12 +14,12 @@ import java.util.ArrayList;
 
 public class EntityTrades implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity
                 && ((dEntity) entity).getBukkitEntity() instanceof Merchant;
     }
 
-    public static EntityTrades getFrom(dObject entity) {
+    public static EntityTrades getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -34,13 +34,13 @@ public class EntityTrades implements Property {
             "trades"
     };
 
-    public dList getTradeRecipes() {
+    public ListTag getTradeRecipes() {
         if (entity.getBukkitEntity() instanceof Merchant) {
             ArrayList<dTrade> recipes = new ArrayList<>();
             for (MerchantRecipe recipe : ((Merchant) entity.getBukkitEntity()).getRecipes()) {
                 recipes.add(new dTrade(recipe));
             }
-            return new dList(recipes);
+            return new ListTag(recipes);
         }
         return null;
     }
@@ -69,7 +69,7 @@ public class EntityTrades implements Property {
 
         // <--[tag]
         // @attribute <e@entity.trades>
-        // @returns dList(dTrade)
+        // @returns ListTag(dTrade)
         // @mechanism dEntity.trades
         // @description
         // Returns a list of the Villager's trade recipes.
@@ -86,7 +86,7 @@ public class EntityTrades implements Property {
         // <--[mechanism]
         // @object dEntity
         // @name trades
-        // @input dList(dTrade)
+        // @input ListTag(dTrade)
         // @description
         // Sets the trades that the entity will offer.
         // @tags
@@ -94,7 +94,7 @@ public class EntityTrades implements Property {
         // -->
         if (mechanism.matches("trades")) {
             ArrayList<MerchantRecipe> recipes = new ArrayList<>();
-            for (dTrade recipe : mechanism.valueAsType(dList.class).filter(dTrade.class, mechanism.context)) {
+            for (dTrade recipe : mechanism.valueAsType(ListTag.class).filter(dTrade.class, mechanism.context)) {
                 recipes.add(recipe.getRecipe());
             }
             ((Merchant) entity.getBukkitEntity()).setRecipes(recipes);

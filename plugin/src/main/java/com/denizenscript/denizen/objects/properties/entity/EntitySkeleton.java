@@ -2,9 +2,9 @@ package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.entity.EntityType;
@@ -12,11 +12,11 @@ import org.bukkit.entity.Skeleton;
 
 public class EntitySkeleton implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity && ((dEntity) entity).getBukkitEntity() instanceof Skeleton;
     }
 
-    public static EntitySkeleton getFrom(dObject entity) {
+    public static EntitySkeleton getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -59,7 +59,7 @@ public class EntitySkeleton implements Property {
     }
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -71,7 +71,7 @@ public class EntitySkeleton implements Property {
 
         if (attribute.startsWith("skeleton_type")) {
             Debug.echoError("Different skeleton types are represented by different entity types. Please remove usage of the 'skeleton_type' tag.");
-            return new Element(((Skeleton) skeleton.getBukkitEntity())
+            return new ElementTag(((Skeleton) skeleton.getBukkitEntity())
                     .getSkeletonType().name()).getAttribute(attribute.fulfill(1));
         }
 

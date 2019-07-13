@@ -5,9 +5,9 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Duration;
+import com.denizenscript.denizencore.objects.DurationTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
@@ -50,12 +50,12 @@ public class BurnCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
 
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("duration")
-                    && arg.matchesArgumentType(Duration.class)) {
+                    && arg.matchesArgumentType(DurationTag.class)) {
 
-                scriptEntry.addObject("duration", arg.asType(Duration.class));
+                scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
             else {
                 arg.reportUnhandled();
@@ -68,7 +68,7 @@ public class BurnCommand extends AbstractCommand {
                 (Utilities.entryHasNPC(scriptEntry) ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null));
 
         // Use default duration if one is not specified
-        scriptEntry.defaultObject("duration", Duration.valueOf("5s"));
+        scriptEntry.defaultObject("duration", DurationTag.valueOf("5s"));
     }
 
     @SuppressWarnings("unchecked")
@@ -77,7 +77,7 @@ public class BurnCommand extends AbstractCommand {
 
         // Get objects
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-        Duration duration = (Duration) scriptEntry.getObject("duration");
+        DurationTag duration = (DurationTag) scriptEntry.getObject("duration");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {

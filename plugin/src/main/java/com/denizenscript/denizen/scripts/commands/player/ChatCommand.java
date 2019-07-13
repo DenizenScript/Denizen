@@ -8,9 +8,9 @@ import com.denizenscript.denizen.npc.speech.DenizenSpeechController;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.tags.TagManager;
@@ -76,18 +76,18 @@ public class ChatCommand extends AbstractCommand {
             // Default target is the attached Player, if none specified otherwise.
             if (arg.matchesPrefix("target", "targets", "t")) {
                 if (arg.matchesArgumentList(dEntity.class)) {
-                    scriptEntry.addObject("targets", arg.asType(dList.class));
+                    scriptEntry.addObject("targets", arg.asType(ListTag.class));
                 }
                 specified_targets = true;
             }
             else if (arg.matches("no_target")) {
-                scriptEntry.addObject("targets", new dList());
+                scriptEntry.addObject("targets", new ListTag());
             }
 
             // Default talker is the attached NPC, if none specified otherwise.
             else if (arg.matchesPrefix("talker", "talkers")) {
                 if (arg.matchesArgumentList(dEntity.class)) {
-                    scriptEntry.addObject("talkers", arg.asType(dList.class));
+                    scriptEntry.addObject("talkers", arg.asType(ListTag.class));
                 }
                 specified_talker = true;
 
@@ -98,7 +98,7 @@ public class ChatCommand extends AbstractCommand {
                 }
             }
             else if (!scriptEntry.hasObject("message")) {
-                scriptEntry.addObject("message", new Element(arg.raw_value));
+                scriptEntry.addObject("message", new ElementTag(arg.raw_value));
             }
             else {
                 arg.reportUnhandled();
@@ -107,12 +107,12 @@ public class ChatCommand extends AbstractCommand {
 
         // Add default recipient as the attached Player if no recipients set otherwise
         if (!scriptEntry.hasObject("targets") && Utilities.entryHasPlayer(scriptEntry) && !specified_targets) {
-            scriptEntry.defaultObject("targets", new dList(Utilities.getEntryPlayer(scriptEntry).identify()));
+            scriptEntry.defaultObject("targets", new ListTag(Utilities.getEntryPlayer(scriptEntry).identify()));
         }
 
         // Add default talker as the attached NPC if no recipients set otherwise
         if (!scriptEntry.hasObject("talkers") && Utilities.entryHasNPC(scriptEntry) && !specified_talker) {
-            scriptEntry.defaultObject("talkers", new dList(Utilities.getEntryNPC(scriptEntry).identify()));
+            scriptEntry.defaultObject("talkers", new ListTag(Utilities.getEntryNPC(scriptEntry).identify()));
         }
 
         // Verify essential fields are set
@@ -128,17 +128,17 @@ public class ChatCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify a message!");
         }
 
-        scriptEntry.defaultObject("range", new Element(Settings.chatBystandersRange()));
+        scriptEntry.defaultObject("range", new ElementTag(Settings.chatBystandersRange()));
 
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        dList talkers = scriptEntry.getdObject("talkers");
-        dList targets = scriptEntry.getdObject("targets");
-        Element message = scriptEntry.getElement("message");
-        Element chatRange = scriptEntry.getElement("range");
+        ListTag talkers = scriptEntry.getdObject("talkers");
+        ListTag targets = scriptEntry.getdObject("targets");
+        ElementTag message = scriptEntry.getElement("message");
+        ElementTag chatRange = scriptEntry.getElement("range");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

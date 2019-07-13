@@ -5,7 +5,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -52,7 +52,7 @@ public class VulnerableCommand extends AbstractCommand {
             }
         }
 
-        scriptEntry.defaultObject("action", new Element("toggle"));
+        scriptEntry.defaultObject("action", new ElementTag("toggle"));
         if (!Utilities.entryHasNPC(scriptEntry)) {
             throw new InvalidArgumentsException("This command requires a linked NPC!");
         }
@@ -61,7 +61,7 @@ public class VulnerableCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
         // Fetch objects
-        Element action = scriptEntry.getElement("action");
+        ElementTag action = scriptEntry.getElement("action");
 
         BukkitScriptEntryData entryData = (BukkitScriptEntryData) scriptEntry.entryData;
 

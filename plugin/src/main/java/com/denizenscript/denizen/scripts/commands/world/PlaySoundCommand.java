@@ -6,9 +6,9 @@ import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Sound;
@@ -67,12 +67,12 @@ public class PlaySoundCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("locations")
                     && !scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dLocation.class)) {
-                scriptEntry.addObject("locations", arg.asType(dList.class).filter(dLocation.class, scriptEntry));
+                scriptEntry.addObject("locations", arg.asType(ListTag.class).filter(dLocation.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("locations")
                     && !scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("volume")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
@@ -90,7 +90,7 @@ public class PlaySoundCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("custom")
                     && arg.matches("custom")) {
-                scriptEntry.addObject("custom", new Element(true));
+                scriptEntry.addObject("custom", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("sound_category")
                     && arg.matchesOnePrefix("sound_category")) {
@@ -109,10 +109,10 @@ public class PlaySoundCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Missing location argument!");
         }
 
-        scriptEntry.defaultObject("volume", new Element(1));
-        scriptEntry.defaultObject("pitch", new Element(1));
-        scriptEntry.defaultObject("custom", new Element(false));
-        scriptEntry.defaultObject("sound_category", new Element("MASTER"));
+        scriptEntry.defaultObject("volume", new ElementTag(1));
+        scriptEntry.defaultObject("pitch", new ElementTag(1));
+        scriptEntry.defaultObject("custom", new ElementTag(false));
+        scriptEntry.defaultObject("sound_category", new ElementTag("MASTER"));
 
     }
 
@@ -122,11 +122,11 @@ public class PlaySoundCommand extends AbstractCommand {
 
         List<dLocation> locations = (List<dLocation>) scriptEntry.getObject("locations");
         List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("entities");
-        Element sound = scriptEntry.getElement("sound");
-        Element volume = scriptEntry.getElement("volume");
-        Element pitch = scriptEntry.getElement("pitch");
-        Element custom = scriptEntry.getElement("custom");
-        Element sound_category = scriptEntry.getElement("sound_category");
+        ElementTag sound = scriptEntry.getElement("sound");
+        ElementTag volume = scriptEntry.getElement("volume");
+        ElementTag pitch = scriptEntry.getElement("pitch");
+        ElementTag custom = scriptEntry.getElement("custom");
+        ElementTag sound_category = scriptEntry.getElement("sound_category");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

@@ -1,20 +1,20 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.entity.Spellcaster;
 
 public class EntitySpell implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity && ((dEntity) entity).getBukkitEntity() instanceof Spellcaster;
     }
 
-    public static EntitySpell getFrom(dObject entity) {
+    public static EntitySpell getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -57,7 +57,7 @@ public class EntitySpell implements Property {
     }
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -69,7 +69,7 @@ public class EntitySpell implements Property {
 
         // <--[tag]
         // @attribute <e@entity.spell>
-        // @returns Element
+        // @returns ElementTag
         // @mechanism dEntity.spell
         // @group properties
         // @description
@@ -77,7 +77,7 @@ public class EntitySpell implements Property {
         // Can be: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Spellcaster.Spell.html>
         // -->
         if (attribute.startsWith("spell")) {
-            return new Element(((Spellcaster) dentity.getBukkitEntity()).getSpell().name())
+            return new ElementTag(((Spellcaster) dentity.getBukkitEntity()).getSpell().name())
                     .getAttribute(attribute.fulfill(1));
         }
 

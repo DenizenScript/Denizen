@@ -1,22 +1,22 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 
 public class EntityArmorBonus implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         if (!(entity instanceof dEntity)) {
             return false;
         }
         return ((dEntity) entity).isLivingEntity();
     }
 
-    public static EntityArmorBonus getFrom(dObject entity) {
+    public static EntityArmorBonus getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -59,13 +59,13 @@ public class EntityArmorBonus implements Property {
         return "armor_bonus";
     }
 
-    public Element getArmorBonus() {
-        return new Element(entity.getLivingEntity().getAttribute(org.bukkit.attribute.Attribute.GENERIC_ARMOR).getValue());
+    public ElementTag getArmorBonus() {
+        return new ElementTag(entity.getLivingEntity().getAttribute(org.bukkit.attribute.Attribute.GENERIC_ARMOR).getValue());
     }
 
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -77,7 +77,7 @@ public class EntityArmorBonus implements Property {
 
         // <--[tag]
         // @attribute <e@entity.armor_bonus>
-        // @returns Element(Decimal)
+        // @returns ElementTag(Decimal)
         // @mechanism dEntity.armor_bonus
         // @group attributes
         // @description

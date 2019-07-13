@@ -4,9 +4,9 @@ import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -46,7 +46,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     public static PlayerPlacesBlockScriptEvent instance;
     public dLocation location;
     public dMaterial material;
-    public Element hand;
+    public ElementTag hand;
     public dItem item_in_hand;
     public BlockPlaceEvent event;
 
@@ -93,7 +93,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("location")) {
             return location;
         }
@@ -111,7 +111,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
         }
         else if (name.equals("cuboids")) {
             Debug.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
-            dList cuboids = new dList();
+            ListTag cuboids = new ListTag();
             for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
                 cuboids.add(cuboid.identifySimple());
             }
@@ -125,7 +125,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-        hand = new Element(event.getHand().name());
+        hand = new ElementTag(event.getHand().name());
         material = new dMaterial(event.getBlock());
         location = new dLocation(event.getBlock().getLocation());
         item_in_hand = new dItem(event.getItemInHand());

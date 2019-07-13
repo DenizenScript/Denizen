@@ -27,7 +27,7 @@ public class ZapCommand extends AbstractCommand implements Listener {
     // TODO: Document Command Details
     //
     // @Tags
-    // <s@script.step[<player>]>
+    // <ScriptTag.step[<player>]>
     //
     // @Usage
     // Use to change the step to 2
@@ -50,16 +50,16 @@ public class ZapCommand extends AbstractCommand implements Listener {
             if (!scriptEntry.hasObject("script")
                     && !scriptEntry.hasObject("step")
                     && arg.hasPrefix()
-                    && arg.getPrefix().matchesArgumentType(dScript.class)) {
-                scriptEntry.addObject("script", arg.getPrefix().asType(dScript.class));
+                    && arg.getPrefix().matchesArgumentType(ScriptTag.class)) {
+                scriptEntry.addObject("script", arg.getPrefix().asType(ScriptTag.class));
                 scriptEntry.addObject("step", arg.asElement());
             }
 
             // If a script is found, use that to ZAP
             else if (!scriptEntry.hasObject("script")
-                    && arg.matchesArgumentType(dScript.class)
+                    && arg.matchesArgumentType(ScriptTag.class)
                     && !arg.matchesPrefix("step")) {
-                scriptEntry.addObject("script", arg.asType(dScript.class));
+                scriptEntry.addObject("script", arg.asType(ScriptTag.class));
             }
 
             // Add argument as step
@@ -69,8 +69,8 @@ public class ZapCommand extends AbstractCommand implements Listener {
 
             // Lastly duration
             else if (!scriptEntry.hasObject("duration")
-                    && arg.matchesArgumentType(Duration.class)) {
-                scriptEntry.addObject("duration", arg.asType(Duration.class));
+                    && arg.matchesArgumentType(DurationTag.class)) {
+                scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
             else {
                 arg.reportUnhandled();
@@ -92,8 +92,8 @@ public class ZapCommand extends AbstractCommand implements Listener {
     @Override
     public void execute(final ScriptEntry scriptEntry) {
 
-        final dScript script = (dScript) scriptEntry.getObject("script");
-        Duration duration = (Duration) scriptEntry.getObject("duration");
+        final ScriptTag script = (ScriptTag) scriptEntry.getObject("script");
+        DurationTag duration = (DurationTag) scriptEntry.getObject("duration");
 
         if (scriptEntry.dbCallShouldDebug()) {
 
@@ -143,10 +143,10 @@ public class ZapCommand extends AbstractCommand implements Listener {
         if (duration != null && duration.getSeconds() > 0) {
             // If a DURATION is specified, the currentStep should be remembered and
             // restored after the duration.
-            scriptEntry.addObject("step", new Element(currentStep));
+            scriptEntry.addObject("step", new ElementTag(currentStep));
             // And let's take away the duration that was set to avoid a re-duration
             // inception-ion-ion-ion-ion... ;)
-            scriptEntry.addObject("duration", Duration.ZERO);
+            scriptEntry.addObject("duration", DurationTag.ZERO);
 
             // Now let's add a delayed task to set it back after the duration
 

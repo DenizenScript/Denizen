@@ -2,7 +2,7 @@ package com.denizenscript.denizen;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizencore.objects.Duration;
+import com.denizenscript.denizencore.objects.DurationTag;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -68,7 +68,7 @@ public class Settings {
         cache_chatGloballyIfNoChatTriggers = config.getBoolean("Triggers.Chat.Appears globally.If triggers missing", true);
         cache_chatGloballyIfUninteractable = config.getBoolean("Triggers.Chat.Appears globally.If NPC uninteractable", true);
         cache_worldScriptChatEventAsynchronous = config.getBoolean("Scripts.World.Events.On player chats.Use asynchronous event", false);
-        cache_worldScriptTimeEventFrequency = Duration.valueOf(config.getString("Scripts.World.Events.On time changes.Frequency of check", "250t"));
+        cache_worldScriptTimeEventFrequency = DurationTag.valueOf(config.getString("Scripts.World.Events.On time changes.Frequency of check", "250t"));
         cache_blockTagsMaxBlocks = config.getInt("Tags.Block tags.Max blocks", 1000000);
         cache_chatHistoryMaxMessages = config.getInt("Tags.Chat history.Max messages", 10);
         cache_tagTimeout = config.getInt("Tags.Timeout", 10);
@@ -99,7 +99,7 @@ public class Settings {
 
     private static double cache_chatBystandersRange, cache_chatToNpcOverhearingRange;
 
-    private static Duration cache_worldScriptTimeEventFrequency;
+    private static DurationTag cache_worldScriptTimeEventFrequency;
 
     /*
 
@@ -208,7 +208,7 @@ public class Settings {
     */
 
     public static double triggerDefaultCooldown(String triggerName) {
-        return Duration.valueOf(DenizenAPI.getCurrentInstance().getConfig()
+        return DurationTag.valueOf(DenizenAPI.getCurrentInstance().getConfig()
                 .getString("Triggers." + String.valueOf(triggerName.charAt(0)).toUpperCase()
                         + CoreUtilities.toLowerCase(triggerName.substring(1)) + ".Cooldown", "5s")).getSeconds();
     }
@@ -433,7 +433,7 @@ public class Settings {
 
     */
 
-    public static Duration worldScriptTimeEventFrequency() {
+    public static DurationTag worldScriptTimeEventFrequency() {
         return cache_worldScriptTimeEventFrequency;
     }
 

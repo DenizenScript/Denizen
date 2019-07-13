@@ -6,9 +6,9 @@ import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -48,7 +48,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
 
     public static EntityTargetsScriptEvent instance;
     public dEntity entity;
-    public Element reason;
+    public ElementTag reason;
     public dEntity target;
     private dLocation location;
     public EntityTargetEvent event;
@@ -102,7 +102,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return entity.getDenizenObject();
         }
@@ -111,7 +111,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
         }
         else if (name.equals("cuboids")) {
             Debug.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
-            dList cuboids = new dList();
+            ListTag cuboids = new ListTag();
             for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
                 cuboids.add(cuboid.identifySimple());
             }
@@ -126,7 +126,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     @EventHandler
     public void onEntityTargets(EntityTargetEvent event) {
         entity = new dEntity(event.getEntity());
-        reason = new Element(event.getReason().toString());
+        reason = new ElementTag(event.getReason().toString());
         target = event.getTarget() != null ? new dEntity(event.getTarget()) : null;
         location = new dLocation(event.getEntity().getLocation());
         this.event = event;

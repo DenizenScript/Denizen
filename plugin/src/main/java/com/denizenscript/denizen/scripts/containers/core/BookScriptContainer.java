@@ -5,7 +5,7 @@ import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.MaterialCompat;
-import com.denizenscript.denizencore.objects.dScript;
+import com.denizenscript.denizencore.objects.ScriptTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
@@ -66,7 +66,7 @@ public class BookScriptContainer extends ScriptContainer {
 
         if (contains("TITLE")) {
             String title = getString("TITLE");
-            title = TagManager.tag(title, new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this)));
+            title = TagManager.tag(title, new BukkitTagContext(player, npc, false, null, shouldDebug(), new ScriptTag(this)));
             bookInfo.setTitle(title);
         }
 
@@ -78,7 +78,7 @@ public class BookScriptContainer extends ScriptContainer {
 
         if (contains("AUTHOR")) {
             String author = getString("AUTHOR");
-            author = TagManager.tag(author, new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this)));
+            author = TagManager.tag(author, new BukkitTagContext(player, npc, false, null, shouldDebug(), new ScriptTag(this)));
             bookInfo.setAuthor(author);
         }
 
@@ -86,7 +86,7 @@ public class BookScriptContainer extends ScriptContainer {
             List<String> pages = getStringList("TEXT");
 
             for (String page : pages) {
-                page = TagManager.tag(page, new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this)));
+                page = TagManager.tag(page, new BukkitTagContext(player, npc, false, null, shouldDebug(), new ScriptTag(this)));
                 bookInfo.addPage(page);
             }
         }

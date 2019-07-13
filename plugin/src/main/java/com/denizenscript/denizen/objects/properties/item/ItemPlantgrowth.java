@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.CropState;
@@ -15,7 +15,7 @@ import org.bukkit.material.NetherWarts;
 
 public class ItemPlantgrowth implements Property {
 
-    public static boolean describes(dObject item) {
+    public static boolean describes(ObjectTag item) {
         return item instanceof dItem
                 && (
                 ((dItem) item).getItemStack().getData() instanceof Crops
@@ -28,7 +28,7 @@ public class ItemPlantgrowth implements Property {
         );
     }
 
-    public static ItemPlantgrowth getFrom(dObject _item) {
+    public static ItemPlantgrowth getFrom(ObjectTag _item) {
         if (!describes(_item)) {
             return null;
         }
@@ -61,7 +61,7 @@ public class ItemPlantgrowth implements Property {
 
         // <--[tag]
         // @attribute <i@item.plant_growth>
-        // @returns Element
+        // @returns ElementTag
         // @mechanism dItem.plant_growth
         // @group properties
         // @description
@@ -74,19 +74,19 @@ public class ItemPlantgrowth implements Property {
         // -->
         if (attribute.startsWith("plant_growth")) {
             if (item.getItemStack().getData() instanceof Crops) {
-                return new Element(((Crops) item.getItemStack().getData()).getState().name())
+                return new ElementTag(((Crops) item.getItemStack().getData()).getState().name())
                         .getAttribute(attribute.fulfill(1));
             }
             else if (item.getItemStack().getData() instanceof NetherWarts) {
-                return new Element(((NetherWarts) item.getItemStack().getData()).getState().name())
+                return new ElementTag(((NetherWarts) item.getItemStack().getData()).getState().name())
                         .getAttribute(attribute.fulfill(1));
             }
             else if (item.getItemStack().getData() instanceof CocoaPlant) {
-                return new Element(((CocoaPlant) item.getItemStack().getData()).getSize().name())
+                return new ElementTag(((CocoaPlant) item.getItemStack().getData()).getSize().name())
                         .getAttribute(attribute.fulfill(1));
             }
             else {
-                return new Element(item.getItemStack().getData().getData())
+                return new ElementTag(item.getItemStack().getData().getData())
                         .getAttribute(attribute.fulfill(1));
             }
         }
@@ -141,7 +141,7 @@ public class ItemPlantgrowth implements Property {
         // -->
 
         if (mechanism.matches("plant_growth")) {
-            Element inputValue = new Element(mechanism.getValue().asString().toUpperCase());
+            ElementTag inputValue = new ElementTag(mechanism.getValue().asString().toUpperCase());
             if (item.getItemStack().getData() instanceof Crops && inputValue.matchesEnum(CropState.values())) {
                 ((Crops) item.getItemStack().getData()).setState(CropState.valueOf(mechanism.getValue().asString().toUpperCase()));
             }

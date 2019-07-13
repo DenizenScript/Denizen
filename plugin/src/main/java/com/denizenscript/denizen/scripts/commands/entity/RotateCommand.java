@@ -62,24 +62,24 @@ public class RotateCommand extends AbstractCommand implements Holdable {
             if (!scriptEntry.hasObject("cancel")
                     && (arg.matches("cancel") || arg.matches("stop"))) {
 
-                scriptEntry.addObject("cancel", new Element("true"));
+                scriptEntry.addObject("cancel", new ElementTag("true"));
             }
             else if (!scriptEntry.hasObject("infinite")
                     && arg.matches("infinite")) {
 
-                scriptEntry.addObject("infinite", new Element("true"));
+                scriptEntry.addObject("infinite", new ElementTag("true"));
             }
             else if (!scriptEntry.hasObject("duration")
-                    && arg.matchesArgumentType(Duration.class)
+                    && arg.matchesArgumentType(DurationTag.class)
                     && arg.matchesPrefix("duration", "d")) {
 
-                scriptEntry.addObject("duration", arg.asType(Duration.class));
+                scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
             else if (!scriptEntry.hasObject("frequency")
-                    && arg.matchesArgumentType(Duration.class)
+                    && arg.matchesArgumentType(DurationTag.class)
                     && arg.matchesPrefix("frequency", "f")) {
 
-                scriptEntry.addObject("frequency", arg.asType(Duration.class));
+                scriptEntry.addObject("frequency", arg.asType(DurationTag.class));
             }
             else if (!scriptEntry.hasObject("yaw")
                     && arg.matchesPrefix("yaw", "y", "rotation", "r")
@@ -96,7 +96,7 @@ public class RotateCommand extends AbstractCommand implements Holdable {
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
 
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
@@ -108,10 +108,10 @@ public class RotateCommand extends AbstractCommand implements Holdable {
                 (Utilities.entryHasPlayer(scriptEntry) ? Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()) : null),
                 (Utilities.entryHasNPC(scriptEntry) ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null));
 
-        scriptEntry.defaultObject("yaw", new Element(10));
-        scriptEntry.defaultObject("pitch", new Element(0));
-        scriptEntry.defaultObject("duration", new Duration(20));
-        scriptEntry.defaultObject("frequency", Duration.valueOf("1t"));
+        scriptEntry.defaultObject("yaw", new ElementTag(10));
+        scriptEntry.defaultObject("pitch", new ElementTag(0));
+        scriptEntry.defaultObject("duration", new DurationTag(20));
+        scriptEntry.defaultObject("frequency", DurationTag.valueOf("1t"));
 
         // Check to make sure required arguments have been filled
         if (!scriptEntry.hasObject("entities")) {
@@ -124,10 +124,10 @@ public class RotateCommand extends AbstractCommand implements Holdable {
     public void execute(final ScriptEntry scriptEntry) {
 
         final List<dEntity> entities = new ArrayList<>((List<dEntity>) scriptEntry.getObject("entities"));
-        final Duration duration = (Duration) scriptEntry.getObject("duration");
-        final Duration frequency = (Duration) scriptEntry.getObject("frequency");
-        final Element yaw = (Element) scriptEntry.getObject("yaw");
-        final Element pitch = (Element) scriptEntry.getObject("pitch");
+        final DurationTag duration = (DurationTag) scriptEntry.getObject("duration");
+        final DurationTag frequency = (DurationTag) scriptEntry.getObject("frequency");
+        final ElementTag yaw = (ElementTag) scriptEntry.getObject("yaw");
+        final ElementTag pitch = (ElementTag) scriptEntry.getObject("pitch");
         boolean cancel = scriptEntry.hasObject("cancel");
         final boolean infinite = scriptEntry.hasObject("infinite");
 

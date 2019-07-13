@@ -3,8 +3,8 @@ package com.denizenscript.denizen.events.entity;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -40,7 +40,7 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
 
     public static EntityCreatePortalScriptEvent instance;
     public dEntity entity;
-    public Element portal_type;
+    public ElementTag portal_type;
     public EntityCreatePortalEvent event;
 
     @Override
@@ -79,7 +79,7 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return entity;
         }
@@ -92,10 +92,10 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
     @EventHandler
     public void onEntityCreatesPortal(EntityCreatePortalEvent event) {
         entity = new dEntity(event.getEntity());
-        portal_type = new Element(event.getPortalType().toString());
+        portal_type = new ElementTag(event.getPortalType().toString());
         // TODO: Add this back?
 /*
-        blocks = new dList();
+        blocks = new ListTag();
         for (int i=0; i < event.getBlocks().size(); i++) {
             dLocation tempLoc = new dLocation(event.getBlocks().get(i).getBlock().getLocation());
             blocks.add(tempLoc.identifySimple());

@@ -5,7 +5,7 @@ import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizencore.objects.Duration;
+import com.denizenscript.denizencore.objects.DurationTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.tags.TagManager;
 import net.citizensnpcs.api.CitizensAPI;
@@ -89,8 +89,8 @@ public class HealthTrait extends Trait implements Listener {
     private UUID entityId = null;
 
 
-    public Duration getRespawnDelay() {
-        return Duration.valueOf(respawnDelay);
+    public DurationTag getRespawnDelay() {
+        return DurationTag.valueOf(respawnDelay);
     }
 
     public void setRespawnLocation(String string) {
@@ -294,7 +294,7 @@ public class HealthTrait extends Trait implements Listener {
 
         //die();
 
-        if (respawn && (Duration.valueOf(respawnDelay).getTicks() > 0)) {
+        if (respawn && (DurationTag.valueOf(respawnDelay).getTicks() > 0)) {
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
                     new Runnable() {
                         public void run() {
@@ -305,7 +305,7 @@ public class HealthTrait extends Trait implements Listener {
                                 npc.spawn(loc);
                             }
                         }
-                    }, (Duration.valueOf(respawnDelay).getTicks()));
+                    }, (DurationTag.valueOf(respawnDelay).getTicks()));
         }
 
     }

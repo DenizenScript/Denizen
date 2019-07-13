@@ -6,7 +6,7 @@ import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -50,7 +50,7 @@ public class LookcloseCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (arg.matches("realistic", "realistically")) {
-                scriptEntry.addObject("realistic", new Element(true));
+                scriptEntry.addObject("realistic", new ElementTag(true));
             }
             else if (arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
                 scriptEntry.addObject("range", arg.asElement());

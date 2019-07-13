@@ -6,8 +6,8 @@ import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Duration;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.DurationTag;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -56,12 +56,12 @@ public class LightCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("reset")
                     && arg.matches("reset")) {
-                scriptEntry.addObject("reset", new Element(true));
+                scriptEntry.addObject("reset", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesPrefix("d", "duration")
-                    && arg.matchesArgumentType(Duration.class)) {
-                scriptEntry.addObject("duration", arg.asType(Duration.class));
+                    && arg.matchesArgumentType(DurationTag.class)) {
+                scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
 
         }
@@ -71,16 +71,16 @@ public class LightCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify a valid location and light level.");
         }
 
-        scriptEntry.defaultObject("reset", new Element(false));
+        scriptEntry.defaultObject("reset", new ElementTag(false));
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
         dLocation location = scriptEntry.getdObject("location");
-        Element light = scriptEntry.getElement("light");
-        Element reset = scriptEntry.getElement("reset");
-        Duration duration = scriptEntry.getdObject("duration");
+        ElementTag light = scriptEntry.getElement("light");
+        ElementTag reset = scriptEntry.getElement("reset");
+        DurationTag duration = scriptEntry.getdObject("duration");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

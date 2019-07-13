@@ -1,20 +1,20 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 
 public class ItemDurability implements Property {
 
-    public static boolean describes(dObject item) {
+    public static boolean describes(ObjectTag item) {
         return item instanceof dItem
                 && ((dItem) item).isRepairable();
     }
 
-    public static ItemDurability getFrom(dObject _item) {
+    public static ItemDurability getFrom(ObjectTag _item) {
         if (!describes(_item)) {
             return null;
         }
@@ -47,27 +47,27 @@ public class ItemDurability implements Property {
 
         // <--[tag]
         // @attribute <i@item.durability>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @mechanism dItem.durability
         // @group properties
         // @description
         // Returns the current durability (number of uses) on the item.
         // -->
         if (attribute.startsWith("durability")) {
-            return new Element(item.getItemStack().getDurability())
+            return new ElementTag(item.getItemStack().getDurability())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <i@item.max_durability>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @group properties
         // @description
         // Returns the maximum durability (number of uses) of this item.
         // For use with <@link tag i@item.durability> and <@link mechanism dItem.durability>.
         // -->
         if (attribute.startsWith("max_durability")) {
-            return new Element(item.getMaterial().getMaterial().getMaxDurability())
+            return new ElementTag(item.getMaterial().getMaterial().getMaxDurability())
                     .getAttribute(attribute.fulfill(1));
         }
 

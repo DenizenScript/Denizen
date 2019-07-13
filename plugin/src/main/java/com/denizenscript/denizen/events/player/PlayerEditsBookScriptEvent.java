@@ -7,9 +7,9 @@ import com.denizenscript.denizen.utilities.MaterialCompat;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
-import com.denizenscript.denizencore.objects.dScript;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -42,9 +42,9 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
 
     PlayerEditsBookScriptEvent instance;
     PlayerEditBookEvent event;
-    Element signing;
-    Element title;
-    Element pages;
+    ElementTag signing;
+    ElementTag title;
+    ElementTag pages;
     dItem book;
     dPlayer player;
     BookMeta bookMeta;
@@ -75,15 +75,15 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (determination.toUpperCase().equals("NOT_SIGNING")) {
-            signing = new Element(false);
+            signing = new ElementTag(false);
         }
-        else if (dScript.matches(determination)) {
-            dScript script = dScript.valueOf(determination);
+        else if (ScriptTag.matches(determination)) {
+            ScriptTag script = ScriptTag.valueOf(determination);
             if (script.getContainer() instanceof BookScriptContainer) {
                 dItem dBook = ((BookScriptContainer) script.getContainer()).getBookFrom(player, null);
                 bookMeta = (BookMeta) dBook.getItemStack().getItemMeta();
                 if (dBook.getMaterial().getMaterial() == MaterialCompat.WRITABLE_BOOK) {
-                    signing = new Element(false);
+                    signing = new ElementTag(false);
                 }
             }
             else {
@@ -99,7 +99,7 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("signing")) {
             return signing;
         }
@@ -115,10 +115,10 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
     @EventHandler
     public void onPlayerEditsBook(PlayerEditBookEvent event) {
         player = dPlayer.mirrorBukkitPlayer(event.getPlayer());
-        signing = new Element(event.isSigning());
+        signing = new ElementTag(event.isSigning());
         bookMeta = event.getNewBookMeta();
-        pages = new Element(bookMeta.getPageCount());
-        title = event.isSigning() ? new Element(bookMeta.getTitle()) : null;
+        pages = new ElementTag(bookMeta.getPageCount());
+        title = event.isSigning() ? new ElementTag(bookMeta.getTitle()) : null;
         book = new dItem(event.getPlayer().getInventory().getItem(event.getSlot()));
         this.event = event;
         fire(event);

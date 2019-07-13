@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.objects;
 
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 
-public interface EntityFormObject extends dObject {
+public interface EntityFormObject extends ObjectTag {
 
     dEntity getDenizenEntity();
 }

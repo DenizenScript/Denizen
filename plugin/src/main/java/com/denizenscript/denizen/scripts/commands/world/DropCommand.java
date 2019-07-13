@@ -68,19 +68,19 @@ public class DropCommand extends AbstractCommand {
                     && !arg.matchesPrefix("qty")
                     && arg.matchesArgumentList(dItem.class)) {
                 // Item arg
-                scriptEntry.addObject("action", new Element(Action.DROP_ITEM.toString()).setPrefix("action"));
-                scriptEntry.addObject("item", arg.asType(dList.class).filter(dItem.class, scriptEntry));
+                scriptEntry.addObject("action", new ElementTag(Action.DROP_ITEM.toString()).setPrefix("action"));
+                scriptEntry.addObject("item", arg.asType(ListTag.class).filter(dItem.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("action")
                     && arg.matches("experience", "exp", "xp"))
             // Experience arg
             {
-                scriptEntry.addObject("action", new Element(Action.DROP_EXP.toString()).setPrefix("action"));
+                scriptEntry.addObject("action", new ElementTag(Action.DROP_EXP.toString()).setPrefix("action"));
             }
             else if (!scriptEntry.hasObject("action")
                     && arg.matchesArgumentType(dEntity.class)) {
                 // Entity arg
-                scriptEntry.addObject("action", new Element(Action.DROP_ENTITY.toString()).setPrefix("action"));
+                scriptEntry.addObject("action", new ElementTag(Action.DROP_ENTITY.toString()).setPrefix("action"));
                 scriptEntry.addObject("entity", arg.asType(dEntity.class).setPrefix("entity"));
             }
             else if (!scriptEntry.hasObject("location")
@@ -100,9 +100,9 @@ public class DropCommand extends AbstractCommand {
             {
                 scriptEntry.addObject("qty", arg.asElement().setPrefix("qty"));
             }
-            else if (!scriptEntry.hasObject("delay") && arg.matchesArgumentType(Duration.class)
+            else if (!scriptEntry.hasObject("delay") && arg.matchesArgumentType(DurationTag.class)
                     && arg.matchesPrefix("delay", "d")) {
-                scriptEntry.addObject("delay", arg.asType(Duration.class));
+                scriptEntry.addObject("delay", arg.asType(DurationTag.class));
             }
             else {
                 arg.reportUnhandled();
@@ -127,7 +127,7 @@ public class DropCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("qty")) {
-            scriptEntry.addObject("qty", Element.valueOf("1").setPrefix("qty"));
+            scriptEntry.addObject("qty", ElementTag.valueOf("1").setPrefix("qty"));
         }
 
         // Okay!
@@ -139,12 +139,12 @@ public class DropCommand extends AbstractCommand {
 
         // Get objects
         dLocation location = (dLocation) scriptEntry.getObject("location");
-        Element qty = scriptEntry.getElement("qty");
-        Element action = scriptEntry.getElement("action");
-        Element speed = scriptEntry.getElement("speed");
+        ElementTag qty = scriptEntry.getElement("qty");
+        ElementTag action = scriptEntry.getElement("action");
+        ElementTag speed = scriptEntry.getElement("speed");
         List<dItem> items = (List<dItem>) scriptEntry.getObject("item");
         dEntity entity = (dEntity) scriptEntry.getObject("entity");
-        Duration delay = (Duration) scriptEntry.getObject("delay");
+        DurationTag delay = (DurationTag) scriptEntry.getObject("delay");
 
 
         // Report to dB
@@ -157,7 +157,7 @@ public class DropCommand extends AbstractCommand {
                             + (delay != null ? delay.debug() : ""));
         }
 
-        dList entityList = new dList();
+        ListTag entityList = new ListTag();
 
         // Do the drop
         switch (Action.valueOf(action.asString())) {
@@ -198,7 +198,7 @@ public class DropCommand extends AbstractCommand {
                 for (int x = 0; x < qty.asInt(); x++) {
                     ArrayList<Mechanism> mechanisms = new ArrayList<>();
                     for (Mechanism mechanism : entity.getWaitingMechanisms()) {
-                        mechanisms.add(new Mechanism(new Element(mechanism.getName()), mechanism.getValue()));
+                        mechanisms.add(new Mechanism(new ElementTag(mechanism.getName()), mechanism.getValue()));
                     }
                     dEntity ent = new dEntity(entity.getEntityType(), mechanisms);
                     ent.spawnAt(location);

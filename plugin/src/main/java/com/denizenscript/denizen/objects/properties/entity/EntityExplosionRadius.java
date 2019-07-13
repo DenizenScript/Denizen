@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.entity.Creeper;
@@ -11,13 +11,13 @@ import org.bukkit.entity.Explosive;
 
 public class EntityExplosionRadius implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity
                 && (((dEntity) entity).getBukkitEntity() instanceof Explosive
                 || ((dEntity) entity).getBukkitEntity() instanceof Creeper);
     }
 
-    public static EntityExplosionRadius getFrom(dObject entity) {
+    public static EntityExplosionRadius getFrom(ObjectTag entity) {
         return describes(entity) ? new EntityExplosionRadius((dEntity) entity) : null;
     }
 
@@ -61,7 +61,7 @@ public class EntityExplosionRadius implements Property {
     }
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -73,14 +73,14 @@ public class EntityExplosionRadius implements Property {
 
         // <--[tag]
         // @attribute <e@entity.explosion_radius>
-        // @returns Element(Decimal)
+        // @returns ElementTag(Decimal)
         // @mechanism dEntity.explosion_radius
         // @group properties
         // @description
         // If this entity can explode, returns its explosion radius.
         // -->
         if (attribute.startsWith("explosion_radius")) {
-            return new Element(getExplosionRadius())
+            return new ElementTag(getExplosionRadius())
                     .getAttribute(attribute.fulfill(1));
         }
 

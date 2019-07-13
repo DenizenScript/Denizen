@@ -4,7 +4,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.Material;
@@ -14,13 +14,13 @@ import org.bukkit.entity.Item;
 
 public class EntityItem implements Property {
 
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity &&
                 (((dEntity) entity).getBukkitEntityType() == EntityType.DROPPED_ITEM
                         || ((dEntity) entity).getBukkitEntityType() == EntityType.ENDERMAN);
     }
 
-    public static EntityItem getFrom(dObject entity) {
+    public static EntityItem getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -79,7 +79,7 @@ public class EntityItem implements Property {
     }
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override

@@ -6,8 +6,8 @@ import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -81,15 +81,15 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("statistic")) {
-            return new Element(statistic.toString());
+            return new ElementTag(statistic.toString());
         }
         else if (name.equals("previous_value")) {
-            return new Element(previous_value);
+            return new ElementTag(previous_value);
         }
         else if (name.equals("new_value")) {
-            return new Element(new_value);
+            return new ElementTag(new_value);
         }
         else if (name.equals("qualifier")) {
             if (statistic.getType() == Statistic.Type.BLOCK || statistic.getType() == Statistic.Type.ITEM) {

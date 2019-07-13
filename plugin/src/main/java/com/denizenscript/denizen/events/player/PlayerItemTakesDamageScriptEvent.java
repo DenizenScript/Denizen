@@ -7,9 +7,9 @@ import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
@@ -43,7 +43,7 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
 
     PlayerItemTakesDamageScriptEvent instance;
     PlayerItemDamageEvent event;
-    Element damage;
+    ElementTag damage;
     dItem item;
     dLocation location;
 
@@ -81,7 +81,7 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (ArgumentHelper.matchesInteger(determination)) {
-            damage = new Element(determination);
+            damage = new ElementTag(determination);
             return true;
         }
         return super.applyDetermination(container, determination);
@@ -93,7 +93,7 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("item")) {
             return item;
         }
@@ -109,7 +109,7 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
             return;
         }
         item = new dItem(event.getItem());
-        damage = new Element(event.getDamage());
+        damage = new ElementTag(event.getDamage());
         location = new dLocation(event.getPlayer().getLocation());
         boolean wasCancelled = event.isCancelled();
         this.event = event;

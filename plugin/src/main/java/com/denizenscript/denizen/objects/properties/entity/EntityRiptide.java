@@ -2,18 +2,18 @@ package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 
 public class EntityRiptide implements Property {
-    public static boolean describes(dObject object) {
+    public static boolean describes(ObjectTag object) {
         return object instanceof dEntity && ((dEntity) object).isLivingEntity();
     }
 
-    public static EntityRiptide getFrom(dObject object) {
+    public static EntityRiptide getFrom(ObjectTag object) {
         if (!describes(object)) {
             return null;
         }
@@ -64,14 +64,14 @@ public class EntityRiptide implements Property {
 
         // <--[tag]
         // @attribute <e@entity.is_using_riptide>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @mechanism dEntity.is_using_riptide
         // @group properties
         // @description
         // Returns whether this entity is using the Riptide enchantment.
         // -->
         if (attribute.startsWith("is_using_riptide")) {
-            return new Element(entity.getLivingEntity().isRiptiding())
+            return new ElementTag(entity.getLivingEntity().isRiptiding())
                     .getAttribute(attribute.fulfill(1));
         }
 

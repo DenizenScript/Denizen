@@ -10,7 +10,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.HashMap;
 
-public class dPlugin implements dObject {
+public class dPlugin implements ObjectTag {
 
     // <--[language]
     // @name dPlugin
@@ -109,7 +109,7 @@ public class dPlugin implements dObject {
 
 
     /////////////////////
-    //  dObject Methods
+    //  ObjectTag Methods
     ///////////////////
 
     private String prefix = "Plugin";
@@ -154,71 +154,71 @@ public class dPlugin implements dObject {
 
         // <--[tag]
         // @attribute <pl@plugin.name>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Gets the name of this plugin.
         // -->
         registerTag("name", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dPlugin) object).plugin.getName())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dPlugin) object).plugin.getName())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <pl@plugin.version>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Gets the version for the plugin specified.
         // -->
         registerTag("version", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dPlugin) object).plugin.getDescription().getVersion())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dPlugin) object).plugin.getDescription().getVersion())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <pl@plugin.description>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Gets the description for the plugin specified.
         // -->
         registerTag("description", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dPlugin) object).plugin.getDescription().getDescription())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dPlugin) object).plugin.getDescription().getDescription())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <pl@plugin.authors>
-        // @returns dList
+        // @returns ListTag
         // @description
         // Gets the list of authors for the plugin specified.
         // -->
         registerTag("authors", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new dList(((dPlugin) object).plugin.getDescription().getAuthors())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ListTag(((dPlugin) object).plugin.getDescription().getAuthors())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <pl@plugin.type>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Always returns 'Plugin' for dPlugin objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         registerTag("type", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element("Plugin").getAttribute(attribute.fulfill(1));
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag("Plugin").getAttribute(attribute.fulfill(1));
             }
         });
     }
@@ -258,7 +258,7 @@ public class dPlugin implements dObject {
             return returned;
         }
 
-        return new Element(identify()).getAttribute(attribute);
+        return new ElementTag(identify()).getAttribute(attribute);
 
     }
 }

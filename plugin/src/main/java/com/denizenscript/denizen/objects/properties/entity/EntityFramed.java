@@ -3,10 +3,10 @@ package com.denizenscript.denizen.objects.properties.entity;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -18,11 +18,11 @@ import org.bukkit.entity.ItemFrame;
 public class EntityFramed implements Property {
 
     // TODO: Possibly merge class with EntityItem?
-    public static boolean describes(dObject entity) {
+    public static boolean describes(ObjectTag entity) {
         return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.ITEM_FRAME;
     }
 
-    public static EntityFramed getFrom(dObject entity) {
+    public static EntityFramed getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
@@ -91,7 +91,7 @@ public class EntityFramed implements Property {
 
 
     ///////////
-    // dObject Attributes
+    // ObjectTag Attributes
     ////////
 
     @Override
@@ -103,14 +103,14 @@ public class EntityFramed implements Property {
 
         // <--[tag]
         // @attribute <e@entity.framed_item_rotation>
-        // @returns Element
+        // @returns ElementTag
         // @mechanism dEntity.framed
         // @group properties
         // @description
         // If the entity is an item frame, returns the rotation of the material currently framed.
         // -->
         if (attribute.startsWith("framed_item_rotation")) {
-            return new Element(CoreUtilities.toLowerCase(getItemFrameEntity().getRotation().name()))
+            return new ElementTag(CoreUtilities.toLowerCase(getItemFrameEntity().getRotation().name()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -129,14 +129,14 @@ public class EntityFramed implements Property {
 
         // <--[tag]
         // @attribute <e@entity.has_framed_item>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @mechanism dEntity.framed
         // @group properties
         // @description
         // If the entity is an item frame, returns whether the frame has an item in it.
         // -->
         if (attribute.startsWith("has_framed_item")) {
-            return new Element(hasItem())
+            return new ElementTag(hasItem())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -162,18 +162,18 @@ public class EntityFramed implements Property {
         // -->
 
         if (mechanism.matches("framed")) {
-            dList list = mechanism.valueAsType(dList.class);
+            ListTag list = mechanism.valueAsType(ListTag.class);
             if (list.size() == 0) {
                 Debug.echoError("Missing value for 'framed' mechanism!");
                 return;
             }
-            if (new Element(list.get(0)).matchesType(dItem.class)) {
-                setItem(new Element(list.get(0)).asType(dItem.class, mechanism.context));
+            if (new ElementTag(list.get(0)).matchesType(dItem.class)) {
+                setItem(new ElementTag(list.get(0)).asType(dItem.class, mechanism.context));
             }
             else {
                 Debug.echoError("Invalid item '" + list.get(0) + "'");
             }
-            if (list.size() > 1 && new Element(list.get(1)).matchesEnum(Rotation.values())) {
+            if (list.size() > 1 && new ElementTag(list.get(1)).matchesEnum(Rotation.values())) {
                 getItemFrameEntity().setRotation(Rotation.valueOf(list.get(1).toUpperCase()));
             }
         }

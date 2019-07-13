@@ -7,9 +7,9 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dMaterial;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.trait.trait.Equipment;
@@ -71,7 +71,7 @@ public class HeadCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
@@ -93,7 +93,7 @@ public class HeadCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-        Element skin = scriptEntry.getElement("skin");
+        ElementTag skin = scriptEntry.getElement("skin");
         dMaterial material = scriptEntry.getdObject("material");
 
         // Report to dB

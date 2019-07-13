@@ -75,10 +75,10 @@ public class PushCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("destination", arg.asType(dLocation.class));
             }
             else if (!scriptEntry.hasObject("duration")
-                    && arg.matchesArgumentType(Duration.class)
+                    && arg.matchesArgumentType(DurationTag.class)
                     && arg.matchesPrefix("duration", "d")) {
 
-                scriptEntry.addObject("duration", arg.asType(Duration.class));
+                scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
             else if (!scriptEntry.hasObject("speed")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
@@ -87,22 +87,22 @@ public class PushCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("speed", arg.asElement());
             }
             else if (!scriptEntry.hasObject("script")
-                    && (arg.matchesArgumentType(dScript.class)
+                    && (arg.matchesArgumentType(ScriptTag.class)
                     || arg.matchesPrefix("script"))) {
-                scriptEntry.addObject("script", arg.asType(dScript.class));
+                scriptEntry.addObject("script", arg.asType(ScriptTag.class));
             }
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
 
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("force_along")
                     && arg.matches("force_along")) {
-                scriptEntry.addObject("force_along", new Element(true));
+                scriptEntry.addObject("force_along", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("no_rotate")
                     && arg.matches("no_rotate")) {
-                scriptEntry.addObject("no_rotate", new Element(true));
+                scriptEntry.addObject("no_rotate", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("precision")
                     && arg.matchesPrefix("precision")) {
@@ -110,10 +110,10 @@ public class PushCommand extends AbstractCommand implements Holdable {
             }
             else if (!scriptEntry.hasObject("no_damage")
                     && arg.matches("no_damage")) {
-                scriptEntry.addObject("no_damage", new Element(true));
+                scriptEntry.addObject("no_damage", new ElementTag(true));
             }
             else if (arg.matchesPrefix("def", "define", "context")) {
-                scriptEntry.addObject("definitions", arg.asType(dList.class));
+                scriptEntry.addObject("definitions", arg.asType(ListTag.class));
             }
             else {
                 arg.reportUnhandled();
@@ -129,10 +129,10 @@ public class PushCommand extends AbstractCommand implements Holdable {
                     Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getDenizenEntity() : null);
         }
 
-        scriptEntry.defaultObject("speed", new Element(1.5));
-        scriptEntry.defaultObject("duration", new Duration(20));
-        scriptEntry.defaultObject("force_along", new Element(false));
-        scriptEntry.defaultObject("precision", new Element(2));
+        scriptEntry.defaultObject("speed", new ElementTag(1.5));
+        scriptEntry.defaultObject("duration", new DurationTag(20));
+        scriptEntry.defaultObject("force_along", new ElementTag(false));
+        scriptEntry.defaultObject("precision", new ElementTag(2));
 
         // Check to make sure required arguments have been filled
 
@@ -177,14 +177,14 @@ public class PushCommand extends AbstractCommand implements Holdable {
         }
 
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-        final dScript script = (dScript) scriptEntry.getObject("script");
-        final dList definitions = (dList) scriptEntry.getObject("definitions");
+        final ScriptTag script = (ScriptTag) scriptEntry.getObject("script");
+        final ListTag definitions = (ListTag) scriptEntry.getObject("definitions");
 
         final double speed = scriptEntry.getElement("speed").asDouble();
-        final int maxTicks = ((Duration) scriptEntry.getObject("duration")).getTicksAsInt();
+        final int maxTicks = ((DurationTag) scriptEntry.getObject("duration")).getTicksAsInt();
 
-        Element force_along = scriptEntry.getElement("force_along");
-        Element precision = scriptEntry.getElement("precision");
+        ElementTag force_along = scriptEntry.getElement("force_along");
+        ElementTag precision = scriptEntry.getElement("precision");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
@@ -203,9 +203,9 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
         final boolean forceAlong = force_along.asBoolean();
 
-        // Keep a dList of entities that can be called using <entry[name].pushed_entities>
+        // Keep a ListTag of entities that can be called using <entry[name].pushed_entities>
         // later in the script queue
-        final dList entityList = new dList();
+        final ListTag entityList = new ListTag();
 
         // Go through all the entities, spawning/teleporting and rotating them
         for (dEntity entity : entities) {

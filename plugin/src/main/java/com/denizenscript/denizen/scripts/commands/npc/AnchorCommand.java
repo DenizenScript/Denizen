@@ -5,7 +5,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
@@ -99,8 +99,8 @@ public class AnchorCommand extends AbstractCommand {
         // Get objects
         Action action = (Action) scriptEntry.getObject("action");
         dLocation location = (dLocation) scriptEntry.getObject("location");
-        Element range = (Element) scriptEntry.getObject("range");
-        Element id = (Element) scriptEntry.getObject("id");
+        ElementTag range = (ElementTag) scriptEntry.getObject("range");
+        ElementTag id = (ElementTag) scriptEntry.getObject("id");
         dNPC npc = Utilities.getEntryNPC(scriptEntry);
 
         // Report to dB

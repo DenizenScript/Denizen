@@ -4,8 +4,8 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -26,7 +26,7 @@ public class PlayerChangesGamemodeScriptEvent extends BukkitScriptEvent implemen
     // @Triggers when a player's gamemode is changed.
     //
     // @Context
-    // <context.gamemode> returns an Element of the gamemode.
+    // <context.gamemode> returns an ElementTag of the gamemode.
     // Game Modes: <@link url http://bit.ly/1KHab43>
     // -->
 
@@ -35,7 +35,7 @@ public class PlayerChangesGamemodeScriptEvent extends BukkitScriptEvent implemen
     }
 
     public static PlayerChangesGamemodeScriptEvent instance;
-    public Element gamemode;
+    public ElementTag gamemode;
     public PlayerGameModeChangeEvent event;
 
     @Override
@@ -70,7 +70,7 @@ public class PlayerChangesGamemodeScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("gamemode")) {
             return gamemode;
         }
@@ -82,7 +82,7 @@ public class PlayerChangesGamemodeScriptEvent extends BukkitScriptEvent implemen
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-        gamemode = new Element(event.getNewGameMode().name());
+        gamemode = new ElementTag(event.getNewGameMode().name());
         this.event = event;
         fire(event);
     }

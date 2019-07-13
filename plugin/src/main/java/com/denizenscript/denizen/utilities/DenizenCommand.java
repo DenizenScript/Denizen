@@ -47,7 +47,7 @@ public class DenizenCommand extends Command {
         if (!testPermissionSilent(commandSender)) {
             return false;
         }
-        Map<String, dObject> context = new HashMap<>();
+        Map<String, ObjectTag> context = new HashMap<>();
         dPlayer player = null;
         dNPC npc = null;
         if (commandSender instanceof Player) {
@@ -55,10 +55,10 @@ public class DenizenCommand extends Command {
             if (!dEntity.isNPC(pl)) {
                 player = dPlayer.mirrorBukkitPlayer(pl);
             }
-            context.put("server", new Element(false));
+            context.put("server", new ElementTag(false));
         }
         else {
-            context.put("server", new Element(true));
+            context.put("server", new ElementTag(true));
         }
         return script.runAllowedHelpProcedure(player, npc, context);
     }
@@ -94,7 +94,7 @@ public class DenizenCommand extends Command {
             }
             // <permission> is built into Bukkit... let's keep it here
             for (String line : TagManager.tag(permissionMessage.replace("<permission>", getPermission()),
-                    new BukkitTagContext(player, npc, false, null, false, new dScript(script))).split("\n")) {
+                    new BukkitTagContext(player, npc, false, null, false, new ScriptTag(script))).split("\n")) {
                 target.sendMessage(line);
             }
         }
@@ -107,7 +107,7 @@ public class DenizenCommand extends Command {
         if (!testPermission(commandSender)) {
             return true;
         }
-        Map<String, dObject> context = new HashMap<>();
+        Map<String, ObjectTag> context = new HashMap<>();
         String raw_args = "";
         if (arguments.length > 0) {
             StringBuilder rawArgsBuilder = new StringBuilder();
@@ -117,9 +117,9 @@ public class DenizenCommand extends Command {
             raw_args = rawArgsBuilder.substring(0, rawArgsBuilder.length() - 1);
         }
         List<String> args = Arrays.asList(ArgumentHelper.buildArgs(raw_args));
-        context.put("args", new dList(args));
-        context.put("raw_args", new Element(raw_args));
-        context.put("alias", new Element(commandLabel));
+        context.put("args", new ListTag(args));
+        context.put("raw_args", new ElementTag(raw_args));
+        context.put("alias", new ElementTag(commandLabel));
         dPlayer player = null;
         dNPC npc = null;
         if (commandSender instanceof Player) {
@@ -130,10 +130,10 @@ public class DenizenCommand extends Command {
             else {
                 player = dPlayer.mirrorBukkitPlayer(pl);
             }
-            context.put("server", new Element(false));
+            context.put("server", new ElementTag(false));
         }
         else {
-            context.put("server", new Element(true));
+            context.put("server", new ElementTag(true));
             if (commandSender instanceof BlockCommandSender) {
                 context.put("command_block_location", new dLocation(((BlockCommandSender) commandSender).getBlock().getLocation()));
             }
@@ -161,7 +161,7 @@ public class DenizenCommand extends Command {
         if (!script.hasTabCompleteProcedure()) {
             return super.tabComplete(commandSender, alias, arguments);
         }
-        Map<String, dObject> context = new HashMap<>();
+        Map<String, ObjectTag> context = new HashMap<>();
         String raw_args = "";
         if (arguments.length > 0) {
             StringBuilder rawArgsBuilder = new StringBuilder();
@@ -171,9 +171,9 @@ public class DenizenCommand extends Command {
             raw_args = rawArgsBuilder.substring(0, rawArgsBuilder.length() - 1);
         }
         List<String> args = Arrays.asList(ArgumentHelper.buildArgs(raw_args));
-        context.put("args", new dList(args));
-        context.put("raw_args", new Element(raw_args));
-        context.put("alias", new Element(alias));
+        context.put("args", new ListTag(args));
+        context.put("raw_args", new ElementTag(raw_args));
+        context.put("alias", new ElementTag(alias));
         dPlayer player = null;
         dNPC npc = null;
         if (commandSender instanceof Player) {
@@ -184,10 +184,10 @@ public class DenizenCommand extends Command {
             else {
                 player = dPlayer.mirrorBukkitPlayer(pl);
             }
-            context.put("server", new Element(false));
+            context.put("server", new ElementTag(false));
         }
         else {
-            context.put("server", new Element(true));
+            context.put("server", new ElementTag(true));
         }
         if (Depends.citizens != null && npc == null) {
             NPC citizen = CitizensAPI.getDefaultNPCSelector().getSelected(commandSender);

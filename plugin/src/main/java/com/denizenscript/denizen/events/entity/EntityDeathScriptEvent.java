@@ -43,18 +43,18 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     // @Context
     // <context.entity> returns the dEntity that died.
     // <context.damager> returns the dEntity damaging the other entity, if any.
-    // <context.message> returns an Element of a player's death message.
+    // <context.message> returns an ElementTag of a player's death message.
     // <context.inventory> returns the dInventory of the entity if it was a player.
-    // <context.cause> returns an Element of the cause of the death. See <@link language damage cause> for a list of possible damage causes.
-    // <context.drops> returns a dList of all pending item drops.
-    // <context.xp> returns an Element of the amount of experience to be dropped.
+    // <context.cause> returns an ElementTag of the cause of the death. See <@link language damage cause> for a list of possible damage causes.
+    // <context.drops> returns a ListTag of all pending item drops.
+    // <context.xp> returns an ElementTag of the amount of experience to be dropped.
     //
     // @Determine
-    // Element to change the death message.
+    // ElementTag to change the death message.
     // "NO_DROPS" to specify that any drops should be removed.
     // "NO_DROPS_OR_XP" to specify that any drops or XP orbs should be removed.
     // "NO_XP" to specify that any XP orbs should be removed.
-    // dList(dItem) to specify new items to be dropped.
+    // ListTag(dItem) to specify new items to be dropped.
     // Element(Number) to specify the new amount of XP to be dropped.
     // "KEEP_INV" to specify (if a player death) that the inventory should be kept.
     // "KEEP_LEVEL" to specify (if a player death) that the XP level should be kept.
@@ -72,11 +72,11 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     public static EntityDeathScriptEvent instance;
 
     public dEntity entity;
-    public dObject damager;
-    public Element message;
+    public ObjectTag damager;
+    public ElementTag message;
     public dInventory inventory;
-    public Element cause;
-    public dList drops;
+    public ElementTag cause;
+    public ListTag drops;
     public List<dItem> dropItems;
     public Integer xp;
     public boolean keep_inv;
@@ -142,11 +142,11 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             xp = Argument.valueOf(lower).asElement().asInt();
         }
 
-        // Change dropped items if dList detected
+        // Change dropped items if ListTag detected
         else if (Argument.valueOf(lower).matchesArgumentList(dItem.class)) {
             drops.clear();
             dropItems = new ArrayList<>();
-            dList drops_list = dList.valueOf(determination);
+            ListTag drops_list = ListTag.valueOf(determination);
             drops_list.filter(dItem.class, container);
             for (String drop : drops_list) {
                 dItem item = dItem.valueOf(drop, container);
@@ -159,7 +159,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
 
         // String containing new Death Message
         else if (event instanceof PlayerDeathEvent && !isDefaultDetermination(determination)) {
-            message = new Element(determination);
+            message = new ElementTag(determination);
         }
         else {
             return super.applyDetermination(container, determination);
@@ -174,7 +174,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return entity.getDenizenObject();
         }
@@ -194,7 +194,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             return drops;
         }
         else if (name.equals("xp") && xp != null) {
-            return new Element(xp);
+            return new ElementTag(xp);
         }
         return super.getContext(name);
     }
@@ -216,7 +216,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         damager = null;
         EntityDamageEvent lastDamage = entity.getBukkitEntity().getLastDamageCause();
         if (lastDamage != null) {
-            cause = new Element(event.getEntity().getLastDamageCause().getCause().toString());
+            cause = new ElementTag(event.getEntity().getLastDamageCause().getCause().toString());
             if (lastDamage instanceof EntityDamageByEntityEvent) {
                 dEntity damageEntity = new dEntity(((EntityDamageByEntityEvent) lastDamage).getDamager());
                 dEntity shooter = damageEntity.getShooter();
@@ -238,7 +238,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         PlayerDeathEvent subEvent = null;
         if (event instanceof PlayerDeathEvent) {
             subEvent = (PlayerDeathEvent) event;
-            message = new Element(subEvent.getDeathMessage());
+            message = new ElementTag(subEvent.getDeathMessage());
 
             // Null check to prevent NPCs from causing an NPE
             if (player != null) {
@@ -248,7 +248,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             keep_level = subEvent.getKeepLevel();
         }
 
-        drops = new dList();
+        drops = new ListTag();
         for (ItemStack stack : event.getDrops()) {
             if (stack == null) {
                 drops.add("i@air");

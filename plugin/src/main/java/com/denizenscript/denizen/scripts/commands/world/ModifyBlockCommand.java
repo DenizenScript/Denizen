@@ -95,42 +95,42 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             else if (arg.matchesArgumentList(dLocation.class)
                     && !scriptEntry.hasObject("locations")
                     && !scriptEntry.hasObject("location_list")) {
-                scriptEntry.addObject("location_list", arg.asType(dList.class));
+                scriptEntry.addObject("location_list", arg.asType(ListTag.class));
             }
             else if (!scriptEntry.hasObject("materials")
                     && arg.matchesArgumentList(dMaterial.class)) {
-                scriptEntry.addObject("materials", arg.asType(dList.class));
+                scriptEntry.addObject("materials", arg.asType(ListTag.class));
             }
             else if (!scriptEntry.hasObject("radius")
                     && arg.matchesPrefix("radius", "r")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
-                scriptEntry.addObject("radius", new Element(arg.getValue()));
+                scriptEntry.addObject("radius", new ElementTag(arg.getValue()));
             }
             else if (!scriptEntry.hasObject("height")
                     && arg.matchesPrefix("height", "h")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
-                scriptEntry.addObject("height", new Element(arg.getValue()));
+                scriptEntry.addObject("height", new ElementTag(arg.getValue()));
             }
             else if (!scriptEntry.hasObject("depth")
                     && arg.matchesPrefix("depth", "d")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
-                scriptEntry.addObject("depth", new Element(arg.getValue()));
+                scriptEntry.addObject("depth", new ElementTag(arg.getValue()));
             }
             else if (arg.matches("no_physics")) {
-                scriptEntry.addObject("physics", new Element(false));
+                scriptEntry.addObject("physics", new ElementTag(false));
             }
             else if (arg.matches("naturally")) {
-                scriptEntry.addObject("natural", new Element(true));
+                scriptEntry.addObject("natural", new ElementTag(true));
             }
             else if (arg.matches("delayed")) {
-                scriptEntry.addObject("delayed", new Element(true));
+                scriptEntry.addObject("delayed", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("script")
-                    && arg.matchesArgumentType(dScript.class)) {
-                scriptEntry.addObject("script", arg.asType(dScript.class));
+                    && arg.matchesArgumentType(ScriptTag.class)) {
+                scriptEntry.addObject("script", arg.asType(ScriptTag.class));
             }
             else if (!scriptEntry.hasObject("percents")) {
-                scriptEntry.addObject("percents", arg.asType(dList.class));
+                scriptEntry.addObject("percents", arg.asType(ListTag.class));
             }
             else {
                 arg.reportUnhandled();
@@ -148,12 +148,12 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         }
 
         // Set some defaults
-        scriptEntry.defaultObject("radius", new Element(0))
-                .defaultObject("height", new Element(0))
-                .defaultObject("depth", new Element(0))
-                .defaultObject("physics", new Element(true))
-                .defaultObject("natural", new Element(false))
-                .defaultObject("delayed", new Element(false));
+        scriptEntry.defaultObject("radius", new ElementTag(0))
+                .defaultObject("height", new ElementTag(0))
+                .defaultObject("depth", new ElementTag(0))
+                .defaultObject("physics", new ElementTag(true))
+                .defaultObject("natural", new ElementTag(false))
+                .defaultObject("delayed", new ElementTag(false));
 
     }
 
@@ -161,17 +161,17 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
     @Override
     public void execute(final ScriptEntry scriptEntry) {
 
-        final dList materials = scriptEntry.getdObject("materials");
+        final ListTag materials = scriptEntry.getdObject("materials");
         final List<dLocation> locations = (List<dLocation>) scriptEntry.getObject("locations");
-        final dList location_list = scriptEntry.getdObject("location_list");
-        final Element physics = scriptEntry.getElement("physics");
-        final Element natural = scriptEntry.getElement("natural");
-        final Element delayed = scriptEntry.getElement("delayed");
-        final Element radiusElement = scriptEntry.getElement("radius");
-        final Element heightElement = scriptEntry.getElement("height");
-        final Element depthElement = scriptEntry.getElement("depth");
-        final dScript script = scriptEntry.getdObject("script");
-        dList percents = scriptEntry.getdObject("percents");
+        final ListTag location_list = scriptEntry.getdObject("location_list");
+        final ElementTag physics = scriptEntry.getElement("physics");
+        final ElementTag natural = scriptEntry.getElement("natural");
+        final ElementTag delayed = scriptEntry.getElement("delayed");
+        final ElementTag radiusElement = scriptEntry.getElement("radius");
+        final ElementTag heightElement = scriptEntry.getElement("height");
+        final ElementTag depthElement = scriptEntry.getElement("depth");
+        final ScriptTag script = scriptEntry.getdObject("script");
+        ListTag percents = scriptEntry.getdObject("percents");
 
         if (percents != null && percents.size() != materials.size()) {
             Debug.echoError(scriptEntry.getResidingQueue(), "Percents length != materials length");
@@ -204,7 +204,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         if (percents != null) {
             percentages = new ArrayList<>();
             for (String str : percents) {
-                percentages.add(new Element(str).asFloat());
+                percentages.add(new ElementTag(str).asFloat());
             }
         }
         final List<Float> percs = percentages;
@@ -276,7 +276,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             boolean was_static = preSetup(loc);
             int index = 0;
             if (locations != null) {
-                for (dObject obj : locations) {
+                for (ObjectTag obj : locations) {
                     handleLocation((dLocation) obj, index, materialList, doPhysics, isNatural, radius, height, depth, percentages);
                     index++;
                 }

@@ -8,7 +8,7 @@ import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -93,7 +93,7 @@ public class FeedCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("amount")) {
-            scriptEntry.addObject("amount", new Element(9999)); // TODO: 9999?
+            scriptEntry.addObject("amount", new ElementTag(9999)); // TODO: 9999?
         }
     }
 
@@ -102,7 +102,7 @@ public class FeedCommand extends AbstractCommand {
 
         dPlayer player = (dPlayer) scriptEntry.getObject("targetplayer");
         dNPC npc = (dNPC) scriptEntry.getObject("targetnpc");
-        Element amount = scriptEntry.getElement("amount");
+        ElementTag amount = scriptEntry.getElement("amount");
 
         if (scriptEntry.dbCallShouldDebug()) {
 
@@ -123,7 +123,7 @@ public class FeedCommand extends AbstractCommand {
         else if (player != null) {
             if (95999 - player.getPlayerEntity().getFoodLevel() < amount.asInt()) // Setting hunger too high = error
             {
-                amount = new Element(95999 - player.getPlayerEntity().getFoodLevel());
+                amount = new ElementTag(95999 - player.getPlayerEntity().getFoodLevel());
             }
             player.getPlayerEntity().setFoodLevel(player.getPlayerEntity().getFoodLevel() + amount.asInt());
         }

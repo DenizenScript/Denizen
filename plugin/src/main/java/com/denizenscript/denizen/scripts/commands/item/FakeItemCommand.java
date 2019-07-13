@@ -58,21 +58,21 @@ public class FakeItemCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesPrefix("duration")
-                    && arg.matchesArgumentType(Duration.class)) {
-                scriptEntry.addObject("duration", arg.asType(Duration.class));
+                    && arg.matchesArgumentType(DurationTag.class)) {
+                scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
             else if (!scriptEntry.hasObject("item")
                     && arg.matchesArgumentList(dItem.class)) {
-                scriptEntry.addObject("item", arg.asType(dList.class).filter(dItem.class, scriptEntry));
+                scriptEntry.addObject("item", arg.asType(ListTag.class).filter(dItem.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("players")
                     && arg.matchesArgumentList(dPlayer.class)
                     && arg.matchesPrefix("players")) {
-                scriptEntry.addObject("players", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
+                scriptEntry.addObject("players", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("player_only")
                     && arg.matches("player_only")) {
-                scriptEntry.addObject("player_only", new Element(true));
+                scriptEntry.addObject("player_only", new ElementTag(true));
             }
             else {
                 arg.reportUnhandled();
@@ -88,7 +88,7 @@ public class FakeItemCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify a valid slot!");
         }
 
-        scriptEntry.defaultObject("duration", Duration.ZERO).defaultObject("player_only", new Element(false))
+        scriptEntry.defaultObject("duration", DurationTag.ZERO).defaultObject("player_only", new ElementTag(false))
                 .defaultObject("players", Arrays.asList(Utilities.getEntryPlayer(scriptEntry)));
 
     }
@@ -97,10 +97,10 @@ public class FakeItemCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         List<dItem> items = (List<dItem>) scriptEntry.getObject("item");
-        final Element elSlot = scriptEntry.getElement("slot");
-        Duration duration = scriptEntry.getdObject("duration");
+        final ElementTag elSlot = scriptEntry.getElement("slot");
+        DurationTag duration = scriptEntry.getdObject("duration");
         final List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("players");
-        final Element player_only = scriptEntry.getElement("player_only");
+        final ElementTag player_only = scriptEntry.getElement("player_only");
 
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugList("items", items) + elSlot.debug() + duration.debug()

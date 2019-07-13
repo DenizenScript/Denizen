@@ -6,7 +6,7 @@ import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Duration;
+import com.denizenscript.denizencore.objects.DurationTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -74,8 +74,8 @@ public class EngageCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("duration")
-                    && arg.matchesArgumentType(Duration.class)) {
-                scriptEntry.addObject("duration", arg.asType(Duration.class));
+                    && arg.matchesArgumentType(DurationTag.class)) {
+                scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
             else {
                 arg.reportUnhandled();
@@ -83,14 +83,14 @@ public class EngageCommand extends AbstractCommand {
 
         }
 
-        scriptEntry.defaultObject("duration", new Duration(0));
+        scriptEntry.defaultObject("duration", new DurationTag(0));
 
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        Duration duration = scriptEntry.getdObject("duration");
+        DurationTag duration = scriptEntry.getdObject("duration");
         dNPC npc = Utilities.getEntryNPC(scriptEntry);
 
         // Report to dB
@@ -139,7 +139,7 @@ public class EngageCommand extends AbstractCommand {
     public static void setEngaged(NPC npc, boolean engaged) {
         if (engaged) {
             currentlyEngaged.put(npc, System.currentTimeMillis()
-                    + (long) (Duration.valueOf(Settings.engageTimeoutInSeconds()).getSeconds()) * 1000);
+                    + (long) (DurationTag.valueOf(Settings.engageTimeoutInSeconds()).getSeconds()) * 1000);
         }
         if (!engaged) {
             currentlyEngaged.remove(npc);

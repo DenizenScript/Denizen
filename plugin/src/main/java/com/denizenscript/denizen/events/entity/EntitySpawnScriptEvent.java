@@ -6,9 +6,9 @@ import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -50,7 +50,7 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     public static EntitySpawnScriptEvent instance;
     public dEntity entity;
     public dLocation location;
-    public Element reason;
+    public ElementTag reason;
     public CreatureSpawnEvent event;
 
     @Override
@@ -95,7 +95,7 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return entity;
         }
@@ -104,7 +104,7 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
         }
         else if (name.equals("cuboids")) {
             Debug.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
-            dList cuboids = new dList();
+            ListTag cuboids = new ListTag();
             for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
                 cuboids.add(cuboid.identifySimple());
             }
@@ -121,7 +121,7 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
         Entity entity = event.getEntity();
         this.entity = new dEntity(entity);
         location = new dLocation(event.getLocation());
-        reason = new Element(event.getSpawnReason().name());
+        reason = new ElementTag(event.getSpawnReason().name());
         this.event = event;
         dEntity.rememberEntity(entity);
         fire(event);

@@ -8,8 +8,8 @@ import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dScript;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
@@ -109,7 +109,7 @@ public class InventoryScriptContainer extends ScriptContainer {
         // TODO: Clean all this code!
 
         dInventory inventory = null;
-        BukkitTagContext context = new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this));
+        BukkitTagContext context = new BukkitTagContext(player, npc, false, null, shouldDebug(), new ScriptTag(this));
 
         try {
             if (contains("INVENTORY")) {
@@ -225,7 +225,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                     }
                     queue.start();
                     if (queue.determinations != null) {
-                        dList list = dList.getListFor(queue.determinations.getObject(0));
+                        ListTag list = ListTag.getListFor(queue.determinations.getObject(0));
                         if (list != null) {
                             int x = 0;
                             for (dItem item : list.filter(dItem.class, this)) {

@@ -6,7 +6,7 @@ import com.denizenscript.denizen.npc.traits.AssignmentTrait;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dScript;
+import com.denizenscript.denizencore.objects.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
@@ -55,12 +55,12 @@ public class AssignmentCommand extends AbstractCommand {
                     && !scriptEntry.hasObject("action")) {
                 scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));
             }
-            else if (arg.matchesArgumentType(dScript.class)
+            else if (arg.matchesArgumentType(ScriptTag.class)
                     && !scriptEntry.hasObject("script")) {
                 // Check the type of script.. it must be an assignment-type container
-                if (arg.asType(dScript.class) != null
-                        && arg.asType(dScript.class).getType().equalsIgnoreCase("assignment")) {
-                    scriptEntry.addObject("script", arg.asType(dScript.class));
+                if (arg.asType(ScriptTag.class) != null
+                        && arg.asType(ScriptTag.class).getType().equalsIgnoreCase("assignment")) {
+                    scriptEntry.addObject("script", arg.asType(ScriptTag.class));
                 }
                 else {
                     throw new InvalidArgumentsException("Script specified is not an 'assignment-type' container.");
@@ -89,7 +89,7 @@ public class AssignmentCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        dScript script = scriptEntry.getdObject("script");
+        ScriptTag script = scriptEntry.getdObject("script");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {

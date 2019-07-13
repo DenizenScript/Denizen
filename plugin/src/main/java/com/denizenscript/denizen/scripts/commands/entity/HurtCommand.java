@@ -5,9 +5,9 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Bukkit;
@@ -78,7 +78,7 @@ public class HurtCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("cause")
                     && arg.matchesEnum(EntityDamageEvent.DamageCause.values())) {
@@ -86,7 +86,7 @@ public class HurtCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("source_once")
                     && arg.matchesOne("source_once")) {
-                scriptEntry.addObject("source_once", new Element(true));
+                scriptEntry.addObject("source_once", new ElementTag(true));
             }
             else {
                 arg.reportUnhandled();
@@ -94,7 +94,7 @@ public class HurtCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("amount")) {
-            scriptEntry.addObject("amount", new Element(1.0d));
+            scriptEntry.addObject("amount", new ElementTag(1.0d));
         }
 
         if (!scriptEntry.hasObject("entities")) {
@@ -119,9 +119,9 @@ public class HurtCommand extends AbstractCommand {
 
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         dEntity source = (dEntity) scriptEntry.getObject("source");
-        Element amountElement = scriptEntry.getElement("amount");
-        Element cause = scriptEntry.getElement("cause");
-        Element source_once = scriptEntry.getElement("source_once");
+        ElementTag amountElement = scriptEntry.getElement("amount");
+        ElementTag cause = scriptEntry.getElement("cause");
+        ElementTag source_once = scriptEntry.getElement("source_once");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

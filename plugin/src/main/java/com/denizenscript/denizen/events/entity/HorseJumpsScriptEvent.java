@@ -2,9 +2,9 @@ package com.denizenscript.denizen.events.entity;
 
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Horse;
@@ -28,8 +28,8 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Context
     // <context.entity> returns the dEntity of the horse.
-    // <context.color> returns an Element of the horse's color.
-    // <context.variant> returns an Element of the horse's variant.
+    // <context.color> returns an ElementTag of the horse's color.
+    // <context.variant> returns an ElementTag of the horse's variant.
     // <context.power> returns an Element(Decimal) of the jump's power.
     //
     // @Determine
@@ -43,8 +43,8 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
 
     public static HorseJumpsScriptEvent instance;
     public dEntity entity;
-    public Element color;
-    public Element variant;
+    public ElementTag color;
+    public ElementTag variant;
     public Float power;
     public HorseJumpEvent event;
 
@@ -91,7 +91,7 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return entity;
         }
@@ -102,7 +102,7 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
             return variant;
         }
         else if (name.equals("power")) {
-            return new Element(power);
+            return new ElementTag(power);
         }
         return super.getContext(name);
     }
@@ -111,8 +111,8 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     public void onHorseJumps(HorseJumpEvent event) {
         if (event.getEntity() instanceof Horse) {
             entity = new dEntity(event.getEntity());
-            color = new Element(((Horse) event.getEntity()).getColor().name());
-            variant = new Element(event.getEntity().getVariant().name());
+            color = new ElementTag(((Horse) event.getEntity()).getColor().name());
+            variant = new ElementTag(event.getEntity().getVariant().name());
             power = event.getPower();
             this.event = event;
             fire(event);

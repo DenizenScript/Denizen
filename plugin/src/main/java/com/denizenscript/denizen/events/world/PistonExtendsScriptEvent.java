@@ -3,9 +3,9 @@ package com.denizenscript.denizen.events.world;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dMaterial;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.block.Block;
@@ -30,9 +30,9 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
     // @Context
     // <context.location> returns the dLocation of the piston.
     // <context.material> returns the dMaterial of the piston.
-    // <context.length> returns an Element of the number of blocks that will be moved by the piston.
-    // <context.blocks> returns a dList of all block locations about to be moved.
-    // <context.sticky> returns an Element of whether the piston is sticky.
+    // <context.length> returns an ElementTag of the number of blocks that will be moved by the piston.
+    // <context.blocks> returns a ListTag of all block locations about to be moved.
+    // <context.sticky> returns an ElementTag of whether the piston is sticky.
     // <context.relative> returns a dLocation of the block in front of the piston.
     //
     // -->
@@ -44,9 +44,9 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
     public static PistonExtendsScriptEvent instance;
     public dLocation location;
     public dMaterial material;
-    public Element length;
-    public dList blocks;
-    public Element sticky;
+    public ElementTag length;
+    public ListTag blocks;
+    public ElementTag sticky;
     public dLocation relative;
     public BlockPistonExtendEvent event;
 
@@ -75,7 +75,7 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("location")) {
             return location;
         }
@@ -101,13 +101,13 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
     public void onPistonExtends(BlockPistonExtendEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         material = new dMaterial(event.getBlock());
-        sticky = new Element(event.isSticky() ? "true" : "false");
+        sticky = new ElementTag(event.isSticky() ? "true" : "false");
         relative = new dLocation(event.getBlock().getRelative(event.getDirection()).getLocation());
-        blocks = new dList();
+        blocks = new ListTag();
         for (Block block : event.getBlocks()) {
             blocks.add(new dLocation(block.getLocation()).identify());
         }
-        length = new Element(blocks.size());
+        length = new ElementTag(blocks.size());
         this.event = event;
         fire(event);
     }

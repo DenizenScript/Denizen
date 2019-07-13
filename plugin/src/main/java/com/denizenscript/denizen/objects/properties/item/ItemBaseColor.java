@@ -2,9 +2,9 @@ package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.utilities.MaterialCompat;
 import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.DyeColor;
@@ -17,7 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemBaseColor implements Property {
 
-    public static boolean describes(dObject item) {
+    public static boolean describes(ObjectTag item) {
         if (item instanceof dItem) {
             Material material = ((dItem) item).getItemStack().getType();
             return MaterialCompat.isBannerOrShield(material);
@@ -25,7 +25,7 @@ public class ItemBaseColor implements Property {
         return false;
     }
 
-    public static ItemBaseColor getFrom(dObject item) {
+    public static ItemBaseColor getFrom(ObjectTag item) {
         if (!describes(item)) {
             return null;
         }
@@ -83,7 +83,7 @@ public class ItemBaseColor implements Property {
 
         // <--[tag]
         // @attribute <i@item.base_color>
-        // @returns Element
+        // @returns ElementTag
         // @group properties
         // @mechanism dItem.base_color
         // @description
@@ -93,7 +93,7 @@ public class ItemBaseColor implements Property {
         if (attribute.startsWith("base_color")) {
             DyeColor baseColor = getBaseColor();
             if (baseColor != null) {
-                return new Element(baseColor.name()).getAttribute(attribute.fulfill(1));
+                return new ElementTag(baseColor.name()).getAttribute(attribute.fulfill(1));
             }
             return null;
         }

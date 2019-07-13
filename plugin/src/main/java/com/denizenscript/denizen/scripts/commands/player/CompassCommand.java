@@ -5,7 +5,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -60,7 +60,7 @@ public class CompassCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("reset")
                     && arg.matches("reset")) {
-                scriptEntry.addObject("reset", new Element(true));
+                scriptEntry.addObject("reset", new ElementTag(true));
             }
             else {
                 arg.reportUnhandled();
@@ -72,7 +72,7 @@ public class CompassCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Missing location argument!");
         }
 
-        scriptEntry.defaultObject("reset", new Element(false));
+        scriptEntry.defaultObject("reset", new ElementTag(false));
     }
 
 
@@ -82,7 +82,7 @@ public class CompassCommand extends AbstractCommand {
         // Fetch required objects
 
         dLocation location = scriptEntry.getdObject("location");
-        Element reset = scriptEntry.getElement("reset");
+        ElementTag reset = scriptEntry.getElement("reset");
         Player player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
 
 

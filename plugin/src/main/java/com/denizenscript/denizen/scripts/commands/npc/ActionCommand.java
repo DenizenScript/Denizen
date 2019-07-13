@@ -52,14 +52,14 @@ public class ActionCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("npcs")
                     && arg.matchesArgumentList(dNPC.class)) {
-                scriptEntry.addObject("npcs", arg.asType(dList.class).filter(dNPC.class, scriptEntry));
+                scriptEntry.addObject("npcs", arg.asType(ListTag.class).filter(dNPC.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("context")
                     && arg.matchesPrefix("context", "c")) {
-                scriptEntry.addObject("context", arg.asType(dList.class));
+                scriptEntry.addObject("context", arg.asType(ListTag.class));
             }
             else if (!scriptEntry.hasObject("actions")) {
-                scriptEntry.addObject("actions", arg.asType(dList.class));
+                scriptEntry.addObject("actions", arg.asType(ListTag.class));
             }
             else {
                 arg.reportUnhandled();
@@ -79,7 +79,7 @@ public class ActionCommand extends AbstractCommand {
             }
         }
 
-        scriptEntry.defaultObject("context", new dList());
+        scriptEntry.defaultObject("context", new ListTag());
 
     }
 
@@ -87,8 +87,8 @@ public class ActionCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        dList actions = (dList) scriptEntry.getObject("actions");
-        dList context = (dList) scriptEntry.getObject("context");
+        ListTag actions = (ListTag) scriptEntry.getObject("actions");
+        ListTag context = (ListTag) scriptEntry.getObject("context");
         List<dNPC> npcs = (List<dNPC>) scriptEntry.getObject("npcs");
 
         if (scriptEntry.dbCallShouldDebug()) {
@@ -102,7 +102,7 @@ public class ActionCommand extends AbstractCommand {
         }
 
         // Change the context input to a list of objects
-        Map<String, dObject> context_map = new HashMap<>();
+        Map<String, ObjectTag> context_map = new HashMap<>();
         for (int i = 0; i < context.size(); i += 2) {
             context_map.put(context.get(i), ObjectFetcher.pickObjectFor(context.get(i + 1), scriptEntry.entryData.getTagContext()));
         }

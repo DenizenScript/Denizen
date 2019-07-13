@@ -58,20 +58,20 @@ public class CastCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("remove")
                     && arg.matches("remove", "cancel")) {
-                scriptEntry.addObject("remove", new Element(true));
+                scriptEntry.addObject("remove", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("ambient")
                     && arg.matches("no_ambient")) {
-                scriptEntry.addObject("ambient", new Element(false));
+                scriptEntry.addObject("ambient", new ElementTag(false));
             }
             else if (!scriptEntry.hasObject("show_particles")
                     && arg.matches("hide_particles")) {
-                scriptEntry.addObject("show_particles", new Element(false));
+                scriptEntry.addObject("show_particles", new ElementTag(false));
             }
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesPrefix("duration", "d")
-                    && arg.matchesArgumentType(Duration.class)) {
-                scriptEntry.addObject("duration", arg.asType(Duration.class));
+                    && arg.matchesArgumentType(DurationTag.class)) {
+                scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
             else if (!scriptEntry.hasObject("amplifier")
                     && arg.matchesPrefix("power", "p", "amplifier", "a")
@@ -84,7 +84,7 @@ public class CastCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
 
             }
             else {
@@ -103,11 +103,11 @@ public class CastCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify a valid PotionType!");
         }
 
-        scriptEntry.defaultObject("duration", new Duration(60));
-        scriptEntry.defaultObject("amplifier", new Element(1));
-        scriptEntry.defaultObject("remove", new Element(false));
-        scriptEntry.defaultObject("show_particles", new Element(true));
-        scriptEntry.defaultObject("ambient", new Element(true));
+        scriptEntry.defaultObject("duration", new DurationTag(60));
+        scriptEntry.defaultObject("amplifier", new ElementTag(1));
+        scriptEntry.defaultObject("remove", new ElementTag(false));
+        scriptEntry.defaultObject("show_particles", new ElementTag(true));
+        scriptEntry.defaultObject("ambient", new ElementTag(true));
 
     }
 
@@ -118,10 +118,10 @@ public class CastCommand extends AbstractCommand {
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         PotionEffectType effect = (PotionEffectType) scriptEntry.getObject("effect");
         int amplifier = scriptEntry.getElement("amplifier").asInt();
-        Duration duration = (Duration) scriptEntry.getObject("duration");
+        DurationTag duration = (DurationTag) scriptEntry.getObject("duration");
         boolean remove = scriptEntry.getElement("remove").asBoolean();
-        Element showParticles = scriptEntry.getElement("show_particles");
-        Element ambient = scriptEntry.getElement("ambient");
+        ElementTag showParticles = scriptEntry.getElement("show_particles");
+        ElementTag ambient = scriptEntry.getElement("ambient");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {

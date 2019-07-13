@@ -4,7 +4,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dWorld;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -74,8 +74,8 @@ public class GameRuleCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
         // Fetch objects
         dWorld world = scriptEntry.getdObject("world");
-        Element gamerule = scriptEntry.getElement("gamerule");
-        Element value = scriptEntry.getElement("value");
+        ElementTag gamerule = scriptEntry.getElement("gamerule");
+        ElementTag value = scriptEntry.getElement("value");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {

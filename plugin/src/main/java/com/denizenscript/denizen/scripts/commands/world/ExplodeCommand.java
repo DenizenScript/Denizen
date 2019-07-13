@@ -5,7 +5,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -81,7 +81,7 @@ public class ExplodeCommand extends AbstractCommand {
         }
 
         // Use default values if necessary
-        scriptEntry.defaultObject("power", new Element(1.0));
+        scriptEntry.defaultObject("power", new ElementTag(1.0));
         scriptEntry.defaultObject("location",
                 Utilities.entryHasNPC(scriptEntry) ? Utilities.getEntryNPC(scriptEntry).getLocation() : null,
                 Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getLocation() : null);
@@ -96,7 +96,7 @@ public class ExplodeCommand extends AbstractCommand {
         // Get objects
 
         final dLocation location = (dLocation) scriptEntry.getObject("location");
-        Element power = (Element) scriptEntry.getObject("power");
+        ElementTag power = (ElementTag) scriptEntry.getObject("power");
         boolean breakblocks = scriptEntry.hasObject("breakblocks");
         boolean fire = scriptEntry.hasObject("fire");
 

@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.inventory.ItemStack;
@@ -11,11 +11,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemUnbreakable implements Property {
 
-    public static boolean describes(dObject object) {
+    public static boolean describes(ObjectTag object) {
         return object instanceof dItem;
     }
 
-    public static ItemUnbreakable getFrom(dObject object) {
+    public static ItemUnbreakable getFrom(ObjectTag object) {
         if (!describes(object)) {
             return null;
         }
@@ -45,14 +45,14 @@ public class ItemUnbreakable implements Property {
 
         // <--[tag]
         // @attribute <i@item.unbreakable>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group properties
         // @mechanism dItem.unbreakable
         // @description
         // Returns whether an item has the unbreakable flag.
         // -->
         if (attribute.startsWith("unbreakable")) {
-            return new Element(getPropertyString() != null).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getPropertyString() != null).getAttribute(attribute.fulfill(1));
         }
 
         return null;

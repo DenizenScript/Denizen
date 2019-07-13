@@ -10,9 +10,9 @@ import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Material;
@@ -65,7 +65,7 @@ public class ToastCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("targets")
                     && arg.matchesPrefix("target", "targets", "t")
                     && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
+                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("icon")
                     && arg.matchesPrefix("icon", "i")
@@ -82,7 +82,7 @@ public class ToastCommand extends AbstractCommand {
                 scriptEntry.addObject("background", arg.asElement());
             }
             else if (!scriptEntry.hasObject("text")) {
-                scriptEntry.addObject("text", new Element(arg.raw_value));
+                scriptEntry.addObject("text", new ElementTag(arg.raw_value));
             }
             else {
                 arg.reportUnhandled();
@@ -104,16 +104,16 @@ public class ToastCommand extends AbstractCommand {
         }
 
         scriptEntry.defaultObject("icon", new dItem(Material.AIR));
-        scriptEntry.defaultObject("frame", new Element("TASK"));
-        scriptEntry.defaultObject("background", new Element("textures/gui/advancements/backgrounds/adventure.png"));
+        scriptEntry.defaultObject("frame", new ElementTag("TASK"));
+        scriptEntry.defaultObject("background", new ElementTag("textures/gui/advancements/backgrounds/adventure.png"));
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void execute(ScriptEntry scriptEntry) {
-        Element text = scriptEntry.getElement("text");
-        Element frame = scriptEntry.getElement("frame");
-        Element background = scriptEntry.getElement("background");
+        ElementTag text = scriptEntry.getElement("text");
+        ElementTag frame = scriptEntry.getElement("frame");
+        ElementTag background = scriptEntry.getElement("background");
         dItem icon = scriptEntry.getdObject("icon");
         final List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
 

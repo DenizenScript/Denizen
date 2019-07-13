@@ -6,7 +6,7 @@ import com.denizenscript.denizen.nms.interfaces.WorldAccess;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.scripts.commands.player.GlowCommand;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
@@ -26,7 +26,7 @@ public class DenizenWorldAccess implements WorldAccess {
             }
             dEntity.rememberEntity(entity);
             EntityDespawnScriptEvent.instance.entity = new dEntity(entity);
-            EntityDespawnScriptEvent.instance.cause = new Element("OTHER");
+            EntityDespawnScriptEvent.instance.cause = new ElementTag("OTHER");
             EntityDespawnScriptEvent.instance.cancelled = false;
             EntityDespawnScriptEvent.instance.fire();
             dEntity.forgetEntity(entity);

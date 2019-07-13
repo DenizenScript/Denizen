@@ -3,7 +3,7 @@ package com.denizenscript.denizen.events.world;
 import com.denizenscript.denizen.objects.dChunk;
 import com.denizenscript.denizen.objects.dWorld;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
@@ -62,7 +62,7 @@ public class ChunkLoadScriptEvent extends BukkitScriptEvent implements Listener 
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("chunk")) {
             return chunk;
         }

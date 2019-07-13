@@ -4,10 +4,10 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -21,13 +21,13 @@ import java.util.List;
 
 public class EntityPotionEffects implements Property {
 
-    public static boolean describes(dObject object) {
+    public static boolean describes(ObjectTag object) {
         return object instanceof dEntity &&
                 (((dEntity) object).isLivingEntity()
                         || ((dEntity) object).getBukkitEntity() instanceof TippedArrow);
     }
 
-    public static EntityPotionEffects getFrom(dObject object) {
+    public static EntityPotionEffects getFrom(ObjectTag object) {
         if (!describes(object)) {
             return null;
         }
@@ -74,7 +74,7 @@ public class EntityPotionEffects implements Property {
         if (effects.isEmpty()) {
             return null;
         }
-        dList returnable = new dList();
+        ListTag returnable = new ListTag();
         for (PotionEffect effect : effects) {
             returnable.add(effect.getType().getName() + "," + effect.getAmplifier() + "," + effect.getDuration());
         }
@@ -99,7 +99,7 @@ public class EntityPotionEffects implements Property {
 
         // <--[tag]
         // @attribute <e@entity.list_effects>
-        // @returns dList
+        // @returns ListTag
         // @group attribute
         // @mechanism dEntity.potion_effects
         // @description
@@ -108,7 +108,7 @@ public class EntityPotionEffects implements Property {
         // IS_AMBIENT, HAS_PARTICLES, and HAS_ICON are booleans.
         // -->
         if (attribute.startsWith("list_effects")) {
-            dList effects = new dList();
+            ListTag effects = new ListTag();
             for (PotionEffect effect : getEffectsList()) {
                 effects.add(stringify(effect));
             }
@@ -117,7 +117,7 @@ public class EntityPotionEffects implements Property {
 
         // <--[tag]
         // @attribute <e@entity.has_effect[<effect>]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group attributes
         // @description
         // Returns whether the entity has a specified effect.
@@ -136,7 +136,7 @@ public class EntityPotionEffects implements Property {
             else if (!getEffectsList().isEmpty()) {
                 returnElement = true;
             }
-            return new Element(returnElement).getAttribute(attribute.fulfill(1));
+            return new ElementTag(returnElement).getAttribute(attribute.fulfill(1));
         }
 
         return null;
@@ -147,7 +147,7 @@ public class EntityPotionEffects implements Property {
         // <--[mechanism]
         // @object dEntity
         // @name potion_effects
-        // @input dList
+        // @input ListTag
         // @description
         // Set the entity's active potion effects.
         // Each item in the list is formatted as: TYPE,AMPLIFIER,DURATION,IS_AMBIENT,HAS_PARTICLES,HAS_ICON
@@ -158,7 +158,7 @@ public class EntityPotionEffects implements Property {
         // <e@entity.list_effects>
         // -->
         if (mechanism.matches("potion_effects")) {
-            dList effects = dList.valueOf(mechanism.getValue().asString());
+            ListTag effects = ListTag.valueOf(mechanism.getValue().asString());
             for (String effect : effects) {
                 List<String> split = CoreUtilities.split(effect, ',');
                 if (split.size() < 3) {

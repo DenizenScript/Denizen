@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.objects.properties.material;
 
 import com.denizenscript.denizen.objects.dMaterial;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.block.BlockFace;
@@ -11,13 +11,13 @@ import org.bukkit.block.data.type.Switch;
 
 public class MaterialSwitchFace implements Property {
 
-    public static boolean describes(dObject material) {
+    public static boolean describes(ObjectTag material) {
         return material instanceof dMaterial
                 && ((dMaterial) material).hasModernData()
                 && ((dMaterial) material).getModernData().data instanceof Switch;
     }
 
-    public static MaterialSwitchFace getFrom(dObject _material) {
+    public static MaterialSwitchFace getFrom(ObjectTag _material) {
         if (!describes(_material)) {
             return null;
         }
@@ -50,7 +50,7 @@ public class MaterialSwitchFace implements Property {
 
         // <--[tag]
         // @attribute <m@material.switch_face>
-        // @returns Element
+        // @returns ElementTag
         // @mechanism dMaterial.switch_face
         // @group properties
         // @description
@@ -58,7 +58,7 @@ public class MaterialSwitchFace implements Property {
         // Output is "CEILING", "FLOOR", or "WALL".
         // -->
         if (attribute.startsWith("switch_face")) {
-            return new Element(getSwitch().getFace().name()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getSwitch().getFace().name()).getAttribute(attribute.fulfill(1));
         }
 
         return null;

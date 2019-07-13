@@ -24,7 +24,7 @@ import org.bukkit.material.MaterialData;
 
 import java.util.HashMap;
 
-public class dMaterial implements dObject, Adjustable {
+public class dMaterial implements ObjectTag, Adjustable {
 
     // <--[language]
     // @name dMaterial
@@ -451,7 +451,7 @@ public class dMaterial implements dObject, Adjustable {
     }
 
     @Override
-    public dObject setPrefix(String prefix) {
+    public ObjectTag setPrefix(String prefix) {
         if (prefix != null) {
             this.prefix = prefix;
         }
@@ -462,27 +462,27 @@ public class dMaterial implements dObject, Adjustable {
 
         registerTag("id", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 Debug.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use material names instead.");
-                return new Element(((dMaterial) object).material.getId())
+                return new ElementTag(((dMaterial) object).material.getId())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         registerTag("data", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 if (attribute.context == null || attribute.context.debug) {
                     Debug.log("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use relevant properties instead.");
                 }
-                return new Element(((dMaterial) object).getData())
+                return new ElementTag(((dMaterial) object).getData())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <m@material.is_ageable>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group properties
         // @description
         // Returns whether the material is an ageable material.
@@ -491,23 +491,23 @@ public class dMaterial implements dObject, Adjustable {
         // -->
         registerTag("is_ageable", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(MaterialAge.describes(object))
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(MaterialAge.describes(object))
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         registerTag("is_plant", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(MaterialAge.describes(object))
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(MaterialAge.describes(object))
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <m@material.is_directional>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group properties
         // @description
         // Returns whether the material is a is_directional material.
@@ -516,15 +516,15 @@ public class dMaterial implements dObject, Adjustable {
         // -->
         registerTag("is_bisected", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(MaterialHalf.describes(object))
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(MaterialHalf.describes(object))
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <m@material.is_bisected>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group properties
         // @description
         // Returns whether the material is a bisected material.
@@ -533,15 +533,15 @@ public class dMaterial implements dObject, Adjustable {
         // -->
         registerTag("is_bisected", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(MaterialHalf.describes(object))
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(MaterialHalf.describes(object))
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <m@material.is_levelable>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @group properties
         // @description
         // Returns whether the material is a levelable material.
@@ -550,208 +550,208 @@ public class dMaterial implements dObject, Adjustable {
         // -->
         registerTag("is_levelable", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(MaterialLevel.describes(object))
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(MaterialLevel.describes(object))
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <m@material.has_gravity>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the material is affected by gravity.
         // -->
         registerTag("has_gravity", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dMaterial) object).material.hasGravity())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dMaterial) object).material.hasGravity())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <m@material.is_block>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the material is a placeable block.
         // -->
         registerTag("is_block", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dMaterial) object).material.isBlock())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dMaterial) object).material.isBlock())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <m@material.is_burnable>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the material is a block that can burn away.
         // -->
         registerTag("is_burnable", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dMaterial) object).material.isBurnable())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dMaterial) object).material.isBurnable())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <m@material.is_edible>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the material is edible.
         // -->
         registerTag("is_edible", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dMaterial) object).material.isEdible())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dMaterial) object).material.isEdible())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <m@material.is_flammable>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the material is a block that can catch fire.
         // -->
         registerTag("is_flammable", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dMaterial) object).material.isFlammable())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dMaterial) object).material.isFlammable())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <m@material.is_occluding>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the material is a block that completely blocks vision.
         // -->
         registerTag("is_occluding", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dMaterial) object).material.isOccluding())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dMaterial) object).material.isOccluding())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <m@material.is_record>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the material is a playable music disc.
         // -->
         registerTag("is_record", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dMaterial) object).material.isRecord())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dMaterial) object).material.isRecord())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <m@material.is_solid>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the material is a block that is solid (cannot be walked through).
         // -->
         registerTag("is_solid", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dMaterial) object).material.isSolid())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dMaterial) object).material.isSolid())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <m@material.is_transparent>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the material is a block that does not block any light.
         // -->
         registerTag("is_transparent", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dMaterial) object).material.isTransparent())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dMaterial) object).material.isTransparent())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <m@material.max_durability>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the maximum durability of this material.
         // -->
         registerTag("max_durability", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dMaterial) object).material.getMaxDurability())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dMaterial) object).material.getMaxDurability())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <m@material.block_resistance>
-        // @returns Element(Decimal)
+        // @returns ElementTag(Decimal)
         // @mechanism dMaterial.block_resistance
         // @description
         // Returns the explosion resistance for all blocks of this material type.
         // -->
         registerTag("block_resistance", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 dMaterial material = (dMaterial) object;
                 if (!NMSHandler.getInstance().getBlockHelper().hasBlock(material.getMaterial())) {
                     Debug.echoError("Provided material does not have a placeable block.");
                     return null;
                 }
-                return new Element(NMSHandler.getInstance().getBlockHelper().getBlockResistance(material.getMaterial()))
+                return new ElementTag(NMSHandler.getInstance().getBlockHelper().getBlockResistance(material.getMaterial()))
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <m@material.hardness>
-        // @returns Element(Decimal)
+        // @returns ElementTag(Decimal)
         // @description
         // Returns the value representing how hard a material, used as a basis for calculating the time it takes to break.
         // -->
         registerTag("hardness", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 dMaterial material = (dMaterial) object;
                 if (!material.getMaterial().isBlock()) {
                     Debug.echoError("Provided material does not have a placeable block.");
                     return null;
                 }
-                return new Element(material.getMaterial().getHardness())
+                return new ElementTag(material.getMaterial().getHardness())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <m@material.max_stack_size>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @description
         // Returns the maximum amount of this material that can be held in a stack.
         // -->
         registerTag("max_stack_size", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dMaterial) object).material.getMaxStackSize())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dMaterial) object).material.getMaxStackSize())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <m@material.is_made_of[<material>]>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns true if the material is a variety of the specified material.
         // Example: <m@red_wool.is_made_of[m@wool]> will return true.
@@ -759,16 +759,16 @@ public class dMaterial implements dObject, Adjustable {
         // -->
         registerTag("is_made_of", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 dMaterial compared = dMaterial.valueOf(attribute.getContext(1));
-                return new Element(compared != null && ((dMaterial) object).material == compared.getMaterial())
+                return new ElementTag(compared != null && ((dMaterial) object).material == compared.getMaterial())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <m@material.bukkit_enum>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the bukkit Material enum value. For example: <m@birch_sapling.bukkit_enum>
         // will return 'sapling'
@@ -776,22 +776,22 @@ public class dMaterial implements dObject, Adjustable {
         // -->
         registerTag("bukkit_enum", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dMaterial) object).material.name())
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dMaterial) object).material.name())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
         // @attribute <m@material.name>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the name of the material.
         // -->
         registerTag("name", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dMaterial) object).forcedIdentity != null ? ((dMaterial) object).forcedIdentityLow :
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((dMaterial) object).forcedIdentity != null ? ((dMaterial) object).forcedIdentityLow :
                         CoreUtilities.toLowerCase(((dMaterial) object).material.name()))
                         .getAttribute(attribute.fulfill(1));
             }
@@ -799,20 +799,20 @@ public class dMaterial implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <m@material.full>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the material's full identification.
         // Irrelevant on modern (1.13+) servers.
         // -->
         registerTag("full", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 if (((dMaterial) object).hasData()) {
-                    return new Element(((dMaterial) object).identifyFull())
+                    return new ElementTag(((dMaterial) object).identifyFull())
                             .getAttribute(attribute.fulfill(1));
                 }
                 else {
-                    return new Element(((dMaterial) object).identify())
+                    return new ElementTag(((dMaterial) object).identify())
                             .getAttribute(attribute.fulfill(1));
                 }
             }
@@ -826,7 +826,7 @@ public class dMaterial implements dObject, Adjustable {
         // -->
         registerTag("item", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
+            public String run(Attribute attribute, ObjectTag object) {
                 dMaterial material = (dMaterial) object;
                 dItem item = new dItem(material, 1);
                 attribute = attribute.fulfill(1);
@@ -850,15 +850,15 @@ public class dMaterial implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <m@material.type>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Always returns 'Material' for dMaterial objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         registerTag("type", new TagRunnable() {
             @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element("Material").getAttribute(attribute.fulfill(1));
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag("Material").getAttribute(attribute.fulfill(1));
             }
         });
 
@@ -895,7 +895,7 @@ public class dMaterial implements dObject, Adjustable {
             return returned;
         }
 
-        return new Element(identify()).getAttribute(attribute.fulfill(0));
+        return new ElementTag(identify()).getAttribute(attribute.fulfill(0));
     }
 
     @Override

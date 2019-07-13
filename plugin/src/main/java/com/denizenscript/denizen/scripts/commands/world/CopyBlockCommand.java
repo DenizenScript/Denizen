@@ -7,7 +7,7 @@ import com.denizenscript.denizen.objects.dCuboid;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -69,7 +69,7 @@ public class CopyBlockCommand extends AbstractCommand {
                 scriptEntry.addObject("destination", arg.asType(dLocation.class));
             }
             else if (arg.matches("remove_original")) {
-                scriptEntry.addObject("remove", new Element(true));
+                scriptEntry.addObject("remove", new ElementTag(true));
             }
             else {
                 arg.reportUnhandled();
@@ -86,7 +86,7 @@ public class CopyBlockCommand extends AbstractCommand {
         }
 
         // Set defaults
-        scriptEntry.defaultObject("remove", new Element(false));
+        scriptEntry.defaultObject("remove", new ElementTag(false));
     }
 
     @Override
@@ -95,7 +95,7 @@ public class CopyBlockCommand extends AbstractCommand {
         dLocation copy_location = (dLocation) scriptEntry.getObject("location");
         dLocation destination = (dLocation) scriptEntry.getObject("destination");
         dCuboid copy_cuboid = (dCuboid) scriptEntry.getObject("cuboid");
-        Element remove_original = (Element) scriptEntry.getObject("remove");
+        ElementTag remove_original = (ElementTag) scriptEntry.getObject("remove");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

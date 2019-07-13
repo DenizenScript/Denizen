@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.core.EscapeTags;
@@ -11,12 +11,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemDisplayname implements Property {
 
-    public static boolean describes(dObject item) {
+    public static boolean describes(ObjectTag item) {
         // Technically, all items can have a display name
         return item instanceof dItem;
     }
 
-    public static ItemDisplayname getFrom(dObject _item) {
+    public static ItemDisplayname getFrom(ObjectTag _item) {
         if (!describes(_item)) {
             return null;
         }
@@ -54,7 +54,7 @@ public class ItemDisplayname implements Property {
 
         // <--[tag]
         // @attribute <i@item.display>
-        // @returns Element
+        // @returns ElementTag
         // @mechanism dItem.display_name
         // @group properties
         // @description
@@ -62,21 +62,21 @@ public class ItemDisplayname implements Property {
         // -->
         if (attribute.startsWith("display")) {
             if (hasDisplayName()) {
-                return new Element(item.getItemStack().getItemMeta().getDisplayName())
+                return new ElementTag(item.getItemStack().getItemMeta().getDisplayName())
                         .getAttribute(attribute.fulfill(1));
             }
         }
 
         // <--[tag]
         // @attribute <i@item.has_display>
-        // @returns Element(Boolean)
+        // @returns ElementTag(Boolean)
         // @mechanism dItem.display_name
         // @group properties
         // @description
         // Returns whether the item has a custom set display name.
         // -->
         if (attribute.startsWith("has_display")) {
-            return new Element(hasDisplayName())
+            return new ElementTag(hasDisplayName())
                     .getAttribute(attribute.fulfill(1));
         }
 

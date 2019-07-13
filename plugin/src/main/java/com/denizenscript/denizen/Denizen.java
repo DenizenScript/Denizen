@@ -37,7 +37,7 @@ import com.denizenscript.denizen.npc.DenizenNPCHelper;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.OldEventManager;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptBuilder;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
@@ -350,7 +350,7 @@ public class Denizen extends JavaPlugin {
 
             CommonRegistries.registerMainObjects();
 
-            // Register Core dObjects with the ObjectFetcher
+            // Register Core ObjectTags with the ObjectFetcher
             ObjectFetcher._registerCoreObjects();
         }
         catch (Exception e) {
@@ -456,7 +456,7 @@ public class Denizen extends JavaPlugin {
         // None.
         //
         // -->
-        HashMap<String, dObject> context = new HashMap<>();
+        HashMap<String, ObjectTag> context = new HashMap<>();
         OldEventManager.doEvents(Arrays.asList("shutdown"), new BukkitScriptEntryData(null, null), context);
 
         // Disable the log interceptor... otherwise bad things on /reload

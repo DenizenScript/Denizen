@@ -6,9 +6,9 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.Duration;
+import com.denizenscript.denizencore.objects.DurationTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.dScript;
+import com.denizenscript.denizencore.objects.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
@@ -27,15 +27,15 @@ public class CooldownCommand extends AbstractCommand {
     // @Description
     // Cools down a script-container. If an interact-container, when on cooldown, scripts will not pass a
     // requirements check allowing the next highest priority script to trigger. If any other type of script, a
-    // manual requirements check (<s@script_name.requirements.check>) will also return false until the cooldown
+    // manual requirements check (<ScriptTag_name.requirements.check>) will also return false until the cooldown
     // period is completed. Cooldown requires a type (player or global), a script, and a duration. It also requires
     // a valid link to a dPlayer if using player-type cooldown.
     //
     // Cooldown periods are persistent through a server restart as they are saved in the saves.yml.
     //
     // @Tags
-    // <s@script_name.cooled_down[player]>
-    // <s@script_name.cooldown>
+    // <ScriptTag_name.cooled_down[player]>
+    // <ScriptTag_name.cooldown>
     // <s@requirements.check>
     //
     // @Usage
@@ -72,16 +72,16 @@ public class CooldownCommand extends AbstractCommand {
 
             // Duration does not need a prefix, but is required.
             else if (!scriptEntry.hasObject("duration")
-                    && arg.matchesArgumentType(Duration.class)) {
-                scriptEntry.addObject("duration", arg.asType(Duration.class));
+                    && arg.matchesArgumentType(DurationTag.class)) {
+                scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
 
             // Require a prefix on the script, since it's optional.
             else if (arg.matchesPrefix("script", "s")) {
                 // Check matchesArgumentType afterwards so we don't default
                 // to the attached script unintentionally.
-                if (arg.matchesArgumentType(dScript.class)) {
-                    scriptEntry.addObject("script", arg.asType(dScript.class));
+                if (arg.matchesArgumentType(ScriptTag.class)) {
+                    scriptEntry.addObject("script", arg.asType(ScriptTag.class));
                 }
                 else {
                     throw new InvalidArgumentsException("Specified an invalid script!");
@@ -101,8 +101,8 @@ public class CooldownCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
         // Fetch objects
-        dScript script = (dScript) scriptEntry.getObject("script");
-        Duration duration = (Duration) scriptEntry.getObject("duration");
+        ScriptTag script = (ScriptTag) scriptEntry.getObject("script");
+        DurationTag duration = (DurationTag) scriptEntry.getObject("duration");
         Type type = (scriptEntry.hasObject("type") ?
                 (Type) scriptEntry.getObject("type") : Type.PLAYER);
 
@@ -140,18 +140,18 @@ public class CooldownCommand extends AbstractCommand {
      * @param scriptName the name of the script to check
      * @return a Duration of the time remaining
      */
-    public static Duration getCooldownDuration(dPlayer player, String scriptName) {
+    public static DurationTag getCooldownDuration(dPlayer player, String scriptName) {
 
         // Change to UPPERCASE so there's no case-sensitivity.
         scriptName = scriptName.toUpperCase();
 
-        Duration duration = Duration.ZERO;
+        DurationTag duration = DurationTag.ZERO;
 
         // Check current entry GLOBALLY, reset it if necessary
         if (DenizenAPI.getSaves().contains("Global.Scripts." + scriptName + ".Cooldown Time")) {
             if (System.currentTimeMillis()
                     < DenizenAPI.getSaves().getLong("Global.Scripts." + scriptName + ".Cooldown Time")) {
-                duration = new Duration((double) (DenizenAPI.getSaves().getLong("Global.Scripts." + scriptName
+                duration = new DurationTag((double) (DenizenAPI.getSaves().getLong("Global.Scripts." + scriptName
                         + ".Cooldown Time") - System.currentTimeMillis()) / 1000);
             }
         }
@@ -169,7 +169,7 @@ public class CooldownCommand extends AbstractCommand {
         // If there is an entry, check against the time
         if (System.currentTimeMillis()
                 <= DenizenAPI.getSaves().getLong("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time")) {
-            Duration player_dur = new Duration((double) (DenizenAPI.getSaves().getLong("Players." + player.getSaveName() + ".Scripts."
+            DurationTag player_dur = new DurationTag((double) (DenizenAPI.getSaves().getLong("Players." + player.getSaveName() + ".Scripts."
                     + scriptName + ".Cooldown Time") - System.currentTimeMillis()) / 1000);
             if (player_dur.getSeconds() > duration.getSeconds()) {
                 return player_dur;
@@ -234,7 +234,7 @@ public class CooldownCommand extends AbstractCommand {
      * @param scriptName the name of the script to cooldown
      * @param global     whether the script should be cooled down globally
      */
-    public static void setCooldown(dPlayer player, Duration duration, String scriptName, boolean global) {
+    public static void setCooldown(dPlayer player, DurationTag duration, String scriptName, boolean global) {
         scriptName = scriptName.toUpperCase();
         // Set global cooldown
         if (global) {

@@ -5,8 +5,8 @@ import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -31,7 +31,7 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Context
     // <context.hook> returns a dEntity of the hook.
-    // <context.state> returns an Element of the fishing state.
+    // <context.state> returns an ElementTag of the fishing state.
     // <context.entity> returns a dEntity of the entity that got caught.
     // <context.item> returns a dItem of the item gotten, if any.
     //
@@ -43,7 +43,7 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
 
     public static PlayerFishesScriptEvent instance;
     public dEntity hook;
-    public Element state;
+    public ElementTag state;
     public dEntity entity;
     public dItem item;
     public PlayerFishEvent event;
@@ -104,7 +104,7 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public dObject getContext(String name) {
+    public ObjectTag getContext(String name) {
         if (name.equals("hook")) {
             return hook;
         }
@@ -128,7 +128,7 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
         Entity hookEntity = NMSHandler.getInstance().getEntityHelper().getFishHook(event);
         dEntity.rememberEntity(hookEntity);
         hook = new dEntity(hookEntity);
-        state = new Element(event.getState().toString());
+        state = new ElementTag(event.getState().toString());
         item = null;
         entity = null;
         Entity caughtEntity = event.getCaught();

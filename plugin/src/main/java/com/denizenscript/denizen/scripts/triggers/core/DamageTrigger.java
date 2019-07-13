@@ -10,8 +10,8 @@ import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.tags.TagManager;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
@@ -90,8 +90,8 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
             damager = damager.getShooter();
         }
 
-        Map<String, dObject> context = new HashMap<>();
-        context.put("damage", new Element(event.getDamage()));
+        Map<String, ObjectTag> context = new HashMap<>();
+        context.put("damage", new ElementTag(event.getDamage()));
 
         dPlayer dplayer = null;
 
