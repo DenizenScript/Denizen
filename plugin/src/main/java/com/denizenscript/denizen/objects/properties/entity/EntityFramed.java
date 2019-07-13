@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -19,7 +19,7 @@ public class EntityFramed implements Property {
 
     // TODO: Possibly merge class with EntityItem?
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.ITEM_FRAME;
+        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntityType() == EntityType.ITEM_FRAME;
     }
 
     public static EntityFramed getFrom(ObjectTag entity) {
@@ -27,7 +27,7 @@ public class EntityFramed implements Property {
             return null;
         }
         else {
-            return new EntityFramed((dEntity) entity);
+            return new EntityFramed((EntityTag) entity);
         }
     }
 
@@ -44,11 +44,11 @@ public class EntityFramed implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityFramed(dEntity item) {
+    private EntityFramed(EntityTag item) {
         item_frame = item;
     }
 
-    dEntity item_frame;
+    EntityTag item_frame;
 
     public boolean hasItem() {
         return getItemFrameEntity().getItem() != null
@@ -59,12 +59,12 @@ public class EntityFramed implements Property {
         return (ItemFrame) item_frame.getBukkitEntity();
     }
 
-    public void setItem(dItem item) {
+    public void setItem(ItemTag item) {
         getItemFrameEntity().setItem(item.getItemStack());
     }
 
-    public dItem getItem() {
-        return new dItem(getItemFrameEntity().getItem());
+    public ItemTag getItem() {
+        return new ItemTag(getItemFrameEntity().getItem());
     }
 
 
@@ -102,9 +102,9 @@ public class EntityFramed implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.framed_item_rotation>
+        // @attribute <EntityTag.framed_item_rotation>
         // @returns ElementTag
-        // @mechanism dEntity.framed
+        // @mechanism EntityTag.framed
         // @group properties
         // @description
         // If the entity is an item frame, returns the rotation of the material currently framed.
@@ -115,9 +115,9 @@ public class EntityFramed implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.framed_item>
-        // @returns dItem
-        // @mechanism dEntity.framed
+        // @attribute <EntityTag.framed_item>
+        // @returns ItemTag
+        // @mechanism EntityTag.framed
         // @group properties
         // @description
         // If the entity is an item frame, returns the material currently framed.
@@ -128,9 +128,9 @@ public class EntityFramed implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.has_framed_item>
+        // @attribute <EntityTag.has_framed_item>
         // @returns ElementTag(Boolean)
-        // @mechanism dEntity.framed
+        // @mechanism EntityTag.framed
         // @group properties
         // @description
         // If the entity is an item frame, returns whether the frame has an item in it.
@@ -147,18 +147,18 @@ public class EntityFramed implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name framed
-        // @input dItem(|Element)
+        // @input ItemTag(|Element)
         // @description
         // Sets the entity's framed item and optionally the rotation as well.
         // Valid rotations: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Rotation.html>
         // For example: framed:i@diamond_sword|clockwise
         // @tags
-        // <e@entity.is_frame>
-        // <e@entity.has_framed_item>
-        // <e@entity.framed_item>
-        // <e@entity.framed_item_rotation>
+        // <EntityTag.is_frame>
+        // <EntityTag.has_framed_item>
+        // <EntityTag.framed_item>
+        // <EntityTag.framed_item_rotation>
         // -->
 
         if (mechanism.matches("framed")) {
@@ -167,8 +167,8 @@ public class EntityFramed implements Property {
                 Debug.echoError("Missing value for 'framed' mechanism!");
                 return;
             }
-            if (new ElementTag(list.get(0)).matchesType(dItem.class)) {
-                setItem(new ElementTag(list.get(0)).asType(dItem.class, mechanism.context));
+            if (new ElementTag(list.get(0)).matchesType(ItemTag.class)) {
+                setItem(new ElementTag(list.get(0)).asType(ItemTag.class, mechanism.context));
             }
             else {
                 Debug.echoError("Invalid item '" + list.get(0) + "'");

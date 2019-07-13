@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.utilities.blocks;
 
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import org.bukkit.event.EventHandler;
@@ -14,26 +14,26 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.*;
 
 /**
- * Creates a temporary fake block and shows it to a dPlayer.
+ * Creates a temporary fake block and shows it to a PlayerTag.
  */
 public class FakeBlock {
 
-    private final static Map<UUID, Map<dLocation, FakeBlock>> blocks = new HashMap<>();
-    private final static Map<dLocation, FakeBlock> blocksByLocation = new HashMap<>();
+    private final static Map<UUID, Map<LocationTag, FakeBlock>> blocks = new HashMap<>();
+    private final static Map<LocationTag, FakeBlock> blocksByLocation = new HashMap<>();
 
-    private final dPlayer player;
-    private final dLocation location;
-    private dMaterial material;
+    private final PlayerTag player;
+    private final LocationTag location;
+    private MaterialTag material;
     private long cancelTime = -1;
     private BukkitTask currentTask = null;
 
-    private FakeBlock(dPlayer player, dLocation location) {
+    private FakeBlock(PlayerTag player, LocationTag location) {
         this.player = player;
         this.location = location;
     }
 
-    public static void showFakeBlockTo(List<dPlayer> players, dLocation location, dMaterial material, DurationTag duration) {
-        for (dPlayer player : players) {
+    public static void showFakeBlockTo(List<PlayerTag> players, LocationTag location, MaterialTag material, DurationTag duration) {
+        for (PlayerTag player : players) {
             if (!player.isOnline() || !player.isValid()) {
                 continue;
             }
@@ -41,7 +41,7 @@ public class FakeBlock {
             if (!blocks.containsKey(uuid)) {
                 blocks.put(uuid, new HashMap<>());
             }
-            Map<dLocation, FakeBlock> playerBlocks = blocks.get(uuid);
+            Map<LocationTag, FakeBlock> playerBlocks = blocks.get(uuid);
             if (!playerBlocks.containsKey(location)) {
                 playerBlocks.put(location, new FakeBlock(player, location));
             }
@@ -49,16 +49,16 @@ public class FakeBlock {
         }
     }
 
-    public static void stopShowingTo(List<dPlayer> players, final dLocation location) {
+    public static void stopShowingTo(List<PlayerTag> players, final LocationTag location) {
         final List<UUID> uuids = new ArrayList<>();
-        for (dPlayer player : players) {
+        for (PlayerTag player : players) {
             if (!player.isOnline() || !player.isValid()) {
                 continue;
             }
             UUID uuid = player.getPlayerEntity().getUniqueId();
             uuids.add(uuid);
             if (blocks.containsKey(uuid)) {
-                Map<dLocation, FakeBlock> playerBlocks = blocks.get(uuid);
+                Map<LocationTag, FakeBlock> playerBlocks = blocks.get(uuid);
                 if (playerBlocks.containsKey(location)) {
                     playerBlocks.get(location).cancelBlock();
                 }
@@ -71,7 +71,7 @@ public class FakeBlock {
                     if (uuids.contains(uuid)) {
                         continue;
                     }
-                    Map<dLocation, FakeBlock> playerBlocks = blocks.get(uuid);
+                    Map<LocationTag, FakeBlock> playerBlocks = blocks.get(uuid);
                     if (playerBlocks.containsKey(location)) {
                         playerBlocks.get(location).updateBlock();
                     }
@@ -80,7 +80,7 @@ public class FakeBlock {
         }.runTaskLater(DenizenAPI.getCurrentInstance(), 2);
     }
 
-    public static Map<UUID, Map<dLocation, FakeBlock>> getBlocks() {
+    public static Map<UUID, Map<LocationTag, FakeBlock>> getBlocks() {
         return blocks;
     }
 
@@ -102,7 +102,7 @@ public class FakeBlock {
         }
     }
 
-    private void updateBlock(dMaterial material, long ticks) {
+    private void updateBlock(MaterialTag material, long ticks) {
         if (currentTask != null) {
             currentTask.cancel();
         }

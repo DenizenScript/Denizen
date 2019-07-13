@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.block;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -27,10 +27,10 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
     // @Triggers when a block is set on fire.
     //
     // @Context
-    // <context.location> returns the dLocation of the block was set on fire at.
-    // <context.material> returns the dMaterial of the block that was set on fire.
-    // <context.entity> returns the dEntity of the entity that ignited the block.
-    // <context.origin_location> returns the dLocation of the fire block that ignited this block.
+    // <context.location> returns the LocationTag of the block was set on fire at.
+    // <context.material> returns the MaterialTag of the block that was set on fire.
+    // <context.entity> returns the EntityTag of the entity that ignited the block.
+    // <context.origin_location> returns the LocationTag of the fire block that ignited this block.
     // <context.cause> returns an ElementTag of the cause of the event: ENDER_CRYSTAL, EXPLOSION, FIREBALL, FLINT_AND_STEEL, LAVA, or SPREAD.
     //
     // -->
@@ -40,10 +40,10 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     public static BlockIgnitesScriptEvent instance;
-    public dLocation location;
-    public dMaterial material;
-    public dEntity entity;
-    public dLocation origin_location;
+    public LocationTag location;
+    public MaterialTag material;
+    public EntityTag entity;
+    public LocationTag origin_location;
     public ElementTag cause;
     public BlockIgniteEvent event;
 
@@ -96,15 +96,15 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
 
     @EventHandler
     public void onBlockIgnites(BlockIgniteEvent event) {
-        location = new dLocation(event.getBlock().getLocation());
-        material = new dMaterial(event.getBlock());
+        location = new LocationTag(event.getBlock().getLocation());
+        material = new MaterialTag(event.getBlock());
         entity = null;
         if (event.getIgnitingEntity() != null) {
-            entity = new dEntity(event.getIgnitingEntity());
+            entity = new EntityTag(event.getIgnitingEntity());
         }
         origin_location = null;
         if (event.getIgnitingBlock() != null) { // TODO: Why would this be null?
-            origin_location = new dLocation(event.getIgnitingBlock().getLocation());
+            origin_location = new LocationTag(event.getIgnitingBlock().getLocation());
         }
         cause = new ElementTag(event.getCause().toString());
         this.event = event;

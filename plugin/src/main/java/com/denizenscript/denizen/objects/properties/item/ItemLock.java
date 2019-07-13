@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -14,9 +14,9 @@ import org.bukkit.inventory.meta.BlockStateMeta;
 public class ItemLock implements Property {
 
     public static boolean describes(ObjectTag item) {
-        return item instanceof dItem
-                && ((dItem) item).getItemStack().getItemMeta() instanceof BlockStateMeta
-                && ((BlockStateMeta) ((dItem) item).getItemStack().getItemMeta()).getBlockState() instanceof Lockable;
+        return item instanceof ItemTag
+                && ((ItemTag) item).getItemStack().getItemMeta() instanceof BlockStateMeta
+                && ((BlockStateMeta) ((ItemTag) item).getItemStack().getItemMeta()).getBlockState() instanceof Lockable;
     }
 
     public static ItemLock getFrom(ObjectTag _item) {
@@ -24,7 +24,7 @@ public class ItemLock implements Property {
             return null;
         }
         else {
-            return new ItemLock((dItem) _item);
+            return new ItemLock((ItemTag) _item);
         }
     }
 
@@ -45,11 +45,11 @@ public class ItemLock implements Property {
         return ((Lockable) ((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()).isLocked();
     }
 
-    private ItemLock(dItem _item) {
+    private ItemLock(ItemTag _item) {
         item = _item;
     }
 
-    dItem item;
+    ItemTag item;
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -59,9 +59,9 @@ public class ItemLock implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.lock>
+        // @attribute <ItemTag.lock>
         // @returns ElementTag
-        // @mechanism dItem.lock
+        // @mechanism ItemTag.lock
         // @group properties
         // @description
         // Returns the lock password of this item.
@@ -71,9 +71,9 @@ public class ItemLock implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.is_locked>
+        // @attribute <ItemTag.is_locked>
         // @returns ElementTag(Boolean)
-        // @mechanism dItem.lock
+        // @mechanism ItemTag.lock
         // @group properties
         // @description
         // Returns whether this item has a lock password.
@@ -100,16 +100,16 @@ public class ItemLock implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name lock
         // @input Element
         // @description
         // Sets the item's lock password.
         // Locked blocks can only be opened while holding an item with the name of the lock.
         // @tags
-        // <i@item.lock>
-        // <i@item.is_locked>
-        // <i@item.is_lockable>
+        // <ItemTag.lock>
+        // <ItemTag.is_locked>
+        // <ItemTag.is_lockable>
         // -->
         if (mechanism.matches("lock")) {
             ItemStack itemStack = item.getItemStack();

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.npc.speech;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.Settings;
@@ -48,7 +48,7 @@ public class DenizenChat implements VocalChord {
         if (queue.hasDefinition("talker")) {
             defTalker = queue.getDefinition("talker");
         }
-        queue.addDefinition("talker", new dEntity(talker.getEntity()).identify());
+        queue.addDefinition("talker", new EntityTag(talker.getEntity()).identify());
 
         String defMessage = null;
         if (queue.hasDefinition("message")) {
@@ -75,7 +75,7 @@ public class DenizenChat implements VocalChord {
                 if (queue.hasDefinition("target")) {
                     defTarget = queue.getDefinition("target");
                 }
-                queue.addDefinition("target", new dEntity(context.iterator().next().getEntity()).identify());
+                queue.addDefinition("target", new EntityTag(context.iterator().next().getEntity()).identify());
                 String bystanderText = TagManager.tag(Settings.chatWithTargetToBystandersFormat(), new BukkitTagContext(entry, false));
                 talkToBystanders(talker, bystanderText, context);
                 if (defTarget != null) {
@@ -104,7 +104,7 @@ public class DenizenChat implements VocalChord {
                         parsed.append(format[i]);
                         break;
                     }
-                    parsed.append(format[i]).append(new dEntity(iter.next().getEntity()).getName());
+                    parsed.append(format[i]).append(new EntityTag(iter.next().getEntity()).getName());
                     i++;
                 }
                 String targets = TagManager.tag(parsed.toString(), new BukkitTagContext(entry, false));

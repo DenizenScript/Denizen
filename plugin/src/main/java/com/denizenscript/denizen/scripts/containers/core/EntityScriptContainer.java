@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dNPC;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -23,8 +23,8 @@ public class EntityScriptContainer extends ScriptContainer {
     // @group Script Container System
     // @description
     // Entity script containers are an easy way to pre-define custom entities for use within scripts. Entity
-    // scripts work with the dEntity object, and can be fetched with the Object Fetcher by using the
-    // dEntity constructor e@EntityScriptName. Example: - spawn <player.location> e@MyEntity
+    // scripts work with the EntityTag object, and can be fetched with the Object Fetcher by using the
+    // EntityTag constructor e@EntityScriptName. Example: - spawn <player.location> e@MyEntity
     //
     // The following is the format for the container. Except for the 'entity_type' key (and the dScript
     // required 'type' key), all other keys are optional.
@@ -33,16 +33,16 @@ public class EntityScriptContainer extends ScriptContainer {
     //
     // <code>
     // # The name of the entity script is the same name that you can use to construct a new
-    // # dEntity based on this entity script. For example, an entity script named 'space zombie'
+    // # EntityTag based on this entity script. For example, an entity script named 'space zombie'
     // # can be referred to as 'e@space zombie'.
     // Entity_Script_Name:
     //
     //   type: entity
     //
-    //   # Must be a valid dEntity (EG e@zombie or e@pig[age=baby]) See 'dEntity' for more information.
+    //   # Must be a valid EntityTag (EG e@zombie or e@pig[age=baby]) See 'dEntity' for more information.
     //   entity_type: e@base_entity
     //
-    //   # Samples of mechanisms to use (any valid dEntity mechanisms may be listed like this):
+    //   # Samples of mechanisms to use (any valid EntityTag mechanisms may be listed like this):
     //
     //   # Whether the entity has the default AI
     //   has_ai: true/false
@@ -59,17 +59,17 @@ public class EntityScriptContainer extends ScriptContainer {
         super(configurationSection, scriptContainerName);
     }
 
-    public dEntity getEntityFrom() {
+    public EntityTag getEntityFrom() {
         return getEntityFrom(null, null);
     }
 
-    public dEntity getEntityFrom(dPlayer player, dNPC npc) {
-        dEntity entity = null;
+    public EntityTag getEntityFrom(PlayerTag player, NPCTag npc) {
+        EntityTag entity = null;
         try {
             if (contains("ENTITY_TYPE")) {
                 String entityType = TagManager.tag((getString("ENTITY_TYPE", "")), new BukkitTagContext
                         (player, npc, false, null, shouldDebug(), new ScriptTag(this)));
-                entity = dEntity.valueOf(entityType);
+                entity = EntityTag.valueOf(entityType);
             }
             else {
                 throw new Exception("Missing entity_type argument!");

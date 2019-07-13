@@ -3,7 +3,7 @@ package com.denizenscript.denizen.objects.properties.item;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -15,8 +15,8 @@ import org.bukkit.inventory.meta.SpawnEggMeta;
 public class ItemSpawnEgg implements Property {
 
     public static boolean describes(ObjectTag item) {
-        return item instanceof dItem
-                && ((dItem) item).getItemStack().getItemMeta() instanceof SpawnEggMeta;
+        return item instanceof ItemTag
+                && ((ItemTag) item).getItemStack().getItemMeta() instanceof SpawnEggMeta;
     }
 
     public static ItemSpawnEgg getFrom(ObjectTag _item) {
@@ -24,7 +24,7 @@ public class ItemSpawnEgg implements Property {
             return null;
         }
         else {
-            return new ItemSpawnEgg((dItem) _item);
+            return new ItemSpawnEgg((ItemTag) _item);
         }
     }
 
@@ -37,11 +37,11 @@ public class ItemSpawnEgg implements Property {
     };
 
 
-    private ItemSpawnEgg(dItem _item) {
+    private ItemSpawnEgg(ItemTag _item) {
         item = _item;
     }
 
-    dItem item;
+    ItemTag item;
 
     private EntityType getEntityType() {
         return ((SpawnEggMeta) item.getItemStack().getItemMeta()).getSpawnedType();
@@ -55,13 +55,13 @@ public class ItemSpawnEgg implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.spawn_id>
+        // @attribute <ItemTag.spawn_id>
         // @returns ElementTag(Number)
         // @group properties
-        // @mechanism dItem.spawn_id
+        // @mechanism ItemTag.spawn_id
         // @description
         // NOTE: ID numbers are deprecated since 1.11
-        //  Use <i@item.spawn_type> instead!
+        //  Use <ItemTag.spawn_type> instead!
         // Returns the spawn egg number of the item.
         // -->
         if ((attribute.startsWith("spawn_id") || attribute.startsWith("spawn_egg_entity"))
@@ -71,10 +71,10 @@ public class ItemSpawnEgg implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.spawn_type>
+        // @attribute <ItemTag.spawn_type>
         // @returns ElementTag
         // @group properties
-        // @mechanism dItem.spawn_type
+        // @mechanism ItemTag.spawn_type
         // @description
         // Returns the spawn egg's entity type.
         // -->
@@ -104,15 +104,15 @@ public class ItemSpawnEgg implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name spawn_id
         // @input Element(Number)
         // @description
         // NOTE: ID numbers are deprecated since 1.11
-        //  Use <@link mechanism dItem.spawn_type> instead!
+        //  Use <@link mechanism ItemTag.spawn_type> instead!
         // Sets what mob a spawn egg holds.
         // @tags
-        // <i@item.spawn_id>
+        // <ItemTag.spawn_id>
         // -->
         if ((mechanism.matches("spawn_id") || mechanism.matches("spawn_egg"))
                 && mechanism.requireInteger()) {
@@ -122,13 +122,13 @@ public class ItemSpawnEgg implements Property {
         }
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name spawn_type
         // @input Element
         // @description
         // Sets what entity type a spawn egg holds.
         // @tags
-        // <i@item.spawn_type>
+        // <ItemTag.spawn_type>
         // -->
         if (mechanism.matches("spawn_type") && mechanism.requireEnum(false, EntityType.values())) {
             try {

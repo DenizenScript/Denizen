@@ -27,10 +27,10 @@ public class NoteCommand extends AbstractCommand {
     //
     // @Tags
     // <server.list_notables[<type>]>
-    // <cu@cuboid.notable_name>
-    // <in@inventory.notable_name>
-    // <i@item.notable_name>
-    // <l@location.notable_name>
+    // <CuboidTag.notable_name>
+    // <InventoryTag.notable_name>
+    // <ItemTag.notable_name>
+    // <LocationTag.notable_name>
     //
     // @Usage
     // Use to add a notable cuboid.

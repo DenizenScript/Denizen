@@ -2,8 +2,8 @@ package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -33,7 +33,7 @@ public class TeleportCommand extends AbstractCommand {
     // command, assuming the location is valid.
     //
     // @Tags
-    // <e@entity.location>
+    // <EntityTag.location>
     //
     // @Usage
     // Use to teleport a player to the location its cursor is pointing on
@@ -59,12 +59,12 @@ public class TeleportCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class)) {
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                    && arg.matchesArgumentType(LocationTag.class)) {
+                scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class)) {
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
+                    && arg.matchesArgumentList(EntityTag.class)) {
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
 
             // NPC arg for compatibility with old scripts
@@ -93,8 +93,8 @@ public class TeleportCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) {
         // Get objects
 
-        dLocation location = (dLocation) scriptEntry.getObject("location");
-        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+        LocationTag location = (LocationTag) scriptEntry.getObject("location");
+        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
@@ -102,7 +102,7 @@ public class TeleportCommand extends AbstractCommand {
                     ArgumentHelper.debugObj("entities", entities.toString()));
         }
 
-        for (dEntity entity : entities) {
+        for (EntityTag entity : entities) {
             // Call a Bukkit event for compatibility with "on entity teleports"
             // world event and other plugins
             if (entity.isSpawned()) {

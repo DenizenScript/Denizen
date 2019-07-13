@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.depends.Depends;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -33,7 +33,7 @@ public class MoneyCommand extends AbstractCommand {
     // NOTE: This requires an economy plugin. May work for offline players depending on economy plugin.
     //
     // @Tags
-    // <p@player.money>
+    // <PlayerTag.money>
     //
     // @Usage
     // Use to give 1 money to the player.
@@ -74,8 +74,8 @@ public class MoneyCommand extends AbstractCommand {
                 scriptEntry.addObject("quantity", arg.asElement());
             }
             else if (!scriptEntry.hasObject("players") && arg.matchesPrefix("to", "from", "players", "player") &&
-                    arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("players", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
+                    arg.matchesArgumentList(PlayerTag.class)) {
+                scriptEntry.addObject("players", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
@@ -102,7 +102,7 @@ public class MoneyCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
         ElementTag action = scriptEntry.getElement("action");
         ElementTag quantity = scriptEntry.getElement("quantity");
-        List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("players");
+        List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
 
         if (scriptEntry.dbCallShouldDebug()) {
 
@@ -113,19 +113,19 @@ public class MoneyCommand extends AbstractCommand {
         double amt = quantity.asDouble();
         switch (Action.valueOf(action.asString().toUpperCase())) {
             case GIVE:
-                for (dPlayer player : players) {
+                for (PlayerTag player : players) {
                     eco.depositPlayer(player.getOfflinePlayer(), amt);
                 }
                 break;
 
             case TAKE:
-                for (dPlayer player : players) {
+                for (PlayerTag player : players) {
                     eco.withdrawPlayer(player.getOfflinePlayer(), amt);
                 }
                 break;
 
             case SET:
-                for (dPlayer player : players) {
+                for (PlayerTag player : players) {
                     double balance = eco.getBalance(player.getOfflinePlayer());
                     if (amt > balance) {
                         eco.depositPlayer(player.getOfflinePlayer(), amt - balance);

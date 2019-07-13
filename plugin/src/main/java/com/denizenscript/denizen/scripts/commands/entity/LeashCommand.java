@@ -3,8 +3,8 @@ package com.denizenscript.denizen.scripts.commands.entity;
 import com.denizenscript.denizen.utilities.MaterialCompat;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -35,8 +35,8 @@ public class LeashCommand extends AbstractCommand {
     // Non-player NPCs can be leashed if '/npc leashable' is enabled.
     //
     // @Tags
-    // <e@entity.is_leashed>
-    // <e@entity.leash_holder>
+    // <EntityTag.is_leashed>
+    // <EntityTag.leash_holder>
     //
     // @Usage
     // Use to attach a leash to the player's target.
@@ -61,17 +61,17 @@ public class LeashCommand extends AbstractCommand {
                 scriptEntry.addObject("cancel", "");
             }
             else if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class)) {
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
+                    && arg.matchesArgumentList(EntityTag.class)) {
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("holder")
                     && arg.matchesPrefix("holder", "h")) {
 
-                if (arg.matchesArgumentType(dEntity.class)) {
-                    scriptEntry.addObject("holder", arg.asType(dEntity.class));
+                if (arg.matchesArgumentType(EntityTag.class)) {
+                    scriptEntry.addObject("holder", arg.asType(EntityTag.class));
                 }
-                else if (arg.matchesArgumentType(dLocation.class)) {
-                    scriptEntry.addObject("holder", arg.asType(dLocation.class));
+                else if (arg.matchesArgumentType(LocationTag.class)) {
+                    scriptEntry.addObject("holder", arg.asType(LocationTag.class));
                 }
             }
             else {
@@ -97,17 +97,17 @@ public class LeashCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) {
 
         // Get objects
-        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-        dEntity holder = null;
-        dLocation holderLoc = null;
+        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
+        EntityTag holder = null;
+        LocationTag holderLoc = null;
         Entity Holder = null;
         Object holderObject = scriptEntry.getObject("holder");
-        if (holderObject instanceof dEntity) {
-            holder = (dEntity) scriptEntry.getObject("holder");
+        if (holderObject instanceof EntityTag) {
+            holder = (EntityTag) scriptEntry.getObject("holder");
             Holder = holder.getBukkitEntity();
         }
-        else if (holderObject instanceof dLocation) {
-            holderLoc = ((dLocation) scriptEntry.getObject("holder"));
+        else if (holderObject instanceof LocationTag) {
+            holderLoc = ((LocationTag) scriptEntry.getObject("holder"));
             Material material = holderLoc.getBlock().getType();
             if (material == MaterialCompat.OAK_FENCE || material == MaterialCompat.NETHER_FENCE
                     || material == Material.ACACIA_FENCE || material == Material.BIRCH_FENCE
@@ -130,7 +130,7 @@ public class LeashCommand extends AbstractCommand {
         }
 
         // Go through all the entities and leash/unleash them
-        for (dEntity entity : entities) {
+        for (EntityTag entity : entities) {
             if (entity.isSpawned() && entity.isLivingEntity()) {
 
                 if (cancel) {

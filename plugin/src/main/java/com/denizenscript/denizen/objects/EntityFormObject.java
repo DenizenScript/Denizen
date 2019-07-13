@@ -4,5 +4,5 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 
 public interface EntityFormObject extends ObjectTag {
 
-    dEntity getDenizenEntity();
+    EntityTag getDenizenEntity();
 }

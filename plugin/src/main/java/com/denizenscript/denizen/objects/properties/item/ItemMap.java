@@ -2,7 +2,7 @@ package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -16,8 +16,8 @@ public class ItemMap implements Property {
     public static Material MAP_MATERIAL = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? Material.FILLED_MAP : Material.MAP;
 
     public static boolean describes(ObjectTag item) {
-        return item instanceof dItem
-                && (((dItem) item).getItemStack().getType() == MAP_MATERIAL);
+        return item instanceof ItemTag
+                && (((ItemTag) item).getItemStack().getType() == MAP_MATERIAL);
     }
 
     public static ItemMap getFrom(ObjectTag _item) {
@@ -25,7 +25,7 @@ public class ItemMap implements Property {
             return null;
         }
         else {
-            return new ItemMap((dItem) _item);
+            return new ItemMap((ItemTag) _item);
         }
     }
 
@@ -38,11 +38,11 @@ public class ItemMap implements Property {
     };
 
 
-    private ItemMap(dItem _item) {
+    private ItemMap(ItemTag _item) {
         item = _item;
     }
 
-    dItem item;
+    ItemTag item;
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -52,10 +52,10 @@ public class ItemMap implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.map>
+        // @attribute <ItemTag.map>
         // @returns ElementTag(Number)
         // @group properties
-        // @mechanism dItem.map
+        // @mechanism ItemTag.map
         // @description
         // Returns the ID number of the map item's map.
         // -->
@@ -115,13 +115,13 @@ public class ItemMap implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name map
         // @input Element(Number)
         // @description
         // Changes what map ID number a map item uses.
         // @tags
-        // <i@item.map>
+        // <ItemTag.map>
         // -->
 
         if (mechanism.matches("map") && mechanism.requireInteger()) {

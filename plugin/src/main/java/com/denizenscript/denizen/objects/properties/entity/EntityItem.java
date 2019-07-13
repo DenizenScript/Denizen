@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
@@ -15,9 +15,9 @@ import org.bukkit.entity.Item;
 public class EntityItem implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity &&
-                (((dEntity) entity).getBukkitEntityType() == EntityType.DROPPED_ITEM
-                        || ((dEntity) entity).getBukkitEntityType() == EntityType.ENDERMAN);
+        return entity instanceof EntityTag &&
+                (((EntityTag) entity).getBukkitEntityType() == EntityType.DROPPED_ITEM
+                        || ((EntityTag) entity).getBukkitEntityType() == EntityType.ENDERMAN);
     }
 
     public static EntityItem getFrom(ObjectTag entity) {
@@ -25,7 +25,7 @@ public class EntityItem implements Property {
             return null;
         }
         else {
-            return new EntityItem((dEntity) entity);
+            return new EntityItem((EntityTag) entity);
         }
     }
 
@@ -42,18 +42,18 @@ public class EntityItem implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityItem(dEntity entity) {
+    private EntityItem(EntityTag entity) {
         item = entity;
     }
 
-    dEntity item;
+    EntityTag item;
 
-    public dItem getItem() {
+    public ItemTag getItem() {
         if (item.getBukkitEntity() instanceof Item) {
-            return new dItem(((Item) item.getBukkitEntity()).getItemStack());
+            return new ItemTag(((Item) item.getBukkitEntity()).getItemStack());
         }
         else {
-            return new dItem(((Enderman) item.getBukkitEntity())
+            return new ItemTag(((Enderman) item.getBukkitEntity())
                     .getCarriedMaterial());
         }
     }
@@ -64,7 +64,7 @@ public class EntityItem implements Property {
 
     @Override
     public String getPropertyString() {
-        dItem item = getItem();
+        ItemTag item = getItem();
         if (item.getItemStack().getType() != Material.AIR) {
             return item.identify();
         }
@@ -90,12 +90,12 @@ public class EntityItem implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.item>
-        // @returns dItem
-        // @mechanism dEntity.item
+        // @attribute <EntityTag.item>
+        // @returns ItemTag
+        // @mechanism EntityTag.item
         // @group properties
         // @description
-        // If the entity is a dropped item or an Enderman, returns the dItem the entity holds.
+        // If the entity is a dropped item or an Enderman, returns the ItemTag the entity holds.
         // -->
         if (attribute.startsWith("item")) {
             return getItem().getAttribute(attribute.fulfill(1));
@@ -108,23 +108,23 @@ public class EntityItem implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name item
-        // @input dItem
+        // @input ItemTag
         // @description
         // Changes what item a dropped item or an Enderman holds.
         // @tags
-        // <e@entity.item>
+        // <EntityTag.item>
         // -->
 
-        if (mechanism.matches("item") && mechanism.requireObject(dItem.class)) {
+        if (mechanism.matches("item") && mechanism.requireObject(ItemTag.class)) {
             if (item.getBukkitEntity() instanceof Item) {
                 ((Item) item.getBukkitEntity()).setItemStack(mechanism.getValue()
-                        .asType(dItem.class, mechanism.context).getItemStack());
+                        .asType(ItemTag.class, mechanism.context).getItemStack());
             }
             else {
                 NMSHandler.getInstance().getEntityHelper().setCarriedItem((Enderman) item.getBukkitEntity(),
-                        mechanism.valueAsType(dItem.class).getItemStack());
+                        mechanism.valueAsType(ItemTag.class).getItemStack());
             }
         }
     }

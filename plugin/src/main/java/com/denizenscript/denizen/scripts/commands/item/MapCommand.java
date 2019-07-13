@@ -6,8 +6,8 @@ import com.denizenscript.denizen.utilities.maps.DenizenMapManager;
 import com.denizenscript.denizen.utilities.maps.DenizenMapRenderer;
 import com.denizenscript.denizen.utilities.maps.MapAnimatedImage;
 import com.denizenscript.denizen.utilities.maps.MapImage;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dWorld;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -50,7 +50,7 @@ public class MapCommand extends AbstractCommand {
     //
     // @Usage
     // Use to add an image with the top-left corner at the center of a new map
-    // - map new:w@world image:my_map_images/my_center_image.png x:64 y:64
+    // - map new:WorldTag image:my_map_images/my_center_image.png x:64 y:64
     //
     // @Usage
     // Reset map to have the center at the player's location
@@ -64,13 +64,13 @@ public class MapCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("new")
                     && arg.matchesPrefix("new")
-                    && arg.matchesArgumentType(dWorld.class)) {
-                scriptEntry.addObject("new", arg.asType(dWorld.class));
+                    && arg.matchesArgumentType(WorldTag.class)) {
+                scriptEntry.addObject("new", arg.asType(WorldTag.class));
             }
             else if (!scriptEntry.hasObject("reset-loc")
                     && arg.matchesPrefix("r", "reset")
-                    && arg.matchesArgumentType(dLocation.class)) {
-                scriptEntry.addObject("reset-loc", arg.asType(dLocation.class));
+                    && arg.matchesArgumentType(LocationTag.class)) {
+                scriptEntry.addObject("reset-loc", arg.asType(LocationTag.class));
                 scriptEntry.addObject("reset", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("reset")
@@ -137,9 +137,9 @@ public class MapCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         ElementTag id = scriptEntry.getElement("map-id");
-        dWorld create = scriptEntry.getdObject("new");
+        WorldTag create = scriptEntry.getdObject("new");
         ElementTag reset = scriptEntry.getElement("reset");
-        dLocation resetLoc = scriptEntry.getdObject("reset-loc");
+        LocationTag resetLoc = scriptEntry.getdObject("reset-loc");
         ElementTag image = scriptEntry.getElement("image");
         ScriptTag script = scriptEntry.getdObject("script");
         ElementTag resize = scriptEntry.getElement("resize");

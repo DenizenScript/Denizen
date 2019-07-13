@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.trade;
 
-import com.denizenscript.denizen.objects.dTrade;
+import com.denizenscript.denizen.objects.TradeTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -10,14 +10,14 @@ import com.denizenscript.denizencore.tags.Attribute;
 public class TradeMaxUses implements Property {
 
     public static boolean describes(ObjectTag recipe) {
-        return recipe instanceof dTrade;
+        return recipe instanceof TradeTag;
     }
 
     public static TradeMaxUses getFrom(ObjectTag recipe) {
         if (!describes(recipe)) {
             return null;
         }
-        return new TradeMaxUses((dTrade) recipe);
+        return new TradeMaxUses((TradeTag) recipe);
     }
 
     public static final String[] handledTags = new String[] {
@@ -28,9 +28,9 @@ public class TradeMaxUses implements Property {
             "max_uses"
     };
 
-    private dTrade recipe;
+    private TradeTag recipe;
 
-    public TradeMaxUses(dTrade recipe) {
+    public TradeMaxUses(TradeTag recipe) {
         this.recipe = recipe;
     }
 
@@ -51,9 +51,9 @@ public class TradeMaxUses implements Property {
         }
 
         // <--[tag]
-        // @attribute <trade@trade.max_uses>
+        // @attribute <TradeTag.max_uses>
         // @returns ElementTag(Number)
-        // @mechanism dTrade.max_uses
+        // @mechanism TradeTag.max_uses
         // @description
         // Returns the maximum amount of times that the trade can be used.
         // -->
@@ -67,7 +67,7 @@ public class TradeMaxUses implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dTrade
+        // @object TradeTag
         // @name max_uses
         // @input Element(Number)
         // @description

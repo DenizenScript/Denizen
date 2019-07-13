@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -35,7 +35,7 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
     // @Determine
     // "MESSAGE:" + ElementTag to change the kick message.
     // "REASON:" + ElementTag to change the kick reason.
-    // "FLY_COOLDOWN:" + Duration to cancel the automatic fly kick and set its next cooldown.
+    // "FLY_COOLDOWN:" + DurationTag to cancel the automatic fly kick and set its next cooldown.
     //
     // -->
 
@@ -44,7 +44,7 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     public static PlayerKickedScriptEvent instance;
-    public dPlayer player;
+    public PlayerTag player;
     public ElementTag message;
     public ElementTag reason;
     public PlayerKickEvent event;
@@ -114,10 +114,10 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
 
     @EventHandler
     public void onPlayerKicked(PlayerKickEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        player = dPlayer.mirrorBukkitPlayer(event.getPlayer());
+        player = PlayerTag.mirrorBukkitPlayer(event.getPlayer());
         message = new ElementTag(event.getLeaveMessage());
         reason = new ElementTag(event.getReason());
         this.event = event;

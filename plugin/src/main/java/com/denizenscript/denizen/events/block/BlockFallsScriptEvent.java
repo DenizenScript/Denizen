@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.block;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -37,10 +37,10 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
 
     public static BlockFallsScriptEvent instance;
 
-    public dLocation location;
-    public dMaterial material;
+    public LocationTag location;
+    public MaterialTag material;
     public EntityChangeBlockEvent event;
-    public dEntity entity;
+    public EntityTag entity;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
@@ -82,9 +82,9 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
 
     @EventHandler
     public void onBlockFalls(EntityChangeBlockEvent event) {
-        entity = new dEntity(event.getEntity());
-        location = new dLocation(event.getBlock().getLocation());
-        material = new dMaterial(event.getBlock());
+        entity = new EntityTag(event.getEntity());
+        location = new LocationTag(event.getBlock().getLocation());
+        material = new MaterialTag(event.getBlock());
         this.event = event;
         fire(event);
     }

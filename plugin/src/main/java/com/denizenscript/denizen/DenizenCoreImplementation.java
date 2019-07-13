@@ -182,8 +182,8 @@ public class DenizenCoreImplementation implements DenizenImplementation {
 
     @Override
     public TagContext getTagContextFor(ScriptEntry scriptEntry, boolean b) {
-        dPlayer player = scriptEntry != null ? Utilities.getEntryPlayer(scriptEntry) : null;
-        dNPC npc = scriptEntry != null ? Utilities.getEntryNPC(scriptEntry) : null;
+        PlayerTag player = scriptEntry != null ? Utilities.getEntryPlayer(scriptEntry) : null;
+        NPCTag npc = scriptEntry != null ? Utilities.getEntryNPC(scriptEntry) : null;
         return new BukkitTagContext(player, npc, b, scriptEntry,
                 scriptEntry != null ? scriptEntry.shouldDebug() : true,
                 scriptEntry != null ? scriptEntry.getScript() : null);
@@ -200,7 +200,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         if (arg.matchesPrefix("player") && !if_ignore) {
             Debug.echoDebug(scriptEntry, "...replacing the linked player with " + arg.getValue());
             String value = TagManager.tag(arg.getValue(), new BukkitTagContext(scriptEntry, false));
-            dPlayer player = dPlayer.valueOf(value);
+            PlayerTag player = PlayerTag.valueOf(value);
             if (player == null || !player.isValid()) {
                 Debug.echoError(scriptEntry.getResidingQueue(), value + " is an invalid player!");
             }
@@ -212,7 +212,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         else if (arg.matchesPrefix("npc, npcid") && !if_ignore) {
             Debug.echoDebug(scriptEntry, "...replacing the linked NPC with " + arg.getValue());
             String value = TagManager.tag(arg.getValue(), new BukkitTagContext(scriptEntry, false));
-            dNPC npc = dNPC.valueOf(value);
+            NPCTag npc = NPCTag.valueOf(value);
             if (npc == null || !npc.isValid()) {
                 Debug.echoError(scriptEntry.getResidingQueue(), value + " is an invalid NPC!");
                 return false;
@@ -253,8 +253,8 @@ public class DenizenCoreImplementation implements DenizenImplementation {
                 int cb = arg.indexOf(']');
                 if (cb > 4 && arg.indexOf('@') == (cb + 1)) {
                     String owner = arg.substring(3, cb);
-                    flag = arg.substring(cb + 2).length() > 0 && (dPlayer.matches(owner)
-                            || (Depends.citizens != null && dNPC.matches(owner)));
+                    flag = arg.substring(cb + 2).length() > 0 && (PlayerTag.matches(owner)
+                            || (Depends.citizens != null && NPCTag.matches(owner)));
                 }
             }
             else if (arg.indexOf('@') == 2) {
@@ -337,40 +337,40 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         boolean outcome = false;
 
         if (comparedto.equalsIgnoreCase("location")) {
-            outcome = dLocation.matches(comparable);
+            outcome = LocationTag.matches(comparable);
         }
         else if (comparedto.equalsIgnoreCase("material")) {
-            outcome = dMaterial.matches(comparable);
+            outcome = MaterialTag.matches(comparable);
         }
         else if (comparedto.equalsIgnoreCase("materiallist")) {
-            outcome = ListTag.valueOf(comparable).containsObjectsFrom(dMaterial.class);
+            outcome = ListTag.valueOf(comparable).containsObjectsFrom(MaterialTag.class);
         }
         else if (comparedto.equalsIgnoreCase("entity")) {
-            outcome = dEntity.matches(comparable);
+            outcome = EntityTag.matches(comparable);
         }
         else if (comparedto.equalsIgnoreCase("spawnedentity")) {
-            outcome = (dEntity.matches(comparable) && dEntity.valueOf(comparable).isSpawned());
+            outcome = (EntityTag.matches(comparable) && EntityTag.valueOf(comparable).isSpawned());
         }
         else if (comparedto.equalsIgnoreCase("npc")) {
-            outcome = dNPC.matches(comparable);
+            outcome = NPCTag.matches(comparable);
         }
         else if (comparedto.equalsIgnoreCase("player")) {
-            outcome = dPlayer.matches(comparable);
+            outcome = PlayerTag.matches(comparable);
         }
         else if (comparedto.equalsIgnoreCase("offlineplayer")) {
-            outcome = (dPlayer.valueOf(comparable) != null && !dPlayer.valueOf(comparable).isOnline());
+            outcome = (PlayerTag.valueOf(comparable) != null && !PlayerTag.valueOf(comparable).isOnline());
         }
         else if (comparedto.equalsIgnoreCase("onlineplayer")) {
-            outcome = (dPlayer.valueOf(comparable) != null && dPlayer.valueOf(comparable).isOnline());
+            outcome = (PlayerTag.valueOf(comparable) != null && PlayerTag.valueOf(comparable).isOnline());
         }
         else if (comparedto.equalsIgnoreCase("item")) {
-            outcome = dItem.matches(comparable);
+            outcome = ItemTag.matches(comparable);
         }
         else if (comparedto.equalsIgnoreCase("cuboid")) {
-            outcome = dCuboid.matches(comparable);
+            outcome = CuboidTag.matches(comparable);
         }
         else if (comparedto.equalsIgnoreCase("trade")) {
-            outcome = dTrade.matches(comparable);
+            outcome = TradeTag.matches(comparable);
         }
         else {
             Debug.echoError("Invalid 'matches' type '" + comparedto + "'!");

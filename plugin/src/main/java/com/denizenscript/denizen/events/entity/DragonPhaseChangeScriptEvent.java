@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -30,7 +30,7 @@ public class DragonPhaseChangeScriptEvent extends BukkitScriptEvent implements L
     // @Triggers when a dragon's combat phase changes.
     //
     // @Context
-    // <context.entity> returns the dEntity of the dragon.
+    // <context.entity> returns the EntityTag of the dragon.
     // <context.new_phase> returns an ElementTag of the dragon's new phase. Phases: <@see link https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EnderDragonChangePhaseEvent.html>
     // <context.old_phase> returns an ElementTag of the dragon's old phase. Can be any phase or 'null' in some cases.
     //
@@ -44,7 +44,7 @@ public class DragonPhaseChangeScriptEvent extends BukkitScriptEvent implements L
     }
 
     public static DragonPhaseChangeScriptEvent instance;
-    public dEntity entity;
+    public EntityTag entity;
     public EnderDragonChangePhaseEvent event;
 
     @Override
@@ -111,7 +111,7 @@ public class DragonPhaseChangeScriptEvent extends BukkitScriptEvent implements L
 
     @EventHandler
     public void onEnderDragonChangePhase(EnderDragonChangePhaseEvent event) {
-        entity = new dEntity(event.getEntity());
+        entity = new EntityTag(event.getEntity());
         this.event = event;
         fire(event);
     }

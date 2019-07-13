@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -29,7 +29,7 @@ public class HealCommand extends AbstractCommand {
     // heal the specified player(s)/entity(s) fully.
     //
     // @Tags
-    // <e@entity.health>
+    // <EntityTag.health>
     //
     // @Usage
     // Use to fully heal a player.
@@ -58,13 +58,13 @@ public class HealCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentType(ListTag.class)) {
                 // Entity arg
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
                 specified_targets = true;
             }
             else if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentType(dEntity.class)) {
+                    && arg.matchesArgumentType(EntityTag.class)) {
                 // Entity arg
-                scriptEntry.addObject("entities", Arrays.asList(arg.asType(dEntity.class)));
+                scriptEntry.addObject("entities", Arrays.asList(arg.asType(EntityTag.class)));
                 specified_targets = true;
             }
             else {
@@ -77,7 +77,7 @@ public class HealCommand extends AbstractCommand {
         }
 
         if (!specified_targets) {
-            List<dEntity> entities = new ArrayList<>();
+            List<EntityTag> entities = new ArrayList<>();
             if (Utilities.getEntryPlayer(scriptEntry) != null) {
                 entities.add(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity());
             }
@@ -96,7 +96,7 @@ public class HealCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         if (entities == null) {
             return;
         }
@@ -108,7 +108,7 @@ public class HealCommand extends AbstractCommand {
 
         }
         if (amountelement.asDouble() == -1) {
-            for (dEntity entity : entities) {
+            for (EntityTag entity : entities) {
                 if (entity.isLivingEntity()) {
                     entity.getLivingEntity().setHealth(entity.getLivingEntity().getMaxHealth());
                 }
@@ -116,7 +116,7 @@ public class HealCommand extends AbstractCommand {
         }
         else {
             double amount = amountelement.asDouble();
-            for (dEntity entity : entities) {
+            for (EntityTag entity : entities) {
                 if (entity.getLivingEntity().getHealth() + amount < entity.getLivingEntity().getMaxHealth()) {
                     entity.getLivingEntity().setHealth(entity.getLivingEntity().getHealth() + amount);
                 }

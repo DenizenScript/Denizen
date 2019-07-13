@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -28,7 +28,7 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
     // <context.to> returns the location teleported to.
     //
     // @Determine
-    // dLocation to change the destination.
+    // LocationTag to change the destination.
     // -->
 
     public PlayerUsesPortalScriptEvent() {
@@ -36,9 +36,9 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
     }
 
     public static PlayerUsesPortalScriptEvent instance;
-    public dEntity entity;
-    public dLocation to;
-    public dLocation from;
+    public EntityTag entity;
+    public LocationTag to;
+    public LocationTag from;
     public PlayerPortalEvent event;
 
     @Override
@@ -58,8 +58,8 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (dLocation.matches(determination)) {
-            to = dLocation.valueOf(determination);
+        if (LocationTag.matches(determination)) {
+            to = LocationTag.valueOf(determination);
             return true;
         }
         return super.applyDetermination(container, determination);
@@ -86,12 +86,12 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
 
     @EventHandler
     public void onPlayerEntersPortal(PlayerPortalEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        entity = new dEntity(event.getPlayer());
-        to = event.getTo() == null ? null : new dLocation(event.getTo());
-        from = new dLocation(event.getFrom());
+        entity = new EntityTag(event.getPlayer());
+        to = event.getTo() == null ? null : new LocationTag(event.getTo());
+        from = new LocationTag(event.getFrom());
         this.event = event;
         fire(event);
         event.setTo(to);

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.dWorld;
+import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
@@ -24,10 +24,10 @@ public class WorldTags {
             return;
         }
 
-        dWorld world = null;
+        WorldTag world = null;
 
         if (event.hasNameContext()) {
-            world = dWorld.valueOf(event.getNameContext(), event.getAttributes().context);
+            world = WorldTag.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
         if (world == null) {

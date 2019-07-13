@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.utilities.maps;
 
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapView;
@@ -21,11 +21,11 @@ public class MapCursor extends MapObject {
         this.typeTag = typeTag;
     }
 
-    public byte getDirection(dPlayer player) {
+    public byte getDirection(PlayerTag player) {
         return yawToDirection(ArgumentHelper.getDoubleFrom(tag(directionTag, player)));
     }
 
-    public org.bukkit.map.MapCursor.Type getType(dPlayer player) {
+    public org.bukkit.map.MapCursor.Type getType(PlayerTag player) {
         return org.bukkit.map.MapCursor.Type.valueOf(tag(typeTag, player).toUpperCase());
     }
 
@@ -34,7 +34,7 @@ public class MapCursor extends MapObject {
     }
 
     @Override
-    public void update(dPlayer player, UUID uuid) {
+    public void update(PlayerTag player, UUID uuid) {
         super.update(player, uuid);
         if (cursors.containsKey(uuid)) {
             org.bukkit.map.MapCursor cursor = cursors.get(uuid);
@@ -56,7 +56,7 @@ public class MapCursor extends MapObject {
     }
 
     @Override
-    public void render(MapView mapView, MapCanvas mapCanvas, dPlayer player, UUID uuid) {
+    public void render(MapView mapView, MapCanvas mapCanvas, PlayerTag player, UUID uuid) {
         org.bukkit.map.MapCursor cursor = new org.bukkit.map.MapCursor((byte) getX(player, uuid),
                 (byte) getY(player, uuid), getDirection(player), getType(player).getValue(),
                 isVisibleTo(player, uuid));

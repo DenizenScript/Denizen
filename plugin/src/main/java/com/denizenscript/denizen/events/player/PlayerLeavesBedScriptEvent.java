@@ -1,10 +1,10 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -27,7 +27,7 @@ public class PlayerLeavesBedScriptEvent extends BukkitScriptEvent implements Lis
     // @Triggers when a player leaves a bed.
     //
     // @Context
-    // <context.location> returns the dLocation of the bed.
+    // <context.location> returns the LocationTag of the bed.
     //
     // -->
 
@@ -36,7 +36,7 @@ public class PlayerLeavesBedScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     public static PlayerLeavesBedScriptEvent instance;
-    public dLocation location;
+    public LocationTag location;
     public PlayerBedLeaveEvent event;
 
     @Override
@@ -61,7 +61,7 @@ public class PlayerLeavesBedScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(new PlayerTag(event.getPlayer()), null);
     }
 
     @Override
@@ -74,10 +74,10 @@ public class PlayerLeavesBedScriptEvent extends BukkitScriptEvent implements Lis
 
     @EventHandler
     public void onPlayerLeavesBed(PlayerBedLeaveEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        location = new dLocation(event.getBed().getLocation());
+        location = new LocationTag(event.getBed().getLocation());
         this.event = event;
         fire(event);
     }

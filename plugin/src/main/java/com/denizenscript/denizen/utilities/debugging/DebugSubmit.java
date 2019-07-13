@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.utilities.debugging;
 
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -89,7 +89,7 @@ public class DebugSubmit extends Thread {
                     + "\nActive Plugins (" + pluginCount + "): " + pluginlist.substring(0, pluginlist.length() - 2)
                     + "\nLoaded Worlds (" + worldCount + "): " + worldlist.substring(0, worldlist.length() - 2)
                     + "\nOnline Players (" + playerCount + "): " + playerlist.substring(0, playerlist.length() - 2)
-                    + "\nOffline Players: " + (dPlayer.getAllPlayers().size() - playerCount)
+                    + "\nOffline Players: " + (PlayerTag.getAllPlayers().size() - playerCount)
                     + "\nMode: " + (Bukkit.getServer().getOnlineMode() ? "online" : "offline") + (bungee ? " (BungeeCoord)" : "")
                     + "\n\n") + recording)
                     .getBytes(StandardCharsets.UTF_8));

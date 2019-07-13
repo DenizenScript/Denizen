@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -27,7 +27,7 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     // @Triggers when a horse jumps.
     //
     // @Context
-    // <context.entity> returns the dEntity of the horse.
+    // <context.entity> returns the EntityTag of the horse.
     // <context.color> returns an ElementTag of the horse's color.
     // <context.variant> returns an ElementTag of the horse's variant.
     // <context.power> returns an Element(Decimal) of the jump's power.
@@ -42,7 +42,7 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     public static HorseJumpsScriptEvent instance;
-    public dEntity entity;
+    public EntityTag entity;
     public ElementTag color;
     public ElementTag variant;
     public Float power;
@@ -110,7 +110,7 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     @EventHandler
     public void onHorseJumps(HorseJumpEvent event) {
         if (event.getEntity() instanceof Horse) {
-            entity = new dEntity(event.getEntity());
+            entity = new EntityTag(event.getEntity());
             color = new ElementTag(((Horse) event.getEntity()).getColor().name());
             variant = new ElementTag(event.getEntity().getVariant().name());
             power = event.getPower();

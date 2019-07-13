@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -12,14 +12,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class ItemUnbreakable implements Property {
 
     public static boolean describes(ObjectTag object) {
-        return object instanceof dItem;
+        return object instanceof ItemTag;
     }
 
     public static ItemUnbreakable getFrom(ObjectTag object) {
         if (!describes(object)) {
             return null;
         }
-        return new ItemUnbreakable((dItem) object);
+        return new ItemUnbreakable((ItemTag) object);
     }
 
     public static final String[] handledTags = new String[] {
@@ -31,11 +31,11 @@ public class ItemUnbreakable implements Property {
     };
 
 
-    private ItemUnbreakable(dItem item) {
+    private ItemUnbreakable(ItemTag item) {
         this.item = item;
     }
 
-    dItem item;
+    ItemTag item;
 
     public String getAttribute(Attribute attribute) {
 
@@ -44,10 +44,10 @@ public class ItemUnbreakable implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.unbreakable>
+        // @attribute <ItemTag.unbreakable>
         // @returns ElementTag(Boolean)
         // @group properties
-        // @mechanism dItem.unbreakable
+        // @mechanism ItemTag.unbreakable
         // @description
         // Returns whether an item has the unbreakable flag.
         // -->
@@ -70,13 +70,13 @@ public class ItemUnbreakable implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name unbreakable
         // @input Element(Boolean)
         // @description
         // Changes whether an item has the unbreakable item flag.
         // @tags
-        // <i@item.unbreakable>
+        // <ItemTag.unbreakable>
         // -->
         if (mechanism.matches("unbreakable") && mechanism.requireBoolean()) {
             ItemStack itemStack = item.getItemStack().clone();

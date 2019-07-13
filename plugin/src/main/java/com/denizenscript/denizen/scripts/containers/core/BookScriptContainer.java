@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dNPC;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.MaterialCompat;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
@@ -21,8 +21,8 @@ public class BookScriptContainer extends ScriptContainer {
     // @group Script Container System
     // @description
     // Book script containers are similar to item script containers, except they are specifically
-    // for the book items. They work with with the dItem object, and can be fetched
-    // with the Object Fetcher by using the dItem constructor i@book_script_name
+    // for the book items. They work with with the ItemTag object, and can be fetched
+    // with the Object Fetcher by using the ItemTag constructor i@book_script_name
     // Example: - give <player> i@my_book
     //
     // <code>
@@ -51,16 +51,16 @@ public class BookScriptContainer extends ScriptContainer {
         super(configurationSection, scriptContainerName);
     }
 
-    public dItem getBookFrom() {
+    public ItemTag getBookFrom() {
         return getBookFrom(null, null);
     }
 
-    public dItem getBookFrom(dPlayer player, dNPC npc) {
-        dItem stack = new dItem(Material.WRITTEN_BOOK);
+    public ItemTag getBookFrom(PlayerTag player, NPCTag npc) {
+        ItemTag stack = new ItemTag(Material.WRITTEN_BOOK);
         return writeBookTo(stack, player, npc);
     }
 
-    public dItem writeBookTo(dItem book, dPlayer player, dNPC npc) {
+    public ItemTag writeBookTo(ItemTag book, PlayerTag player, NPCTag npc) {
         // Get current ItemMeta from the book
         BookMeta bookInfo = (BookMeta) book.getItemStack().getItemMeta();
 

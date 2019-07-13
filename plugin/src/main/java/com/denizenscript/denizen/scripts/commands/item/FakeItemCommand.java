@@ -5,8 +5,8 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.PacketHelper;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
@@ -65,13 +65,13 @@ public class FakeItemCommand extends AbstractCommand {
                 scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
             else if (!scriptEntry.hasObject("item")
-                    && arg.matchesArgumentList(dItem.class)) {
-                scriptEntry.addObject("item", arg.asType(ListTag.class).filter(dItem.class, scriptEntry));
+                    && arg.matchesArgumentList(ItemTag.class)) {
+                scriptEntry.addObject("item", arg.asType(ListTag.class).filter(ItemTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("players")
-                    && arg.matchesArgumentList(dPlayer.class)
+                    && arg.matchesArgumentList(PlayerTag.class)
                     && arg.matchesPrefix("players")) {
-                scriptEntry.addObject("players", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
+                scriptEntry.addObject("players", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("player_only")
                     && arg.matches("player_only")) {
@@ -99,10 +99,10 @@ public class FakeItemCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        List<dItem> items = (List<dItem>) scriptEntry.getObject("item");
+        List<ItemTag> items = (List<ItemTag>) scriptEntry.getObject("item");
         final ElementTag elSlot = scriptEntry.getElement("slot");
         DurationTag duration = scriptEntry.getdObject("duration");
-        final List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("players");
+        final List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
         final ElementTag player_only = scriptEntry.getElement("player_only");
 
         if (scriptEntry.dbCallShouldDebug()) {
@@ -119,13 +119,13 @@ public class FakeItemCommand extends AbstractCommand {
 
         final PacketHelper packetHelper = NMSHandler.getInstance().getPacketHelper();
 
-        for (dItem item : items) {
+        for (ItemTag item : items) {
             if (item == null) {
                 slot++;
                 continue;
             }
 
-            for (dPlayer player : players) {
+            for (PlayerTag player : players) {
                 Player ent = player.getPlayerEntity();
                 packetHelper.setSlot(ent, translateSlot(ent, slot, playerOnly), item.getItemStack(), playerOnly);
             }
@@ -137,7 +137,7 @@ public class FakeItemCommand extends AbstractCommand {
                 DenizenCore.schedule(new OneTimeSchedulable(new Runnable() {
                     @Override
                     public void run() {
-                        for (dPlayer player : players) {
+                        for (PlayerTag player : players) {
                             Player ent = player.getPlayerEntity();
                             int translated = translateSlot(ent, slotSnapshot, playerOnly);
                             ItemStack original = ent.getOpenInventory().getItem(translated);

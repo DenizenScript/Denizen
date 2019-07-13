@@ -28,8 +28,8 @@ public class RenameCommand extends AbstractCommand {
     // NPC names may exceed the 16 character limit of normal Minecraft names.
     //
     // @Tags
-    // <n@npc.name>
-    // <n@npc.name.nickname>
+    // <NPCTag.name>
+    // <NPCTag.name.nickname>
     //
     // @Usage
     // Use to rename the linked NPC.

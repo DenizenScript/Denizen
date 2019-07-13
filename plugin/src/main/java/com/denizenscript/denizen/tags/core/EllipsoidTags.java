@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.dEllipsoid;
+import com.denizenscript.denizen.objects.EllipsoidTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
@@ -24,10 +24,10 @@ public class EllipsoidTags {
             return;
         }
 
-        dEllipsoid ellipsoid = null;
+        EllipsoidTag ellipsoid = null;
 
         if (event.hasNameContext()) {
-            ellipsoid = dEllipsoid.valueOf(event.getNameContext(), event.getAttributes().context);
+            ellipsoid = EllipsoidTag.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
         if (ellipsoid == null) {

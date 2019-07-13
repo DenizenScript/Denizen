@@ -7,7 +7,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.BlockData;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -36,7 +36,7 @@ public class SignCommand extends AbstractCommand {
     // If there is not already a sign there, defaults to a sign_post.
     //
     // @Tags
-    // <l@location.block.sign_contents>
+    // <LocationTag.block.sign_contents>
     //
     // @Usage
     // Use to edit some text on a sign
@@ -64,8 +64,8 @@ public class SignCommand extends AbstractCommand {
                 scriptEntry.addObject("type", arg.asElement());
             }
             else if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class)) {
-                scriptEntry.addObject("location", arg.asType(dLocation.class).setPrefix("location"));
+                    && arg.matchesArgumentType(LocationTag.class)) {
+                scriptEntry.addObject("location", arg.asType(LocationTag.class).setPrefix("location"));
             }
             else if (!scriptEntry.hasObject("direction")
                     && arg.matchesPrefix("direction", "dir")) {
@@ -115,7 +115,7 @@ public class SignCommand extends AbstractCommand {
         String direction = scriptEntry.hasObject("direction") ? ((ElementTag) scriptEntry.getObject("direction")).asString() : null;
         ElementTag typeElement = scriptEntry.getElement("type");
         ListTag text = (ListTag) scriptEntry.getObject("text");
-        dLocation location = (dLocation) scriptEntry.getObject("location");
+        LocationTag location = (LocationTag) scriptEntry.getObject("location");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
@@ -142,7 +142,7 @@ public class SignCommand extends AbstractCommand {
                 // TODO: 1.14 - allow new sign types?
                 sign.setType(MaterialCompat.SIGN, false);
                 if (direction != null) {
-                    Utilities.setSignRotation(dLocation.getBlockStateFor(sign), direction);
+                    Utilities.setSignRotation(LocationTag.getBlockStateFor(sign), direction);
                 }
             }
         }
@@ -156,7 +156,7 @@ public class SignCommand extends AbstractCommand {
                 setWallSign(sign, bf);
             }
         }
-        BlockState signState = dLocation.getBlockStateFor(sign);
+        BlockState signState = LocationTag.getBlockStateFor(sign);
 
         Utilities.setSignLines((Sign) signState, text.toArray(4));
     }

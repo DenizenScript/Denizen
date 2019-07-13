@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.Argument;
@@ -30,8 +30,8 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
     // @Triggers when a vehicle collides with an entity.
     //
     // @Context
-    // <context.vehicle> returns the dEntity of the vehicle.
-    // <context.entity> returns the dEntity of the entity the vehicle has collided with.
+    // <context.vehicle> returns the EntityTag of the vehicle.
+    // <context.entity> returns the EntityTag of the entity the vehicle has collided with.
     // <context.pickup> returns whether the vehicle can pick up the entity.
     //
     // @Determine
@@ -50,8 +50,8 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
 
     public static VehicleCollidesEntityScriptEvent instance;
 
-    public dEntity vehicle;
-    public dEntity entity;
+    public EntityTag vehicle;
+    public EntityTag entity;
     private Boolean pickup_cancel;
     public VehicleEntityCollisionEvent event;
 
@@ -115,8 +115,8 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
 
     @EventHandler
     public void onVehicleCollidesEntity(VehicleEntityCollisionEvent event) {
-        entity = new dEntity(event.getEntity());
-        vehicle = new dEntity(event.getVehicle());
+        entity = new EntityTag(event.getEntity());
+        vehicle = new EntityTag(event.getVehicle());
         pickup_cancel = event.isPickupCancelled();
         this.event = event;
         fire(event);

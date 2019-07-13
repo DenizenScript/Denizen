@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dInventory;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -27,7 +27,7 @@ public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Lis
     // @Triggers when a player closes an inventory. (EG, chests, not the player's main inventory.)
     //
     // @Context
-    // <context.inventory> returns the dInventory.
+    // <context.inventory> returns the InventoryTag.
     //
     // -->
 
@@ -37,8 +37,8 @@ public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Lis
 
     public static PlayerClosesInvScriptEvent instance;
 
-    public dInventory inventory;
-    private dEntity entity;
+    public InventoryTag inventory;
+    private EntityTag entity;
     public InventoryCloseEvent event;
 
     @Override
@@ -93,11 +93,11 @@ public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Lis
 
     @EventHandler
     public void onPlayerClosesInv(InventoryCloseEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        inventory = dInventory.mirrorBukkitInventory(event.getInventory());
-        entity = new dEntity(event.getPlayer());
+        inventory = InventoryTag.mirrorBukkitInventory(event.getInventory());
+        entity = new EntityTag(event.getPlayer());
         this.event = event;
         fire(event);
     }

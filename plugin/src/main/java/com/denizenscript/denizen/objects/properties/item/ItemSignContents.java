@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -17,9 +17,9 @@ import java.util.Arrays;
 public class ItemSignContents implements Property {
 
     public static boolean describes(ObjectTag item) {
-        return item instanceof dItem
-                && ((dItem) item).getItemStack().getItemMeta() instanceof BlockStateMeta
-                && ((BlockStateMeta) ((dItem) item).getItemStack().getItemMeta()).getBlockState() instanceof Sign;
+        return item instanceof ItemTag
+                && ((ItemTag) item).getItemStack().getItemMeta() instanceof BlockStateMeta
+                && ((BlockStateMeta) ((ItemTag) item).getItemStack().getItemMeta()).getBlockState() instanceof Sign;
     }
 
     public static ItemSignContents getFrom(ObjectTag _item) {
@@ -27,7 +27,7 @@ public class ItemSignContents implements Property {
             return null;
         }
         else {
-            return new ItemSignContents((dItem) _item);
+            return new ItemSignContents((ItemTag) _item);
         }
     }
 
@@ -44,11 +44,11 @@ public class ItemSignContents implements Property {
         return new ListTag(Arrays.asList(((Sign) ((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()).getLines()));
     }
 
-    private ItemSignContents(dItem _item) {
+    private ItemSignContents(ItemTag _item) {
         item = _item;
     }
 
-    dItem item;
+    ItemTag item;
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -58,9 +58,9 @@ public class ItemSignContents implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.sign_contents>
+        // @attribute <ItemTag.sign_contents>
         // @returns ListTag
-        // @mechanism dItem.sign_contents
+        // @mechanism ItemTag.sign_contents
         // @group properties
         // @description
         // Returns a list of lines on a sign item.
@@ -92,13 +92,13 @@ public class ItemSignContents implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name sign_contents
         // @input ListTag
         // @description
         // Sets the contents of a sign item.
         // @tags
-        // <i@item.sign_contents>
+        // <ItemTag.sign_contents>
         // -->
         if (mechanism.matches("sign_contents")) {
             ItemStack itemStack = item.getItemStack();

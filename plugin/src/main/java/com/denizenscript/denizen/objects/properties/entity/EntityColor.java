@@ -5,7 +5,7 @@ import com.denizenscript.denizen.utilities.entity.LlamaHelper;
 import com.denizenscript.denizen.utilities.entity.ParrotHelper;
 import com.denizenscript.denizen.utilities.entity.RabbitType;
 import com.denizenscript.denizen.utilities.entity.ShulkerHelper;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -20,10 +20,10 @@ public class EntityColor implements Property {
 
 
     public static boolean describes(ObjectTag entity) {
-        if (!(entity instanceof dEntity)) {
+        if (!(entity instanceof EntityTag)) {
             return false;
         }
-        EntityType type = ((dEntity) entity).getBukkitEntityType();
+        EntityType type = ((EntityTag) entity).getBukkitEntityType();
         return type == EntityType.SHEEP ||
                 type == EntityType.HORSE ||
                 type == EntityType.WOLF ||
@@ -39,7 +39,7 @@ public class EntityColor implements Property {
             return null;
         }
         else {
-            return new EntityColor((dEntity) entity);
+            return new EntityColor((EntityTag) entity);
         }
     }
 
@@ -56,11 +56,11 @@ public class EntityColor implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityColor(dEntity entity) {
+    private EntityColor(EntityTag entity) {
         colored = entity;
     }
 
-    dEntity colored;
+    EntityTag colored;
 
     private String getColor() {
         EntityType type = colored.getBukkitEntityType();
@@ -120,7 +120,7 @@ public class EntityColor implements Property {
     // @group Properties
     // @description
     // This is a quick rundown of the styling information used to create a horse,
-    // used for both <@link tag e@entity.color> and <@link mechanism e@entity.color>.
+    // used for both <@link tag EntityTag.color> and <@link mechanism EntityTag.color>.
     //
     // The output/input is formatted as COLOR|STYLE(|VARIANT)
     // Where color is:
@@ -155,9 +155,9 @@ public class EntityColor implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.color>
+        // @attribute <EntityTag.color>
         // @returns ElementTag
-        // @mechanism dEntity.color
+        // @mechanism EntityTag.color
         // @group properties
         // @description
         // If the entity can have a color, returns the entity's color.
@@ -182,7 +182,7 @@ public class EntityColor implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name color
         // @input Element
         // @description
@@ -195,8 +195,8 @@ public class EntityColor implements Property {
         // For llamas, the types are CREAMY, WHITE, BROWN, and GRAY.
         // For sheep, wolf, and shulker entities, see <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/DyeColor.html>
         // @tags
-        // <e@entity.color>
-        // <e@entity.is_colorable>
+        // <EntityTag.color>
+        // <EntityTag.is_colorable>
         // -->
 
         if (mechanism.matches("color")) {

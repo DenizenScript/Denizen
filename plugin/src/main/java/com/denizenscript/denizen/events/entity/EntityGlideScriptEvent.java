@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -28,7 +28,7 @@ public class EntityGlideScriptEvent extends BukkitScriptEvent implements Listene
     // @Triggers when an entity starts or stops gliding.
     //
     // @Context
-    // <context.entity> returns the dEntity of this event.
+    // <context.entity> returns the EntityTag of this event.
     // <context.state> returns an Element(Boolean) with a value of "true" if the entity is now gliding and "false" otherwise.
     //
     // @Player when the entity is a player.
@@ -42,7 +42,7 @@ public class EntityGlideScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     public static EntityGlideScriptEvent instance;
-    public dEntity entity;
+    public EntityTag entity;
     public Boolean state;
 
     @Override
@@ -101,7 +101,7 @@ public class EntityGlideScriptEvent extends BukkitScriptEvent implements Listene
 
     @EventHandler
     public void onEntityToggleGlide(EntityToggleGlideEvent event) {
-        entity = new dEntity(event.getEntity());
+        entity = new EntityTag(event.getEntity());
         state = event.isGliding();
         fire(event);
     }

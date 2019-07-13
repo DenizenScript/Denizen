@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -45,11 +45,11 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     public static PlayerMendsItemScriptEvent instance;
-    public dItem item;
-    public dEntity experienceOrb;
+    public ItemTag item;
+    public EntityTag experienceOrb;
     public ElementTag repairAmount;
     public PlayerItemMendEvent event;
-    public dLocation location;
+    public LocationTag location;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
@@ -85,7 +85,7 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(dPlayer.mirrorBukkitPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(PlayerTag.mirrorBukkitPlayer(event.getPlayer()), null);
     }
 
     @Override
@@ -104,12 +104,12 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
 
     @EventHandler
     public void onPlayerItemMend(PlayerItemMendEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        item = new dItem(event.getItem());
-        experienceOrb = new dEntity(event.getExperienceOrb());
-        location = new dLocation(event.getPlayer().getLocation());
+        item = new ItemTag(event.getItem());
+        experienceOrb = new EntityTag(event.getExperienceOrb());
+        location = new LocationTag(event.getPlayer().getLocation());
         repairAmount = new ElementTag(event.getRepairAmount());
         this.event = event;
         fire(event);

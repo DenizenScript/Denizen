@@ -17,13 +17,13 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class dEllipsoid implements ObjectTag, Notable {
+public class EllipsoidTag implements ObjectTag, Notable {
 
     // <--[language]
-    // @name dEllipsoid
+    // @name EllipsoidTag
     // @group Object System
     // @description
-    // A dEllipsoid represents an ellipsoidal region in the world.
+    // A EllipsoidTag represents an ellipsoidal region in the world.
     //
     // The word 'ellipsoid' means a less strict sphere.
     // Basically: an "ellipsoid" is to a 3D "sphere" what an "ellipse" (or "oval") is to a 2D "circle".
@@ -36,17 +36,17 @@ public class dEllipsoid implements ObjectTag, Notable {
     // @name ellipsoid@
     // @group Object Fetcher System
     // @description
-    // ellipsoid@ refers to the 'object identifier' of a dEllipsoid. The 'ellipsoid@' is notation for Denizen's Object
-    // Fetcher. The constructor for a dEllipsoid is <x>,<y>,<z>,<world>,<x-radius>,<y-radius>,<z-radius>
+    // ellipsoid@ refers to the 'object identifier' of a EllipsoidTag. The 'ellipsoid@' is notation for Denizen's Object
+    // Fetcher. The constructor for a EllipsoidTag is <x>,<y>,<z>,<world>,<x-radius>,<y-radius>,<z-radius>
     // For example, 'ellipsoid@1,2,3,space,7,7,7'.
     //
-    // For general info, see <@link language dEllipsoid>
+    // For general info, see <@link language EllipsoidTag>
     //
     // -->
 
-    public static List<dEllipsoid> getNotableEllipsoidsContaining(Location location) {
-        List<dEllipsoid> cuboids = new ArrayList<>();
-        for (dEllipsoid ellipsoid : NotableManager.getAllType(dEllipsoid.class)) {
+    public static List<EllipsoidTag> getNotableEllipsoidsContaining(Location location) {
+        List<EllipsoidTag> cuboids = new ArrayList<>();
+        for (EllipsoidTag ellipsoid : NotableManager.getAllType(EllipsoidTag.class)) {
             if (ellipsoid.contains(location)) {
                 cuboids.add(ellipsoid);
             }
@@ -59,7 +59,7 @@ public class dEllipsoid implements ObjectTag, Notable {
     //    OBJECT FETCHER
     ////////////////
 
-    public static dEllipsoid valueOf(String string) {
+    public static EllipsoidTag valueOf(String string) {
         return valueOf(string, null);
     }
 
@@ -69,14 +69,14 @@ public class dEllipsoid implements ObjectTag, Notable {
      * @param string the string
      */
     @Fetchable("ellipsoid")
-    public static dEllipsoid valueOf(String string, TagContext context) {
+    public static EllipsoidTag valueOf(String string, TagContext context) {
 
         if (string.startsWith("ellipsoid@")) {
             string = string.substring(10);
         }
 
-        if (NotableManager.isType(string, dEllipsoid.class)) {
-            return (dEllipsoid) NotableManager.getSavedObject(string);
+        if (NotableManager.isType(string, EllipsoidTag.class)) {
+            return (EllipsoidTag) NotableManager.getSavedObject(string);
         }
 
         List<String> split = CoreUtilities.split(string, ',');
@@ -85,16 +85,16 @@ public class dEllipsoid implements ObjectTag, Notable {
             return null;
         }
 
-        dWorld world = dWorld.valueOf(split.get(3), false);
+        WorldTag world = WorldTag.valueOf(split.get(3), false);
         if (world == null) {
             return null;
         }
 
-        dLocation location = new dLocation(world.getWorld(),
+        LocationTag location = new LocationTag(world.getWorld(),
                 ArgumentHelper.getDoubleFrom(split.get(0)), ArgumentHelper.getDoubleFrom(split.get(1)), ArgumentHelper.getDoubleFrom(split.get(2)));
-        dLocation size = new dLocation(null, ArgumentHelper.getDoubleFrom(split.get(4)),
+        LocationTag size = new LocationTag(null, ArgumentHelper.getDoubleFrom(split.get(4)),
                 ArgumentHelper.getDoubleFrom(split.get(5)), ArgumentHelper.getDoubleFrom(split.get(6)));
-        return new dEllipsoid(location, size);
+        return new EllipsoidTag(location, size);
     }
 
     /**
@@ -106,7 +106,7 @@ public class dEllipsoid implements ObjectTag, Notable {
     public static boolean matches(String arg) {
 
         try {
-            return dEllipsoid.valueOf(arg) != null;
+            return EllipsoidTag.valueOf(arg) != null;
         }
         catch (Exception e) {
             return false;
@@ -118,7 +118,7 @@ public class dEllipsoid implements ObjectTag, Notable {
     //   Constructors
     /////////////
 
-    public dEllipsoid(dLocation loc, dLocation size) {
+    public EllipsoidTag(LocationTag loc, LocationTag size) {
         this.loc = loc;
         this.size = size;
     }
@@ -127,22 +127,22 @@ public class dEllipsoid implements ObjectTag, Notable {
     //   INSTANCE FIELDS/METHODS
     /////////////////
 
-    private dLocation loc;
+    private LocationTag loc;
 
-    private dLocation size;
+    private LocationTag size;
 
     public ListTag getBlocks() {
         return getBlocks(null);
     }
 
-    public ListTag getBlocks(List<dMaterial> materials) {
-        List<dLocation> initial = new dCuboid(new Location(loc.getWorld(),
+    public ListTag getBlocks(List<MaterialTag> materials) {
+        List<LocationTag> initial = new CuboidTag(new Location(loc.getWorld(),
                 loc.getX() - size.getX(), loc.getY() - size.getY(), loc.getZ() - size.getZ()),
                 new Location(loc.getWorld(),
                         loc.getX() + size.getX(), loc.getY() + size.getY(), loc.getZ() + size.getZ()))
                 .getBlocks_internal(materials);
         ListTag list = new ListTag();
-        for (dLocation loc : initial) {
+        for (LocationTag loc : initial) {
             if (contains(loc)) {
                 list.add(loc.identify());
             }
@@ -150,14 +150,14 @@ public class dEllipsoid implements ObjectTag, Notable {
         return list;
     }
 
-    public List<dLocation> getBlockLocations() {
-        List<dLocation> initial = new dCuboid(new Location(loc.getWorld(),
+    public List<LocationTag> getBlockLocations() {
+        List<LocationTag> initial = new CuboidTag(new Location(loc.getWorld(),
                 loc.getX() - size.getX(), loc.getY() - size.getY(), loc.getZ() - size.getZ()),
                 new Location(loc.getWorld(),
                         loc.getX() + size.getX(), loc.getY() + size.getY(), loc.getZ() + size.getZ()))
                 .getBlocks_internal(null);
-        List<dLocation> locations = new ArrayList<>();
-        for (dLocation loc : initial) {
+        List<LocationTag> locations = new ArrayList<>();
+        for (LocationTag loc : initial) {
             if (contains(loc)) {
                 locations.add(loc);
             }
@@ -253,10 +253,10 @@ public class dEllipsoid implements ObjectTag, Notable {
     public static void registerTags() {
 
         // <--[tag]
-        // @attribute <ellipsoid@ellipsoid.blocks[<material>|...]>
-        // @returns ListTag(dLocation)
+        // @attribute <EllipsoidTag.blocks[<material>|...]>
+        // @returns ListTag(LocationTag)
         // @description
-        // Returns each block location within the dEllipsoid.
+        // Returns each block location within the EllipsoidTag.
         // Optionally, specify a list of materials to only return locations
         // with that block type.
         // -->
@@ -264,11 +264,11 @@ public class dEllipsoid implements ObjectTag, Notable {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 if (attribute.hasContext(1)) {
-                    return new ListTag(((dEllipsoid) object).getBlocks(ListTag.valueOf(attribute.getContext(1)).filter(dMaterial.class, attribute.context)))
+                    return new ListTag(((EllipsoidTag) object).getBlocks(ListTag.valueOf(attribute.getContext(1)).filter(MaterialTag.class, attribute.context)))
                             .getAttribute(attribute.fulfill(1));
                 }
                 else {
-                    return new ListTag(((dEllipsoid) object).getBlocks())
+                    return new ListTag(((EllipsoidTag) object).getBlocks())
                             .getAttribute(attribute.fulfill(1));
                 }
             }
@@ -276,36 +276,36 @@ public class dEllipsoid implements ObjectTag, Notable {
         registerTag("get_blocks", registeredTags.get("blocks"));
 
         // <--[tag]
-        // @attribute <ellipsoid@ellipsoid.location>
-        // @returns dLocation
+        // @attribute <EllipsoidTag.location>
+        // @returns LocationTag
         // @description
         // Returns the location of the ellipsoid.
         // -->
         registerTag("location", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                return ((dEllipsoid) object).loc.getAttribute(attribute.fulfill(1));
+                return ((EllipsoidTag) object).loc.getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
-        // @attribute <ellipsoid@ellipsoid.size>
-        // @returns dLocation
+        // @attribute <EllipsoidTag.size>
+        // @returns LocationTag
         // @description
         // Returns the size of the ellipsoid.
         // -->
         registerTag("size", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                return ((dEllipsoid) object).size.getAttribute(attribute.fulfill(1));
+                return ((EllipsoidTag) object).size.getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
-        // @attribute <ellipsoid@ellipsoid.type>
+        // @attribute <EllipsoidTag.type>
         // @returns ElementTag
         // @description
-        // Always returns 'Ellipsoid' for dEllipsoid objects. All objects fetchable by the Object Fetcher will return the
+        // Always returns 'Ellipsoid' for EllipsoidTag objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         registerTag("type", new TagRunnable() {

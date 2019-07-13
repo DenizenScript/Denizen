@@ -21,13 +21,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
-public class dChunk implements ObjectTag, Adjustable {
+public class ChunkTag implements ObjectTag, Adjustable {
 
     // <--[language]
-    // @name dChunk
+    // @name ChunkTag
     // @group Object System
     // @description
-    // A dChunk represents a chunk in the world.
+    // A ChunkTag represents a chunk in the world.
     //
     // For format info, see <@link language ch@>
     //
@@ -37,8 +37,8 @@ public class dChunk implements ObjectTag, Adjustable {
     // @name ch@
     // @group Object Fetcher System
     // @description
-    // ch@ refers to the 'object identifier' of a dChunk. The 'ch@' is notation for Denizen's Object
-    // Fetcher. The constructor for a dChunk is <x>,<z>,<world>.
+    // ch@ refers to the 'object identifier' of a ChunkTag. The 'ch@' is notation for Denizen's Object
+    // Fetcher. The constructor for a ChunkTag is <x>,<z>,<world>.
     // For example, 'ch@5,3,world'.
     //
     // Note that the X/Z pair are chunk coordinates, not block coordinates.
@@ -54,7 +54,7 @@ public class dChunk implements ObjectTag, Adjustable {
     // For example, block at X,Z 32,67 is in the chunk at X,Z 2,4
     // And the block at X,Z -32,-67 is in the chunk at X,Z -2,-5
     //
-    // For general info, see <@link language dChunk>
+    // For general info, see <@link language ChunkTag>
     //
     // -->
 
@@ -62,20 +62,20 @@ public class dChunk implements ObjectTag, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
-    public static dChunk valueOf(String string) {
+    public static ChunkTag valueOf(String string) {
         return valueOf(string, null);
     }
 
     /**
      * Gets a Chunk Object from a string form of x,z,world.
      * This is not to be confused with the 'x,y,z,world' of a
-     * location, which is a finer grain of unit in a dWorlds.
+     * location, which is a finer grain of unit in a WorldTags.
      *
      * @param string the string or dScript argument String
-     * @return a dChunk, or null if incorrectly formatted
+     * @return a ChunkTag, or null if incorrectly formatted
      */
     @Fetchable("ch")
-    public static dChunk valueOf(String string, TagContext context) {
+    public static ChunkTag valueOf(String string, TagContext context) {
         if (string == null) {
             return null;
         }
@@ -89,11 +89,11 @@ public class dChunk implements ObjectTag, Adjustable {
         String[] parts = string.split(",");
         if (parts.length == 3) {
             try {
-                return new dChunk(dWorld.valueOf(parts[2], context), Integer.valueOf(parts[0]), Integer.valueOf(parts[1]));
+                return new ChunkTag(WorldTag.valueOf(parts[2], context), Integer.valueOf(parts[0]), Integer.valueOf(parts[1]));
             }
             catch (Exception e) {
                 if (context == null || context.debug) {
-                    Debug.log("Minor: valueOf dChunk returning null: " + "ch@" + string);
+                    Debug.log("Minor: valueOf ChunkTag returning null: " + "ch@" + string);
                 }
                 return null;
             }
@@ -101,7 +101,7 @@ public class dChunk implements ObjectTag, Adjustable {
         }
         else {
             if (context == null || context.debug) {
-                Debug.log("Minor: valueOf dChunk unable to handle malformed format: " + "ch@" + string);
+                Debug.log("Minor: valueOf ChunkTag unable to handle malformed format: " + "ch@" + string);
             }
         }
 
@@ -120,7 +120,7 @@ public class dChunk implements ObjectTag, Adjustable {
 
     int chunkX, chunkZ;
 
-    dWorld world;
+    WorldTag world;
 
     Chunk cachedChunk;
 
@@ -132,36 +132,36 @@ public class dChunk implements ObjectTag, Adjustable {
     }
 
     /**
-     * dChunk can be constructed with a Chunk
+     * ChunkTag can be constructed with a Chunk
      *
      * @param chunk The chunk to use.
      */
-    public dChunk(Chunk chunk) {
+    public ChunkTag(Chunk chunk) {
         this.cachedChunk = chunk;
-        world = new dWorld(chunk.getWorld());
+        world = new WorldTag(chunk.getWorld());
         chunkX = chunk.getX();
         chunkZ = chunk.getZ();
     }
 
-    public dChunk(dWorld world, int x, int z) {
+    public ChunkTag(WorldTag world, int x, int z) {
         this.world = world;
         chunkX = x;
         chunkZ = z;
     }
 
     /**
-     * dChunk can be constructed with a Location (or dLocation)
+     * ChunkTag can be constructed with a Location (or LocationTag)
      *
      * @param location The location of the chunk.
      */
-    public dChunk(Location location) {
-        world = new dWorld(location.getWorld());
+    public ChunkTag(Location location) {
+        world = new WorldTag(location.getWorld());
         chunkX = location.getBlockX() >> 4;
         chunkZ = location.getBlockZ() >> 4;
     }
 
-    public dLocation getCenter() {
-        return new dLocation(getWorld(), getX() * 16 + 8, 128, getZ() * 16 + 8);
+    public LocationTag getCenter() {
+        return new LocationTag(getWorld(), getX() * 16 + 8, 128, getZ() * 16 + 8);
     }
 
     public int getX() {
@@ -197,7 +197,7 @@ public class dChunk implements ObjectTag, Adjustable {
     }
 
     @Override
-    public dChunk setPrefix(String prefix) {
+    public ChunkTag setPrefix(String prefix) {
         this.prefix = prefix;
         return this;
     }
@@ -229,8 +229,8 @@ public class dChunk implements ObjectTag, Adjustable {
     public static void registerTags() {
 
         // <--[tag]
-        // @attribute <ch@chunk.add[<#>,<#>]>
-        // @returns dChunk
+        // @attribute <ChunkTag.add[<#>,<#>]>
+        // @returns ChunkTag
         // @description
         // Returns the chunk with the specified coordinates added to it.
         // -->
@@ -238,27 +238,27 @@ public class dChunk implements ObjectTag, Adjustable {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
-                    Debug.echoError("The tag ch@chunk.add[<#>,<#>] must have a value.");
+                    Debug.echoError("The tag ChunkTag.add[<#>,<#>] must have a value.");
                     return null;
                 }
                 List<String> coords = CoreUtilities.split(attribute.getContext(1), ',');
                 if (coords.size() < 2) {
-                    Debug.echoError("The tag ch@chunk.add[<#>,<#>] requires two values!");
+                    Debug.echoError("The tag ChunkTag.add[<#>,<#>] requires two values!");
                     return null;
                 }
                 int x = ArgumentHelper.getIntegerFrom(coords.get(0));
                 int z = ArgumentHelper.getIntegerFrom(coords.get(1));
-                dChunk chunk = (dChunk) object;
+                ChunkTag chunk = (ChunkTag) object;
 
-                return new dChunk(chunk.world, chunk.chunkX + x, chunk.chunkZ + z)
+                return new ChunkTag(chunk.world, chunk.chunkX + x, chunk.chunkZ + z)
                         .getAttribute(attribute.fulfill(1));
 
             }
         });
 
         // <--[tag]
-        // @attribute <ch@chunk.sub[<#>,<#>]>
-        // @returns dChunk
+        // @attribute <ChunkTag.sub[<#>,<#>]>
+        // @returns ChunkTag
         // @description
         // Returns the chunk with the specified coordinates subtracted from it.
         // -->
@@ -266,26 +266,26 @@ public class dChunk implements ObjectTag, Adjustable {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
-                    Debug.echoError("The tag ch@chunk.add[<#>,<#>] must have a value.");
+                    Debug.echoError("The tag ChunkTag.add[<#>,<#>] must have a value.");
                     return null;
                 }
                 List<String> coords = CoreUtilities.split(attribute.getContext(1), ',');
                 if (coords.size() < 2) {
-                    Debug.echoError("The tag ch@chunk.sub[<#>,<#>] requires two values!");
+                    Debug.echoError("The tag ChunkTag.sub[<#>,<#>] requires two values!");
                     return null;
                 }
                 int x = ArgumentHelper.getIntegerFrom(coords.get(0));
                 int z = ArgumentHelper.getIntegerFrom(coords.get(1));
-                dChunk chunk = (dChunk) object;
+                ChunkTag chunk = (ChunkTag) object;
 
-                return new dChunk(chunk.world, chunk.chunkX - x, chunk.chunkZ - z)
+                return new ChunkTag(chunk.world, chunk.chunkX - x, chunk.chunkZ - z)
                         .getAttribute(attribute.fulfill(1));
 
             }
         });
 
         // <--[tag]
-        // @attribute <ch@chunk.is_loaded>
+        // @attribute <ChunkTag.is_loaded>
         // @returns ElementTag(Boolean)
         // @description
         // Returns true if the chunk is currently loaded into memory.
@@ -293,13 +293,13 @@ public class dChunk implements ObjectTag, Adjustable {
         registerTag("is_loaded", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((dChunk) object).isLoaded())
+                return new ElementTag(((ChunkTag) object).isLoaded())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
-        // @attribute <ch@chunk.x>
+        // @attribute <ChunkTag.x>
         // @returns ElementTag(Number)
         // @description
         // Returns the x coordinate of the chunk.
@@ -307,12 +307,12 @@ public class dChunk implements ObjectTag, Adjustable {
         registerTag("x", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((dChunk) object).chunkX).getAttribute(attribute.fulfill(1));
+                return new ElementTag(((ChunkTag) object).chunkX).getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
-        // @attribute <ch@chunk.z>
+        // @attribute <ChunkTag.z>
         // @returns ElementTag(Number)
         // @description
         // Returns the z coordinate of the chunk.
@@ -320,42 +320,42 @@ public class dChunk implements ObjectTag, Adjustable {
         registerTag("z", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((dChunk) object).chunkZ).getAttribute(attribute.fulfill(1));
+                return new ElementTag(((ChunkTag) object).chunkZ).getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
-        // @attribute <ch@chunk.world>
-        // @returns dWorld
+        // @attribute <ChunkTag.world>
+        // @returns WorldTag
         // @description
         // Returns the world associated with the chunk.
         // -->
         registerTag("world", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                return ((dChunk) object).world.getAttribute(attribute.fulfill(1));
+                return ((ChunkTag) object).world.getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
-        // @attribute <ch@chunk.cuboid>
-        // @returns dCuboid
+        // @attribute <ChunkTag.cuboid>
+        // @returns CuboidTag
         // @description
         // Returns a cuboid of this chunk.
         // -->
         registerTag("cuboid", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                dChunk chunk = (dChunk) object;
-                return new dCuboid(new Location(chunk.getWorld(), chunk.getX() * 16, 0, chunk.getZ() * 16),
+                ChunkTag chunk = (ChunkTag) object;
+                return new CuboidTag(new Location(chunk.getWorld(), chunk.getX() * 16, 0, chunk.getZ() * 16),
                         new Location(chunk.getWorld(), chunk.getX() * 16 + 15, 255, chunk.getZ() * 16 + 15))
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
-        // @attribute <ch@chunk.entities>
-        // @returns ListTag(dEntity)
+        // @attribute <ChunkTag.entities>
+        // @returns ListTag(EntityTag)
         // @description
         // Returns a list of entities in the chunk.
         // -->
@@ -363,9 +363,9 @@ public class dChunk implements ObjectTag, Adjustable {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 ListTag entities = new ListTag();
-                if (((dChunk) object).isLoaded()) {
-                    for (Entity ent : ((dChunk) object).getChunk().getEntities()) {
-                        entities.addObject(new dEntity(ent).getDenizenObject());
+                if (((ChunkTag) object).isLoaded()) {
+                    for (Entity ent : ((ChunkTag) object).getChunk().getEntities()) {
+                        entities.addObject(new EntityTag(ent).getDenizenObject());
                     }
                 }
 
@@ -374,8 +374,8 @@ public class dChunk implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <ch@chunk.living_entities>
-        // @returns ListTag(dEntity)
+        // @attribute <ChunkTag.living_entities>
+        // @returns ListTag(EntityTag)
         // @description
         // Returns a list of living entities in the chunk. This includes Players, mobs, NPCs, etc., but excludes
         // dropped items, experience orbs, etc.
@@ -384,10 +384,10 @@ public class dChunk implements ObjectTag, Adjustable {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 ListTag entities = new ListTag();
-                if (((dChunk) object).isLoaded()) {
-                    for (Entity ent : ((dChunk) object).getChunk().getEntities()) {
+                if (((ChunkTag) object).isLoaded()) {
+                    for (Entity ent : ((ChunkTag) object).getChunk().getEntities()) {
                         if (ent instanceof LivingEntity) {
-                            entities.addObject(new dEntity(ent).getDenizenObject());
+                            entities.addObject(new EntityTag(ent).getDenizenObject());
                         }
                     }
                 }
@@ -397,8 +397,8 @@ public class dChunk implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <ch@chunk.players>
-        // @returns ListTag(dPlayer)
+        // @attribute <ChunkTag.players>
+        // @returns ListTag(PlayerTag)
         // @description
         // Returns a list of players in the chunk.
         // -->
@@ -406,10 +406,10 @@ public class dChunk implements ObjectTag, Adjustable {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 ListTag entities = new ListTag();
-                if (((dChunk) object).isLoaded()) {
-                    for (Entity ent : ((dChunk) object).getChunk().getEntities()) {
-                        if (dEntity.isPlayer(ent)) {
-                            entities.addObject(new dPlayer((Player) ent));
+                if (((ChunkTag) object).isLoaded()) {
+                    for (Entity ent : ((ChunkTag) object).getChunk().getEntities()) {
+                        if (EntityTag.isPlayer(ent)) {
+                            entities.addObject(new PlayerTag((Player) ent));
                         }
                     }
                 }
@@ -419,7 +419,7 @@ public class dChunk implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <ch@chunk.height_map>
+        // @attribute <ChunkTag.height_map>
         // @returns ListTag
         // @description
         // Returns a list of the height of each block in the chunk.
@@ -427,7 +427,7 @@ public class dChunk implements ObjectTag, Adjustable {
         registerTag("height_map", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                int[] heightMap = ((dChunk) object).getHeightMap();
+                int[] heightMap = ((ChunkTag) object).getHeightMap();
                 List<String> height_map = new ArrayList<>(heightMap.length);
                 for (int i : heightMap) {
                     height_map.add(String.valueOf(i));
@@ -437,7 +437,7 @@ public class dChunk implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <ch@chunk.average_height>
+        // @attribute <ChunkTag.average_height>
         // @returns ElementTag(Decimal)
         // @description
         // Returns the average height of the blocks in the chunk.
@@ -446,7 +446,7 @@ public class dChunk implements ObjectTag, Adjustable {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 int sum = 0;
-                int[] heightMap = ((dChunk) object).getHeightMap();
+                int[] heightMap = ((ChunkTag) object).getHeightMap();
                 for (int i : heightMap) {
                     sum += i;
                 }
@@ -455,7 +455,7 @@ public class dChunk implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <ch@chunk.is_flat[#]>
+        // @attribute <ChunkTag.is_flat[#]>
         // @returns ElementTag(Boolean)
         // @description
         // scans the heights of the blocks to check variance between them. If no number is supplied, is_flat will return
@@ -467,7 +467,7 @@ public class dChunk implements ObjectTag, Adjustable {
             public String run(Attribute attribute, ObjectTag object) {
                 int tolerance = attribute.hasContext(1) && ArgumentHelper.matchesInteger(attribute.getContext(1)) ?
                         Integer.valueOf(attribute.getContext(1)) : 2;
-                int[] heightMap = ((dChunk) object).getHeightMap();
+                int[] heightMap = ((ChunkTag) object).getHeightMap();
                 int x = heightMap[0];
                 for (int i : heightMap) {
                     if (Math.abs(x - i) > tolerance) {
@@ -480,8 +480,8 @@ public class dChunk implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <ch@chunk.surface_blocks>
-        // @returns ListTag(dLocation)
+        // @attribute <ChunkTag.surface_blocks>
+        // @returns ListTag(LocationTag)
         // @description
         // Returns a list of the highest non-air surface blocks in the chunk.
         // -->
@@ -491,7 +491,7 @@ public class dChunk implements ObjectTag, Adjustable {
                 ListTag surface_blocks = new ListTag();
                 for (int x = 0; x < 16; x++) {
                     for (int z = 0; z < 16; z++) {
-                        surface_blocks.add(new dLocation(((dChunk) object).getChunk().getBlock(x, ((dChunk) object)
+                        surface_blocks.add(new LocationTag(((ChunkTag) object).getChunk().getBlock(x, ((ChunkTag) object)
                                 .getSnapshot().getHighestBlockYAt(x, z) - 1, z).getLocation()).identify());
                     }
                 }
@@ -501,15 +501,15 @@ public class dChunk implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <ch@chunk.spawn_slimes>
-        // @returns ListTag(dLocation)
+        // @attribute <ChunkTag.spawn_slimes>
+        // @returns ListTag(LocationTag)
         // @description
         // Returns whether the chunk is a specially located 'slime spawner' chunk.
         // -->
         registerTag("spawn_slimes", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                dChunk chunk = (dChunk) object;
+                ChunkTag chunk = (ChunkTag) object;
                 Random random = new Random(chunk.getWorld().getSeed() +
                         chunk.getX() * chunk.getX() * 4987142 +
                         chunk.getX() * 5947611 +
@@ -520,10 +520,10 @@ public class dChunk implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <ch@chunk.type>
+        // @attribute <ChunkTag.type>
         // @returns ElementTag
         // @description
-        // Always returns 'Chunk' for dChunk objects. All objects fetchable by the Object Fetcher will return the
+        // Always returns 'Chunk' for ChunkTag objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         registerTag("type", new TagRunnable() {
@@ -577,7 +577,7 @@ public class dChunk implements ObjectTag, Adjustable {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dChunk
+        // @object ChunkTag
         // @name unload
         // @input None
         // @description
@@ -595,7 +595,7 @@ public class dChunk implements ObjectTag, Adjustable {
         }
 
         // <--[mechanism]
-        // @object dChunk
+        // @object ChunkTag
         // @name unload_without_saving
         // @input None
         // @description
@@ -608,7 +608,7 @@ public class dChunk implements ObjectTag, Adjustable {
         }
 
         // <--[mechanism]
-        // @object dChunk
+        // @object ChunkTag
         // @name load
         // @input None
         // @description
@@ -621,7 +621,7 @@ public class dChunk implements ObjectTag, Adjustable {
         }
 
         // <--[mechanism]
-        // @object dChunk
+        // @object ChunkTag
         // @name regenerate
         // @input None
         // @description
@@ -634,7 +634,7 @@ public class dChunk implements ObjectTag, Adjustable {
         }
 
         // <--[mechanism]
-        // @object dChunk
+        // @object ChunkTag
         // @name refresh_chunk
         // @input None
         // @description
@@ -649,9 +649,9 @@ public class dChunk implements ObjectTag, Adjustable {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    for (Map<dLocation, FakeBlock> blocks : FakeBlock.getBlocks().values()) {
-                        for (Map.Entry<dLocation, FakeBlock> locBlock : blocks.entrySet()) {
-                            dLocation location = locBlock.getKey();
+                    for (Map<LocationTag, FakeBlock> blocks : FakeBlock.getBlocks().values()) {
+                        for (Map.Entry<LocationTag, FakeBlock> locBlock : blocks.entrySet()) {
+                            LocationTag location = locBlock.getKey();
                             if (Math.floor(location.getX() / 16) == chunkX
                                     && Math.floor(location.getZ() / 16) == chunkZ) {
                                 locBlock.getValue().updateBlock();
@@ -663,7 +663,7 @@ public class dChunk implements ObjectTag, Adjustable {
         }
 
         // <--[mechanism]
-        // @object dChunk
+        // @object ChunkTag
         // @name refresh_chunk_sections
         // @input None
         // @description

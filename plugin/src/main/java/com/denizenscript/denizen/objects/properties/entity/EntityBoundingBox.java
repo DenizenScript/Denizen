@@ -3,8 +3,8 @@ package com.denizenscript.denizen.objects.properties.entity;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.util.BoundingBox;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -19,7 +19,7 @@ import java.util.UUID;
 public class EntityBoundingBox implements Property {
 
     public static boolean describes(ObjectTag object) {
-        return object instanceof dEntity;
+        return object instanceof EntityTag;
     }
 
     public static EntityBoundingBox getFrom(ObjectTag object) {
@@ -27,7 +27,7 @@ public class EntityBoundingBox implements Property {
             return null;
         }
         else {
-            return new EntityBoundingBox((dEntity) object);
+            return new EntityBoundingBox((EntityTag) object);
         }
     }
 
@@ -52,17 +52,17 @@ public class EntityBoundingBox implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityBoundingBox(dEntity entity) {
+    private EntityBoundingBox(EntityTag entity) {
         this.entity = entity;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     private ListTag getBoundingBox() {
         BoundingBox boundingBox = NMSHandler.getInstance().getEntityHelper().getBoundingBox(entity.getBukkitEntity());
         ListTag list = new ListTag();
-        list.add(new dLocation(boundingBox.getLow().toLocation(entity.getWorld())).identify());
-        list.add(new dLocation(boundingBox.getHigh().toLocation(entity.getWorld())).identify());
+        list.add(new LocationTag(boundingBox.getLow().toLocation(entity.getWorld())).identify());
+        list.add(new LocationTag(boundingBox.getHigh().toLocation(entity.getWorld())).identify());
         return list;
     }
 
@@ -93,9 +93,9 @@ public class EntityBoundingBox implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.bounding_box>
-        // @returns ListTag(dLocation)
-        // @mechanism dEntity.bounding_box
+        // @attribute <EntityTag.bounding_box>
+        // @returns ListTag(LocationTag)
+        // @mechanism EntityTag.bounding_box
         // @group properties
         // @description
         // Returns the collision bounding box of the entity in the format "<low>|<high>", essentially a cuboid with decimals.
@@ -111,13 +111,13 @@ public class EntityBoundingBox implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name bounding_box
-        // @input ListTag(dLocation)
+        // @input ListTag(LocationTag)
         // @description
         // Changes the collision bounding box of the entity in the format "<low>|<high>", essentially a cuboid with decimals.
         // @tags
-        // <e@entity.bounding_box>
+        // <EntityTag.bounding_box>
         // -->
 
         if (mechanism.matches("bounding_box")) {
@@ -125,14 +125,14 @@ public class EntityBoundingBox implements Property {
                 // TODO: Allow editing NPC boxes properly?
                 return;
             }
-            List<dLocation> locations = mechanism.valueAsType(ListTag.class).filter(dLocation.class, mechanism.context);
+            List<LocationTag> locations = mechanism.valueAsType(ListTag.class).filter(LocationTag.class, mechanism.context);
             if (locations.size() == 2) {
                 BoundingBox boundingBox = new BoundingBox(locations.get(0).toVector(), locations.get(1).toVector());
                 NMSHandler.getInstance().getEntityHelper().setBoundingBox(entity.getBukkitEntity(), boundingBox);
                 modifiedBoxes.add(entity.getUUID());
             }
             else {
-                Debug.echoError("Must specify exactly 2 dLocations in the format '<low>|<high>'!");
+                Debug.echoError("Must specify exactly 2 LocationTags in the format '<low>|<high>'!");
             }
         }
     }

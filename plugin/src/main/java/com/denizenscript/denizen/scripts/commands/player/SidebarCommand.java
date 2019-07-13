@@ -6,7 +6,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -60,9 +60,9 @@ public class SidebarCommand extends AbstractCommand {
     // lines and it will show each player specified their name on that line.
     //
     // @Tags
-    // <p@player.sidebar.lines>
-    // <p@player.sidebar.title>
-    // <p@player.sidebar.scores>
+    // <PlayerTag.sidebar.lines>
+    // <PlayerTag.sidebar.title>
+    // <PlayerTag.sidebar.scores>
     //
     // @Usage
     // Show all online players a sidebar.
@@ -243,7 +243,7 @@ public class SidebarCommand extends AbstractCommand {
         switch (Action.valueOf(action.asString())) {
 
             case ADD:
-                for (dPlayer player : players.filter(dPlayer.class, scriptEntry)) {
+                for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
                     if (player == null || !player.isValid()) {
                         Debug.echoError("Invalid player!");
                         continue;
@@ -279,7 +279,7 @@ public class SidebarCommand extends AbstractCommand {
                 break;
 
             case REMOVE:
-                for (dPlayer player : players.filter(dPlayer.class, scriptEntry)) {
+                for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
                     if (player == null || !player.isValid()) {
                         Debug.echoError("Invalid player!");
                         continue;
@@ -336,7 +336,7 @@ public class SidebarCommand extends AbstractCommand {
                 break;
 
             case SET:
-                for (dPlayer player : players.filter(dPlayer.class, scriptEntry)) {
+                for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
                     if (player == null || !player.isValid()) {
                         Debug.echoError("Invalid player!");
                         continue;
@@ -395,7 +395,7 @@ public class SidebarCommand extends AbstractCommand {
 
     private static final Map<UUID, Sidebar> sidebars = new HashMap<>();
 
-    private static Sidebar createSidebar(dPlayer denizenPlayer) {
+    private static Sidebar createSidebar(PlayerTag denizenPlayer) {
         if (!denizenPlayer.isOnline()) {
             return null;
         }
@@ -407,7 +407,7 @@ public class SidebarCommand extends AbstractCommand {
         return sidebars.get(player.getUniqueId());
     }
 
-    public static Sidebar getSidebar(dPlayer denizenPlayer) {
+    public static Sidebar getSidebar(PlayerTag denizenPlayer) {
         if (!denizenPlayer.isOnline()) {
             return null;
         }

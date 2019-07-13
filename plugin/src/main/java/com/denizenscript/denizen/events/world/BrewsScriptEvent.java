@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.world;
 
-import com.denizenscript.denizen.objects.dInventory;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.InventoryTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -24,8 +24,8 @@ public class BrewsScriptEvent extends BukkitScriptEvent implements Listener {
     // @Triggers when a brewing stand brews a potion.
     //
     // @Context
-    // <context.location> returns the dLocation of the brewing stand.
-    // <context.inventory> returns the dInventory of the brewing stand's contents.
+    // <context.location> returns the LocationTag of the brewing stand.
+    // <context.inventory> returns the InventoryTag of the brewing stand's contents.
     //
     // -->
 
@@ -34,8 +34,8 @@ public class BrewsScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     public static BrewsScriptEvent instance;
-    public dInventory inventory;
-    public dLocation location;
+    public InventoryTag inventory;
+    public LocationTag location;
     public BrewEvent event;
 
     @Override
@@ -71,8 +71,8 @@ public class BrewsScriptEvent extends BukkitScriptEvent implements Listener {
 
     @EventHandler
     public void onBrews(BrewEvent event) {
-        location = new dLocation(event.getBlock().getLocation());
-        inventory = dInventory.mirrorBukkitInventory(event.getContents());
+        location = new LocationTag(event.getBlock().getLocation());
+        inventory = InventoryTag.mirrorBukkitInventory(event.getContents());
         this.event = event;
         fire(event);
     }

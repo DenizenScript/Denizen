@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -12,7 +12,7 @@ import org.bukkit.entity.EntityType;
 public class EntityPowered implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.CREEPER;
+        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntityType() == EntityType.CREEPER;
     }
 
     public static EntityPowered getFrom(ObjectTag entity) {
@@ -20,7 +20,7 @@ public class EntityPowered implements Property {
             return null;
         }
         else {
-            return new EntityPowered((dEntity) entity);
+            return new EntityPowered((EntityTag) entity);
         }
     }
 
@@ -37,11 +37,11 @@ public class EntityPowered implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityPowered(dEntity entity) {
+    private EntityPowered(EntityTag entity) {
         powered = entity;
     }
 
-    dEntity powered;
+    EntityTag powered;
 
     private boolean getPowered() {
         return ((Creeper) (powered.getBukkitEntity())).isPowered();
@@ -86,9 +86,9 @@ public class EntityPowered implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.powered>
+        // @attribute <EntityTag.powered>
         // @returns ElementTag(Boolean)
-        // @mechanism dEntity.powered
+        // @mechanism EntityTag.powered
         // @group properties
         // @description
         // If the entity is a creeper, returns whether the creeper is powered.
@@ -105,13 +105,13 @@ public class EntityPowered implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name powered
         // @input Element(Boolean)
         // @description
         // Changes the powered state of a Creeper.
         // @tags
-        // <e@entity.powered>
+        // <EntityTag.powered>
         // -->
 
         if (mechanism.matches("powered") && mechanism.requireBoolean()) {

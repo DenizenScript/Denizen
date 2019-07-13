@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.utilities.entity.Position;
 import com.denizenscript.denizen.BukkitScriptEntryData;
@@ -36,13 +36,13 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
     // @Triggers when an entity shoots something out of a bow.
     //
     // @Context
-    // <context.entity> returns the dEntity that shot the bow.
-    // <context.projectile> returns a dEntity of the projectile.
-    // <context.bow> returns the dItem of the bow used to shoot.
+    // <context.entity> returns the EntityTag that shot the bow.
+    // <context.projectile> returns a EntityTag of the projectile.
+    // <context.bow> returns the ItemTag of the bow used to shoot.
     // <context.force> returns the force of the shot.
     //
     // @Determine
-    // ListTag(dEntity) to change the projectile(s) being shot.
+    // ListTag(EntityTag) to change the projectile(s) being shot.
     //
     // @Player when the entity that shot the bow is a player.
     //
@@ -56,10 +56,10 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
 
     public static EntityShootsBowEvent instance;
 
-    public dEntity entity;
+    public EntityTag entity;
     public Float force;
-    public dItem bow;
-    public dEntity projectile;
+    public ItemTag bow;
+    public EntityTag projectile;
     public EntityShootBowEvent event;
 
     @Override
@@ -95,13 +95,13 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (Argument.valueOf(determination).matchesArgumentList(dEntity.class)) {
+        if (Argument.valueOf(determination).matchesArgumentList(EntityTag.class)) {
             cancelled = true;
 
             // Get the list of entities
-            List<dEntity> newProjectiles = ListTag.valueOf(determination).filter(dEntity.class, container);
+            List<EntityTag> newProjectiles = ListTag.valueOf(determination).filter(EntityTag.class, container);
             // Go through all the entities, spawning/teleporting them
-            for (dEntity newProjectile : newProjectiles) {
+            for (EntityTag newProjectile : newProjectiles) {
                 newProjectile.spawnAt(entity.getEyeLocation()
                         .add(entity.getEyeLocation().getDirection()));
                 // Set the entity as the shooter of the projectile,
@@ -129,8 +129,8 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? EntityTag.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? EntityTag.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -152,14 +152,14 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
 
     @EventHandler
     public void onEntityShootsBow(EntityShootBowEvent event) {
-        entity = new dEntity(event.getEntity());
+        entity = new EntityTag(event.getEntity());
         force = event.getForce() * 3;
-        bow = new dItem(event.getBow());
+        bow = new ItemTag(event.getBow());
         Entity projectileEntity = event.getProjectile();
-        dEntity.rememberEntity(projectileEntity);
-        projectile = new dEntity(projectileEntity);
+        EntityTag.rememberEntity(projectileEntity);
+        projectile = new EntityTag(projectileEntity);
         this.event = event;
         fire(event);
-        dEntity.forgetEntity(projectileEntity);
+        EntityTag.forgetEntity(projectileEntity);
     }
 }

@@ -4,8 +4,8 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.PacketHelper;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -73,8 +73,8 @@ public class AnimateChestCommand extends AbstractCommand {
                 scriptEntry.addObject("action", arg.asElement());
             }
             else if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class)) {
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                    && arg.matchesArgumentType(LocationTag.class)) {
+                scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("sound")
                     && arg.matchesPrefix("sound")
@@ -82,8 +82,8 @@ public class AnimateChestCommand extends AbstractCommand {
                 scriptEntry.addObject("sound", arg.asElement());
             }
             else if (!scriptEntry.hasObject("players")
-                    && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("players", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
+                    && arg.matchesArgumentList(PlayerTag.class)) {
+                scriptEntry.addObject("players", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
@@ -117,10 +117,10 @@ public class AnimateChestCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        dLocation location = (dLocation) scriptEntry.getObject("location");
+        LocationTag location = (LocationTag) scriptEntry.getObject("location");
         ElementTag action = scriptEntry.getElement("action");
         ElementTag sound = scriptEntry.getElement("sound");
-        List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("players");
+        List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
 
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), location.debug()
@@ -134,7 +134,7 @@ public class AnimateChestCommand extends AbstractCommand {
 
         switch (ChestAction.valueOf(action.asString().toUpperCase())) {
             case OPEN:
-                for (dPlayer player : players) {
+                for (PlayerTag player : players) {
                     Player ent = player.getPlayerEntity();
                     if (sound.asBoolean()) {
                         NMSHandler.getInstance().getSoundHelper().playSound(ent, location,
@@ -145,7 +145,7 @@ public class AnimateChestCommand extends AbstractCommand {
                 break;
 
             case CLOSE:
-                for (dPlayer player : players) {
+                for (PlayerTag player : players) {
                     Player ent = player.getPlayerEntity();
                     if (sound.asBoolean()) {
                         NMSHandler.getInstance().getSoundHelper().playSound(ent, location,

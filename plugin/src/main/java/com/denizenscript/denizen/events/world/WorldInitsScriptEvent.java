@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.world;
 
-import com.denizenscript.denizen.objects.dWorld;
+import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -21,7 +21,7 @@ public class WorldInitsScriptEvent extends BukkitScriptEvent implements Listener
     // @Triggers when a world is initialized.
     //
     // @Context
-    // <context.world> returns the dWorld that was initialized.
+    // <context.world> returns the WorldTag that was initialized.
     //
     // -->
 
@@ -30,7 +30,7 @@ public class WorldInitsScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     public static WorldInitsScriptEvent instance;
-    public dWorld world;
+    public WorldTag world;
     public WorldInitEvent event;
 
     @Override
@@ -67,7 +67,7 @@ public class WorldInitsScriptEvent extends BukkitScriptEvent implements Listener
 
     @EventHandler
     public void onWorldInits(WorldInitEvent event) {
-        world = new dWorld(event.getWorld());
+        world = new WorldTag(event.getWorld());
         this.event = event;
         fire(event);
     }

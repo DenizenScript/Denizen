@@ -2,8 +2,8 @@ package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dNPC;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.core.CooldownCommand;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
@@ -25,7 +25,7 @@ public class InteractScriptHelper {
      * @param trigger the class of the trigger being used
      * @return the highest priority InteractScriptContainer that meets requirements, if any.
      */
-    public static InteractScriptContainer getInteractScript(dNPC npc, dPlayer player,
+    public static InteractScriptContainer getInteractScript(NPCTag npc, PlayerTag player,
                                                             Class<? extends AbstractTrigger> trigger) {
         // If no trigger, npc or player specified, return null.
         // These objects are required to progress any further.
@@ -217,7 +217,7 @@ public class InteractScriptHelper {
      * @param scriptName the name of the interact script container to check
      * @return the current, or default, step name
      */
-    public static String getCurrentStep(dPlayer player, String scriptName) {
+    public static String getCurrentStep(PlayerTag player, String scriptName) {
         if (scriptName == null) {
             return null;
         }

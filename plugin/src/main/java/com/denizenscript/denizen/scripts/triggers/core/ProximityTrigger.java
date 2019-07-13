@@ -5,8 +5,8 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
 import com.denizenscript.denizen.npc.traits.TriggerTrait;
-import com.denizenscript.denizen.objects.dNPC;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import net.citizensnpcs.api.CitizensAPI;
@@ -116,7 +116,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                     if (!citizensNPC.hasTrait(TriggerTrait.class) || !citizensNPC.getTrait(TriggerTrait.class).isEnabled(name)) {
                         continue;
                     }
-                    dNPC npc = new dNPC(citizensNPC);
+                    NPCTag npc = new NPCTag(citizensNPC);
                     TriggerTrait triggerTrait = npc.getTriggerTrait();
 
                     // Loop through all players
@@ -141,7 +141,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                         }
 
                         // Get the player
-                        dPlayer player = dPlayer.mirrorBukkitPlayer(bukkitPlayer);
+                        PlayerTag player = PlayerTag.mirrorBukkitPlayer(bukkitPlayer);
 
                         //
                         // Check to make sure the NPC has an assignment. If no assignment, a script doesn't need to be parsed,
@@ -270,7 +270,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
      * @param npc    the NPC
      * @return true if within maxProximityDistance in all directions
      */
-    private boolean isCloseEnough(Player player, dNPC npc) {
+    private boolean isCloseEnough(Player player, NPCTag npc) {
         Location pLoc = player.getLocation();
         Location nLoc = npc.getLocation();
         if (Math.abs(pLoc.getX() - nLoc.getX()) > maxProximityDistance) {
@@ -308,7 +308,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
     //
     // Ensures that a Player who has entered proximity of an NPC also fires Exit Proximity.
     //
-    private boolean hasExitedProximityOf(Player player, dNPC npc) {
+    private boolean hasExitedProximityOf(Player player, NPCTag npc) {
         // If Player hasn't entered proximity, it's not in the Map. Return true, must be exited.
         Set<Integer> existing = proximityTracker.get(player.getUniqueId());
         if (existing == null) {
@@ -329,7 +329,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
      * @param player the Player
      * @param npc    the NPC
      */
-    private void enterProximityOf(Player player, dNPC npc) {
+    private void enterProximityOf(Player player, NPCTag npc) {
         Set<Integer> npcs = proximityTracker.get(player.getUniqueId());
         if (npcs == null) {
             npcs = new HashSet<>();
@@ -345,7 +345,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
      * @param player the Player
      * @param npc    the NPC
      */
-    private void exitProximityOf(Player player, dNPC npc) {
+    private void exitProximityOf(Player player, NPCTag npc) {
         Set<Integer> npcs = proximityTracker.get(player.getUniqueId());
         if (npcs == null) {
             npcs = new HashSet<>();

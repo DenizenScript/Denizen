@@ -2,7 +2,7 @@ package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -21,7 +21,7 @@ import java.util.List;
 public class ItemAttributeNBT implements Property {
 
     public static boolean describes(ObjectTag item) {
-        return item instanceof dItem;
+        return item instanceof ItemTag;
     }
 
     public static ItemAttributeNBT getFrom(ObjectTag item) {
@@ -29,7 +29,7 @@ public class ItemAttributeNBT implements Property {
             return null;
         }
         else {
-            return new ItemAttributeNBT((dItem) item);
+            return new ItemAttributeNBT((ItemTag) item);
         }
     }
 
@@ -41,11 +41,11 @@ public class ItemAttributeNBT implements Property {
             "nbt_attributes"
     };
 
-    private ItemAttributeNBT(dItem item) {
+    private ItemAttributeNBT(ItemTag item) {
         this.item = item;
     }
 
-    dItem item;
+    ItemTag item;
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -55,10 +55,10 @@ public class ItemAttributeNBT implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.nbt_attributes>
+        // @attribute <ItemTag.nbt_attributes>
         // @returns ListTag
         // @group properties
-        // @mechanism dItem.nbt_attributes
+        // @mechanism ItemTag.nbt_attributes
         // @description
         // Returns the NBT attribute data (as matches the mechanism input), if any.
         // -->
@@ -99,7 +99,7 @@ public class ItemAttributeNBT implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name nbt_attributes
         // @input ListTag
         // @description
@@ -107,7 +107,7 @@ public class ItemAttributeNBT implements Property {
         // Attribute is text ( http://minecraft.gamepedia.com/Attribute ), slot is the name of the slot,
         // op is the number code for operation, and amount is a decimal.
         // @tags
-        // <i@item.nbt_attributes>
+        // <ItemTag.nbt_attributes>
         // -->
         if (mechanism.matches("nbt_attributes")) {
             if (item.getMaterial().getMaterial() == Material.AIR) {

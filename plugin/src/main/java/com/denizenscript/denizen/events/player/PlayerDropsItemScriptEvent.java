@@ -1,11 +1,11 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -30,9 +30,9 @@ public class PlayerDropsItemScriptEvent extends BukkitScriptEvent implements Lis
     // @Triggers when a player drops an item.
     //
     // @Context
-    // <context.item> returns the dItem.
-    // <context.entity> returns a dEntity of the item.
-    // <context.location> returns a dLocation of the item's location.
+    // <context.item> returns the ItemTag.
+    // <context.entity> returns a EntityTag of the item.
+    // <context.location> returns a LocationTag of the item's location.
     //
     // -->
 
@@ -41,9 +41,9 @@ public class PlayerDropsItemScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     public static PlayerDropsItemScriptEvent instance;
-    public dItem item;
-    public dEntity entity;
-    public dLocation location;
+    public ItemTag item;
+    public EntityTag entity;
+    public LocationTag location;
     public PlayerDropItemEvent event;
 
     @Override
@@ -76,7 +76,7 @@ public class PlayerDropsItemScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(new PlayerTag(event.getPlayer()), null);
     }
 
     @Override
@@ -95,14 +95,14 @@ public class PlayerDropsItemScriptEvent extends BukkitScriptEvent implements Lis
 
     @EventHandler
     public void onPlayerDropsItem(PlayerDropItemEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        location = new dLocation(event.getPlayer().getLocation());
+        location = new LocationTag(event.getPlayer().getLocation());
         Item itemDrop = event.getItemDrop();
-        dEntity.rememberEntity(itemDrop);
-        item = new dItem(itemDrop.getItemStack());
-        entity = new dEntity(itemDrop);
+        EntityTag.rememberEntity(itemDrop);
+        item = new ItemTag(itemDrop.getItemStack());
+        entity = new EntityTag(itemDrop);
         this.event = event;
         fire(event);
     }

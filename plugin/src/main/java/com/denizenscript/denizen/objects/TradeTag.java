@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 
-public class dTrade implements ObjectTag, Adjustable {
+public class TradeTag implements ObjectTag, Adjustable {
 
     // <--[language]
     // @name Merchant Trades
@@ -24,7 +24,7 @@ public class dTrade implements ObjectTag, Adjustable {
     // Merchant trades are the parts of a special merchant inventory that is typically viewed by right clicking
     // a villager entity. Any number of trades can fit in a single merchant inventory.
     //
-    // Trades are represented by 'trade@trade' ObjectTags.
+    // Trades are represented by 'TradeTag' ObjectTags.
     //
     // The properties that can be used to customize a merchant trade are:
     //
@@ -42,7 +42,7 @@ public class dTrade implements ObjectTag, Adjustable {
     // open two trades:
     //     type: task
     //     script:
-    //     - opentrades li@trade@trade[max_uses=10;inputs=i@emerald[quantity=2];result=i@sponge|trade@trade[result=i@barrier]
+    //     - opentrades li@TradeTag[max_uses=10;inputs=i@emerald[quantity=2];result=i@sponge|TradeTag[result=i@barrier]
     // </code>
     //
     // For format info, see <@link language trade@>
@@ -52,8 +52,8 @@ public class dTrade implements ObjectTag, Adjustable {
     // @name trade@
     // @group Object Fetcher System
     // @description
-    // trade@ refers to the 'object identifier' of a dTrade. The 'trade@' is notation for Denizen's Object
-    // Fetcher. The constructor for a dNPC is just the text 'trade'. All other data is specified through properties.
+    // trade@ refers to the 'object identifier' of a TradeTag. The 'trade@' is notation for Denizen's Object
+    // Fetcher. The constructor for a NPCTag is just the text 'trade'. All other data is specified through properties.
     //
     // For general info, see <@link language Merchant Trades>
     //
@@ -63,12 +63,12 @@ public class dTrade implements ObjectTag, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
-    public static dTrade valueOf(String string) {
+    public static TradeTag valueOf(String string) {
         return valueOf(string, null);
     }
 
     @Fetchable("trade")
-    public static dTrade valueOf(String string, TagContext context) {
+    public static TradeTag valueOf(String string, TagContext context) {
         if (string == null) {
             return null;
         }
@@ -77,7 +77,7 @@ public class dTrade implements ObjectTag, Adjustable {
         // Handle objects with properties through the object fetcher
         Matcher m = ObjectFetcher.DESCRIBED_PATTERN.matcher(string);
         if (m.matches()) {
-            return ObjectFetcher.getObjectFrom(dTrade.class, string, new BukkitTagContext(((BukkitTagContext) context).player,
+            return ObjectFetcher.getObjectFrom(TradeTag.class, string, new BukkitTagContext(((BukkitTagContext) context).player,
                     ((BukkitTagContext) context).npc, false, null, !context.debug, null));
         }
 
@@ -85,20 +85,20 @@ public class dTrade implements ObjectTag, Adjustable {
         if (string.toLowerCase().matches("trade")) {
             MerchantRecipe recipe = new MerchantRecipe(new ItemStack(Material.AIR), 0);
             recipe.setIngredients(new ArrayList<>(Arrays.asList(new ItemStack(Material.AIR))));
-            return new dTrade(recipe);
+            return new TradeTag(recipe);
         }
         return null;
     }
 
     public static boolean matches(String arg) {
-        return arg.matches("trade@trade");
+        return arg.matches("TradeTag");
     }
 
     ///////////////
     //   Constructors
     /////////////
 
-    public dTrade(MerchantRecipe recipe) {
+    public TradeTag(MerchantRecipe recipe) {
         this.recipe = recipe;
     }
 
@@ -128,7 +128,7 @@ public class dTrade implements ObjectTag, Adjustable {
         return "trade";
     }
 
-    public dTrade setPrefix(String prefix) {
+    public TradeTag setPrefix(String prefix) {
         return this;
     }
 

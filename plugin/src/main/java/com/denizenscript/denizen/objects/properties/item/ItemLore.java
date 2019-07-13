@@ -2,7 +2,7 @@ package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.Settings;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -19,7 +19,7 @@ public class ItemLore implements Property {
 
     public static boolean describes(ObjectTag item) {
         // Technically, all items can hold lore
-        return item instanceof dItem;
+        return item instanceof ItemTag;
     }
 
     public static ItemLore getFrom(ObjectTag _item) {
@@ -27,7 +27,7 @@ public class ItemLore implements Property {
             return null;
         }
         else {
-            return new ItemLore((dItem) _item);
+            return new ItemLore((ItemTag) _item);
         }
     }
 
@@ -46,11 +46,11 @@ public class ItemLore implements Property {
     }
 
 
-    private ItemLore(dItem _item) {
+    private ItemLore(ItemTag _item) {
         item = _item;
     }
 
-    dItem item;
+    ItemTag item;
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -67,19 +67,19 @@ public class ItemLore implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.lore>
+        // @attribute <ItemTag.lore>
         // @returns ListTag
-        // @mechanism dItem.lore
+        // @mechanism ItemTag.lore
         // @group properties
         // @description
         // Returns lore as a ListTag. Excludes the custom-script-id lore.
-        // To get that information, use <i@item.scriptname>.
+        // To get that information, use <ItemTag.scriptname>.
         // -->
         if (attribute.startsWith("lore")) {
             if (hasLore()) {
                 List<String> loreList = new ArrayList<>();
                 for (String itemLore : item.getItemStack().getItemMeta().getLore()) {
-                    if (!itemLore.startsWith(dItem.itemscriptIdentifier)
+                    if (!itemLore.startsWith(ItemTag.itemscriptIdentifier)
                             && !itemLore.startsWith(ItemScriptHelper.ItemScriptHashID)) {
                         loreList.add(itemLore);
                     }
@@ -89,9 +89,9 @@ public class ItemLore implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.has_lore>
+        // @attribute <ItemTag.has_lore>
         // @returns ElementTag(Boolean)
-        // @mechanism dItem.lore
+        // @mechanism ItemTag.lore
         // @group properties
         // @description
         // Returns whether the item has lore set on it.
@@ -110,7 +110,7 @@ public class ItemLore implements Property {
         if (hasLore()) {
             StringBuilder output = new StringBuilder();
             for (String itemLore : item.getItemStack().getItemMeta().getLore()) {
-                if (!itemLore.startsWith(dItem.itemscriptIdentifier)
+                if (!itemLore.startsWith(ItemTag.itemscriptIdentifier)
                         && !itemLore.startsWith(ItemScriptHelper.ItemScriptHashID)) {
                     output.append(EscapeTags.escape(itemLore)).append("|");
                 }
@@ -131,14 +131,14 @@ public class ItemLore implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name lore
         // @input ListTag
         // @description
         // Sets the item's lore.
         // See <@link language Property Escaping>
         // @tags
-        // <i@item.lore>
+        // <ItemTag.lore>
         // -->
 
         if (mechanism.matches("lore")) {

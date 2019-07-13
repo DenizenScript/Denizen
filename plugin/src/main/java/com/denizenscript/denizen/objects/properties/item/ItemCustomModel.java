@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -11,7 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class ItemCustomModel implements Property {
 
     public static boolean describes(ObjectTag item) {
-        return item instanceof dItem;
+        return item instanceof ItemTag;
     }
 
     public static ItemCustomModel getFrom(ObjectTag _item) {
@@ -19,7 +19,7 @@ public class ItemCustomModel implements Property {
             return null;
         }
         else {
-            return new ItemCustomModel((dItem) _item);
+            return new ItemCustomModel((ItemTag) _item);
         }
     }
 
@@ -32,11 +32,11 @@ public class ItemCustomModel implements Property {
     };
 
 
-    private ItemCustomModel(dItem _item) {
+    private ItemCustomModel(ItemTag _item) {
         item = _item;
     }
 
-    dItem item;
+    ItemTag item;
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -46,13 +46,13 @@ public class ItemCustomModel implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.has_custom_model_data>
+        // @attribute <ItemTag.has_custom_model_data>
         // @returns ElementTag(Boolean)
-        // @mechanism dItem.custom_model_data
+        // @mechanism ItemTag.custom_model_data
         // @group properties
         // @description
         // Returns whether the item has a custom model data ID number set on it.
-        // Also see <@link tag i@item.custom_model_data>.
+        // Also see <@link tag ItemTag.custom_model_data>.
         // -->
         if (attribute.startsWith("has_custom_model_data")) {
             return new ElementTag(item.getItemStack().getItemMeta().hasCustomModelData())
@@ -60,14 +60,14 @@ public class ItemCustomModel implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.custom_model_data>
+        // @attribute <ItemTag.custom_model_data>
         // @returns ElementTag(Number)
-        // @mechanism dItem.custom_model_data
+        // @mechanism ItemTag.custom_model_data
         // @group properties
         // @description
         // Returns the custom model data ID number of the item.
         // This tag is invalid for items that do not have a custom model data ID.
-        // Also see <@link tag i@item.has_custom_model_data>.
+        // Also see <@link tag ItemTag.has_custom_model_data>.
         // -->
         if (attribute.startsWith("custom_model_data")) {
             if (item.getItemStack().getItemMeta().hasCustomModelData()) {
@@ -99,15 +99,15 @@ public class ItemCustomModel implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name custom_model_data
         // @input Element(Number)
         // @description
         // Changes the custom model data ID number of the item.
         // Use with no input to remove the custom model data.
         // @tags
-        // <i@item.has_custom_model_data>
-        // <i@item.custom_model_data>
+        // <ItemTag.has_custom_model_data>
+        // <ItemTag.custom_model_data>
         // -->
         if (mechanism.matches("custom_model_data")) {
             ItemMeta meta = (item.getItemStack().getItemMeta());

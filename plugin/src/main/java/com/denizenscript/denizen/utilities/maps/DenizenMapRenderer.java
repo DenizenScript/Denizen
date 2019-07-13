@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.utilities.maps;
 
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.entity.Player;
@@ -89,7 +89,7 @@ public class DenizenMapRenderer extends MapRenderer {
                     }
                 }
                 UUID uuid = player.getUniqueId();
-                dPlayer p = dPlayer.mirrorBukkitPlayer(player);
+                PlayerTag p = PlayerTag.mirrorBukkitPlayer(player);
                 for (MapObject object : mapObjects) {
                     if (autoUpdate) {
                         object.lastMap = mapView;

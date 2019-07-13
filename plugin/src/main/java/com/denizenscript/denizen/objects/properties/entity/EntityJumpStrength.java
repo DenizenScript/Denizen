@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -13,8 +13,8 @@ public class EntityJumpStrength implements Property {
 
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity &&
-                ((dEntity) entity).getBukkitEntityType() == EntityType.HORSE;
+        return entity instanceof EntityTag &&
+                ((EntityTag) entity).getBukkitEntityType() == EntityType.HORSE;
     }
 
     public static EntityJumpStrength getFrom(ObjectTag entity) {
@@ -22,7 +22,7 @@ public class EntityJumpStrength implements Property {
             return null;
         }
         else {
-            return new EntityJumpStrength((dEntity) entity);
+            return new EntityJumpStrength((EntityTag) entity);
         }
     }
 
@@ -39,11 +39,11 @@ public class EntityJumpStrength implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityJumpStrength(dEntity ent) {
+    private EntityJumpStrength(EntityTag ent) {
         entity = ent;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     /////////
     // Property Methods
@@ -72,9 +72,9 @@ public class EntityJumpStrength implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.jump_strength>
+        // @attribute <EntityTag.jump_strength>
         // @returns ElementTag(Number)
-        // @mechanism dEntity.jump_strength
+        // @mechanism EntityTag.jump_strength
         // @group properties
         // @description
         // Returns the power of a horse's jump.
@@ -91,13 +91,13 @@ public class EntityJumpStrength implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name jump_strength
         // @input Element(Number)
         // @description
         // Sets the power of the horse's jump.
         // @tags
-        // <e@entity.jump_strength>
+        // <EntityTag.jump_strength>
         // -->
 
         if (mechanism.matches("jump_strength") && mechanism.requireDouble()) {

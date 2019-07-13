@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.utilities.ScoreboardHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -145,7 +145,7 @@ public class TeamCommand extends AbstractCommand {
         if (add != null) {
             for (String string : add) {
                 if (string.startsWith("p@")) {
-                    string = dPlayer.valueOf(string).getName();
+                    string = PlayerTag.valueOf(string).getName();
                 }
                 if (!team.hasEntry(string)) {
                     team.addEntry(string);
@@ -156,7 +156,7 @@ public class TeamCommand extends AbstractCommand {
         if (remove != null) {
             for (String string : remove) {
                 if (string.startsWith("p@")) {
-                    string = dPlayer.valueOf(string).getName();
+                    string = PlayerTag.valueOf(string).getName();
                 }
                 if (team.hasEntry(string)) {
                     team.removeEntry(string);

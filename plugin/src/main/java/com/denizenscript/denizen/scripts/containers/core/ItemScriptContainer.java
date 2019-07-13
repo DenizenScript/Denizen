@@ -2,9 +2,9 @@ package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.nbt.LeatherColorer;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dNPC;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -30,21 +30,21 @@ public class ItemScriptContainer extends ScriptContainer {
     // @group Script Container System
     // @description
     // Item script containers are an easy way to pre-define custom items for use within scripts. Item
-    // scripts work with the dItem object, and can be fetched with the Object Fetcher by using the
-    // dItem constructor i@item_script_name. Example: - drop <player.location> i@super_dooper_diamond
+    // scripts work with the ItemTag object, and can be fetched with the Object Fetcher by using the
+    // ItemTag constructor ItemTag_script_name. Example: - drop <player.location> i@super_dooper_diamond
     //
     // The following is the format for the container. Except for the 'material' key (and the dScript
     // required 'type' key), all other keys are optional.
     //
     // <code>
     // # The name of the item script is the same name that you can use to construct a new
-    // # dItem based on this item script. For example, an item script named 'sword of swiftness'
+    // # ItemTag based on this item script. For example, an item script named 'sword of swiftness'
     // # can be referred to as 'i@sword of swiftness'.
     // Item Script Name:
     //
     //   type: item
     //
-    //   # Must be a valid dItem (EG i@red_wool or i@potion,8226) See 'dItem' for more information.
+    //   # Must be a valid ItemTag (EG i@red_wool or i@potion,8226) See 'dItem' for more information.
     //   material: i@base_material
     //
     //   # List any mechanisms you want to apply to the item within
@@ -71,28 +71,28 @@ public class ItemScriptContainer extends ScriptContainer {
     //
     //   # You can specify the items required to craft your item. For an empty slot, use i@air.
     //   recipe:
-    //   - i@item|i@item|i@item
-    //   - i@item|i@item|i@item
-    //   - i@item|i@item|i@item
+    //   - ItemTag|ItemTag|ItemTag
+    //   - ItemTag|ItemTag|ItemTag
+    //   - ItemTag|ItemTag|ItemTag
     //
     //   # You can specify a material that can be smelted into your item.
     //   # Note: This can overwrite existing furnace recipes.
     //   # If no_id is specified, only the material/data pair will be validated.
     //   # This might misbehave with some smelting systems, as the Minecraft smelting logic may refuse
     //   # To continue smelting items in some cases when the script validator gets in the way.
-    //   furnace_recipe: i@item
+    //   furnace_recipe: ItemTag
     //
     //   # You can specify a list of materials that make up a shapeless recipe.
     //   # Note: This can overwrite existing shapeless recipes.
-    //   shapeless_recipe: i@item|...
+    //   shapeless_recipe: ItemTag|...
     //
     //   # Set to true to not store the scriptID on the item, treating it as an item dropped by any other plugin.
     //   # NOTE: THIS IS NOT RECOMMENDED UNLESS YOU HAVE A SPECIFIC REASON TO USE IT.
     //   no_id: true/false
     //
-    //   # For colorable items, such as leather armor, you can specify a valid dColor to specify the item's appearance.
+    //   # For colorable items, such as leather armor, you can specify a valid ColorTag to specify the item's appearance.
     //   # See 'dColor' for more information.
-    //   color: co@color
+    //   color: ColorTag
     //
     //   # If your material is a 'm@written_book', you can specify a book script to automatically scribe your item
     //   # upon creation. See 'book script containers' for more information.
@@ -102,11 +102,11 @@ public class ItemScriptContainer extends ScriptContainer {
     // -->
 
     // A map storing special recipes that use itemscripts as ingredients
-    public static Map<ItemScriptContainer, List<dItem>> specialrecipesMap = new HashMap<>();
-    public static Map<ItemScriptContainer, List<dItem>> shapelessRecipesMap = new HashMap<>();
+    public static Map<ItemScriptContainer, List<ItemTag>> specialrecipesMap = new HashMap<>();
+    public static Map<ItemScriptContainer, List<ItemTag>> shapelessRecipesMap = new HashMap<>();
 
-    dNPC npc = null;
-    dPlayer player = null;
+    NPCTag npc = null;
+    PlayerTag player = null;
     public boolean bound = false;
     String hash = "";
 
@@ -137,13 +137,13 @@ public class ItemScriptContainer extends ScriptContainer {
         }
     }
 
-    private dItem cleanReference;
+    private ItemTag cleanReference;
 
-    public dItem getCleanReference() {
+    public ItemTag getCleanReference() {
         if (cleanReference == null) {
             cleanReference = getItemFrom();
         }
-        return new dItem(cleanReference.getItemStack().clone());
+        return new ItemTag(cleanReference.getItemStack().clone());
     }
 
     public String getHashID() {
@@ -154,15 +154,15 @@ public class ItemScriptContainer extends ScriptContainer {
         hash = HashID;
     }
 
-    public dItem getItemFrom() {
+    public ItemTag getItemFrom() {
         return getItemFrom(null, null);
     }
 
     public static SlowWarning boundWarning = new SlowWarning("Item script 'bound' functionality has never been reliable and should not be used. Consider replicating the concept with world events.");
 
-    public dItem getItemFrom(dPlayer player, dNPC npc) {
+    public ItemTag getItemFrom(PlayerTag player, NPCTag npc) {
         // Try to use this script to make an item.
-        dItem stack = null;
+        ItemTag stack = null;
         try {
             boolean debug = true;
             if (contains("DEBUG")) {
@@ -175,7 +175,7 @@ public class ItemScriptContainer extends ScriptContainer {
                 if (material.startsWith("m@")) {
                     material = material.substring(2);
                 }
-                stack = dItem.valueOf(material, this);
+                stack = ItemTag.valueOf(material, this);
             }
 
             // Make sure we're working with a valid base ItemStack
@@ -275,11 +275,11 @@ public class ItemScriptContainer extends ScriptContainer {
         return stack;
     }
 
-    public void setNPC(dNPC npc) {
+    public void setNPC(NPCTag npc) {
         this.npc = npc;
     }
 
-    public void setPlayer(dPlayer player) {
+    public void setPlayer(PlayerTag player) {
         this.player = player;
     }
 }

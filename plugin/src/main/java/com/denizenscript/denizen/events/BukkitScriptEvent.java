@@ -208,10 +208,10 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             if (it.equals("notable")) {
                 String subit = path.eventArgLowerAt(index + 2);
                 if (subit.equals("cuboid")) {
-                    return dCuboid.getNotableCuboidsContaining(location).size() > 0;
+                    return CuboidTag.getNotableCuboidsContaining(location).size() > 0;
                 }
                 else if (subit.equals("ellipsoid")) {
-                    return dEllipsoid.getNotableEllipsoidsContaining(location).size() > 0;
+                    return EllipsoidTag.getNotableEllipsoidsContaining(location).size() > 0;
                 }
                 else {
                     Debug.echoError("Invalid event 'IN ...' check [" + getName() + "] ('in notable ???'): '" + path.event + "' for " + path.container.getName());
@@ -221,20 +221,20 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
         String lower = CoreUtilities.toLowerCase(it);
         if (lower.equals("cuboid")) {
-            return dCuboid.getNotableCuboidsContaining(location).size() > 0;
+            return CuboidTag.getNotableCuboidsContaining(location).size() > 0;
         }
         else if (lower.equals("ellipsoid")) {
-            return dEllipsoid.getNotableEllipsoidsContaining(location).size() > 0;
+            return EllipsoidTag.getNotableEllipsoidsContaining(location).size() > 0;
         }
-        else if (dWorld.matches(it)) {
+        else if (WorldTag.matches(it)) {
             return CoreUtilities.toLowerCase(location.getWorld().getName()).equals(lower);
         }
-        else if (dCuboid.matches(it)) {
-            dCuboid cuboid = dCuboid.valueOf(it);
+        else if (CuboidTag.matches(it)) {
+            CuboidTag cuboid = CuboidTag.valueOf(it);
             return cuboid.isInsideCuboid(location);
         }
-        else if (dEllipsoid.matches(it)) {
-            dEllipsoid ellipsoid = dEllipsoid.valueOf(it);
+        else if (EllipsoidTag.matches(it)) {
+            EllipsoidTag ellipsoid = EllipsoidTag.valueOf(it);
             return ellipsoid.contains(location);
         }
         else {
@@ -243,7 +243,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
     }
 
-    public boolean tryLocation(dLocation location, String comparedto) {
+    public boolean tryLocation(LocationTag location, String comparedto) {
         if (comparedto == null || comparedto.length() == 0) {
             Debug.echoError("Null or empty location string to compare");
             return false;
@@ -252,7 +252,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return true;
         }
         comparedto = "l@" + comparedto;
-        dLocation loc = dLocation.valueOf(comparedto);
+        LocationTag loc = LocationTag.valueOf(comparedto);
         if (loc == null) {
             Debug.echoError("Invalid location in location comparison string: " + comparedto);
             return false;
@@ -261,7 +261,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     }
 
     @Deprecated
-    public boolean runWithCheck(ScriptContainer scriptContainer, String s, String lower, dItem held) {
+    public boolean runWithCheck(ScriptContainer scriptContainer, String s, String lower, ItemTag held) {
         return runWithCheck(new ScriptPath(scriptContainer, s), held);
     }
 
@@ -298,7 +298,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return true;
     }
 
-    public boolean runWithCheck(ScriptPath path, dItem held) {
+    public boolean runWithCheck(ScriptPath path, ItemTag held) {
         String with = path.switches.get("with");
         if (with != null) {
             if (with.equalsIgnoreCase("item")) {
@@ -311,7 +311,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return true;
     }
 
-    public boolean tryInventory(dInventory inv, String comparedto) {
+    public boolean tryInventory(InventoryTag inv, String comparedto) {
         comparedto = CoreUtilities.toLowerCase(comparedto);
         if (comparedto.equals("inventory")) {
             return true;
@@ -337,7 +337,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public boolean tryItem(dItem item, String comparedto) {
+    public boolean tryItem(ItemTag item, String comparedto) {
         if (comparedto == null || comparedto.isEmpty() || item == null) {
             return false;
         }
@@ -348,9 +348,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (comparedto.equals("potion") && CoreUtilities.toLowerCase(item.getItemStack().getType().name()).contains("potion")) {
             return true;
         }
-        dMaterial quickOf = dMaterial.quickOfNamed(comparedto);
+        MaterialTag quickOf = MaterialTag.quickOfNamed(comparedto);
         if (quickOf != null) {
-            dMaterial mat = item.getMaterial();
+            MaterialTag mat = item.getMaterial();
             if (quickOf.getMaterial() != mat.getMaterial()) {
                 return false;
             }
@@ -359,7 +359,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             }
         }
         Pattern regexd = regexHandle(comparedto);
-        item = new dItem(item.getItemStack().clone());
+        item = new ItemTag(item.getItemStack().clone());
         item.setAmount(1);
         if (equalityCheck(item.identify().substring("i@".length()), comparedto, regexd)) {
             return true;
@@ -377,7 +377,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public boolean tryMaterial(dMaterial mat, String comparedto) {
+    public boolean tryMaterial(MaterialTag mat, String comparedto) {
         if (comparedto == null || comparedto.isEmpty() || mat == null) {
             return false;
         }
@@ -385,7 +385,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (comparedto.equals("block") || comparedto.equals("material")) {
             return true;
         }
-        dMaterial quickOf = dMaterial.quickOfNamed(comparedto);
+        MaterialTag quickOf = MaterialTag.quickOfNamed(comparedto);
         if (quickOf != null) {
             if (quickOf.getMaterial() != mat.getMaterial()) {
                 return false;
@@ -410,7 +410,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public boolean tryEntity(dEntity entity, String comparedto) {
+    public boolean tryEntity(EntityTag entity, String comparedto) {
         if (comparedto == null || comparedto.isEmpty() || entity == null) {
             return false;
         }

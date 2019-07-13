@@ -4,8 +4,8 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.interfaces.FishingHelper;
 import com.denizenscript.denizen.npc.traits.FishingTrait;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dNPC;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -50,8 +50,8 @@ public class FishCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class)) {
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                    && arg.matchesArgumentType(LocationTag.class)) {
+                scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("catch")
                     && arg.matchesPrefix("catch")
@@ -87,12 +87,12 @@ public class FishCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        dLocation location = scriptEntry.getdObject("location");
+        LocationTag location = scriptEntry.getdObject("location");
         ElementTag catchtype = scriptEntry.getElement("catch");
         ElementTag stop = scriptEntry.getElement("stop");
         ElementTag percent = scriptEntry.getElement("percent");
 
-        dNPC npc = Utilities.getEntryNPC(scriptEntry);
+        NPCTag npc = Utilities.getEntryNPC(scriptEntry);
         FishingTrait trait = npc.getFishingTrait();
 
         if (scriptEntry.dbCallShouldDebug()) {

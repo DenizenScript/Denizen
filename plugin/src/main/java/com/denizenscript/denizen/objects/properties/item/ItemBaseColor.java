@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.utilities.MaterialCompat;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -18,8 +18,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class ItemBaseColor implements Property {
 
     public static boolean describes(ObjectTag item) {
-        if (item instanceof dItem) {
-            Material material = ((dItem) item).getItemStack().getType();
+        if (item instanceof ItemTag) {
+            Material material = ((ItemTag) item).getItemStack().getType();
             return MaterialCompat.isBannerOrShield(material);
         }
         return false;
@@ -30,7 +30,7 @@ public class ItemBaseColor implements Property {
             return null;
         }
         else {
-            return new ItemBaseColor((dItem) item);
+            return new ItemBaseColor((ItemTag) item);
         }
     }
 
@@ -43,11 +43,11 @@ public class ItemBaseColor implements Property {
     };
 
 
-    private ItemBaseColor(dItem item) {
+    private ItemBaseColor(ItemTag item) {
         this.item = item;
     }
 
-    dItem item;
+    ItemTag item;
 
     private DyeColor getBaseColor() {
         ItemMeta itemMeta = item.getItemStack().getItemMeta();
@@ -82,10 +82,10 @@ public class ItemBaseColor implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.base_color>
+        // @attribute <ItemTag.base_color>
         // @returns ElementTag
         // @group properties
-        // @mechanism dItem.base_color
+        // @mechanism ItemTag.base_color
         // @description
         // Gets the base color of a banner.
         // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
@@ -120,14 +120,14 @@ public class ItemBaseColor implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name base_color
         // @input Element
         // @description
         // Changes the base color of a banner.
         // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
         // @tags
-        // <i@item.base_color>
+        // <ItemTag.base_color>
         // -->
 
         if (mechanism.matches("base_color")) {

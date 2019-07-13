@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.commands.core;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -29,7 +29,7 @@ public class CooldownCommand extends AbstractCommand {
     // requirements check allowing the next highest priority script to trigger. If any other type of script, a
     // manual requirements check (<ScriptTag_name.requirements.check>) will also return false until the cooldown
     // period is completed. Cooldown requires a type (player or global), a script, and a duration. It also requires
-    // a valid link to a dPlayer if using player-type cooldown.
+    // a valid link to a PlayerTag if using player-type cooldown.
     //
     // Cooldown periods are persistent through a server restart as they are saved in the saves.yml.
     //
@@ -70,7 +70,7 @@ public class CooldownCommand extends AbstractCommand {
                 scriptEntry.addObject("type", Type.valueOf(arg.getValue().toUpperCase()));
             }
 
-            // Duration does not need a prefix, but is required.
+            // DurationTag does not need a prefix, but is required.
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesArgumentType(DurationTag.class)) {
                 scriptEntry.addObject("duration", arg.asType(DurationTag.class));
@@ -138,9 +138,9 @@ public class CooldownCommand extends AbstractCommand {
      *
      * @param player     the Player to check, null if only checking Global.
      * @param scriptName the name of the script to check
-     * @return a Duration of the time remaining
+     * @return a DurationTag of the time remaining
      */
-    public static DurationTag getCooldownDuration(dPlayer player, String scriptName) {
+    public static DurationTag getCooldownDuration(PlayerTag player, String scriptName) {
 
         // Change to UPPERCASE so there's no case-sensitivity.
         scriptName = scriptName.toUpperCase();
@@ -189,7 +189,7 @@ public class CooldownCommand extends AbstractCommand {
      * @param scriptName the name of the script to check
      * @return true if the script is cool
      */
-    public static boolean checkCooldown(dPlayer player, String scriptName) {
+    public static boolean checkCooldown(PlayerTag player, String scriptName) {
 
         // Change to UPPERCASE so there's no case-sensitivity.
         scriptName = scriptName.toUpperCase();
@@ -234,7 +234,7 @@ public class CooldownCommand extends AbstractCommand {
      * @param scriptName the name of the script to cooldown
      * @param global     whether the script should be cooled down globally
      */
-    public static void setCooldown(dPlayer player, DurationTag duration, String scriptName, boolean global) {
+    public static void setCooldown(PlayerTag player, DurationTag duration, String scriptName, boolean global) {
         scriptName = scriptName.toUpperCase();
         // Set global cooldown
         if (global) {

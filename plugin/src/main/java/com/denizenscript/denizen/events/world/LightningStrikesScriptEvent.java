@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.events.world;
 
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dWorld;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -27,8 +27,8 @@ public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Context
     // <context.world> DEPRECATED
-    // <context.lightning> returns the dEntity of the lightning.
-    // <context.location> returns the dLocation where the lightning struck.
+    // <context.lightning> returns the EntityTag of the lightning.
+    // <context.location> returns the LocationTag where the lightning struck.
     //
     // -->
 
@@ -37,8 +37,8 @@ public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Li
     }
 
     public static LightningStrikesScriptEvent instance;
-    public dEntity lightning;
-    public dLocation location;
+    public EntityTag lightning;
+    public LocationTag location;
     public LightningStrikeEvent event;
 
     @Override
@@ -70,15 +70,15 @@ public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Li
             return location;
         }
         else if (name.equals("world")) { // NOTE: Deprecated in favor of context.location.world
-            return new dWorld(location.getWorld());
+            return new WorldTag(location.getWorld());
         }
         return super.getContext(name);
     }
 
     @EventHandler
     public void onLightningStrikes(LightningStrikeEvent event) {
-        lightning = new dEntity(event.getLightning());
-        location = new dLocation(event.getLightning().getLocation());
+        lightning = new EntityTag(event.getLightning());
+        location = new LocationTag(event.getLightning().getLocation());
         this.event = event;
         fire(event);
     }

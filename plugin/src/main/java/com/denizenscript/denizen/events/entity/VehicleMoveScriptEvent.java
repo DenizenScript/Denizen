@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -25,7 +25,7 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
     // @Triggers when a vehicle moves in the slightest.
     //
     // @Context
-    // <context.vehicle> returns the dEntity of the vehicle.
+    // <context.vehicle> returns the EntityTag of the vehicle.
     // <context.from> returns the location of where the vehicle was.
     // <context.to> returns the location of where the vehicle is.
     //
@@ -36,9 +36,9 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     public static VehicleMoveScriptEvent instance;
-    public dEntity vehicle;
-    public dLocation from;
-    public dLocation to;
+    public EntityTag vehicle;
+    public LocationTag from;
+    public LocationTag to;
     public VehicleMoveEvent event;
 
     @Override
@@ -89,9 +89,9 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
 
     @EventHandler
     public void onVehicleMove(VehicleMoveEvent event) {
-        to = new dLocation(event.getTo());
-        from = new dLocation(event.getFrom());
-        vehicle = new dEntity(event.getVehicle());
+        to = new LocationTag(event.getTo());
+        from = new LocationTag(event.getFrom());
+        vehicle = new EntityTag(event.getVehicle());
         this.event = event;
         fire(event);
     }

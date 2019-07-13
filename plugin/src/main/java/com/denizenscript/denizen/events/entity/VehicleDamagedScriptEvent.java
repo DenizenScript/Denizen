@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -33,8 +33,8 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
     // @Triggers when a vehicle is damaged.
     //
     // @Context
-    // <context.vehicle> returns the dEntity of the vehicle.
-    // <context.entity> returns the dEntity of the attacking entity.
+    // <context.vehicle> returns the EntityTag of the vehicle.
+    // <context.entity> returns the EntityTag of the attacking entity.
     //
     // @Determine
     // Element(Decimal) to set the value of the damage received by the vehicle.
@@ -50,8 +50,8 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
     }
 
     public static VehicleDamagedScriptEvent instance;
-    public dEntity vehicle;
-    public dEntity entity;
+    public EntityTag vehicle;
+    public EntityTag entity;
     private double damage;
     public VehicleDamageEvent event;
 
@@ -127,8 +127,8 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
 
     @EventHandler
     public void onVehicleDestroyed(VehicleDamageEvent event) {
-        vehicle = new dEntity(event.getVehicle());
-        entity = event.getAttacker() != null ? new dEntity(event.getAttacker()) : null;
+        vehicle = new EntityTag(event.getVehicle());
+        entity = event.getAttacker() != null ? new EntityTag(event.getAttacker()) : null;
         damage = event.getDamage();
         this.event = event;
         fire(event);

@@ -5,7 +5,7 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -63,8 +63,8 @@ public class ActionBarCommand extends AbstractCommand {
                 scriptEntry.addObject("format", format);
             }
             if (arg.matchesPrefix("targets", "target")
-                    && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
+                    && arg.matchesArgumentList(PlayerTag.class)) {
+                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("text")) {
                 scriptEntry.addObject("text", new ElementTag(TagManager.cleanOutputFully(arg.raw_value)));
@@ -97,7 +97,7 @@ public class ActionBarCommand extends AbstractCommand {
         ElementTag text = scriptEntry.getElement("text");
         FormatScriptContainer format = (FormatScriptContainer) scriptEntry.getObject("format");
 
-        List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
+        List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
 
         if (scriptEntry.dbCallShouldDebug()) {
 
@@ -108,7 +108,7 @@ public class ActionBarCommand extends AbstractCommand {
             text = new ElementTag(format.getFormattedText(scriptEntry));
         }
 
-        for (dPlayer player : targets) {
+        for (PlayerTag player : targets) {
             if (player.isValid() && player.isOnline()) {
                 NMSHandler.getInstance().getPacketHelper().sendActionBarMessage(player.getPlayerEntity(), text.asString());
             }

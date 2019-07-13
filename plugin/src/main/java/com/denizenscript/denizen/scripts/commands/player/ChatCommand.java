@@ -5,7 +5,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.npc.speech.DenizenSpeechContext;
 import com.denizenscript.denizen.npc.speech.DenizenSpeechController;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -75,7 +75,7 @@ public class ChatCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
             // Default target is the attached Player, if none specified otherwise.
             if (arg.matchesPrefix("target", "targets", "t")) {
-                if (arg.matchesArgumentList(dEntity.class)) {
+                if (arg.matchesArgumentList(EntityTag.class)) {
                     scriptEntry.addObject("targets", arg.asType(ListTag.class));
                 }
                 specified_targets = true;
@@ -86,7 +86,7 @@ public class ChatCommand extends AbstractCommand {
 
             // Default talker is the attached NPC, if none specified otherwise.
             else if (arg.matchesPrefix("talker", "talkers")) {
-                if (arg.matchesArgumentList(dEntity.class)) {
+                if (arg.matchesArgumentList(EntityTag.class)) {
                     scriptEntry.addObject("talkers", arg.asType(ListTag.class));
                 }
                 specified_talker = true;
@@ -151,12 +151,12 @@ public class ChatCommand extends AbstractCommand {
                 scriptEntry, chatRange.asDouble());
 
         if (!targets.isEmpty()) {
-            for (dEntity ent : targets.filter(dEntity.class, scriptEntry)) {
+            for (EntityTag ent : targets.filter(EntityTag.class, scriptEntry)) {
                 context.addRecipient(ent.getBukkitEntity());
             }
         }
 
-        for (dEntity talker : talkers.filter(dEntity.class, scriptEntry)) {
+        for (EntityTag talker : talkers.filter(EntityTag.class, scriptEntry)) {
 
             Entity entity = talker.getBukkitEntity();
             if (entity != null) {

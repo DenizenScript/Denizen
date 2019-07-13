@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dPlayer;
-import com.denizenscript.denizen.objects.dWorld;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -25,8 +25,8 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
     // @Triggers when a player moves to a different world.
     //
     // @Context
-    // <context.origin_world> returns the dWorld that the player was previously on.
-    // <context.destination_world> returns the dWorld that the player is now in.
+    // <context.origin_world> returns the WorldTag that the player was previously on.
+    // <context.destination_world> returns the WorldTag that the player is now in.
     //
     // -->
 
@@ -35,8 +35,8 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
     }
 
     public static PlayerChangesWorldScriptEvent instance;
-    public dWorld origin_world;
-    public dWorld destination_world;
+    public WorldTag origin_world;
+    public WorldTag destination_world;
     public PlayerChangedWorldEvent event;
 
     @Override
@@ -76,7 +76,7 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(new PlayerTag(event.getPlayer()), null);
     }
 
     @Override
@@ -92,11 +92,11 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
 
     @EventHandler
     public void onPlayerChangesWorld(PlayerChangedWorldEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        origin_world = new dWorld(event.getFrom());
-        destination_world = new dWorld(event.getPlayer().getWorld());
+        origin_world = new WorldTag(event.getFrom());
+        destination_world = new WorldTag(event.getPlayer().getWorld());
         this.event = event;
         fire(event);
     }

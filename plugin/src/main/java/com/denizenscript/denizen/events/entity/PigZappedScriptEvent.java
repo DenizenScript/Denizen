@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -24,9 +24,9 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
     // @Triggers when a pig is zapped by lightning and turned into a pig zombie.
     //
     // @Context
-    // <context.pig> returns the dEntity of the pig.
-    // <context.pig_zombie> returns the dEntity of the pig zombie.
-    // <context.lightning> returns the dEntity of the lightning.
+    // <context.pig> returns the EntityTag of the pig.
+    // <context.pig_zombie> returns the EntityTag of the pig zombie.
+    // <context.lightning> returns the EntityTag of the lightning.
     //
     // -->
 
@@ -35,9 +35,9 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
     }
 
     public static PigZappedScriptEvent instance;
-    public dEntity pig;
-    public dEntity pig_zombie;
-    private dEntity lightning;
+    public EntityTag pig;
+    public EntityTag pig_zombie;
+    private EntityTag lightning;
     public PigZapEvent event;
 
     @Override
@@ -80,13 +80,13 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
 
     @EventHandler
     public void onPigZapped(PigZapEvent event) {
-        pig = new dEntity(event.getEntity());
+        pig = new EntityTag(event.getEntity());
         Entity pigZombie = event.getPigZombie();
-        dEntity.rememberEntity(pigZombie);
-        pig_zombie = new dEntity(pigZombie);
-        lightning = new dEntity(event.getLightning());
+        EntityTag.rememberEntity(pigZombie);
+        pig_zombie = new EntityTag(pigZombie);
+        lightning = new EntityTag(event.getLightning());
         this.event = event;
         fire(event);
-        dEntity.forgetEntity(pigZombie);
+        EntityTag.forgetEntity(pigZombie);
     }
 }

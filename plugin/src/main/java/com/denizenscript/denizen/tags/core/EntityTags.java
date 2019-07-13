@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
@@ -28,10 +28,10 @@ public class EntityTags {
             return;
         }
 
-        dEntity entity = null;
+        EntityTag entity = null;
 
         if (event.hasNameContext()) {
-            entity = dEntity.valueOf(event.getNameContext(), event.getAttributes().context);
+            entity = EntityTag.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
         if (entity == null) {

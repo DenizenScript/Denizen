@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -10,7 +10,7 @@ import com.denizenscript.denizencore.tags.Attribute;
 
 public class EntityRiptide implements Property {
     public static boolean describes(ObjectTag object) {
-        return object instanceof dEntity && ((dEntity) object).isLivingEntity();
+        return object instanceof EntityTag && ((EntityTag) object).isLivingEntity();
     }
 
     public static EntityRiptide getFrom(ObjectTag object) {
@@ -18,7 +18,7 @@ public class EntityRiptide implements Property {
             return null;
         }
         else {
-            return new EntityRiptide((dEntity) object);
+            return new EntityRiptide((EntityTag) object);
         }
     }
 
@@ -35,11 +35,11 @@ public class EntityRiptide implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityRiptide(dEntity entity) {
+    private EntityRiptide(EntityTag entity) {
         this.entity = entity;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     /////////
     // Property Methods
@@ -63,9 +63,9 @@ public class EntityRiptide implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_using_riptide>
+        // @attribute <EntityTag.is_using_riptide>
         // @returns ElementTag(Boolean)
-        // @mechanism dEntity.is_using_riptide
+        // @mechanism EntityTag.is_using_riptide
         // @group properties
         // @description
         // Returns whether this entity is using the Riptide enchantment.
@@ -82,13 +82,13 @@ public class EntityRiptide implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name is_using_riptide
         // @input Element(Boolean)
         // @description
         // Sets whether this entity is using the Riptide enchantment.
         // @tags
-        // <e@entity.is_using_riptide>
+        // <EntityTag.is_using_riptide>
         // -->
         if (mechanism.matches("is_using_riptide") && mechanism.requireBoolean()) {
             NMSHandler.getInstance().getEntityHelper().setRiptide(entity.getBukkitEntity(), mechanism.getValue().asBoolean());

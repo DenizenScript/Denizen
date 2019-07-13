@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.commands.server;
 import com.denizenscript.denizen.utilities.FakeOfflinePlayer;
 import com.denizenscript.denizen.utilities.ScoreboardHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -134,8 +134,8 @@ public class ScoreboardCommand extends AbstractCommand {
                 scriptEntry.addObject("displayslot", arg.asElement());
             }
             else if (!scriptEntry.hasObject("viewers")
-                    && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("viewers", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
+                    && arg.matchesArgumentList(PlayerTag.class)) {
+                scriptEntry.addObject("viewers", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
@@ -149,7 +149,7 @@ public class ScoreboardCommand extends AbstractCommand {
     }
 
     public static OfflinePlayer getOfflinePlayer(String name) {
-        if (dPlayer.playerNameIsValid(name)) {
+        if (PlayerTag.playerNameIsValid(name)) {
             return Bukkit.getOfflinePlayer(name);
         }
         else {
@@ -162,7 +162,7 @@ public class ScoreboardCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) {
         // Get objects
 
-        List<dPlayer> viewers = (List<dPlayer>) scriptEntry.getObject("viewers");
+        List<PlayerTag> viewers = (List<PlayerTag>) scriptEntry.getObject("viewers");
         ListTag lines = scriptEntry.hasObject("lines") ?
                 ListTag.valueOf(scriptEntry.getElement("lines").asString()) :
                 new ListTag();
@@ -314,7 +314,7 @@ public class ScoreboardCommand extends AbstractCommand {
         }
 
         if (viewers != null) {
-            for (dPlayer viewer : viewers) {
+            for (PlayerTag viewer : viewers) {
                 // Add viewers for this scoreboard
                 if (act.equals(Action.ADD)) {
                     // If this isn't the main scoreboard, add this viewer

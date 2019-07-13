@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.dTrade;
+import com.denizenscript.denizen.objects.TradeTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
@@ -24,10 +24,10 @@ public class TradeTags {
             return;
         }
 
-        dTrade trade = null;
+        TradeTag trade = null;
 
         if (event.hasNameContext()) {
-            trade = dTrade.valueOf(event.getNameContext(), event.getAttributes().context);
+            trade = TradeTag.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
         if (trade == null) {

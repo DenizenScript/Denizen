@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -27,7 +27,7 @@ public class PlayerRiptideScriptEvent extends BukkitScriptEvent implements Liste
     // @Triggers when a player activates the riptide effect.
     //
     // @Context
-    // <context.item> returns the dItem of the trident.
+    // <context.item> returns the ItemTag of the trident.
     //
     // -->
 
@@ -37,7 +37,7 @@ public class PlayerRiptideScriptEvent extends BukkitScriptEvent implements Liste
 
     public static PlayerRiptideScriptEvent instance;
     public PlayerRiptideEvent event;
-    private dItem item;
+    private ItemTag item;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
@@ -61,7 +61,7 @@ public class PlayerRiptideScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(new PlayerTag(event.getPlayer()), null);
     }
 
     @Override
@@ -74,10 +74,10 @@ public class PlayerRiptideScriptEvent extends BukkitScriptEvent implements Liste
 
     @EventHandler
     public void onPlayerRiptide(PlayerRiptideEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        this.item = new dItem(event.getItem());
+        this.item = new ItemTag(event.getItem());
         this.event = event;
         fire(event);
     }

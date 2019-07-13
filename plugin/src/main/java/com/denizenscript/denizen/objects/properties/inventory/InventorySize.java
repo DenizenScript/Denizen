@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.inventory;
 
-import com.denizenscript.denizen.objects.dInventory;
+import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -11,14 +11,14 @@ public class InventorySize implements Property {
 
     public static boolean describes(ObjectTag inventory) {
         // All inventories should have a size
-        return inventory instanceof dInventory;
+        return inventory instanceof InventoryTag;
     }
 
     public static InventorySize getFrom(ObjectTag inventory) {
         if (!describes(inventory)) {
             return null;
         }
-        return new InventorySize((dInventory) inventory);
+        return new InventorySize((InventoryTag) inventory);
     }
 
     public static final String[] handledTags = new String[] {
@@ -33,9 +33,9 @@ public class InventorySize implements Property {
     // Instance Fields and Methods
     /////////////
 
-    dInventory inventory;
+    InventoryTag inventory;
 
-    public InventorySize(dInventory inventory) {
+    public InventorySize(InventoryTag inventory) {
         this.inventory = inventory;
     }
 
@@ -84,10 +84,10 @@ public class InventorySize implements Property {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.size>
+        // @attribute <InventoryTag.size>
         // @returns ElementTag(Number)
         // @group properties
-        // @mechanism dInventory.size
+        // @mechanism InventoryTag.size
         // @description
         // Return the number of slots in the inventory.
         // -->
@@ -104,13 +104,13 @@ public class InventorySize implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dInventory
+        // @object InventoryTag
         // @name size
         // @input Element(Number)
         // @description
         // Sets the size of the inventory. (Only works for "generic" chest inventories.)
         // @tags
-        // <in@inventory.size>
+        // <InventoryTag.size>
         // -->
         if (mechanism.matches("size") && inventory.getIdType().equals("generic") && mechanism.requireInteger()) {
             setSize(mechanism.getValue().asInt());

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -92,7 +92,7 @@ public class PlayerTabCompleteScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(sender instanceof Player ? new dPlayer((Player) sender) : null, null);
+        return new BukkitScriptEntryData(sender instanceof Player ? new PlayerTag((Player) sender) : null, null);
     }
 
     @Override

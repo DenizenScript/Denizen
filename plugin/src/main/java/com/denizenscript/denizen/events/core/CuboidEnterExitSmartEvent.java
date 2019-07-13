@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.core;
 
-import com.denizenscript.denizen.objects.dCuboid;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.CuboidTag;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.scripts.containers.core.BukkitWorldScriptHelper;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -93,7 +93,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
     ///////////
 
     private boolean broad_detection = false;
-    private Map<String, List<dCuboid>> player_cuboids = new ConcurrentHashMap<>();
+    private Map<String, List<CuboidTag>> player_cuboids = new ConcurrentHashMap<>();
 
     // <--[event]
     // @Events
@@ -118,7 +118,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
     // -->
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
         PlayerMoveEvent evt = new PlayerMoveEvent(event.getPlayer(), event.getFrom(), event.getTo());
@@ -130,7 +130,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
         double pos = 10000000d;
@@ -141,7 +141,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
         double pos = 10000000d;
@@ -151,7 +151,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
     }
 
     public void onWorldChange(PlayerChangedWorldEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
         Location to = event.getPlayer().getLocation().clone();
@@ -164,7 +164,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
     @EventHandler
     public void vehicleMoveEvent(VehicleMoveEvent event) {
         for (Entity entity : event.getVehicle().getPassengers()) {
-            if (dEntity.isPlayer(entity)) {
+            if (EntityTag.isPlayer(entity)) {
                 PlayerMoveEvent evt = new PlayerMoveEvent((Player) entity, event.getFrom(), event.getTo());
                 internalRun(evt, "vehicle");
             }
@@ -177,7 +177,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
     }
 
     public void internalRun(PlayerMoveEvent event, String cause) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
 
@@ -186,18 +186,18 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
         }
 
         // Look for cuboids that contain the block's location
-        List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getTo());
-        List<dCuboid> match = new ArrayList<>();
+        List<CuboidTag> cuboids = CuboidTag.getNotableCuboidsContaining(event.getTo());
+        List<CuboidTag> match = new ArrayList<>();
         String namelow = CoreUtilities.toLowerCase(event.getPlayer().getName()); // TODO: UUID?
         if (player_cuboids.containsKey(namelow)) // TODO: Clear on quit?
         {
             match = player_cuboids.get(namelow);
         }
 
-        List<dCuboid> exits = new ArrayList<>(match);
+        List<CuboidTag> exits = new ArrayList<>(match);
         exits.removeAll(cuboids);
 
-        List<dCuboid> enters = new ArrayList<>(cuboids);
+        List<CuboidTag> enters = new ArrayList<>(cuboids);
         enters.removeAll(match);
 
         if (exits.isEmpty() && enters.isEmpty()) {
@@ -207,14 +207,14 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
         if (!exits.isEmpty()) {
             if (broad_detection) {
                 ListTag cuboid_context = new ListTag();
-                for (dCuboid cuboid : exits) {
+                for (CuboidTag cuboid : exits) {
                     cuboid_context.add(cuboid.identify());
                 }
                 if (Fire(event, cuboid_context, "player exits notable cuboid", cause)) {
                     return;
                 }
             }
-            for (dCuboid cuboid : exits) {
+            for (CuboidTag cuboid : exits) {
                 if (Fire(event, new ListTag(cuboid.identify()), "player exits " + cuboid.identifySimple(), cause)) {
                     return;
                 }
@@ -224,14 +224,14 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
         if (!enters.isEmpty()) {
             if (broad_detection) {
                 ListTag cuboid_context = new ListTag();
-                for (dCuboid cuboid : enters) {
+                for (CuboidTag cuboid : enters) {
                     cuboid_context.add(cuboid.identify());
                 }
                 if (Fire(event, cuboid_context, "player enters notable cuboid", cause)) {
                     return;
                 }
             }
-            for (dCuboid cuboid : enters) {
+            for (CuboidTag cuboid : enters) {
                 if (Fire(event, new ListTag(cuboid.identify()), "player enters " + cuboid.identifySimple(), cause)) {
                     return;
                 }
@@ -247,14 +247,14 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
     private boolean Fire(PlayerMoveEvent event, ListTag cuboids, String EventName, String cause) {
         List<String> events = new ArrayList<>();
         Map<String, ObjectTag> context = new HashMap<>();
-        context.put("from", new dLocation(event.getFrom()));
-        context.put("to", new dLocation(event.getTo()));
+        context.put("from", new LocationTag(event.getFrom()));
+        context.put("to", new LocationTag(event.getTo()));
         context.put("cuboids", cuboids);
         context.put("cause", new ElementTag(cause));
         events.add(EventName);
 
         String determination = BukkitWorldScriptHelper.doEvents(events,
-                null, dEntity.getPlayerFrom(event.getPlayer()), context, true);
+                null, EntityTag.getPlayerFrom(event.getPlayer()), context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED")) {
             event.setCancelled(true);

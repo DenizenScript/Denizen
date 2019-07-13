@@ -2,7 +2,7 @@ package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.npc.traits.InvisibleTrait;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -15,8 +15,8 @@ import org.bukkit.entity.EntityType;
 public class EntityVisible implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity &&
-                ((dEntity) entity).getBukkitEntityType() == EntityType.ARMOR_STAND;
+        return entity instanceof EntityTag &&
+                ((EntityTag) entity).getBukkitEntityType() == EntityType.ARMOR_STAND;
     }
 
     public static EntityVisible getFrom(ObjectTag entity) {
@@ -24,7 +24,7 @@ public class EntityVisible implements Property {
             return null;
         }
         else {
-            return new EntityVisible((dEntity) entity);
+            return new EntityVisible((EntityTag) entity);
         }
     }
 
@@ -41,12 +41,12 @@ public class EntityVisible implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityVisible(dEntity ent) {
+    private EntityVisible(EntityTag ent) {
         entity = ent;
         stand = (ArmorStand) ent.getBukkitEntity();
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     ArmorStand stand;
 
@@ -80,7 +80,7 @@ public class EntityVisible implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.visible>
+        // @attribute <EntityTag.visible>
         // @returns ElementTag(Boolean)
         // @group attributes
         // @description
@@ -98,13 +98,13 @@ public class EntityVisible implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name visible
         // @input Element(Boolean)
         // @description
         // Sets whether the armor stand is visible.
         // @tags
-        // <e@entity.visible>
+        // <EntityTag.visible>
         // -->
         if (mechanism.matches("visible") && mechanism.requireBoolean()) {
             if (Depends.citizens != null) {

@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dCuboid;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.CuboidTag;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -36,7 +36,7 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     // @Triggers when an entity spawns.
     //
     // @Context
-    // <context.entity> returns the dEntity that spawned.
+    // <context.entity> returns the EntityTag that spawned.
     // <context.location> returns the location the entity will spawn at.
     // <context.reason> returns the reason the entity spawned.
     // Reasons: <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html>
@@ -48,8 +48,8 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     public static EntitySpawnScriptEvent instance;
-    public dEntity entity;
-    public dLocation location;
+    public EntityTag entity;
+    public LocationTag location;
     public ElementTag reason;
     public CreatureSpawnEvent event;
 
@@ -90,8 +90,8 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? EntityTag.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? EntityTag.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
         else if (name.equals("cuboids")) {
             Debug.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
             ListTag cuboids = new ListTag();
-            for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+            for (CuboidTag cuboid : CuboidTag.getNotableCuboidsContaining(location)) {
                 cuboids.add(cuboid.identifySimple());
             }
             return cuboids;
@@ -119,13 +119,13 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     @EventHandler
     public void onCreatureSpawn(CreatureSpawnEvent event) {
         Entity entity = event.getEntity();
-        this.entity = new dEntity(entity);
-        location = new dLocation(event.getLocation());
+        this.entity = new EntityTag(entity);
+        location = new LocationTag(event.getLocation());
         reason = new ElementTag(event.getSpawnReason().name());
         this.event = event;
-        dEntity.rememberEntity(entity);
+        EntityTag.rememberEntity(entity);
         fire(event);
-        dEntity.forgetEntity(entity);
+        EntityTag.forgetEntity(entity);
     }
 
 }

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -11,7 +11,7 @@ import org.bukkit.entity.Arrow;
 public class EntityCritical implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntity() instanceof Arrow;
+        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntity() instanceof Arrow;
     }
 
     public static EntityCritical getFrom(ObjectTag entity) {
@@ -19,7 +19,7 @@ public class EntityCritical implements Property {
             return null;
         }
         else {
-            return new EntityCritical((dEntity) entity);
+            return new EntityCritical((EntityTag) entity);
         }
     }
 
@@ -36,11 +36,11 @@ public class EntityCritical implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityCritical(dEntity entity) {
+    private EntityCritical(EntityTag entity) {
         critical = entity;
     }
 
-    dEntity critical;
+    EntityTag critical;
 
     /////////
     // Property Methods
@@ -73,9 +73,9 @@ public class EntityCritical implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.critical>
+        // @attribute <EntityTag.critical>
         // @returns ElementTag(Boolean)
-        // @mechanism dEntity.critical
+        // @mechanism EntityTag.critical
         // @group properties
         // @description
         // If the entity is an arrow or trident, returns whether the arrow/trident is critical.
@@ -92,13 +92,13 @@ public class EntityCritical implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name critical
         // @input Element(Boolean)
         // @description
         // Changes whether an arrow/trident is critical.
         // @tags
-        // <e@entity.critical>
+        // <EntityTag.critical>
         // -->
 
         if (mechanism.matches("critical") && mechanism.requireBoolean()) {

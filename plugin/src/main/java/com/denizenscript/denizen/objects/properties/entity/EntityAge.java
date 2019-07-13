@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -16,12 +16,12 @@ import org.bukkit.entity.Zombie;
 public class EntityAge implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        if (!(entity instanceof dEntity)) {
+        if (!(entity instanceof EntityTag)) {
             return false;
         }
         // Check if entity is Ageable, or a Zombie
-        return (((dEntity) entity).getBukkitEntity() instanceof Ageable)
-                || (((dEntity) entity).getBukkitEntity() instanceof Zombie);
+        return (((EntityTag) entity).getBukkitEntity() instanceof Ageable)
+                || (((EntityTag) entity).getBukkitEntity() instanceof Zombie);
     }
 
     public static EntityAge getFrom(ObjectTag entity) {
@@ -29,7 +29,7 @@ public class EntityAge implements Property {
             return null;
         }
         else {
-            return new EntityAge((dEntity) entity);
+            return new EntityAge((EntityTag) entity);
         }
     }
 
@@ -46,11 +46,11 @@ public class EntityAge implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityAge(dEntity entity) {
+    private EntityAge(EntityTag entity) {
         ageable = entity;
     }
 
-    dEntity ageable;
+    EntityTag ageable;
 
     public boolean isBaby() {
         if (ageable.getBukkitEntity() instanceof Zombie) {
@@ -145,9 +145,9 @@ public class EntityAge implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.age>
+        // @attribute <EntityTag.age>
         // @returns ElementTag(Number)
-        // @mechanism dEntity.age
+        // @mechanism EntityTag.age
         // @group properties
         // @description
         // If the entity is ageable, returns the entity's age number (-24000 to 0)
@@ -158,9 +158,9 @@ public class EntityAge implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_age_locked>
+        // @attribute <EntityTag.is_age_locked>
         // @returns ElementTag(Boolean)
-        // @mechanism dEntity.age_lock
+        // @mechanism EntityTag.age_lock
         // @group properties
         // @description
         // If the entity is ageable, returns whether the entity is age locked.
@@ -171,9 +171,9 @@ public class EntityAge implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_baby>
+        // @attribute <EntityTag.is_baby>
         // @returns ElementTag(Boolean)
-        // @mechanism dEntity.age
+        // @mechanism EntityTag.age
         // @group properties
         // @description
         // If the entity is ageable, returns whether the entity is a baby.
@@ -192,17 +192,17 @@ public class EntityAge implements Property {
 
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name age_lock
         // @input Element(Boolean)
         // @description
         // Sets whether the entity is locked into its current age.
-        // Also available: <@link mechanism dEntity.age>
+        // Also available: <@link mechanism EntityTag.age>
         // @tags
-        // <e@entity.age>
-        // <e@entity.is_baby>
-        // <e@entity.is_age_locked>
-        // <e@entity.is_ageable>
+        // <EntityTag.age>
+        // <EntityTag.is_baby>
+        // <EntityTag.is_age_locked>
+        // <EntityTag.is_ageable>
         // -->
 
         if (mechanism.matches("age_lock")
@@ -211,7 +211,7 @@ public class EntityAge implements Property {
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name age
         // @input Element
         // @description
@@ -219,12 +219,12 @@ public class EntityAge implements Property {
         // Inputs can be 'baby', 'adult', or a valid age number (-24000 to 0)
         // Optionally, add '|locked' or 'unlocked' to lock/unlock the entity into/from the current age.
         // (EG, age:baby|locked or age:-24000|unlocked)
-        // Also available: <@link mechanism dEntity.age_lock>
+        // Also available: <@link mechanism EntityTag.age_lock>
         // @tags
-        // <e@entity.age>
-        // <e@entity.is_baby>
-        // <e@entity.is_age_locked>
-        // <e@entity.is_ageable>
+        // <EntityTag.age>
+        // <EntityTag.is_baby>
+        // <EntityTag.is_age_locked>
+        // <EntityTag.is_ageable>
         // -->
 
         if (mechanism.matches("age")) {

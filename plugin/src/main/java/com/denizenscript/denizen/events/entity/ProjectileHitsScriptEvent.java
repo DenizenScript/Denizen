@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -29,9 +29,9 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     // @Triggers when a projectile hits a block.
     //
     // @Context
-    // <context.projectile> returns the dEntity of the projectile.
-    // <context.shooter> returns the dEntity of the shooter, if there is one.
-    // <context.location> returns the dLocation of the block that was hit.
+    // <context.projectile> returns the EntityTag of the projectile.
+    // <context.shooter> returns the EntityTag of the shooter, if there is one.
+    // <context.location> returns the LocationTag of the block that was hit.
     //
     // -->
 
@@ -48,9 +48,9 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     // @Triggers when a projectile shot by an entity hits a block.
     //
     // @Context
-    // <context.projectile> returns the dEntity of the projectile.
-    // <context.shooter> returns the dEntity of the shooter, if there is one.
-    // <context.location> returns the dLocation of the block that was hit.
+    // <context.projectile> returns the EntityTag of the projectile.
+    // <context.shooter> returns the EntityTag of the shooter, if there is one.
+    // <context.location> returns the LocationTag of the block that was hit.
     //
     // -->
     public ProjectileHitsScriptEvent() {
@@ -58,10 +58,10 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     }
 
     public static ProjectileHitsScriptEvent instance;
-    public dEntity projectile;
-    public dEntity shooter;
-    public dLocation location;
-    private dMaterial material;
+    public EntityTag projectile;
+    public EntityTag shooter;
+    public LocationTag location;
+    private MaterialTag material;
     public ProjectileHitEvent event;
 
     @Override
@@ -110,8 +110,8 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(shooter != null && shooter.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
-                shooter != null && shooter.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(shooter != null && shooter.isPlayer() ? EntityTag.getPlayerFrom(event.getEntity()) : null,
+                shooter != null && shooter.isCitizensNPC() ? EntityTag.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -130,7 +130,7 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
 
     @EventHandler
     public void onProjectileHits(ProjectileHitEvent event) {
-        projectile = new dEntity(event.getEntity());
+        projectile = new EntityTag(event.getEntity());
         if (projectile.getLocation() == null) {
             return; // No, I can't explain how or why this would ever happen... nonetheless, it appears it does happen sometimes.
         }
@@ -144,9 +144,9 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
         if (block == null) {
             return;
         }
-        material = new dMaterial(block);
+        material = new MaterialTag(block);
         shooter = projectile.getShooter();
-        location = new dLocation(block.getLocation());
+        location = new LocationTag(block.getLocation());
         this.event = event;
         fire(event);
     }

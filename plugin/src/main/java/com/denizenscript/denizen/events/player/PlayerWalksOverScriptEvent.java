@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -50,7 +50,7 @@ public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Lis
     @Override
     public boolean matches(ScriptPath path) {
         String loc = path.eventArgLowerAt(3);
-        return loc.equals(CoreUtilities.toLowerCase(notable)) || tryLocation(new dLocation(event.getPlayer().getLocation()), loc);
+        return loc.equals(CoreUtilities.toLowerCase(notable)) || tryLocation(new LocationTag(event.getPlayer().getLocation()), loc);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(new PlayerTag(event.getPlayer()), null);
     }
 
     @Override
@@ -81,10 +81,10 @@ public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Lis
         if (event.getFrom().getBlock().equals(event.getTo().getBlock())) {
             return;
         }
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        notable = NotableManager.getSavedId(new dLocation(event.getTo().getBlock().getLocation()));
+        notable = NotableManager.getSavedId(new LocationTag(event.getTo().getBlock().getLocation()));
         if (notable == null) {
             return;
         }

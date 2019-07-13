@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.world;
 
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dWorld;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -21,9 +21,9 @@ public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listene
     // @Triggers when the world's spawn point changes.
     //
     // @Context
-    // <context.world> returns the dWorld that the spawn point changed in.
-    // <context.old_location> returns the dLocation of the old spawn point.
-    // <context.new_location> returns the dLocation of the new spawn point.
+    // <context.world> returns the WorldTag that the spawn point changed in.
+    // <context.old_location> returns the LocationTag of the old spawn point.
+    // <context.new_location> returns the LocationTag of the new spawn point.
     //
     // -->
 
@@ -32,9 +32,9 @@ public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     public static SpawnChangeScriptEvent instance;
-    public dWorld world;
-    public dLocation old_location;
-    public dLocation new_location;
+    public WorldTag world;
+    public LocationTag old_location;
+    public LocationTag new_location;
     public SpawnChangeEvent event;
 
     @Override
@@ -73,9 +73,9 @@ public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listene
 
     @EventHandler
     public void onSpawnChange(SpawnChangeEvent event) {
-        world = new dWorld(event.getWorld());
-        old_location = new dLocation(event.getPreviousLocation());
-        new_location = new dLocation(event.getWorld().getSpawnLocation());
+        world = new WorldTag(event.getWorld());
+        old_location = new LocationTag(event.getPreviousLocation());
+        new_location = new LocationTag(event.getWorld().getSpawnLocation());
         this.event = event;
         fire(event);
     }

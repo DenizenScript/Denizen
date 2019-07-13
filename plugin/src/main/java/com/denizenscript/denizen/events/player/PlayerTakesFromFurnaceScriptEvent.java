@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -28,8 +28,8 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
     //
     // @Triggers when a player takes an item from a furnace.
     // @Context
-    // <context.location> returns the dLocation of the furnace.
-    // <context.item> returns the dItem taken out of the furnace.
+    // <context.location> returns the LocationTag of the furnace.
+    // <context.item> returns the ItemTag taken out of the furnace.
     //
     // @Determine
     // Element(Number) to set the amount of experience the player will get.
@@ -41,8 +41,8 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
     }
 
     public static PlayerTakesFromFurnaceScriptEvent instance;
-    public dLocation location;
-    public dItem item;
+    public LocationTag location;
+    public ItemTag item;
     private int xp;
     public FurnaceExtractEvent event;
 
@@ -76,7 +76,7 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(dPlayer.mirrorBukkitPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(PlayerTag.mirrorBukkitPlayer(event.getPlayer()), null);
     }
 
     @Override
@@ -92,11 +92,11 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
 
     @EventHandler
     public void onPlayerTakesFromFurnace(FurnaceExtractEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        item = new dItem(event.getItemType(), event.getItemAmount());
-        location = new dLocation(event.getBlock().getLocation());
+        item = new ItemTag(event.getItemType(), event.getItemAmount());
+        location = new LocationTag(event.getBlock().getLocation());
         xp = event.getExpToDrop();
         this.event = event;
         fire(event);

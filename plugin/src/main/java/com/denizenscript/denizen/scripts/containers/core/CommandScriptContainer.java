@@ -2,8 +2,8 @@ package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.utilities.DenizenCommand;
 import com.denizenscript.denizen.BukkitScriptEntryData;
-import com.denizenscript.denizen.objects.dNPC;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.events.OldEventManager;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -106,7 +106,7 @@ public class CommandScriptContainer extends ScriptContainer {
     //   # <context.server> returns whether the server is running the command (a player if false).
     //   # <context.alias> returns the command alias being used.
     //   # <context.command_block_location> returns the command block's location (if the command was run from one).
-    //   # <context.command_minecart> returns the dEntity of the command minecart (if the command was run from one).
+    //   # <context.command_minecart> returns the EntityTag of the command minecart (if the command was run from one).
     //   script:
     //   - if !<player.is_op||<context.server>>:
     //     - narrate "<red>You do not have permission for that command."
@@ -153,7 +153,7 @@ public class CommandScriptContainer extends ScriptContainer {
         return getString("PERMISSION MESSAGE");
     }
 
-    public ScriptQueue runCommandScript(dPlayer player, dNPC npc, Map<String, ObjectTag> context) {
+    public ScriptQueue runCommandScript(PlayerTag player, NPCTag npc, Map<String, ObjectTag> context) {
         ScriptQueue queue = new InstantQueue(getName()).addEntries(getBaseEntries(
                 new BukkitScriptEntryData(player, npc)));
         if (context != null) {
@@ -165,7 +165,7 @@ public class CommandScriptContainer extends ScriptContainer {
         return queue;
     }
 
-    public boolean runAllowedHelpProcedure(dPlayer player, dNPC npc, Map<String, ObjectTag> context) {
+    public boolean runAllowedHelpProcedure(PlayerTag player, NPCTag npc, Map<String, ObjectTag> context) {
         List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(player, npc), "ALLOWED HELP");
 
         ScriptQueue queue = new InstantQueue(getName()).addEntries(entries);
@@ -178,7 +178,7 @@ public class CommandScriptContainer extends ScriptContainer {
         return queue.determinations != null && queue.determinations.size() > 0 && queue.determinations.get(0).equalsIgnoreCase("true");
     }
 
-    public List<String> runTabCompleteProcedure(dPlayer player, dNPC npc, Map<String, ObjectTag> context) {
+    public List<String> runTabCompleteProcedure(PlayerTag player, NPCTag npc, Map<String, ObjectTag> context) {
         List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(player, npc), "TAB COMPLETE");
 
         ScriptQueue queue = new InstantQueue(getName()).addEntries(entries);

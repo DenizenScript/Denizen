@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dInventory;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.InventoryTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
@@ -15,9 +15,9 @@ import org.bukkit.inventory.meta.BlockStateMeta;
 public class ItemInventory implements Property {
 
     public static boolean describes(ObjectTag item) {
-        return item instanceof dItem
-                && ((dItem) item).getItemStack().getItemMeta() instanceof BlockStateMeta
-                && ((BlockStateMeta) ((dItem) item).getItemStack().getItemMeta()).getBlockState() instanceof InventoryHolder;
+        return item instanceof ItemTag
+                && ((ItemTag) item).getItemStack().getItemMeta() instanceof BlockStateMeta
+                && ((BlockStateMeta) ((ItemTag) item).getItemStack().getItemMeta()).getBlockState() instanceof InventoryHolder;
     }
 
     public static ItemInventory getFrom(ObjectTag _item) {
@@ -25,7 +25,7 @@ public class ItemInventory implements Property {
             return null;
         }
         else {
-            return new ItemInventory((dItem) _item);
+            return new ItemInventory((ItemTag) _item);
         }
     }
 
@@ -38,15 +38,15 @@ public class ItemInventory implements Property {
     };
 
 
-    private dInventory getItemInventory() {
-        return dInventory.mirrorBukkitInventory(((InventoryHolder) ((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()).getInventory());
+    private InventoryTag getItemInventory() {
+        return InventoryTag.mirrorBukkitInventory(((InventoryHolder) ((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()).getInventory());
     }
 
-    private ItemInventory(dItem _item) {
+    private ItemInventory(ItemTag _item) {
         item = _item;
     }
 
-    dItem item;
+    ItemTag item;
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -56,12 +56,12 @@ public class ItemInventory implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.inventory>
-        // @returns dInventory
-        // @mechanism dItem.inventory
+        // @attribute <ItemTag.inventory>
+        // @returns InventoryTag
+        // @mechanism ItemTag.inventory
         // @group properties
         // @description
-        // Returns a dInventory of a container item.
+        // Returns a InventoryTag of a container item.
         // -->
         if (attribute.startsWith("inventory")) {
             return getItemInventory().getAttribute(attribute.fulfill(1));
@@ -73,7 +73,7 @@ public class ItemInventory implements Property {
 
     @Override
     public String getPropertyString() {
-        dInventory inv = getItemInventory();
+        InventoryTag inv = getItemInventory();
         return inv != null ? inv.identify() : null;
     }
 
@@ -86,16 +86,16 @@ public class ItemInventory implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name inventory
-        // @input dInventory
+        // @input InventoryTag
         // @description
         // Sets the item's inventory contents.
         // @tags
-        // <i@item.inventory>
+        // <ItemTag.inventory>
         // -->
-        if (mechanism.matches("inventory") && mechanism.requireObject(dInventory.class)) {
-            dInventory inventory = mechanism.valueAsType(dInventory.class);
+        if (mechanism.matches("inventory") && mechanism.requireObject(InventoryTag.class)) {
+            InventoryTag inventory = mechanism.valueAsType(InventoryTag.class);
             if (inventory == null || inventory.getInventory() == null) {
                 return;
             }
@@ -105,7 +105,7 @@ public class ItemInventory implements Property {
             InventoryHolder invHolder = (InventoryHolder) bsm.getBlockState();
 
             if (inventory.getSize() > invHolder.getInventory().getSize()) {
-                Debug.echoError("Invalid dInventory size; expected " + invHolder.getInventory().getSize() + " or less.");
+                Debug.echoError("Invalid InventoryTag size; expected " + invHolder.getInventory().getSize() + " or less.");
                 return;
             }
 

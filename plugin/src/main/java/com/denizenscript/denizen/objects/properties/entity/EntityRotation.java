@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -15,11 +15,11 @@ public class EntityRotation implements Property {
 
 
     public static boolean describes(ObjectTag entity) {
-        if (!(entity instanceof dEntity)) {
+        if (!(entity instanceof EntityTag)) {
             return false;
         }
-        return ((dEntity) entity).getBukkitEntityType() == EntityType.PAINTING
-                || ((dEntity) entity).getBukkitEntityType() == EntityType.ITEM_FRAME;
+        return ((EntityTag) entity).getBukkitEntityType() == EntityType.PAINTING
+                || ((EntityTag) entity).getBukkitEntityType() == EntityType.ITEM_FRAME;
     }
 
     public static EntityRotation getFrom(ObjectTag entity) {
@@ -27,7 +27,7 @@ public class EntityRotation implements Property {
             return null;
         }
         else {
-            return new EntityRotation((dEntity) entity);
+            return new EntityRotation((EntityTag) entity);
         }
     }
 
@@ -44,11 +44,11 @@ public class EntityRotation implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityRotation(dEntity entity) {
+    private EntityRotation(EntityTag entity) {
         this.entity = entity;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     private BlockFace getRotation() {
         return ((Hanging) entity.getBukkitEntity()).getAttachedFace().getOppositeFace();
@@ -86,9 +86,9 @@ public class EntityRotation implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.rotation>
+        // @attribute <EntityTag.rotation>
         // @returns ElementTag
-        // @mechanism dEntity.rotiation
+        // @mechanism EntityTag.rotiation
         // @group properties
         // @description
         // If the entity can have a rotation, returns the entity's rotation.
@@ -106,14 +106,14 @@ public class EntityRotation implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name rotation
         // @input Element
         // @description
         // Changes the entity's rotation.
         // Currently, only Hanging-type entities can have rotations.
         // @tags
-        // <e@entity.rotation>
+        // <EntityTag.rotation>
         // -->
 
         if (mechanism.matches("rotation") && mechanism.requireEnum(false, BlockFace.values())) {

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.utilities.maps;
 
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapView;
 
@@ -17,7 +17,7 @@ public class MapAnimatedImage extends MapImage {
     }
 
     @Override
-    public void render(MapView mapView, MapCanvas mapCanvas, dPlayer player, UUID uuid) {
+    public void render(MapView mapView, MapCanvas mapCanvas, PlayerTag player, UUID uuid) {
         super.render(mapView, mapCanvas, player, uuid);
         if (observer == null) {
             observer = new AnimationObserver(this);

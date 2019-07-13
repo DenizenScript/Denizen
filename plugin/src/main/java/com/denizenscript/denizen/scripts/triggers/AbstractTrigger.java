@@ -4,8 +4,8 @@ import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.npc.traits.TriggerTrait;
-import com.denizenscript.denizen.objects.dNPC;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.events.OldEventManager;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
@@ -70,16 +70,16 @@ public abstract class AbstractTrigger {
     }
 
 
-    public boolean parse(dNPC npc, dPlayer player, InteractScriptContainer script) {
+    public boolean parse(NPCTag npc, PlayerTag player, InteractScriptContainer script) {
         return parse(npc, player, script, null, null);
     }
 
 
-    public boolean parse(dNPC npc, dPlayer player, InteractScriptContainer script, String id) {
+    public boolean parse(NPCTag npc, PlayerTag player, InteractScriptContainer script, String id) {
         return parse(npc, player, script, id, null);
     }
 
-    public boolean parse(dNPC npc, dPlayer player, InteractScriptContainer script, String id, Map<String, ObjectTag> context) {
+    public boolean parse(NPCTag npc, PlayerTag player, InteractScriptContainer script, String id, Map<String, ObjectTag> context) {
         if (npc == null || player == null || script == null) {
             return false;
         }

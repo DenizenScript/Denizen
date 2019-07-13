@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
@@ -45,8 +45,8 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
 
     public static BiomeEnterExitScriptEvent instance;
 
-    public dLocation from;
-    public dLocation to;
+    public LocationTag from;
+    public LocationTag to;
     public ElementTag old_biome;
     public ElementTag new_biome;
     public PlayerMoveEvent event;
@@ -81,7 +81,7 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
     @Override
     public ScriptEntryData getScriptEntryData() {
         // TODO: Store the player / npc?
-        return new BukkitScriptEntryData(event != null ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
+        return new BukkitScriptEntryData(event != null ? EntityTag.getPlayerFrom(event.getPlayer()) : null, null);
     }
 
     @Override
@@ -103,8 +103,8 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
 
     @EventHandler
     public void onPlayerEntersExitsBiome(PlayerMoveEvent event) {
-        from = new dLocation(event.getFrom());
-        to = new dLocation(event.getTo());
+        from = new LocationTag(event.getFrom());
+        to = new LocationTag(event.getTo());
         old_biome = new ElementTag(from.getBlock().getBiome().name());
         new_biome = new ElementTag(to.getBlock().getBiome().name());
         if (old_biome.identify().equals(new_biome.identify())) {

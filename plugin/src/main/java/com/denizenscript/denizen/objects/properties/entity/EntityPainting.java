@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -13,7 +13,7 @@ import org.bukkit.entity.Painting;
 public class EntityPainting implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.PAINTING;
+        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntityType() == EntityType.PAINTING;
     }
 
     public static EntityPainting getFrom(ObjectTag entity) {
@@ -21,7 +21,7 @@ public class EntityPainting implements Property {
             return null;
         }
         else {
-            return new EntityPainting((dEntity) entity);
+            return new EntityPainting((EntityTag) entity);
         }
     }
 
@@ -38,11 +38,11 @@ public class EntityPainting implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityPainting(dEntity entity) {
+    private EntityPainting(EntityTag entity) {
         painting = entity;
     }
 
-    dEntity painting;
+    EntityTag painting;
 
     /////////
     // Property Methods
@@ -70,9 +70,9 @@ public class EntityPainting implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.painting_width>
+        // @attribute <EntityTag.painting_width>
         // @returns ElementTag
-        // @mechanism dEntity.painting
+        // @mechanism EntityTag.painting
         // @group properties
         // @description
         // If the entity is a painting, returns its width.
@@ -83,9 +83,9 @@ public class EntityPainting implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.painting_height>
+        // @attribute <EntityTag.painting_height>
         // @returns ElementTag
-        // @mechanism dEntity.painting
+        // @mechanism EntityTag.painting
         // @group properties
         // @description
         // If the entity is a painting, returns its height.
@@ -96,9 +96,9 @@ public class EntityPainting implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.painting>
+        // @attribute <EntityTag.painting>
         // @returns ElementTag
-        // @mechanism dEntity.painting
+        // @mechanism EntityTag.painting
         // @group properties
         // @description
         // If the entity is a painting, returns what art it shows.
@@ -115,13 +115,13 @@ public class EntityPainting implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name painting
         // @input Element
         // @description
         // Changes the art shown by a painting.
         // @tags
-        // <e@entity.painting>
+        // <EntityTag.painting>
         // -->
 
         if (mechanism.matches("painting") && mechanism.requireEnum(false, Art.values())) {

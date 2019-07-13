@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -11,7 +11,7 @@ import org.bukkit.entity.Arrow;
 public class EntityKnockback implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntity() instanceof Arrow;
+        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntity() instanceof Arrow;
     }
 
     public static EntityKnockback getFrom(ObjectTag entity) {
@@ -19,7 +19,7 @@ public class EntityKnockback implements Property {
             return null;
         }
         else {
-            return new EntityKnockback((dEntity) entity);
+            return new EntityKnockback((EntityTag) entity);
         }
     }
 
@@ -36,11 +36,11 @@ public class EntityKnockback implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityKnockback(dEntity entity) {
+    private EntityKnockback(EntityTag entity) {
         arrow = entity;
     }
 
-    dEntity arrow;
+    EntityTag arrow;
 
     /////////
     // Property Methods
@@ -68,9 +68,9 @@ public class EntityKnockback implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.knockback>
+        // @attribute <EntityTag.knockback>
         // @returns ElementTag(Number)
-        // @mechanism dEntity.knockback
+        // @mechanism EntityTag.knockback
         // @group properties
         // @description
         // If the entity is an arrow or trident, returns the knockback strength of the arrow/trident.
@@ -87,13 +87,13 @@ public class EntityKnockback implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name knockback
         // @input Element(Number)
         // @description
         // Changes an arrow's/trident's knockback strength.
         // @tags
-        // <e@entity.knockback>
+        // <EntityTag.knockback>
         // -->
 
         if (mechanism.matches("knockback") && mechanism.requireInteger()) {

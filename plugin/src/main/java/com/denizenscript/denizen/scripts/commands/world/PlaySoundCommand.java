@@ -2,8 +2,8 @@ package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -66,13 +66,13 @@ public class PlaySoundCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("locations")
                     && !scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dLocation.class)) {
-                scriptEntry.addObject("locations", arg.asType(ListTag.class).filter(dLocation.class, scriptEntry));
+                    && arg.matchesArgumentList(LocationTag.class)) {
+                scriptEntry.addObject("locations", arg.asType(ListTag.class).filter(LocationTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("locations")
                     && !scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
+                    && arg.matchesArgumentList(PlayerTag.class)) {
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("volume")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
@@ -120,8 +120,8 @@ public class PlaySoundCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        List<dLocation> locations = (List<dLocation>) scriptEntry.getObject("locations");
-        List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("entities");
+        List<LocationTag> locations = (List<LocationTag>) scriptEntry.getObject("locations");
+        List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("entities");
         ElementTag sound = scriptEntry.getElement("sound");
         ElementTag volume = scriptEntry.getElement("volume");
         ElementTag pitch = scriptEntry.getElement("pitch");
@@ -143,20 +143,20 @@ public class PlaySoundCommand extends AbstractCommand {
         try {
             if (locations != null) {
                 if (custom.asBoolean()) {
-                    for (dLocation location : locations) {
+                    for (LocationTag location : locations) {
                         NMSHandler.getInstance().getSoundHelper().playSound(null, location, sound.asString(), volume.asFloat(),
                                 pitch.asFloat(), sound_category.asString());
                     }
                 }
                 else {
-                    for (dLocation location : locations) {
+                    for (LocationTag location : locations) {
                         NMSHandler.getInstance().getSoundHelper().playSound(null, location, Sound.valueOf(sound.asString().toUpperCase()),
                                 volume.asFloat(), pitch.asFloat(), sound_category.asString());
                     }
                 }
             }
             else {
-                for (dPlayer player : players) {
+                for (PlayerTag player : players) {
                     if (custom.asBoolean()) {
                         NMSHandler.getInstance().getSoundHelper().playSound(player.getPlayerEntity(), player.getLocation(), sound.asString(),
                                 volume.asFloat(), pitch.asFloat(), sound_category.asString());

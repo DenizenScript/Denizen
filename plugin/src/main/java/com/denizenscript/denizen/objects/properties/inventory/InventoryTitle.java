@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.inventory;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.dInventory;
+import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -12,14 +12,14 @@ public class InventoryTitle implements Property {
 
     public static boolean describes(ObjectTag inventory) {
         // All inventories could possibly have a title
-        return inventory instanceof dInventory;
+        return inventory instanceof InventoryTag;
     }
 
     public static InventoryTitle getFrom(ObjectTag inventory) {
         if (!describes(inventory)) {
             return null;
         }
-        return new InventoryTitle((dInventory) inventory);
+        return new InventoryTitle((InventoryTag) inventory);
     }
 
     public static final String[] handledTags = new String[] {
@@ -34,9 +34,9 @@ public class InventoryTitle implements Property {
     // Instance Fields and Methods
     /////////////
 
-    dInventory inventory;
+    InventoryTag inventory;
 
-    public InventoryTitle(dInventory inventory) {
+    public InventoryTitle(InventoryTag inventory) {
         this.inventory = inventory;
     }
 
@@ -45,7 +45,7 @@ public class InventoryTitle implements Property {
             String title = NMSHandler.getInstance().getTitle(inventory.getInventory());
             if (title != null) {
                 if (inventory.isUnique()) {
-                    return title.substring(0, title.length() - dInventory.inventoryNameNotableRequired);
+                    return title.substring(0, title.length() - InventoryTag.inventoryNameNotableRequired);
                 }
                 else if (!title.startsWith("container.")) {
                     return title;
@@ -86,10 +86,10 @@ public class InventoryTitle implements Property {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.title>
+        // @attribute <InventoryTag.title>
         // @returns ElementTag
         // @group properties
-        // @mechanism dInventory.title
+        // @mechanism InventoryTag.title
         // @description
         // Returns the title of the inventory.
         // -->
@@ -104,13 +104,13 @@ public class InventoryTitle implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dInventory
+        // @object InventoryTag
         // @name title
         // @input Element
         // @description
         // Sets the title of the inventory. (Only works for "generic" inventories.)
         // @tags
-        // <in@inventory.title>
+        // <InventoryTag.title>
         // -->
         if (mechanism.matches("title") && inventory.getIdType().equals("generic")) {
             inventory.setTitle(mechanism.getValue().asString());

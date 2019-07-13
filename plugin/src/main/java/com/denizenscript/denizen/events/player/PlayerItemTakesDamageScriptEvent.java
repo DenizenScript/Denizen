@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -44,8 +44,8 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     PlayerItemTakesDamageScriptEvent instance;
     PlayerItemDamageEvent event;
     ElementTag damage;
-    dItem item;
-    dLocation location;
+    ItemTag item;
+    LocationTag location;
 
 
     public PlayerItemTakesDamageScriptEvent() {
@@ -89,7 +89,7 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public BukkitScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(dPlayer.mirrorBukkitPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(PlayerTag.mirrorBukkitPlayer(event.getPlayer()), null);
     }
 
     @Override
@@ -105,12 +105,12 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
 
     @EventHandler
     public void onPlayerItemTakesDamage(PlayerItemDamageEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        item = new dItem(event.getItem());
+        item = new ItemTag(event.getItem());
         damage = new ElementTag(event.getDamage());
-        location = new dLocation(event.getPlayer().getLocation());
+        location = new LocationTag(event.getPlayer().getLocation());
         boolean wasCancelled = event.isCancelled();
         this.event = event;
         fire(event);

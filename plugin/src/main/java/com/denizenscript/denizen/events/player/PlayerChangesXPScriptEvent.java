@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -43,7 +43,7 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
     public static PlayerChangesXPScriptEvent instance;
     public PlayerExpChangeEvent event;
     public int amount;
-    public dPlayer player;
+    public PlayerTag player;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
@@ -89,11 +89,11 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
 
     @EventHandler
     public void onPlayerChangesXP(PlayerExpChangeEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
         amount = event.getAmount();
-        player = dPlayer.mirrorBukkitPlayer(event.getPlayer());
+        player = PlayerTag.mirrorBukkitPlayer(event.getPlayer());
         this.event = event;
         cancelled = false;
         fire(event);

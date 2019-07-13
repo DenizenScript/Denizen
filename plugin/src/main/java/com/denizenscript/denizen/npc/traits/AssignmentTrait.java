@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.npc.traits;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -81,7 +81,7 @@ public class AssignmentTrait extends Trait {
      * @param player     the player adding the assignment, can be null
      * @return false if the assignment is invalid
      */
-    public boolean setAssignment(String assignment, dPlayer player) {
+    public boolean setAssignment(String assignment, PlayerTag player) {
         if (ScriptRegistry.containsScript(assignment, AssignmentScriptContainer.class)) {
             this.assignment = assignment.toUpperCase();
             // Add Constants/Trigger trait if not already added to the NPC.
@@ -150,7 +150,7 @@ public class AssignmentTrait extends Trait {
      *
      * @param player the player removing the assignment, can be null
      */
-    public void removeAssignment(dPlayer player) {
+    public void removeAssignment(PlayerTag player) {
         DenizenNPCHelper.getDenizen(npc).action("remove assignment", player);
         assignment = "";
     }
@@ -267,20 +267,20 @@ public class AssignmentTrait extends Trait {
         Map<String, ObjectTag> context = new HashMap<>();
         context.put("damage", new ElementTag(event == null ? 0 : event.getDamage()));
         context.put("death_cause", new ElementTag(deathCause));
-        dPlayer player = null;
+        PlayerTag player = null;
         if (event instanceof EntityDamageByEntityEvent) {
             Entity killerEntity = ((EntityDamageByEntityEvent) event).getDamager();
-            context.put("killer", new dEntity(killerEntity));
+            context.put("killer", new EntityTag(killerEntity));
             if (killerEntity instanceof Player) {
-                player = dPlayer.mirrorBukkitPlayer((Player) killerEntity);
+                player = PlayerTag.mirrorBukkitPlayer((Player) killerEntity);
             }
             else if (killerEntity instanceof Projectile) {
                 ProjectileSource shooter = ((Projectile) killerEntity).getShooter();
                 if (shooter != null && shooter instanceof LivingEntity) {
 
-                    context.put("shooter", new dEntity((LivingEntity) shooter));
+                    context.put("shooter", new EntityTag((LivingEntity) shooter));
                     if (shooter instanceof Player) {
-                        player = dPlayer.mirrorBukkitPlayer((Player) shooter);
+                        player = PlayerTag.mirrorBukkitPlayer((Player) shooter);
                     }
 
                     DenizenAPI.getDenizenNPC(npc).action("death by " +
@@ -347,11 +347,11 @@ public class AssignmentTrait extends Trait {
             }
         }
 
-        dPlayer player = null;
+        PlayerTag player = null;
 
         // Check if the entity hit by this NPC is a player
         if (event.getEntity() instanceof Player) {
-            player = dPlayer.mirrorBukkitPlayer((Player) event.getEntity());
+            player = PlayerTag.mirrorBukkitPlayer((Player) event.getEntity());
         }
 
         // TODO: Context containing the entity hit

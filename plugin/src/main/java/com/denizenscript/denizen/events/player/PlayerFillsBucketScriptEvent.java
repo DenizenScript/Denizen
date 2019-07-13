@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -29,9 +29,9 @@ public class PlayerFillsBucketScriptEvent extends BukkitScriptEvent implements L
     // @Cancellable true
     //
     // @Context
-    // <context.item> returns the dItem of the filled bucket.
-    // <context.location> returns the dLocation of the block clicked with the bucket.
-    // <context.material> returns the dMaterial of the dLocation.
+    // <context.item> returns the ItemTag of the filled bucket.
+    // <context.location> returns the LocationTag of the block clicked with the bucket.
+    // <context.material> returns the MaterialTag of the LocationTag.
     //
     // -->
 
@@ -42,10 +42,10 @@ public class PlayerFillsBucketScriptEvent extends BukkitScriptEvent implements L
 
     public static PlayerFillsBucketScriptEvent instance;
 
-    public dEntity entity;
-    public dItem item;
-    public dMaterial material;
-    public dLocation location;
+    public EntityTag entity;
+    public ItemTag item;
+    public MaterialTag material;
+    public LocationTag location;
     public PlayerBucketFillEvent event;
 
 
@@ -75,7 +75,7 @@ public class PlayerFillsBucketScriptEvent extends BukkitScriptEvent implements L
     @Override
     public ScriptEntryData getScriptEntryData() {
         // TODO: Store the player / npc?
-        return new BukkitScriptEntryData(event != null ? dEntity.getPlayerFrom(event.getPlayer()) : null,
+        return new BukkitScriptEntryData(event != null ? EntityTag.getPlayerFrom(event.getPlayer()) : null,
                 entity.isNPC() ? entity.getDenizenNPC() : null);
     }
 
@@ -95,10 +95,10 @@ public class PlayerFillsBucketScriptEvent extends BukkitScriptEvent implements L
 
     @EventHandler
     public void onBucketFill(PlayerBucketFillEvent event) {
-        entity = new dEntity(event.getPlayer());
-        location = new dLocation(event.getBlockClicked().getLocation());
-        item = new dItem(event.getItemStack());
-        material = new dMaterial(event.getBlockClicked());
+        entity = new EntityTag(event.getPlayer());
+        location = new LocationTag(event.getBlockClicked().getLocation());
+        item = new ItemTag(event.getItemStack());
+        material = new MaterialTag(event.getBlockClicked());
         this.event = event;
         fire(event);
     }

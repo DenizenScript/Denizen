@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -30,10 +30,10 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     // @Triggers when a player uses a fishing rod.
     //
     // @Context
-    // <context.hook> returns a dEntity of the hook.
+    // <context.hook> returns a EntityTag of the hook.
     // <context.state> returns an ElementTag of the fishing state.
-    // <context.entity> returns a dEntity of the entity that got caught.
-    // <context.item> returns a dItem of the item gotten, if any.
+    // <context.entity> returns a EntityTag of the entity that got caught.
+    // <context.item> returns a ItemTag of the item gotten, if any.
     //
     // -->
 
@@ -42,10 +42,10 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     public static PlayerFishesScriptEvent instance;
-    public dEntity hook;
+    public EntityTag hook;
     public ElementTag state;
-    public dEntity entity;
-    public dItem item;
+    public EntityTag entity;
+    public ItemTag item;
     public PlayerFishEvent event;
 
     @Override
@@ -97,10 +97,10 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(dEntity.isPlayer(event.getPlayer()) ? dEntity.getPlayerFrom(event.getPlayer()) :
-                dEntity.isPlayer(event.getCaught()) ? dEntity.getPlayerFrom(event.getCaught()) : null,
-                dEntity.isCitizensNPC(event.getPlayer()) ? dEntity.getNPCFrom(event.getPlayer()) :
-                        dEntity.isCitizensNPC(event.getCaught()) ? dEntity.getNPCFrom(event.getCaught()) : null);
+        return new BukkitScriptEntryData(EntityTag.isPlayer(event.getPlayer()) ? EntityTag.getPlayerFrom(event.getPlayer()) :
+                EntityTag.isPlayer(event.getCaught()) ? EntityTag.getPlayerFrom(event.getCaught()) : null,
+                EntityTag.isCitizensNPC(event.getPlayer()) ? EntityTag.getNPCFrom(event.getPlayer()) :
+                        EntityTag.isCitizensNPC(event.getCaught()) ? EntityTag.getNPCFrom(event.getCaught()) : null);
     }
 
     @Override
@@ -122,26 +122,26 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
 
     @EventHandler
     public void onPlayerFishes(PlayerFishEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
         Entity hookEntity = NMSHandler.getInstance().getEntityHelper().getFishHook(event);
-        dEntity.rememberEntity(hookEntity);
-        hook = new dEntity(hookEntity);
+        EntityTag.rememberEntity(hookEntity);
+        hook = new EntityTag(hookEntity);
         state = new ElementTag(event.getState().toString());
         item = null;
         entity = null;
         Entity caughtEntity = event.getCaught();
         if (caughtEntity != null) {
-            dEntity.rememberEntity(caughtEntity);
-            entity = new dEntity(caughtEntity);
+            EntityTag.rememberEntity(caughtEntity);
+            entity = new EntityTag(caughtEntity);
             if (caughtEntity instanceof Item) {
-                item = new dItem(((Item) caughtEntity).getItemStack());
+                item = new ItemTag(((Item) caughtEntity).getItemStack());
             }
         }
         this.event = event;
         fire(event);
-        dEntity.forgetEntity(hookEntity);
-        dEntity.forgetEntity(caughtEntity);
+        EntityTag.forgetEntity(hookEntity);
+        EntityTag.forgetEntity(caughtEntity);
     }
 }

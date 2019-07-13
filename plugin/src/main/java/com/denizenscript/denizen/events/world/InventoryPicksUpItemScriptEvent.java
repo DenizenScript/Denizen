@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.world;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dInventory;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.InventoryTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -28,9 +28,9 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
     // @Triggers when a hopper or hopper minecart picks up an item.
     //
     // @Context
-    // <context.inventory> returns the dInventory that picked up the item.
-    // <context.item> returns the dItem.
-    // <context.entity> returns a dEntity of the item entity.
+    // <context.inventory> returns the InventoryTag that picked up the item.
+    // <context.item> returns the ItemTag.
+    // <context.entity> returns a EntityTag of the item entity.
     //
     // -->
 
@@ -39,9 +39,9 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
     }
 
     public static InventoryPicksUpItemScriptEvent instance;
-    public dInventory inventory;
-    public dItem item;
-    public dEntity entity;
+    public InventoryTag inventory;
+    public ItemTag item;
+    public EntityTag entity;
     public InventoryPickupItemEvent event;
 
     @Override
@@ -93,9 +93,9 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
 
     @EventHandler
     public void onInvPicksUpItem(InventoryPickupItemEvent event) {
-        inventory = dInventory.mirrorBukkitInventory(event.getInventory());
-        item = new dItem(event.getItem());
-        entity = new dEntity(event.getItem());
+        inventory = InventoryTag.mirrorBukkitInventory(event.getInventory());
+        item = new ItemTag(event.getItem());
+        entity = new EntityTag(event.getItem());
         fire(event);
     }
 }

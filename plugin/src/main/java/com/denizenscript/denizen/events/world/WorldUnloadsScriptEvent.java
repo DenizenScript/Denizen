@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.world;
 
-import com.denizenscript.denizen.objects.dWorld;
+import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -23,7 +23,7 @@ public class WorldUnloadsScriptEvent extends BukkitScriptEvent implements Listen
     // @Triggers when a world is unloaded.
     //
     // @Context
-    // <context.world> returns the dWorld that was unloaded.
+    // <context.world> returns the WorldTag that was unloaded.
     //
     // -->
 
@@ -32,7 +32,7 @@ public class WorldUnloadsScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     public static WorldUnloadsScriptEvent instance;
-    public dWorld world;
+    public WorldTag world;
     public WorldUnloadEvent event;
 
     @Override
@@ -71,7 +71,7 @@ public class WorldUnloadsScriptEvent extends BukkitScriptEvent implements Listen
 
     @EventHandler
     public void onWorldUnloads(WorldUnloadEvent event) {
-        world = new dWorld(event.getWorld());
+        world = new WorldTag(event.getWorld());
         this.event = event;
         fire(event);
     }

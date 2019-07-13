@@ -2,9 +2,9 @@ package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dPlayer;
-import com.denizenscript.denizen.objects.dTrade;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.objects.TradeTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -37,18 +37,18 @@ public class OpenTradesCommand extends AbstractCommand {
     // If no player is specified, by default the attached player will be forced to trade.
     //
     // @Tags
-    // <p@player.selected_trade_index>
-    // <e@entity.is_trading>
-    // <e@entity.trades>
-    // <e@entity.trading_with>
+    // <PlayerTag.selected_trade_index>
+    // <EntityTag.is_trading>
+    // <EntityTag.trades>
+    // <EntityTag.trading_with>
     //
     // @Usage
     // Use to open an unusable trade.
-    // - opentrades trade@trade
+    // - opentrades TradeTag
     //
     // @Usage
     // Use to open a list of trades with an optional title.
-    // - opentrades trade@trade[result=i@stone;inputs=li@i@stone;max_uses=9999]|trade@trade[result=i@barrier] "title:Useless Trades"
+    // - opentrades TradeTag[result=i@stone;inputs=li@i@stone;max_uses=9999]|TradeTag[result=i@barrier] "title:Useless Trades"
     //
     // @Usage
     // Use to force a player to trade with a villager.
@@ -61,20 +61,20 @@ public class OpenTradesCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("trades")
                     && !scriptEntry.hasObject("entity")
-                    && arg.matchesArgumentList(dTrade.class)) {
-                scriptEntry.addObject("trades", arg.asType(ListTag.class).filter(dTrade.class, scriptEntry));
+                    && arg.matchesArgumentList(TradeTag.class)) {
+                scriptEntry.addObject("trades", arg.asType(ListTag.class).filter(TradeTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("trades")
                     && !scriptEntry.hasObject("entity")
-                    && arg.matchesArgumentType(dEntity.class)) {
-                scriptEntry.addObject("entity", arg.asType(dEntity.class));
+                    && arg.matchesArgumentType(EntityTag.class)) {
+                scriptEntry.addObject("entity", arg.asType(EntityTag.class));
             }
             else if (arg.matchesPrefix("title")) {
                 scriptEntry.addObject("title", arg.asElement());
             }
             else if (arg.matchesPrefix("players")
-                    && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("players", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
+                    && arg.matchesArgumentList(PlayerTag.class)) {
+                scriptEntry.addObject("players", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
@@ -94,9 +94,9 @@ public class OpenTradesCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         String title = scriptEntry.getElement("title").asString();
-        dEntity entity = scriptEntry.getdObject("entity");
-        List<dTrade> trades = (List<dTrade>) scriptEntry.getObject("trades");
-        List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("players");
+        EntityTag entity = scriptEntry.getdObject("entity");
+        List<TradeTag> trades = (List<TradeTag>) scriptEntry.getObject("trades");
+        List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
 
         if (scriptEntry.dbCallShouldDebug()) {
 
@@ -114,7 +114,7 @@ public class OpenTradesCommand extends AbstractCommand {
                 return;
             }
             if (entity.getBukkitEntity() instanceof Merchant) {
-                dPlayer player = players.get(0);
+                PlayerTag player = players.get(0);
                 if (player.isValid() && player.isOnline()) {
                     player.getPlayerEntity().openMerchant((Merchant) entity.getBukkitEntity(), true);
                 }
@@ -128,11 +128,11 @@ public class OpenTradesCommand extends AbstractCommand {
         }
 
         List<MerchantRecipe> recipes = new ArrayList<>();
-        for (dTrade trade : trades) {
+        for (TradeTag trade : trades) {
             recipes.add(trade.getRecipe());
         }
 
-        for (dPlayer player : players) {
+        for (PlayerTag player : players) {
             if (player.isValid() && player.isOnline()) {
                 Merchant merchant = Bukkit.createMerchant(title);
                 merchant.setRecipes(recipes);

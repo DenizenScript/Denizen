@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -34,9 +34,9 @@ public class AttackCommand extends AbstractCommand {
     // To cancel an attack, use the 'cancel' argument instead of specifying a target.
     //
     // @Tags
-    // <n@npc.navigator.is_fighting>
-    // <n@npc.navigator.attack_strategy>
-    // <n@npc.navigator.target_entity>
+    // <NPCTag.navigator.is_fighting>
+    // <NPCTag.navigator.attack_strategy>
+    // <NPCTag.navigator.target_entity>
     //
     // @Usage
     // Use to make an NPC attack a player in an interact script.
@@ -66,15 +66,15 @@ public class AttackCommand extends AbstractCommand {
                 scriptEntry.addObject("cancel", "true");
             }
             else if (!scriptEntry.hasObject("target")
-                    && arg.matchesArgumentType(dEntity.class)
+                    && arg.matchesArgumentType(EntityTag.class)
                     && arg.matchesPrefix("target", "t")) {
                 // Single entity arg
-                scriptEntry.addObject("target", arg.asType(dEntity.class));
+                scriptEntry.addObject("target", arg.asType(EntityTag.class));
             }
             else if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class)
+                    && arg.matchesArgumentList(EntityTag.class)
                     && !arg.matchesPrefix("target", "t")) {
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
@@ -105,8 +105,8 @@ public class AttackCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) {
 
         // Get objects
-        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-        dEntity target = (dEntity) scriptEntry.getObject("target");
+        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
+        EntityTag target = (EntityTag) scriptEntry.getObject("target");
         boolean cancel = scriptEntry.hasObject("cancel");
 
         // Report to dB
@@ -119,7 +119,7 @@ public class AttackCommand extends AbstractCommand {
         // Go through all the entities and make them either attack
         // the target or stop attacking
 
-        for (dEntity entity : entities) {
+        for (EntityTag entity : entities) {
             if (entity.isCitizensNPC()) {
                 Navigator nav = entity.getDenizenNPC().getCitizen().getNavigator();
 

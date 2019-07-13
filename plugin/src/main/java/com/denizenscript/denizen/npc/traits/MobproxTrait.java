@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.npc.traits;
 
 import com.denizenscript.denizen.flags.FlagManager;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dNPC;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import net.citizensnpcs.api.event.NPCTraitCommandAttachEvent;
@@ -28,7 +28,7 @@ public class MobproxTrait extends Trait {
     int checkTimer = 0;
     int timerBounce = 0;
     LivingEntity liveEnt;
-    dNPC dnpc;
+    NPCTag dnpc;
     FlagManager.Flag frange;
     FlagManager.Flag facceptnpc;
     FlagManager.Flag ftimer;
@@ -52,8 +52,8 @@ public class MobproxTrait extends Trait {
                     List<Entity> removeme = new ArrayList<>();
                     removeme.addAll(inrange);
                     for (Entity ent : nearby) {
-                        if (ent instanceof LivingEntity && (!(ent instanceof Player) || dEntity.isCitizensNPC(ent))
-                                && (acceptnpc || (!dEntity.isCitizensNPC(ent)))) {
+                        if (ent instanceof LivingEntity && (!(ent instanceof Player) || EntityTag.isCitizensNPC(ent))
+                                && (acceptnpc || (!EntityTag.isCitizensNPC(ent)))) {
                             if (removeme.contains(ent)) {
                                 removeme.remove(ent);
                             }
@@ -111,7 +111,7 @@ public class MobproxTrait extends Trait {
     // -->
     private void callAction(String act, Entity ent) {
         Map<String, ObjectTag> context = new HashMap<>();
-        context.put("entity", new dEntity(ent));
+        context.put("entity", new EntityTag(ent));
         dnpc.action("mob " + act + " proximity", null, context);
         dnpc.action(ent.getType().name() + " " + act + " proximity", null, context);
     }
@@ -134,7 +134,7 @@ public class MobproxTrait extends Trait {
     @Override
     public void onSpawn() {
         liveEnt = (LivingEntity) getNPC().getEntity();
-        dnpc = dNPC.mirrorCitizensNPC(getNPC());
+        dnpc = NPCTag.mirrorCitizensNPC(getNPC());
         frange = DenizenAPI.getCurrentInstance().flagManager().getNPCFlag(dnpc.getId(), "mobprox_range");
         if (frange.isEmpty()) {
             frange.set("10");

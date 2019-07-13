@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -29,9 +29,9 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
     // @Cancellable true
     //
     // @Context
-    // <context.item> returns the dItem of the bucket being emptied.
-    // <context.location> returns the dLocation of the block clicked with the bucket.
-    // <context.relative> returns the dLocation of the block in front of the clicked block.
+    // <context.item> returns the ItemTag of the bucket being emptied.
+    // <context.location> returns the LocationTag of the block clicked with the bucket.
+    // <context.relative> returns the LocationTag of the block in front of the clicked block.
     //
     // -->
 
@@ -42,11 +42,11 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
 
     public static PlayerEmptiesBucketScriptEvent instance;
 
-    public dEntity entity;
-    public dItem item;
-    public dMaterial material;
-    public dLocation location;
-    public dLocation relative;
+    public EntityTag entity;
+    public ItemTag item;
+    public MaterialTag material;
+    public LocationTag location;
+    public LocationTag relative;
     public PlayerBucketEmptyEvent event;
 
 
@@ -75,7 +75,7 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(event != null ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
+        return new BukkitScriptEntryData(event != null ? EntityTag.getPlayerFrom(event.getPlayer()) : null, null);
     }
 
     @Override
@@ -94,10 +94,10 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
 
     @EventHandler
     public void onBucketEmpty(PlayerBucketEmptyEvent event) {
-        entity = new dEntity(event.getPlayer());
-        location = new dLocation(event.getBlockClicked().getLocation());
-        relative = new dLocation(event.getBlockClicked().getRelative(event.getBlockFace()).getLocation());
-        item = new dItem(event.getBucket());
+        entity = new EntityTag(event.getPlayer());
+        location = new LocationTag(event.getBlockClicked().getLocation());
+        relative = new LocationTag(event.getBlockClicked().getRelative(event.getBlockFace()).getLocation());
+        item = new ItemTag(event.getBucket());
         this.event = event;
         fire(event);
     }

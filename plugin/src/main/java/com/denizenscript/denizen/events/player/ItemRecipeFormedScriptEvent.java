@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dInventory;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.InventoryTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -32,12 +32,12 @@ import org.bukkit.inventory.Recipe;
 //
 // @Triggers when an item's recipe is correctly formed.
 // @Context
-// <context.inventory> returns the dInventory of the crafting inventory.
-// <context.item> returns the dItem to be formed in the result slot.
-// <context.recipe> returns a ListTag of dItems in the recipe.
+// <context.inventory> returns the InventoryTag of the crafting inventory.
+// <context.item> returns the ItemTag to be formed in the result slot.
+// <context.recipe> returns a ListTag of ItemTags in the recipe.
 //
 // @Determine
-// dItem to change the item that is formed in the result slot.
+// ItemTag to change the item that is formed in the result slot.
 //
 // -->
 
@@ -50,10 +50,10 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
     public static ItemRecipeFormedScriptEvent instance;
 
     public boolean resultChanged;
-    public dItem result;
+    public ItemTag result;
     public ListTag recipe;
     public CraftingInventory inventory;
-    public dPlayer player;
+    public PlayerTag player;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
@@ -80,8 +80,8 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (dItem.matches(determination)) {
-            result = dItem.valueOf(determination, container);
+        if (ItemTag.matches(determination)) {
+            result = ItemTag.valueOf(determination, container);
             resultChanged = true;
             return true;
         }
@@ -101,7 +101,7 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
             return result;
         }
         else if (name.equals("inventory")) {
-            return dInventory.mirrorBukkitInventory(inventory);
+            return InventoryTag.mirrorBukkitInventory(inventory);
         }
         else if (name.equals("recipe")) {
             return recipe;
@@ -112,7 +112,7 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
     @EventHandler
     public void onRecipeFormed(PrepareItemCraftEvent event) {
         HumanEntity humanEntity = event.getView().getPlayer();
-        if (dEntity.isNPC(humanEntity)) {
+        if (EntityTag.isNPC(humanEntity)) {
             return;
         }
         Recipe eRecipe = event.getRecipe();
@@ -120,17 +120,17 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
             return;
         }
         inventory = event.getInventory();
-        result = new dItem(eRecipe.getResult());
+        result = new ItemTag(eRecipe.getResult());
         recipe = new ListTag();
         for (ItemStack itemStack : inventory.getMatrix()) {
             if (itemStack != null && itemStack.getType() != Material.AIR) {
-                recipe.add(new dItem(itemStack).identify());
+                recipe.add(new ItemTag(itemStack).identify());
             }
             else {
-                recipe.add(new dItem(Material.AIR).identify());
+                recipe.add(new ItemTag(Material.AIR).identify());
             }
         }
-        player = dEntity.getPlayerFrom(humanEntity);
+        player = EntityTag.getPlayerFrom(humanEntity);
         resultChanged = false;
         cancelled = false;
         fire(event);

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.material;
 
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -13,9 +13,9 @@ import org.bukkit.block.data.Directional;
 public class MaterialDirectional implements Property {
 
     public static boolean describes(ObjectTag material) {
-        return material instanceof dMaterial
-                && ((dMaterial) material).hasModernData()
-                && ((dMaterial) material).getModernData().data instanceof Directional;
+        return material instanceof MaterialTag
+                && ((MaterialTag) material).hasModernData()
+                && ((MaterialTag) material).getModernData().data instanceof Directional;
     }
 
     public static MaterialDirectional getFrom(ObjectTag _material) {
@@ -23,7 +23,7 @@ public class MaterialDirectional implements Property {
             return null;
         }
         else {
-            return new MaterialDirectional((dMaterial) _material);
+            return new MaterialDirectional((MaterialTag) _material);
         }
     }
 
@@ -36,11 +36,11 @@ public class MaterialDirectional implements Property {
     };
 
 
-    private MaterialDirectional(dMaterial _material) {
+    private MaterialDirectional(MaterialTag _material) {
         material = _material;
     }
 
-    dMaterial material;
+    MaterialTag material;
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -50,9 +50,9 @@ public class MaterialDirectional implements Property {
         }
 
         // <--[tag]
-        // @attribute <m@material.valid_directions>
+        // @attribute <MaterialTag.valid_directions>
         // @returns ElementTag
-        // @mechanism dMaterial.direction
+        // @mechanism MaterialTag.direction
         // @group properties
         // @description
         // Returns a list of directions that are valid for a directional material.
@@ -67,9 +67,9 @@ public class MaterialDirectional implements Property {
         }
 
         // <--[tag]
-        // @attribute <m@material.direction>
+        // @attribute <MaterialTag.direction>
         // @returns ElementTag
-        // @mechanism dMaterial.direction
+        // @mechanism MaterialTag.direction
         // @group properties
         // @description
         // Returns the current facing direction for a directional material (like a door or a bed).
@@ -104,14 +104,14 @@ public class MaterialDirectional implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dMaterial
+        // @object MaterialTag
         // @name direction
         // @input Element
         // @description
         // Sets the current facing direction for a directional material (like a door or a bed).
         // @tags
-        // <m@material.direction>
-        // <m@material.valid_directions>
+        // <MaterialTag.direction>
+        // <MaterialTag.valid_directions>
         // -->
         if (mechanism.matches("direction") && mechanism.requireEnum(false, BlockFace.values())) {
             getDirectional().setFacing(BlockFace.valueOf(mechanism.getValue().asString().toUpperCase()));

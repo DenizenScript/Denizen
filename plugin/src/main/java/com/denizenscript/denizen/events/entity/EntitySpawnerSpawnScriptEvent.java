@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -28,9 +28,9 @@ public class EntitySpawnerSpawnScriptEvent extends BukkitScriptEvent implements 
     // @Triggers when an entity spawns from a monster spawner.
     //
     // @Context
-    // <context.entity> returns the dEntity that spawned.
-    // <context.location> returns the dLocation the entity will spawn at.
-    // <context.spawner_location> returns the dLocation of the monster spawner.
+    // <context.entity> returns the EntityTag that spawned.
+    // <context.location> returns the LocationTag the entity will spawn at.
+    // <context.spawner_location> returns the LocationTag of the monster spawner.
     //
     // -->
 
@@ -39,9 +39,9 @@ public class EntitySpawnerSpawnScriptEvent extends BukkitScriptEvent implements 
     }
 
     public static EntitySpawnerSpawnScriptEvent instance;
-    private dEntity entity;
-    private dLocation location;
-    private dLocation spawnerLocation;
+    private EntityTag entity;
+    private LocationTag location;
+    private LocationTag spawnerLocation;
     public SpawnerSpawnEvent event;
 
     @Override
@@ -71,8 +71,8 @@ public class EntitySpawnerSpawnScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? EntityTag.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? EntityTag.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -92,12 +92,12 @@ public class EntitySpawnerSpawnScriptEvent extends BukkitScriptEvent implements 
     @EventHandler
     public void onSpawnerSpawn(SpawnerSpawnEvent event) {
         Entity entity = event.getEntity();
-        this.entity = new dEntity(entity);
-        location = new dLocation(event.getLocation());
-        spawnerLocation = new dLocation(event.getSpawner().getLocation());
+        this.entity = new EntityTag(entity);
+        location = new LocationTag(event.getLocation());
+        spawnerLocation = new LocationTag(event.getSpawner().getLocation());
         this.event = event;
-        dEntity.rememberEntity(entity);
+        EntityTag.rememberEntity(entity);
         fire(event);
-        dEntity.forgetEntity(entity);
+        EntityTag.forgetEntity(entity);
     }
 }

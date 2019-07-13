@@ -5,9 +5,9 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.CuboidBlockSet;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.interfaces.BlockData;
-import com.denizenscript.denizen.objects.dCuboid;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.CuboidTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -131,12 +131,12 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                 scriptEntry.addObject("angle", arg.asElement());
             }
             else if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class)) {
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                    && arg.matchesArgumentType(LocationTag.class)) {
+                scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("cuboid")
-                    && arg.matchesArgumentType(dCuboid.class)) {
-                scriptEntry.addObject("cuboid", arg.asType(dCuboid.class));
+                    && arg.matchesArgumentType(CuboidTag.class)) {
+                scriptEntry.addObject("cuboid", arg.asType(CuboidTag.class));
             }
             else if (!scriptEntry.hasObject("delayed")
                     && arg.matches("delayed")) {
@@ -170,8 +170,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         ElementTag filename = scriptEntry.getElement("filename");
         ElementTag noair = scriptEntry.getElement("noair");
         ElementTag delayed = scriptEntry.getElement("delayed");
-        dLocation location = scriptEntry.getdObject("location");
-        dCuboid cuboid = scriptEntry.getdObject("cuboid");
+        LocationTag location = scriptEntry.getdObject("location");
+        CuboidTag cuboid = scriptEntry.getdObject("cuboid");
 
         if (scriptEntry.dbCallShouldDebug()) {
 
@@ -446,15 +446,15 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
         // <--[tag]
         // @attribute <schematic[<name>].block[<location>]>
-        // @returns dMaterial
+        // @returns MaterialTag
         // @description
         // Returns the material for the block at the location in the schematic.
         // -->
         if (attribute.startsWith("block")) {
-            if (attribute.hasContext(1) && dLocation.matches(attribute.getContext(1))) {
-                dLocation location = dLocation.valueOf(attribute.getContext(1));
+            if (attribute.hasContext(1) && LocationTag.matches(attribute.getContext(1))) {
+                LocationTag location = LocationTag.valueOf(attribute.getContext(1));
                 BlockData block = set.blockAt(location.getX(), location.getY(), location.getZ());
-                event.setReplaced(new dMaterial(block)
+                event.setReplaced(new MaterialTag(block)
                         .getAttribute(attribute.fulfill(1)));
                 return;
             }
@@ -462,12 +462,12 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
         // <--[tag]
         // @attribute <schematic[<name>].origin>
-        // @returns dLocation
+        // @returns LocationTag
         // @description
         // Returns the origin location of the schematic.
         // -->
         if (attribute.startsWith("origin")) {
-            event.setReplaced(new dLocation(null, set.center_x, set.center_y, set.center_z)
+            event.setReplaced(new LocationTag(null, set.center_x, set.center_y, set.center_z)
                     .getAttribute(attribute.fulfill(1)));
             return;
         }
@@ -486,12 +486,12 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
         // <--[tag]
         // @attribute <schematic[<name>].cuboid[<origin location>]>
-        // @returns dCuboid
+        // @returns CuboidTag
         // @description
         // Returns a cuboid of where the schematic would be if it was pasted at an origin.
         // -->
         if (attribute.startsWith("cuboid") && attribute.hasContext(1)) {
-            dLocation origin = dLocation.valueOf(attribute.getContext(1));
+            LocationTag origin = LocationTag.valueOf(attribute.getContext(1));
             event.setReplaced(set.getCuboid(origin)
                     .getAttribute(attribute.fulfill(1)));
             return;

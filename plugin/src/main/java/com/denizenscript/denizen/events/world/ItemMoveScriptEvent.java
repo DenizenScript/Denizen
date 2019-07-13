@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.world;
 
-import com.denizenscript.denizen.objects.dInventory;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.InventoryTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -27,13 +27,13 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
     // @Triggers when an entity or block moves an item from one inventory to another. (Hopper-style movement, not player-induced movement).
     //
     // @Context
-    // <context.origin> returns the origin dInventory.
-    // <context.destination> returns the destination dInventory.
-    // <context.initiator> returns the dInventory that initiatied the item's transfer.
-    // <context.item> returns the dItem that was moved.
+    // <context.origin> returns the origin InventoryTag.
+    // <context.destination> returns the destination InventoryTag.
+    // <context.initiator> returns the InventoryTag that initiatied the item's transfer.
+    // <context.item> returns the ItemTag that was moved.
     //
     // @Determine
-    // dItem to set a different item to be moved. NOTE: The original item will not be moved!
+    // ItemTag to set a different item to be moved. NOTE: The original item will not be moved!
     //
     // -->
 
@@ -43,10 +43,10 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
 
     public static ItemMoveScriptEvent instance;
 
-    public dInventory origin;
-    public dInventory destination;
-    public dInventory initiator;
-    public dItem item;
+    public InventoryTag origin;
+    public InventoryTag destination;
+    public InventoryTag initiator;
+    public ItemTag item;
     public boolean itemSet;
     public InventoryMoveItemEvent event;
 
@@ -82,8 +82,8 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (dItem.matches(determination)) {
-            item = dItem.valueOf(determination, container);
+        if (ItemTag.matches(determination)) {
+            item = ItemTag.valueOf(determination, container);
             itemSet = true;
             return true;
         }
@@ -109,10 +109,10 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
 
     @EventHandler
     public void onInventoryMoveItemEvent(InventoryMoveItemEvent event) {
-        origin = dInventory.mirrorBukkitInventory(event.getSource());
-        destination = dInventory.mirrorBukkitInventory(event.getDestination());
-        initiator = dInventory.mirrorBukkitInventory(event.getInitiator());
-        item = new dItem(event.getItem());
+        origin = InventoryTag.mirrorBukkitInventory(event.getSource());
+        destination = InventoryTag.mirrorBukkitInventory(event.getDestination());
+        initiator = InventoryTag.mirrorBukkitInventory(event.getInitiator());
+        item = new ItemTag(event.getItem());
         itemSet = false;
         fire(event);
         if (itemSet) {

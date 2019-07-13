@@ -2,9 +2,9 @@ package com.denizenscript.denizen.scripts.commands.item;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -38,8 +38,8 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
     // If no duration is specified the item will stay for 1 minute, after which the item will disappear.
     //
     // @Tags
-    // <e@entity.item>
-    // <entry[saveName].dropped> returns a dEntity of the spawned item.
+    // <EntityTag.item>
+    // <entry[saveName].dropped> returns a EntityTag of the spawned item.
     //
     // @Usage
     // Use to display a stone block dropped at a players location
@@ -72,13 +72,13 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
                     && !scriptEntry.hasObject("duration")) {
                 scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
-            else if (arg.matchesArgumentType(dLocation.class)
+            else if (arg.matchesArgumentType(LocationTag.class)
                     && !scriptEntry.hasObject("location")) {
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
-            else if (arg.matchesArgumentType(dItem.class)
+            else if (arg.matchesArgumentType(ItemTag.class)
                     && !scriptEntry.hasObject("item")) {
-                scriptEntry.addObject("item", arg.asType(dItem.class));
+                scriptEntry.addObject("item", arg.asType(ItemTag.class));
             }
             else {
                 arg.reportUnhandled();
@@ -126,9 +126,9 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        dItem item = (dItem) scriptEntry.getObject("item");
+        ItemTag item = (ItemTag) scriptEntry.getObject("item");
         DurationTag duration = (DurationTag) scriptEntry.getObject("duration");
-        dLocation location = (dLocation) scriptEntry.getObject("location");
+        LocationTag location = (LocationTag) scriptEntry.getObject("location");
 
         if (scriptEntry.dbCallShouldDebug()) {
 
@@ -152,7 +152,7 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
         protectedEntities.add(itemUUID);
 
         // Remember the item entity
-        scriptEntry.addObject("dropped", new dEntity(dropped));
+        scriptEntry.addObject("dropped", new EntityTag(dropped));
 
         // Remove it later
         Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),

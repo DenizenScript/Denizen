@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.commands.npc;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.npc.traits.TriggerTrait;
-import com.denizenscript.denizen.objects.dNPC;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -25,7 +25,7 @@ public class TriggerCommand extends AbstractCommand {
     // TODO: Document Command Details
     //
     // @Tags
-    // <n@npc.has_trigger[<trigger>]>
+    // <NPCTag.has_trigger[<trigger>]>
     //
     // @Usage
     // Use to enable the click trigger.
@@ -61,8 +61,8 @@ public class TriggerCommand extends AbstractCommand {
                 scriptEntry.addObject("toggle", arg.asElement());
             }
             else if (!scriptEntry.hasObject("npc")
-                    && arg.matchesArgumentType(dNPC.class)) {
-                scriptEntry.addObject("npc", arg.asType(dNPC.class));
+                    && arg.matchesArgumentType(NPCTag.class)) {
+                scriptEntry.addObject("npc", arg.asType(NPCTag.class));
             }
             else if (!scriptEntry.hasObject("trigger")) {
                 scriptEntry.addObject("trigger", arg.asElement());
@@ -93,7 +93,7 @@ public class TriggerCommand extends AbstractCommand {
         ElementTag trigger = scriptEntry.getElement("trigger");
         ElementTag radius = scriptEntry.getElement("radius");
         DurationTag cooldown = (DurationTag) scriptEntry.getObject("cooldown");
-        dNPC npc = scriptEntry.hasObject("npc") ? (dNPC) scriptEntry.getObject("npc") : Utilities.getEntryNPC(scriptEntry);
+        NPCTag npc = scriptEntry.hasObject("npc") ? (NPCTag) scriptEntry.getObject("npc") : Utilities.getEntryNPC(scriptEntry);
 
         if (scriptEntry.dbCallShouldDebug()) {
 

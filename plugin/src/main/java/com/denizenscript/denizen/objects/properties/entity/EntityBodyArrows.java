@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -10,7 +10,7 @@ import com.denizenscript.denizencore.tags.Attribute;
 
 public class EntityBodyArrows implements Property {
     public static boolean describes(ObjectTag object) {
-        return object instanceof dEntity && ((dEntity) object).isLivingEntity();
+        return object instanceof EntityTag && ((EntityTag) object).isLivingEntity();
     }
 
     public static EntityBodyArrows getFrom(ObjectTag object) {
@@ -18,7 +18,7 @@ public class EntityBodyArrows implements Property {
             return null;
         }
         else {
-            return new EntityBodyArrows((dEntity) object);
+            return new EntityBodyArrows((EntityTag) object);
         }
     }
 
@@ -35,11 +35,11 @@ public class EntityBodyArrows implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityBodyArrows(dEntity entity) {
+    private EntityBodyArrows(EntityTag entity) {
         this.entity = entity;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     /////////
     // Property Methods
@@ -72,9 +72,9 @@ public class EntityBodyArrows implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.body_arrows>
+        // @attribute <EntityTag.body_arrows>
         // @returns ElementTag(Number)
-        // @mechanism dEntity.body_arrows
+        // @mechanism EntityTag.body_arrows
         // @group properties
         // @description
         // Returns the number of arrows stuck in the entity's body.
@@ -92,28 +92,28 @@ public class EntityBodyArrows implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name body_arrows
         // @input Element(Number)
         // @description
         // Sets the number of arrows stuck in the entity's body.
         // Note: Body arrows will only be visible for players or player-type npcs.
         // @tags
-        // <e@entity.body_arrows>
+        // <EntityTag.body_arrows>
         // -->
         if (mechanism.matches("body_arrows") && mechanism.requireInteger()) {
             setBodyArrows(mechanism.getValue().asInt());
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name clear_body_arrows
         // @input None
         // @description
         // Clears all arrows stuck in the entity's body.
         // Note: Body arrows will only be visible for players or player-type npcs.
         // @tags
-        // <e@entity.body_arrows>
+        // <EntityTag.body_arrows>
         // -->
         if (mechanism.matches("clear_body_arrows")) {
             setBodyArrows(0);

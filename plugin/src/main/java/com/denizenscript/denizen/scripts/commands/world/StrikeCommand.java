@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -44,8 +44,8 @@ public class StrikeCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class)) {
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                    && arg.matchesArgumentType(LocationTag.class)) {
+                scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
             else if (arg.matches("no_damage") || arg.matches("nodamage")) {
                 scriptEntry.addObject("damage", new ElementTag(false));
@@ -68,7 +68,7 @@ public class StrikeCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         // Extract objects from ScriptEntry
-        dLocation location = (dLocation) scriptEntry.getObject("location");
+        LocationTag location = (LocationTag) scriptEntry.getObject("location");
         Boolean damage = scriptEntry.getElement("damage").asBoolean();
 
         // Debugger

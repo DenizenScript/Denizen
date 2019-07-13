@@ -6,8 +6,8 @@ import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
-import com.denizenscript.denizen.objects.dChunk;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.ChunkTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -43,8 +43,8 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
     // other than activity that requires a nearby player.
     //
     // @Tags
-    // <w@world.loaded_chunks>
-    // <ch@chunk.is_loaded>
+    // <WorldTag.loaded_chunks>
+    // <ChunkTag.is_loaded>
     //
     // @Usage
     // Use to load a chunk.
@@ -86,16 +86,16 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                     && !scriptEntry.hasObject("action")) {
                 scriptEntry.addObject("action", new ElementTag(arg.getValue().toUpperCase()));
                 if (arg.getValue().equalsIgnoreCase("removeall")) {
-                    scriptEntry.addObject("location", new dLocation(Bukkit.getWorlds().get(0), 0, 0, 0));
+                    scriptEntry.addObject("location", new LocationTag(Bukkit.getWorlds().get(0), 0, 0, 0));
                 }
             }
-            else if (arg.matchesArgumentType(dChunk.class)
+            else if (arg.matchesArgumentType(ChunkTag.class)
                     && !scriptEntry.hasObject("location")) {
-                scriptEntry.addObject("location", arg.asType(dChunk.class).getCenter());
+                scriptEntry.addObject("location", arg.asType(ChunkTag.class).getCenter());
             }
-            else if (arg.matchesArgumentType(dLocation.class)
+            else if (arg.matchesArgumentType(LocationTag.class)
                     && !scriptEntry.hasObject("location")) {
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
             else if (arg.matchesArgumentType(DurationTag.class)
                     && !scriptEntry.hasObject("duration")) {
@@ -123,7 +123,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
     public void execute(ScriptEntry scriptEntry) {
         // Get objects
         ElementTag action = scriptEntry.getElement("action");
-        dLocation chunkloc = (dLocation) scriptEntry.getObject("location");
+        LocationTag chunkloc = (LocationTag) scriptEntry.getObject("location");
         DurationTag length = (DurationTag) scriptEntry.getObject("duration");
 
         if (scriptEntry.dbCallShouldDebug()) {
@@ -181,7 +181,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                 Debug.echoDebug(scriptEntry, "...allowing unloading of all stored chunks");
                 if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
                     for (String chunkStr : chunkDelays.keySet()) {
-                        dChunk loopChunk = dChunk.valueOf(chunkStr);
+                        ChunkTag loopChunk = ChunkTag.valueOf(chunkStr);
                         loopChunk.getChunk().setForceLoaded(false);
                     }
                 }

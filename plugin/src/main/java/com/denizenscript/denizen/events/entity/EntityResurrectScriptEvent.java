@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -26,7 +26,7 @@ public class EntityResurrectScriptEvent extends BukkitScriptEvent implements Lis
     // @Triggers when an entity dies and is resurrected by a totem.
     //
     // @Context
-    // <context.entity> returns the dEntity being resurrected.
+    // <context.entity> returns the EntityTag being resurrected.
     //
     // @Player when the entity being resurrected is a player.
     //
@@ -37,7 +37,7 @@ public class EntityResurrectScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     public static EntityResurrectScriptEvent instance;
-    public dEntity entity;
+    public EntityTag entity;
     public EntityResurrectEvent event;
 
     @Override
@@ -72,8 +72,8 @@ public class EntityResurrectScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? EntityTag.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? EntityTag.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class EntityResurrectScriptEvent extends BukkitScriptEvent implements Lis
 
     @EventHandler
     public void onEntityResurrect(EntityResurrectEvent event) {
-        entity = new dEntity(event.getEntity());
+        entity = new EntityTag(event.getEntity());
         this.event = event;
         fire(event);
     }

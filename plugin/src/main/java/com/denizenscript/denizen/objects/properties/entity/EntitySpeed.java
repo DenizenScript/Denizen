@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -14,10 +14,10 @@ import org.bukkit.entity.Minecart;
 public class EntitySpeed implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        if (!(entity instanceof dEntity)) {
+        if (!(entity instanceof EntityTag)) {
             return false;
         }
-        dEntity ent = (dEntity) entity;
+        EntityTag ent = (EntityTag) entity;
         if (ent.isLivingEntity()) {
             return true;
         }
@@ -39,7 +39,7 @@ public class EntitySpeed implements Property {
             return null;
         }
         else {
-            return new EntitySpeed((dEntity) entity);
+            return new EntitySpeed((EntityTag) entity);
         }
     }
 
@@ -56,11 +56,11 @@ public class EntitySpeed implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntitySpeed(dEntity ent) {
+    private EntitySpeed(EntityTag ent) {
         entity = ent;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     /////////
     // Property Methods
@@ -111,9 +111,9 @@ public class EntitySpeed implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.speed>
+        // @attribute <EntityTag.speed>
         // @returns ElementTag(Decimal)
-        // @mechanism dEntity.speed
+        // @mechanism EntityTag.speed
         // @group attributes
         // @description
         // Returns how fast the entity can move.
@@ -130,13 +130,13 @@ public class EntitySpeed implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name speed
         // @input Element(Decimal)
         // @description
         // Sets how fast the entity can move.
         // @tags
-        // <e@entity.speed>
+        // <EntityTag.speed>
         // -->
         if (mechanism.matches("speed") && mechanism.requireDouble()) {
             double value = mechanism.getValue().asDouble();

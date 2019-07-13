@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.scripts.commands.npc;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dNPC;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -48,17 +48,17 @@ public class CreateCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("entity_type")
-                    && arg.matchesArgumentType(dEntity.class)) {
+                    && arg.matchesArgumentType(EntityTag.class)) {
                 // Avoid duplication of objects
-                dEntity ent = arg.asType(dEntity.class);
+                EntityTag ent = arg.asType(EntityTag.class);
                 if (!ent.isGeneric() && !ent.isCitizensNPC()) {
                     throw new InvalidArgumentsException("Entity supplied must be generic or a Citizens NPC!");
                 }
                 scriptEntry.addObject("entity_type", ent);
             }
             else if (!scriptEntry.hasObject("spawn_location")
-                    && arg.matchesArgumentType(dLocation.class)) {
-                scriptEntry.addObject("spawn_location", arg.asType(dLocation.class));
+                    && arg.matchesArgumentType(LocationTag.class)) {
+                scriptEntry.addObject("spawn_location", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("name")) {
                 scriptEntry.addObject("name", arg.asElement());
@@ -84,8 +84,8 @@ public class CreateCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) {
 
         ElementTag name = (ElementTag) scriptEntry.getObject("name");
-        dEntity type = (dEntity) scriptEntry.getObject("entity_type");
-        dLocation loc = (dLocation) scriptEntry.getObject("spawn_location");
+        EntityTag type = (EntityTag) scriptEntry.getObject("entity_type");
+        LocationTag loc = (LocationTag) scriptEntry.getObject("spawn_location");
         ListTag traits = (ListTag) scriptEntry.getObject("traits");
 
         if (scriptEntry.dbCallShouldDebug()) {
@@ -95,13 +95,13 @@ public class CreateCommand extends AbstractCommand {
 
         }
 
-        dNPC created;
+        NPCTag created;
         if (!type.isGeneric() && type.isCitizensNPC()) {
-            created = new dNPC(type.getDenizenNPC().getCitizen().clone());
+            created = new NPCTag(type.getDenizenNPC().getCitizen().clone());
             created.getCitizen().setName(name.asString());
         }
         else {
-            created = dNPC.mirrorCitizensNPC(CitizensAPI.getNPCRegistry()
+            created = NPCTag.mirrorCitizensNPC(CitizensAPI.getNPCRegistry()
                     .createNPC(type.getBukkitEntityType(), name.asString()));
         }
 

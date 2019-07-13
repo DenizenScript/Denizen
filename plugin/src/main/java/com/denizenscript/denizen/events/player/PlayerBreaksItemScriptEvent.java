@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -41,7 +41,7 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
     }
 
     public static PlayerBreaksItemScriptEvent instance;
-    public dItem item;
+    public ItemTag item;
     public PlayerItemBreakEvent event;
 
     @Override
@@ -70,7 +70,7 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(new PlayerTag(event.getPlayer()), null);
     }
 
     @Override
@@ -83,10 +83,10 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
 
     @EventHandler
     public void onPlayerItemBreak(PlayerItemBreakEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        item = new dItem(event.getBrokenItem());
+        item = new ItemTag(event.getBrokenItem());
         this.event = event;
         cancelled = false;
         fire(event);

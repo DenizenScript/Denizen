@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.commands.npc;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.npc.traits.SittingTrait;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -37,9 +37,9 @@ public class SitCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
-            if (arg.matchesArgumentType(dLocation.class)
+            if (arg.matchesArgumentType(LocationTag.class)
                     && !scriptEntry.hasObject("location")) {
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
             else {
                 arg.reportUnhandled();
@@ -53,7 +53,7 @@ public class SitCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-        dLocation location = (dLocation) scriptEntry.getObject("location");
+        LocationTag location = (LocationTag) scriptEntry.getObject("location");
         if (Utilities.getEntryNPC(scriptEntry).getEntityType() != EntityType.PLAYER
                 && Utilities.getEntryNPC(scriptEntry).getEntityType() != EntityType.OCELOT
                 && Utilities.getEntryNPC(scriptEntry).getEntityType() != EntityType.WOLF) {

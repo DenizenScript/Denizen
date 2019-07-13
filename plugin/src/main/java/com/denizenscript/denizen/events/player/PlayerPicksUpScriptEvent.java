@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -36,12 +36,12 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
     // @Triggers when a player picks up an item.
     //
     // @Context
-    // <context.item> returns the dItem.
-    // <context.entity> returns a dEntity of the item.
-    // <context.location> returns a dLocation of the item's location.
+    // <context.item> returns the ItemTag.
+    // <context.entity> returns a EntityTag of the item.
+    // <context.location> returns a LocationTag of the item's location.
     //
     // @Determine
-    // "ITEM:" + dItem to changed the item being picked up.
+    // "ITEM:" + ItemTag to changed the item being picked up.
     //
     // -->
 
@@ -50,10 +50,10 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     public static PlayerPicksUpScriptEvent instance;
-    public dItem item;
+    public ItemTag item;
     public boolean itemChanged;
-    public dEntity entity;
-    public dLocation location;
+    public EntityTag entity;
+    public LocationTag location;
     public PlayerPickupItemEvent event;
 
     private static final Set<UUID> editedItems = new HashSet<>();
@@ -86,7 +86,7 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
     public boolean applyDetermination(ScriptContainer container, String determination) {
         String lower = CoreUtilities.toLowerCase(determination);
         if (lower.startsWith("item:")) {
-            item = dItem.valueOf(determination.substring("item:".length()), container);
+            item = ItemTag.valueOf(determination.substring("item:".length()), container);
             itemChanged = true;
             return true;
         }
@@ -95,7 +95,7 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(new PlayerTag(event.getPlayer()), null);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
 
     @EventHandler
     public void onPlayerPicksUp(PlayerPickupItemEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
         Item itemEntity = event.getItem();
@@ -123,9 +123,9 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
             editedItems.remove(itemUUID);
             return;
         }
-        location = new dLocation(itemEntity.getLocation());
-        item = new dItem(itemEntity.getItemStack());
-        entity = new dEntity(itemEntity);
+        location = new LocationTag(itemEntity.getLocation());
+        item = new ItemTag(itemEntity.getItemStack());
+        entity = new EntityTag(itemEntity);
         itemChanged = false;
         this.event = event;
         fire(event);

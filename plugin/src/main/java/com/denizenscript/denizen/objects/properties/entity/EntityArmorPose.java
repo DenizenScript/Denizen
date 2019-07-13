@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -18,8 +18,8 @@ import java.util.Iterator;
 public class EntityArmorPose implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity
-                && ((dEntity) entity).getBukkitEntityType() == EntityType.ARMOR_STAND;
+        return entity instanceof EntityTag
+                && ((EntityTag) entity).getBukkitEntityType() == EntityType.ARMOR_STAND;
     }
 
     public static EntityArmorPose getFrom(ObjectTag entity) {
@@ -27,7 +27,7 @@ public class EntityArmorPose implements Property {
             return null;
         }
         else {
-            return new EntityArmorPose((dEntity) entity);
+            return new EntityArmorPose((EntityTag) entity);
         }
     }
 
@@ -44,11 +44,11 @@ public class EntityArmorPose implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityArmorPose(dEntity ent) {
+    private EntityArmorPose(EntityTag ent) {
         entity = ent;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     /////////
     // Property Methods
@@ -86,7 +86,7 @@ public class EntityArmorPose implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.armor_pose_list>
+        // @attribute <EntityTag.armor_pose_list>
         // @returns ListTag
         // @group attributes
         // @description
@@ -100,8 +100,8 @@ public class EntityArmorPose implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.armor_pose[<part>]>
-        // @returns dLocation
+        // @attribute <EntityTag.armor_pose[<part>]>
+        // @returns LocationTag
         // @group attributes
         // @description
         // Returns the current angle pose for the specified part.
@@ -129,7 +129,7 @@ public class EntityArmorPose implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name armor_pose
         // @input ListTag
         // @description
@@ -139,8 +139,8 @@ public class EntityArmorPose implements Property {
         // Valid parts: HEAD, BODY, LEFT_ARM, RIGHT_ARM, LEFT_LEG, RIGHT_LEG
         // Angles are in radians!
         // @tags
-        // <e@entity.armor_pose_list>
-        // <e@entity.armor_pose[<part>]>
+        // <EntityTag.armor_pose_list>
+        // <EntityTag.armor_pose[<part>]>
         // -->
         if (mechanism.matches("armor_pose")) {
             ArmorStand armorStand = (ArmorStand) entity.getBukkitEntity();
@@ -154,17 +154,17 @@ public class EntityArmorPose implements Property {
                     Debug.echoError("Invalid pose part specified: " + name + "; ignoring next: " + angle);
                 }
                 else {
-                    posePart.setAngle(armorStand, toEulerAngle(dLocation.valueOf(angle)));
+                    posePart.setAngle(armorStand, toEulerAngle(LocationTag.valueOf(angle)));
                 }
             }
         }
     }
 
-    private static dLocation fromEulerAngle(EulerAngle eulerAngle) {
-        return new dLocation(null, eulerAngle.getX(), eulerAngle.getY(), eulerAngle.getZ());
+    private static LocationTag fromEulerAngle(EulerAngle eulerAngle) {
+        return new LocationTag(null, eulerAngle.getX(), eulerAngle.getY(), eulerAngle.getZ());
     }
 
-    private static EulerAngle toEulerAngle(dLocation location) {
+    private static EulerAngle toEulerAngle(LocationTag location) {
         return new EulerAngle(location.getX(), location.getY(), location.getZ());
     }
 

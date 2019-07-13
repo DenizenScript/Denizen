@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -11,8 +11,8 @@ import org.bukkit.entity.Sittable;
 public class EntitySitting implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity
-                && ((dEntity) entity).getBukkitEntity() instanceof Sittable;
+        return entity instanceof EntityTag
+                && ((EntityTag) entity).getBukkitEntity() instanceof Sittable;
     }
 
     public static EntitySitting getFrom(ObjectTag entity) {
@@ -20,7 +20,7 @@ public class EntitySitting implements Property {
             return null;
         }
         else {
-            return new EntitySitting((dEntity) entity);
+            return new EntitySitting((EntityTag) entity);
         }
     }
 
@@ -37,11 +37,11 @@ public class EntitySitting implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntitySitting(dEntity entity) {
+    private EntitySitting(EntityTag entity) {
         this.entity = entity;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     /////////
     // Property Methods
@@ -72,9 +72,9 @@ public class EntitySitting implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.sitting>
+        // @attribute <EntityTag.sitting>
         // @returns ElementTag(Boolean)
-        // @mechanism dEntity.sitting
+        // @mechanism EntityTag.sitting
         // @group properties
         // @description
         // If the entity is a wolf, cat, or parrot, returns whether the animal is sitting.
@@ -91,13 +91,13 @@ public class EntitySitting implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name sitting
         // @input Element(Boolean)
         // @description
         // Changes the sitting state of a wolf, cat, or parrot.
         // @tags
-        // <e@entity.sitting>
+        // <EntityTag.sitting>
         // -->
 
         if (mechanism.matches("sitting") && mechanism.requireBoolean()) {

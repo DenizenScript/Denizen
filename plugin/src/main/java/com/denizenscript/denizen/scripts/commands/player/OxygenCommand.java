@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -24,8 +24,8 @@ public class OxygenCommand extends AbstractCommand {
     // player's maximum oxygen level. Value is in ticks, so 30 equals to 1 bubble.
     //
     // @Tags
-    // <p@player.oxygen>
-    // <p@player.oxygen.max>
+    // <PlayerTag.oxygen>
+    // <PlayerTag.oxygen.max>
     //
     // @Usage
     // Use to set the player's current oxygen level to 5 bubbles.
@@ -91,7 +91,7 @@ public class OxygenCommand extends AbstractCommand {
 
         }
 
-        dPlayer player = Utilities.getEntryPlayer(scriptEntry);
+        PlayerTag player = Utilities.getEntryPlayer(scriptEntry);
 
         switch (Type.valueOf(type.asString().toUpperCase())) {
             case MAXIMUM:

@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.npc;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dNPC;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -52,8 +52,8 @@ public class ActionCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("npcs")
-                    && arg.matchesArgumentList(dNPC.class)) {
-                scriptEntry.addObject("npcs", arg.asType(ListTag.class).filter(dNPC.class, scriptEntry));
+                    && arg.matchesArgumentList(NPCTag.class)) {
+                scriptEntry.addObject("npcs", arg.asType(ListTag.class).filter(NPCTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("context")
                     && arg.matchesPrefix("context", "c")) {
@@ -90,7 +90,7 @@ public class ActionCommand extends AbstractCommand {
 
         ListTag actions = (ListTag) scriptEntry.getObject("actions");
         ListTag context = (ListTag) scriptEntry.getObject("context");
-        List<dNPC> npcs = (List<dNPC>) scriptEntry.getObject("npcs");
+        List<NPCTag> npcs = (List<NPCTag>) scriptEntry.getObject("npcs");
 
         if (scriptEntry.dbCallShouldDebug()) {
 
@@ -108,7 +108,7 @@ public class ActionCommand extends AbstractCommand {
             context_map.put(context.get(i), ObjectFetcher.pickObjectFor(context.get(i + 1), scriptEntry.entryData.getTagContext()));
         }
 
-        for (dNPC npc : npcs) {
+        for (NPCTag npc : npcs) {
             for (String action : actions) {
                 npc.action(action, Utilities.getEntryPlayer(scriptEntry), context_map);
             }

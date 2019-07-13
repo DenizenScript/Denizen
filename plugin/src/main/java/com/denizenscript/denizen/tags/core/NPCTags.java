@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.tags.core;
 
 import com.denizenscript.denizen.events.core.NPCNavigationSmartEvent;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dNPC;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
@@ -58,15 +58,15 @@ public class NPCTags implements Listener {
         // Build a new attribute out of the raw_tag supplied in the script to be fulfilled
         Attribute attribute = event.getAttributes();
 
-        // NPCTags require a... dNPC!
-        dNPC n = ((BukkitTagContext) event.getContext()).npc;
+        // NPCTags require a... NPCTag!
+        NPCTag n = ((BukkitTagContext) event.getContext()).npc;
 
         // Player tag may specify a new player in the <player[context]...> portion of the tag.
         if (attribute.hasContext(1))
-        // Check if this is a valid player and update the dPlayer object reference.
+        // Check if this is a valid player and update the PlayerTag object reference.
         {
-            if (dNPC.matches(attribute.getContext(1))) {
-                n = dNPC.valueOf(attribute.getContext(1), attribute.context);
+            if (NPCTag.matches(attribute.getContext(1))) {
+                n = NPCTag.valueOf(attribute.getContext(1), attribute.context);
             }
             else {
                 if (!event.hasAlternative()) {
@@ -93,7 +93,7 @@ public class NPCTags implements Listener {
     // Keep track of previous locations and fire navigation actions
     ////
 
-    public static Map<Integer, dLocation> previousLocations = new HashMap<>();
+    public static Map<Integer, LocationTag> previousLocations = new HashMap<>();
 
     // <--[event]
     // @Events
@@ -124,7 +124,7 @@ public class NPCTags implements Listener {
     @EventHandler
     public void navComplete(NavigationCompleteEvent event) {
 
-        dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
+        NPCTag npc = DenizenAPI.getDenizenNPC(event.getNPC());
 
         // Do world script event 'On NPC Completes Navigation'
         if (NPCNavigationSmartEvent.IsActive()) {
@@ -168,7 +168,7 @@ public class NPCTags implements Listener {
     // -->
     @EventHandler
     public void navBegin(NavigationBeginEvent event) {
-        dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
+        NPCTag npc = DenizenAPI.getDenizenNPC(event.getNPC());
 
         // Do world script event 'On NPC Begins Navigation'
         if (NPCNavigationSmartEvent.IsActive()) {
@@ -189,11 +189,11 @@ public class NPCTags implements Listener {
             if (event.getNPC().getNavigator().getEntityTarget().isAggressive()
                     && !entity.isDead()) {
 
-                dPlayer player = null;
+                PlayerTag player = null;
 
                 // Check if the entity attacked by this NPC is a player
                 if (entity instanceof Player) {
-                    player = dPlayer.mirrorBukkitPlayer((Player) entity);
+                    player = PlayerTag.mirrorBukkitPlayer((Player) entity);
                 }
 
                 // <--[action]
@@ -229,7 +229,7 @@ public class NPCTags implements Listener {
     // -->
     @EventHandler
     public void navCancel(NavigationCancelEvent event) {
-        dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
+        NPCTag npc = DenizenAPI.getDenizenNPC(event.getNPC());
 
         if (NPCNavigationSmartEvent.IsActive()) {
             OldEventManager.doEvents(Arrays.asList
@@ -276,7 +276,7 @@ public class NPCTags implements Listener {
     @EventHandler
     public void navStuck(NavigationStuckEvent event) {
 
-        dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
+        NPCTag npc = DenizenAPI.getDenizenNPC(event.getNPC());
 
         Map<String, ObjectTag> context = new HashMap<>();
 

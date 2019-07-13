@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -42,7 +42,7 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
     public ElementTag message;
     public ElementTag rawJson;
     public ElementTag system;
-    public dPlayer player;
+    public PlayerTag player;
 
     public boolean messageModified;
     public boolean rawJsonModified;

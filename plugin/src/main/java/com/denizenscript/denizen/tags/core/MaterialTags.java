@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
@@ -24,10 +24,10 @@ public class MaterialTags {
             return;
         }
 
-        dMaterial material = null;
+        MaterialTag material = null;
 
         if (event.hasNameContext()) {
-            material = dMaterial.valueOf(event.getNameContext(), event.getAttributes().context);
+            material = MaterialTag.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
         if (material == null) {

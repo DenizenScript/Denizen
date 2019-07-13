@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -10,7 +10,7 @@ import com.denizenscript.denizencore.tags.Attribute;
 public class EntityGravity implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity;
+        return entity instanceof EntityTag;
     }
 
     public static EntityGravity getFrom(ObjectTag entity) {
@@ -18,7 +18,7 @@ public class EntityGravity implements Property {
             return null;
         }
         else {
-            return new EntityGravity((dEntity) entity);
+            return new EntityGravity((EntityTag) entity);
         }
     }
 
@@ -35,11 +35,11 @@ public class EntityGravity implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityGravity(dEntity entity) {
+    private EntityGravity(EntityTag entity) {
         dentity = entity;
     }
 
-    dEntity dentity;
+    EntityTag dentity;
 
     /////////
     // Property Methods
@@ -72,9 +72,9 @@ public class EntityGravity implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.gravity>
+        // @attribute <EntityTag.gravity>
         // @returns ElementTag(Boolean)
-        // @mechanism dEntity.gravity
+        // @mechanism EntityTag.gravity
         // @group properties
         // @description
         // Returns whether the entity has gravity.
@@ -91,13 +91,13 @@ public class EntityGravity implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name gravity
         // @input Element(Boolean)
         // @description
         // Changes the gravity state of an entity.
         // @tags
-        // <e@entity.gravity>
+        // <EntityTag.gravity>
         // -->
 
         if (mechanism.matches("gravity") && mechanism.requireBoolean()) {

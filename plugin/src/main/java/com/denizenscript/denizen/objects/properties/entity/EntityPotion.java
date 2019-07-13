@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
@@ -13,11 +13,11 @@ import org.bukkit.inventory.ItemStack;
 public class EntityPotion implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        if (!(entity instanceof dEntity)) {
+        if (!(entity instanceof EntityTag)) {
             return false;
         }
         // Check if the entity is a SPLASH_POTION, the EntityType alias for ThrownPotion
-        return ((dEntity) entity).getBukkitEntityType() == EntityType.SPLASH_POTION;
+        return ((EntityTag) entity).getBukkitEntityType() == EntityType.SPLASH_POTION;
     }
 
     public static EntityPotion getFrom(ObjectTag entity) {
@@ -25,7 +25,7 @@ public class EntityPotion implements Property {
             return null;
         }
         else {
-            return new EntityPotion((dEntity) entity);
+            return new EntityPotion((EntityTag) entity);
         }
     }
 
@@ -42,9 +42,9 @@ public class EntityPotion implements Property {
     // Instance Fields and Methods
     /////////////
 
-    dEntity potion;
+    EntityTag potion;
 
-    private EntityPotion(dEntity entity) {
+    private EntityPotion(EntityTag entity) {
         potion = entity;
     }
 
@@ -71,7 +71,7 @@ public class EntityPotion implements Property {
         if (potion == null) {
             return null;
         }
-        return new dItem(getPotion().getItem()).identify();
+        return new ItemTag(getPotion().getItem()).identify();
     }
 
     @Override
@@ -91,15 +91,15 @@ public class EntityPotion implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.potion>
-        // @returns dItem
-        // @mechanism dEntity.potion
+        // @attribute <EntityTag.potion>
+        // @returns ItemTag
+        // @mechanism EntityTag.potion
         // @group properties
         // @description
-        // Returns the dItem of the splash potion.
+        // Returns the ItemTag of the splash potion.
         // -->
         if (attribute.startsWith("potion")) {
-            return new dItem(getPotion().getItem()).getAttribute(attribute.fulfill(1));
+            return new ItemTag(getPotion().getItem()).getAttribute(attribute.fulfill(1));
         }
 
         return null;
@@ -109,16 +109,16 @@ public class EntityPotion implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name potion
-        // @input dItem
+        // @input ItemTag
         // @description
         // Sets the splash potion's ItemStack (must be a potion), thereby changing the effects.
         // @tags
-        // <e@entity.potion>
+        // <EntityTag.potion>
         // -->
-        if (mechanism.matches("potion") && mechanism.requireObject(dItem.class)) {
-            setPotion(mechanism.valueAsType(dItem.class).getItemStack());
+        if (mechanism.matches("potion") && mechanism.requireObject(ItemTag.class)) {
+            setPotion(mechanism.valueAsType(ItemTag.class).getItemStack());
         }
 
     }

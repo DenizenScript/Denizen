@@ -4,8 +4,8 @@ import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.Position;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -30,8 +30,8 @@ public class MountCommand extends AbstractCommand {
     // spawned. Accepts a location, which the entities will be teleported to on mounting.
     //
     // @Tags
-    // <e@entity.vehicle>
-    // <e@entity.inside_vehicle>
+    // <EntityTag.vehicle>
+    // <EntityTag.inside_vehicle>
     // <entry[saveName].mounted_entities> returns a list of entities that were mounted.
     //
     // @Usage
@@ -56,7 +56,7 @@ public class MountCommand extends AbstractCommand {
 
         // Initialize necessary fields
 
-        List<dEntity> entities = null;
+        List<EntityTag> entities = null;
 
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
@@ -66,14 +66,14 @@ public class MountCommand extends AbstractCommand {
                 scriptEntry.addObject("cancel", "");
             }
             else if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class)) {
+                    && arg.matchesArgumentType(LocationTag.class)) {
                 // Location arg
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class)) {
+                    && arg.matchesArgumentList(EntityTag.class)) {
                 // Entity arg
-                entities = arg.asType(ListTag.class).filter(dEntity.class, scriptEntry);
+                entities = arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry);
                 scriptEntry.addObject("entities", entities);
             }
             else {
@@ -109,8 +109,8 @@ public class MountCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) {
         // Get objects
 
-        dLocation location = (dLocation) scriptEntry.getObject("location");
-        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+        LocationTag location = (LocationTag) scriptEntry.getObject("location");
+        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         boolean cancel = scriptEntry.hasObject("cancel");
 
         // Report to dB
@@ -124,7 +124,7 @@ public class MountCommand extends AbstractCommand {
         if (!cancel) {
 
             // Go through all the entities, spawning/teleporting them
-            for (dEntity entity : entities) {
+            for (EntityTag entity : entities) {
                 entity.spawnAt(location);
             }
 

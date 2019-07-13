@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.dBiome;
+import com.denizenscript.denizen.objects.BiomeTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
@@ -24,10 +24,10 @@ public class BiomeTags {
             return;
         }
 
-        dBiome biome = null;
+        BiomeTag biome = null;
 
         if (event.hasNameContext()) {
-            biome = dBiome.valueOf(event.getNameContext(), event.getAttributes().context);
+            biome = BiomeTag.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
         if (biome == null) {

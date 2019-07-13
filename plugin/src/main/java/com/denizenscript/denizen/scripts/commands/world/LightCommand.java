@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.commands.world;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BlockLight;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -29,8 +29,8 @@ public class LightCommand extends AbstractCommand {
     // WARNING: May cause lag spikes, use carefully.
     //
     // @Tags
-    // <l@location.light>
-    // <l@location.light.blocks>
+    // <LocationTag.light>
+    // <LocationTag.light.blocks>
     //
     // @Usage
     // Use to create a bright light at a noted location.
@@ -47,8 +47,8 @@ public class LightCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class)) {
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                    && arg.matchesArgumentType(LocationTag.class)) {
+                scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("light")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
@@ -77,7 +77,7 @@ public class LightCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        dLocation location = scriptEntry.getdObject("location");
+        LocationTag location = scriptEntry.getdObject("location");
         ElementTag light = scriptEntry.getElement("light");
         ElementTag reset = scriptEntry.getElement("reset");
         DurationTag duration = scriptEntry.getdObject("duration");

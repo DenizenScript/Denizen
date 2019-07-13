@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -16,15 +16,15 @@ import org.bukkit.material.NetherWarts;
 public class ItemPlantgrowth implements Property {
 
     public static boolean describes(ObjectTag item) {
-        return item instanceof dItem
+        return item instanceof ItemTag
                 && (
-                ((dItem) item).getItemStack().getData() instanceof Crops
-                        || ((dItem) item).getItemStack().getData() instanceof NetherWarts
-                        || ((dItem) item).getItemStack().getData() instanceof CocoaPlant
-                        || ((dItem) item).getItemStack().getType().equals(Material.PUMPKIN_STEM)
-                        || ((dItem) item).getItemStack().getType().equals(Material.MELON_STEM)
-                        || ((dItem) item).getItemStack().getType().equals(Material.CARROT)
-                        || ((dItem) item).getItemStack().getType().equals(Material.POTATO)
+                ((ItemTag) item).getItemStack().getData() instanceof Crops
+                        || ((ItemTag) item).getItemStack().getData() instanceof NetherWarts
+                        || ((ItemTag) item).getItemStack().getData() instanceof CocoaPlant
+                        || ((ItemTag) item).getItemStack().getType().equals(Material.PUMPKIN_STEM)
+                        || ((ItemTag) item).getItemStack().getType().equals(Material.MELON_STEM)
+                        || ((ItemTag) item).getItemStack().getType().equals(Material.CARROT)
+                        || ((ItemTag) item).getItemStack().getType().equals(Material.POTATO)
         );
     }
 
@@ -33,7 +33,7 @@ public class ItemPlantgrowth implements Property {
             return null;
         }
         else {
-            return new ItemPlantgrowth((dItem) _item);
+            return new ItemPlantgrowth((ItemTag) _item);
         }
     }
 
@@ -46,11 +46,11 @@ public class ItemPlantgrowth implements Property {
     };
 
 
-    private ItemPlantgrowth(dItem _item) {
+    private ItemPlantgrowth(ItemTag _item) {
         item = _item;
     }
 
-    dItem item;
+    ItemTag item;
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -60,9 +60,9 @@ public class ItemPlantgrowth implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.plant_growth>
+        // @attribute <ItemTag.plant_growth>
         // @returns ElementTag
-        // @mechanism dItem.plant_growth
+        // @mechanism ItemTag.plant_growth
         // @group properties
         // @description
         // Returns the growth level of a plant item as one of the following:
@@ -70,7 +70,7 @@ public class ItemPlantgrowth implements Property {
         // Nether Warts: SEEDED, STAGE_ONE, STAGE_TWO, RIPE
         // Cocoa Plants: SMALL, MEDIUM, LARGE
         // Pumpkin stem, melon stem, carrot, potato: 0-7
-        // Deprecated as of MC 1.13, use <@link tag m@material.plant_growth> instead.
+        // Deprecated as of MC 1.13, use <@link tag MaterialTag.plant_growth> instead.
         // -->
         if (attribute.startsWith("plant_growth")) {
             if (item.getItemStack().getData() instanceof Crops) {
@@ -128,16 +128,16 @@ public class ItemPlantgrowth implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name plant_growth
         // @input Element
         // @description
         // Changes the growth level of plant items.
-        // See <@link tag i@item.plant_growth> for valid inputs.
-        // Deprecated as of MC 1.13, use <@link mechanism dMaterial.plant_growth> instead.
+        // See <@link tag ItemTag.plant_growth> for valid inputs.
+        // Deprecated as of MC 1.13, use <@link mechanism MaterialTag.plant_growth> instead.
         // @tags
-        // <i@item.is_crop>
-        // <i@item.plant_growth>
+        // <ItemTag.is_crop>
+        // <ItemTag.plant_growth>
         // -->
 
         if (mechanism.matches("plant_growth")) {

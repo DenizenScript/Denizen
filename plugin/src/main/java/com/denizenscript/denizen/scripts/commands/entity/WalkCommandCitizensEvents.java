@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
-import com.denizenscript.denizen.objects.dNPC;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
@@ -58,7 +58,7 @@ public class WalkCommandCitizensEvents implements Listener {
 
             // Get all NPCs associated with the entry. They must all
             // finish navigation before the entry can be let go
-            List<dNPC> tally = (List<dNPC>) entry.getObject("tally");
+            List<NPCTag> tally = (List<NPCTag>) entry.getObject("tally");
 
             if (tally == null) {
                 continue;
@@ -70,7 +70,7 @@ public class WalkCommandCitizensEvents implements Listener {
                 }
             }
             // If the NPC is the NPC from the event, take it from the list.
-            tally.remove(dNPC.mirrorCitizensNPC(e.getNPC()));
+            tally.remove(NPCTag.mirrorCitizensNPC(e.getNPC()));
 
             // Check if tally is empty.
             if (tally.isEmpty()) {

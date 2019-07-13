@@ -55,14 +55,14 @@ public class BukkitElementProperties implements Property {
 
         // <--[tag]
         // @attribute <ElementTag.as_chunk>
-        // @returns dChunk
+        // @returns ChunkTag
         // @group conversion
         // @description
         // Returns the element as a chunk. Note: the value must be a valid chunk.
         // -->
         if (attribute.startsWith("aschunk")
                 || attribute.startsWith("as_chunk")) {
-            ObjectTag object = ElementTag.handleNull(element.asString(), dChunk.valueOf(element.asString(),
+            ObjectTag object = ElementTag.handleNull(element.asString(), ChunkTag.valueOf(element.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "dChunk", attribute.hasAlternative());
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));
@@ -71,14 +71,14 @@ public class BukkitElementProperties implements Property {
 
         // <--[tag]
         // @attribute <ElementTag.as_color>
-        // @returns dColor
+        // @returns ColorTag
         // @group conversion
         // @description
-        // Returns the element as a dColor. Note: the value must be a valid color.
+        // Returns the element as a ColorTag. Note: the value must be a valid color.
         // -->
         if (attribute.startsWith("ascolor")
                 || attribute.startsWith("as_color")) {
-            ObjectTag object = ElementTag.handleNull(element.asString(), dColor.valueOf(element.asString(),
+            ObjectTag object = ElementTag.handleNull(element.asString(), ColorTag.valueOf(element.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "dColor", attribute.hasAlternative());
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));
@@ -87,14 +87,14 @@ public class BukkitElementProperties implements Property {
 
         // <--[tag]
         // @attribute <ElementTag.as_cuboid>
-        // @returns dCuboid
+        // @returns CuboidTag
         // @group conversion
         // @description
         // Returns the element as a cuboid. Note: the value must be a valid cuboid.
         // -->
         if (attribute.startsWith("ascuboid")
                 || attribute.startsWith("as_cuboid")) {
-            ObjectTag object = ElementTag.handleNull(element.asString(), dCuboid.valueOf(element.asString(),
+            ObjectTag object = ElementTag.handleNull(element.asString(), CuboidTag.valueOf(element.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "dCuboid", attribute.hasAlternative());
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));
@@ -103,14 +103,14 @@ public class BukkitElementProperties implements Property {
 
         // <--[tag]
         // @attribute <ElementTag.as_entity>
-        // @returns dEntity
+        // @returns EntityTag
         // @group conversion
         // @description
         // Returns the element as an entity. Note: the value must be a valid entity.
         // -->
         if (attribute.startsWith("asentity")
                 || attribute.startsWith("as_entity")) {
-            ObjectTag object = ElementTag.handleNull(element.asString(), dEntity.valueOf(element.asString(),
+            ObjectTag object = ElementTag.handleNull(element.asString(), EntityTag.valueOf(element.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "dEntity", attribute.hasAlternative());
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));
@@ -119,14 +119,14 @@ public class BukkitElementProperties implements Property {
 
         // <--[tag]
         // @attribute <ElementTag.as_inventory>
-        // @returns dInventory
+        // @returns InventoryTag
         // @group conversion
         // @description
         // Returns the element as an inventory. Note: the value must be a valid inventory.
         // -->
         if (attribute.startsWith("asinventory")
                 || attribute.startsWith("as_inventory")) {
-            ObjectTag object = ElementTag.handleNull(element.asString(), dInventory.valueOf(element.asString(),
+            ObjectTag object = ElementTag.handleNull(element.asString(), InventoryTag.valueOf(element.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "dInventory", attribute.hasAlternative());
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));
@@ -135,15 +135,15 @@ public class BukkitElementProperties implements Property {
 
         // <--[tag]
         // @attribute <ElementTag.as_item>
-        // @returns dItem
+        // @returns ItemTag
         // @group conversion
         // @description
-        // Returns the element as an item. Additional attributes can be accessed by dItem.
+        // Returns the element as an item. Additional attributes can be accessed by ItemTag.
         // Note: the value must be a valid item.
         // -->
         if (attribute.startsWith("asitem")
                 || attribute.startsWith("as_item")) {
-            ObjectTag object = ElementTag.handleNull(element.asString(), dItem.valueOf(element.asString(),
+            ObjectTag object = ElementTag.handleNull(element.asString(), ItemTag.valueOf(element.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "dItem", attribute.hasAlternative());
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));
@@ -152,14 +152,14 @@ public class BukkitElementProperties implements Property {
 
         // <--[tag]
         // @attribute <ElementTag.as_location>
-        // @returns dLocation
+        // @returns LocationTag
         // @group conversion
         // @description
         // Returns the element as a location. Note: the value must be a valid location.
         // -->
         if (attribute.startsWith("aslocation")
                 || attribute.startsWith("as_location")) {
-            ObjectTag object = ElementTag.handleNull(element.asString(), dLocation.valueOf(element.asString(),
+            ObjectTag object = ElementTag.handleNull(element.asString(), LocationTag.valueOf(element.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "dLocation", attribute.hasAlternative());
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));
@@ -168,14 +168,14 @@ public class BukkitElementProperties implements Property {
 
         // <--[tag]
         // @attribute <ElementTag.as_material>
-        // @returns dMaterial
+        // @returns MaterialTag
         // @group conversion
         // @description
         // Returns the element as a material. Note: the value must be a valid material.
         // -->
         if (attribute.startsWith("asmaterial")
                 || attribute.startsWith("as_material")) {
-            ObjectTag object = ElementTag.handleNull(element.asString(), dMaterial.valueOf(element.asString(),
+            ObjectTag object = ElementTag.handleNull(element.asString(), MaterialTag.valueOf(element.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "dMaterial", attribute.hasAlternative());
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));
@@ -184,14 +184,14 @@ public class BukkitElementProperties implements Property {
 
         // <--[tag]
         // @attribute <ElementTag.as_npc>
-        // @returns dNPC
+        // @returns NPCTag
         // @group conversion
         // @description
         // Returns the element as an NPC. Note: the value must be a valid NPC.
         // -->
         if (attribute.startsWith("asnpc")
                 || attribute.startsWith("as_npc")) {
-            ObjectTag object = ElementTag.handleNull(element.asString(), dNPC.valueOf(element.asString(),
+            ObjectTag object = ElementTag.handleNull(element.asString(), NPCTag.valueOf(element.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "dNPC", attribute.hasAlternative());
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));
@@ -200,14 +200,14 @@ public class BukkitElementProperties implements Property {
 
         // <--[tag]
         // @attribute <ElementTag.as_player>
-        // @returns dPlayer
+        // @returns PlayerTag
         // @group conversion
         // @description
         // Returns the element as a player. Note: the value must be a valid player. Can be online or offline.
         // -->
         if (attribute.startsWith("asplayer")
                 || attribute.startsWith("as_player")) {
-            ObjectTag object = ElementTag.handleNull(element.asString(), dPlayer.valueOf(element.asString(),
+            ObjectTag object = ElementTag.handleNull(element.asString(), PlayerTag.valueOf(element.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "dPlayer", attribute.hasAlternative());
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));
@@ -216,14 +216,14 @@ public class BukkitElementProperties implements Property {
 
         // <--[tag]
         // @attribute <ElementTag.as_world>
-        // @returns dWorld
+        // @returns WorldTag
         // @group conversion
         // @description
         // Returns the element as a world.
         // -->
         if (attribute.startsWith("asworld")
                 || attribute.startsWith("as_world")) {
-            ObjectTag object = ElementTag.handleNull(element.asString(), dWorld.valueOf(element.asString(),
+            ObjectTag object = ElementTag.handleNull(element.asString(), WorldTag.valueOf(element.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "dWorld", attribute.hasAlternative());
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));
@@ -232,14 +232,14 @@ public class BukkitElementProperties implements Property {
 
         // <--[tag]
         // @attribute <ElementTag.as_plugin>
-        // @returns dPlugin
+        // @returns PluginTag
         // @group conversion
         // @description
         // Returns the element as a plugin. Note: the value must be a valid plugin.
         // -->
         if (attribute.startsWith("asplugin")
                 || attribute.startsWith("as_plugin")) {
-            ObjectTag object = ElementTag.handleNull(element.asString(), dPlugin.valueOf(element.asString(),
+            ObjectTag object = ElementTag.handleNull(element.asString(), PluginTag.valueOf(element.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "dPlugin", attribute.hasAlternative());
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));

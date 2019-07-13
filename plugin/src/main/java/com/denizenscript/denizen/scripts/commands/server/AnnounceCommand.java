@@ -4,7 +4,7 @@ import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.flags.FlagManager;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -139,7 +139,7 @@ public class AnnounceCommand extends AbstractCommand {
         }
         else if (type == AnnounceType.TO_FLAGGED) {
             for (Player player : Bukkit.getOnlinePlayers()) {
-                if (FlagManager.playerHasFlag(dPlayer.mirrorBukkitPlayer(player), flag.asString())) {
+                if (FlagManager.playerHasFlag(PlayerTag.mirrorBukkitPlayer(player), flag.asString())) {
                     player.sendMessage(message);
                 }
             }

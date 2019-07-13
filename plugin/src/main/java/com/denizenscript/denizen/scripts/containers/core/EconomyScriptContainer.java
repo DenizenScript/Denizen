@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.BukkitScriptEntryData;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -33,7 +33,7 @@ public class EconomyScriptContainer extends ScriptContainer {
     // Economy script containers
     //
     // Economy script containers provide a Vault economy, which can be used in scripts by
-    // <@link tag p@player.money> and <@link mechanism dPlayer.money>
+    // <@link tag PlayerTag.money> and <@link mechanism PlayerTag.money>
     // and as well by any other plugin that relies on economy functionality (such as shop plugins).
     //
     // Note that vault economy bank systems are not currently supported.
@@ -96,12 +96,12 @@ public class EconomyScriptContainer extends ScriptContainer {
             if (value == null) {
                 return null;
             }
-            return TagManager.tag(value, new BukkitTagContext(player == null ? null : new dPlayer(player),
+            return TagManager.tag(value, new BukkitTagContext(player == null ? null : new PlayerTag(player),
                     null, false, null, backingScript.shouldDebug(), new ScriptTag(backingScript)));
         }
 
         public String runSubScript(String pathName, OfflinePlayer player, double amount) {
-            List<ScriptEntry> entries = backingScript.getEntries(new BukkitScriptEntryData(new dPlayer(player), null), pathName);
+            List<ScriptEntry> entries = backingScript.getEntries(new BukkitScriptEntryData(new PlayerTag(player), null), pathName);
             InstantQueue queue = new InstantQueue(backingScript.getName());
             queue.addEntries(entries);
             queue.addDefinition("amount", new ElementTag(amount));

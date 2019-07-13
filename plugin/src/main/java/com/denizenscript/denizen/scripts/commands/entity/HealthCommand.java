@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.commands.entity;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.npc.traits.HealthTrait;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -35,8 +35,8 @@ public class HealthCommand extends AbstractCommand {
     // explained above.
     //
     // @Tags
-    // <e@entity.health>
-    // <n@npc.has_trait[health]>
+    // <EntityTag.health>
+    // <NPCTag.has_trait[health]>
     //
     // @Usage
     // Use to set the NPC's maximum health to 50.
@@ -74,8 +74,8 @@ public class HealthCommand extends AbstractCommand {
                 scriptEntry.addObject("qty", arg.asElement());
             }
             else if (!scriptEntry.hasObject("target")
-                    && arg.matchesArgumentList(dEntity.class)) {
-                scriptEntry.addObject("target", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
+                    && arg.matchesArgumentList(EntityTag.class)) {
+                scriptEntry.addObject("target", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("action")
                     && arg.matchesPrefix("state")) {
@@ -107,7 +107,7 @@ public class HealthCommand extends AbstractCommand {
 
         ElementTag qty = scriptEntry.getElement("qty");
         ElementTag action = scriptEntry.getElement("action");
-        List<dEntity> targets = (List<dEntity>) scriptEntry.getObject("target");
+        List<EntityTag> targets = (List<EntityTag>) scriptEntry.getObject("target");
 
         if (scriptEntry.dbCallShouldDebug()) {
 
@@ -125,7 +125,7 @@ public class HealthCommand extends AbstractCommand {
             action = new ElementTag(true);
         }
 
-        for (dEntity target : targets) {
+        for (EntityTag target : targets) {
             if (target.isCitizensNPC()) {
                 if (action.asString().equalsIgnoreCase("true")) {
                     target.getDenizenNPC().getCitizen().addTrait(HealthTrait.class);

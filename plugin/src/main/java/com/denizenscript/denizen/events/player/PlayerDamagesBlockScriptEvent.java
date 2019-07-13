@@ -28,8 +28,8 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
     // @Triggers when a block is damaged by a player.
     //
     // @Context
-    // <context.location> returns the dLocation the block that was damaged.
-    // <context.material> returns the dMaterial of the block that was damaged.
+    // <context.location> returns the LocationTag the block that was damaged.
+    // <context.material> returns the MaterialTag of the block that was damaged.
     //
     // @Determine
     // "INSTABREAK" to make the block get broken instantly.
@@ -41,8 +41,8 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
     }
 
     public static PlayerDamagesBlockScriptEvent instance;
-    public dLocation location;
-    public dMaterial material;
+    public LocationTag location;
+    public MaterialTag material;
     public Boolean instabreak;
     public BlockDamageEvent event;
 
@@ -51,7 +51,7 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
         String lower = CoreUtilities.toLowerCase(s);
         String mat = CoreUtilities.getXthArg(2, lower);
         return lower.startsWith("player damages")
-                && (mat.equals("block") || dMaterial.matches(mat));
+                && (mat.equals("block") || MaterialTag.matches(mat));
     }
 
     @Override
@@ -85,7 +85,7 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(dPlayer.mirrorBukkitPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(PlayerTag.mirrorBukkitPlayer(event.getPlayer()), null);
     }
 
     @Override
@@ -99,7 +99,7 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
         else if (name.equals("cuboids")) {
             Debug.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
             ListTag cuboids = new ListTag();
-            for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+            for (CuboidTag cuboid : CuboidTag.getNotableCuboidsContaining(location)) {
                 cuboids.add(cuboid.identifySimple());
             }
             return cuboids;
@@ -109,11 +109,11 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
 
     @EventHandler
     public void onPlayerDamagesBlock(BlockDamageEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        material = new dMaterial(event.getBlock());
-        location = new dLocation(event.getBlock().getLocation());
+        material = new MaterialTag(event.getBlock());
+        location = new LocationTag(event.getBlock().getLocation());
         instabreak = event.getInstaBreak();
         this.event = event;
         fire(event);

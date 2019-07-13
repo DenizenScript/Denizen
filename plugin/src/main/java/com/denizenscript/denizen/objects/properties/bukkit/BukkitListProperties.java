@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.objects.properties.bukkit;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -55,7 +55,7 @@ public class BukkitListProperties implements Property {
 
             for (int n = 0; n < list.size(); n++) {
                 if (list.get(n).startsWith("p@")) {
-                    dPlayer gotten = dPlayer.valueOf(list.get(n));
+                    PlayerTag gotten = PlayerTag.valueOf(list.get(n));
                     if (gotten != null) {
                         dScriptArg.append(gotten.getName());
                     }
@@ -64,7 +64,7 @@ public class BukkitListProperties implements Property {
                     }
                 }
                 else if (list.get(n).startsWith("e@") || list.get(n).startsWith("n@")) {
-                    dEntity gotten = dEntity.valueOf(list.get(n));
+                    EntityTag gotten = EntityTag.valueOf(list.get(n));
                     if (gotten != null) {
                         dScriptArg.append(gotten.getName());
                     }
@@ -92,7 +92,7 @@ public class BukkitListProperties implements Property {
         // @attribute <fl@flag_name.expiration>
         // @returns DurationTag
         // @description
-        // Returns a Duration of the time remaining on the flag, if it
+        // Returns a DurationTag of the time remaining on the flag, if it
         // has an expiration.
         // -->
         if (attribute.startsWith("expiration") && list.flag != null) {

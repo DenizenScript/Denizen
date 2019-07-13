@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.trade;
 
-import com.denizenscript.denizen.objects.dTrade;
+import com.denizenscript.denizen.objects.TradeTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -10,14 +10,14 @@ import com.denizenscript.denizencore.tags.Attribute;
 public class TradeHasXp implements Property {
 
     public static boolean describes(ObjectTag recipe) {
-        return recipe instanceof dTrade;
+        return recipe instanceof TradeTag;
     }
 
     public static TradeHasXp getFrom(ObjectTag recipe) {
         if (!describes(recipe)) {
             return null;
         }
-        return new TradeHasXp((dTrade) recipe);
+        return new TradeHasXp((TradeTag) recipe);
     }
 
     public static final String[] handledTags = new String[] {
@@ -28,9 +28,9 @@ public class TradeHasXp implements Property {
             "has_xp"
     };
 
-    private dTrade recipe;
+    private TradeTag recipe;
 
-    public TradeHasXp(dTrade recipe) {
+    public TradeHasXp(TradeTag recipe) {
         this.recipe = recipe;
     }
 
@@ -51,9 +51,9 @@ public class TradeHasXp implements Property {
         }
 
         // <--[tag]
-        // @attribute <trade@trade.has_xp>
+        // @attribute <TradeTag.has_xp>
         // @returns ElementTag(Boolean)
-        // @mechanism dTrade.has_xp
+        // @mechanism TradeTag.has_xp
         // @description
         // Returns whether the trade has an experience reward.
         // -->
@@ -67,13 +67,13 @@ public class TradeHasXp implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dTrade
+        // @object TradeTag
         // @name has_xp
         // @input Element(Boolean)
         // @description
         // Sets whether this trade will reward XP upon successful trading.
         // @tags
-        // <trade@trade.has_xp>
+        // <TradeTag.has_xp>
         // -->
         if (mechanism.matches("has_xp") && mechanism.requireBoolean()) {
             recipe.getRecipe().setExperienceReward(mechanism.getValue().asBoolean());

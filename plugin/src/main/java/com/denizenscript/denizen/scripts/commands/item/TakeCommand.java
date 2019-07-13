@@ -5,8 +5,8 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
-import com.denizenscript.denizen.objects.dInventory;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.InventoryTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -37,8 +37,8 @@ public class TakeCommand extends AbstractCommand {
     // If no quantity is specified, exactly 1 item will be taken.
     //
     // @Tags
-    // <p@player.item_in_hand>
-    // <p@player.money>
+    // <PlayerTag.item_in_hand>
+    // <PlayerTag.money>
     //
     // @Usage
     // Use to take money from the player
@@ -96,7 +96,7 @@ public class TakeCommand extends AbstractCommand {
                     && !scriptEntry.hasObject("items")
                     && arg.matchesPrefix("script", "scriptname")) {
                 scriptEntry.addObject("type", Type.SCRIPTNAME);
-                scriptEntry.addObject("scriptitem", arg.asType(dItem.class));
+                scriptEntry.addObject("scriptitem", arg.asType(ItemTag.class));
             }
             else if (!scriptEntry.hasObject("slot")
                     && !scriptEntry.hasObject("type")
@@ -106,13 +106,13 @@ public class TakeCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("items")
                     && !scriptEntry.hasObject("type")
-                    && arg.matchesArgumentList(dItem.class)) {
-                scriptEntry.addObject("items", ListTag.valueOf(arg.raw_value.replace("item:", "")).filter(dItem.class, scriptEntry));
+                    && arg.matchesArgumentList(ItemTag.class)) {
+                scriptEntry.addObject("items", ListTag.valueOf(arg.raw_value.replace("item:", "")).filter(ItemTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("inventory")
                     && arg.matchesPrefix("f", "from")
-                    && arg.matchesArgumentType(dInventory.class)) {
-                scriptEntry.addObject("inventory", arg.asType(dInventory.class));
+                    && arg.matchesArgumentType(InventoryTag.class)) {
+                scriptEntry.addObject("inventory", arg.asType(InventoryTag.class));
             }
             else if (!scriptEntry.hasObject("type")
                     && arg.matches("inventory")) {
@@ -147,20 +147,20 @@ public class TakeCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        dInventory inventory = (dInventory) scriptEntry.getObject("inventory");
+        InventoryTag inventory = (InventoryTag) scriptEntry.getObject("inventory");
         ElementTag qty = scriptEntry.getElement("qty");
         ElementTag displayname = scriptEntry.getElement("displayname");
-        dItem scriptitem = scriptEntry.getdObject("scriptitem");
+        ItemTag scriptitem = scriptEntry.getdObject("scriptitem");
         ElementTag slot = scriptEntry.getElement("slot");
         ListTag titleAuthor = scriptEntry.getdObject("cover");
         ElementTag nbtKey = scriptEntry.getElement("nbt_key");
         Type type = (Type) scriptEntry.getObject("type");
 
         Object items_object = scriptEntry.getObject("items");
-        List<dItem> items = null;
+        List<ItemTag> items = null;
 
         if (items_object != null) {
-            items = (List<dItem>) items_object;
+            items = (List<ItemTag>) items_object;
         }
 
         if (scriptEntry.dbCallShouldDebug()) {
@@ -218,7 +218,7 @@ public class TakeCommand extends AbstractCommand {
             }
 
             case ITEM: {
-                for (dItem item : items) {
+                for (ItemTag item : items) {
                     ItemStack is = item.getItemStack();
                     is.setAmount(qty.asInt());
 
@@ -286,7 +286,7 @@ public class TakeCommand extends AbstractCommand {
                 for (ItemStack it : inventory.getContents()) {
                     if (script_items < qty.asInt()
                             && it != null
-                            && scriptitem.getScriptName().equalsIgnoreCase(new dItem(it).getScriptName())) {
+                            && scriptitem.getScriptName().equalsIgnoreCase(new ItemTag(it).getScriptName())) {
                         int amt = it.getAmount();
                         if (script_items + amt <= qty.asInt()) {
                             inventory.getInventory().removeItem(it);

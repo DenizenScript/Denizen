@@ -6,8 +6,8 @@ import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
 import com.denizenscript.denizen.events.player.ItemRecipeFormedScriptEvent;
 import com.denizenscript.denizen.events.player.PlayerCraftsItemScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
@@ -67,7 +67,7 @@ public class ItemScriptHelper implements Listener {
             }
 
             // Store every ingredient in a List
-            List<dItem> ingredients = new ArrayList<>();
+            List<ItemTag> ingredients = new ArrayList<>();
 
             boolean shouldRegister = true;
             recipeLoop:
@@ -75,9 +75,9 @@ public class ItemScriptHelper implements Listener {
                 String[] elements = recipeRow.split("\\|", 3);
 
                 for (String element : elements) {
-                    dItem ingredient = dItem.valueOf(element.replaceAll("[iImM]@", ""), container);
+                    ItemTag ingredient = ItemTag.valueOf(element.replaceAll("[iImM]@", ""), container);
                     if (ingredient == null) {
-                        Debug.echoError("Invalid dItem ingredient, recipe will not be registered for item script '"
+                        Debug.echoError("Invalid ItemTag ingredient, recipe will not be registered for item script '"
                                 + container.getName() + "': " + element);
                         shouldRegister = false;
                         break recipeLoop;
@@ -101,13 +101,13 @@ public class ItemScriptHelper implements Listener {
             String list = TagManager.tag(string, new BukkitTagContext(container.player, container.npc,
                     false, null, Debug.shouldDebug(container), new ScriptTag(container)));
 
-            List<dItem> ingredients = new ArrayList<>();
+            List<ItemTag> ingredients = new ArrayList<>();
 
             boolean shouldRegister = true;
             for (String element : ListTag.valueOf(list)) {
-                dItem ingredient = dItem.valueOf(element.replaceAll("[iImM]@", ""), container);
+                ItemTag ingredient = ItemTag.valueOf(element.replaceAll("[iImM]@", ""), container);
                 if (ingredient == null) {
-                    Debug.echoError("Invalid dItem ingredient, shapeless recipe will not be registered for item script '"
+                    Debug.echoError("Invalid ItemTag ingredient, shapeless recipe will not be registered for item script '"
                             + container.getName() + "': " + element);
                     shouldRegister = false;
                     break;
@@ -121,7 +121,7 @@ public class ItemScriptHelper implements Listener {
 
         for (Map.Entry<ItemScriptContainer, String> entry : furnace_to_register.entrySet()) {
 
-            dItem furnace_item = dItem.valueOf(entry.getValue(), entry.getKey());
+            ItemTag furnace_item = ItemTag.valueOf(entry.getValue(), entry.getKey());
             if (furnace_item == null) {
                 Debug.echoError("Invalid item '" + entry.getValue() + "'");
                 continue;
@@ -144,10 +144,10 @@ public class ItemScriptHelper implements Listener {
             ItemScriptContainer isc = getItemScriptContainer(event.getResult());
             String inp = currentFurnaceRecipes.get(isc);
             if (inp != null) {
-                dItem itm = dItem.valueOf(inp, isc);
+                ItemTag itm = ItemTag.valueOf(inp, isc);
                 if (itm != null) {
                     itm.setAmount(1);
-                    dItem src = new dItem(event.getSource().clone());
+                    ItemTag src = new ItemTag(event.getSource().clone());
                     src.setAmount(1);
                     if (!itm.getFullString().equals(src.getFullString())) {
                         List<Recipe> recipes = Bukkit.getServer().getRecipesFor(event.getSource());
@@ -186,8 +186,8 @@ public class ItemScriptHelper implements Listener {
             return null;
         }
         for (String itemLore : item.getItemMeta().getLore()) {
-            if (itemLore.startsWith(dItem.itemscriptIdentifier)) {
-                return item_scripts.get(itemLore.replace(dItem.itemscriptIdentifier, ""));
+            if (itemLore.startsWith(ItemTag.itemscriptIdentifier)) {
+                return item_scripts.get(itemLore.replace(ItemTag.itemscriptIdentifier, ""));
             }
             if (itemLore.startsWith(ItemScriptHashID)) {
                 return item_scripts_by_hash_id.get(itemLore);
@@ -249,7 +249,7 @@ public class ItemScriptHelper implements Listener {
 
             CraftingInventory inventory = (CraftingInventory) event.getInventory();
             Player player = (Player) event.getWhoClicked();
-            Map.Entry<ItemScriptContainer, List<dItem>> recipeEntry = null;
+            Map.Entry<ItemScriptContainer, List<ItemTag>> recipeEntry = null;
 
             if (slotType == SlotType.RESULT && inventory.getResult() != null
                     && inventory.getResult().getData().getItemType() != Material.AIR) {
@@ -269,18 +269,18 @@ public class ItemScriptHelper implements Listener {
 
                 PlayerCraftsItemScriptEvent scriptEvent = PlayerCraftsItemScriptEvent.instance;
                 scriptEvent.inventory = inventory;
-                scriptEvent.result = new dItem(inventory.getResult());
+                scriptEvent.result = new ItemTag(inventory.getResult());
                 ListTag recipeList = new ListTag();
                 for (ItemStack item : inventory.getMatrix()) {
                     if (item != null) {
-                        recipeList.add(new dItem(item.clone()).identify());
+                        recipeList.add(new ItemTag(item.clone()).identify());
                     }
                     else {
-                        recipeList.add(new dItem(Material.AIR).identify());
+                        recipeList.add(new ItemTag(Material.AIR).identify());
                     }
                 }
                 scriptEvent.recipe = recipeList;
-                scriptEvent.player = dPlayer.mirrorBukkitPlayer(player);
+                scriptEvent.player = PlayerTag.mirrorBukkitPlayer(player);
                 scriptEvent.resultChanged = false;
                 scriptEvent.cancelled = false;
                 scriptEvent.fire();
@@ -309,7 +309,7 @@ public class ItemScriptHelper implements Listener {
         }
     }
 
-    public void removeFromEachSlot(final CraftingInventory inventory, final List<dItem> recipe, final Player player) {
+    public void removeFromEachSlot(final CraftingInventory inventory, final List<ItemTag> recipe, final Player player) {
         // This cloning is a workaround for what seems to be a Spigot issue
         // Basically, after taking the crafted item, it randomly sets the recipe items
         // to twice their amount minus 2. I have no idea why.
@@ -383,7 +383,7 @@ public class ItemScriptHelper implements Listener {
 
         // Get the result of the special recipe that this matrix matches,
         // if any
-        dItem result1 = getSpecialRecipeResult(matrix1, player);
+        ItemTag result1 = getSpecialRecipeResult(matrix1, player);
 
         boolean returnme = result1 != null;
 
@@ -401,17 +401,17 @@ public class ItemScriptHelper implements Listener {
 
                         // Get the result of the special recipe that this matrix matches,
                         // if any
-                        dItem result = getSpecialRecipeResult(matrix, player);
+                        ItemTag result = getSpecialRecipeResult(matrix, player);
 
                         // Proceed only if the result was not null
                         if (result != null) {
                             ListTag recipeList = new ListTag();
                             for (ItemStack item : matrix) {
                                 if (item != null) {
-                                    recipeList.add(new dItem(item).identify());
+                                    recipeList.add(new ItemTag(item).identify());
                                 }
                                 else {
-                                    recipeList.add(new dItem(Material.AIR).identify());
+                                    recipeList.add(new ItemTag(Material.AIR).identify());
                                 }
                             }
 
@@ -419,7 +419,7 @@ public class ItemScriptHelper implements Listener {
                             event.result = result;
                             event.recipe = recipeList;
                             event.inventory = inventory;
-                            event.player = dPlayer.mirrorBukkitPlayer(player);
+                            event.player = PlayerTag.mirrorBukkitPlayer(player);
                             event.cancelled = false;
                             event.resultChanged = false;
                             event.fire();
@@ -440,19 +440,19 @@ public class ItemScriptHelper implements Listener {
         return returnme;
     }
 
-    public Map.Entry<ItemScriptContainer, List<dItem>> getSpecialRecipeEntry(ItemStack[] matrix) {
+    public Map.Entry<ItemScriptContainer, List<ItemTag>> getSpecialRecipeEntry(ItemStack[] matrix) {
         // Iterate through all the special recipes
         master:
-        for (Map.Entry<ItemScriptContainer, List<dItem>> entry :
+        for (Map.Entry<ItemScriptContainer, List<ItemTag>> entry :
                 ItemScriptContainer.specialrecipesMap.entrySet()) {
 
             // Check if the two sets of items match each other
             for (int n = 0; n < 9; n++) {
 
-                // Use dItem.valueOf on the entry values to ensure
+                // Use ItemTag.valueOf on the entry values to ensure
                 // correct comparison
-                dItem valueN = entry.getValue().get(n);
-                dItem matrixN = matrix.length <= n || matrix[n] == null ? new dItem(Material.AIR) : new dItem(matrix[n].clone());
+                ItemTag valueN = entry.getValue().get(n);
+                ItemTag matrixN = matrix.length <= n || matrix[n] == null ? new ItemTag(Material.AIR) : new ItemTag(matrix[n].clone());
 
                 // If one's an item script and the other's not, it's a fail
                 if (valueN.isItemscript() != matrixN.isItemscript()) {
@@ -477,26 +477,26 @@ public class ItemScriptHelper implements Listener {
                 }
             }
 
-            // If all the items match, return the special recipe's dItem key
+            // If all the items match, return the special recipe's ItemTag key
             return entry;
         }
 
         // Forms a shaped recipe from a shapeless recipe
         primary:
-        for (Map.Entry<ItemScriptContainer, List<dItem>> entry :
+        for (Map.Entry<ItemScriptContainer, List<ItemTag>> entry :
                 ItemScriptContainer.shapelessRecipesMap.entrySet()) {
 
             // Clone recipe & matrix so we can remove items from them
             List<ItemStack> entryList = new ArrayList<>();
             List<ItemStack> matrixList = new ArrayList<>();
-            for (dItem entryItem : entry.getValue()) {
+            for (ItemTag entryItem : entry.getValue()) {
                 entryList.add(entryItem.getItemStack().clone());
             }
             for (ItemStack itemStack : matrix) {
                 matrixList.add(itemStack != null ? itemStack.clone() : new ItemStack(Material.AIR));
             }
 
-            List<dItem> shapedRecipe = new ArrayList<>();
+            List<ItemTag> shapedRecipe = new ArrayList<>();
             ItemStack matrixItem;
             ItemStack entryItem;
 
@@ -515,7 +515,7 @@ public class ItemScriptHelper implements Listener {
 
                         // If the items are similar & the matrix has enough, we have a match
                         if (matrixItem.isSimilar(entryItem) && matrixItem.getAmount() >= entryItem.getAmount()) {
-                            shapedRecipe.add(new dItem(entryItem));
+                            shapedRecipe.add(new ItemTag(entryItem));
                             mL.remove();
                             eL.remove();
                             matched = true;
@@ -528,7 +528,7 @@ public class ItemScriptHelper implements Listener {
                     }
                 }
                 else {
-                    shapedRecipe.add(new dItem(Material.AIR));
+                    shapedRecipe.add(new ItemTag(Material.AIR));
                     mL.remove();
                 }
             }
@@ -547,11 +547,11 @@ public class ItemScriptHelper implements Listener {
     }
 
     // Check if a CraftingInventory's crafting matrix matches a special
-    // recipe and return that recipe's dItem result if it does
-    public dItem getSpecialRecipeResult(ItemStack[] matrix, Player player) {
-        Map.Entry<ItemScriptContainer, List<dItem>> recipeEntry = getSpecialRecipeEntry(matrix);
+    // recipe and return that recipe's ItemTag result if it does
+    public ItemTag getSpecialRecipeResult(ItemStack[] matrix, Player player) {
+        Map.Entry<ItemScriptContainer, List<ItemTag>> recipeEntry = getSpecialRecipeEntry(matrix);
         if (recipeEntry != null) {
-            return recipeEntry.getKey().getItemFrom(dPlayer.mirrorBukkitPlayer(player), null);
+            return recipeEntry.getKey().getItemFrom(PlayerTag.mirrorBukkitPlayer(player), null);
         }
         return null;
     }
@@ -568,14 +568,14 @@ public class ItemScriptHelper implements Listener {
         }
 
         // Get the recipe entry for this matrix, if any
-        Map.Entry<ItemScriptContainer, List<dItem>> recipeEntry = getSpecialRecipeEntry(matrix);
+        Map.Entry<ItemScriptContainer, List<ItemTag>> recipeEntry = getSpecialRecipeEntry(matrix);
 
         // Proceed only if the result was not null
         if (recipeEntry != null) {
-            List<dItem> recipe = recipeEntry.getValue();
-            dItem result = recipeEntry.getKey().getItemFrom(dPlayer.mirrorBukkitPlayer(player), null);
+            List<ItemTag> recipe = recipeEntry.getValue();
+            ItemTag result = recipeEntry.getKey().getItemFrom(PlayerTag.mirrorBukkitPlayer(player), null);
 
-            // In a shift click, the amount of the resulting dItem should
+            // In a shift click, the amount of the resulting ItemTag should
             // be based on the amount of the least numerous ingredient multiple,
             // so track it
             int lowestAmount = 0;

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.utilities.maps;
 
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapView;
 import org.bukkit.map.MinecraftFont;
@@ -20,12 +20,12 @@ public class MapText extends MapObject {
     }
 
     @Override
-    public void update(dPlayer player, UUID uuid) {
+    public void update(PlayerTag player, UUID uuid) {
         super.update(player, uuid);
         playerTexts.put(uuid, tag(textTag, player));
     }
 
-    public String getText(dPlayer player) {
+    public String getText(PlayerTag player) {
         return playerTexts.get(player.getPlayerEntity().getUniqueId());
     }
 
@@ -42,7 +42,7 @@ public class MapText extends MapObject {
     }
 
     @Override
-    public void render(MapView mapView, MapCanvas mapCanvas, dPlayer player, UUID uuid) {
+    public void render(MapView mapView, MapCanvas mapCanvas, PlayerTag player, UUID uuid) {
         if (!playerTexts.containsKey(uuid)) {
             playerTexts.put(uuid, tag(textTag, player));
         }

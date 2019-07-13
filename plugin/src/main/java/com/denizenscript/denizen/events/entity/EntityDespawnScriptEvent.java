@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -39,7 +39,7 @@ public class EntityDespawnScriptEvent extends BukkitScriptEvent {
     }
 
     public static EntityDespawnScriptEvent instance;
-    public dEntity entity;
+    public EntityTag entity;
     public ElementTag cause;
 
     @Override
@@ -78,8 +78,8 @@ public class EntityDespawnScriptEvent extends BukkitScriptEvent {
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(entity.getBukkitEntity()) : null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(entity.getBukkitEntity()) : null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? EntityTag.getPlayerFrom(entity.getBukkitEntity()) : null,
+                entity.isCitizensNPC() ? EntityTag.getNPCFrom(entity.getBukkitEntity()) : null);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -10,14 +10,14 @@ import com.denizenscript.denizencore.tags.Attribute;
 public class EntityCustomName implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity;
+        return entity instanceof EntityTag;
     }
 
     public static EntityCustomName getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
-        return new EntityCustomName((dEntity) entity);
+        return new EntityCustomName((EntityTag) entity);
     }
 
     public static final String[] handledTags = new String[] {
@@ -28,11 +28,11 @@ public class EntityCustomName implements Property {
             "custom_name_visibility", "custom_name_visible", "custom_name"
     };
 
-    private EntityCustomName(dEntity ent) {
+    private EntityCustomName(EntityTag ent) {
         entity = ent;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     @Override
     public String getPropertyString() {
@@ -58,7 +58,7 @@ public class EntityCustomName implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.custom_name_visible>
+        // @attribute <EntityTag.custom_name_visible>
         // @returns ElementTag(Boolean)
         // @group attributes
         // @description
@@ -73,7 +73,7 @@ public class EntityCustomName implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.custom_name>
+        // @attribute <EntityTag.custom_name>
         // @returns ElementTag
         // @group attributes
         // @description
@@ -97,13 +97,13 @@ public class EntityCustomName implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name custom_name_visible
         // @input Element(Boolean)
         // @description
         // Sets whether the custom name is visible.
         // @tags
-        // <e@entity.custom_name_visible>
+        // <EntityTag.custom_name_visible>
         // -->
         if ((mechanism.matches("custom_name_visibility") || mechanism.matches("custom_name_visible"))
                 && mechanism.requireBoolean()) {
@@ -111,13 +111,13 @@ public class EntityCustomName implements Property {
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name custom_name
         // @input Element
         // @description
         // Sets the custom name of the entity.
         // @tags
-        // <e@entity.custom_name>
+        // <EntityTag.custom_name>
         // -->
         else if (mechanism.matches("custom_name")) {
             entity.getBukkitEntity().setCustomName(mechanism.getValue().asString());

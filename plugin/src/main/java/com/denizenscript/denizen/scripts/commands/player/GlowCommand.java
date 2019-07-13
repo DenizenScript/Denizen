@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.commands.player;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -36,7 +36,7 @@ public class GlowCommand extends AbstractCommand {
     // This command does it's best to disable glow effect when the entity is unloaded, but does not guarantee it.
     //
     // @Tags
-    // <e@entity.glowing>
+    // <EntityTag.glowing>
     //
     // @Usage
     // Use to make the player's target glow.
@@ -65,8 +65,8 @@ public class GlowCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class)) {
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
+                    && arg.matchesArgumentList(EntityTag.class)) {
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("glowing")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Boolean)) {
@@ -91,7 +91,7 @@ public class GlowCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        final ArrayList<dEntity> entities = (ArrayList<dEntity>) scriptEntry.getObject("entities");
+        final ArrayList<EntityTag> entities = (ArrayList<EntityTag>) scriptEntry.getObject("entities");
         ElementTag glowing = scriptEntry.getElement("glowing");
 
         if (scriptEntry.dbCallShouldDebug()) {
@@ -109,7 +109,7 @@ public class GlowCommand extends AbstractCommand {
             return;
         }
 
-        for (dEntity ent : entities) {
+        for (EntityTag ent : entities) {
             if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(ent.getLivingEntity())) {
                 CitizensAPI.getNPCRegistry().getNPC(ent.getLivingEntity()).data().setPersistent(NPC.GLOWING_METADATA, shouldGlow);
             }

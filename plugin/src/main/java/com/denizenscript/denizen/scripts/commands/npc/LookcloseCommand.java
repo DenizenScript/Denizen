@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.commands.npc;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
-import com.denizenscript.denizen.objects.dNPC;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -58,9 +58,9 @@ public class LookcloseCommand extends AbstractCommand {
             else if (arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Boolean)) {
                 scriptEntry.addObject("toggle", arg.asElement());
             }
-            else if (arg.matchesArgumentType(dNPC.class)) // TODO: better way of handling this?
+            else if (arg.matchesArgumentType(NPCTag.class)) // TODO: better way of handling this?
             {
-                ((BukkitScriptEntryData) scriptEntry.entryData).setNPC(arg.asType(dNPC.class));
+                ((BukkitScriptEntryData) scriptEntry.entryData).setNPC(arg.asType(NPCTag.class));
             }
             else {
                 arg.reportUnhandled();

@@ -4,10 +4,10 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.WorldHelper;
-import com.denizenscript.denizen.objects.dCuboid;
-import com.denizenscript.denizen.objects.dEllipsoid;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.CuboidTag;
+import com.denizenscript.denizen.objects.EllipsoidTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -55,7 +55,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
     // This command is ~holdable.
     //
     // @Tags
-    // <l@location.material>
+    // <LocationTag.material>
     //
     // @Usage
     // Use to change the block a player is looking at to stone.
@@ -85,23 +85,23 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
 
-            if (arg.matchesArgumentType(dCuboid.class)
+            if (arg.matchesArgumentType(CuboidTag.class)
                     && !scriptEntry.hasObject("locations")
                     && !scriptEntry.hasObject("location_list")) {
-                scriptEntry.addObject("locations", arg.asType(dCuboid.class).getBlockLocations());
+                scriptEntry.addObject("locations", arg.asType(CuboidTag.class).getBlockLocations());
             }
-            else if (arg.matchesArgumentType(dEllipsoid.class)
+            else if (arg.matchesArgumentType(EllipsoidTag.class)
                     && !scriptEntry.hasObject("locations")
                     && !scriptEntry.hasObject("location_list")) {
-                scriptEntry.addObject("locations", arg.asType(dEllipsoid.class).getBlockLocations());
+                scriptEntry.addObject("locations", arg.asType(EllipsoidTag.class).getBlockLocations());
             }
-            else if (arg.matchesArgumentList(dLocation.class)
+            else if (arg.matchesArgumentList(LocationTag.class)
                     && !scriptEntry.hasObject("locations")
                     && !scriptEntry.hasObject("location_list")) {
                 scriptEntry.addObject("location_list", arg.asType(ListTag.class));
             }
             else if (!scriptEntry.hasObject("materials")
-                    && arg.matchesArgumentList(dMaterial.class)) {
+                    && arg.matchesArgumentList(MaterialTag.class)) {
                 scriptEntry.addObject("materials", arg.asType(ListTag.class));
             }
             else if (!scriptEntry.hasObject("radius")
@@ -165,7 +165,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
     public void execute(final ScriptEntry scriptEntry) {
 
         final ListTag materials = scriptEntry.getdObject("materials");
-        final List<dLocation> locations = (List<dLocation>) scriptEntry.getObject("locations");
+        final List<LocationTag> locations = (List<LocationTag>) scriptEntry.getObject("locations");
         final ListTag location_list = scriptEntry.getdObject("location_list");
         final ElementTag physics = scriptEntry.getElement("physics");
         final ElementTag natural = scriptEntry.getElement("natural");
@@ -181,7 +181,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             percents = null;
         }
 
-        final List<dMaterial> materialList = materials.filter(dMaterial.class, scriptEntry);
+        final List<MaterialTag> materialList = materials.filter(MaterialTag.class, scriptEntry);
 
         if (scriptEntry.dbCallShouldDebug()) {
 
@@ -232,21 +232,21 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                 @Override
                 public void run() {
                     long start = System.currentTimeMillis();
-                    dLocation loc;
+                    LocationTag loc;
                     if (locations != null) {
                         loc = locations.get(0);
                     }
                     else {
-                        loc = dLocation.valueOf(location_list.get(0));
+                        loc = LocationTag.valueOf(location_list.get(0));
                     }
                     boolean was_static = preSetup(loc);
                     while ((locations != null && locations.size() > index) || (location_list != null && location_list.size() > index)) {
-                        dLocation nLoc;
+                        LocationTag nLoc;
                         if (locations != null) {
                             nLoc = locations.get(index);
                         }
                         else {
-                            nLoc = dLocation.valueOf(location_list.get(index));
+                            nLoc = LocationTag.valueOf(location_list.get(index));
                         }
                         handleLocation(nLoc, index, materialList, doPhysics, isNatural, radius, height, depth, percs);
                         index++;
@@ -269,24 +269,24 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             }.runTaskTimer(DenizenAPI.getCurrentInstance(), 1, 1);
         }
         else {
-            dLocation loc;
+            LocationTag loc;
             if (locations != null) {
                 loc = locations.get(0);
             }
             else {
-                loc = dLocation.valueOf(location_list.get(0));
+                loc = LocationTag.valueOf(location_list.get(0));
             }
             boolean was_static = preSetup(loc);
             int index = 0;
             if (locations != null) {
                 for (ObjectTag obj : locations) {
-                    handleLocation((dLocation) obj, index, materialList, doPhysics, isNatural, radius, height, depth, percentages);
+                    handleLocation((LocationTag) obj, index, materialList, doPhysics, isNatural, radius, height, depth, percentages);
                     index++;
                 }
             }
             else {
                 for (String str : location_list) {
-                    handleLocation(dLocation.valueOf(str), index, materialList, doPhysics, isNatural, radius, height, depth, percentages);
+                    handleLocation(LocationTag.valueOf(str), index, materialList, doPhysics, isNatural, radius, height, depth, percentages);
                     index++;
                 }
             }
@@ -295,7 +295,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         }
     }
 
-    boolean preSetup(dLocation loc0) {
+    boolean preSetup(LocationTag loc0) {
         // Freeze the first world in the list.
         WorldHelper worldHelper = NMSHandler.getInstance().getWorldHelper();
         World world = loc0.getWorld();
@@ -314,10 +314,10 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         no_physics = false;
     }
 
-    void handleLocation(dLocation location, int index, List<dMaterial> materialList, boolean doPhysics,
+    void handleLocation(LocationTag location, int index, List<MaterialTag> materialList, boolean doPhysics,
                         boolean isNatural, int radius, int height, int depth, List<Float> percents) {
 
-        dMaterial material;
+        MaterialTag material;
         if (percents == null) {
             material = materialList.get(index % materialList.size());
         }
@@ -371,7 +371,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         }
     }
 
-    void setBlock(Location location, dMaterial material, boolean physics, boolean natural) {
+    void setBlock(Location location, MaterialTag material, boolean physics, boolean natural) {
         if (physics) {
             for (int i = 0; i < block_physics.size(); i++) {
                 if (compareloc(block_physics.get(i), location)) {
@@ -384,7 +384,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             physitick = tick;
         }
         if (location.getY() < 0 || location.getY() > 255) {
-            Debug.echoError("Invalid modifyblock location: " + new dLocation(location).toString());
+            Debug.echoError("Invalid modifyblock location: " + new LocationTag(location).toString());
             return;
         }
         if (natural && material.getMaterial() == Material.AIR) {

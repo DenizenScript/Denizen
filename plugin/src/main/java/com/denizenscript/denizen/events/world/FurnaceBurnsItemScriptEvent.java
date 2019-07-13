@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.world;
 
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -26,8 +26,8 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
     // @Triggers when a furnace burns an item used as fuel.
     //
     // @Context
-    // <context.location> returns the dLocation of the furnace.
-    // <context.item> returns the dItem burnt.
+    // <context.location> returns the LocationTag of the furnace.
+    // <context.item> returns the ItemTag burnt.
     //
     // @Determine
     // Element(Number) to set the burn time for this fuel.
@@ -39,8 +39,8 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
     }
 
     public static FurnaceBurnsItemScriptEvent instance;
-    public dItem item;
-    public dLocation location;
+    public ItemTag item;
+    public LocationTag location;
     private Integer burntime;
     public FurnaceBurnEvent event;
 
@@ -83,8 +83,8 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
 
     @EventHandler
     public void onBrews(FurnaceBurnEvent event) {
-        location = new dLocation(event.getBlock().getLocation());
-        item = new dItem(event.getFuel());
+        location = new LocationTag(event.getBlock().getLocation());
+        item = new ItemTag(event.getFuel());
         burntime = event.getBurnTime();
         this.event = event;
         fire(event);

@@ -3,7 +3,7 @@ package com.denizenscript.denizen.objects.properties.entity;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -22,9 +22,9 @@ import java.util.List;
 public class EntityPotionEffects implements Property {
 
     public static boolean describes(ObjectTag object) {
-        return object instanceof dEntity &&
-                (((dEntity) object).isLivingEntity()
-                        || ((dEntity) object).getBukkitEntity() instanceof TippedArrow);
+        return object instanceof EntityTag &&
+                (((EntityTag) object).isLivingEntity()
+                        || ((EntityTag) object).getBukkitEntity() instanceof TippedArrow);
     }
 
     public static EntityPotionEffects getFrom(ObjectTag object) {
@@ -32,7 +32,7 @@ public class EntityPotionEffects implements Property {
             return null;
         }
         else {
-            return new EntityPotionEffects((dEntity) object);
+            return new EntityPotionEffects((EntityTag) object);
         }
     }
 
@@ -49,11 +49,11 @@ public class EntityPotionEffects implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityPotionEffects(dEntity entity) {
+    private EntityPotionEffects(EntityTag entity) {
         this.entity = entity;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     public Collection<PotionEffect> getEffectsList() {
         if (entity.isLivingEntity()) {
@@ -98,10 +98,10 @@ public class EntityPotionEffects implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.list_effects>
+        // @attribute <EntityTag.list_effects>
         // @returns ListTag
         // @group attribute
-        // @mechanism dEntity.potion_effects
+        // @mechanism EntityTag.potion_effects
         // @description
         // Returns the list of active potion effects on the entity, in the format: li@TYPE,AMPLIFIER,DURATION,IS_AMBIENT,HAS_PARTICLES,HAS_ICON|...
         // Note that AMPLIFIER is a number representing the level, and DURATION is a number representing the time, in ticks, it will last for.
@@ -116,7 +116,7 @@ public class EntityPotionEffects implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.has_effect[<effect>]>
+        // @attribute <EntityTag.has_effect[<effect>]>
         // @returns ElementTag(Boolean)
         // @group attributes
         // @description
@@ -145,7 +145,7 @@ public class EntityPotionEffects implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name potion_effects
         // @input ListTag
         // @description
@@ -155,7 +155,7 @@ public class EntityPotionEffects implements Property {
         // IS_AMBIENT, HAS_PARTICLES, and HAS_ICON are booleans.
         // For example: SPEED,0,120,false,true,true would give the entity a swiftness potion for 120 ticks.
         // @tags
-        // <e@entity.list_effects>
+        // <EntityTag.list_effects>
         // -->
         if (mechanism.matches("potion_effects")) {
             ListTag effects = ListTag.valueOf(mechanism.getValue().asString());

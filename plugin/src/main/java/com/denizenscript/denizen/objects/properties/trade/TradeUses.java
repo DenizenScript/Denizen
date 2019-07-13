@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.trade;
 
-import com.denizenscript.denizen.objects.dTrade;
+import com.denizenscript.denizen.objects.TradeTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -10,14 +10,14 @@ import com.denizenscript.denizencore.tags.Attribute;
 public class TradeUses implements Property {
 
     public static boolean describes(ObjectTag recipe) {
-        return recipe instanceof dTrade;
+        return recipe instanceof TradeTag;
     }
 
     public static TradeUses getFrom(ObjectTag recipe) {
         if (!describes(recipe)) {
             return null;
         }
-        return new TradeUses((dTrade) recipe);
+        return new TradeUses((TradeTag) recipe);
     }
 
     public static final String[] handledTags = new String[] {
@@ -28,9 +28,9 @@ public class TradeUses implements Property {
             "uses"
     };
 
-    private dTrade recipe;
+    private TradeTag recipe;
 
-    public TradeUses(dTrade recipe) {
+    public TradeUses(TradeTag recipe) {
         this.recipe = recipe;
     }
 
@@ -51,9 +51,9 @@ public class TradeUses implements Property {
         }
 
         // <--[tag]
-        // @attribute <trade@trade.uses>
+        // @attribute <TradeTag.uses>
         // @returns ElementTag(Number)
-        // @mechanism dTrade.uses
+        // @mechanism TradeTag.uses
         // @description
         // Returns how many times the trade has been used.
         // -->
@@ -67,13 +67,13 @@ public class TradeUses implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dTrade
+        // @object TradeTag
         // @name uses
         // @input Element(Number)
         // @description
         // Sets the amount of times the trade has been used.
         // @tags
-        // <trade@trade.uses>
+        // <TradeTag.uses>
         // -->
         if (mechanism.matches("uses") && mechanism.requireInteger()) {
             recipe.getRecipe().setUses(mechanism.getValue().asInt());

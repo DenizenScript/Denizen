@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dWorld;
+import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -41,8 +41,8 @@ public class GameRuleCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("world")
-                    && arg.matchesArgumentType(dWorld.class)) {
-                scriptEntry.addObject("world", arg.asType(dWorld.class));
+                    && arg.matchesArgumentType(WorldTag.class)) {
+                scriptEntry.addObject("world", arg.asType(WorldTag.class));
             }
             else if (!scriptEntry.hasObject("gamerule")) {
                 scriptEntry.addObject("gamerule", arg.asElement());
@@ -73,7 +73,7 @@ public class GameRuleCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
         // Fetch objects
-        dWorld world = scriptEntry.getdObject("world");
+        WorldTag world = scriptEntry.getdObject("world");
         ElementTag gamerule = scriptEntry.getElement("gamerule");
         ElementTag value = scriptEntry.getElement("value");
 

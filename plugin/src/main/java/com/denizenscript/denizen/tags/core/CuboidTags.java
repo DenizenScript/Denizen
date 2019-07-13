@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.dCuboid;
+import com.denizenscript.denizen.objects.CuboidTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
@@ -25,10 +25,10 @@ public class CuboidTags {
             return;
         }
 
-        dCuboid cuboid = null;
+        CuboidTag cuboid = null;
 
         if (event.hasNameContext()) {
-            cuboid = dCuboid.valueOf(event.getNameContext(), event.getAttributes().context);
+            cuboid = CuboidTag.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
         // Check if cuboid is null, return if it is

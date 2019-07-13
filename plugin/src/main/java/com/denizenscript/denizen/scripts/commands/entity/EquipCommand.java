@@ -3,9 +3,9 @@ package com.denizenscript.denizen.scripts.commands.entity;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dNPC;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -38,12 +38,12 @@ public class EquipCommand extends AbstractCommand {
     // Set the item to 'i@air' to unequip any slot.
     //
     // @Tags
-    // <e@entity.equipment>
-    // <e@entity.equipment.helmet>
-    // <e@entity.equipment.chestplate>
-    // <e@entity.equipment.leggings>
-    // <e@entity.equipment.boots>
-    // <in@inventory.equipment>
+    // <EntityTag.equipment>
+    // <EntityTag.equipment.helmet>
+    // <EntityTag.equipment.chestplate>
+    // <EntityTag.equipment.leggings>
+    // <EntityTag.equipment.boots>
+    // <InventoryTag.equipment>
     //
     // @Usage
     // Use to equip a stone block on the player's head.
@@ -69,48 +69,48 @@ public class EquipCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        Map<String, dItem> equipment = new HashMap<>();
+        Map<String, ItemTag> equipment = new HashMap<>();
 
         // Initialize necessary fields
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class)) {
+                    && arg.matchesArgumentList(EntityTag.class)) {
 
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
-            else if (arg.matchesArgumentType(dItem.class)
+            else if (arg.matchesArgumentType(ItemTag.class)
                     && arg.matchesPrefix("head", "helmet")) {
-                equipment.put("head", dItem.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
+                equipment.put("head", ItemTag.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
             }
-            else if (arg.matchesArgumentType(dItem.class)
+            else if (arg.matchesArgumentType(ItemTag.class)
                     && arg.matchesPrefix("chest", "chestplate")) {
-                equipment.put("chest", dItem.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
+                equipment.put("chest", ItemTag.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
             }
-            else if (arg.matchesArgumentType(dItem.class)
+            else if (arg.matchesArgumentType(ItemTag.class)
                     && arg.matchesPrefix("legs", "leggings")) {
-                equipment.put("legs", dItem.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
+                equipment.put("legs", ItemTag.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
             }
-            else if (arg.matchesArgumentType(dItem.class)
+            else if (arg.matchesArgumentType(ItemTag.class)
                     && arg.matchesPrefix("boots", "feet")) {
-                equipment.put("boots", dItem.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
+                equipment.put("boots", ItemTag.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
             }
-            else if (arg.matchesArgumentType(dItem.class)
+            else if (arg.matchesArgumentType(ItemTag.class)
                     && arg.matchesPrefix("saddle")) {
-                equipment.put("saddle", dItem.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
+                equipment.put("saddle", ItemTag.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
             }
-            else if (arg.matchesArgumentType(dItem.class)
+            else if (arg.matchesArgumentType(ItemTag.class)
                     && arg.matchesPrefix("horse_armor", "horse_armour")) {
-                equipment.put("horse_armor", dItem.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
+                equipment.put("horse_armor", ItemTag.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
             }
-            else if (arg.matchesArgumentType(dItem.class)
+            else if (arg.matchesArgumentType(ItemTag.class)
                     && arg.matchesPrefix("offhand")) {
-                equipment.put("offhand", dItem.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
+                equipment.put("offhand", ItemTag.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
             }
 
             // Default to item in hand if no prefix is used
-            else if (arg.matchesArgumentType(dItem.class)) {
-                equipment.put("hand", dItem.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
+            else if (arg.matchesArgumentType(ItemTag.class)) {
+                equipment.put("hand", ItemTag.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
             }
             else if (arg.matches("player") && Utilities.entryHasPlayer(scriptEntry)) {
                 // Player arg for compatibility with old scripts
@@ -138,8 +138,8 @@ public class EquipCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        Map<String, dItem> equipment = (Map<String, dItem>) scriptEntry.getObject("equipment");
-        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+        Map<String, ItemTag> equipment = (Map<String, ItemTag>) scriptEntry.getObject("equipment");
+        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
@@ -147,14 +147,14 @@ public class EquipCommand extends AbstractCommand {
                     ArgumentHelper.debugObj("equipment", equipment.toString()));
         }
 
-        for (dEntity entity : entities) {
+        for (EntityTag entity : entities) {
 
             if (entity.isGeneric()) {
                 Debug.echoError(scriptEntry.getResidingQueue(), "Cannot equip generic entity " + entity.identify() + "!");
             }
             else if (entity.isCitizensNPC()) {
 
-                dNPC npc = entity.getDenizenNPC();
+                NPCTag npc = entity.getDenizenNPC();
 
                 if (npc != null) {
 
@@ -194,7 +194,7 @@ public class EquipCommand extends AbstractCommand {
                         }
                         else if (livingEntity.getType() == EntityType.PIG) {
                             if (equipment.get("saddle") != null) {
-                                dItem saddle = equipment.get("saddle");
+                                ItemTag saddle = equipment.get("saddle");
                                 if (saddle.getItemStack().getType() == Material.SADDLE) {
                                     ((Pig) livingEntity).setSaddle(true);
                                 }
@@ -223,7 +223,7 @@ public class EquipCommand extends AbstractCommand {
                     }
                     else if (livingEntity.getType() == EntityType.PIG) {
                         if (equipment.get("saddle") != null) {
-                            dItem saddle = equipment.get("saddle");
+                            ItemTag saddle = equipment.get("saddle");
                             if (saddle.getItemStack().getType() == Material.SADDLE) {
                                 ((Pig) livingEntity).setSaddle(true);
                             }

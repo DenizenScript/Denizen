@@ -2,7 +2,7 @@ package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.utilities.MaterialCompat;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -25,8 +25,8 @@ import java.util.List;
 public class ItemPatterns implements Property {
 
     public static boolean describes(ObjectTag item) {
-        if (item instanceof dItem) {
-            Material material = ((dItem) item).getItemStack().getType();
+        if (item instanceof ItemTag) {
+            Material material = ((ItemTag) item).getItemStack().getType();
             return MaterialCompat.isBannerOrShield(material);
         }
         return false;
@@ -37,7 +37,7 @@ public class ItemPatterns implements Property {
             return null;
         }
         else {
-            return new ItemPatterns((dItem) item);
+            return new ItemPatterns((ItemTag) item);
         }
     }
 
@@ -50,11 +50,11 @@ public class ItemPatterns implements Property {
     };
 
 
-    private ItemPatterns(dItem item) {
+    private ItemPatterns(ItemTag item) {
         this.item = item;
     }
 
-    dItem item;
+    ItemTag item;
 
     private ListTag listPatterns() {
         ListTag list = new ListTag();
@@ -110,10 +110,10 @@ public class ItemPatterns implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.patterns>
+        // @attribute <ItemTag.patterns>
         // @returns ListTag
         // @group properties
-        // @mechanism dItem.patterns
+        // @mechanism ItemTag.patterns
         // @description
         // Lists a banner's patterns in the form "li@COLOR/PATTERN|COLOR/PATTERN" etc.
         // TODO: Local meta for these links
@@ -146,7 +146,7 @@ public class ItemPatterns implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name patterns
         // @input ListTag
         // @description
@@ -155,7 +155,7 @@ public class ItemPatterns implements Property {
         // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
         // For the list of possible patterns, see <@link url http://bit.ly/1MqRn7T>.
         // @tags
-        // <i@item.patterns>
+        // <ItemTag.patterns>
         // <server.list_patterns>
         // -->
 

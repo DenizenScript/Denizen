@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dCuboid;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.CuboidTag;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -33,8 +33,8 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
     // @Triggers when a hanging entity (painting or itemframe) is placed.
     //
     // @Context
-    // <context.hanging> returns the dEntity of the hanging.
-    // <context.location> returns the dLocation of the block the hanging was placed on.
+    // <context.hanging> returns the EntityTag of the hanging.
+    // <context.location> returns the LocationTag of the block the hanging was placed on.
     //
     // -->
 
@@ -43,8 +43,8 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
     }
 
     public static PlayerPlacesHangingScriptEvent instance;
-    public dEntity hanging;
-    public dLocation location;
+    public EntityTag hanging;
+    public LocationTag location;
     public HangingPlaceEvent event;
 
     @Override
@@ -76,7 +76,7 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(dPlayer.mirrorBukkitPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(PlayerTag.mirrorBukkitPlayer(event.getPlayer()), null);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
         else if (name.equals("cuboids")) {
             Debug.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
             ListTag cuboids = new ListTag();
-            for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+            for (CuboidTag cuboid : CuboidTag.getNotableCuboidsContaining(location)) {
                 cuboids.add(cuboid.identifySimple());
             }
             return cuboids;
@@ -100,15 +100,15 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
 
     @EventHandler
     public void pnPlayerPlacesHanging(HangingPlaceEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
         Entity hangingEntity = event.getEntity();
-        dEntity.rememberEntity(hangingEntity);
-        hanging = new dEntity(hangingEntity);
-        location = new dLocation(event.getBlock().getLocation());
+        EntityTag.rememberEntity(hangingEntity);
+        hanging = new EntityTag(hangingEntity);
+        location = new LocationTag(event.getBlock().getLocation());
         this.event = event;
         fire(event);
-        dEntity.forgetEntity(hangingEntity);
+        EntityTag.forgetEntity(hangingEntity);
     }
 }

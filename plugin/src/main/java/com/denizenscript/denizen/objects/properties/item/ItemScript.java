@@ -6,7 +6,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 
@@ -14,7 +14,7 @@ public class ItemScript implements Property {
 
     public static boolean describes(ObjectTag item) {
         // All items can have a script
-        return item instanceof dItem;
+        return item instanceof ItemTag;
     }
 
     public static ItemScript getFrom(ObjectTag _item) {
@@ -22,7 +22,7 @@ public class ItemScript implements Property {
             return null;
         }
         else {
-            return new ItemScript((dItem) _item);
+            return new ItemScript((ItemTag) _item);
         }
     }
 
@@ -35,11 +35,11 @@ public class ItemScript implements Property {
     };
 
 
-    private ItemScript(dItem _item) {
+    private ItemScript(ItemTag _item) {
         item = _item;
     }
 
-    dItem item;
+    ItemTag item;
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -49,7 +49,7 @@ public class ItemScript implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.has_script>
+        // @attribute <ItemTag.has_script>
         // @returns ElementTag(Boolean)
         // @group scripts
         // @description
@@ -61,7 +61,7 @@ public class ItemScript implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.scriptname>
+        // @attribute <ItemTag.scriptname>
         // @returns ElementTag
         // @group scripts
         // @description
@@ -75,7 +75,7 @@ public class ItemScript implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.script>
+        // @attribute <ItemTag.script>
         // @returns ScriptTag
         // @group scripts
         // @description

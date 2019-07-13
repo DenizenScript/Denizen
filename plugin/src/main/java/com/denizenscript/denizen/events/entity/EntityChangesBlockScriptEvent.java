@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dCuboid;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.CuboidTag;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -34,8 +34,8 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     // @Triggers when an entity changes the material of a block.
     //
     // @Context
-    // <context.entity> returns the dEntity that changed the block.
-    // <context.location> returns the dLocation of the changed block.
+    // <context.entity> returns the EntityTag that changed the block.
+    // <context.location> returns the LocationTag of the changed block.
     // <context.old_material> returns the old material of the block.
     // <context.new_material> returns the new material of the block.
     //
@@ -48,10 +48,10 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     }
 
     public static EntityChangesBlockScriptEvent instance;
-    public dEntity entity;
-    public dLocation location;
-    public dMaterial old_material;
-    public dMaterial new_material;
+    public EntityTag entity;
+    public LocationTag location;
+    public MaterialTag old_material;
+    public MaterialTag new_material;
     public ListTag cuboids;
     public EntityChangeBlockEvent event;
 
@@ -103,8 +103,8 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? EntityTag.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? EntityTag.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -115,7 +115,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
         else if (name.equals("cuboids")) { // NOTE: Deprecated
             if (cuboids == null) {
                 cuboids = new ListTag();
-                for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+                for (CuboidTag cuboid : CuboidTag.getNotableCuboidsContaining(location)) {
                     cuboids.add(cuboid.identifySimple());
                 }
             }
@@ -135,10 +135,10 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
 
     @EventHandler
     public void onEntityChangesBlock(EntityChangeBlockEvent event) {
-        entity = new dEntity(event.getEntity());
-        location = new dLocation(event.getBlock().getLocation());
-        old_material = new dMaterial(location.getBlock());
-        new_material = new dMaterial(event.getTo());
+        entity = new EntityTag(event.getEntity());
+        location = new LocationTag(event.getBlock().getLocation());
+        old_material = new MaterialTag(location.getBlock());
+        new_material = new MaterialTag(event.getTo());
         cuboids = null;
         this.event = event;
         fire(event);

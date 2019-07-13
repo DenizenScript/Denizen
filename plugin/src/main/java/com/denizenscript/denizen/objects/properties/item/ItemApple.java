@@ -2,7 +2,7 @@ package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -13,9 +13,9 @@ import org.bukkit.Material;
 public class ItemApple implements Property {
 
     public static boolean describes(ObjectTag item) {
-        return item instanceof dItem
-                && ((((dItem) item).getItemStack().getType() == Material.GOLDEN_APPLE)
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && ((dItem) item).getItemStack().getType() == Material.ENCHANTED_GOLDEN_APPLE));
+        return item instanceof ItemTag
+                && ((((ItemTag) item).getItemStack().getType() == Material.GOLDEN_APPLE)
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && ((ItemTag) item).getItemStack().getType() == Material.ENCHANTED_GOLDEN_APPLE));
     }
 
     public static ItemApple getFrom(ObjectTag _item) {
@@ -23,7 +23,7 @@ public class ItemApple implements Property {
             return null;
         }
         else {
-            return new ItemApple((dItem) _item);
+            return new ItemApple((ItemTag) _item);
         }
     }
 
@@ -36,11 +36,11 @@ public class ItemApple implements Property {
     };
 
 
-    private ItemApple(dItem _item) {
+    private ItemApple(ItemTag _item) {
         item = _item;
     }
 
-    dItem item;
+    ItemTag item;
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -50,10 +50,10 @@ public class ItemApple implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.apple_enchanted>
+        // @attribute <ItemTag.apple_enchanted>
         // @returns ElementTag(Boolean)
         // @group properties
-        // @mechanism dItem.apple_enchanted
+        // @mechanism ItemTag.apple_enchanted
         // @description
         // Returns whether a golden apple item is enchanted.
         // NOTE: In 1.13+, enchanted golden apples are now a separate Material type, making this tag no longer required.
@@ -93,14 +93,14 @@ public class ItemApple implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name apple_enchanted
         // @input Element(Boolean)
         // @description
         // Changes whether a golden apple is enchanted.
         // NOTE: In 1.13+, enchanted golden apples are now a separate Material type, making this mechanism no longer required.
         // @tags
-        // <i@item.apple_enchanted>
+        // <ItemTag.apple_enchanted>
         // -->
 
         if (mechanism.matches("apple_enchanted") && mechanism.requireBoolean()) {

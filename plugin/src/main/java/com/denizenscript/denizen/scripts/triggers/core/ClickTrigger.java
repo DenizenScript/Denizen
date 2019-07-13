@@ -4,9 +4,9 @@ import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.npc.traits.TriggerTrait;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dNPC;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.tags.TagManager;
@@ -66,9 +66,9 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
             return;
         }
 
-        // The rest of the methods beyond this point require a dNPC object, which can easily be
+        // The rest of the methods beyond this point require a NPCTag object, which can easily be
         // obtained if a valid NPC object is available:
-        dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
+        NPCTag npc = DenizenAPI.getDenizenNPC(event.getNPC());
 
         // Now, check if the 'click trigger' specifically is enabled. 'name' is inherited from the
         // super AbstractTrigger and contains the name of the trigger that was use in registration.
@@ -77,7 +77,7 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
         }
 
         // We'll get the player too, since it makes reading the next few methods a bit easier:
-        dPlayer player = dPlayer.mirrorBukkitPlayer(event.getClicker());
+        PlayerTag player = PlayerTag.mirrorBukkitPlayer(event.getClicker());
 
         // Check availability based on the NPC's ENGAGED status and the trigger's COOLDOWN that is
         // provided (and adjustable) by the TriggerTrait. Just use .trigger(...)!
@@ -130,7 +130,7 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
                             (player, npc, false, null, false, null));
                     // Check if the item specified in the specified id's 'trigger:' key
                     // matches the item that the player is holding.
-                    dItem item = dItem.valueOf(entry_value, script);
+                    ItemTag item = ItemTag.valueOf(entry_value, script);
                     if (item == null) {
                         Debug.echoError("Invalid click trigger in script '" + script.getName() + "' (null trigger item)!");
                     }

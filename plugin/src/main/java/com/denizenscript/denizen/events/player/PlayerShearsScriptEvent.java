@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -29,7 +29,7 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
     // @Triggers when a player shears an entity.
     //
     // @Context
-    // <context.entity> returns the dEntity of the sheep.
+    // <context.entity> returns the EntityTag of the sheep.
     //
     // -->
 
@@ -38,7 +38,7 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     public static PlayerShearsScriptEvent instance;
-    public dEntity entity;
+    public EntityTag entity;
     public PlayerShearEntityEvent event;
 
     @Override
@@ -78,7 +78,7 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(new PlayerTag(event.getPlayer()), null);
     }
 
     @Override
@@ -94,10 +94,10 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
 
     @EventHandler
     public void onPlayerShears(PlayerShearEntityEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        entity = new dEntity(event.getEntity());
+        entity = new EntityTag(event.getEntity());
         this.event = event;
         fire(event);
     }

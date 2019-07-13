@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -29,7 +29,7 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Context
     // <context.amount> returns the amount the entity healed.
-    // <context.entity> returns the dEntity that healed.
+    // <context.entity> returns the EntityTag that healed.
     // <context.reason> returns the cause of the entity healing. Can be: <@link url http://bit.ly/2GTtxsf>
     //
     // @Determine
@@ -46,7 +46,7 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     public static EntityHealsScriptEvent instance;
-    public dEntity entity;
+    public EntityTag entity;
     public ElementTag amount;
     public ElementTag reason;
     public EntityRegainHealthEvent event;
@@ -91,8 +91,8 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? EntityTag.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? EntityTag.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -111,7 +111,7 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
 
     @EventHandler
     public void onEntityHeals(EntityRegainHealthEvent event) {
-        entity = new dEntity(event.getEntity());
+        entity = new EntityTag(event.getEntity());
         amount = new ElementTag(event.getAmount());
         reason = new ElementTag(event.getRegainReason().toString());
         this.event = event;

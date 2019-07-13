@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.material;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -12,9 +12,9 @@ import org.bukkit.block.data.Levelled;
 public class MaterialLevel implements Property {
 
     public static boolean describes(ObjectTag material) {
-        return material instanceof dMaterial
-                && ((dMaterial) material).hasModernData()
-                && ((dMaterial) material).getModernData().data instanceof Levelled;
+        return material instanceof MaterialTag
+                && ((MaterialTag) material).hasModernData()
+                && ((MaterialTag) material).getModernData().data instanceof Levelled;
     }
 
     public static MaterialLevel getFrom(ObjectTag _material) {
@@ -22,7 +22,7 @@ public class MaterialLevel implements Property {
             return null;
         }
         else {
-            return new MaterialLevel((dMaterial) _material);
+            return new MaterialLevel((MaterialTag) _material);
         }
     }
 
@@ -35,11 +35,11 @@ public class MaterialLevel implements Property {
     };
 
 
-    private MaterialLevel(dMaterial _material) {
+    private MaterialLevel(MaterialTag _material) {
         material = _material;
     }
 
-    dMaterial material;
+    MaterialTag material;
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -49,7 +49,7 @@ public class MaterialLevel implements Property {
         }
 
         // <--[tag]
-        // @attribute <m@material.maximum_level>
+        // @attribute <MaterialTag.maximum_level>
         // @returns ElementTag(Number)
         // @group properties
         // @description
@@ -60,9 +60,9 @@ public class MaterialLevel implements Property {
         }
 
         // <--[tag]
-        // @attribute <m@material.level>
+        // @attribute <MaterialTag.level>
         // @returns ElementTag(Number)
-        // @mechanism dMaterial.level
+        // @mechanism MaterialTag.level
         // @group properties
         // @description
         // Returns the current level for a levelable material (like water, lava, and Cauldrons).
@@ -100,14 +100,14 @@ public class MaterialLevel implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dMaterial
+        // @object MaterialTag
         // @name level
         // @input Element(Number)
         // @description
         // Sets the current level for a levelable material (like water, lava, and Cauldrons).
         // @tags
-        // <m@material.level>
-        // <m@material.maximum_level>
+        // <MaterialTag.level>
+        // <MaterialTag.maximum_level>
         // -->
         if (mechanism.matches("level") && mechanism.requireInteger()) {
             int level = mechanism.getValue().asInt();

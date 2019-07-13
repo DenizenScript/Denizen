@@ -8,7 +8,7 @@ import com.denizenscript.denizen.events.entity.EntityDespawnScriptEvent;
 import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.properties.entity.EntityBoundingBox;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
@@ -43,12 +43,12 @@ public class EntityScriptHelper implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onEntityDeath(EntityDeathEvent event) {
         Entity entity = event.getEntity();
-        dEntity.rememberEntity(entity);
-        EntityDespawnScriptEvent.instance.entity = new dEntity(entity);
+        EntityTag.rememberEntity(entity);
+        EntityDespawnScriptEvent.instance.entity = new EntityTag(entity);
         EntityDespawnScriptEvent.instance.cause = new ElementTag("DEATH");
         EntityDespawnScriptEvent.instance.cancelled = false;
         EntityDespawnScriptEvent.instance.fire();
-        dEntity.forgetEntity(entity);
+        EntityTag.forgetEntity(entity);
         unlinkEntity(event.getEntity());
     }
 
@@ -89,12 +89,12 @@ public class EntityScriptHelper implements Listener {
         // CraftBukkit: https://github.com/Bukkit/CraftBukkit/pull/1386
         for (Entity ent : event.getChunk().getEntities()) {
             if (!(ent instanceof LivingEntity) || ((LivingEntity) ent).getRemoveWhenFarAway()) {
-                dEntity.rememberEntity(ent);
-                EntityDespawnScriptEvent.instance.entity = new dEntity(ent);
+                EntityTag.rememberEntity(ent);
+                EntityDespawnScriptEvent.instance.entity = new EntityTag(ent);
                 EntityDespawnScriptEvent.instance.cause = new ElementTag("CHUNK_UNLOAD");
                 EntityDespawnScriptEvent.instance.cancelled = false;
                 EntityDespawnScriptEvent.instance.fire();
-                dEntity.forgetEntity(ent);
+                EntityTag.forgetEntity(ent);
                 unlinkEntity(ent);
             }
         }
@@ -201,7 +201,7 @@ public class EntityScriptHelper implements Listener {
                     @Override
                     public void run() {
                         entities.remove(ent.getUniqueId());
-                        FlagManager.clearEntityFlags(new dEntity(ent));
+                        FlagManager.clearEntityFlags(new EntityTag(ent));
                         EntityBoundingBox.remove(ent.getUniqueId());
                     }
                 }, 5);

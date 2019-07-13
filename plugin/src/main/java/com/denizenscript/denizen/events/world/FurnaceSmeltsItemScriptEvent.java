@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.world;
 
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -25,12 +25,12 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
     // @Triggers when a furnace smelts an item.
     //
     // @Context
-    // <context.location> returns the dLocation of the furnace.
-    // <context.source_item> returns the dItem that is being smelted.
-    // <context.result_item> returns the dItem that is the result of the smelting.
+    // <context.location> returns the LocationTag of the furnace.
+    // <context.source_item> returns the ItemTag that is being smelted.
+    // <context.result_item> returns the ItemTag that is the result of the smelting.
     //
     // @Determine
-    // dItem to set the item that is the result of the smelting.
+    // ItemTag to set the item that is the result of the smelting.
     //
     // -->
 
@@ -39,9 +39,9 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
     }
 
     public static FurnaceSmeltsItemScriptEvent instance;
-    public dItem source_item;
-    public dItem result_item;
-    public dLocation location;
+    public ItemTag source_item;
+    public ItemTag result_item;
+    public LocationTag location;
     public FurnaceSmeltEvent event;
 
     @Override
@@ -72,8 +72,8 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (dItem.matches(determination)) {
-            result_item = dItem.valueOf(determination, container);
+        if (ItemTag.matches(determination)) {
+            result_item = ItemTag.valueOf(determination, container);
             return true;
         }
         return super.applyDetermination(container, determination);
@@ -95,9 +95,9 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
 
     @EventHandler
     public void onFurnaceSmelts(FurnaceSmeltEvent event) {
-        location = new dLocation(event.getBlock().getLocation());
-        source_item = new dItem(event.getSource());
-        result_item = new dItem(event.getResult());
+        location = new LocationTag(event.getBlock().getLocation());
+        source_item = new ItemTag(event.getSource());
+        result_item = new ItemTag(event.getResult());
         this.event = event;
         fire(event);
         event.setResult(result_item.getItemStack());

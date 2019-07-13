@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.properties.entity.EntityPotionEffects;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -32,12 +32,12 @@ public class EntityPotionEffectScriptEvent extends BukkitScriptEvent implements 
     // @Triggers when an entity's potion effects change.
     //
     // @Context
-    // <context.entity> returns the dEntity.
+    // <context.entity> returns the EntityTag.
     // <context.cause> returns the cause of the effect change, based on <@see link https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EntityPotionEffectEvent.Cause.html>
     // <context.action> returns the action of the effect changed, which can be 'added', 'changed', 'cleared', or 'removed'
     // <context.override> returns whether the new potion effect will override the old.
-    // <context.new_effect> returns the new potion effect (in the same format as <@link tag e@entity.list_effects>).
-    // <context.old_effect> returns the new potion effect (in the same format as <@link tag e@entity.list_effects>).
+    // <context.new_effect> returns the new potion effect (in the same format as <@link tag EntityTag.list_effects>).
+    // <context.old_effect> returns the new potion effect (in the same format as <@link tag EntityTag.list_effects>).
     // <context.effect_type> returns the name of the modified potion effect type.
     //
     // @Determine
@@ -54,7 +54,7 @@ public class EntityPotionEffectScriptEvent extends BukkitScriptEvent implements 
     }
 
     public static EntityPotionEffectScriptEvent instance;
-    public dEntity entity;
+    public EntityTag entity;
     public EntityPotionEffectEvent event;
 
     @Override
@@ -107,8 +107,8 @@ public class EntityPotionEffectScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? EntityTag.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? EntityTag.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -139,7 +139,7 @@ public class EntityPotionEffectScriptEvent extends BukkitScriptEvent implements 
 
     @EventHandler
     public void onEntityPotionEffect(EntityPotionEffectEvent event) {
-        entity = new dEntity(event.getEntity());
+        entity = new EntityTag(event.getEntity());
         this.event = event;
         fire(event);
     }

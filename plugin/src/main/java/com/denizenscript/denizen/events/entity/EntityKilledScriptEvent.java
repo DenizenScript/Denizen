@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dNPC;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -44,12 +44,12 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
     // @Warning This event may mis-fire in some cases, particularly with plugins or scripts modify the damage from scripts. If you need reliable death tracking, the entity death event may be better.
     //
     // @Context
-    // <context.entity> returns the dEntity that was killed.
+    // <context.entity> returns the EntityTag that was killed.
     // <context.cause> returns the an ElementTag of reason the entity was damaged - see <@link language damage cause> for causes.
     // <context.damage> returns an Element(Decimal) of the amount of damage dealt.
     // <context.final_damage> returns an Element(Decimal) of the amount of damage dealt, after armor is calculated.
-    // <context.damager> returns the dEntity damaging the other entity.
-    // <context.projectile> returns a dEntity of the projectile shot by the damager, if any.
+    // <context.damager> returns the EntityTag damaging the other entity.
+    // <context.projectile> returns a EntityTag of the projectile shot by the damager, if any.
     // <context.damage_TYPE> returns the damage dealt by a specific damage type where TYPE can be any of: BASE, HARD_HAT, BLOCKING, ARMOR, RESISTANCE, MAGIC, ABSORPTION.
     //
     // @Determine
@@ -67,12 +67,12 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
 
     public static EntityKilledScriptEvent instance;
 
-    public dEntity entity;
+    public EntityTag entity;
     public ElementTag cause;
     public ElementTag damage;
     public ElementTag final_damage;
-    public dEntity damager;
-    public dEntity projectile;
+    public EntityTag damager;
+    public EntityTag projectile;
     public EntityDamageEvent event;
 
     @Override
@@ -130,13 +130,13 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        dPlayer player = entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null;
+        PlayerTag player = entity.isPlayer() ? EntityTag.getPlayerFrom(event.getEntity()) : null;
         if (damager != null && player == null && damager.isPlayer()) {
-            player = dEntity.getPlayerFrom(damager.getBukkitEntity());
+            player = EntityTag.getPlayerFrom(damager.getBukkitEntity());
         }
-        dNPC npc = entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null;
+        NPCTag npc = entity.isCitizensNPC() ? EntityTag.getNPCFrom(event.getEntity()) : null;
         if (damager != null && npc == null && damager.isCitizensNPC()) {
-            npc = dEntity.getNPCFrom(damager.getBukkitEntity());
+            npc = EntityTag.getNPCFrom(damager.getBukkitEntity());
         }
         return new BukkitScriptEntryData(player, npc);
     }
@@ -173,7 +173,7 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onEntityKilled(EntityDamageEvent event) {
-        entity = new dEntity(event.getEntity());
+        entity = new EntityTag(event.getEntity());
         // Check for possibility of death first
         if (entity.isValid() && entity.isLivingEntity()) {
             if (event.getFinalDamage() < entity.getLivingEntity().getHealth()) {
@@ -189,7 +189,7 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
         damager = null;
         projectile = null;
         if (event instanceof EntityDamageByEntityEvent) {
-            damager = new dEntity(((EntityDamageByEntityEvent) event).getDamager());
+            damager = new EntityTag(((EntityDamageByEntityEvent) event).getDamager());
             if (damager.isProjectile()) {
                 projectile = damager;
                 if (damager.hasShooter()) {

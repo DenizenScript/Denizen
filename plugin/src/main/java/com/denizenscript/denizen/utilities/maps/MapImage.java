@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.utilities.maps;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapView;
@@ -59,7 +59,7 @@ public class MapImage extends MapObject {
     }
 
     @Override
-    public void render(MapView mapView, MapCanvas mapCanvas, dPlayer player, UUID uuid) {
+    public void render(MapView mapView, MapCanvas mapCanvas, PlayerTag player, UUID uuid) {
         if (actualFile == null) {
             String file = fileTag;
             actualFile = DenizenMapManager.getActualFile(file);

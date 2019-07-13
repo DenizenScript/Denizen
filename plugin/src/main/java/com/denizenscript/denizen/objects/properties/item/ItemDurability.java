@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -10,8 +10,8 @@ import com.denizenscript.denizencore.tags.Attribute;
 public class ItemDurability implements Property {
 
     public static boolean describes(ObjectTag item) {
-        return item instanceof dItem
-                && ((dItem) item).isRepairable();
+        return item instanceof ItemTag
+                && ((ItemTag) item).isRepairable();
     }
 
     public static ItemDurability getFrom(ObjectTag _item) {
@@ -19,7 +19,7 @@ public class ItemDurability implements Property {
             return null;
         }
         else {
-            return new ItemDurability((dItem) _item);
+            return new ItemDurability((ItemTag) _item);
         }
     }
 
@@ -32,11 +32,11 @@ public class ItemDurability implements Property {
     };
 
 
-    private ItemDurability(dItem _item) {
+    private ItemDurability(ItemTag _item) {
         item = _item;
     }
 
-    dItem item;
+    ItemTag item;
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -46,9 +46,9 @@ public class ItemDurability implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.durability>
+        // @attribute <ItemTag.durability>
         // @returns ElementTag(Number)
-        // @mechanism dItem.durability
+        // @mechanism ItemTag.durability
         // @group properties
         // @description
         // Returns the current durability (number of uses) on the item.
@@ -59,12 +59,12 @@ public class ItemDurability implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.max_durability>
+        // @attribute <ItemTag.max_durability>
         // @returns ElementTag(Number)
         // @group properties
         // @description
         // Returns the maximum durability (number of uses) of this item.
-        // For use with <@link tag i@item.durability> and <@link mechanism dItem.durability>.
+        // For use with <@link tag ItemTag.durability> and <@link mechanism ItemTag.durability>.
         // -->
         if (attribute.startsWith("max_durability")) {
             return new ElementTag(item.getMaterial().getMaterial().getMaxDurability())
@@ -94,15 +94,15 @@ public class ItemDurability implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name durability
         // @input Element(Number)
         // @description
         // Changes the durability of damageable items.
         // @tags
-        // <i@item.durability>
-        // <i@item.max_durability>
-        // <i@item.repairable>
+        // <ItemTag.durability>
+        // <ItemTag.max_durability>
+        // <ItemTag.repairable>
         // -->
 
         if (mechanism.matches("durability") && mechanism.requireInteger()) {

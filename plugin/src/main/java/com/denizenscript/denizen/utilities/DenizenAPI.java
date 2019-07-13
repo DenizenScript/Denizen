@@ -2,7 +2,7 @@ package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.npc.DenizenNPCHelper;
-import com.denizenscript.denizen.objects.dNPC;
+import com.denizenscript.denizen.objects.NPCTag;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -15,13 +15,13 @@ public class DenizenAPI {
     private static Denizen denizen;
 
     /**
-     * Returns a dNPC object when given a valid NPC. DenizenNPCs have some methods
+     * Returns a NPCTag object when given a valid NPC. DenizenNPCs have some methods
      * specific to Denizen functionality as well as easy access to the attached NPC and LivingEntity.
      *
      * @param npc the Citizens NPC
-     * @return a dNPC
+     * @return a NPCTag
      */
-    public static dNPC getDenizenNPC(NPC npc) {
+    public static NPCTag getDenizenNPC(NPC npc) {
         return DenizenNPCHelper.getDenizen(npc);
     }
 

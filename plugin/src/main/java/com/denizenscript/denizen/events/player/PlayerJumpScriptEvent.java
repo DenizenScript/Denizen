@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -34,7 +34,7 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
 
     public static PlayerJumpScriptEvent instance;
 
-    public dLocation location;
+    public LocationTag location;
     public PlayerMoveEvent event;
 
     @Override
@@ -63,7 +63,7 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
     @Override
     public ScriptEntryData getScriptEntryData() {
         // TODO: Store the player / npc?
-        return new BukkitScriptEntryData(event != null ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
+        return new BukkitScriptEntryData(event != null ? EntityTag.getPlayerFrom(event.getPlayer()) : null, null);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
 
     @EventHandler
     public void onPlayerJumps(PlayerMoveEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
         // Check that the block level changed (Upward)
@@ -86,7 +86,7 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
                 // and that the player isn't in any form of fast moving vehicle
                 && event.getPlayer().getVehicle() == null) {
             // Not perfect checking, but close enough until Bukkit adds a proper event
-            location = new dLocation(event.getFrom());
+            location = new LocationTag(event.getFrom());
             this.event = event;
             fire(event);
         }

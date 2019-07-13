@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.block;
 
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -24,8 +24,8 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Triggers when a block grows naturally in the world, EG, when wheat, sugar canes, cacti, watermelons or pumpkins grow.
     // @Context
-    // <context.location> returns the dLocation of the block that grew.
-    // <context.material> returns the dMaterial of the block that grew.
+    // <context.location> returns the LocationTag of the block that grew.
+    // <context.material> returns the MaterialTag of the block that grew.
     //
     // -->
 
@@ -34,8 +34,8 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     public static BlockGrowsScriptEvent instance;
-    public dLocation location;
-    public dMaterial material;
+    public LocationTag location;
+    public MaterialTag material;
     public BlockGrowEvent event;
 
     @Override
@@ -49,7 +49,7 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
         if (block.equals("block")) {
             return true;
         }
-        dMaterial mat = dMaterial.valueOf(block);
+        MaterialTag mat = MaterialTag.valueOf(block);
         return mat != null && !mat.isStructure();
     }
 
@@ -88,8 +88,8 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
 
     @EventHandler
     public void onBlockGrows(BlockGrowEvent event) {
-        location = new dLocation(event.getBlock().getLocation());
-        material = new dMaterial(event.getNewState());
+        location = new LocationTag(event.getBlock().getLocation());
+        material = new MaterialTag(event.getNewState());
         this.event = event;
         fire(event);
     }

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.world;
 
-import com.denizenscript.denizen.objects.dWorld;
+import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -22,7 +22,7 @@ public class WorldSavesScriptEvent extends BukkitScriptEvent implements Listener
     // @Triggers when a world is saved.
     //
     // @Context
-    // <context.world> returns the dWorld that was saved.
+    // <context.world> returns the WorldTag that was saved.
     //
     // -->
 
@@ -31,7 +31,7 @@ public class WorldSavesScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     public static WorldSavesScriptEvent instance;
-    public dWorld world;
+    public WorldTag world;
     public WorldSaveEvent event;
 
     @Override
@@ -69,7 +69,7 @@ public class WorldSavesScriptEvent extends BukkitScriptEvent implements Listener
 
     @EventHandler
     public void onWorldSaves(WorldSaveEvent event) {
-        world = new dWorld(event.getWorld());
+        world = new WorldTag(event.getWorld());
         this.event = event;
         fire(event);
     }

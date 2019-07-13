@@ -6,8 +6,8 @@ import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
 import com.denizenscript.denizen.nms.util.Advancement;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -64,13 +64,13 @@ public class ToastCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("targets")
                     && arg.matchesPrefix("target", "targets", "t")
-                    && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
+                    && arg.matchesArgumentList(PlayerTag.class)) {
+                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("icon")
                     && arg.matchesPrefix("icon", "i")
-                    && arg.matchesArgumentType(dItem.class)) {
-                scriptEntry.addObject("icon", arg.asType(dItem.class));
+                    && arg.matchesArgumentType(ItemTag.class)) {
+                scriptEntry.addObject("icon", arg.asType(ItemTag.class));
             }
             else if (!scriptEntry.hasObject("frame")
                     && arg.matchesPrefix("frame", "f")
@@ -103,7 +103,7 @@ public class ToastCommand extends AbstractCommand {
             }
         }
 
-        scriptEntry.defaultObject("icon", new dItem(Material.AIR));
+        scriptEntry.defaultObject("icon", new ItemTag(Material.AIR));
         scriptEntry.defaultObject("frame", new ElementTag("TASK"));
         scriptEntry.defaultObject("background", new ElementTag("textures/gui/advancements/backgrounds/adventure.png"));
     }
@@ -114,8 +114,8 @@ public class ToastCommand extends AbstractCommand {
         ElementTag text = scriptEntry.getElement("text");
         ElementTag frame = scriptEntry.getElement("frame");
         ElementTag background = scriptEntry.getElement("background");
-        dItem icon = scriptEntry.getdObject("icon");
-        final List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
+        ItemTag icon = scriptEntry.getdObject("icon");
+        final List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
 
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, name, text.debug() + frame.debug() + icon.debug()
@@ -138,7 +138,7 @@ public class ToastCommand extends AbstractCommand {
 
         final AdvancementHelper advancementHelper = NMSHandler.getInstance().getAdvancementHelper();
 
-        for (dPlayer target : targets) {
+        for (PlayerTag target : targets) {
             Player player = target.getPlayerEntity();
             if (player != null) {
                 advancementHelper.grant(advancement, player);

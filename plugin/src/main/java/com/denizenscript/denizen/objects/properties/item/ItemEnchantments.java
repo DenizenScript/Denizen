@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -19,7 +19,7 @@ public class ItemEnchantments implements Property {
 
     public static boolean describes(ObjectTag item) {
         // Technically, all items can hold enchants.
-        return item instanceof dItem;
+        return item instanceof ItemTag;
     }
 
     public static ItemEnchantments getFrom(ObjectTag _item) {
@@ -27,7 +27,7 @@ public class ItemEnchantments implements Property {
             return null;
         }
         else {
-            return new ItemEnchantments((dItem) _item);
+            return new ItemEnchantments((ItemTag) _item);
         }
     }
 
@@ -40,11 +40,11 @@ public class ItemEnchantments implements Property {
     };
 
 
-    private ItemEnchantments(dItem _item) {
+    private ItemEnchantments(ItemTag _item) {
         item = _item;
     }
 
-    dItem item;
+    ItemTag item;
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -54,9 +54,9 @@ public class ItemEnchantments implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.is_enchanted>
+        // @attribute <ItemTag.is_enchanted>
         // @returns ElementTag(Boolean)
-        // @mechanism dItem.enchantments
+        // @mechanism ItemTag.enchantments
         // @group properties
         // @description
         // Returns whether the item has any enchantments.
@@ -67,9 +67,9 @@ public class ItemEnchantments implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.enchantments.with_levels>
+        // @attribute <ItemTag.enchantments.with_levels>
         // @returns ListTag
-        // @mechanism dItem.enchantments
+        // @mechanism ItemTag.enchantments
         // @group properties
         // @description
         // Returns a list of enchantments on the item, with their levels listed too.
@@ -88,9 +88,9 @@ public class ItemEnchantments implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.enchantments.levels>
+        // @attribute <ItemTag.enchantments.levels>
         // @returns ListTag
-        // @mechanism dItem.enchantments
+        // @mechanism ItemTag.enchantments
         // @group properties
         // @description
         // Returns a list of enchantments on the item, showing only the level.
@@ -108,9 +108,9 @@ public class ItemEnchantments implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.enchantments.level[<name>]>
+        // @attribute <ItemTag.enchantments.level[<name>]>
         // @returns ElementTag(Number)
-        // @mechanism dItem.enchantments
+        // @mechanism ItemTag.enchantments
         // @group properties
         // @description
         // Returns the level of a specified enchantment.
@@ -131,9 +131,9 @@ public class ItemEnchantments implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.enchantments>
+        // @attribute <ItemTag.enchantments>
         // @returns ListTag
-        // @mechanism dItem.enchantments
+        // @mechanism ItemTag.enchantments
         // @group properties
         // @description
         // Returns a list of enchantments on the item.
@@ -188,16 +188,16 @@ public class ItemEnchantments implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name remove_enchantments
         // @input None
         // @description
         // Removes the specified enchantments from the item (as a list of enchantment names).
         // Give no value input to remove all enchantments.
         // @tags
-        // <i@item.enchantments>
-        // <i@item.enchantments.levels>
-        // <i@item.enchantments.with_levels>
+        // <ItemTag.enchantments>
+        // <ItemTag.enchantments.levels>
+        // <ItemTag.enchantments.with_levels>
         // -->
         if (mechanism.matches("remove_enchantments")) {
             HashSet<String> names = null;
@@ -226,16 +226,16 @@ public class ItemEnchantments implements Property {
         }
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name enchantments
         // @input ListTag
         // @description
         // Sets the item's enchantments.
         // For a list of valid enchantment names, refer to <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html>
         // @tags
-        // <i@item.enchantments>
-        // <i@item.enchantments.levels>
-        // <i@item.enchantments.with_levels>
+        // <ItemTag.enchantments>
+        // <ItemTag.enchantments.levels>
+        // <ItemTag.enchantments.with_levels>
         // -->
 
         if (mechanism.matches("enchantments")) {

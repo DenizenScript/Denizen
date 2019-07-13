@@ -6,9 +6,9 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.Position;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -38,9 +38,9 @@ public class FlyCommand extends AbstractCommand {
     // TODO: Document Command Details
     //
     // @Tags
-    // <p@player.can_fly>
-    // <p@player.fly_speed>
-    // <p@player.is_flying>
+    // <PlayerTag.can_fly>
+    // <PlayerTag.fly_speed>
+    // <PlayerTag.is_flying>
     //
     // @Usage
     // TODO: Document Command Details
@@ -61,24 +61,24 @@ public class FlyCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("destinations")
                     && arg.matchesPrefix("destination", "destinations", "d")) {
 
-                scriptEntry.addObject("destinations", arg.asType(ListTag.class).filter(dLocation.class, scriptEntry));
+                scriptEntry.addObject("destinations", arg.asType(ListTag.class).filter(LocationTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("controller")
-                    && arg.matchesArgumentType(dPlayer.class)
+                    && arg.matchesArgumentType(PlayerTag.class)
                     && arg.matchesPrefix("controller", "c")) {
 
-                // Check if it matches a dPlayer, but save it as a dEntity
-                scriptEntry.addObject("controller", (arg.asType(dEntity.class)));
+                // Check if it matches a PlayerTag, but save it as a EntityTag
+                scriptEntry.addObject("controller", (arg.asType(EntityTag.class)));
             }
             else if (!scriptEntry.hasObject("origin")
-                    && arg.matchesArgumentType(dLocation.class)) {
+                    && arg.matchesArgumentType(LocationTag.class)) {
 
-                scriptEntry.addObject("origin", arg.asType(dLocation.class));
+                scriptEntry.addObject("origin", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class)) {
+                    && arg.matchesArgumentList(EntityTag.class)) {
 
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("rotationthreshold")
                     && arg.matchesPrefix("rotationthreshold", "rotation", "r")
@@ -119,16 +119,16 @@ public class FlyCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) {
         // Get objects
 
-        dLocation origin = (dLocation) scriptEntry.getObject("origin");
-        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-        final List<dLocation> destinations = scriptEntry.hasObject("destinations") ?
-                (List<dLocation>) scriptEntry.getObject("destinations") :
+        LocationTag origin = (LocationTag) scriptEntry.getObject("origin");
+        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
+        final List<LocationTag> destinations = scriptEntry.hasObject("destinations") ?
+                (List<LocationTag>) scriptEntry.getObject("destinations") :
                 new ArrayList<>();
 
         // Set freeflight to true only if there are no destinations
         final boolean freeflight = destinations.size() < 1;
 
-        dEntity controller = (dEntity) scriptEntry.getObject("controller");
+        EntityTag controller = (EntityTag) scriptEntry.getObject("controller");
 
         // If freeflight is on, we need to do some checks
         if (freeflight) {
@@ -136,7 +136,7 @@ public class FlyCommand extends AbstractCommand {
             // If no controller was set, we need someone to control the
             // flying entities, so try to find a player in the entity list
             if (controller == null) {
-                for (dEntity entity : entities) {
+                for (EntityTag entity : entities) {
                     if (entity.isPlayer()) {
                         // If this player will be a rider on something, and will not
                         // be at the bottom ridden by the other entities, set it as
@@ -165,7 +165,7 @@ public class FlyCommand extends AbstractCommand {
             else {
                 boolean found = false;
 
-                for (dEntity entity : entities) {
+                for (EntityTag entity : entities) {
                     if (entity.identify().equals(controller.identify())) {
                         found = true;
                         break;
@@ -201,7 +201,7 @@ public class FlyCommand extends AbstractCommand {
         if (!cancel) {
 
             // Go through all the entities, spawning/teleporting them
-            for (dEntity entity : entities) {
+            for (EntityTag entity : entities) {
                 entity.spawnAt(origin);
             }
 

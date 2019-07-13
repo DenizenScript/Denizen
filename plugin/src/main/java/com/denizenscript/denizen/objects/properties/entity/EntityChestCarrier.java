@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -11,8 +11,8 @@ import com.denizenscript.denizencore.tags.Attribute;
 public class EntityChestCarrier implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity
-                && NMSHandler.getInstance().getEntityHelper().isChestedHorse(((dEntity) entity).getBukkitEntity());
+        return entity instanceof EntityTag
+                && NMSHandler.getInstance().getEntityHelper().isChestedHorse(((EntityTag) entity).getBukkitEntity());
     }
 
     public static EntityChestCarrier getFrom(ObjectTag entity) {
@@ -20,7 +20,7 @@ public class EntityChestCarrier implements Property {
             return null;
         }
         else {
-            return new EntityChestCarrier((dEntity) entity);
+            return new EntityChestCarrier((EntityTag) entity);
         }
     }
 
@@ -37,11 +37,11 @@ public class EntityChestCarrier implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityChestCarrier(dEntity entity) {
+    private EntityChestCarrier(EntityTag entity) {
         this.entity = entity;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     /////////
     // Property Methods
@@ -69,9 +69,9 @@ public class EntityChestCarrier implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.carries_chest>
+        // @attribute <EntityTag.carries_chest>
         // @returns ElementTag(Boolean)
-        // @mechanism dEntity.carries_chest
+        // @mechanism EntityTag.carries_chest
         // @group properties
         // @description
         // If the entity is a horse, returns whether it is carrying a chest.
@@ -88,13 +88,13 @@ public class EntityChestCarrier implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name carries_chest
         // @input Element(Boolean)
         // @description
         // Changes whether a Horse carries a chest.
         // @tags
-        // <e@entity.carries_chest>
+        // <EntityTag.carries_chest>
         // -->
 
         if (mechanism.matches("carries_chest") && mechanism.requireBoolean()) {

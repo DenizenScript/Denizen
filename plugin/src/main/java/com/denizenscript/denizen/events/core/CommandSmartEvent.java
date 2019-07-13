@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.events.core;
 
-import com.denizenscript.denizen.objects.dCuboid;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dWorld;
+import com.denizenscript.denizen.objects.CuboidTag;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.scripts.containers.core.BukkitWorldScriptHelper;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -122,7 +122,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
     // <context.args> returns a ListTag of the arguments.
     // <context.server> returns true if the command was run from the console.
     // <context.command_block_location> returns the command block's location (if the command was run from one).
-    // <context.command_minecart> returns the dEntity of the command minecart (if the command was run from one).
+    // <context.command_minecart> returns the EntityTag of the command minecart (if the command was run from one).
     //
     // @Determine
     // "FULFILLED" to tell Bukkit the command was handled.
@@ -142,18 +142,18 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
         events.addAll(getAll(command));
 
         // Look for cuboids that contain the block's location
-        List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getPlayer().getLocation());
+        List<CuboidTag> cuboids = CuboidTag.getNotableCuboidsContaining(event.getPlayer().getLocation());
 
         ListTag cuboid_context = new ListTag();
         List<String> cuboidEvents = new ArrayList<>();
-        for (dCuboid cuboid : cuboids) {
+        for (CuboidTag cuboid : cuboids) {
             for (String str : events) {
                 cuboidEvents.add(str + " in " + cuboid.identifySimple());
             }
             cuboid_context.add(cuboid.identifySimple());
         }
         for (String str : events) {
-            cuboidEvents.add(str + " in " + new dWorld(event.getPlayer().getLocation().getWorld()).identifySimple());
+            cuboidEvents.add(str + " in " + new WorldTag(event.getPlayer().getLocation().getWorld()).identifySimple());
         }
         events.addAll(cuboidEvents);
         // Add in cuboids context, with either the cuboids or an empty list
@@ -172,7 +172,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
 
         // Run any event scripts and get the determination.
         determination = BukkitWorldScriptHelper.doEvents(events,
-                null, dEntity.getPlayerFrom(event.getPlayer()), context, true).toUpperCase();
+                null, EntityTag.getPlayerFrom(event.getPlayer()), context, true).toUpperCase();
 
         // If a script has determined fulfilled, cancel this event so the player doesn't
         // receive the default 'Invalid command' gibberish from bukkit.
@@ -210,10 +210,10 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
 
         CommandSender sender = event.getSender();
         if (sender instanceof BlockCommandSender) {
-            context.put("command_block_location", new dLocation(((BlockCommandSender) sender).getBlock().getLocation()));
+            context.put("command_block_location", new LocationTag(((BlockCommandSender) sender).getBlock().getLocation()));
         }
         else if (sender instanceof CommandMinecart) {
-            context.put("command_minecart", new dEntity((CommandMinecart) sender));
+            context.put("command_minecart", new EntityTag((CommandMinecart) sender));
         }
 
         String determination = BukkitWorldScriptHelper.doEvents(events, null, null, context);

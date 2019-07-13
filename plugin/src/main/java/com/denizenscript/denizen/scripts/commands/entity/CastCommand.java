@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -39,7 +39,7 @@ public class CastCommand extends AbstractCommand {
     // Optionally, specify "hide_particles" to remove the particle effects entirely.
     //
     // @Tags
-    // <e@entity.has_effect[<effect>]>
+    // <EntityTag.has_effect[<effect>]>
     // <server.list_potion_effects>
     //
     // @Usage
@@ -86,8 +86,8 @@ public class CastCommand extends AbstractCommand {
                 scriptEntry.addObject("effect", PotionEffectType.getByName(arg.asElement().asString()));
             }
             else if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class)) {
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
+                    && arg.matchesArgumentList(EntityTag.class)) {
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
 
             }
             else {
@@ -118,7 +118,7 @@ public class CastCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
         // Fetch objects
-        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         PotionEffectType effect = (PotionEffectType) scriptEntry.getObject("effect");
         int amplifier = scriptEntry.getElement("amplifier").asInt();
         DurationTag duration = (DurationTag) scriptEntry.getObject("duration");
@@ -141,7 +141,7 @@ public class CastCommand extends AbstractCommand {
         boolean showP = showParticles.asBoolean();
 
         // Apply the PotionEffect to the targets!
-        for (dEntity entity : entities) {
+        for (EntityTag entity : entities) {
             if (entity.getLivingEntity().hasPotionEffect(effect)) {
                 entity.getLivingEntity().removePotionEffect(effect);
             }

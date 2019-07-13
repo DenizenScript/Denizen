@@ -25,7 +25,7 @@ public class VulnerableCommand extends AbstractCommand {
     // Toggles whether an NPC can be hurt or not.
     //
     // @Tags
-    // <n@npc.invulnerable>
+    // <NPCTag.invulnerable>
     //
     // @Usage
     // Makes an NPC vulnerable.

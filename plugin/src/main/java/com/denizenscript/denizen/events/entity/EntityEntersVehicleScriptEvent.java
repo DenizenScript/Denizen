@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -28,8 +28,8 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
     // @Triggers when an entity enters a vehicle.
     //
     // @Context
-    // <context.vehicle> returns the dEntity of the vehicle.
-    // <context.entity> returns the dEntity of the entering entity.
+    // <context.vehicle> returns the EntityTag of the vehicle.
+    // <context.entity> returns the EntityTag of the entering entity.
     //
     // @Player when the entity that entered the vehicle is a player.
     //
@@ -42,8 +42,8 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
     }
 
     public static EntityEntersVehicleScriptEvent instance;
-    public dEntity vehicle;
-    public dEntity entity;
+    public EntityTag vehicle;
+    public EntityTag entity;
     public VehicleEnterEvent event;
 
     @Override
@@ -98,8 +98,8 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
 
     @EventHandler
     public void onEntityEntersVehicle(VehicleEnterEvent event) {
-        vehicle = new dEntity(event.getVehicle());
-        entity = new dEntity(event.getEntered());
+        vehicle = new EntityTag(event.getVehicle());
+        entity = new EntityTag(event.getEntered());
         this.event = event;
         fire(event);
     }

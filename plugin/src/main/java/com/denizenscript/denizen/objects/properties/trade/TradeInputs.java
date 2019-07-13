@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.objects.properties.trade;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dTrade;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.TradeTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -16,14 +16,14 @@ import java.util.List;
 public class TradeInputs implements Property {
 
     public static boolean describes(ObjectTag recipe) {
-        return recipe instanceof dTrade;
+        return recipe instanceof TradeTag;
     }
 
     public static TradeInputs getFrom(ObjectTag recipe) {
         if (!describes(recipe)) {
             return null;
         }
-        return new TradeInputs((dTrade) recipe);
+        return new TradeInputs((TradeTag) recipe);
     }
 
     public static final String[] handledTags = new String[] {
@@ -34,9 +34,9 @@ public class TradeInputs implements Property {
             "inputs"
     };
 
-    private dTrade recipe;
+    private TradeTag recipe;
 
-    public TradeInputs(dTrade recipe) {
+    public TradeInputs(TradeTag recipe) {
         this.recipe = recipe;
     }
 
@@ -46,7 +46,7 @@ public class TradeInputs implements Property {
         }
         ListTag ingredients = new ListTag();
         for (ItemStack item : recipe.getRecipe().getIngredients()) {
-            ingredients.addObject(new dItem(item));
+            ingredients.addObject(new ItemTag(item));
         }
         return ingredients.identify();
     }
@@ -61,16 +61,16 @@ public class TradeInputs implements Property {
         }
 
         // <--[tag]
-        // @attribute <trade@trade.inputs>
-        // @returns ListTag(dItem)
-        // @mechanism dTrade.inputs
+        // @attribute <TradeTag.inputs>
+        // @returns ListTag(ItemTag)
+        // @mechanism TradeTag.inputs
         // @description
         // Returns the list of items required to make the trade.
         // -->
         if (attribute.startsWith("inputs")) {
-            ArrayList<dItem> itemList = new ArrayList<>();
+            ArrayList<ItemTag> itemList = new ArrayList<>();
             for (ItemStack item : recipe.getRecipe().getIngredients()) {
-                itemList.add(new dItem(item));
+                itemList.add(new ItemTag(item));
             }
             return new ListTag(itemList).getAttribute(attribute.fulfill(1));
         }
@@ -81,25 +81,25 @@ public class TradeInputs implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dTrade
+        // @object TradeTag
         // @name inputs
-        // @input ListTag(dItem)
+        // @input ListTag(ItemTag)
         // @description
         // Sets the items required to make a successful trade. Use an empty input to make the trade impossible.
         // NOTE: If a more than two items are specified, then only the first two items will be used.
         // @tags
-        // <trade@trade.input>
+        // <TradeTag.input>
         // -->
         if (mechanism.matches("inputs")) {
             List<ItemStack> ingredients = new ArrayList<>();
-            List<dItem> list = mechanism.valueAsType(ListTag.class).filter(dItem.class, mechanism.context);
+            List<ItemTag> list = mechanism.valueAsType(ListTag.class).filter(ItemTag.class, mechanism.context);
 
             if (!mechanism.hasValue() || list.isEmpty()) {
                 recipe.getRecipe().setIngredients(ingredients);
                 return;
             }
 
-            for (dItem item : list) {
+            for (ItemTag item : list) {
                 ingredients.add(item.getItemStack());
             }
 

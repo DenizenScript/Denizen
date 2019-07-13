@@ -4,10 +4,10 @@ import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dInventory;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.InventoryTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -64,17 +64,17 @@ public class InventoryCommand extends AbstractCommand {
     // is the current attached player's inventory. If you are copying, swapping, removing from
     // (including via "keep" and "exclude"), adding to, moving, or filling inventories, you'll need
     // both destination and origin inventories. Origin inventories may be specified as a list of
-    // dItems, but destinations must be actual dInventories.
+    // ItemTags, but destinations must be actual dInventories.
     // Using "open", "clear", or "update" only require a destination. "Update" also requires the
     // destination to be a valid player inventory.
     // Using "close" closes any inventory that the currently attached player has opened.
     //
     // @Tags
-    // <p@player.inventory>
-    // <p@player.enderchest>
-    // <p@player.open_inventory>
-    // <n@npc.inventory>
-    // <l@location.inventory>
+    // <PlayerTag.inventory>
+    // <PlayerTag.enderchest>
+    // <PlayerTag.open_inventory>
+    // <NPCTag.inventory>
+    // <LocationTag.inventory>
     //
     // @Usage
     // Use to open a chest inventory, at a location.
@@ -124,20 +124,20 @@ public class InventoryCommand extends AbstractCommand {
                 isAdjust = arg.toString().equalsIgnoreCase("adjust");
             }
 
-            // Check for an origin, which can be a dInventory, dEntity, dLocation
-            // or a ListTag of dItems
+            // Check for an origin, which can be a InventoryTag, EntityTag, LocationTag
+            // or a ListTag of ItemTags
             else if (!scriptEntry.hasObject("origin")
                     && arg.matchesPrefix("origin", "o", "source", "items", "item", "i", "from", "f")
-                    && (arg.matchesArgumentTypes(dInventory.class, dEntity.class, dLocation.class)
-                    || arg.matchesArgumentList(dItem.class))) {
+                    && (arg.matchesArgumentTypes(InventoryTag.class, EntityTag.class, LocationTag.class)
+                    || arg.matchesArgumentList(ItemTag.class))) {
                 scriptEntry.addObject("origin", Conversion.getInventory(arg, scriptEntry));
             }
 
-            // Check for a destination, which can be a dInventory, dEntity
-            // or dLocation
+            // Check for a destination, which can be a InventoryTag, EntityTag
+            // or LocationTag
             else if (!scriptEntry.hasObject("destination")
                     && arg.matchesPrefix("destination", "dest", "d", "target", "to", "t")
-                    && arg.matchesArgumentTypes(dInventory.class, dEntity.class, dLocation.class)) {
+                    && arg.matchesArgumentTypes(InventoryTag.class, EntityTag.class, LocationTag.class)) {
                 scriptEntry.addObject("destination", Conversion.getInventory(arg, scriptEntry));
             }
 
@@ -194,10 +194,10 @@ public class InventoryCommand extends AbstractCommand {
 
         // Get objects
         List<String> actions = (List<String>) scriptEntry.getObject("actions");
-        AbstractMap.SimpleEntry<Integer, dInventory> originentry = (AbstractMap.SimpleEntry<Integer, dInventory>) scriptEntry.getObject("origin");
-        dInventory origin = originentry != null ? originentry.getValue() : null;
-        AbstractMap.SimpleEntry<Integer, dInventory> destinationentry = (AbstractMap.SimpleEntry<Integer, dInventory>) scriptEntry.getObject("destination");
-        dInventory destination = destinationentry.getValue();
+        AbstractMap.SimpleEntry<Integer, InventoryTag> originentry = (AbstractMap.SimpleEntry<Integer, InventoryTag>) scriptEntry.getObject("origin");
+        InventoryTag origin = originentry != null ? originentry.getValue() : null;
+        AbstractMap.SimpleEntry<Integer, InventoryTag> destinationentry = (AbstractMap.SimpleEntry<Integer, InventoryTag>) scriptEntry.getObject("destination");
+        InventoryTag destination = destinationentry.getValue();
         ElementTag slot = scriptEntry.getElement("slot");
         ElementTag mechanism = scriptEntry.getElement("mechanism");
         ElementTag mechanismValue = scriptEntry.getElement("mechanism_value");
@@ -265,7 +265,7 @@ public class InventoryCommand extends AbstractCommand {
                         Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
                         return;
                     }
-                    dInventory temp = new dInventory(destination.getInventory());
+                    InventoryTag temp = new InventoryTag(destination.getInventory());
                     origin.replace(destination);
                     temp.replace(origin);
                     break;
@@ -340,7 +340,7 @@ public class InventoryCommand extends AbstractCommand {
                     break;
 
                 case ADJUST:
-                    dItem toAdjust = new dItem(destination.getInventory().getItem(slotId));
+                    ItemTag toAdjust = new ItemTag(destination.getInventory().getItem(slotId));
                     toAdjust.safeAdjust(new Mechanism(mechanism, mechanismValue, scriptEntry.entryData.getTagContext()));
                     destination.getInventory().setItem(slotId, toAdjust.getItemStack());
                     break;

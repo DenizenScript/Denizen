@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
@@ -24,10 +24,10 @@ public class ItemTags {
             return;
         }
 
-        dItem item = null;
+        ItemTag item = null;
 
         if (event.hasNameContext()) {
-            item = dItem.valueOf(event.getNameContext(), event.getAttributes().context);
+            item = ItemTag.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
         if (item == null) {

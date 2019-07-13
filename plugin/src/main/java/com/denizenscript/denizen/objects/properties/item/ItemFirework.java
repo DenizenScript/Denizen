@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -20,9 +20,9 @@ import java.util.List;
 public class ItemFirework implements Property {
 
     public static boolean describes(ObjectTag item) {
-        return item instanceof dItem
-                && ((((dItem) item).getItemStack().getItemMeta() instanceof FireworkMeta)
-                || (((dItem) item).getItemStack().getItemMeta() instanceof FireworkEffectMeta));
+        return item instanceof ItemTag
+                && ((((ItemTag) item).getItemStack().getItemMeta() instanceof FireworkMeta)
+                || (((ItemTag) item).getItemStack().getItemMeta() instanceof FireworkEffectMeta));
     }
 
     public static ItemFirework getFrom(ObjectTag _item) {
@@ -30,7 +30,7 @@ public class ItemFirework implements Property {
             return null;
         }
         else {
-            return new ItemFirework((dItem) _item);
+            return new ItemFirework((ItemTag) _item);
         }
     }
 
@@ -43,11 +43,11 @@ public class ItemFirework implements Property {
     };
 
 
-    private ItemFirework(dItem _item) {
+    private ItemFirework(ItemTag _item) {
         item = _item;
     }
 
-    dItem item;
+    ItemTag item;
 
     public ListTag getFireworkData() {
         List<FireworkEffect> effects;
@@ -85,10 +85,10 @@ public class ItemFirework implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.firework>
+        // @attribute <ItemTag.firework>
         // @returns ListTag
         // @group properties
-        // @mechanism dItem.firework
+        // @mechanism ItemTag.firework
         // @description
         // Returns the firework's property value as a list, matching the format of the mechanism.
         // -->
@@ -116,7 +116,7 @@ public class ItemFirework implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name firework
         // @input ListTag
         // @description
@@ -125,7 +125,7 @@ public class ItemFirework implements Property {
         // For example: true,false,BALL,255,0,0,0,255,0 would create a trailing ball firework that fades from red to green.
         // Optionally add a list entry that's just a single number to set the power.
         // @tags
-        // <i@item.firework>
+        // <ItemTag.firework>
         // -->
 
         if (mechanism.matches("firework")) {

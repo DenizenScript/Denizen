@@ -3,8 +3,8 @@ package com.denizenscript.denizen.scripts.commands.entity;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dNPC;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -27,7 +27,7 @@ public class FollowCommand extends AbstractCommand {
     // The 'max' and 'allow_wander' arguments can only be used on non-NPC entities.
     //
     // @Tags
-    // <n@npc.navigator.target_entity> returns the entity the npc is following.
+    // <NPCTag.navigator.target_entity> returns the entity the npc is following.
     //
     // @Usage
     // To make an NPC follow the player in an interact script
@@ -65,12 +65,12 @@ public class FollowCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("entities") &&
                     arg.matchesPrefix("followers", "follower") &&
-                    arg.matchesArgumentList(dEntity.class)) {
+                    arg.matchesArgumentList(EntityTag.class)) {
                 scriptEntry.addObject("entities", arg.asType(ListTag.class));
             }
             else if (!scriptEntry.hasObject("target") &&
-                    arg.matchesArgumentType(dEntity.class)) {
-                scriptEntry.addObject("target", arg.asType(dEntity.class));
+                    arg.matchesArgumentType(EntityTag.class)) {
+                scriptEntry.addObject("target", arg.asType(EntityTag.class));
             }
             else {
                 arg.reportUnhandled();
@@ -106,7 +106,7 @@ public class FollowCommand extends AbstractCommand {
         ElementTag allowWander = scriptEntry.getElement("allow_wander");
         ElementTag speed = scriptEntry.getElement("speed");
         ListTag entities = scriptEntry.getdObject("entities");
-        dEntity target = scriptEntry.getdObject("target");
+        EntityTag target = scriptEntry.getdObject("target");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
@@ -120,9 +120,9 @@ public class FollowCommand extends AbstractCommand {
                             + target.debug());
         }
 
-        for (dEntity entity : entities.filter(dEntity.class, scriptEntry)) {
+        for (EntityTag entity : entities.filter(EntityTag.class, scriptEntry)) {
             if (entity.isCitizensNPC()) {
-                dNPC npc = entity.getDenizenNPC();
+                NPCTag npc = entity.getDenizenNPC();
                 if (lead != null) {
                     npc.getNavigator().getLocalParameters().distanceMargin(lead.asDouble());
                 }

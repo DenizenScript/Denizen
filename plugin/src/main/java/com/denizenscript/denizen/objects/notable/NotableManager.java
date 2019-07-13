@@ -30,11 +30,11 @@ import java.util.logging.Logger;
 public class NotableManager {
 
     public NotableManager() {
-        registerWithNotableManager(dCuboid.class);
-        registerWithNotableManager(dEllipsoid.class);
-        registerWithNotableManager(dInventory.class);
-        registerWithNotableManager(dItem.class);
-        registerWithNotableManager(dLocation.class);
+        registerWithNotableManager(CuboidTag.class);
+        registerWithNotableManager(EllipsoidTag.class);
+        registerWithNotableManager(InventoryTag.class);
+        registerWithNotableManager(ItemTag.class);
+        registerWithNotableManager(LocationTag.class);
     }
 
 

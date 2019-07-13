@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -31,9 +31,9 @@ public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Li
     // For example, when a snowman forms snow.
     //
     // @Context
-    // <context.location> returns the dLocation the block.
-    // <context.material> returns the dMaterial of the block.
-    // <context.entity> returns the dEntity that formed the block.
+    // <context.location> returns the LocationTag the block.
+    // <context.material> returns the MaterialTag of the block.
+    // <context.entity> returns the EntityTag that formed the block.
     //
     // -->
 
@@ -42,9 +42,9 @@ public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Li
     }
 
     public static EntityFormsBlockScriptEvent instance;
-    public dMaterial material;
-    public dLocation location;
-    public dEntity entity;
+    public MaterialTag material;
+    public LocationTag location;
+    public EntityTag entity;
     public EntityBlockFormEvent event;
 
     @Override
@@ -83,8 +83,8 @@ public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? EntityTag.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? EntityTag.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -103,9 +103,9 @@ public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Li
 
     @EventHandler
     public void onEntityFormsBlock(EntityBlockFormEvent event) {
-        location = new dLocation(event.getBlock().getLocation());
-        material = new dMaterial(event.getBlock());
-        entity = new dEntity(event.getEntity());
+        location = new LocationTag(event.getBlock().getLocation());
+        material = new MaterialTag(event.getBlock());
+        entity = new EntityTag(event.getEntity());
         this.event = event;
         fire(event);
     }

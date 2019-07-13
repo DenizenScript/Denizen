@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dInventory;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.InventoryTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -30,14 +30,14 @@ import org.bukkit.inventory.AnvilInventory;
 // @Warning The player doing the crafting is estimated and may be inaccurate.
 //
 // @Context
-// <context.inventory> returns the dInventory of the anvil inventory.
-// <context.item> returns the dItem to be crafted.
+// <context.inventory> returns the InventoryTag of the anvil inventory.
+// <context.item> returns the ItemTag to be crafted.
 // <context.repair_cost> returns an Element(Number) of the repair cost.
 // <context.new_name> returns an ElementTag of the new name.
 //
 // @Determine
 // Element(Number) to set the repair cost.
-// dItem to change the item that is crafted.
+// ItemTag to change the item that is crafted.
 //
 // -->
 
@@ -49,9 +49,9 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
 
     public static PlayerPreparesAnvilCraftScriptEvent instance;
     public boolean resultChanged;
-    public dItem result;
+    public ItemTag result;
     public AnvilInventory inventory;
-    public dPlayer player;
+    public PlayerTag player;
     public ElementTag repairCost;
     public ElementTag newName;
 
@@ -83,8 +83,8 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
             repairCost = new ElementTag(determination);
             return true;
         }
-        else if (dItem.matches(determination)) {
-            result = dItem.valueOf(determination, container);
+        else if (ItemTag.matches(determination)) {
+            result = ItemTag.valueOf(determination, container);
             resultChanged = true;
             return true;
         }
@@ -110,7 +110,7 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
             return newName;
         }
         else if (name.equals("inventory")) {
-            return dInventory.mirrorBukkitInventory(inventory);
+            return InventoryTag.mirrorBukkitInventory(inventory);
         }
         return super.getContext(name);
     }
@@ -121,14 +121,14 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
             return;
         }
         HumanEntity humanEntity = event.getInventory().getViewers().get(0);
-        if (dEntity.isNPC(humanEntity)) {
+        if (EntityTag.isNPC(humanEntity)) {
             return;
         }
         inventory = event.getInventory();
         repairCost = new ElementTag(inventory.getRepairCost());
         newName = new ElementTag(inventory.getRenameText());
-        result = new dItem(event.getResult());
-        this.player = dEntity.getPlayerFrom(humanEntity);
+        result = new ItemTag(event.getResult());
+        this.player = EntityTag.getPlayerFrom(humanEntity);
         this.resultChanged = false;
         this.cancelled = false;
         fire(event);

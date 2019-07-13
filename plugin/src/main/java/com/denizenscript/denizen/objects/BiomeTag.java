@@ -15,13 +15,13 @@ import org.bukkit.entity.EntityType;
 import java.util.HashMap;
 import java.util.List;
 
-public class dBiome implements ObjectTag, Adjustable {
+public class BiomeTag implements ObjectTag, Adjustable {
 
     // <--[language]
-    // @name dBiome
+    // @name BiomeTag
     // @group Object System
     // @description
-    // A dBiome represents a world biome type.
+    // A BiomeTag represents a world biome type.
     //
     // A list of all valid Bukkit biomes can found be at
     // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Biome.html>
@@ -34,11 +34,11 @@ public class dBiome implements ObjectTag, Adjustable {
     // @name b@
     // @group Object Fetcher System
     // @description
-    // b@ refers to the 'object identifier' of a dBiome. The 'b@' is notation for Denizen's Object
-    // Fetcher. The constructor for a dBiome is the name of a valid biome (in Bukkit).
+    // b@ refers to the 'object identifier' of a BiomeTag. The 'b@' is notation for Denizen's Object
+    // Fetcher. The constructor for a BiomeTag is the name of a valid biome (in Bukkit).
     // For example, 'b@desert'.
     //
-    // For general info, see <@link language dBiome>
+    // For general info, see <@link language BiomeTag>
     //
     // -->
 
@@ -46,7 +46,7 @@ public class dBiome implements ObjectTag, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
-    public static dBiome valueOf(String string) {
+    public static BiomeTag valueOf(String string) {
         return valueOf(string, null);
     }
 
@@ -56,7 +56,7 @@ public class dBiome implements ObjectTag, Adjustable {
      * @param string the string
      */
     @Fetchable("b")
-    public static dBiome valueOf(String string, TagContext context) {
+    public static BiomeTag valueOf(String string, TagContext context) {
 
         if (string.startsWith("b@")) {
             string = string.substring(2);
@@ -64,7 +64,7 @@ public class dBiome implements ObjectTag, Adjustable {
 
         for (Biome biome : Biome.values()) {
             if (biome.name().equalsIgnoreCase(string)) {
-                return new dBiome(biome);
+                return new BiomeTag(biome);
             }
         }
 
@@ -97,7 +97,7 @@ public class dBiome implements ObjectTag, Adjustable {
     //   Constructors
     /////////////
 
-    public dBiome(Biome biome) {
+    public BiomeTag(Biome biome) {
         this.biome = NMSHandler.getInstance().getBiomeNMS(biome);
     }
 
@@ -156,7 +156,7 @@ public class dBiome implements ObjectTag, Adjustable {
     public static void registerTags() {
 
         // <--[tag]
-        // @attribute <b@biome.downfall_type>
+        // @attribute <BiomeTag.downfall_type>
         // @returns ElementTag
         // @description
         // Returns this biome's downfall type for when a world has weather.
@@ -165,13 +165,13 @@ public class dBiome implements ObjectTag, Adjustable {
         registerTag("downfall_type", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(CoreUtilities.toLowerCase(((dBiome) object).biome.getDownfallType().name()))
+                return new ElementTag(CoreUtilities.toLowerCase(((BiomeTag) object).biome.getDownfallType().name()))
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
-        // @attribute <b@biome.humidity>
+        // @attribute <BiomeTag.humidity>
         // @returns ElementTag(Decimal)
         // @description
         // Returns the humidity of this biome.
@@ -179,12 +179,12 @@ public class dBiome implements ObjectTag, Adjustable {
         registerTag("humidity", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((dBiome) object).biome.getHumidity())
+                return new ElementTag(((BiomeTag) object).biome.getHumidity())
                         .getAttribute(attribute.fulfill(1));
             }
         });
         // <--[tag]
-        // @attribute <b@biome.temperature>
+        // @attribute <BiomeTag.temperature>
         // @returns ElementTag(Decimal)
         // @description
         // Returns the temperature of this biome.
@@ -192,13 +192,13 @@ public class dBiome implements ObjectTag, Adjustable {
         registerTag("temperature", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((dBiome) object).biome.getTemperature())
+                return new ElementTag(((BiomeTag) object).biome.getTemperature())
                         .getAttribute(attribute.fulfill(1));
             }
         });
         // <--[tag]
-        // @attribute <b@biome.spawnable_entities>
-        // @returns ListTag(dEntity)
+        // @attribute <BiomeTag.spawnable_entities>
+        // @returns ListTag(EntityTag)
         // @description
         // Returns all entities that spawn naturally in this biome.
         // -->
@@ -206,14 +206,14 @@ public class dBiome implements ObjectTag, Adjustable {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 attribute = attribute.fulfill(1);
-                BiomeNMS biome = ((dBiome) object).biome;
+                BiomeNMS biome = ((BiomeTag) object).biome;
 
                 List<EntityType> entityTypes;
                 boolean hasAttribute = true;
 
                 // <--[tag]
-                // @attribute <b@biome.spawnable_entities.ambient>
-                // @returns ListTag(dEntity)
+                // @attribute <BiomeTag.spawnable_entities.ambient>
+                // @returns ListTag(EntityTag)
                 // @description
                 // Returns the entities that spawn naturally in ambient locations.
                 // Default examples: BAT
@@ -223,8 +223,8 @@ public class dBiome implements ObjectTag, Adjustable {
                 }
 
                 // <--[tag]
-                // @attribute <b@biome.spawnable_entities.creatures>
-                // @returns ListTag(dEntity)
+                // @attribute <BiomeTag.spawnable_entities.creatures>
+                // @returns ListTag(EntityTag)
                 // @description
                 // Returns the entities that spawn naturally in creature locations.
                 // Default examples: PIG, COW, CHICKEN...
@@ -234,8 +234,8 @@ public class dBiome implements ObjectTag, Adjustable {
                 }
 
                 // <--[tag]
-                // @attribute <b@biome.spawnable_entities.monsters>
-                // @returns ListTag(dEntity)
+                // @attribute <BiomeTag.spawnable_entities.monsters>
+                // @returns ListTag(EntityTag)
                 // @description
                 // Returns the entities that spawn naturally in monster locations.
                 // Default examples: CREEPER, ZOMBIE, SKELETON...
@@ -245,8 +245,8 @@ public class dBiome implements ObjectTag, Adjustable {
                 }
 
                 // <--[tag]
-                // @attribute <b@biome.spawnable_entities.water>
-                // @returns ListTag(dEntity)
+                // @attribute <BiomeTag.spawnable_entities.water>
+                // @returns ListTag(EntityTag)
                 // @description
                 // Returns the entities that spawn naturally in underwater locations.
                 // Default examples: SQUID
@@ -268,10 +268,10 @@ public class dBiome implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <b@biome.type>
+        // @attribute <BiomeTag.type>
         // @returns ElementTag
         // @description
-        // Always returns 'Biome' for dBiome objects. All objects fetchable by the Object Fetcher will return the
+        // Always returns 'Biome' for BiomeTag objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         registerTag("type", new TagRunnable() {
@@ -320,7 +320,7 @@ public class dBiome implements ObjectTag, Adjustable {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dBiome
+        // @object BiomeTag
         // @name humidity
         // @input Element(Decimal)
         // @description
@@ -328,14 +328,14 @@ public class dBiome implements ObjectTag, Adjustable {
         // If this is greater than 0.85, fire has less chance
         // to spread in this biome.
         // @tags
-        // <b@biome.humidity>
+        // <BiomeTag.humidity>
         // -->
         if (mechanism.matches("humidity") && mechanism.requireFloat()) {
             biome.setHumidity(mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
-        // @object dBiome
+        // @object BiomeTag
         // @name temperature
         // @input Element(Decimal)
         // @description
@@ -344,7 +344,7 @@ public class dBiome implements ObjectTag, Adjustable {
         // when weather occurs in the world and a layer of ice
         // will form over water.
         // @tags
-        // <b@biome.temperature>
+        // <BiomeTag.temperature>
         // -->
         if (mechanism.matches("temperature") && mechanism.requireFloat()) {
             biome.setTemperature(mechanism.getValue().asFloat());

@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.commands.npc;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.Settings;
-import com.denizenscript.denizen.objects.dNPC;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -42,7 +42,7 @@ public class EngageCommand extends AbstractCommand {
     // See <@link command Disengage>
     //
     // @Tags
-    // <n@npc.is_engaged>
+    // <NPCTag.is_engaged>
     //
     // @Usage
     // Use to make an NPC appear 'busy'.
@@ -91,7 +91,7 @@ public class EngageCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         DurationTag duration = scriptEntry.getdObject("duration");
-        dNPC npc = Utilities.getEntryNPC(scriptEntry);
+        NPCTag npc = Utilities.getEntryNPC(scriptEntry);
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
@@ -113,11 +113,11 @@ public class EngageCommand extends AbstractCommand {
     private static Map<NPC, Long> currentlyEngaged = new HashMap<>();
 
     /**
-     * Checks if the dNPC is ENGAGED. Engaged NPCs do not respond to
+     * Checks if the NPCTag is ENGAGED. Engaged NPCs do not respond to
      * Player interaction.
      *
      * @param npc the Denizen NPC being checked
-     * @return if the dNPC is currently engaged
+     * @return if the NPCTag is currently engaged
      */
     public static boolean getEngaged(NPC npc) {
         if (currentlyEngaged.containsKey(npc)) {
@@ -129,12 +129,12 @@ public class EngageCommand extends AbstractCommand {
     }
 
     /**
-     * Sets a dNPC's ENGAGED status. Engaged NPCs do not respond to Player
+     * Sets a NPCTag's ENGAGED status. Engaged NPCs do not respond to Player
      * interaction. Note: Denizen NPC will automatically disengage after the
      * engage_timeout_in_seconds which is set in the Denizen config.yml.
      *
-     * @param npc     the dNPC affected
-     * @param engaged true sets the dNPC engaged, false sets the dNPC as disengaged
+     * @param npc     the NPCTag affected
+     * @param engaged true sets the NPCTag engaged, false sets the NPCTag as disengaged
      */
     public static void setEngaged(NPC npc, boolean engaged) {
         if (engaged) {
@@ -147,12 +147,12 @@ public class EngageCommand extends AbstractCommand {
     }
 
     /**
-     * Sets a dNPC as ENGAGED for a specific amount of seconds. Engaged NPCs do not
+     * Sets a NPCTag as ENGAGED for a specific amount of seconds. Engaged NPCs do not
      * respond to Player interaction. If the NPC is previously engaged, using this will
      * over-ride the previously set duration.
      *
-     * @param npc      the dNPC to set as engaged
-     * @param duration the number of seconds to engage the dNPC
+     * @param npc      the NPCTag to set as engaged
+     * @param duration the number of seconds to engage the NPCTag
      */
     public static void setEngaged(NPC npc, int duration) {
         currentlyEngaged.put(npc, System.currentTimeMillis() + duration * 1000);

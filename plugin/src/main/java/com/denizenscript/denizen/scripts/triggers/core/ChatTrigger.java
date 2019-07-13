@@ -8,8 +8,8 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.npc.traits.TriggerTrait;
-import com.denizenscript.denizen.objects.dNPC;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -111,8 +111,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
     public ChatContext process(Player player, String message) {
 
         // Check if there is an NPC within range of a player to chat to.
-        dNPC npc = Utilities.getClosestNPC_ChatTrigger(player.getLocation(), 25);
-        dPlayer denizenPlayer = dPlayer.mirrorBukkitPlayer(player);
+        NPCTag npc = Utilities.getClosestNPC_ChatTrigger(player.getLocation(), 25);
+        PlayerTag denizenPlayer = PlayerTag.mirrorBukkitPlayer(player);
 
         if (HyperDebug) {
             Debug.log("Processing chat trigger: valid npc? " + (npc != null));

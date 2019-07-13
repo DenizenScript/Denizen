@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.inventory;
 
-import com.denizenscript.denizen.objects.dInventory;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.InventoryTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -15,14 +15,14 @@ public class InventoryContents implements Property {
 
     public static boolean describes(ObjectTag inventory) {
         // All inventories should have contents
-        return inventory instanceof dInventory;
+        return inventory instanceof InventoryTag;
     }
 
     public static InventoryContents getFrom(ObjectTag inventory) {
         if (!describes(inventory)) {
             return null;
         }
-        return new InventoryContents((dInventory) inventory);
+        return new InventoryContents((InventoryTag) inventory);
     }
 
     public static final String[] handledTags = new String[] {
@@ -37,9 +37,9 @@ public class InventoryContents implements Property {
     // Instance Fields and Methods
     /////////////
 
-    dInventory inventory;
+    InventoryTag inventory;
 
-    public InventoryContents(dInventory inventory) {
+    public InventoryContents(InventoryTag inventory) {
         this.inventory = inventory;
     }
 
@@ -53,13 +53,13 @@ public class InventoryContents implements Property {
             if (item != null && item.getType() != Material.AIR) {
                 containsNonAir = true;
                 if (simpleOrFull == 1) {
-                    contents.add(new dItem(item).identifySimple());
+                    contents.add(new ItemTag(item).identifySimple());
                 }
                 else if (simpleOrFull == 2) {
-                    contents.add(new dItem(item).getFullString());
+                    contents.add(new ItemTag(item).getFullString());
                 }
                 else {
-                    contents.add(new dItem(item).identify());
+                    contents.add(new ItemTag(item).identify());
                 }
             }
             else {
@@ -89,10 +89,10 @@ public class InventoryContents implements Property {
                         // the context
                         if (ChatColor.stripColor(line).equalsIgnoreCase(lore)) {
                             if (simple) {
-                                contents.add(new dItem(item).identifySimple());
+                                contents.add(new ItemTag(item).identifySimple());
                             }
                             else {
-                                contents.add(new dItem(item).identify());
+                                contents.add(new ItemTag(item).identify());
                             }
                             break;
                         }
@@ -135,10 +135,10 @@ public class InventoryContents implements Property {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.list_contents>
-        // @returns ListTag(dItem)
+        // @attribute <InventoryTag.list_contents>
+        // @returns ListTag(ItemTag)
         // @group properties
-        // @mechanism dInventory.contents
+        // @mechanism InventoryTag.contents
         // @description
         // Returns a list of all items in the inventory.
         // -->
@@ -146,10 +146,10 @@ public class InventoryContents implements Property {
             attribute.fulfill(1);
 
             // <--[tag]
-            // @attribute <in@inventory.list_contents.simple>
-            // @returns ListTag(dItem)
+            // @attribute <InventoryTag.list_contents.simple>
+            // @returns ListTag(ItemTag)
             // @group properties
-            // @mechanism dInventory.contents
+            // @mechanism InventoryTag.contents
             // @description
             // Returns a list of all items in the inventory, without item properties.
             // -->
@@ -158,10 +158,10 @@ public class InventoryContents implements Property {
             }
 
             // <--[tag]
-            // @attribute <in@inventory.list_contents.full>
-            // @returns ListTag(dItem)
+            // @attribute <InventoryTag.list_contents.full>
+            // @returns ListTag(ItemTag)
             // @group properties
-            // @mechanism dInventory.contents
+            // @mechanism InventoryTag.contents
             // @description
             // Returns a list of all items in the inventory, with the tag item.full used.
             // Irrelevant on modern (1.13+) servers.
@@ -171,10 +171,10 @@ public class InventoryContents implements Property {
             }
 
             // <--[tag]
-            // @attribute <in@inventory.list_contents.with_lore[<element>]>
-            // @returns ListTag(dItem)
+            // @attribute <InventoryTag.list_contents.with_lore[<element>]>
+            // @returns ListTag(ItemTag)
             // @group properties
-            // @mechanism dInventory.contents
+            // @mechanism InventoryTag.contents
             // @description
             // Returns a list of all items in the inventory with the specified
             // lore. Color codes are ignored.
@@ -187,10 +187,10 @@ public class InventoryContents implements Property {
                 String lore = attribute.getContext(1);
                 attribute.fulfill(1);
                 // <--[tag]
-                // @attribute <in@inventory.list_contents.with_lore[<element>].simple>
-                // @returns ListTag(dItem)
+                // @attribute <InventoryTag.list_contents.with_lore[<element>].simple>
+                // @returns ListTag(ItemTag)
                 // @group properties
-                // @mechanism dInventory.contents
+                // @mechanism InventoryTag.contents
                 // @description
                 // Returns a list of all items in the inventory with the specified
                 // lore, without item properties. Color codes are ignored.
@@ -215,16 +215,16 @@ public class InventoryContents implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dInventory
+        // @object InventoryTag
         // @name contents
-        // @input ListTag(dItem)
+        // @input ListTag(ItemTag)
         // @description
         // Sets the contents of the inventory.
         // @tags
-        // <in@inventory.list_contents>
-        // <in@inventory.list_contents.simple>
-        // <in@inventory.list_contents.with_lore[<lore>]>
-        // <in@inventory.list_contents.with_lore[<lore>].simple>
+        // <InventoryTag.list_contents>
+        // <InventoryTag.list_contents.simple>
+        // <InventoryTag.list_contents.with_lore[<lore>]>
+        // <InventoryTag.list_contents.with_lore[<lore>].simple>
         // -->
         if (mechanism.matches("contents") && inventory.getIdType().equals("generic")) {
             inventory.setContents(mechanism.valueAsType(ListTag.class), mechanism.context);

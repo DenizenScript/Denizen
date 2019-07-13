@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.server;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -33,11 +33,11 @@ public class BanCommand extends AbstractCommand {
     // source: Sets the source of the ban. Defaults to "(Unknown)".
     //
     // @Tags
-    // <p@player.is_banned>
-    // <p@player.ban_info.reason>
-    // <p@player.ban_info.expiration>
-    // <p@player.ban_info.created>
-    // <p@player.ban_info.source>
+    // <PlayerTag.is_banned>
+    // <PlayerTag.ban_info.reason>
+    // <PlayerTag.ban_info.expiration>
+    // <PlayerTag.ban_info.created>
+    // <PlayerTag.ban_info.source>
     // <server.is_banned[<address>]>
     // <server.ban_info[<address>].expiration>
     // <server.ban_info[<address>].reason>
@@ -96,8 +96,8 @@ public class BanCommand extends AbstractCommand {
                 scriptEntry.addObject("addresses", arg.asType(ListTag.class));
             }
             else if (!scriptEntry.hasObject("targets") && (arg.matchesPrefix("targets", "target")
-                    || arg.matchesArgumentList(dPlayer.class))) {
-                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
+                    || arg.matchesArgumentList(PlayerTag.class))) {
+                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("reason") && arg.matchesPrefix("reason")) {
                 scriptEntry.addObject("reason", arg.asElement());
@@ -122,7 +122,7 @@ public class BanCommand extends AbstractCommand {
             throw new IllegalArgumentException("Invalid action specified.");
         }
 
-        if ((!scriptEntry.hasObject("targets") || ((List<dPlayer>) scriptEntry.getObject("targets")).isEmpty())
+        if ((!scriptEntry.hasObject("targets") || ((List<PlayerTag>) scriptEntry.getObject("targets")).isEmpty())
                 && (!scriptEntry.hasObject("addresses") || ((List<ElementTag>) scriptEntry.getObject("addresses")).isEmpty())) {
             throw new IllegalArgumentException("Must specify a valid target or address!");
         }
@@ -132,7 +132,7 @@ public class BanCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
         ElementTag action = scriptEntry.getElement("action");
-        List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
+        List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
         ListTag addresses = (ListTag) scriptEntry.getObject("addresses");
         ElementTag reason = scriptEntry.getElement("reason");
         DurationTag duration = scriptEntry.getdObject("duration");
@@ -158,7 +158,7 @@ public class BanCommand extends AbstractCommand {
         switch (banAction) {
             case ADD:
                 if (targets != null) {
-                    for (dPlayer player : targets) {
+                    for (PlayerTag player : targets) {
                         if (player.isValid()) {
                             Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(), reason.toString(), expiration, source.toString());
                             if (player.isOnline()) {
@@ -176,7 +176,7 @@ public class BanCommand extends AbstractCommand {
 
             case REMOVE:
                 if (targets != null) {
-                    for (dPlayer player : targets) {
+                    for (PlayerTag player : targets) {
                         if (player.isValid()) {
                             if (player.getOfflinePlayer().isBanned()) {
                                 Bukkit.getBanList(BanList.Type.NAME).pardon(player.getName());

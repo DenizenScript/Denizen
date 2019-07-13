@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.commands.player;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
-import com.denizenscript.denizen.objects.dWorld;
+import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -30,9 +30,9 @@ public class PermissionCommand extends AbstractCommand {
     // Note: This requires a permissions plugin.
     //
     // @Tags
-    // <p@player.has_permission[permission.node]>
-    // <p@player.has_permission[permission.node].global>
-    // <p@player.has_permission[permission.node].world[<world>]>
+    // <PlayerTag.has_permission[permission.node]>
+    // <PlayerTag.has_permission[permission.node].global>
+    // <PlayerTag.has_permission[permission.node].world[<world>]>
     // <server.has_permissions>
     //
     // @Usage
@@ -72,8 +72,8 @@ public class PermissionCommand extends AbstractCommand {
                 scriptEntry.addObject("group", arg.asElement());
             }
             else if (!scriptEntry.hasObject("world")
-                    && arg.matchesArgumentType(dWorld.class)) {
-                scriptEntry.addObject("world", arg.asType(dWorld.class));
+                    && arg.matchesArgumentType(WorldTag.class)) {
+                scriptEntry.addObject("world", arg.asType(WorldTag.class));
             }
             else if (!scriptEntry.hasObject("permission")) {
                 scriptEntry.addObject("permission", arg.asElement());
@@ -101,7 +101,7 @@ public class PermissionCommand extends AbstractCommand {
         ElementTag action = scriptEntry.getElement("action");
         ElementTag permission = scriptEntry.getElement("permission");
         ElementTag group = scriptEntry.getElement("group");
-        dWorld world = (dWorld) scriptEntry.getObject("world");
+        WorldTag world = (WorldTag) scriptEntry.getObject("world");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {

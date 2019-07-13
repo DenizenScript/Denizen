@@ -1,25 +1,25 @@
 package com.denizenscript.denizen;
 
-import com.denizenscript.denizen.objects.dNPC;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.tags.TagContext;
 
 public class BukkitScriptEntryData extends ScriptEntryData {
-    private dPlayer player;
-    private dNPC npc;
+    private PlayerTag player;
+    private NPCTag npc;
 
-    public BukkitScriptEntryData(dPlayer player, dNPC npc) {
+    public BukkitScriptEntryData(PlayerTag player, NPCTag npc) {
         this.player = player;
         this.npc = npc;
     }
 
-    public dPlayer getPlayer() {
+    public PlayerTag getPlayer() {
         return player;
     }
 
-    public dNPC getNPC() {
+    public NPCTag getNPC() {
         return npc != null && npc.getCitizen() != null ? npc : null;
     }
 
@@ -31,11 +31,11 @@ public class BukkitScriptEntryData extends ScriptEntryData {
         return player != null;
     }
 
-    public void setPlayer(dPlayer player) {
+    public void setPlayer(PlayerTag player) {
         this.player = player;
     }
 
-    public void setNPC(dNPC npc) {
+    public void setNPC(NPCTag npc) {
         this.npc = npc;
     }
 

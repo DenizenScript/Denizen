@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -16,12 +16,12 @@ import org.bukkit.entity.ZombieVillager;
 public class EntityInfected implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        if (!(entity instanceof dEntity)) {
+        if (!(entity instanceof EntityTag)) {
             return false;
         }
         // Check if a Villager or Zombie -- the only two EntityTypes that can be 'infected'
-        return ((dEntity) entity).getBukkitEntityType() == EntityType.ZOMBIE
-                || ((dEntity) entity).getBukkitEntityType() == EntityType.VILLAGER;
+        return ((EntityTag) entity).getBukkitEntityType() == EntityType.ZOMBIE
+                || ((EntityTag) entity).getBukkitEntityType() == EntityType.VILLAGER;
     }
 
     public static EntityInfected getFrom(ObjectTag entity) {
@@ -29,7 +29,7 @@ public class EntityInfected implements Property {
             return null;
         }
         else {
-            return new EntityInfected((dEntity) entity);
+            return new EntityInfected((EntityTag) entity);
         }
     }
 
@@ -46,11 +46,11 @@ public class EntityInfected implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityInfected(dEntity item) {
+    private EntityInfected(EntityTag item) {
         infected = item;
     }
 
-    dEntity infected;
+    EntityTag infected;
 
     public boolean isInfected() {
         return infected.getBukkitEntity() instanceof Zombie
@@ -73,7 +73,7 @@ public class EntityInfected implements Property {
             infect.getEquipment().setArmorContents(entity.getEquipment().getArmorContents());
             // Remove the Villager
             entity.remove();
-            // Set the dEntity to the new entity
+            // Set the EntityTag to the new entity
             infected.setEntity(infect);
         }
     }

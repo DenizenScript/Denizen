@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -30,8 +30,8 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
     // @Triggers when a vehicle is destroyed.
     //
     // @Context
-    // <context.vehicle> returns the dEntity of the vehicle.
-    // <context.entity> returns the dEntity of the attacking entity.
+    // <context.vehicle> returns the EntityTag of the vehicle.
+    // <context.entity> returns the EntityTag of the attacking entity.
     //
     // @NPC when the entity that destroyed the vehicle is a player..
     //
@@ -44,8 +44,8 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
     }
 
     public static VehicleDestroyedScriptEvent instance;
-    public dEntity vehicle;
-    public dEntity entity;
+    public EntityTag vehicle;
+    public EntityTag entity;
     public VehicleDestroyEvent event;
 
     @Override
@@ -108,8 +108,8 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
 
     @EventHandler
     public void onVehicleDestroyed(VehicleDestroyEvent event) {
-        vehicle = new dEntity(event.getVehicle());
-        entity = event.getAttacker() != null ? new dEntity(event.getAttacker()) : null;
+        vehicle = new EntityTag(event.getVehicle());
+        entity = event.getAttacker() != null ? new EntityTag(event.getAttacker()) : null;
         this.event = event;
         fire(event);
     }

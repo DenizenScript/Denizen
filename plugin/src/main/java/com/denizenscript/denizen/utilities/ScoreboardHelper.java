@@ -3,7 +3,7 @@ package com.denizenscript.denizen.utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.Argument;
 import com.google.common.base.Splitter;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.server.ScoreboardCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -70,8 +70,8 @@ public class ScoreboardHelper {
             // Iterate through viewers, store them in the viewerMap,
             // and make them see this scoreboard if they are online
             for (String viewer : viewerList) {
-                if (dPlayer.matches(viewer)) {
-                    dPlayer player = dPlayer.valueOf(viewer);
+                if (PlayerTag.matches(viewer)) {
+                    PlayerTag player = PlayerTag.valueOf(viewer);
                     viewerMap.put(player.getName(), id);
 
                     if (player.isOnline()) {

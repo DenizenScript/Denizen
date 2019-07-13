@@ -7,9 +7,9 @@ import com.denizenscript.denizen.events.core.CuboidEnterExitSmartEvent;
 import com.denizenscript.denizen.events.core.FlagSmartEvent;
 import com.denizenscript.denizen.events.core.NPCNavigationSmartEvent;
 import com.denizenscript.denizen.flags.FlagManager;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dNPC;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.objects.properties.PropertyRegistry;
 import com.denizenscript.denizen.scripts.commands.BukkitCommandRegistry;
@@ -85,15 +85,15 @@ public class Denizen extends JavaPlugin {
      */
     private BukkitCommandRegistry commandRegistry = new BukkitCommandRegistry();
     private TriggerRegistry triggerRegistry = new TriggerRegistry();
-    private DenizenNPCHelper dNPCRegistry;
+    private DenizenNPCHelper npcHelper;
 
 
     public BukkitCommandRegistry getCommandRegistry() {
         return commandRegistry;
     }
 
-    public DenizenNPCHelper getNPCRegistry() {
-        return dNPCRegistry;
+    public DenizenNPCHelper getNPCHelper() {
+        return npcHelper;
     }
 
     public TriggerRegistry getTriggerRegistry() {
@@ -209,9 +209,9 @@ public class Denizen extends JavaPlugin {
         }
 
         try {
-            // If Citizens is enabled, Create the dNPC Registry
+            // If Citizens is enabled, Create the NPC Helper
             if (Depends.citizens != null) {
-                dNPCRegistry = new DenizenNPCHelper(this);
+                npcHelper = new DenizenNPCHelper(this);
             }
 
             // Create our CommandManager to handle '/denizen' commands
@@ -228,9 +228,9 @@ public class Denizen extends JavaPlugin {
             DenizenEntityType.registerEntityType("FAKE_ARROW", FakeArrow.class);
             DenizenEntityType.registerEntityType("FAKE_PLAYER", FakePlayer.class);
 
-            // Track all player names for quick dPlayer matching
+            // Track all player names for quick PlayerTag matching
             for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
-                dPlayer.notePlayer(player);
+                PlayerTag.notePlayer(player);
             }
         }
         catch (Exception e) {
@@ -645,12 +645,12 @@ public class Denizen extends JavaPlugin {
 
             entries.add(entry);
             InstantQueue queue = new InstantQueue("EXCOMMAND");
-            dNPC npc = null;
+            NPCTag npc = null;
             if (Depends.citizens != null && Depends.citizens.getNPCSelector().getSelected(sender) != null) {
-                npc = new dNPC(Depends.citizens.getNPCSelector().getSelected(sender));
+                npc = new NPCTag(Depends.citizens.getNPCSelector().getSelected(sender));
             }
             List<ScriptEntry> scriptEntries = ScriptBuilder.buildScriptEntries(entries, null,
-                    new BukkitScriptEntryData(sender instanceof Player ? new dPlayer((Player) sender) : null, npc));
+                    new BukkitScriptEntryData(sender instanceof Player ? new PlayerTag((Player) sender) : null, npc));
 
             queue.addEntries(scriptEntries);
             if (!quiet && sender instanceof Player) {
@@ -688,8 +688,8 @@ public class Denizen extends JavaPlugin {
                 if (cb > 4) {
                     String owner = string.substring(3, cb);
                     String flag = string.substring(cb + 2);
-                    if (dPlayer.matches(owner)) {
-                        dPlayer player = dPlayer.valueOf(owner);
+                    if (PlayerTag.matches(owner)) {
+                        PlayerTag player = PlayerTag.valueOf(owner);
                         if (FlagManager.playerHasFlag(player, flag)) {
                             return flag_manager.getPlayerFlag(player, flag);
                         }
@@ -697,8 +697,8 @@ public class Denizen extends JavaPlugin {
                             Debug.echoError("Player '" + owner + "' flag '" + flag + "' not found.");
                         }
                     }
-                    else if (Depends.citizens != null && dNPC.matches(owner)) {
-                        dNPC npc = dNPC.valueOf(owner);
+                    else if (Depends.citizens != null && NPCTag.matches(owner)) {
+                        NPCTag npc = NPCTag.valueOf(owner);
                         if (FlagManager.npcHasFlag(npc, flag)) {
                             return flag_manager.getNPCFlag(npc.getId(), flag);
                         }
@@ -706,8 +706,8 @@ public class Denizen extends JavaPlugin {
                             Debug.echoError("NPC '" + owner + "' flag '" + flag + "' not found.");
                         }
                     }
-                    else if (dEntity.matches(owner)) {
-                        dEntity entity = dEntity.valueOf(owner);
+                    else if (EntityTag.matches(owner)) {
+                        EntityTag entity = EntityTag.valueOf(owner);
                         if (FlagManager.entityHasFlag(entity, flag)) {
                             return flag_manager.getEntityFlag(entity, flag);
                         }

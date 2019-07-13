@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.server;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -104,7 +104,7 @@ public class BossBarCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("players")
                     && arg.matchesPrefix("players")
-                    && arg.matchesArgumentList(dPlayer.class)) {
+                    && arg.matchesArgumentList(PlayerTag.class)) {
                 scriptEntry.addObject("players", arg.asType(ListTag.class));
             }
             else if (!scriptEntry.hasObject("id")) {
@@ -168,7 +168,7 @@ public class BossBarCommand extends AbstractCommand {
                     return;
                 }
                 String barTitle = title != null ? title.asString() : "";
-                List<dPlayer> barPlayers = players.filter(dPlayer.class, scriptEntry);
+                List<PlayerTag> barPlayers = players.filter(PlayerTag.class, scriptEntry);
                 double barProgress = progress != null ? progress.asDouble() : 1D;
                 BarColor barColor = color != null ? BarColor.valueOf(color.asString().toUpperCase()) : BarColor.WHITE;
                 BarStyle barStyle = style != null ? BarStyle.valueOf(style.asString().toUpperCase()) : BarStyle.SOLID;
@@ -180,7 +180,7 @@ public class BossBarCommand extends AbstractCommand {
                 }
                 BossBar bossBar = Bukkit.createBossBar(barTitle, barColor, barStyle, barFlags);
                 bossBar.setProgress(barProgress);
-                for (dPlayer player : barPlayers) {
+                for (PlayerTag player : barPlayers) {
                     if (!player.isOnline()) {
                         Debug.echoError("Player must be online to show a BossBar to them!");
                         continue;
@@ -210,7 +210,7 @@ public class BossBarCommand extends AbstractCommand {
                     bossBar1.setStyle(BarStyle.valueOf(style.asString().toUpperCase()));
                 }
                 if (players != null) {
-                    for (dPlayer player : players.filter(dPlayer.class, scriptEntry)) {
+                    for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
                         bossBar1.addPlayer(player.getPlayerEntity());
                     }
                 }
@@ -223,7 +223,7 @@ public class BossBarCommand extends AbstractCommand {
                 }
                 if (players != null) {
                     BossBar bar = bossBarMap.get(idString);
-                    for (dPlayer player : players.filter(dPlayer.class, scriptEntry)) {
+                    for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
                         bar.removePlayer(player.getPlayerEntity());
                     }
                     break;

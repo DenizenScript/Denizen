@@ -2,10 +2,10 @@ package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.objects.*;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dNPC;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.CommandScriptContainer;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -51,12 +51,12 @@ public class DenizenCommand extends Command {
             return false;
         }
         Map<String, ObjectTag> context = new HashMap<>();
-        dPlayer player = null;
-        dNPC npc = null;
+        PlayerTag player = null;
+        NPCTag npc = null;
         if (commandSender instanceof Player) {
             Player pl = (Player) commandSender;
-            if (!dEntity.isNPC(pl)) {
-                player = dPlayer.mirrorBukkitPlayer(pl);
+            if (!EntityTag.isNPC(pl)) {
+                player = PlayerTag.mirrorBukkitPlayer(pl);
             }
             context.put("server", new ElementTag(false));
         }
@@ -78,21 +78,21 @@ public class DenizenCommand extends Command {
                     + "Please contact the server administrators if you believe that this is in error.");
         }
         else if (permissionMessage.length() != 0) {
-            dPlayer player = null;
-            dNPC npc = null;
+            PlayerTag player = null;
+            NPCTag npc = null;
             if (target instanceof Player) {
                 Player pl = (Player) target;
-                if (dEntity.isCitizensNPC(pl)) {
-                    npc = dNPC.fromEntity(pl);
+                if (EntityTag.isCitizensNPC(pl)) {
+                    npc = NPCTag.fromEntity(pl);
                 }
                 else {
-                    player = dPlayer.mirrorBukkitPlayer(pl);
+                    player = PlayerTag.mirrorBukkitPlayer(pl);
                 }
             }
             if (Depends.citizens != null && npc == null) {
                 NPC citizen = CitizensAPI.getDefaultNPCSelector().getSelected(target);
                 if (citizen != null) {
-                    npc = dNPC.mirrorCitizensNPC(citizen);
+                    npc = NPCTag.mirrorCitizensNPC(citizen);
                 }
             }
             // <permission> is built into Bukkit... let's keep it here
@@ -123,31 +123,31 @@ public class DenizenCommand extends Command {
         context.put("args", new ListTag(args));
         context.put("raw_args", new ElementTag(raw_args));
         context.put("alias", new ElementTag(commandLabel));
-        dPlayer player = null;
-        dNPC npc = null;
+        PlayerTag player = null;
+        NPCTag npc = null;
         if (commandSender instanceof Player) {
             Player pl = (Player) commandSender;
-            if (dEntity.isCitizensNPC(pl)) {
-                npc = dNPC.fromEntity(pl);
+            if (EntityTag.isCitizensNPC(pl)) {
+                npc = NPCTag.fromEntity(pl);
             }
             else {
-                player = dPlayer.mirrorBukkitPlayer(pl);
+                player = PlayerTag.mirrorBukkitPlayer(pl);
             }
             context.put("server", new ElementTag(false));
         }
         else {
             context.put("server", new ElementTag(true));
             if (commandSender instanceof BlockCommandSender) {
-                context.put("command_block_location", new dLocation(((BlockCommandSender) commandSender).getBlock().getLocation()));
+                context.put("command_block_location", new LocationTag(((BlockCommandSender) commandSender).getBlock().getLocation()));
             }
             else if (commandSender instanceof CommandMinecart) {
-                context.put("command_minecart", new dEntity((CommandMinecart) commandSender));
+                context.put("command_minecart", new EntityTag((CommandMinecart) commandSender));
             }
         }
         if (Depends.citizens != null && npc == null) {
             NPC citizen = CitizensAPI.getDefaultNPCSelector().getSelected(commandSender);
             if (citizen != null) {
-                npc = dNPC.mirrorCitizensNPC(citizen);
+                npc = NPCTag.mirrorCitizensNPC(citizen);
             }
         }
         script.runCommandScript(player, npc, context);
@@ -177,15 +177,15 @@ public class DenizenCommand extends Command {
         context.put("args", new ListTag(args));
         context.put("raw_args", new ElementTag(raw_args));
         context.put("alias", new ElementTag(alias));
-        dPlayer player = null;
-        dNPC npc = null;
+        PlayerTag player = null;
+        NPCTag npc = null;
         if (commandSender instanceof Player) {
             Player pl = (Player) commandSender;
-            if (dEntity.isCitizensNPC(pl)) {
-                npc = dNPC.fromEntity(pl);
+            if (EntityTag.isCitizensNPC(pl)) {
+                npc = NPCTag.fromEntity(pl);
             }
             else {
-                player = dPlayer.mirrorBukkitPlayer(pl);
+                player = PlayerTag.mirrorBukkitPlayer(pl);
             }
             context.put("server", new ElementTag(false));
         }
@@ -195,7 +195,7 @@ public class DenizenCommand extends Command {
         if (Depends.citizens != null && npc == null) {
             NPC citizen = CitizensAPI.getDefaultNPCSelector().getSelected(commandSender);
             if (citizen != null) {
-                npc = dNPC.mirrorCitizensNPC(citizen);
+                npc = NPCTag.mirrorCitizensNPC(citizen);
             }
         }
         return script.runTabCompleteProcedure(player, npc, context);

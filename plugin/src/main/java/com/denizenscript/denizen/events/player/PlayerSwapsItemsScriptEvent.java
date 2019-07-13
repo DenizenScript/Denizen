@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -25,12 +25,12 @@ public class PlayerSwapsItemsScriptEvent extends BukkitScriptEvent implements Li
     // @Triggers when a player swaps the items in their main and off hands.
     //
     // @Context
-    // <context.main> returns the dItem switched to the main hand.
-    // <context.offhand> returns the dItem switched to the off hand.
+    // <context.main> returns the ItemTag switched to the main hand.
+    // <context.offhand> returns the ItemTag switched to the off hand.
     //
     // @Determine
-    // "MAIN:" + dItem to set the item in the main hand.
-    // "OFFHAND:" + dItem to set the item in the off hand.
+    // "MAIN:" + ItemTag to set the item in the main hand.
+    // "OFFHAND:" + ItemTag to set the item in the off hand.
     //
     // -->
 
@@ -39,9 +39,9 @@ public class PlayerSwapsItemsScriptEvent extends BukkitScriptEvent implements Li
     }
 
     public static PlayerSwapsItemsScriptEvent instance;
-    public dPlayer player;
-    public dItem mainhand;
-    public dItem offhand;
+    public PlayerTag player;
+    public ItemTag mainhand;
+    public ItemTag offhand;
     public PlayerSwapHandItemsEvent event;
 
     @Override
@@ -63,11 +63,11 @@ public class PlayerSwapsItemsScriptEvent extends BukkitScriptEvent implements Li
     public boolean applyDetermination(ScriptContainer container, String determination) {
         String lower = CoreUtilities.toLowerCase(determination);
         if (lower.startsWith("main:")) {
-            event.setMainHandItem(dItem.valueOf(determination.substring("main:".length()), container).getItemStack());
+            event.setMainHandItem(ItemTag.valueOf(determination.substring("main:".length()), container).getItemStack());
             return true;
         }
         else if (lower.startsWith("offhand:")) {
-            event.setOffHandItem(dItem.valueOf(determination.substring("offhand:".length()), container).getItemStack());
+            event.setOffHandItem(ItemTag.valueOf(determination.substring("offhand:".length()), container).getItemStack());
             return true;
         }
         return super.applyDetermination(container, determination);
@@ -91,9 +91,9 @@ public class PlayerSwapsItemsScriptEvent extends BukkitScriptEvent implements Li
 
     @EventHandler
     public void playerSwapsItems(PlayerSwapHandItemsEvent event) {
-        player = dPlayer.mirrorBukkitPlayer(event.getPlayer());
-        mainhand = new dItem(event.getMainHandItem());
-        offhand = new dItem(event.getOffHandItem());
+        player = PlayerTag.mirrorBukkitPlayer(event.getPlayer());
+        mainhand = new ItemTag(event.getMainHandItem());
+        offhand = new ItemTag(event.getOffHandItem());
         this.event = event;
         fire(event);
     }

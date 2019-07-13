@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dWorld;
+import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -29,8 +29,8 @@ public class TimeCommand extends AbstractCommand {
     // When that player logs off, their time will be reset to the global time.
     //
     // @Tags
-    // <w@world.time>
-    // <w@world.time.period>
+    // <WorldTag.time>
+    // <WorldTag.time.period>
     //
     // @Usage
     // Use to set the time in the NPC or Player's world.
@@ -62,8 +62,8 @@ public class TimeCommand extends AbstractCommand {
                 scriptEntry.addObject("value", arg.asType(DurationTag.class));
             }
             else if (!scriptEntry.hasObject("world")
-                    && arg.matchesArgumentType(dWorld.class)) {
-                scriptEntry.addObject("world", arg.asType(dWorld.class));
+                    && arg.matchesArgumentType(WorldTag.class)) {
+                scriptEntry.addObject("world", arg.asType(WorldTag.class));
             }
             else {
                 arg.reportUnhandled();
@@ -81,9 +81,9 @@ public class TimeCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("world")) {
             scriptEntry.addObject("world",
                     Utilities.entryHasNPC(scriptEntry) ?
-                            new dWorld(Utilities.getEntryNPC(scriptEntry).getWorld()) :
+                            new WorldTag(Utilities.getEntryNPC(scriptEntry).getWorld()) :
                             (Utilities.entryHasPlayer(scriptEntry) ?
-                                    new dWorld(Utilities.getEntryPlayer(scriptEntry).getWorld()) : null));
+                                    new WorldTag(Utilities.getEntryPlayer(scriptEntry).getWorld()) : null));
         }
 
         scriptEntry.defaultObject("type", new ElementTag("GLOBAL"));
@@ -97,7 +97,7 @@ public class TimeCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
         // Fetch objects
         DurationTag value = (DurationTag) scriptEntry.getObject("value");
-        dWorld world = (dWorld) scriptEntry.getObject("world");
+        WorldTag world = (WorldTag) scriptEntry.getObject("world");
         ElementTag type_element = scriptEntry.getElement("type");
         Type type = Type.valueOf(type_element.asString().toUpperCase());
 

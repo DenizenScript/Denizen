@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -40,8 +40,8 @@ public class PlayerWalkScriptEvent extends BukkitScriptEvent implements Listener
 
     public static PlayerWalkScriptEvent instance;
 
-    public dLocation old_location;
-    public dLocation new_location;
+    public LocationTag old_location;
+    public LocationTag new_location;
     public PlayerMoveEvent event;
 
     @Override
@@ -67,7 +67,7 @@ public class PlayerWalkScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(dPlayer.mirrorBukkitPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(PlayerTag.mirrorBukkitPlayer(event.getPlayer()), null);
     }
 
     @Override
@@ -83,11 +83,11 @@ public class PlayerWalkScriptEvent extends BukkitScriptEvent implements Listener
 
     @EventHandler
     public void onPlayerMoves(PlayerMoveEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        old_location = new dLocation(event.getFrom());
-        new_location = new dLocation(event.getTo());
+        old_location = new LocationTag(event.getFrom());
+        new_location = new LocationTag(event.getTo());
         this.event = event;
         fire(event);
     }

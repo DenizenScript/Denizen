@@ -26,8 +26,8 @@ public class TraitCommand extends AbstractCommand {
     // TODO: Document Command Details
     //
     // @Tags
-    // <n@npc.has_trait[<trait>]>
-    // <n@npc.list_traits>
+    // <NPCTag.has_trait[<trait>]>
+    // <NPCTag.list_traits>
     //
     // @Usage
     // TODO: Document Command Details

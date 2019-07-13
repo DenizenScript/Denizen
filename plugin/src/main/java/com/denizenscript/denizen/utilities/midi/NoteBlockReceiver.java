@@ -3,8 +3,8 @@ package com.denizenscript.denizen.utilities.midi;
 import com.google.common.collect.Maps;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.SoundHelper;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Bukkit;
@@ -23,21 +23,21 @@ import java.util.Map;
 public class NoteBlockReceiver implements Receiver, MetaEventListener {
     public float VOLUME_RANGE = 10.0f;
 
-    private List<dEntity> entities;
-    private dLocation location;
+    private List<EntityTag> entities;
+    private LocationTag location;
     private Map<Integer, Integer> channelPatches;
     public String key = null;
     public Sequencer sequencer;
     public boolean closing = false;
 
-    public NoteBlockReceiver(List<dEntity> entities, String _Key) throws InvalidMidiDataException, IOException {
+    public NoteBlockReceiver(List<EntityTag> entities, String _Key) throws InvalidMidiDataException, IOException {
         this.entities = entities;
         this.location = null;
         this.channelPatches = Maps.newHashMap();
         this.key = _Key;
     }
 
-    public NoteBlockReceiver(dLocation location, String _Key) throws InvalidMidiDataException, IOException {
+    public NoteBlockReceiver(LocationTag location, String _Key) throws InvalidMidiDataException, IOException {
         this.entities = null;
         this.location = location;
         this.channelPatches = Maps.newHashMap();
@@ -121,7 +121,7 @@ public class NoteBlockReceiver implements Receiver, MetaEventListener {
         }
         else if (entities != null && !entities.isEmpty()) {
             for (int i = 0; i < entities.size(); i++) {
-                dEntity entity = entities.get(i);
+                EntityTag entity = entities.get(i);
                 if (entity.isSpawned()) {
                     if (entity.isPlayer()) {
                         NMSHandler.getInstance().getSoundHelper().playSound(entity.getPlayer(), entity.getLocation(), instrument, volume, pitch, "RECORDS");

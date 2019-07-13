@@ -22,14 +22,14 @@ public class InventoryHolder implements Property {
 
     public static boolean describes(ObjectTag inventory) {
         // All inventories should have a holder
-        return inventory instanceof dInventory;
+        return inventory instanceof InventoryTag;
     }
 
     public static InventoryHolder getFrom(ObjectTag inventory) {
         if (!describes(inventory)) {
             return null;
         }
-        return new InventoryHolder((dInventory) inventory);
+        return new InventoryHolder((InventoryTag) inventory);
     }
 
     public static final String[] handledTags = new String[] {
@@ -44,10 +44,10 @@ public class InventoryHolder implements Property {
     // Instance Fields and Methods
     /////////////
 
-    dInventory inventory;
+    InventoryTag inventory;
     ObjectTag holder;
 
-    public InventoryHolder(dInventory inventory) {
+    public InventoryHolder(InventoryTag inventory) {
         this.inventory = inventory;
         this.holder = getHolder();
     }
@@ -58,7 +58,7 @@ public class InventoryHolder implements Property {
         }
         if (inventory.getIdType() != null
                 && (inventory.getIdType().equals("player") || inventory.getIdType().equals("enderchest"))) {
-            return dPlayer.valueOf(inventory.getIdHolder());
+            return PlayerTag.valueOf(inventory.getIdHolder());
         }
         else if (inventory.getIdType() != null && inventory.getIdType().equalsIgnoreCase("script")
                 && ScriptTag.matches(inventory.getIdHolder())) {
@@ -67,23 +67,23 @@ public class InventoryHolder implements Property {
         org.bukkit.inventory.InventoryHolder holder = inventory.getInventory().getHolder();
 
         if (holder != null) {
-            if (holder instanceof dNPC) {
-                return (dNPC) holder;
+            if (holder instanceof NPCTag) {
+                return (NPCTag) holder;
             }
             else if (holder instanceof Player) {
                 if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC((Player) holder)) {
-                    return new dNPC(CitizensAPI.getNPCRegistry().getNPC((Player) holder));
+                    return new NPCTag(CitizensAPI.getNPCRegistry().getNPC((Player) holder));
                 }
-                return new dPlayer((Player) holder);
+                return new PlayerTag((Player) holder);
             }
             else if (holder instanceof Entity) {
-                return new dEntity((Entity) holder);
+                return new EntityTag((Entity) holder);
             }
             else if (holder instanceof DoubleChest) {
-                return new dLocation(((DoubleChest) holder).getLocation());
+                return new LocationTag(((DoubleChest) holder).getLocation());
             }
             else if (holder instanceof BlockState) {
-                return new dLocation(((BlockState) holder).getLocation());
+                return new LocationTag(((BlockState) holder).getLocation());
             }
         }
         else {
@@ -93,7 +93,7 @@ public class InventoryHolder implements Property {
         return null;
     }
 
-    public void setHolder(dPlayer player) {
+    public void setHolder(PlayerTag player) {
         if (inventory.getIdType().equals("enderchest")) {
             inventory.setInventory(player.getBukkitEnderChest(), player);
         }
@@ -115,15 +115,15 @@ public class InventoryHolder implements Property {
         }
     }
 
-    public void setHolder(dNPC npc) {
+    public void setHolder(NPCTag npc) {
         inventory.setInventory(npc.getInventory());
     }
 
-    public void setHolder(dEntity entity) {
+    public void setHolder(EntityTag entity) {
         inventory.setInventory(entity.getBukkitInventory());
     }
 
-    public void setHolder(dLocation location) {
+    public void setHolder(LocationTag location) {
         inventory.setInventory(location.getBukkitInventory());
     }
 
@@ -168,10 +168,10 @@ public class InventoryHolder implements Property {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.id_holder>
+        // @attribute <InventoryTag.id_holder>
         // @returns ObjectTag
         // @group properties
-        // @mechanism dInventory.holder
+        // @mechanism InventoryTag.holder
         // @description
         // Returns Denizen's holder ID for this inventory. (p@aufdemrand, l@123,321,123, etc.)
         // -->
@@ -190,30 +190,30 @@ public class InventoryHolder implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dInventory
+        // @object InventoryTag
         // @name holder
         // @input ObjectTag
         // @description
-        // Changes the holder of the dInventory, therefore completely reconfiguring
+        // Changes the holder of the InventoryTag, therefore completely reconfiguring
         // the inventory to that of the holder.
         // @tags
-        // <in@inventory.id_holder>
+        // <InventoryTag.id_holder>
         // -->
         if (mechanism.matches("holder")) {
             if (mechanism.getValue().matchesEnum(InventoryType.values())) {
                 setHolder(mechanism.getValue());
             }
-            else if (mechanism.getValue().matchesType(dPlayer.class)) {
-                setHolder(mechanism.valueAsType(dPlayer.class));
+            else if (mechanism.getValue().matchesType(PlayerTag.class)) {
+                setHolder(mechanism.valueAsType(PlayerTag.class));
             }
-            else if (Depends.citizens != null && mechanism.getValue().matchesType(dNPC.class)) {
-                setHolder(mechanism.valueAsType(dNPC.class));
+            else if (Depends.citizens != null && mechanism.getValue().matchesType(NPCTag.class)) {
+                setHolder(mechanism.valueAsType(NPCTag.class));
             }
-            else if (mechanism.getValue().matchesType(dEntity.class)) {
-                setHolder(mechanism.valueAsType(dEntity.class));
+            else if (mechanism.getValue().matchesType(EntityTag.class)) {
+                setHolder(mechanism.valueAsType(EntityTag.class));
             }
-            else if (mechanism.getValue().matchesType(dLocation.class)) {
-                setHolder(mechanism.valueAsType(dLocation.class));
+            else if (mechanism.getValue().matchesType(LocationTag.class)) {
+                setHolder(mechanism.valueAsType(LocationTag.class));
             }
         }
 

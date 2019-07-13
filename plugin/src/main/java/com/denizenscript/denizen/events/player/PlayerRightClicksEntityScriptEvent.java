@@ -33,18 +33,18 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
     // @Triggers when a player right clicks on an entity.
     //
     // @Context
-    // <context.entity> returns the dEntity the player is clicking on.
-    // <context.item> returns the dItem the player is clicking with.
-    // <context.location> returns a dLocation of the clicked entity. NOTE: DEPRECATED IN FAVOR OF <context.entity.location>
-    // <context.click_position> returns a dLocation of the click position (as a world-less vector, relative to the entity's center). This is only available when clicking armor stands.
+    // <context.entity> returns the EntityTag the player is clicking on.
+    // <context.item> returns the ItemTag the player is clicking with.
+    // <context.location> returns a LocationTag of the clicked entity. NOTE: DEPRECATED IN FAVOR OF <context.entity.location>
+    // <context.click_position> returns a LocationTag of the click position (as a world-less vector, relative to the entity's center). This is only available when clicking armor stands.
     //
     // -->
 
     PlayerRightClicksEntityScriptEvent instance;
     PlayerInteractEntityEvent event;
-    dEntity entity;
-    dItem item;
-    dLocation location;
+    EntityTag entity;
+    ItemTag item;
+    LocationTag location;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
@@ -84,7 +84,7 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(dPlayer.mirrorBukkitPlayer(event.getPlayer()), entity.isNPC() ? entity.getDenizenNPC() : null);
+        return new BukkitScriptEntryData(PlayerTag.mirrorBukkitPlayer(event.getPlayer()), entity.isNPC() ? entity.getDenizenNPC() : null);
     }
 
     @Override
@@ -99,12 +99,12 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
             return location;
         }
         else if (name.equals("click_position") && event instanceof PlayerInteractAtEntityEvent) {
-            return new dLocation(((PlayerInteractAtEntityEvent) event).getClickedPosition());
+            return new LocationTag(((PlayerInteractAtEntityEvent) event).getClickedPosition());
         }
         else if (name.equals("cuboids")) {
             Debug.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
             ListTag cuboids = new ListTag();
-            for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+            for (CuboidTag cuboid : CuboidTag.getNotableCuboidsContaining(location)) {
                 cuboids.addObject(cuboid);
             }
             return cuboids;
@@ -122,9 +122,9 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
         if (event.getHand() == EquipmentSlot.OFF_HAND) {
             return;
         }
-        entity = new dEntity(event.getRightClicked());
-        item = new dItem(event.getPlayer().getItemInHand());
-        location = new dLocation(event.getRightClicked().getLocation());
+        entity = new EntityTag(event.getRightClicked());
+        item = new ItemTag(event.getPlayer().getItemInHand());
+        location = new LocationTag(event.getRightClicked().getLocation());
         this.event = event;
         fire(event);
     }

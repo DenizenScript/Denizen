@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -29,9 +29,9 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
     // @Triggers when an item entity merges into another item entity.
     //
     // @Context
-    // <context.item> returns the dItem of the entity.
-    // <context.entity> returns the dEntity.
-    // <context.target> returns the dEntity being merged into.
+    // <context.item> returns the ItemTag of the entity.
+    // <context.entity> returns the EntityTag.
+    // <context.target> returns the EntityTag being merged into.
     // <context.location> returns the location of the entity to be spawned.
     //
     // -->
@@ -41,9 +41,9 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     public static ItemMergesScriptEvent instance;
-    public dItem item;
-    public dLocation location;
-    public dEntity entity;
+    public ItemTag item;
+    public LocationTag location;
+    public EntityTag entity;
     public ItemMergeEvent event;
 
     @Override
@@ -52,7 +52,7 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
         String cmd = CoreUtilities.getXthArg(1, lower);
         String entTest = CoreUtilities.getXthArg(0, lower);
         return cmd.equals("merges")
-                && (entTest.equals("item") || dMaterial.matches(entTest) || dItem.matches(entTest));
+                && (entTest.equals("item") || MaterialTag.matches(entTest) || ItemTag.matches(entTest));
     }
 
     @Override
@@ -92,7 +92,7 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
             return entity;
         }
         else if (name.equals("target")) {
-            return new dEntity(event.getTarget());
+            return new EntityTag(event.getTarget());
         }
         return super.getContext(name);
     }
@@ -101,9 +101,9 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
     public void onItemMerges(ItemMergeEvent event) {
         Item entity = event.getEntity();
         Item target = event.getTarget();
-        location = new dLocation(target.getLocation());
-        item = new dItem(entity.getItemStack());
-        this.entity = new dEntity(entity);
+        location = new LocationTag(target.getLocation());
+        item = new ItemTag(entity.getItemStack());
+        this.entity = new EntityTag(entity);
         this.event = event;
         fire(event);
     }

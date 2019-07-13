@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -24,10 +24,10 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
     // @Triggers when a player respawns.
     //
     // @Context
-    // <context.location> returns a dLocation of the respawn location.
+    // <context.location> returns a LocationTag of the respawn location.
     //
     // @Determine
-    // dLocation to change the respawn location.
+    // LocationTag to change the respawn location.
     //
     // -->
 
@@ -36,7 +36,7 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
     }
 
     public static PlayerRespawnsScriptEvent instance;
-    public dLocation location;
+    public LocationTag location;
     public PlayerRespawnEvent event;
 
     @Override
@@ -64,7 +64,7 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (!CoreUtilities.toLowerCase(determination).equals("none")) {
-            dLocation loc = dLocation.valueOf(determination);
+            LocationTag loc = LocationTag.valueOf(determination);
             if (loc != null) {
                 location = loc;
                 return true;
@@ -75,7 +75,7 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(new PlayerTag(event.getPlayer()), null);
     }
 
     @Override
@@ -88,10 +88,10 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
 
     @EventHandler
     public void onPlayerRespawns(PlayerRespawnEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        location = new dLocation(event.getRespawnLocation());
+        location = new LocationTag(event.getRespawnLocation());
         this.event = event;
         fire(event);
         event.setRespawnLocation(location);

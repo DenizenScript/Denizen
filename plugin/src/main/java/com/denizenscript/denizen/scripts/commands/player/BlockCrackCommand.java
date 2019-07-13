@@ -4,8 +4,8 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.PacketHelper;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -59,15 +59,15 @@ public class BlockCrackCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (arg.matchesPrefix("players")
-                    && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("players", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
+                    && arg.matchesArgumentList(PlayerTag.class)) {
+                scriptEntry.addObject("players", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
             else if (arg.matchesPrefix("progress")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
                 scriptEntry.addObject("progress", arg.asElement());
             }
-            else if (arg.matchesArgumentType(dLocation.class)) {
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+            else if (arg.matchesArgumentType(LocationTag.class)) {
+                scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
             else if (arg.matches("stack")) {
                 scriptEntry.addObject("stack", new ElementTag(true));
@@ -101,9 +101,9 @@ public class BlockCrackCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("players");
+        List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
         ElementTag progress = scriptEntry.getElement("progress");
-        dLocation location = scriptEntry.getdObject("location");
+        LocationTag location = scriptEntry.getdObject("location");
         ElementTag stack = scriptEntry.getElement("stack");
 
         if (scriptEntry.dbCallShouldDebug()) {
@@ -124,7 +124,7 @@ public class BlockCrackCommand extends AbstractCommand {
 
         PacketHelper packetHelper = NMSHandler.getInstance().getPacketHelper();
 
-        for (dPlayer player : players) {
+        for (PlayerTag player : players) {
             if (!player.isOnline()) {
                 Debug.echoError("Players must be online!");
                 continue;

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -12,13 +12,13 @@ import org.bukkit.entity.Explosive;
 public class EntityExplosionRadius implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity
-                && (((dEntity) entity).getBukkitEntity() instanceof Explosive
-                || ((dEntity) entity).getBukkitEntity() instanceof Creeper);
+        return entity instanceof EntityTag
+                && (((EntityTag) entity).getBukkitEntity() instanceof Explosive
+                || ((EntityTag) entity).getBukkitEntity() instanceof Creeper);
     }
 
     public static EntityExplosionRadius getFrom(ObjectTag entity) {
-        return describes(entity) ? new EntityExplosionRadius((dEntity) entity) : null;
+        return describes(entity) ? new EntityExplosionRadius((EntityTag) entity) : null;
     }
 
     public static final String[] handledTags = new String[] {
@@ -40,11 +40,11 @@ public class EntityExplosionRadius implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityExplosionRadius(dEntity ent) {
+    private EntityExplosionRadius(EntityTag ent) {
         entity = ent;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     /////////
     // Property Methods
@@ -72,9 +72,9 @@ public class EntityExplosionRadius implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.explosion_radius>
+        // @attribute <EntityTag.explosion_radius>
         // @returns ElementTag(Decimal)
-        // @mechanism dEntity.explosion_radius
+        // @mechanism EntityTag.explosion_radius
         // @group properties
         // @description
         // If this entity can explode, returns its explosion radius.
@@ -91,13 +91,13 @@ public class EntityExplosionRadius implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name explosion_radius
         // @input Element(Decimal)
         // @description
         // If this entity can explode, sets its explosion radius.
         // @tags
-        // <e@entity.explosion_radius>
+        // <EntityTag.explosion_radius>
         // -->
         if (mechanism.matches("explosion_radius") && mechanism.requireFloat()) {
             if (entity.getBukkitEntity() instanceof Creeper) {

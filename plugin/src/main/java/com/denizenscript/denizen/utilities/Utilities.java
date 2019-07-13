@@ -7,8 +7,8 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.npc.traits.TriggerTrait;
-import com.denizenscript.denizen.objects.dNPC;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.tags.TagContext;
@@ -173,7 +173,7 @@ public class Utilities {
      * @param npc    the npc being talked to
      * @param range  the range, in blocks, that 'bystanders' will hear he chat
      */
-    public static void talkToNPC(String message, dPlayer player, dNPC npc, double range) {
+    public static void talkToNPC(String message, PlayerTag player, NPCTag npc, double range) {
         String replacer = String.valueOf((char) 0x04);
         // Get formats from Settings, and fill in <TEXT>
         String talkFormat = Settings.chatToNpcFormat()
@@ -231,7 +231,7 @@ public class Utilities {
      * @return The closest NPC to the location, or null if no NPC was found
      * within the range specified.
      */
-    public static dNPC getClosestNPC_ChatTrigger(Location location, int range) {
+    public static NPCTag getClosestNPC_ChatTrigger(Location location, int range) {
         NPC closestNPC = null;
         double closestDistance = Math.pow(range, 2);
         for (NPC npc : CitizensAPI.getNPCRegistry()) {
@@ -246,7 +246,7 @@ public class Utilities {
                 closestDistance = npc.getStoredLocation().distanceSquared(location);
             }
         }
-        return new dNPC(closestNPC);
+        return new NPCTag(closestNPC);
     }
 
 
@@ -513,11 +513,11 @@ public class Utilities {
         return getEntryData(entry).hasNPC();
     }
 
-    public static dPlayer getEntryPlayer(ScriptEntry entry) {
+    public static PlayerTag getEntryPlayer(ScriptEntry entry) {
         return getEntryData(entry).getPlayer();
     }
 
-    public static dNPC getEntryNPC(ScriptEntry entry) {
+    public static NPCTag getEntryNPC(ScriptEntry entry) {
         return getEntryData(entry).getNPC();
     }
 }

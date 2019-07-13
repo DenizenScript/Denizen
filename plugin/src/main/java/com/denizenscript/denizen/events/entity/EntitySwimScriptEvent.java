@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -28,7 +28,7 @@ public class EntitySwimScriptEvent extends BukkitScriptEvent implements Listener
     // @Triggers when an entity starts or stops swimming.
     //
     // @Context
-    // <context.entity> returns the dEntity of this event.
+    // <context.entity> returns the EntityTag of this event.
     // <context.state> returns an Element(Boolean) with a value of "true" if the entity is now swimming and "false" otherwise.
     //
     // @Player when the entity is a player.
@@ -42,7 +42,7 @@ public class EntitySwimScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     public static EntitySwimScriptEvent instance;
-    public dEntity entity;
+    public EntityTag entity;
     public Boolean state;
 
     @Override
@@ -101,7 +101,7 @@ public class EntitySwimScriptEvent extends BukkitScriptEvent implements Listener
 
     @EventHandler
     public void onEntityToggleSwim(EntityToggleSwimEvent event) {
-        entity = new dEntity(event.getEntity());
+        entity = new EntityTag(event.getEntity());
         state = event.isSwimming();
         fire(event);
     }

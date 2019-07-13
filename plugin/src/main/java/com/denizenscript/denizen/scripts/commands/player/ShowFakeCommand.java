@@ -3,9 +3,9 @@ package com.denizenscript.denizen.scripts.commands.player;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -39,7 +39,7 @@ public class ShowFakeCommand extends AbstractCommand {
     // If no duration is specefied, then it assumes the default duration of 10 seconds.
     //
     // @Tags
-    // <l@location.block.material>
+    // <LocationTag.block.material>
     //
     // @Usage
     // Use to place a fake gold block at where the player is looking
@@ -66,25 +66,25 @@ public class ShowFakeCommand extends AbstractCommand {
 
             if (arg.matchesPrefix("to", "players")) {
                 for (String entity : ListTag.valueOf(arg.getValue())) {
-                    if (dPlayer.matches(entity)) {
+                    if (PlayerTag.matches(entity)) {
                         entities.add(entity);
                     }
                 }
                 added_entities = true; // TODO: handle lists properly
             }
-            else if (arg.matchesArgumentList(dMaterial.class)) {
+            else if (arg.matchesArgumentList(MaterialTag.class)) {
                 scriptEntry.addObject("materials", arg.asType(ListTag.class));
             }
             else if (locations.isEmpty()
                     && arg.matchesArgumentType(ListTag.class)) {
                 for (String item : ListTag.valueOf(arg.getValue())) {
-                    if (dLocation.matches(item)) {
+                    if (LocationTag.matches(item)) {
                         locations.add(item);
                     }
                 }
             }
             else if (locations.isEmpty()
-                    && arg.matchesArgumentType(dLocation.class)) {
+                    && arg.matchesArgumentType(LocationTag.class)) {
                 locations.add(arg.getValue());
             }
             else if (arg.matchesPrefix("d", "duration")
@@ -147,18 +147,18 @@ public class ShowFakeCommand extends AbstractCommand {
 
         boolean shouldCancel = cancel.asBoolean();
 
-        List<dMaterial> mats = null;
+        List<MaterialTag> mats = null;
         if (!shouldCancel) {
-            mats = material_list.filter(dMaterial.class, scriptEntry);
+            mats = material_list.filter(MaterialTag.class, scriptEntry);
         }
 
         int i = 0;
-        for (dLocation loc : list.filter(dLocation.class, scriptEntry)) {
+        for (LocationTag loc : list.filter(LocationTag.class, scriptEntry)) {
             if (!shouldCancel) {
-                FakeBlock.showFakeBlockTo(players.filter(dPlayer.class, scriptEntry), loc, mats.get(i % mats.size()), duration);
+                FakeBlock.showFakeBlockTo(players.filter(PlayerTag.class, scriptEntry), loc, mats.get(i % mats.size()), duration);
             }
             else {
-                FakeBlock.stopShowingTo(players.filter(dPlayer.class, scriptEntry), loc);
+                FakeBlock.stopShowingTo(players.filter(PlayerTag.class, scriptEntry), loc);
             }
             i++;
         }

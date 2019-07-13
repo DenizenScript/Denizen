@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -13,7 +13,7 @@ public class ItemDisplayname implements Property {
 
     public static boolean describes(ObjectTag item) {
         // Technically, all items can have a display name
-        return item instanceof dItem;
+        return item instanceof ItemTag;
     }
 
     public static ItemDisplayname getFrom(ObjectTag _item) {
@@ -21,7 +21,7 @@ public class ItemDisplayname implements Property {
             return null;
         }
         else {
-            return new ItemDisplayname((dItem) _item);
+            return new ItemDisplayname((ItemTag) _item);
         }
     }
 
@@ -34,11 +34,11 @@ public class ItemDisplayname implements Property {
     };
 
 
-    private ItemDisplayname(dItem _item) {
+    private ItemDisplayname(ItemTag _item) {
         item = _item;
     }
 
-    dItem item;
+    ItemTag item;
 
     public boolean hasDisplayName() {
         return item.getItemStack().hasItemMeta()
@@ -53,9 +53,9 @@ public class ItemDisplayname implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.display>
+        // @attribute <ItemTag.display>
         // @returns ElementTag
-        // @mechanism dItem.display_name
+        // @mechanism ItemTag.display_name
         // @group properties
         // @description
         // Returns the display name of the item, as set by plugin or an anvil.
@@ -68,9 +68,9 @@ public class ItemDisplayname implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.has_display>
+        // @attribute <ItemTag.has_display>
         // @returns ElementTag(Boolean)
-        // @mechanism dItem.display_name
+        // @mechanism ItemTag.display_name
         // @group properties
         // @description
         // Returns whether the item has a custom set display name.
@@ -103,14 +103,14 @@ public class ItemDisplayname implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name display_name
         // @input Element
         // @description
         // Changes the items display name.
         // See <@link language Property Escaping>
         // @tags
-        // <i@item.display>
+        // <ItemTag.display>
         // -->
 
         if (mechanism.matches("display_name")) {

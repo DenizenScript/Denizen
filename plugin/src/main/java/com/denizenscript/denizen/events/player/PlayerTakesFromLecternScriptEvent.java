@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.events.ScriptEvent;
@@ -30,8 +30,8 @@ public class PlayerTakesFromLecternScriptEvent extends BukkitScriptEvent impleme
     // @Triggers when a player takes a book from a lectern.
     //
     // @Context
-    // <context.location> returns the dLocation of the lectern.
-    // <context.item> returns the book dItem taken out of the lectern.
+    // <context.location> returns the LocationTag of the lectern.
+    // <context.item> returns the book ItemTag taken out of the lectern.
     //
     // -->
 
@@ -40,8 +40,8 @@ public class PlayerTakesFromLecternScriptEvent extends BukkitScriptEvent impleme
     }
 
     public static PlayerTakesFromLecternScriptEvent instance;
-    public dLocation location;
-    public dItem item;
+    public LocationTag location;
+    public ItemTag item;
     public PlayerTakeLecternBookEvent event;
 
     @Override
@@ -64,7 +64,7 @@ public class PlayerTakesFromLecternScriptEvent extends BukkitScriptEvent impleme
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(dPlayer.mirrorBukkitPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(PlayerTag.mirrorBukkitPlayer(event.getPlayer()), null);
     }
 
     @Override
@@ -80,11 +80,11 @@ public class PlayerTakesFromLecternScriptEvent extends BukkitScriptEvent impleme
 
     @EventHandler
     public void onPlayerTakesFromLectern(PlayerTakeLecternBookEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        item = new dItem(event.getBook());
-        location = new dLocation(event.getLectern().getLocation());
+        item = new ItemTag(event.getBook());
+        location = new LocationTag(event.getLectern().getLocation());
         this.event = event;
         fire(event);
     }

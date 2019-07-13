@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -11,7 +11,7 @@ import com.denizenscript.denizencore.tags.Attribute;
 public class EntitySilent implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity;
+        return entity instanceof EntityTag;
     }
 
     public static EntitySilent getFrom(ObjectTag entity) {
@@ -19,7 +19,7 @@ public class EntitySilent implements Property {
             return null;
         }
         else {
-            return new EntitySilent((dEntity) entity);
+            return new EntitySilent((EntityTag) entity);
         }
     }
 
@@ -36,11 +36,11 @@ public class EntitySilent implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntitySilent(dEntity ent) {
+    private EntitySilent(EntityTag ent) {
         entity = ent;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     /////////
     // Property Methods
@@ -69,7 +69,7 @@ public class EntitySilent implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.silent>
+        // @attribute <EntityTag.silent>
         // @returns ElementTag(Boolean)
         // @group attributes
         // @description
@@ -88,13 +88,13 @@ public class EntitySilent implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name silent
         // @input Element(Boolean)
         // @description
         // Sets whether this entity is silent. (Plays no sounds)
         // @tags
-        // <e@entity.silent>
+        // <EntityTag.silent>
         // -->
         if (mechanism.matches("silent") && mechanism.requireBoolean()) {
             NMSHandler.getInstance().getEntityHelper().setSilent(entity.getBukkitEntity(), mechanism.getValue().asBoolean());

@@ -3,7 +3,7 @@ package com.denizenscript.denizen.objects.properties.item;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -19,8 +19,8 @@ import java.util.UUID;
 public class ItemSkullskin implements Property {
 
     public static boolean describes(ObjectTag item) {
-        return item instanceof dItem
-                && ((dItem) item).getItemStack().getItemMeta() instanceof SkullMeta;
+        return item instanceof ItemTag
+                && ((ItemTag) item).getItemStack().getItemMeta() instanceof SkullMeta;
     }
 
     public static ItemSkullskin getFrom(ObjectTag _item) {
@@ -28,7 +28,7 @@ public class ItemSkullskin implements Property {
             return null;
         }
         else {
-            return new ItemSkullskin((dItem) _item);
+            return new ItemSkullskin((ItemTag) _item);
         }
     }
 
@@ -41,11 +41,11 @@ public class ItemSkullskin implements Property {
     };
 
 
-    private ItemSkullskin(dItem _item) {
+    private ItemSkullskin(ItemTag _item) {
         item = _item;
     }
 
-    dItem item;
+    ItemTag item;
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -55,18 +55,18 @@ public class ItemSkullskin implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.skin>
+        // @attribute <ItemTag.skin>
         // @returns ElementTag
-        // @mechanism dItem.skull_skin
+        // @mechanism ItemTag.skull_skin
         // @group properties
         // @description
         // Returns the UUID of the player whose skin a skull item uses.
         // Note: Item must be a 'skull_item' with a skin.
         // -->
         // <--[tag]
-        // @attribute <i@item.skin.full>
+        // @attribute <ItemTag.skin.full>
         // @returns ElementTag|Element
-        // @mechanism dItem.skull_skin
+        // @mechanism ItemTag.skull_skin
         // @group properties
         // @description
         // Returns the UUID of the player whose skin a skull item uses, along
@@ -89,9 +89,9 @@ public class ItemSkullskin implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.has_skin>
+        // @attribute <ItemTag.has_skin>
         // @returns ElementTag(Boolean)
-        // @mechanism dItem.skull_skin
+        // @mechanism ItemTag.skull_skin
         // @group properties
         // @description
         // Returns whether the item has a custom skin set.
@@ -134,7 +134,7 @@ public class ItemSkullskin implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name skull_skin
         // @input Element(|Element(|Element))
         // @description
@@ -143,9 +143,9 @@ public class ItemSkullskin implements Property {
         // Optionally, use the second ElementTag for the skin texture cache.
         // Optionally, use the third ElementTag for a player name.
         // @tags
-        // <i@item.skin>
-        // <i@item.skin.full>
-        // <i@item.has_skin>
+        // <ItemTag.skin>
+        // <ItemTag.skin.full>
+        // <ItemTag.has_skin>
         // -->
         if (mechanism.matches("skull_skin")) {
             if (!isCorrectDurability()) {

@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.world;
 
-import com.denizenscript.denizen.objects.dChunk;
-import com.denizenscript.denizen.objects.dWorld;
+import com.denizenscript.denizen.objects.ChunkTag;
+import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -34,8 +34,8 @@ public class ChunkLoadScriptEvent extends BukkitScriptEvent implements Listener 
 
     public static ChunkLoadScriptEvent instance;
 
-    public dChunk chunk;
-    public dWorld world;
+    public ChunkTag chunk;
+    public WorldTag world;
     public ChunkLoadEvent event;
 
     @Override
@@ -77,8 +77,8 @@ public class ChunkLoadScriptEvent extends BukkitScriptEvent implements Listener 
         if (!event.isNewChunk()) {
             return;
         }
-        chunk = new dChunk(event.getChunk());
-        world = new dWorld(event.getWorld());
+        chunk = new ChunkTag(event.getChunk());
+        world = new WorldTag(event.getWorld());
         this.event = event;
         fire(event);
     }

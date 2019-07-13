@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -15,8 +15,8 @@ import org.bukkit.inventory.meta.CrossbowMeta;
 public class ItemChargedProjectile implements Property {
 
     public static boolean describes(ObjectTag item) {
-        return item instanceof dItem
-                && ((dItem) item).getItemStack().getType() == Material.CROSSBOW;
+        return item instanceof ItemTag
+                && ((ItemTag) item).getItemStack().getType() == Material.CROSSBOW;
     }
 
     public static ItemChargedProjectile getFrom(ObjectTag item) {
@@ -24,7 +24,7 @@ public class ItemChargedProjectile implements Property {
             return null;
         }
         else {
-            return new ItemChargedProjectile((dItem) item);
+            return new ItemChargedProjectile((ItemTag) item);
         }
     }
 
@@ -36,11 +36,11 @@ public class ItemChargedProjectile implements Property {
             "charged_projectiles", "add_charged_projectile", "remove_charged_projectiles"
     };
 
-    private ItemChargedProjectile(dItem _item) {
+    private ItemChargedProjectile(ItemTag _item) {
         item = _item;
     }
 
-    dItem item;
+    ItemTag item;
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -49,9 +49,9 @@ public class ItemChargedProjectile implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.charged_projectiles>
-        // @returns ListTag(dItem)
-        // @mechanism dItem.charged_projectiles
+        // @attribute <ItemTag.charged_projectiles>
+        // @returns ListTag(ItemTag)
+        // @mechanism ItemTag.charged_projectiles
         // @group properties
         // @description
         // Returns a list of charged projectile items on this crossbow.
@@ -62,9 +62,9 @@ public class ItemChargedProjectile implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.is_charged>
+        // @attribute <ItemTag.is_charged>
         // @returns ElementTag(Boolean)
-        // @mechanism dItem.charged_projectiles
+        // @mechanism ItemTag.charged_projectiles
         // @group properties
         // @description
         // Returns whether this crossbow is charged.
@@ -85,7 +85,7 @@ public class ItemChargedProjectile implements Property {
         }
 
         for (ItemStack projectile : meta.getChargedProjectiles()) {
-            list.addObject(new dItem(projectile));
+            list.addObject(new ItemTag(projectile));
         }
         return list;
     }
@@ -105,19 +105,19 @@ public class ItemChargedProjectile implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name charged_projectiles
-        // @input ListTag(dItem)
+        // @input ListTag(ItemTag)
         // @description
         // Sets the charged projectile items on this crossbow. Charged projectiles may only be arrows and fireworks.
         // @tags
-        // <i@item.charged_projectiles>
-        // <i@item.is_charged>
+        // <ItemTag.charged_projectiles>
+        // <ItemTag.is_charged>
         // -->
         if (mechanism.matches("charged_projectiles")) {
             CrossbowMeta meta = (CrossbowMeta) item.getItemStack().getItemMeta();
             meta.setChargedProjectiles(null);
-            for (dItem projectile : mechanism.valueAsType(ListTag.class).filter(dItem.class, mechanism.context)) {
+            for (ItemTag projectile : mechanism.valueAsType(ListTag.class).filter(ItemTag.class, mechanism.context)) {
                 try {
                     meta.addChargedProjectile(projectile.getItemStack());
                 }
@@ -129,19 +129,19 @@ public class ItemChargedProjectile implements Property {
         }
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name add_charged_projectile
-        // @input dItem
+        // @input ItemTag
         // @description
         // Adds a new charged projectile item on this crossbow. Charged projectiles may only be arrows and fireworks.
         // @tags
-        // <i@item.charged_projectiles>
-        // <i@item.is_charged>
+        // <ItemTag.charged_projectiles>
+        // <ItemTag.is_charged>
         // -->
-        if (mechanism.matches("add_charged_projectile") && mechanism.requireObject(dItem.class)) {
+        if (mechanism.matches("add_charged_projectile") && mechanism.requireObject(ItemTag.class)) {
             CrossbowMeta meta = (CrossbowMeta) item.getItemStack().getItemMeta();
             try {
-                meta.addChargedProjectile(mechanism.valueAsType(dItem.class).getItemStack());
+                meta.addChargedProjectile(mechanism.valueAsType(ItemTag.class).getItemStack());
             }
             catch (IllegalArgumentException e) {
                 Debug.echoError("Charged crossbow projectiles may only be arrows or fireworks!");
@@ -150,14 +150,14 @@ public class ItemChargedProjectile implements Property {
         }
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name remove_charged_projectiles
         // @input None
         // @description
         // Removes all charged projectiles from this crossbow.
         // @tags
-        // <i@item.charged_projectiles>
-        // <i@item.is_charged>
+        // <ItemTag.charged_projectiles>
+        // <ItemTag.is_charged>
         // -->
         if (mechanism.matches("remove_charged_projectiles")) {
             CrossbowMeta meta = (CrossbowMeta) item.getItemStack().getItemMeta();

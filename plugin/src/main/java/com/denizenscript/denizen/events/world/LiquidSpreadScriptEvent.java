@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.world;
 
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -25,9 +25,9 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
     // @Triggers when a liquid block spreads or dragon egg moves.
     //
     // @Context
-    // <context.destination> returns the dLocation the block spread to.
-    // <context.location> returns the dLocation the block spread location.
-    // <context.material> returns the dMaterial of the block that spread.
+    // <context.destination> returns the LocationTag the block spread to.
+    // <context.location> returns the LocationTag the block spread location.
+    // <context.material> returns the MaterialTag of the block that spread.
     //
     // -->
 
@@ -37,9 +37,9 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     public static LiquidSpreadScriptEvent instance;
-    public dMaterial material;
-    public dLocation location;
-    public dLocation destination;
+    public MaterialTag material;
+    public LocationTag location;
+    public LocationTag destination;
     public BlockFromToEvent event;
 
     @Override
@@ -82,9 +82,9 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
 
     @EventHandler
     public void onLiquidSpreads(BlockFromToEvent event) {
-        destination = new dLocation(event.getToBlock().getLocation());
-        location = new dLocation(event.getBlock().getLocation());
-        material = new dMaterial(event.getBlock());
+        destination = new LocationTag(event.getToBlock().getLocation());
+        location = new LocationTag(event.getBlock().getLocation());
+        material = new MaterialTag(event.getBlock());
         this.event = event;
         fire(event);
     }

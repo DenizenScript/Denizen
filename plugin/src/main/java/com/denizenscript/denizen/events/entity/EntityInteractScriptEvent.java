@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dCuboid;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.CuboidTag;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -33,8 +33,8 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
     // @Triggers when an entity interacts with a block (EG an arrow hits a button)
     //
     // @Context
-    // <context.location> returns a dLocation of the block being interacted with.
-    // <context.entity> returns a dEntity of the entity doing the interaction.
+    // <context.location> returns a LocationTag of the block being interacted with.
+    // <context.entity> returns a EntityTag of the entity doing the interaction.
     //
     // -->
 
@@ -43,9 +43,9 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
     }
 
     public static EntityInteractScriptEvent instance;
-    public dEntity entity;
-    public dLocation location;
-    private dMaterial material;
+    public EntityTag entity;
+    public LocationTag location;
+    private MaterialTag material;
     public EntityInteractEvent event;
 
     @Override
@@ -83,8 +83,8 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? EntityTag.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? EntityTag.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -98,7 +98,7 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
         else if (name.equals("cuboids")) {
             Debug.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
             ListTag cuboids = new ListTag();
-            for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+            for (CuboidTag cuboid : CuboidTag.getNotableCuboidsContaining(location)) {
                 cuboids.add(cuboid.identifySimple());
             }
             return cuboids;
@@ -108,9 +108,9 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
 
     @EventHandler
     public void onEntityInteract(EntityInteractEvent event) {
-        entity = new dEntity(event.getEntity());
-        location = new dLocation(event.getBlock().getLocation());
-        material = new dMaterial(event.getBlock());
+        entity = new EntityTag(event.getEntity());
+        location = new LocationTag(event.getBlock().getLocation());
+        material = new MaterialTag(event.getBlock());
         this.event = event;
         fire(event);
     }

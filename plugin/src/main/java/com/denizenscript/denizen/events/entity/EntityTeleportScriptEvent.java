@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -32,15 +32,15 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
     // @Cancellable true
     //
     // @Context
-    // <context.entity> returns the dEntity.
-    // <context.origin> returns the dLocation the entity teleported from.
-    // <context.destination> returns the dLocation the entity teleported to.
+    // <context.entity> returns the EntityTag.
+    // <context.origin> returns the LocationTag the entity teleported from.
+    // <context.destination> returns the LocationTag the entity teleported to.
     // <context.cause> returns an ElementTag of the teleport cause. Can be:
     // COMMAND, END_PORTAL, ENDER_PEARL, NETHER_PORTAL, PLUGIN, END_GATEWAY, CHORUS_FRUIT, SPECTATE, UNKNOWN, or ENTITY_TELEPORT
     //
     // @Determine
-    // "ORIGIN:" + dLocation to change the location the entity teleported from.
-    // "DESTINATION:" + dLocation to change the location the entity teleports to.
+    // "ORIGIN:" + LocationTag to change the location the entity teleported from.
+    // "DESTINATION:" + LocationTag to change the location the entity teleports to.
     //
     // @Player when the entity being teleported is a player.
     //
@@ -53,9 +53,9 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
     }
 
     public static EntityTeleportScriptEvent instance;
-    public dEntity entity;
-    public dLocation from;
-    public dLocation to;
+    public EntityTag entity;
+    public LocationTag from;
+    public LocationTag to;
     public String cause;
     public EntityTeleportEvent event;
     public PlayerTeleportEvent pEvent;
@@ -93,21 +93,21 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
     public boolean applyDetermination(ScriptContainer container, String determination) {
         String dlow = CoreUtilities.toLowerCase(determination);
         if (dlow.startsWith("origin:")) {
-            dLocation new_from = dLocation.valueOf(determination.substring("origin:".length()));
+            LocationTag new_from = LocationTag.valueOf(determination.substring("origin:".length()));
             if (new_from != null) {
                 from = new_from;
                 return true;
             }
         }
         else if (dlow.startsWith("destination:")) {
-            dLocation new_to = dLocation.valueOf(determination.substring("destination:".length()));
+            LocationTag new_to = LocationTag.valueOf(determination.substring("destination:".length()));
             if (new_to != null) {
                 to = new_to;
                 return true;
             }
         }
-        else if (dLocation.matches(determination)) {
-            dLocation new_to = dLocation.valueOf(determination);
+        else if (LocationTag.matches(determination)) {
+            LocationTag new_to = LocationTag.valueOf(determination);
             if (new_to != null) {
                 to = new_to;
                 return true;
@@ -119,7 +119,7 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
     @Override
     public ScriptEntryData getScriptEntryData() {
         // TODO: Store the player / npc?
-        return new BukkitScriptEntryData(pEvent != null ? dEntity.getPlayerFrom(pEvent.getPlayer()) : null,
+        return new BukkitScriptEntryData(pEvent != null ? EntityTag.getPlayerFrom(pEvent.getPlayer()) : null,
                 entity.isCitizensNPC() ? entity.getDenizenNPC() : null);
     }
 
@@ -145,9 +145,9 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
         if (event.getEntity() instanceof Player) {
             return;
         }
-        to = new dLocation(event.getTo());
-        from = new dLocation(event.getFrom());
-        entity = new dEntity(event.getEntity());
+        to = new LocationTag(event.getTo());
+        from = new LocationTag(event.getFrom());
+        entity = new EntityTag(event.getEntity());
         cause = "ENTITY_TELEPORT";
         this.event = event;
         pEvent = null;
@@ -158,9 +158,9 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
 
     @EventHandler
     public void onPlayerTeleports(PlayerTeleportEvent event) {
-        from = new dLocation(event.getFrom());
-        to = new dLocation(event.getTo());
-        entity = new dEntity(event.getPlayer());
+        from = new LocationTag(event.getFrom());
+        to = new LocationTag(event.getTo());
+        entity = new EntityTag(event.getPlayer());
         cause = event.getCause().name();
         this.event = null;
         pEvent = event;

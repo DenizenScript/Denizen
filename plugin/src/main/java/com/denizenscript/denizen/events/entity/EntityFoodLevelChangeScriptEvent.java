@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -28,7 +28,7 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
     // @Triggers when an entity's food level changes.
     //
     // @Context
-    // <context.entity> returns the dEntity.
+    // <context.entity> returns the EntityTag.
     // <context.food> returns an Element(Number) of the entity's new food level.
     //
     // @Determine
@@ -45,7 +45,7 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
     }
 
     public static EntityFoodLevelChangeScriptEvent instance;
-    public dEntity entity;
+    public EntityTag entity;
     public Integer food;
     public FoodLevelChangeEvent event;
 
@@ -85,8 +85,8 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? EntityTag.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? EntityTag.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -102,7 +102,7 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
 
     @EventHandler
     public void onEntityFoodLevelChanged(FoodLevelChangeEvent event) {
-        entity = new dEntity(event.getEntity());
+        entity = new EntityTag(event.getEntity());
         food = event.getFoodLevel();
         this.event = event;
         fire(event);

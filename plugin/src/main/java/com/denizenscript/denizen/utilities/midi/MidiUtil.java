@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.utilities.midi;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiSystem;
@@ -40,13 +40,13 @@ public class MidiUtil {
         sequencer.start();
     }
 
-    public static NoteBlockReceiver playMidi(File file, float tempo, float volume, List<dEntity> entities) {
+    public static NoteBlockReceiver playMidi(File file, float tempo, float volume, List<EntityTag> entities) {
         try {
             NoteBlockReceiver receiver = new NoteBlockReceiver(entities, entities.get(0).getUUID().toString());
             receiver.VOLUME_RANGE = volume;
             // If there is already a midi file being played for one of the entities,
             // stop playing it
-            for (dEntity entity : entities) {
+            for (EntityTag entity : entities) {
                 stopMidi(entity.getUUID().toString());
             }
             receivers.put(entities.get(0).getUUID().toString(), receiver);
@@ -59,7 +59,7 @@ public class MidiUtil {
         }
     }
 
-    public static NoteBlockReceiver playMidi(File file, float tempo, float volume, dLocation location) {
+    public static NoteBlockReceiver playMidi(File file, float tempo, float volume, LocationTag location) {
         try {
             NoteBlockReceiver receiver = new NoteBlockReceiver(location, location.identify());
             receiver.VOLUME_RANGE = volume;
@@ -82,8 +82,8 @@ public class MidiUtil {
         }
     }
 
-    public static void stopMidi(List<dEntity> entities) {
-        for (dEntity entity : entities) {
+    public static void stopMidi(List<EntityTag> entities) {
+        for (EntityTag entity : entities) {
             stopMidi(entity.getUUID().toString());
         }
     }

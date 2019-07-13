@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
@@ -31,16 +31,16 @@ public class LocationTags {
         }
 
         // Stage the location
-        dLocation loc = null;
+        LocationTag loc = null;
 
         // Check name context for a specified location, or check
         // the ScriptEntry for a 'location' context
         String context = event.getNameContext();
-        if (event.hasNameContext() && dLocation.matches(context)) {
-            loc = dLocation.valueOf(context, event.getAttributes().context);
+        if (event.hasNameContext() && LocationTag.matches(context)) {
+            loc = LocationTag.valueOf(context, event.getAttributes().context);
         }
         else if (event.getScriptEntry().hasObject("location")) {
-            loc = (dLocation) event.getScriptEntry().getObject("location");
+            loc = (LocationTag) event.getScriptEntry().getObject("location");
         }
 
         // Check if location is null, return null if it is

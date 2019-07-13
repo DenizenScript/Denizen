@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -38,7 +38,7 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
 
     public static PlayerAnimatesScriptEvent instance;
     public String animation;
-    private dLocation location;
+    private LocationTag location;
     public PlayerAnimationEvent event;
 
     @Override
@@ -48,7 +48,7 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return false;
         }
 
@@ -72,7 +72,7 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(new PlayerTag(event.getPlayer()), null);
     }
 
     @Override
@@ -85,10 +85,10 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
 
     @EventHandler
     public void onPlayerAnimates(PlayerAnimationEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        location = new dLocation(event.getPlayer().getLocation());
+        location = new LocationTag(event.getPlayer().getLocation());
         animation = event.getAnimationType().name();
         this.event = event;
         fire(event);

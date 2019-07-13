@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.block;
 
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -25,8 +25,8 @@ public class BlockFormsScriptEvent extends BukkitScriptEvent implements Listener
     // @Triggers when a block is formed based on world conditions, EG, when snow forms in a snow storm or ice forms in a cold biome.
     //
     // @Context
-    // <context.location> returns the dLocation the block that is forming.
-    // <context.material> returns the dMaterial of the block that is forming.
+    // <context.location> returns the LocationTag the block that is forming.
+    // <context.material> returns the MaterialTag of the block that is forming.
     //
     // -->
 
@@ -35,8 +35,8 @@ public class BlockFormsScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     public static BlockFormsScriptEvent instance;
-    public dLocation location;
-    public dMaterial material;
+    public LocationTag location;
+    public MaterialTag material;
     public BlockFormEvent event;
 
     @Override
@@ -80,8 +80,8 @@ public class BlockFormsScriptEvent extends BukkitScriptEvent implements Listener
     @EventHandler
     public void onBlockForms(BlockFormEvent event) {
 
-        location = new dLocation(event.getBlock().getLocation());
-        material = new dMaterial(event.getNewState());
+        location = new LocationTag(event.getBlock().getLocation());
+        material = new MaterialTag(event.getNewState());
         this.event = event;
         fire(event);
     }

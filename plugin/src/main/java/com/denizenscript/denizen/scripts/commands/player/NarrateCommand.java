@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.commands.player;
 import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -67,7 +67,7 @@ public class NarrateCommand extends AbstractCommand {
             // Add players to target list
             else if (!scriptEntry.hasObject("targets")
                     && arg.matchesPrefix("target", "targets", "t")) {
-                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
+                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
 
             // Use raw_value as to not accidentally strip a value before any :'s.
@@ -97,7 +97,7 @@ public class NarrateCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
         // Get objects
-        List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
+        List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
         String text = scriptEntry.getElement("text").asString();
         FormatScriptContainer format = (FormatScriptContainer) scriptEntry.getObject("format");
 
@@ -114,7 +114,7 @@ public class NarrateCommand extends AbstractCommand {
             return;
         }
 
-        for (dPlayer player : targets) {
+        for (PlayerTag player : targets) {
             if (player != null && player.isOnline()) {
                 player.getPlayerEntity().sendMessage(format != null ? format.getFormattedText(scriptEntry) : text);
             }

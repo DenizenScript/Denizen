@@ -31,10 +31,10 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     // @Triggers when a player places a block.
     //
     // @Context
-    // <context.location> returns the dLocation of the block that was placed.
-    // <context.material> returns the dMaterial of the block that was placed.
-    // <context.old_material> returns the dMaterial of the block that was replaced.
-    // <context.item_in_hand> returns the dItem of the item in hand.
+    // <context.location> returns the LocationTag of the block that was placed.
+    // <context.material> returns the MaterialTag of the block that was placed.
+    // <context.old_material> returns the MaterialTag of the block that was replaced.
+    // <context.item_in_hand> returns the ItemTag of the item in hand.
     // <context.hand> returns the name of the hand that the block was in (HAND or OFF_HAND).
     //
     // -->
@@ -44,10 +44,10 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     }
 
     public static PlayerPlacesBlockScriptEvent instance;
-    public dLocation location;
-    public dMaterial material;
+    public LocationTag location;
+    public MaterialTag material;
     public ElementTag hand;
-    public dItem item_in_hand;
+    public ItemTag item_in_hand;
     public BlockPlaceEvent event;
 
     @Override
@@ -89,7 +89,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(dPlayer.mirrorBukkitPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(PlayerTag.mirrorBukkitPlayer(event.getPlayer()), null);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
             return material;
         }
         else if (name.equals("old_material")) {
-            return new dMaterial(event.getBlockReplacedState());
+            return new MaterialTag(event.getBlockReplacedState());
         }
         else if (name.equals("item_in_hand")) {
             return item_in_hand;
@@ -112,7 +112,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
         else if (name.equals("cuboids")) {
             Debug.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
             ListTag cuboids = new ListTag();
-            for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+            for (CuboidTag cuboid : CuboidTag.getNotableCuboidsContaining(location)) {
                 cuboids.add(cuboid.identifySimple());
             }
             return cuboids;
@@ -122,13 +122,13 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
 
     @EventHandler
     public void onPlayerPlacesBlock(BlockPlaceEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
         hand = new ElementTag(event.getHand().name());
-        material = new dMaterial(event.getBlock());
-        location = new dLocation(event.getBlock().getLocation());
-        item_in_hand = new dItem(event.getItemInHand());
+        material = new MaterialTag(event.getBlock());
+        location = new LocationTag(event.getBlock().getLocation());
+        item_in_hand = new ItemTag(event.getItemInHand());
         this.event = event;
         fire(event);
     }

@@ -2,7 +2,7 @@ package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -18,7 +18,7 @@ import java.util.List;
 public class ItemNBT implements Property {
 
     public static boolean describes(ObjectTag item) {
-        return item instanceof dItem;
+        return item instanceof ItemTag;
     }
 
     public static ItemNBT getFrom(ObjectTag item) {
@@ -26,7 +26,7 @@ public class ItemNBT implements Property {
             return null;
         }
         else {
-            return new ItemNBT((dItem) item);
+            return new ItemNBT((ItemTag) item);
         }
     }
 
@@ -39,11 +39,11 @@ public class ItemNBT implements Property {
     };
 
 
-    private ItemNBT(dItem item) {
+    private ItemNBT(ItemTag item) {
         this.item = item;
     }
 
-    dItem item;
+    ItemTag item;
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -53,7 +53,7 @@ public class ItemNBT implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.has_nbt[<key>]>
+        // @attribute <ItemTag.has_nbt[<key>]>
         // @returns ElementTag(Boolean)
         // @group properties
         // @description
@@ -65,7 +65,7 @@ public class ItemNBT implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.nbt_keys>
+        // @attribute <ItemTag.nbt_keys>
         // @returns ListTag
         // @group properties
         // @description
@@ -77,9 +77,9 @@ public class ItemNBT implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.nbt[<key>]>
+        // @attribute <ItemTag.nbt[<key>]>
         // @returns ElementTag
-        // @mechanism dItem.nbt
+        // @mechanism ItemTag.nbt
         // @group properties
         // @description
         // Returns the value of this item's NBT key as an ElementTag as best it can.
@@ -136,15 +136,15 @@ public class ItemNBT implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name remove_nbt
         // @input ListTag
         // @description
         // Removes the Denizen NBT keys specified, or all Denizen NBT if no value is given.
         // @tags
-        // <i@item.has_nbt[<key>]>
-        // <i@item.nbt_keys>
-        // <i@item.nbt[<key>]>
+        // <ItemTag.has_nbt[<key>]>
+        // <ItemTag.nbt_keys>
+        // <ItemTag.nbt[<key>]>
         // -->
         if (mechanism.matches("remove_nbt")) {
             if (item.getMaterial().getMaterial() == Material.AIR) {
@@ -166,16 +166,16 @@ public class ItemNBT implements Property {
         }
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name nbt
         // @input ListTag
         // @description
         // Sets the Denizen NBT for this item in the format li@key/value|key/value...
         // See also <@link language property escaping>.
         // @tags
-        // <i@item.has_nbt[<key>]>
-        // <i@item.nbt_keys>
-        // <i@item.nbt[<key>]>
+        // <ItemTag.has_nbt[<key>]>
+        // <ItemTag.nbt_keys>
+        // <ItemTag.nbt[<key>]>
         // -->
         if (mechanism.matches("nbt")) {
             if (item.getMaterial().getMaterial() == Material.AIR) {

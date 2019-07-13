@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.item;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -55,8 +55,8 @@ public class NBTCommand extends AbstractCommand {
                 scriptEntry.addObject("value", new ElementTag(flagArgs[1]));
             }
             else if (!scriptEntry.hasObject("item")
-                    && arg.matchesArgumentType(dItem.class)) {
-                scriptEntry.addObject("item", arg.asType(dItem.class));
+                    && arg.matchesArgumentType(ItemTag.class)) {
+                scriptEntry.addObject("item", arg.asType(ItemTag.class));
             }
             else {
                 arg.reportUnhandled();
@@ -76,7 +76,7 @@ public class NBTCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        dItem item = scriptEntry.getdObject("item");
+        ItemTag item = scriptEntry.getdObject("item");
         ElementTag key = scriptEntry.getElement("key");
         ElementTag value = scriptEntry.getElement("value");
 
@@ -95,6 +95,6 @@ public class NBTCommand extends AbstractCommand {
             itemStack = CustomNBT.addCustomNBT(itemStack, key.asString(), value.asString(), CustomNBT.KEY_DENIZEN);
         }
 
-        scriptEntry.addObject("new_item", new dItem(itemStack));
+        scriptEntry.addObject("new_item", new ItemTag(itemStack));
     }
 }

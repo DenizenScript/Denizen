@@ -41,17 +41,17 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class dItem implements ObjectTag, Notable, Adjustable {
+public class ItemTag implements ObjectTag, Notable, Adjustable {
 
     // <--[language]
-    // @name dItem
+    // @name ItemTag
     // @group Object System
     // @description
-    // A dItem represents a holdable item generically.
+    // A ItemTag represents a holdable item generically.
     //
-    // dItems are temporary objects, to actually modify an item in an inventory you must add the item into that inventory.
+    // ItemTags are temporary objects, to actually modify an item in an inventory you must add the item into that inventory.
     //
-    // dItems do NOT remember where they came from. If you read an item from an inventory, changing it
+    // ItemTags do NOT remember where they came from. If you read an item from an inventory, changing it
     // does not change the original item in the original inventory. You must set it back in.
     //
     // For format info, see <@link language i@>
@@ -62,15 +62,15 @@ public class dItem implements ObjectTag, Notable, Adjustable {
     // @name i@
     // @group Object Fetcher System
     // @description
-    // i@ refers to the 'object identifier' of a dItem. The 'i@' is notation for Denizen's Object
-    // Fetcher. The constructor for a dItem is the basic material type name, or an item script name. Other data is specified in properties.
+    // i@ refers to the 'object identifier' of a ItemTag. The 'i@' is notation for Denizen's Object
+    // Fetcher. The constructor for a ItemTag is the basic material type name, or an item script name. Other data is specified in properties.
     // For example, 'i@stick'.
     //
     // Find a list of valid materials at:
     // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html>
     // Note that some materials on that list are exclusively for use with blocks, and cannot be held as items.
     //
-    // For general info, see <@link language dItem>
+    // For general info, see <@link language ItemTag>
     //
     // -->
 
@@ -87,33 +87,33 @@ public class dItem implements ObjectTag, Notable, Adjustable {
     ////////////////
 
 
-    public static dItem valueOf(String string) {
+    public static ItemTag valueOf(String string) {
         return valueOf(string, null, null);
     }
 
     @Fetchable("i")
-    public static dItem valueOf(String string, TagContext context) {
+    public static ItemTag valueOf(String string, TagContext context) {
         if (context == null) {
             return valueOf(string, null, null);
         }
         else {
             nope = !context.debug;
-            dItem tmp = valueOf(string, ((BukkitTagContext) context).player, ((BukkitTagContext) context).npc);
+            ItemTag tmp = valueOf(string, ((BukkitTagContext) context).player, ((BukkitTagContext) context).npc);
             nope = false;
             return tmp;
         }
     }
 
-    public static dItem valueOf(String string, Debuggable debugMe) {
+    public static ItemTag valueOf(String string, Debuggable debugMe) {
         nope = debugMe != null && !debugMe.shouldDebug();
-        dItem tmp = valueOf(string, null, null);
+        ItemTag tmp = valueOf(string, null, null);
         nope = false;
         return tmp;
     }
 
-    public static dItem valueOf(String string, boolean debugMe) {
+    public static ItemTag valueOf(String string, boolean debugMe) {
         nope = !debugMe;
-        dItem tmp = valueOf(string, null, null);
+        ItemTag tmp = valueOf(string, null, null);
         nope = false;
         return tmp;
     }
@@ -122,34 +122,34 @@ public class dItem implements ObjectTag, Notable, Adjustable {
      * Gets a Item Object from a string form.
      *
      * @param string The string or dScript argument String
-     * @param player The dPlayer to be used for player contexts
+     * @param player The PlayerTag to be used for player contexts
      *               where applicable.
-     * @param npc    The dNPC to be used for NPC contexts
+     * @param npc    The NPCTag to be used for NPC contexts
      *               where applicable.
      * @return an Item, or null if incorrectly formatted
      */
-    public static dItem valueOf(String string, dPlayer player, dNPC npc) {
+    public static ItemTag valueOf(String string, PlayerTag player, NPCTag npc) {
         if (string == null || string.equals("")) {
             return null;
         }
 
         Matcher m;
-        dItem stack = null;
+        ItemTag stack = null;
 
         ///////
         // Handle objects with properties through the object fetcher
         m = ObjectFetcher.DESCRIBED_PATTERN.matcher(string);
         if (m.matches()) {
-            return ObjectFetcher.getObjectFrom(dItem.class, string, new BukkitTagContext(player, npc, false, null, !nope, null));
+            return ObjectFetcher.getObjectFrom(ItemTag.class, string, new BukkitTagContext(player, npc, false, null, !nope, null));
         }
 
         ////////
-        // Match @object format for saved dItems
+        // Match @object format for saved ItemTags
 
         m = item_by_saved.matcher(string);
 
-        if (m.matches() && NotableManager.isSaved(m.group(2)) && NotableManager.isType(m.group(2), dItem.class)) {
-            stack = (dItem) NotableManager.getSavedObject(m.group(2));
+        if (m.matches() && NotableManager.isSaved(m.group(2)) && NotableManager.isType(m.group(2), ItemTag.class)) {
+            stack = (ItemTag) NotableManager.getSavedObject(m.group(2));
 
             if (m.group(3) != null) {
                 stack.setAmount(Integer.valueOf(m.group(3)));
@@ -203,11 +203,11 @@ public class dItem implements ObjectTag, Notable, Adjustable {
                     if (!nope) {
                         Debug.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release. For item input of '" + string + "'.");
                     }
-                    stack = new dItem(Integer.valueOf(material));
+                    stack = new ItemTag(Integer.valueOf(material));
                 }
                 else {
-                    dMaterial mat = dMaterial.valueOf(material);
-                    stack = new dItem(mat.getMaterial());
+                    MaterialTag mat = MaterialTag.valueOf(material);
+                    stack = new ItemTag(mat.getMaterial());
                     if (mat.hasData() && NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1)) {
                         stack.setDurability(mat.getData());
                     }
@@ -230,7 +230,7 @@ public class dItem implements ObjectTag, Notable, Adjustable {
         }
 
         if (!nope) {
-            Debug.log("valueOf dItem returning null: " + string);
+            Debug.log("valueOf ItemTag returning null: " + string);
         }
 
         // No match! Return null.
@@ -277,12 +277,12 @@ public class dItem implements ObjectTag, Notable, Adjustable {
     //   Constructors
     /////////////
 
-    public dItem(Material material) {
+    public ItemTag(Material material) {
         this(new ItemStack(material));
     }
 
     @Deprecated
-    public dItem(int itemId) {
+    public ItemTag(int itemId) {
         this(MaterialCompat.updateItem(itemId));
     }
 
@@ -292,15 +292,15 @@ public class dItem implements ObjectTag, Notable, Adjustable {
     }
 
     @Deprecated
-    public dItem(int itemId, int qty) {
+    public ItemTag(int itemId, int qty) {
         this(fixQty(MaterialCompat.updateItem(itemId), qty));
     }
 
-    public dItem(Material material, int qty) {
+    public ItemTag(Material material, int qty) {
         this(new ItemStack(material, qty));
     }
 
-    public dItem(dMaterial material, int qty) {
+    public ItemTag(MaterialTag material, int qty) {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
             this.item = new ItemStack(material.getMaterial(), qty);
         }
@@ -309,7 +309,7 @@ public class dItem implements ObjectTag, Notable, Adjustable {
         }
     }
 
-    public dItem(MaterialData data) {
+    public ItemTag(MaterialData data) {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && item.getType().isLegacy()) {
             this.item = new ItemStack(Bukkit.getUnsafe().fromLegacy(data));
         }
@@ -318,7 +318,7 @@ public class dItem implements ObjectTag, Notable, Adjustable {
         }
     }
 
-    public dItem(ItemStack item) {
+    public ItemTag(ItemStack item) {
         if (item == null || item.getType() == Material.AIR) {
             this.item = new ItemStack(Material.AIR, 0);
         }
@@ -327,7 +327,7 @@ public class dItem implements ObjectTag, Notable, Adjustable {
         }
     }
 
-    public dItem(Item item) {
+    public ItemTag(Item item) {
         this(item.getItemStack());
     }
 
@@ -354,7 +354,7 @@ public class dItem implements ObjectTag, Notable, Adjustable {
     //    was probably originally alike, but may have been
     //    modified or enhanced.
 
-    public int comparesTo(dItem item) {
+    public int comparesTo(ItemTag item) {
         return comparesTo(item.getItemStack());
     }
 
@@ -533,9 +533,9 @@ public class dItem implements ObjectTag, Notable, Adjustable {
         }
     }
 
-    public dMaterial getMaterial() {
+    public MaterialTag getMaterial() {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-            return new dMaterial(getItemStack().getType());
+            return new MaterialTag(getItemStack().getType());
         }
         return OldMaterialsHelper.getMaterialFrom(getItemStack().getType(), getItemStack().getData().getData());
     }
@@ -592,7 +592,7 @@ public class dItem implements ObjectTag, Notable, Adjustable {
     }
 
     @Override
-    public dItem setPrefix(String prefix) {
+    public ItemTag setPrefix(String prefix) {
         this.prefix = prefix;
         return this;
     }
@@ -694,7 +694,7 @@ public class dItem implements ObjectTag, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 Debug.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
-                return new ElementTag(((dItem) object).getItemStack().getType().getId())
+                return new ElementTag(((ItemTag) object).getItemStack().getType().getId())
                         .getAttribute(attribute.fulfill(1));
             }
         });
@@ -703,14 +703,14 @@ public class dItem implements ObjectTag, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 Debug.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
-                return new ElementTag(((dItem) object).getItemStack().getData().getData())
+                return new ElementTag(((ItemTag) object).getItemStack().getData().getData())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
-        // @attribute <i@item.with[<mechanism>=<value>;...]>
-        // @returns dItem
+        // @attribute <ItemTag.with[<mechanism>=<value>;...]>
+        // @returns ItemTag
         // @group properties
         // @description
         // Returns a copy of the item with mechanism adjustments applied.
@@ -719,9 +719,9 @@ public class dItem implements ObjectTag, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
-                    Debug.echoError("i@item.with[...] tag must have an input mechanism list.");
+                    Debug.echoError("ItemTag.with[...] tag must have an input mechanism list.");
                 }
-                dItem item = new dItem(((dItem) object).getItemStack().clone());
+                ItemTag item = new ItemTag(((ItemTag) object).getItemStack().clone());
                 List<String> properties = ObjectFetcher.separateProperties("[" + attribute.getContext(1) + "]");
                 for (int i = 1; i < properties.size(); i++) {
                     List<String> data = CoreUtilities.split(properties.get(i), '=', 2);
@@ -737,14 +737,14 @@ public class dItem implements ObjectTag, Notable, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <i@item.repairable>
+        // @attribute <ItemTag.repairable>
         // @returns ElementTag(Boolean)
         // @group properties
         // @description
         // Returns whether the item can be repaired.
         // If this returns true, it will enable access to:
-        // <@link mechanism dItem.durability>, <@link tag i@item.max_durability>,
-        // and <@link tag i@item.durability>
+        // <@link mechanism ItemTag.durability>, <@link tag ItemTag.max_durability>,
+        // and <@link tag ItemTag.durability>
         // -->
         registerTag("repairable", new TagRunnable() {
             @Override
@@ -755,13 +755,13 @@ public class dItem implements ObjectTag, Notable, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <i@item.is_crop>
+        // @attribute <ItemTag.is_crop>
         // @returns ElementTag(Boolean)
         // @group properties
         // @description
         // Returns whether the item is a growable crop.
         // If this returns true, it will enable access to:
-        // <@link mechanism dItem.plant_growth> and <@link tag i@item.plant_growth>
+        // <@link mechanism ItemTag.plant_growth> and <@link tag ItemTag.plant_growth>
         // -->
         registerTag("is_crop", new TagRunnable() {
             @Override
@@ -772,16 +772,16 @@ public class dItem implements ObjectTag, Notable, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <i@item.is_book>
+        // @attribute <ItemTag.is_book>
         // @returns ElementTag(Boolean)
         // @group properties
         // @description
         // Returns whether the item is considered an editable book.
         // If this returns true, it will enable access to:
-        // <@link mechanism dItem.book>, <@link tag i@item.book>,
-        // <@link tag i@item.book.author>, <@link tag i@item.book.title>,
-        // <@link tag i@item.book.page_count>, <@link tag i@item.book.page[<#>]>,
-        // and <@link tag i@item.book.pages>
+        // <@link mechanism ItemTag.book>, <@link tag ItemTag.book>,
+        // <@link tag ItemTag.book.author>, <@link tag ItemTag.book.title>,
+        // <@link tag ItemTag.book.page_count>, <@link tag ItemTag.book.page[<#>]>,
+        // and <@link tag ItemTag.book.pages>
         // -->
         registerTag("is_book", new TagRunnable() {
             @Override
@@ -792,12 +792,12 @@ public class dItem implements ObjectTag, Notable, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <i@item.is_colorable>
+        // @attribute <ItemTag.is_colorable>
         // @returns ElementTag(Boolean)
         // @group properties
         // Returns whether the item can have a custom color.
         // If this returns true, it will enable access to:
-        // <@link mechanism dItem.color>, and <@link tag i@item.color>
+        // <@link mechanism ItemTag.color>, and <@link tag ItemTag.color>
         // -->
         registerTag("is_colorable", new TagRunnable() {
             @Override
@@ -816,12 +816,12 @@ public class dItem implements ObjectTag, Notable, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <i@item.is_firework>
+        // @attribute <ItemTag.is_firework>
         // @returns ElementTag(Boolean)
         // @group properties
         // Returns whether the item is a firework.
         // If this returns true, it will enable access to:
-        // <@link mechanism dItem.firework>, and <@link tag i@item.firework>
+        // <@link mechanism ItemTag.firework>, and <@link tag ItemTag.firework>
         // -->
         registerTag("is_firework", new TagRunnable() {
             @Override
@@ -832,12 +832,12 @@ public class dItem implements ObjectTag, Notable, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <i@item.has_inventory>
+        // @attribute <ItemTag.has_inventory>
         // @returns ElementTag(Boolean)
         // @group properties
         // Returns whether the item has an inventory.
         // If this returns true, it will enable access to:
-        // <@link mechanism dItem.inventory>, and <@link tag i@item.inventory>
+        // <@link mechanism ItemTag.inventory>, and <@link tag ItemTag.inventory>
         // -->
         registerTag("has_inventory", new TagRunnable() {
             @Override
@@ -848,12 +848,12 @@ public class dItem implements ObjectTag, Notable, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <i@item.is_lockable>
+        // @attribute <ItemTag.is_lockable>
         // @returns ElementTag(Boolean)
         // @group properties
         // Returns whether the item is lockable.
         // If this returns true, it will enable access to:
-        // <@link mechanism dItem.lock>, and <@link tag i@item.lock>
+        // <@link mechanism ItemTag.lock>, and <@link tag ItemTag.lock>
         // -->
         registerTag("is_lockable", new TagRunnable() {
             @Override
@@ -864,20 +864,20 @@ public class dItem implements ObjectTag, Notable, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <i@item.material>
-        // @returns dMaterial
+        // @attribute <ItemTag.material>
+        // @returns MaterialTag
         // @group conversion
         // @description
-        // Returns the dMaterial that is the basis of the item.
+        // Returns the MaterialTag that is the basis of the item.
         // EG, a stone with lore and a display name, etc. will return only "m@stone".
         // -->
         registerTag("material", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                dItem item = (dItem) object;
+                ItemTag item = (ItemTag) object;
                 if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) &&
                         item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof BlockStateMeta) {
-                    return new dMaterial(new ModernBlockData(((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()))
+                    return new MaterialTag(new ModernBlockData(((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()))
                             .getAttribute(attribute.fulfill(1));
                 }
                 return item.getMaterial().getAttribute(attribute.fulfill(1));
@@ -885,7 +885,7 @@ public class dItem implements ObjectTag, Notable, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <i@item.json>
+        // @attribute <ItemTag.json>
         // @returns ElementTag
         // @group conversion
         // @description
@@ -898,13 +898,13 @@ public class dItem implements ObjectTag, Notable, Adjustable {
         registerTag("json", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(NMSHandler.getInstance().getItemHelper().getJsonString(((dItem) object).item))
+                return new ElementTag(NMSHandler.getInstance().getItemHelper().getJsonString(((ItemTag) object).item))
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
-        // @attribute <i@item.bukkit_serial>
+        // @attribute <ItemTag.bukkit_serial>
         // @returns ElementTag
         // @group conversion
         // @description
@@ -914,13 +914,13 @@ public class dItem implements ObjectTag, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 YamlConfiguration config = new YamlConfiguration();
-                config.set("item", ((dItem) object).getItemStack());
+                config.set("item", ((ItemTag) object).getItemStack());
                 return new ElementTag(config.saveToString()).getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
-        // @attribute <i@item.full>
+        // @attribute <ItemTag.full>
         // @returns ElementTag
         // @group conversion
         // @description
@@ -930,12 +930,12 @@ public class dItem implements ObjectTag, Notable, Adjustable {
         registerTag("full", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((dItem) object).getFullString()).getAttribute(attribute.fulfill(1));
+                return new ElementTag(((ItemTag) object).getFullString()).getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
-        // @attribute <i@item.simple>
+        // @attribute <ItemTag.simple>
         // @returns ElementTag
         // @group conversion
         // @description
@@ -944,21 +944,21 @@ public class dItem implements ObjectTag, Notable, Adjustable {
         registerTag("simple", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((dItem) object).identifySimple()).getAttribute(attribute.fulfill(1));
+                return new ElementTag(((ItemTag) object).identifySimple()).getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
-        // @attribute <i@item.notable_name>
+        // @attribute <ItemTag.notable_name>
         // @returns ElementTag
         // @description
-        // Gets the name of a Notable dItem. If the item isn't noted,
+        // Gets the name of a Notable ItemTag. If the item isn't noted,
         // this is null.
         // -->
         registerTag("notable_name", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                String notname = NotableManager.getSavedId((dItem) object);
+                String notname = NotableManager.getSavedId((ItemTag) object);
                 if (notname == null) {
                     return null;
                 }
@@ -967,10 +967,10 @@ public class dItem implements ObjectTag, Notable, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <i@item.type>
+        // @attribute <ItemTag.type>
         // @returns ElementTag
         // @description
-        // Always returns 'Item' for dItem objects. All objects fetchable by the Object Fetcher will return the
+        // Always returns 'Item' for ItemTag objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         registerTag("type", new TagRunnable() {
@@ -1018,7 +1018,7 @@ public class dItem implements ObjectTag, Notable, Adjustable {
         //
 
         // <--[tag]
-        // @attribute <i@item.formatted>
+        // @attribute <ItemTag.formatted>
         // @returns ElementTag
         // @group formatting
         // @description

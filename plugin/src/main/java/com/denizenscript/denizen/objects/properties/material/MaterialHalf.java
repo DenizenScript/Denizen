@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.material;
 
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -11,9 +11,9 @@ import org.bukkit.block.data.Bisected;
 public class MaterialHalf implements Property {
 
     public static boolean describes(ObjectTag material) {
-        return material instanceof dMaterial
-                && ((dMaterial) material).hasModernData()
-                && ((dMaterial) material).getModernData().data instanceof Bisected;
+        return material instanceof MaterialTag
+                && ((MaterialTag) material).hasModernData()
+                && ((MaterialTag) material).getModernData().data instanceof Bisected;
     }
 
     public static MaterialHalf getFrom(ObjectTag _material) {
@@ -21,7 +21,7 @@ public class MaterialHalf implements Property {
             return null;
         }
         else {
-            return new MaterialHalf((dMaterial) _material);
+            return new MaterialHalf((MaterialTag) _material);
         }
     }
 
@@ -34,11 +34,11 @@ public class MaterialHalf implements Property {
     };
 
 
-    private MaterialHalf(dMaterial _material) {
+    private MaterialHalf(MaterialTag _material) {
         material = _material;
     }
 
-    dMaterial material;
+    MaterialTag material;
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -48,9 +48,9 @@ public class MaterialHalf implements Property {
         }
 
         // <--[tag]
-        // @attribute <m@material.half>
+        // @attribute <MaterialTag.half>
         // @returns ElementTag
-        // @mechanism dMaterial.half
+        // @mechanism MaterialTag.half
         // @group properties
         // @description
         // Returns the current half for a bisected material (like stairs).
@@ -81,13 +81,13 @@ public class MaterialHalf implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dMaterial
+        // @object MaterialTag
         // @name half
         // @input Element
         // @description
         // Sets the current half for a bisected material (like stairs).
         // @tags
-        // <m@material.half>
+        // <MaterialTag.half>
         // -->
         if (mechanism.matches("half") && mechanism.requireEnum(false, Bisected.Half.values())) {
             getBisected().setHalf(Bisected.Half.valueOf(mechanism.getValue().asString().toUpperCase()));

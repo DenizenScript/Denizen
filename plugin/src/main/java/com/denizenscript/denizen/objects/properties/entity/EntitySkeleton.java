@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -13,7 +13,7 @@ import org.bukkit.entity.Skeleton;
 public class EntitySkeleton implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntity() instanceof Skeleton;
+        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntity() instanceof Skeleton;
     }
 
     public static EntitySkeleton getFrom(ObjectTag entity) {
@@ -21,7 +21,7 @@ public class EntitySkeleton implements Property {
             return null;
         }
         else {
-            return new EntitySkeleton((dEntity) entity);
+            return new EntitySkeleton((EntityTag) entity);
         }
     }
 
@@ -38,11 +38,11 @@ public class EntitySkeleton implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntitySkeleton(dEntity entity) {
+    private EntitySkeleton(EntityTag entity) {
         skeleton = entity;
     }
 
-    dEntity skeleton;
+    EntityTag skeleton;
 
     /////////
     // Property Methods

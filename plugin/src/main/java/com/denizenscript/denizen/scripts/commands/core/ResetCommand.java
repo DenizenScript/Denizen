@@ -4,7 +4,7 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -52,7 +52,7 @@ public class ResetCommand extends AbstractCommand {
             else if (arg.matchesArgumentType(ScriptTag.class)) {
                 scriptEntry.addObject("script", arg.asType(ScriptTag.class));
             }
-            else if (arg.matchesArgumentList(dPlayer.class)) {
+            else if (arg.matchesArgumentList(PlayerTag.class)) {
                 scriptEntry.addObject("players", arg.asType(ListTag.class));
             }
             // TODO: Reset NPCs option too!
@@ -79,7 +79,7 @@ public class ResetCommand extends AbstractCommand {
         // We allow players to be a single player or multiple players
         ObjectTag player = scriptEntry.getdObject("players");
         ListTag players;
-        if (player instanceof dPlayer) {
+        if (player instanceof PlayerTag) {
             players = new ListTag(player.identify());
         }
         else {
@@ -107,7 +107,7 @@ public class ResetCommand extends AbstractCommand {
         // Now deal with the rest
         for (String object : players) {
 
-            dPlayer resettable = dPlayer.valueOf(object);
+            PlayerTag resettable = PlayerTag.valueOf(object);
             if (resettable.isValid()) {
 
                 switch (type) {

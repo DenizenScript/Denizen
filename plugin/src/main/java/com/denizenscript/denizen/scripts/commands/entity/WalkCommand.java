@@ -7,9 +7,9 @@ import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.objects.Argument;
 import com.google.common.base.Function;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dNPC;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -37,10 +37,10 @@ public class WalkCommand extends AbstractCommand implements Holdable {
     // TODO: Document Command Details
     //
     // @Tags
-    // <n@npc.navigator.is_navigating>
-    // <n@npc.navigator.speed>
-    // <n@npc.navigator.range>
-    // <n@npc.navigator.target_location>
+    // <NPCTag.navigator.is_navigating>
+    // <NPCTag.navigator.speed>
+    // <NPCTag.navigator.range>
+    // <NPCTag.navigator.target_location>
     //
     // @Usage
     // TODO: Document Command Details
@@ -55,8 +55,8 @@ public class WalkCommand extends AbstractCommand implements Holdable {
 
             if (!scriptEntry.hasObject("lookat")
                     && arg.matchesPrefix("lookat")
-                    && arg.matchesArgumentType(dLocation.class)) {
-                scriptEntry.addObject("lookat", arg.asType(dLocation.class));
+                    && arg.matchesArgumentType(LocationTag.class)) {
+                scriptEntry.addObject("lookat", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("speed")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Percentage)
@@ -77,12 +77,12 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("stop", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class)) {
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                    && arg.matchesArgumentType(LocationTag.class)) {
+                scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class)) {
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
+                    && arg.matchesArgumentList(EntityTag.class)) {
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
@@ -117,13 +117,13 @@ public class WalkCommand extends AbstractCommand implements Holdable {
 
         // Fetch required objects
 
-        dLocation loc = (dLocation) scriptEntry.getObject("location");
+        LocationTag loc = (LocationTag) scriptEntry.getObject("location");
         ElementTag speed = scriptEntry.getElement("speed");
         ElementTag auto_range = scriptEntry.getElement("auto_range");
         ElementTag radius = scriptEntry.getElement("radius");
         ElementTag stop = scriptEntry.getElement("stop");
-        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-        final dLocation lookat = scriptEntry.getdObject("lookat");
+        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
+        final LocationTag lookat = scriptEntry.getdObject("lookat");
 
 
         // Debug the execution
@@ -144,11 +144,11 @@ public class WalkCommand extends AbstractCommand implements Holdable {
 
         boolean shouldStop = stop.asBoolean();
 
-        List<dNPC> npcs = new ArrayList<>();
-        final List<dEntity> waitForEntities = new ArrayList<>();
-        for (final dEntity entity : entities) {
+        List<NPCTag> npcs = new ArrayList<>();
+        final List<EntityTag> waitForEntities = new ArrayList<>();
+        for (final EntityTag entity : entities) {
             if (entity.isCitizensNPC()) {
-                dNPC npc = entity.getDenizenNPC();
+                NPCTag npc = entity.getDenizenNPC();
                 npcs.add(npc);
                 if (!npc.isSpawned()) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "NPC " + npc.identify() + " is not spawned!");
@@ -219,16 +219,16 @@ public class WalkCommand extends AbstractCommand implements Holdable {
     // Held script entries
     public static List<ScriptEntry> held = new ArrayList<>();
 
-    public void checkHeld(dEntity entity) {
+    public void checkHeld(EntityTag entity) {
         for (int i = 0; i < held.size(); i++) {
             ScriptEntry entry = held.get(i);
-            List<dEntity> waitForEntities = (List<dEntity>) entry.getObject("entities");
+            List<EntityTag> waitForEntities = (List<EntityTag>) entry.getObject("entities");
             if (waitForEntities == null) {
                 continue;
             }
             waitForEntities.remove(entity);
             if (waitForEntities.isEmpty()) {
-                if (!entry.hasObject("tally") || ((List<dNPC>) entry.getObject("tally")).isEmpty()) {
+                if (!entry.hasObject("tally") || ((List<NPCTag>) entry.getObject("tally")).isEmpty()) {
                     entry.setFinished(true);
                     held.remove(i);
                     i--;

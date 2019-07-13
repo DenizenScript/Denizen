@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -24,8 +24,8 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
     // @Triggers when a creeper is struck by lightning and turned into a powered creeper.
     //
     // @Context
-    // <context.entity> returns the dEntity of the creeper.
-    // <context.lightning> returns the dEntity of the lightning.
+    // <context.entity> returns the EntityTag of the creeper.
+    // <context.lightning> returns the EntityTag of the lightning.
     // <context.cause> returns an ElementTag of the cause for the creeper being powered.
     //
     // -->
@@ -35,8 +35,8 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
     }
 
     public static CreeperPoweredScriptEvent instance;
-    public dEntity lightning;
-    public dEntity entity;
+    public EntityTag lightning;
+    public EntityTag entity;
     public ElementTag cause;
     public CreeperPowerEvent event;
 
@@ -87,8 +87,8 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
 
     @EventHandler
     public void onCreeperPowered(CreeperPowerEvent event) {
-        lightning = new dEntity(event.getLightning());
-        entity = new dEntity(event.getEntity());
+        lightning = new EntityTag(event.getLightning());
+        entity = new EntityTag(event.getEntity());
         cause = new ElementTag(event.getCause().name());
         this.event = event;
         fire(event);

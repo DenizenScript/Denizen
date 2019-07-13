@@ -3,7 +3,7 @@ package com.denizenscript.denizen.objects.properties.bukkit;
 import com.denizenscript.denizen.scripts.commands.core.CooldownCommand;
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptHelper;
 import com.denizenscript.denizen.BukkitScriptEntryData;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -55,7 +55,7 @@ public class BukkitScriptProperties implements Property {
         // using the attached player available in the script entry. Not having a valid player will result in 'null'.
         // -->
         if (attribute.startsWith("cooled_down")) {
-            dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
+            PlayerTag player = (attribute.hasContext(1) ? PlayerTag.valueOf(attribute.getContext(1))
                     : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
             if (player != null && player.isValid()) {
                 return new ElementTag(CooldownCommand.checkCooldown(player, script.getContainer().getName()))
@@ -73,7 +73,7 @@ public class BukkitScriptProperties implements Property {
         // Returns the time left for the player to cooldown for the script.
         // -->
         if (attribute.startsWith("cooldown")) {
-            dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
+            PlayerTag player = (attribute.hasContext(1) ? PlayerTag.valueOf(attribute.getContext(1))
                     : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
             return CooldownCommand.getCooldownDuration(player, script.getName())
                     .getAttribute(attribute.fulfill(1));
@@ -89,7 +89,7 @@ public class BukkitScriptProperties implements Property {
         // Must be an INTERACT script.
         // -->
         if (attribute.startsWith("step")) {
-            dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
+            PlayerTag player = (attribute.hasContext(1) ? PlayerTag.valueOf(attribute.getContext(1))
                     : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
 
             if (player != null && player.isValid()) {

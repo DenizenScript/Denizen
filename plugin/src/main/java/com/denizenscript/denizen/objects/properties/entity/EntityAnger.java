@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -12,7 +12,7 @@ import org.bukkit.entity.PigZombie;
 public class EntityAnger implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.PIG_ZOMBIE;
+        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntityType() == EntityType.PIG_ZOMBIE;
     }
 
     public static EntityAnger getFrom(ObjectTag entity) {
@@ -20,7 +20,7 @@ public class EntityAnger implements Property {
             return null;
         }
         else {
-            return new EntityAnger((dEntity) entity);
+            return new EntityAnger((EntityTag) entity);
         }
     }
 
@@ -37,11 +37,11 @@ public class EntityAnger implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityAnger(dEntity entity) {
+    private EntityAnger(EntityTag entity) {
         this.entity = entity;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     /////////
     // Property Methods
@@ -69,9 +69,9 @@ public class EntityAnger implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.anger>
+        // @attribute <EntityTag.anger>
         // @returns ElementTag(Number)
-        // @mechanism dEntity.anger
+        // @mechanism EntityTag.anger
         // @group properties
         // @description
         // Returns the anger level of a PigZombie.
@@ -90,13 +90,13 @@ public class EntityAnger implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name anger
         // @input Element(Boolean)
         // @description
         // Changes the anger level of a PigZombie.
         // @tags
-        // <e@entity.anger>
+        // <EntityTag.anger>
         // -->
 
         if (mechanism.matches("anger") && mechanism.requireInteger()) {

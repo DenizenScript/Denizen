@@ -60,7 +60,7 @@ public class PlayEffectCommand extends AbstractCommand {
     // If you do not have this prefix, the system will assume your command is older, and will apply the 1-block height offset.
     //
     // Some particles will require input to the "special_data" argument. The data input is unique per particle.
-    // - For REDSTONE particles, the input is of format: <size>|<color>, for example: "1.2|red". Color input is any valid dColor object.
+    // - For REDSTONE particles, the input is of format: <size>|<color>, for example: "1.2|red". Color input is any valid ColorTag object.
     //
     // @Tags
     // None
@@ -75,7 +75,7 @@ public class PlayEffectCommand extends AbstractCommand {
     //
     // @Usage
     // Use to play some effects at spawn.
-    // - playeffect effect:FIREWORKS_SPARK at:<w@world.spawn_location> visibility:100 quantity:375 data:0 offset:50.0
+    // - playeffect effect:FIREWORKS_SPARK at:<WorldTag.spawn_location> visibility:100 quantity:375 data:0 offset:50.0
     // -->
 
     @Override
@@ -87,12 +87,12 @@ public class PlayEffectCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentList(dLocation.class)) {
+                    && arg.matchesArgumentList(LocationTag.class)) {
                 if (arg.matchesOnePrefix("at")) {
                     scriptEntry.addObject("no_offset", new ElementTag(true));
                 }
 
-                scriptEntry.addObject("location", arg.asType(ListTag.class).filter(dLocation.class, scriptEntry));
+                scriptEntry.addObject("location", arg.asType(ListTag.class).filter(LocationTag.class, scriptEntry));
                 continue;
             }
             else if (!scriptEntry.hasObject("effect") &&
@@ -114,34 +114,34 @@ public class PlayEffectCommand extends AbstractCommand {
                 else if (arg.startsWith("iconcrack_")) {
                     // Allow iconcrack_[item] for item break effects (ex: iconcrack_stone)
                     String shrunk = arg.getValue().substring("iconcrack_".length());
-                    dItem item = dItem.valueOf(shrunk, scriptEntry.entryData.getTagContext());
+                    ItemTag item = ItemTag.valueOf(shrunk, scriptEntry.entryData.getTagContext());
                     if (item != null) {
                         scriptEntry.addObject("iconcrack", item);
                     }
                     else {
-                        Debug.echoError("Invalid iconcrack_[item]. Must be a valid dItem!");
+                        Debug.echoError("Invalid iconcrack_[item]. Must be a valid ItemTag!");
                     }
                     continue;
                 }
                 else if (arg.startsWith("blockcrack_")) {
                     String shrunk = arg.getValue().substring("blockcrack_".length());
-                    dMaterial material = dMaterial.valueOf(shrunk);
+                    MaterialTag material = MaterialTag.valueOf(shrunk);
                     if (material != null) {
                         scriptEntry.addObject("blockcrack", material);
                     }
                     else {
-                        Debug.echoError("Invalid blockcrack_[item]. Must be a valid dMaterial!");
+                        Debug.echoError("Invalid blockcrack_[item]. Must be a valid MaterialTag!");
                     }
                     continue;
                 }
                 else if (arg.startsWith("blockdust_")) {
                     String shrunk = arg.getValue().substring("blockdust_".length());
-                    dMaterial material = dMaterial.valueOf(shrunk);
+                    MaterialTag material = MaterialTag.valueOf(shrunk);
                     if (material != null) {
                         scriptEntry.addObject("blockdust", material);
                     }
                     else {
-                        Debug.echoError("Invalid blockdust_[item]. Must be a valid dMaterial!");
+                        Debug.echoError("Invalid blockdust_[item]. Must be a valid MaterialTag!");
                     }
                     continue;
                 }
@@ -180,19 +180,19 @@ public class PlayEffectCommand extends AbstractCommand {
                     && arg.matchesPrefix("offset", "o")) {
 
                 double offset = arg.asElement().asDouble();
-                scriptEntry.addObject("offset", new dLocation(null, offset, offset, offset));
+                scriptEntry.addObject("offset", new LocationTag(null, offset, offset, offset));
             }
             else if (!scriptEntry.hasObject("offset")
-                    && arg.matchesArgumentType(dLocation.class)
+                    && arg.matchesArgumentType(LocationTag.class)
                     && arg.matchesPrefix("offset", "o")) {
 
-                scriptEntry.addObject("offset", arg.asType(dLocation.class));
+                scriptEntry.addObject("offset", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("targets")
-                    && arg.matchesArgumentList(dPlayer.class)
+                    && arg.matchesArgumentList(PlayerTag.class)
                     && arg.matchesPrefix("targets", "target", "t")) {
 
-                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
+                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
@@ -206,7 +206,7 @@ public class PlayEffectCommand extends AbstractCommand {
         scriptEntry.defaultObject("data", new ElementTag(0));
         scriptEntry.defaultObject("radius", new ElementTag(15));
         scriptEntry.defaultObject("qty", new ElementTag(1));
-        scriptEntry.defaultObject("offset", new dLocation(null, 0.5, 0.5, 0.5));
+        scriptEntry.defaultObject("offset", new LocationTag(null, 0.5, 0.5, 0.5));
 
         // Check to make sure required arguments have been filled
 
@@ -227,19 +227,19 @@ public class PlayEffectCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         // Extract objects from ScriptEntry
-        List<dLocation> locations = (List<dLocation>) scriptEntry.getObject("location");
-        List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
+        List<LocationTag> locations = (List<LocationTag>) scriptEntry.getObject("location");
+        List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
         Effect effect = (Effect) scriptEntry.getObject("effect");
         Particle particleEffect = (Particle) scriptEntry.getObject("particleeffect");
-        dItem iconcrack = scriptEntry.getdObject("iconcrack");
-        dMaterial blockcrack = scriptEntry.getdObject("blockcrack");
-        dMaterial blockdust = scriptEntry.getdObject("blockdust");
+        ItemTag iconcrack = scriptEntry.getdObject("iconcrack");
+        MaterialTag blockcrack = scriptEntry.getdObject("blockcrack");
+        MaterialTag blockdust = scriptEntry.getdObject("blockdust");
         ElementTag radius = scriptEntry.getElement("radius");
         ElementTag data = scriptEntry.getElement("data");
         ElementTag qty = scriptEntry.getElement("qty");
         ElementTag no_offset = scriptEntry.getElement("no_offset");
         boolean should_offset = no_offset == null || !no_offset.asBoolean();
-        dLocation offset = scriptEntry.getdObject("offset");
+        LocationTag offset = scriptEntry.getdObject("offset");
         ElementTag special_data = scriptEntry.getElement("special_data");
 
         // Report to dB
@@ -259,17 +259,17 @@ public class PlayEffectCommand extends AbstractCommand {
                     (should_offset ? ArgumentHelper.debugObj("note", "Location will be offset 1 block-height upward (see documentation)") : ""));
         }
 
-        for (dLocation location : locations) {
+        for (LocationTag location : locations) {
             if (should_offset) {
                 // Slightly increase the location's Y so effects don't seem to come out of the ground
-                location = new dLocation(location.clone().add(0, 1, 0));
+                location = new LocationTag(location.clone().add(0, 1, 0));
             }
 
             // Play the Bukkit effect the number of times specified
             if (effect != null) {
                 for (int n = 0; n < qty.asInt(); n++) {
                     if (targets != null) {
-                        for (dPlayer player : targets) {
+                        for (PlayerTag player : targets) {
                             if (player.isValid() && player.isOnline()) {
                                 player.getPlayerEntity().playEffect(location, effect, data.asInt()); // TODO: 1.13
                             }
@@ -296,7 +296,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     }
                 }
                 else {
-                    for (dPlayer player : targets) {
+                    for (PlayerTag player : targets) {
                         if (player.isValid() && player.isOnline()) {
                             players.add(player.getPlayerEntity());
                         }
@@ -319,7 +319,7 @@ public class PlayEffectCommand extends AbstractCommand {
                             }
                             else {
                                 float size = ArgumentHelper.getFloatFrom(dataList.get(0));
-                                dColor color = dColor.valueOf(dataList.get(1));
+                                ColorTag color = ColorTag.valueOf(dataList.get(1));
                                 dataObject = new org.bukkit.Particle.DustOptions(color.getColor(), size);
                             }
                         }
@@ -343,7 +343,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     }
                 }
                 else {
-                    for (dPlayer player : targets) {
+                    for (PlayerTag player : targets) {
                         if (player.isValid() && player.isOnline()) {
                             players.add(player.getPlayerEntity());
                         }

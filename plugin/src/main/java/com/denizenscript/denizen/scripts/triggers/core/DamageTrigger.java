@@ -4,10 +4,10 @@ import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptHelper;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.npc.traits.TriggerTrait;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dNPC;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -84,7 +84,7 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
             return;
         }
 
-        dEntity damager = new dEntity(event.getDamager());
+        EntityTag damager = new EntityTag(event.getDamager());
 
         if (damager.isProjectile() && damager.hasShooter()) {
             damager = damager.getShooter();
@@ -93,10 +93,10 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
         Map<String, ObjectTag> context = new HashMap<>();
         context.put("damage", new ElementTag(event.getDamage()));
 
-        dPlayer dplayer = null;
+        PlayerTag dplayer = null;
 
         if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
-            dNPC npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()));
+            NPCTag npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()));
             if (npc == null) {
                 return;
             }
@@ -159,7 +159,7 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
                                 (dplayer, npc, false, null, false, null));
                         // Check if the item specified in the specified id's 'trigger:' key
                         // matches the item that the player is holding.
-                        if (dItem.valueOf(entry_value, script).comparesTo(dplayer.getPlayerEntity().getItemInHand()) >= 0) {
+                        if (ItemTag.valueOf(entry_value, script).comparesTo(dplayer.getPlayerEntity().getItemInHand()) >= 0) {
                             id = entry.getKey();
                         }
                     }

@@ -2,8 +2,8 @@ package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -32,7 +32,7 @@ public class SpawnCommand extends AbstractCommand {
     // the enity to remain until killed.
     //
     // @Tags
-    // <e@entity.is_spawned>
+    // <EntityTag.is_spawned>
     // <server.entity_is_spawned[<entity>]>
     // <server.list_entity_types>
     // <entry[saveName].spawned_entities> returns a list of entities that were spawned.
@@ -57,20 +57,20 @@ public class SpawnCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class)) {
+                    && arg.matchesArgumentList(EntityTag.class)) {
 
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class)) {
+                    && arg.matchesArgumentType(LocationTag.class)) {
 
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("target")
-                    && arg.matchesArgumentType(dEntity.class)
+                    && arg.matchesArgumentType(EntityTag.class)
                     && arg.matchesPrefix("target")) {
 
-                scriptEntry.addObject("target", arg.asType(dEntity.class));
+                scriptEntry.addObject("target", arg.asType(EntityTag.class));
             }
             else if (!scriptEntry.hasObject("spread")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
@@ -106,9 +106,9 @@ public class SpawnCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) {
 
         // Get objects
-        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-        dLocation location = (dLocation) scriptEntry.getObject("location");
-        dEntity target = (dEntity) scriptEntry.getObject("target");
+        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
+        LocationTag location = (LocationTag) scriptEntry.getObject("location");
+        EntityTag target = (EntityTag) scriptEntry.getObject("target");
         ElementTag spread = scriptEntry.getElement("spread");
         boolean persistent = scriptEntry.hasObject("persistent");
 
@@ -129,7 +129,7 @@ public class SpawnCommand extends AbstractCommand {
         // Go through all the entities and spawn them or teleport them,
         // then set their targets if applicable
 
-        for (dEntity entity : entities) {
+        for (EntityTag entity : entities) {
             Location loc = location.clone();
             if (spread != null) {
                 loc.add(CoreUtilities.getRandom().nextInt(spread.asInt() * 2) - spread.asInt(),

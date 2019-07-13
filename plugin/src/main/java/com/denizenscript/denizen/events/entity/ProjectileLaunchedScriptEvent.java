@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -35,8 +35,8 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
     }
 
     public static ProjectileLaunchedScriptEvent instance;
-    public dEntity projectile;
-    private dLocation location;
+    public EntityTag projectile;
+    private LocationTag location;
     public ProjectileLaunchEvent event;
 
     @Override
@@ -82,11 +82,11 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
     @EventHandler
     public void onProjectileLaunched(ProjectileLaunchEvent event) {
         Entity projectile = event.getEntity();
-        dEntity.rememberEntity(projectile);
-        this.projectile = new dEntity(projectile);
-        location = new dLocation(event.getEntity().getLocation());
+        EntityTag.rememberEntity(projectile);
+        this.projectile = new EntityTag(projectile);
+        location = new LocationTag(event.getEntity().getLocation());
         this.event = event;
         fire(event);
-        dEntity.forgetEntity(projectile);
+        EntityTag.forgetEntity(projectile);
     }
 }

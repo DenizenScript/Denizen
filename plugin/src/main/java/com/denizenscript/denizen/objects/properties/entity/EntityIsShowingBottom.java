@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -12,7 +12,7 @@ import org.bukkit.entity.EntityType;
 public class EntityIsShowingBottom implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.ENDER_CRYSTAL;
+        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntityType() == EntityType.ENDER_CRYSTAL;
     }
 
     public static EntityIsShowingBottom getFrom(ObjectTag entity) {
@@ -20,7 +20,7 @@ public class EntityIsShowingBottom implements Property {
             return null;
         }
         else {
-            return new EntityIsShowingBottom((dEntity) entity);
+            return new EntityIsShowingBottom((EntityTag) entity);
         }
     }
 
@@ -37,11 +37,11 @@ public class EntityIsShowingBottom implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityIsShowingBottom(dEntity entity) {
+    private EntityIsShowingBottom(EntityTag entity) {
         dentity = entity;
     }
 
-    dEntity dentity;
+    EntityTag dentity;
 
     /////////
     // Property Methods
@@ -74,9 +74,9 @@ public class EntityIsShowingBottom implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_showing_bottom>
+        // @attribute <EntityTag.is_showing_bottom>
         // @returns ElementTag(Boolean)
-        // @mechanism dEntity.is_showing_bottom
+        // @mechanism EntityTag.is_showing_bottom
         // @group properties
         // @description
         // If the entity is an ender crystal, returns whether the ender crystal has its bottom showing.
@@ -93,13 +93,13 @@ public class EntityIsShowingBottom implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name is_showing_bottom
         // @input Element(Boolean)
         // @description
         // Changes the bottom state of an ender crystal.
         // @tags
-        // <e@entity.is_showing_bottom>
+        // <EntityTag.is_showing_bottom>
         // -->
 
         if (mechanism.matches("is_showing_bottom") && mechanism.requireBoolean()) {

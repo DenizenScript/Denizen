@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -27,8 +27,8 @@ public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implement
     // @Triggers when a vehicle collides with a block.
     //
     // @Context
-    // <context.vehicle> returns the dEntity of the vehicle.
-    // <context.location> returns the dLocation of the block.
+    // <context.vehicle> returns the EntityTag of the vehicle.
+    // <context.location> returns the LocationTag of the block.
     //
     // -->
 
@@ -38,9 +38,9 @@ public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implement
 
     public static VehicleCollidesBlockScriptEvent instance;
 
-    public dEntity vehicle;
-    public dLocation location;
-    private dMaterial material;
+    public EntityTag vehicle;
+    public LocationTag location;
+    private MaterialTag material;
     public VehicleBlockCollisionEvent event;
 
     @Override
@@ -90,9 +90,9 @@ public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implement
 
     @EventHandler
     public void onVehicleCollidesBlock(VehicleBlockCollisionEvent event) {
-        vehicle = new dEntity(event.getVehicle());
-        location = new dLocation(event.getBlock().getLocation());
-        material = new dMaterial(event.getBlock());
+        vehicle = new EntityTag(event.getVehicle());
+        location = new LocationTag(event.getBlock().getLocation());
+        material = new MaterialTag(event.getBlock());
         this.event = event;
         fire(event);
     }

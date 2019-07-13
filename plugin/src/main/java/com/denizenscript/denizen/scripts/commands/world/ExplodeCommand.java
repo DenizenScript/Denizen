@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -55,9 +55,9 @@ public class ExplodeCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class)) {
+                    && arg.matchesArgumentType(LocationTag.class)) {
 
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("power")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Float)
@@ -95,7 +95,7 @@ public class ExplodeCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) {
         // Get objects
 
-        final dLocation location = (dLocation) scriptEntry.getObject("location");
+        final LocationTag location = (LocationTag) scriptEntry.getObject("location");
         ElementTag power = (ElementTag) scriptEntry.getObject("power");
         boolean breakblocks = scriptEntry.hasObject("breakblocks");
         boolean fire = scriptEntry.hasObject("fire");

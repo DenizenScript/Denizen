@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dInventory;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.InventoryTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -33,17 +33,17 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
     // @Triggers when an item is enchanted.
     //
     // @Context
-    // <context.entity> returns the dEntity of the enchanter (if applicable)
-    // <context.location> returns the dLocation of the enchanting table.
-    // <context.inventory> returns the dInventory of the enchanting table.
-    // <context.item> returns the dItem to be enchanted.
+    // <context.entity> returns the EntityTag of the enchanter (if applicable)
+    // <context.location> returns the LocationTag of the enchanting table.
+    // <context.inventory> returns the InventoryTag of the enchanting table.
+    // <context.item> returns the ItemTag to be enchanted.
     // <context.button> returns which button was pressed to initiate the enchanting.
     // <context.cost> returns the experience level cost of the enchantment.
     //
     // @Determine
     // Element(Number) to set the experience level cost of the enchantment.
-    // "RESULT:" + dItem to change the item result (only affects metadata (like enchantments), not material/quantity/etc!).
-    // "ENCHANTS:" + dItem to change the resultant enchantments based on a dItem.
+    // "RESULT:" + ItemTag to change the item result (only affects metadata (like enchantments), not material/quantity/etc!).
+    // "ENCHANTS:" + ItemTag to change the resultant enchantments based on a ItemTag.
     // -->
 
     public ItemEnchantedScriptEvent() {
@@ -51,15 +51,15 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     public static ItemEnchantedScriptEvent instance;
-    public dEntity entity;
-    public dLocation location;
-    public dInventory inventory;
-    public dItem item;
+    public EntityTag entity;
+    public LocationTag location;
+    public InventoryTag inventory;
+    public ItemTag item;
     public ElementTag button;
     public int cost;
     public EnchantItemEvent event;
     public boolean itemEdited;
-    public dItem enchantsRes;
+    public ItemTag enchantsRes;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
@@ -96,13 +96,13 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
         }
         else if (CoreUtilities.toLowerCase(determination).startsWith("result:")) {
             String ditem = determination.substring("result:".length());
-            item = dItem.valueOf(ditem, container);
+            item = ItemTag.valueOf(ditem, container);
             itemEdited = true;
             return true;
         }
         else if (CoreUtilities.toLowerCase(determination).startsWith("enchants:")) {
             String ditem = determination.substring("enchants:".length());
-            enchantsRes = dItem.valueOf(ditem, container);
+            enchantsRes = ItemTag.valueOf(ditem, container);
             return true;
         }
         else {
@@ -141,10 +141,10 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
 
     @EventHandler
     public void onItemEnchanted(EnchantItemEvent event) {
-        entity = new dEntity(event.getEnchanter());
-        location = new dLocation(event.getEnchantBlock().getLocation());
-        inventory = dInventory.mirrorBukkitInventory(event.getInventory());
-        item = new dItem(event.getItem());
+        entity = new EntityTag(event.getEnchanter());
+        location = new LocationTag(event.getEnchantBlock().getLocation());
+        inventory = InventoryTag.mirrorBukkitInventory(event.getInventory());
+        item = new ItemTag(event.getItem());
         button = new ElementTag(event.whichButton());
         cost = event.getExpLevelCost();
         itemEdited = false;

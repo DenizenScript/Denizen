@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -28,8 +28,8 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
     // @Triggers when an item entity spawns.
     //
     // @Context
-    // <context.item> returns the dItem of the entity.
-    // <context.entity> returns the dEntity.
+    // <context.item> returns the ItemTag of the entity.
+    // <context.entity> returns the EntityTag.
     // <context.location> returns the location of the entity to be spawned.
     //
     // -->
@@ -39,9 +39,9 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     public static ItemSpawnsScriptEvent instance;
-    public dItem item;
-    public dLocation location;
-    public dEntity entity;
+    public ItemTag item;
+    public LocationTag location;
+    public EntityTag entity;
     public ItemSpawnEvent event;
 
     // TODO: De-collide with 'entity spawns'
@@ -98,12 +98,12 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
     @EventHandler
     public void onItemSpawns(ItemSpawnEvent event) {
         Item entity = event.getEntity();
-        location = new dLocation(event.getLocation());
-        item = new dItem(entity.getItemStack());
-        this.entity = new dEntity(entity);
+        location = new LocationTag(event.getLocation());
+        item = new ItemTag(entity.getItemStack());
+        this.entity = new EntityTag(entity);
         this.event = event;
-        dEntity.rememberEntity(entity);
+        EntityTag.rememberEntity(entity);
         fire(event);
-        dEntity.forgetEntity(entity);
+        EntityTag.forgetEntity(entity);
     }
 }

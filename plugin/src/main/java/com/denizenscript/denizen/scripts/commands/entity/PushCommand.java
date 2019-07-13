@@ -7,8 +7,8 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.Position;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -43,7 +43,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
     // when they stop moving.
     //
     // @Tags
-    // <e@entity.velocity>
+    // <EntityTag.velocity>
     //
     // @Usage
     // Use to launch an arrow straight towards a target
@@ -62,21 +62,21 @@ public class PushCommand extends AbstractCommand implements Holdable {
             if (!scriptEntry.hasObject("origin")
                     && arg.matchesPrefix("origin", "o", "source", "shooter", "s")) {
 
-                if (arg.matchesArgumentType(dEntity.class)) {
-                    scriptEntry.addObject("originEntity", arg.asType(dEntity.class));
+                if (arg.matchesArgumentType(EntityTag.class)) {
+                    scriptEntry.addObject("originEntity", arg.asType(EntityTag.class));
                 }
-                else if (arg.matchesArgumentType(dLocation.class)) {
-                    scriptEntry.addObject("originLocation", arg.asType(dLocation.class));
+                else if (arg.matchesArgumentType(LocationTag.class)) {
+                    scriptEntry.addObject("originLocation", arg.asType(LocationTag.class));
                 }
                 else {
                     Debug.echoError("Ignoring unrecognized argument: " + arg.raw_value);
                 }
             }
             else if (!scriptEntry.hasObject("destination")
-                    && arg.matchesArgumentType(dLocation.class)
+                    && arg.matchesArgumentType(LocationTag.class)
                     && arg.matchesPrefix("destination", "d")) {
 
-                scriptEntry.addObject("destination", arg.asType(dLocation.class));
+                scriptEntry.addObject("destination", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesArgumentType(DurationTag.class)
@@ -96,9 +96,9 @@ public class PushCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("script", arg.asType(ScriptTag.class));
             }
             else if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class)) {
+                    && arg.matchesArgumentList(EntityTag.class)) {
 
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("force_along")
                     && arg.matches("force_along")) {
@@ -153,10 +153,10 @@ public class PushCommand extends AbstractCommand implements Holdable {
     @Override
     public void execute(final ScriptEntry scriptEntry) {
 
-        dEntity originEntity = (dEntity) scriptEntry.getObject("originentity");
-        dLocation originLocation = scriptEntry.hasObject("originlocation") ?
-                (dLocation) scriptEntry.getObject("originlocation") :
-                new dLocation(originEntity.getEyeLocation()
+        EntityTag originEntity = (EntityTag) scriptEntry.getObject("originentity");
+        LocationTag originLocation = scriptEntry.hasObject("originlocation") ?
+                (LocationTag) scriptEntry.getObject("originlocation") :
+                new LocationTag(originEntity.getEyeLocation()
                         .add(originEntity.getEyeLocation().getDirection())
                         .subtract(0, 0.4, 0));
         boolean no_rotate = scriptEntry.hasObject("no_rotate") && scriptEntry.getElement("no_rotate").asBoolean();
@@ -164,9 +164,9 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
         // If there is no destination set, but there is a shooter, get a point
         // in front of the shooter and set it as the destination
-        final dLocation destination = scriptEntry.hasObject("destination") ?
-                (dLocation) scriptEntry.getObject("destination") :
-                (originEntity != null ? new dLocation(originEntity.getEyeLocation()
+        final LocationTag destination = scriptEntry.hasObject("destination") ?
+                (LocationTag) scriptEntry.getObject("destination") :
+                (originEntity != null ? new LocationTag(originEntity.getEyeLocation()
                         .add(originEntity.getEyeLocation().getDirection()
                                 .multiply(30)))
                         : null);
@@ -180,7 +180,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
             return;
         }
 
-        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         final ScriptTag script = (ScriptTag) scriptEntry.getObject("script");
         final ListTag definitions = (ListTag) scriptEntry.getObject("definitions");
 
@@ -212,7 +212,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
         final ListTag entityList = new ListTag();
 
         // Go through all the entities, spawning/teleporting and rotating them
-        for (dEntity entity : entities) {
+        for (EntityTag entity : entities) {
             entity.spawnAt(originLocation);
 
             // Only add to entityList after the entities have been
@@ -240,7 +240,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
         // Get the entity at the bottom of the entity list, because
         // only its gravity should be affected and tracked considering
         // that the other entities will be mounted on it
-        final dEntity lastEntity = entities.get(entities.size() - 1);
+        final EntityTag lastEntity = entities.get(entities.size() - 1);
 
         final Vector v2 = destination.toVector();
         final Vector Origin = originLocation.toVector();
@@ -249,7 +249,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
         BukkitRunnable task = new BukkitRunnable() {
             int runs = 0;
-            dLocation lastLocation;
+            LocationTag lastLocation;
 
             @Override
             public void run() {

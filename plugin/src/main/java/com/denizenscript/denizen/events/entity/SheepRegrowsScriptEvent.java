@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -24,7 +24,7 @@ public class SheepRegrowsScriptEvent extends BukkitScriptEvent implements Listen
     // @Triggers when a sheep regrows wool.
     //
     // @Context
-    // <context.entity> returns the dEntity of the sheep.
+    // <context.entity> returns the EntityTag of the sheep.
     //
     // -->
 
@@ -33,8 +33,8 @@ public class SheepRegrowsScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     public static SheepRegrowsScriptEvent instance;
-    public dEntity entity;
-    private dLocation location;
+    public EntityTag entity;
+    private LocationTag location;
     public SheepRegrowWoolEvent event;
 
     @Override
@@ -73,8 +73,8 @@ public class SheepRegrowsScriptEvent extends BukkitScriptEvent implements Listen
 
     @EventHandler
     public void onSheepRegrows(SheepRegrowWoolEvent event) {
-        entity = new dEntity(event.getEntity());
-        location = new dLocation(entity.getLocation());
+        entity = new EntityTag(event.getEntity());
+        location = new LocationTag(entity.getLocation());
         this.event = event;
         fire(event);
     }

@@ -38,13 +38,13 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class dInventory implements ObjectTag, Notable, Adjustable {
+public class InventoryTag implements ObjectTag, Notable, Adjustable {
 
     // <--[language]
-    // @name dInventory
+    // @name InventoryTag
     // @group Object System
     // @description
-    // A dInventory represents an inventory, generically or attached to some in-the-world object.
+    // A InventoryTag represents an inventory, generically or attached to some in-the-world object.
     //
     // Inventories can be generically designed using inventory script containers,
     // and can be modified using the inventory command.
@@ -57,20 +57,20 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
     // @name in@
     // @group Object Fetcher System
     // @description
-    // in@ refers to the 'object identifier' of a dInventory. The 'in@' is notation for Denizen's Object
-    // Fetcher. The constructor for a dInventory is a the classification type of inventory to use. All other data is specified through properties.
+    // in@ refers to the 'object identifier' of a InventoryTag. The 'in@' is notation for Denizen's Object
+    // Fetcher. The constructor for a InventoryTag is a the classification type of inventory to use. All other data is specified through properties.
     //
     // Valid inventory type classifications:
     // "npc", "player", "crafting", "enderchest", "workbench", "entity", "location", "generic"
     //
-    // For general info, see <@link language dInventory>
+    // For general info, see <@link language InventoryTag>
     //
     // -->
 
-    public static dInventory mirrorBukkitInventory(Inventory inventory) {
+    public static InventoryTag mirrorBukkitInventory(Inventory inventory) {
         // Scripts have priority over notables
         if (InventoryScriptHelper.tempInventoryScripts.containsKey(inventory)) {
-            return new dInventory(inventory).setIdentifiers("script",
+            return new InventoryTag(inventory).setIdentifiers("script",
                     InventoryScriptHelper.tempInventoryScripts.get(inventory));
         }
         // Use the map to get notable inventories
@@ -81,17 +81,17 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         // Iterate through offline player inventories
         for (Map.Entry<UUID, PlayerInventory> inv : ImprovedOfflinePlayer.offlineInventories.entrySet()) {
             if (inv.getValue().equals(inventory)) {
-                return new dInventory(NMSHandler.getInstance().getPlayerHelper().getOfflineData(inv.getKey()));
+                return new InventoryTag(NMSHandler.getInstance().getPlayerHelper().getOfflineData(inv.getKey()));
             }
         }
         // Iterate through offline player enderchests
         for (Map.Entry<UUID, Inventory> inv : ImprovedOfflinePlayer.offlineEnderChests.entrySet()) {
             if (inv.getValue().equals(inventory)) {
-                return new dInventory(NMSHandler.getInstance().getPlayerHelper().getOfflineData(inv.getKey()), true);
+                return new InventoryTag(NMSHandler.getInstance().getPlayerHelper().getOfflineData(inv.getKey()), true);
             }
         }
 
-        return new dInventory(inventory);
+        return new InventoryTag(inventory);
     }
 
     /////////////////////
@@ -186,7 +186,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
     ////////////////
 
     @Fetchable("in")
-    public static dInventory valueOf(String string, TagContext context) {
+    public static InventoryTag valueOf(String string, TagContext context) {
         if (context == null) {
             return valueOf(string, null, null);
         }
@@ -195,18 +195,18 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
     }
 
-    public static dInventory valueOf(String string, dPlayer player, dNPC npc) {
+    public static InventoryTag valueOf(String string, PlayerTag player, NPCTag npc) {
         return valueOf(string, player, npc, false);
     }
 
     /**
-     * Gets a dInventory from a string format.
+     * Gets a InventoryTag from a string format.
      *
      * @param string The inventory in string form. (in@player[playerName], in@scriptName, etc.)
-     * @return The dInventory value. If the string is incorrectly formatted or
+     * @return The InventoryTag value. If the string is incorrectly formatted or
      * the specified inventory is invalid, this is null.
      */
-    public static dInventory valueOf(String string, dPlayer player, dNPC npc, boolean silent) {
+    public static InventoryTag valueOf(String string, PlayerTag player, NPCTag npc, boolean silent) {
 
         if (string == null) {
             return null;
@@ -216,7 +216,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         // Handle objects with properties through the object fetcher
         Matcher m = ObjectFetcher.DESCRIBED_PATTERN.matcher(string);
         if (m.matches()) {
-            return ObjectFetcher.getObjectFrom(dInventory.class, string,
+            return ObjectFetcher.getObjectFrom(InventoryTag.class, string,
                     new BukkitTagContext(player, npc, false, null, false, null));
         }
 
@@ -229,13 +229,13 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
                         .getInventoryFrom(player, npc);
             }
 
-            if (NotableManager.isSaved(m.group(2)) && NotableManager.isType(m.group(2), dInventory.class)) {
-                return (dInventory) NotableManager.getSavedObject(m.group(2));
+            if (NotableManager.isSaved(m.group(2)) && NotableManager.isType(m.group(2), InventoryTag.class)) {
+                return (InventoryTag) NotableManager.getSavedObject(m.group(2));
             }
 
             for (String idType : idTypes) {
                 if (m.group(2).equalsIgnoreCase(idType)) {
-                    return new dInventory(m.group(2));
+                    return new InventoryTag(m.group(2));
                 }
             }
         }
@@ -252,10 +252,10 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
             if (type.equals("generic")) {
                 Argument arg = Argument.valueOf(holder);
                 if (arg.matchesEnum(InventoryType.values())) {
-                    return new dInventory(InventoryType.valueOf(holder.toUpperCase()));
+                    return new InventoryTag(InventoryType.valueOf(holder.toUpperCase()));
                 }
                 else if (arg.matchesPrimitive(PrimitiveType.Integer)) {
-                    return new dInventory(arg.asElement().asInt());
+                    return new InventoryTag(arg.asElement().asInt());
                 }
                 else {
                     if (!silent) {
@@ -264,31 +264,31 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
                 }
             }
             else if (type.equals("npc")) {
-                if (dNPC.matches(holder)) {
-                    return dNPC.valueOf(holder).getDenizenInventory();
+                if (NPCTag.matches(holder)) {
+                    return NPCTag.valueOf(holder).getDenizenInventory();
                 }
             }
             else if (type.equals("crafting")) {
-                if (dPlayer.matches(holder)) {
-                    dPlayer holderPlayer = dPlayer.valueOf(holder);
+                if (PlayerTag.matches(holder)) {
+                    PlayerTag holderPlayer = PlayerTag.valueOf(holder);
                     Inventory opened = holderPlayer.getPlayerEntity().getOpenInventory().getTopInventory();
                     if (opened instanceof CraftingInventory) {
-                        return new dInventory(opened);
+                        return new InventoryTag(opened);
                     }
-                    return dPlayer.valueOf(holder).getInventory();
+                    return PlayerTag.valueOf(holder).getInventory();
                 }
             }
             else if (type.equals("player")) {
-                if (dPlayer.matches(holder)) {
-                    return dPlayer.valueOf(holder).getInventory();
+                if (PlayerTag.matches(holder)) {
+                    return PlayerTag.valueOf(holder).getInventory();
                 }
             }
             else if (type.equals("workbench")) {
-                if (dPlayer.matches(holder)) {
-                    dInventory workbench = dPlayer.valueOf(holder).getWorkbench();
+                if (PlayerTag.matches(holder)) {
+                    InventoryTag workbench = PlayerTag.valueOf(holder).getWorkbench();
                     if (workbench == null) {
                         if (!silent) {
-                            Debug.echoError("Value of dInventory returning null (" + string + ")." +
+                            Debug.echoError("Value of InventoryTag returning null (" + string + ")." +
                                     " Specified player does not have an open workbench.");
                         }
                     }
@@ -298,31 +298,31 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
                 }
             }
             else if (type.equals("enderchest")) {
-                if (dPlayer.matches(holder)) {
-                    return dPlayer.valueOf(holder).getEnderChest();
+                if (PlayerTag.matches(holder)) {
+                    return PlayerTag.valueOf(holder).getEnderChest();
                 }
             }
             else if (type.equals("entity")) {
-                if (dEntity.matches(holder)) {
-                    return dEntity.valueOf(holder).getInventory();
+                if (EntityTag.matches(holder)) {
+                    return EntityTag.valueOf(holder).getInventory();
                 }
             }
             else if (type.equals("location")) {
-                if (dLocation.matches(holder)) {
-                    return dLocation.valueOf(holder).getInventory();
+                if (LocationTag.matches(holder)) {
+                    return LocationTag.valueOf(holder).getInventory();
                 }
             }
 
-            // If the dInventory is invalid, alert the user and return null
+            // If the InventoryTag is invalid, alert the user and return null
             if (!silent) {
-                Debug.echoError("Value of dInventory returning null. Invalid " +
+                Debug.echoError("Value of InventoryTag returning null. Invalid " +
                         type + " specified: " + holder);
             }
             return null;
         }
 
         if (!silent) {
-            Debug.echoError("Value of dInventory returning null. Invalid dInventory specified: " + string);
+            Debug.echoError("Value of InventoryTag returning null. Invalid InventoryTag specified: " + string);
         }
         return null;
     }
@@ -351,7 +351,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
             return true;
         }
 
-        if (NotableManager.isSaved(tid) && NotableManager.isType(tid, dInventory.class)) {
+        if (NotableManager.isSaved(tid) && NotableManager.isType(tid, InventoryTag.class)) {
             return true;
         }
 
@@ -372,37 +372,37 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
     String idType = null;
     String idHolder = null;
 
-    public dInventory(Inventory inventory) {
+    public InventoryTag(Inventory inventory) {
         this.inventory = inventory;
         loadIdentifiers();
     }
 
-    public dInventory(Inventory inventory, InventoryHolder holder) {
+    public InventoryTag(Inventory inventory, InventoryHolder holder) {
         this.inventory = inventory;
         loadIdentifiers(holder);
     }
 
-    public dInventory(InventoryHolder holder) {
+    public InventoryTag(InventoryHolder holder) {
         inventory = holder.getInventory();
         loadIdentifiers();
     }
 
-    public dInventory(ItemStack[] items) {
+    public InventoryTag(ItemStack[] items) {
         inventory = Bukkit.getServer().createInventory(null, (int) Math.ceil(items.length / 9.0) * 9);
         setContents(items);
         loadIdentifiers();
     }
 
-    public dInventory(ImprovedOfflinePlayer offlinePlayer) {
+    public InventoryTag(ImprovedOfflinePlayer offlinePlayer) {
         this(offlinePlayer, false);
     }
 
-    public dInventory(ImprovedOfflinePlayer offlinePlayer, boolean isEnderChest) {
+    public InventoryTag(ImprovedOfflinePlayer offlinePlayer, boolean isEnderChest) {
         inventory = isEnderChest ? offlinePlayer.getEnderChest() : offlinePlayer.getInventory();
         setIdentifiers(isEnderChest ? "enderchest" : "player", "p@" + offlinePlayer.getUniqueId());
     }
 
-    public dInventory(int size, String title) {
+    public InventoryTag(int size, String title) {
         if (size <= 0 || size % 9 != 0) {
             Debug.echoError("InventorySize must be multiple of 9, and greater than 0.");
             return;
@@ -411,16 +411,16 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         loadIdentifiers();
     }
 
-    public dInventory(InventoryType type) {
+    public InventoryTag(InventoryType type) {
         inventory = Bukkit.getServer().createInventory(null, type);
         loadIdentifiers();
     }
 
-    public dInventory(int size) {
+    public InventoryTag(int size) {
         this(size, "Chest");
     }
 
-    public dInventory(String idType) {
+    public InventoryTag(String idType) {
         this.idType = CoreUtilities.toLowerCase(idType);
     }
 
@@ -449,7 +449,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         loadIdentifiers();
     }
 
-    public void setInventory(Inventory inventory, dPlayer player) {
+    public void setInventory(Inventory inventory, PlayerTag player) {
         this.inventory = inventory;
         this.idHolder = player.identify();
     }
@@ -482,11 +482,11 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         loadIdentifiers();
     }
 
-    public boolean containsItem(dItem item, int amount) {
+    public boolean containsItem(ItemTag item, int amount) {
         if (item == null) {
             return false;
         }
-        item = new dItem(item.getItemStack().clone());
+        item = new ItemTag(item.getItemStack().clone());
         item.setAmount(1);
         String myItem = CoreUtilities.toLowerCase(item.getFullString());
         for (int i = 0; i < inventory.getSize(); i++) {
@@ -497,7 +497,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
             is = is.clone();
             int count = is.getAmount();
             is.setAmount(1);
-            String newItem = CoreUtilities.toLowerCase(new dItem(is).getFullString());
+            String newItem = CoreUtilities.toLowerCase(new ItemTag(is).getFullString());
             if (myItem.equals(newItem)) {
                 if (count <= amount) {
                     amount -= count;
@@ -513,7 +513,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         return false;
     }
 
-    public boolean removeItem(dItem item, int amount) {
+    public boolean removeItem(ItemTag item, int amount) {
         if (item == null) {
             return false;
         }
@@ -528,7 +528,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
             int count = is.getAmount();
             is.setAmount(1);
             // Note: this double-parsing is intentional, as part of a hotfix for a larger issue
-            String newItem = CoreUtilities.toLowerCase(dItem.valueOf(new dItem(is).getFullString(), false).getFullString());
+            String newItem = CoreUtilities.toLowerCase(ItemTag.valueOf(new ItemTag(is).getFullString(), false).getFullString());
             if (myItem.equals(newItem)) {
                 if (count <= amount) {
                     inventory.setItem(i, null);
@@ -587,15 +587,15 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         if (holder != null) {
-            if (holder instanceof dNPC) {
+            if (holder instanceof NPCTag) {
                 idType = "npc";
-                idHolder = ((dNPC) holder).identify();
+                idHolder = ((NPCTag) holder).identify();
                 return;
             }
             else if (holder instanceof Player) {
                 if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC((Player) holder)) {
                     idType = "npc";
-                    idHolder = (dNPC.fromEntity((Player) holder)).identify();
+                    idHolder = (NPCTag.fromEntity((Player) holder)).identify();
                     return;
                 }
                 if (inventory.getType() == InventoryType.CRAFTING) {
@@ -610,12 +610,12 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
                 else {
                     idType = "player";
                 }
-                idHolder = new dPlayer((Player) holder).identify();
+                idHolder = new PlayerTag((Player) holder).identify();
                 return;
             }
             else if (holder instanceof Entity) {
                 idType = "entity";
-                idHolder = new dEntity((Entity) holder).identify();
+                idHolder = new EntityTag((Entity) holder).identify();
                 return;
             }
             else {
@@ -633,7 +633,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
             // Iterate through offline player inventories
             for (Map.Entry<UUID, PlayerInventory> inv : ImprovedOfflinePlayer.offlineInventories.entrySet()) { // TODO: Less weird lookup?
                 if (inv.getValue().equals(inventory)) {
-                    idHolder = new dPlayer(inv.getKey()).identify();
+                    idHolder = new PlayerTag(inv.getKey()).identify();
                     return;
                 }
             }
@@ -642,7 +642,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
             // Iterate through offline player enderchests
             for (Map.Entry<UUID, Inventory> inv : ImprovedOfflinePlayer.offlineEnderChests.entrySet()) { // TODO: Less weird lookup?
                 if (inv.getValue().equals(inventory)) {
-                    idHolder = new dPlayer(inv.getKey()).identify();
+                    idHolder = new PlayerTag(inv.getKey()).identify();
                     return;
                 }
             }
@@ -657,7 +657,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         idHolder = getInventory().getType().name();
     }
 
-    public dInventory setIdentifiers(String type, String holder) {
+    public InventoryTag setIdentifiers(String type, String holder) {
         idType = type;
         idHolder = holder;
         return this;
@@ -679,31 +679,31 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
     }
 
     /**
-     * Return the dLocation of this inventory's
+     * Return the LocationTag of this inventory's
      * holder
      *
-     * @return The holder's dLocation
+     * @return The holder's LocationTag
      */
 
-    public dLocation getLocation() {
+    public LocationTag getLocation() {
         return getLocation(inventory.getHolder());
     }
 
-    public dLocation getLocation(InventoryHolder holder) {
+    public LocationTag getLocation(InventoryHolder holder) {
         if (inventory != null && holder != null) {
             if (holder instanceof BlockState) {
-                return new dLocation(((BlockState) holder).getLocation());
+                return new LocationTag(((BlockState) holder).getLocation());
             }
             else if (holder instanceof DoubleChest) {
-                return new dLocation(((DoubleChest) holder).getLocation());
+                return new LocationTag(((DoubleChest) holder).getLocation());
             }
             else if (holder instanceof Entity) {
-                return new dLocation(((Entity) holder).getLocation());
+                return new LocationTag(((Entity) holder).getLocation());
             }
-            else if (holder instanceof dNPC) {
-                dNPC npc = (dNPC) holder;
+            else if (holder instanceof NPCTag) {
+                NPCTag npc = (NPCTag) holder;
                 if (npc.getLocation() == null) {
-                    return new dLocation(((dNPC) holder).getCitizen().getStoredLocation());
+                    return new LocationTag(((NPCTag) holder).getCitizen().getStoredLocation());
                 }
                 return npc.getLocation();
             }
@@ -743,7 +743,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
         ListTag equipmentList = new ListTag();
         for (ItemStack item : equipment) {
-            equipmentList.add(new dItem(item).identify());
+            equipmentList.add(new ItemTag(item).identify());
         }
         return equipmentList;
     }
@@ -779,7 +779,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
         ItemStack[] contents = new ItemStack[size];
         int filled = 0;
-        for (dItem item : list.filter(dItem.class, context)) {
+        for (ItemTag item : list.filter(ItemTag.class, context)) {
             contents[filled] = item.getItemStack();
             filled++;
         }
@@ -789,14 +789,14 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
             filled++;
         }
         inventory.setContents(contents);
-        if (Depends.citizens != null && dNPC.matches(idHolder)) { // TODO: Directly store holder
-            dNPC.valueOf(idHolder).getInventoryTrait().setContents(contents);
+        if (Depends.citizens != null && NPCTag.matches(idHolder)) { // TODO: Directly store holder
+            NPCTag.valueOf(idHolder).getInventoryTrait().setContents(contents);
         }
     }
 
     public boolean update() {
         if (getIdType().equals("player")) {
-            dPlayer.valueOf(idHolder).getPlayerEntity().updateInventory();
+            PlayerTag.valueOf(idHolder).getPlayerEntity().updateInventory();
             return true;
         }
         return false;
@@ -831,7 +831,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
     /////////////////
 
     // Somewhat simplified version of CraftBukkit's current code
-    public dInventory add(int slot, ItemStack... items) {
+    public InventoryTag add(int slot, ItemStack... items) {
         if (inventory == null || items == null) {
             return this;
         }
@@ -1008,7 +1008,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         int qty = 0;
         for (ItemStack invStack : inventory) {
             if (invStack != null) {
-                dItem item = new dItem(invStack);
+                ItemTag item = new ItemTag(invStack);
                 if (item.isItemscript() && item.getScriptName().equalsIgnoreCase(scriptName)) {
                     qty += invStack.getAmount();
                 }
@@ -1053,10 +1053,10 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
      * in this inventory, removing all others
      *
      * @param items The array of items
-     * @return The resulting dInventory
+     * @return The resulting InventoryTag
      */
 
-    public dInventory keep(ItemStack[] items) {
+    public InventoryTag keep(ItemStack[] items) {
 
         if (inventory == null || items == null) {
             return this;
@@ -1098,10 +1098,10 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
      * until they are completely gone
      *
      * @param items The array of items
-     * @return The resulting dInventory
+     * @return The resulting InventoryTag
      */
 
-    public dInventory exclude(ItemStack[] items) {
+    public InventoryTag exclude(ItemStack[] items) {
 
         if (inventory == null || items == null) {
             return this;
@@ -1125,10 +1125,10 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
      * over until there is no more room
      *
      * @param items The array of items
-     * @return The resulting dInventory
+     * @return The resulting InventoryTag
      */
 
-    public dInventory fill(ItemStack[] items) {
+    public InventoryTag fill(ItemStack[] items) {
 
         if (inventory == null || items == null) {
             return this;
@@ -1151,10 +1151,10 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
      * and return the result
      *
      * @param items The array of items
-     * @return The resulting dInventory
+     * @return The resulting InventoryTag
      */
 
-    public dInventory remove(ItemStack[] items) {
+    public InventoryTag remove(ItemStack[] items) {
 
         if (inventory == null || items == null) {
             return this;
@@ -1179,10 +1179,10 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
      * @param title    The title of the book
      * @param author   The author of the book
      * @param quantity The number of books to remove
-     * @return The resulting dInventory
+     * @return The resulting InventoryTag
      */
 
-    public dInventory removeBook(String title, String author, int quantity) {
+    public InventoryTag removeBook(String title, String author, int quantity) {
 
         if (inventory == null || (title == null && author == null)) {
             return this;
@@ -1237,7 +1237,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
      * @param destination The destination inventory
      */
 
-    public void replace(dInventory destination) {
+    public void replace(InventoryTag destination) {
 
         if (inventory == null || destination == null) {
             return;
@@ -1257,7 +1257,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
     }
 
-    public dInventory setSlots(int slot, ItemStack... items) {
+    public InventoryTag setSlots(int slot, ItemStack... items) {
         return setSlots(slot, items, items.length);
     }
 
@@ -1266,9 +1266,9 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
      *
      * @param slot  The slot to start from
      * @param items The items to add
-     * @return The resulting dInventory
+     * @return The resulting InventoryTag
      */
-    public dInventory setSlots(int slot, ItemStack[] items, int c) {
+    public InventoryTag setSlots(int slot, ItemStack[] items, int c) {
 
         if (inventory == null || items == null) {
             return this;
@@ -1284,8 +1284,8 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
             }
             inventory.setItem(slot + i, item);
         }
-        if (Depends.citizens != null && dNPC.matches(idHolder)) { // TODO: Directly store holder
-            dNPC.valueOf(idHolder).getInventoryTrait().setContents(inventory.getContents());
+        if (Depends.citizens != null && NPCTag.matches(idHolder)) { // TODO: Directly store holder
+            NPCTag.valueOf(idHolder).getInventoryTrait().setContents(inventory.getContents());
         }
         return this;
 
@@ -1316,7 +1316,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
 
 
     @Override
-    public dInventory setPrefix(String prefix) {
+    public InventoryTag setPrefix(String prefix) {
         this.prefix = prefix;
         return this;
     }
@@ -1373,15 +1373,15 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.empty_slots>
+        // @attribute <InventoryTag.empty_slots>
         // @returns ElementTag(Number)
         // @description
         // Returns the number of empty slots in an inventory.
         // -->
         if (attribute.startsWith("empty_slots")) {
-            dInventory dummyInv;
+            InventoryTag dummyInv;
             if (inventory.getType() == InventoryType.PLAYER) {
-                dummyInv = new dInventory(Bukkit.createInventory(null, InventoryType.CHEST));
+                dummyInv = new InventoryTag(Bukkit.createInventory(null, InventoryType.CHEST));
                 ItemStack[] contents = getStorageContents();
                 dummyInv.setSize(contents.length);
                 if (contents.length != dummyInv.getSize()) {
@@ -1390,27 +1390,27 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
                 dummyInv.setContents(contents);
             }
             else {
-                dummyInv = new dInventory(inventory);
+                dummyInv = new InventoryTag(inventory);
             }
             int full = dummyInv.count(null, true);
             return new ElementTag(dummyInv.getSize() - full).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
-        // @attribute <in@inventory.can_fit[<item>|...]>
+        // @attribute <InventoryTag.can_fit[<item>|...]>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the inventory can fit an item.
         // -->
         if (attribute.startsWith("can_fit") && attribute.hasContext(1)) {
-            List<dItem> items = ListTag.valueOf(attribute.getContext(1)).filter(dItem.class, attribute.getScriptEntry());
+            List<ItemTag> items = ListTag.valueOf(attribute.getContext(1)).filter(ItemTag.class, attribute.getScriptEntry());
             if (items == null || items.isEmpty()) {
                 return null;
             }
             int attribs = 1;
 
             InventoryType type = inventory.getType();
-            dInventory dummyInv = new dInventory(Bukkit.createInventory(null, type == InventoryType.PLAYER ? InventoryType.CHEST : type, NMSHandler.getInstance().getTitle(inventory)));
+            InventoryTag dummyInv = new InventoryTag(Bukkit.createInventory(null, type == InventoryType.PLAYER ? InventoryType.CHEST : type, NMSHandler.getInstance().getTitle(inventory)));
             ItemStack[] contents = getStorageContents();
             if (dummyInv.getInventoryType() == InventoryType.CHEST) {
                 dummyInv.setSize(contents.length);
@@ -1421,7 +1421,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
             dummyInv.setContents(contents);
 
             // <--[tag]
-            // @attribute <in@inventory.can_fit[<item>].count>
+            // @attribute <InventoryTag.can_fit[<item>].count>
             // @returns ElementTag(Number)
             // @description
             // Returns the total count of how many times an item can fit into an inventory.
@@ -1440,7 +1440,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
             }
 
             // <--[tag]
-            // @attribute <in@inventory.can_fit[<item>].quantity[<#>]>
+            // @attribute <InventoryTag.can_fit[<item>].quantity[<#>]>
             // @returns ElementTag(Boolean)
             // @description
             // Returns whether the inventory can fit a certain quantity of an item.
@@ -1454,7 +1454,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
             }
 
             // NOTE: Could just also convert items to an array and pass it all in at once...
-            for (dItem itm : items) {
+            for (ItemTag itm : items) {
                 List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, true, itm.getItemStack());
                 if (!leftovers.isEmpty()) {
                     return new ElementTag(false).getAttribute(attribute.fulfill(attribs));
@@ -1464,31 +1464,31 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.include[<item>]>
-        // @returns dInventory
+        // @attribute <InventoryTag.include[<item>]>
+        // @returns InventoryTag
         // @description
-        // Returns the dInventory with an item added.
+        // Returns the InventoryTag with an item added.
         // -->
         if (attribute.startsWith("include") && attribute.hasContext(1)
-                && dItem.matches(attribute.getContext(1))) {
-            dItem item = dItem.valueOf(attribute.getContext(1), attribute.context);
+                && ItemTag.matches(attribute.getContext(1))) {
+            ItemTag item = ItemTag.valueOf(attribute.getContext(1), attribute.context);
             if (item == null) {
                 return null;
             }
             int attribs = 1;
             int qty = 1;
 
-            dInventory dummyInv = new dInventory(Bukkit.createInventory(null, inventory.getType(), NMSHandler.getInstance().getTitle(inventory)));
+            InventoryTag dummyInv = new InventoryTag(Bukkit.createInventory(null, inventory.getType(), NMSHandler.getInstance().getTitle(inventory)));
             if (inventory.getType() == InventoryType.CHEST) {
                 dummyInv.setSize(inventory.getSize());
             }
             dummyInv.setContents(getContents());
 
             // <--[tag]
-            // @attribute <in@inventory.include[<item>].quantity[<#>]>
-            // @returns dInventory
+            // @attribute <InventoryTag.include[<item>].quantity[<#>]>
+            // @returns InventoryTag
             // @description
-            // Returns the dInventory with a certain quantity of an item added.
+            // Returns the InventoryTag with a certain quantity of an item added.
             // -->
             if ((attribute.getAttribute(2).startsWith("quantity") || attribute.getAttribute(2).startsWith("qty")) &&
                     attribute.hasContext(2) && ArgumentHelper.matchesInteger(attribute.getContext(2))) {
@@ -1501,7 +1501,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.is_empty>
+        // @attribute <InventoryTag.is_empty>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the inventory is empty.
@@ -1518,7 +1518,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.is_full>
+        // @attribute <InventoryTag.is_full>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the inventory is completely full.
@@ -1538,7 +1538,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.contains.display[(strict:)<element>]>
+        // @attribute <InventoryTag.contains.display[(strict:)<element>]>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the inventory contains an item with the specified display
@@ -1560,7 +1560,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
             int attribs = 2;
 
             // <--[tag]
-            // @attribute <in@inventory.contains.display[(strict:)<element>].quantity[<#>]>
+            // @attribute <InventoryTag.contains.display[(strict:)<element>].quantity[<#>]>
             // @returns ElementTag(Boolean)
             // @description
             // Returns whether the inventory contains a certain quantity of an item with the
@@ -1620,7 +1620,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.contains.lore[(strict:)<element>|...]>
+        // @attribute <InventoryTag.contains.lore[(strict:)<element>|...]>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the inventory contains an item with the specified lore.
@@ -1643,7 +1643,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
             int attribs = 2;
 
             // <--[tag]
-            // @attribute <in@inventory.contains.lore[(strict:)<element>|...].quantity[<#>]>
+            // @attribute <InventoryTag.contains.lore[(strict:)<element>|...].quantity[<#>]>
             // @returns ElementTag(Boolean)
             // @description
             // Returns whether the inventory contains a certain quantity of an item
@@ -1712,7 +1712,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.contains.scriptname[<scriptname>]>
+        // @attribute <InventoryTag.contains.scriptname[<scriptname>]>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the inventory contains an item with the specified scriptname.
@@ -1723,7 +1723,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
             int attribs = 2;
 
             // <--[tag]
-            // @attribute <in@inventory.contains.scriptname[<scriptname>].quantity[<#>]>
+            // @attribute <InventoryTag.contains.scriptname[<scriptname>].quantity[<#>]>
             // @returns ElementTag(Boolean)
             // @description
             // Returns whether the inventory contains a certain quantity of an item with the specified scriptname.
@@ -1738,7 +1738,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
             int found_items = 0;
 
             for (ItemStack item : getContents()) {
-                if (item != null && scrName.equalsIgnoreCase(new dItem(item).getScriptName())) {
+                if (item != null && scrName.equalsIgnoreCase(new ItemTag(item).getScriptName())) {
                     found_items += item.getAmount();
                     if (found_items >= qty) {
                         break;
@@ -1750,7 +1750,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.contains.nbt[<key>]>
+        // @attribute <InventoryTag.contains.nbt[<key>]>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the inventory contains an item with the specified key.
@@ -1761,7 +1761,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
             int attribs = 2;
 
             // <--[tag]
-            // @attribute <in@inventory.contains.nbt[<key>].quantity[<#>]>
+            // @attribute <InventoryTag.contains.nbt[<key>].quantity[<#>]>
             // @returns ElementTag(Boolean)
             // @description
             // Returns whether the inventory contains a certain quantity of an item with the specified key.
@@ -1788,19 +1788,19 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.contains.material[<material>]>
+        // @attribute <InventoryTag.contains.material[<material>]>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the inventory contains an item with the specified material.
         // -->
         if (attribute.startsWith("contains.material") && attribute.hasContext(2) &&
-                dMaterial.matches(attribute.getContext(2))) {
-            dMaterial material = dMaterial.valueOf(attribute.getContext(2));
+                MaterialTag.matches(attribute.getContext(2))) {
+            MaterialTag material = MaterialTag.valueOf(attribute.getContext(2));
             int qty = 1;
             int attribs = 2;
 
             // <--[tag]
-            // @attribute <in@inventory.contains.material[<material>].quantity[<#>]>
+            // @attribute <InventoryTag.contains.material[<material>].quantity[<#>]>
             // @returns ElementTag(Boolean)
             // @description
             // Returns whether the inventory contains a certain quantity of an item with the
@@ -1828,7 +1828,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.contains_any[<item>|...]>
+        // @attribute <InventoryTag.contains_any[<item>|...]>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the inventory contains any of the specified items.
@@ -1842,7 +1842,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
             int attribs = 1;
 
             // <--[tag]
-            // @attribute <in@inventory.contains_any[<item>|...].quantity[<#>]>
+            // @attribute <InventoryTag.contains_any[<item>|...].quantity[<#>]>
             // @returns ElementTag(Boolean)
             // @description
             // Returns whether the inventory contains a certain quantity of any of the specified items.
@@ -1852,9 +1852,9 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
                 qty = attribute.getIntContext(2);
                 attribs = 2;
             }
-            List<dItem> contains = list.filter(dItem.class, attribute.getScriptEntry());
+            List<ItemTag> contains = list.filter(ItemTag.class, attribute.getScriptEntry());
             if (!contains.isEmpty()) {
-                for (dItem item : contains) {
+                for (ItemTag item : contains) {
                     if (containsItem(item, qty)) {
                         return new ElementTag(true).getAttribute(attribute.fulfill(attribs));
                     }
@@ -1864,7 +1864,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.contains[<item>|...]>
+        // @attribute <InventoryTag.contains[<item>|...]>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the inventory contains all of the specified items.
@@ -1878,7 +1878,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
             int attribs = 1;
 
             // <--[tag]
-            // @attribute <in@inventory.contains[<item>|...].quantity[<#>]>
+            // @attribute <InventoryTag.contains[<item>|...].quantity[<#>]>
             // @returns ElementTag(Boolean)
             // @description
             // Returns whether the inventory contains a certain quantity of all of the specified items.
@@ -1888,9 +1888,9 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
                 qty = attribute.getIntContext(2);
                 attribs = 2;
             }
-            List<dItem> contains = list.filter(dItem.class, attribute.getScriptEntry());
+            List<ItemTag> contains = list.filter(ItemTag.class, attribute.getScriptEntry());
             if (contains.size() == list.size()) {
-                for (dItem item : contains) {
+                for (ItemTag item : contains) {
                     if (!containsItem(item, qty)) {
                         return new ElementTag(false).getAttribute(attribute.fulfill(attribs));
                     }
@@ -1901,7 +1901,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.first_empty>
+        // @attribute <InventoryTag.first_empty>
         // @returns ElementTag(Number)
         // @description
         // Returns the location of the first empty slot.
@@ -1913,7 +1913,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.find.material[<material>]>
+        // @attribute <InventoryTag.find.material[<material>]>
         // @returns ElementTag(Number)
         // @description
         // Returns the location of the first slot that contains the material.
@@ -1921,8 +1921,8 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         // -->
         if (attribute.startsWith("find.material")
                 && attribute.hasContext(2)
-                && dMaterial.matches(attribute.getContext(2))) {
-            dMaterial material = dMaterial.valueOf(attribute.getContext(2));
+                && MaterialTag.matches(attribute.getContext(2))) {
+            MaterialTag material = MaterialTag.valueOf(attribute.getContext(2));
             if (material == null) {
                 return null;
             }
@@ -1937,7 +1937,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.find.scriptname[<item>]>
+        // @attribute <InventoryTag.find.scriptname[<item>]>
         // @returns ElementTag(Number)
         // @description
         // Returns the location of the first slot that contains the item
@@ -1946,15 +1946,15 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         // -->
         if (attribute.startsWith("find.scriptname")
                 && attribute.hasContext(2)
-                && dItem.matches(attribute.getContext(2))) {
-            String scrname = dItem.valueOf(attribute.getContext(2), attribute.context).getScriptName();
+                && ItemTag.matches(attribute.getContext(2))) {
+            String scrname = ItemTag.valueOf(attribute.getContext(2), attribute.context).getScriptName();
             if (scrname == null) {
                 return null;
             }
             int slot = -1;
             for (int i = 0; i < inventory.getSize(); i++) {
                 if (inventory.getItem(i) != null
-                        && scrname.equalsIgnoreCase(new dItem(inventory.getItem(i)).getScriptName())) {
+                        && scrname.equalsIgnoreCase(new ItemTag(inventory.getItem(i)).getScriptName())) {
                     slot = i + 1;
                     break;
                 }
@@ -1963,7 +1963,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.find_imperfect[<item>]>
+        // @attribute <InventoryTag.find_imperfect[<item>]>
         // @returns ElementTag(Number)
         // @description
         // Returns the location of the first slot that contains the item.
@@ -1972,13 +1972,13 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         // -->
         if (attribute.startsWith("find_imperfect")
                 && attribute.hasContext(1)
-                && dItem.matches(attribute.getContext(1))) {
-            dItem item = dItem.valueOf(attribute.getContext(1), attribute.context);
+                && ItemTag.matches(attribute.getContext(1))) {
+            ItemTag item = ItemTag.valueOf(attribute.getContext(1), attribute.context);
             item.setAmount(1);
             int slot = -1;
             for (int i = 0; i < inventory.getSize(); i++) {
                 if (inventory.getItem(i) != null) {
-                    dItem compare_to = new dItem(inventory.getItem(i).clone());
+                    ItemTag compare_to = new ItemTag(inventory.getItem(i).clone());
                     compare_to.setAmount(1);
                     if (item.identify().equalsIgnoreCase(compare_to.identify())
                             || item.getScriptName().equalsIgnoreCase(compare_to.getScriptName())) {
@@ -1991,7 +1991,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.find[<item>]>
+        // @attribute <InventoryTag.find[<item>]>
         // @returns ElementTag(Number)
         // @description
         // Returns the location of the first slot that contains the item.
@@ -1999,13 +1999,13 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         // -->
         if (attribute.startsWith("find")
                 && attribute.hasContext(1)
-                && dItem.matches(attribute.getContext(1))) {
-            dItem item = dItem.valueOf(attribute.getContext(1), attribute.context);
+                && ItemTag.matches(attribute.getContext(1))) {
+            ItemTag item = ItemTag.valueOf(attribute.getContext(1), attribute.context);
             item.setAmount(1);
             int slot = -1;
             for (int i = 0; i < inventory.getSize(); i++) {
                 if (inventory.getItem(i) != null) {
-                    dItem compare_to = new dItem(inventory.getItem(i).clone());
+                    ItemTag compare_to = new ItemTag(inventory.getItem(i).clone());
                     compare_to.setAmount(1);
                     if (item.getFullString().equalsIgnoreCase(compare_to.getFullString())) {
                         slot = i + 1;
@@ -2017,7 +2017,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.id_type>
+        // @attribute <InventoryTag.id_type>
         // @returns ElementTag
         // @description
         // Returns Denizen's type ID for this inventory. (player, location, etc.)
@@ -2027,10 +2027,10 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.notable_name>
+        // @attribute <InventoryTag.notable_name>
         // @returns ElementTag
         // @description
-        // Gets the name of a Notable dInventory. If the inventory isn't noted,
+        // Gets the name of a Notable InventoryTag. If the inventory isn't noted,
         // this is null.
         // -->
         if (attribute.startsWith("notable_name")) {
@@ -2042,13 +2042,13 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.location>
-        // @returns dLocation
+        // @attribute <InventoryTag.location>
+        // @returns LocationTag
         // @description
         // Returns the location of this inventory's holder.
         // -->
         if (attribute.startsWith("location")) {
-            dLocation location = getLocation();
+            LocationTag location = getLocation();
             if (location == null) {
                 return null;
             }
@@ -2056,7 +2056,7 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.quantity.scriptname[<script>]>
+        // @attribute <InventoryTag.quantity.scriptname[<script>]>
         // @returns ElementTag(Number)
         // @description
         // Returns the combined quantity of itemstacks that have the specified script name.
@@ -2067,19 +2067,19 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.quantity.material[<material>]>
+        // @attribute <InventoryTag.quantity.material[<material>]>
         // @returns ElementTag(Number)
         // @description
         // Returns the combined quantity of itemstacks that have the specified material.
         // -->
         if (attribute.startsWith("quantity.material")
-                && attribute.hasContext(2) && dMaterial.matches(attribute.getContext(2))) {
-            return new ElementTag(countByMaterial(dMaterial.valueOf(attribute.getContext(2)).getMaterial()))
+                && attribute.hasContext(2) && MaterialTag.matches(attribute.getContext(2))) {
+            return new ElementTag(countByMaterial(MaterialTag.valueOf(attribute.getContext(2)).getMaterial()))
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
-        // @attribute <in@inventory.quantity[<item>]>
+        // @attribute <InventoryTag.quantity[<item>]>
         // @returns ElementTag(Number)
         // @description
         // Returns the combined quantity of itemstacks that match an item if
@@ -2087,9 +2087,9 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         // if one is not.
         // -->
         if (attribute.startsWith("quantity") || attribute.startsWith("qty")) {
-            if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
+            if (attribute.hasContext(1) && ItemTag.matches(attribute.getContext(1))) {
                 return new ElementTag(count // TODO: Handle no-script-entry cases
-                        (dItem.valueOf(attribute.getContext(1), attribute.context).getItemStack(), false))
+                        (ItemTag.valueOf(attribute.getContext(1), attribute.context).getItemStack(), false))
                         .getAttribute(attribute.fulfill(1));
             }
             else {
@@ -2099,16 +2099,16 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.stacks[<item>]>
+        // @attribute <InventoryTag.stacks[<item>]>
         // @returns ElementTag(Number)
         // @description
         // Returns the number of itemstacks that match an item if one is
         // specified, or the number of all itemstacks if one is not.
         // -->
         if (attribute.startsWith("stacks")) {
-            if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
+            if (attribute.hasContext(1) && ItemTag.matches(attribute.getContext(1))) {
                 return new ElementTag(count // TODO: Handle no-script-entry cases
-                        (dItem.valueOf(attribute.getContext(1), attribute.context).getItemStack(), true))
+                        (ItemTag.valueOf(attribute.getContext(1), attribute.context).getItemStack(), true))
                         .getAttribute(attribute.fulfill(1));
             }
             else {
@@ -2118,8 +2118,8 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.slot[<#>]>
-        // @returns dItem
+        // @attribute <InventoryTag.slot[<#>]>
+        // @returns ItemTag
         // @description
         // Returns the item in the specified slot.
         // -->
@@ -2133,12 +2133,12 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
             else if (slot > getInventory().getSize() - 1) {
                 slot = getInventory().getSize() - 1;
             }
-            return new dItem(getInventory().getItem(slot))
+            return new ItemTag(getInventory().getItem(slot))
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
-        // @attribute <in@inventory.inventory_type>
+        // @attribute <InventoryTag.inventory_type>
         // @returns ElementTag
         // @description
         // Returns the type of the inventory (e.g. "PLAYER", "CRAFTING", "HORSE").
@@ -2149,8 +2149,8 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.equipment>
-        // @returns ListTag(dItem)
+        // @attribute <InventoryTag.equipment>
+        // @returns ListTag(ItemTag)
         // @description
         // Returns the equipment of an inventory.
         // -->
@@ -2166,44 +2166,44 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
             CraftingInventory craftingInventory = (CraftingInventory) inventory;
 
             // <--[tag]
-            // @attribute <in@inventory.matrix>
-            // @returns ListTag(dItem)
+            // @attribute <InventoryTag.matrix>
+            // @returns ListTag(ItemTag)
             // @description
-            // Returns the dItems currently in a crafting inventory's matrix.
+            // Returns the ItemTags currently in a crafting inventory's matrix.
             // -->
             if (attribute.startsWith("matrix")) {
                 ListTag recipeList = new ListTag();
                 for (ItemStack item : craftingInventory.getMatrix()) {
                     if (item != null) {
-                        recipeList.add(new dItem(item).identify());
+                        recipeList.add(new ItemTag(item).identify());
                     }
                     else {
-                        recipeList.add(new dItem(Material.AIR).identify());
+                        recipeList.add(new ItemTag(Material.AIR).identify());
                     }
                 }
                 return recipeList.getAttribute(attribute.fulfill(1));
             }
 
             // <--[tag]
-            // @attribute <in@inventory.result>
-            // @returns dItem
+            // @attribute <InventoryTag.result>
+            // @returns ItemTag
             // @description
-            // Returns the dItem currently in the result section of a crafting inventory.
+            // Returns the ItemTag currently in the result section of a crafting inventory.
             // -->
             if (attribute.startsWith("result")) {
                 ItemStack result = craftingInventory.getResult();
                 if (result == null) {
                     return null;
                 }
-                return new dItem(result).getAttribute(attribute.fulfill(1));
+                return new ItemTag(result).getAttribute(attribute.fulfill(1));
             }
         }
 
         // <--[tag]
-        // @attribute <in@inventory.type>
+        // @attribute <InventoryTag.type>
         // @returns ElementTag
         // @description
-        // Always returns 'Inventory' for dInventory objects. All objects fetchable by the Object Fetcher will return the
+        // Always returns 'Inventory' for InventoryTag objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         if (attribute.startsWith("type")) {
@@ -2242,18 +2242,18 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         CoreUtilities.autoPropertyMechanism(this, mechanism);
 
         // <--[mechanism]
-        // @object dInventory
+        // @object InventoryTag
         // @name matrix
-        // @input ListTag(dItem)
+        // @input ListTag(ItemTag)
         // @description
         // Sets the items in the matrix slots of this crafting inventory.
         // @tags
-        // <in@inventory.matrix>
+        // <InventoryTag.matrix>
         // -->
         if (mechanism.matches("matrix") && mechanism.requireObject(ListTag.class)) {
             if (inventory instanceof CraftingInventory) {
                 CraftingInventory craftingInventory = (CraftingInventory) inventory;
-                List<dItem> items = mechanism.valueAsType(ListTag.class).filter(dItem.class, mechanism.context);
+                List<ItemTag> items = mechanism.valueAsType(ListTag.class).filter(ItemTag.class, mechanism.context);
                 ItemStack[] itemStacks = new ItemStack[9];
                 for (int i = 0; i < 9 && i < items.size(); i++) {
                     itemStacks[i] = items.get(i).getItemStack();
@@ -2267,18 +2267,18 @@ public class dInventory implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[mechanism]
-        // @object dInventory
+        // @object InventoryTag
         // @name result
-        // @input dItem
+        // @input ItemTag
         // @description
         // Sets the item in the result slot of this crafting inventory.
         // @tags
-        // <in@inventory.result>
+        // <InventoryTag.result>
         // -->
-        if (mechanism.matches("result") && mechanism.requireObject(dItem.class)) {
+        if (mechanism.matches("result") && mechanism.requireObject(ItemTag.class)) {
             if (inventory instanceof CraftingInventory) {
                 CraftingInventory craftingInventory = (CraftingInventory) inventory;
-                craftingInventory.setResult(mechanism.valueAsType(dItem.class).getItemStack());
+                craftingInventory.setResult(mechanism.valueAsType(ItemTag.class).getItemStack());
                 ((Player) inventory.getHolder()).updateInventory();
             }
             else {

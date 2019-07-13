@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.dInventory;
+import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
@@ -24,10 +24,10 @@ public class InventoryTags {
             return;
         }
 
-        dInventory inventory = null;
+        InventoryTag inventory = null;
 
         if (event.hasNameContext()) {
-            inventory = dInventory.valueOf(event.getNameContext(), event.getAttributes().context);
+            inventory = InventoryTag.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
         if (inventory == null) {

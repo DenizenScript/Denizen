@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.commands.player;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
-import com.denizenscript.denizen.objects.dWorld;
+import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -31,10 +31,10 @@ public class GroupCommand extends AbstractCommand {
     // Note: This requires a permissions plugin.
     //
     // @Tags
-    // <p@player.in_group[<group>]>
-    // <p@player.in_group[<group>].global>
-    // <p@player.in_group[<group>].world>
-    // <p@player.groups>
+    // <PlayerTag.in_group[<group>]>
+    // <PlayerTag.in_group[<group>].global>
+    // <PlayerTag.in_group[<group>].world>
+    // <PlayerTag.groups>
     // <server.list_permission_groups>
     //
     // @Usage
@@ -66,8 +66,8 @@ public class GroupCommand extends AbstractCommand {
                 scriptEntry.addObject("action", arg.asElement());
             }
             else if (!scriptEntry.hasObject("world")
-                    && arg.matchesArgumentType(dWorld.class)) {
-                scriptEntry.addObject("world", arg.asType(dWorld.class));
+                    && arg.matchesArgumentType(WorldTag.class)) {
+                scriptEntry.addObject("world", arg.asType(WorldTag.class));
             }
             else if (!scriptEntry.hasObject("group")) {
                 scriptEntry.addObject("group", arg.asElement());
@@ -93,7 +93,7 @@ public class GroupCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         ElementTag action = scriptEntry.getElement("action");
-        dWorld world = (dWorld) scriptEntry.getObject("world");
+        WorldTag world = (WorldTag) scriptEntry.getObject("world");
         ElementTag group = scriptEntry.getElement("group");
 
         // Report to dB

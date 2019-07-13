@@ -2,7 +2,7 @@ package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -14,10 +14,10 @@ import org.bukkit.entity.Slime;
 public class EntitySize implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity &&
-                (((dEntity) entity).getBukkitEntity() instanceof Slime
+        return entity instanceof EntityTag &&
+                (((EntityTag) entity).getBukkitEntity() instanceof Slime
                         || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)
-                        && ((dEntity) entity).getBukkitEntity() instanceof Phantom));
+                        && ((EntityTag) entity).getBukkitEntity() instanceof Phantom));
     }
 
     public static EntitySize getFrom(ObjectTag entity) {
@@ -25,7 +25,7 @@ public class EntitySize implements Property {
             return null;
         }
         else {
-            return new EntitySize((dEntity) entity);
+            return new EntitySize((EntityTag) entity);
         }
     }
 
@@ -42,11 +42,11 @@ public class EntitySize implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntitySize(dEntity ent) {
+    private EntitySize(EntityTag ent) {
         entity = ent;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     /////////
     // Property Methods
@@ -78,9 +78,9 @@ public class EntitySize implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.size>
+        // @attribute <EntityTag.size>
         // @returns ElementTag(Number)
-        // @mechanism dEntity.size
+        // @mechanism EntityTag.size
         // @group properties
         // @description
         // Returns the size of a slime-type entity or a Phantom (1-120).
@@ -101,13 +101,13 @@ public class EntitySize implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name size
         // @input Element(Number)
         // @description
         // Sets the size of a slime-type entity or a Phantom (1-120).
         // @tags
-        // <e@entity.size>
+        // <EntityTag.size>
         // -->
         if (mechanism.matches("size") && mechanism.requireInteger()) {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && entity.getBukkitEntity() instanceof Phantom) {

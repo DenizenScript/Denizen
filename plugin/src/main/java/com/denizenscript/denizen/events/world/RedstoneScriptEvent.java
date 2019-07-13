@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.world;
 
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -39,7 +39,7 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
 
     public static RedstoneScriptEvent instance;
 
-    public dLocation location;
+    public LocationTag location;
     public ElementTag old_current;
     public ElementTag new_current;
     public BlockRedstoneEvent event;
@@ -86,7 +86,7 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
 
     @EventHandler
     public void onBlockRedstone(BlockRedstoneEvent event) {
-        location = new dLocation(event.getBlock().getLocation());
+        location = new LocationTag(event.getBlock().getLocation());
         old_current = new ElementTag(event.getOldCurrent());
         new_current = new ElementTag(event.getNewCurrent());
         this.event = event;

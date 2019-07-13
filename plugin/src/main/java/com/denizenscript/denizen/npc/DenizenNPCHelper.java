@@ -3,7 +3,7 @@ package com.denizenscript.denizen.npc;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.npc.actions.ActionHandler;
-import com.denizenscript.denizen.objects.dNPC;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
@@ -30,7 +30,7 @@ import java.util.*;
 public class DenizenNPCHelper implements Listener {
 
     public static DenizenNPCHelper getCurrentInstance() {
-        return DenizenAPI.getCurrentInstance().getNPCRegistry();
+        return DenizenAPI.getCurrentInstance().getNPCHelper();
     }
 
     private Denizen plugin;
@@ -56,25 +56,25 @@ public class DenizenNPCHelper implements Listener {
 
 
     /**
-     * Returns a dNPC object when given a valid NPC. DenizenNPCs have some methods
+     * Returns a NPCTag object when given a valid NPC. DenizenNPCs have some methods
      * specific to Denizen functionality as well as easy access to the attached NPC and LivingEntity.
      *
      * @param npc the Citizens NPC
-     * @return a dNPC
+     * @return a NPCTag
      */
-    public static dNPC getDenizen(NPC npc) {
-        return new dNPC(npc);
+    public static NPCTag getDenizen(NPC npc) {
+        return new NPCTag(npc);
     }
 
-    public static dNPC getDenizen(int id) {
-        return new dNPC(CitizensAPI.getNPCRegistry().getById(id));
+    public static NPCTag getDenizen(int id) {
+        return new NPCTag(CitizensAPI.getNPCRegistry().getById(id));
     }
 
     /**
-     * Returns a dInventory object from the Inventory trait of a valid NPC.
+     * Returns a InventoryTag object from the Inventory trait of a valid NPC.
      *
      * @param npc the Citizens NPC
-     * @return the NPC's dInventory
+     * @return the NPC's InventoryTag
      */
     public static Inventory getInventory(NPC npc) {
         if (npc == null) {
@@ -131,7 +131,7 @@ public class DenizenNPCHelper implements Listener {
             return;
         }
         // On Spawn action
-        new dNPC(event.getNPC()).action("spawn", null);
+        new NPCTag(event.getNPC()).action("spawn", null);
     }
 
 
@@ -152,7 +152,7 @@ public class DenizenNPCHelper implements Listener {
      */
     @EventHandler
     public void despawn(NPCDespawnEvent event) {
-        dNPC npc = getDenizen(event.getNPC());
+        NPCTag npc = getDenizen(event.getNPC());
 
         // Do world script event 'On NPC Despawns'
         if (npc != null && npc.isValid()) {
@@ -189,8 +189,8 @@ public class DenizenNPCHelper implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         Inventory inventory = event.getInventory();
-        if (inventory.getHolder() instanceof dNPC) {
-            dNPC npc = (dNPC) inventory.getHolder();
+        if (inventory.getHolder() instanceof NPCTag) {
+            NPCTag npc = (NPCTag) inventory.getHolder();
             npc.getInventory().setContents(inventory.getContents());
             Equipment equipment = npc.getEquipmentTrait();
             for (int i = 0; i < 5; i++) {

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -12,7 +12,7 @@ import org.bukkit.entity.EntityType;
 public class EntityMaxFuseTicks implements Property {
 
     public static boolean describes(ObjectTag object) {
-        return object instanceof dEntity && ((dEntity) object).getBukkitEntityType() == EntityType.CREEPER;
+        return object instanceof EntityTag && ((EntityTag) object).getBukkitEntityType() == EntityType.CREEPER;
     }
 
     public static EntityMaxFuseTicks getFrom(ObjectTag object) {
@@ -20,7 +20,7 @@ public class EntityMaxFuseTicks implements Property {
             return null;
         }
         else {
-            return new EntityMaxFuseTicks((dEntity) object);
+            return new EntityMaxFuseTicks((EntityTag) object);
         }
     }
 
@@ -37,11 +37,11 @@ public class EntityMaxFuseTicks implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityMaxFuseTicks(dEntity entity) {
+    private EntityMaxFuseTicks(EntityTag entity) {
         this.entity = entity;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     /////////
     // Property Methods
@@ -65,9 +65,9 @@ public class EntityMaxFuseTicks implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.max_fuse_ticks>
+        // @attribute <EntityTag.max_fuse_ticks>
         // @returns ElementTag(Number)
-        // @mechanism dEntity.max_fuse_ticks
+        // @mechanism EntityTag.max_fuse_ticks
         // @group properties
         // @description
         // Returns the default number of ticks until the creeper explodes when primed (NOT the time remaining if already primed).
@@ -84,13 +84,13 @@ public class EntityMaxFuseTicks implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name max_fuse_ticks
         // @input Element(Number)
         // @description
         // Sets the default number of ticks until the creeper explodes when primed (NOT the time remaining if already primed).
         // @tags
-        // <e@entity.max_fuse_ticks>
+        // <EntityTag.max_fuse_ticks>
         // -->
         if (mechanism.matches("max_fuse_ticks") && mechanism.requireInteger()) {
             ((Creeper) entity.getBukkitEntity()).setMaxFuseTicks(mechanism.getValue().asInt());

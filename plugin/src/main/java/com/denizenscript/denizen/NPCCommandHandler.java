@@ -1,8 +1,8 @@
 package com.denizenscript.denizen;
 
 import com.denizenscript.denizen.npc.traits.*;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.command.messaging.Messaging;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
@@ -214,7 +214,7 @@ public class NPCCommandHandler {
         if (args.hasValueFlag("set")) {
             String script = args.getFlag("set").replace("\"", "");
 
-            if (trait.setAssignment(script, dPlayer.mirrorBukkitPlayer(player))) {
+            if (trait.setAssignment(script, PlayerTag.mirrorBukkitPlayer(player))) {
                 if (trait.hasAssignment()) {
                     Messaging.sendInfo(sender, npc.getName() + "'s assignment is now: '" + trait.getAssignment().getName() + "'.");
                 }
@@ -232,7 +232,7 @@ public class NPCCommandHandler {
 
         }
         else if (args.hasFlag('r')) {
-            trait.removeAssignment(dPlayer.mirrorBukkitPlayer(player));
+            trait.removeAssignment(PlayerTag.mirrorBukkitPlayer(player));
             Messaging.sendInfo(sender, npc.getName() + "'s assignment has been removed.");
             return;
 
@@ -378,7 +378,7 @@ public class NPCCommandHandler {
                 Messaging.sendError(sender, "Usage: /npc sit --location x,y,z,world");
                 return;
             }
-            trait.sit(dLocation.valueOf(argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
+            trait.sit(LocationTag.valueOf(argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
         }
         else if (args.hasValueFlag("anchor")) {
             if (npc.hasTrait(Anchors.class)) {
@@ -447,7 +447,7 @@ public class NPCCommandHandler {
                 Messaging.sendError(sender, "Usage: /npc sleep --location x,y,z,world");
                 return;
             }
-            trait.toSleep(dLocation.valueOf(argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
+            trait.toSleep(LocationTag.valueOf(argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
         }
         else if (args.hasValueFlag("anchor")) {
             if (npc.hasTrait(Anchors.class)) {
@@ -526,7 +526,7 @@ public class NPCCommandHandler {
                 Messaging.sendError(sender, "Usage: /npc fish --location x,y,z,world");
                 return;
             }
-            trait.startFishing(dLocation.valueOf(argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
+            trait.startFishing(LocationTag.valueOf(argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
         }
         else if (args.hasValueFlag("anchor")) {
             if (npc.hasTrait(Anchors.class)) {

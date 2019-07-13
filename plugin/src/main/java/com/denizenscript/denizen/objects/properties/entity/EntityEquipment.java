@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -14,8 +14,8 @@ import org.bukkit.inventory.ItemStack;
 public class EntityEquipment implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity
-                && ((dEntity) entity).getBukkitEntity() instanceof LivingEntity;
+        return entity instanceof EntityTag
+                && ((EntityTag) entity).getBukkitEntity() instanceof LivingEntity;
     }
 
     public static EntityEquipment getFrom(ObjectTag entity) {
@@ -23,7 +23,7 @@ public class EntityEquipment implements Property {
             return null;
         }
         else {
-            return new EntityEquipment((dEntity) entity);
+            return new EntityEquipment((EntityTag) entity);
         }
     }
 
@@ -40,11 +40,11 @@ public class EntityEquipment implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityEquipment(dEntity ent) {
+    private EntityEquipment(EntityTag ent) {
         entity = ent;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     /////////
     // Property Methods
@@ -73,26 +73,26 @@ public class EntityEquipment implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.equipment.boots>
-        // @returns dItem
+        // @attribute <EntityTag.equipment.boots>
+        // @returns ItemTag
         // @group inventory
         // @description
         // Returns the item the entity is wearing as boots.
         // -->
         if (attribute.startsWith("equipment.boots")) {
             if (entity.getLivingEntity().getEquipment().getBoots() != null) {
-                return new dItem(entity.getLivingEntity().getEquipment().getBoots())
+                return new ItemTag(entity.getLivingEntity().getEquipment().getBoots())
                         .getAttribute(attribute.fulfill(2));
             }
             else {
-                return new dItem(Material.AIR)
+                return new ItemTag(Material.AIR)
                         .getAttribute(attribute.fulfill(2));
             }
         }
 
         // <--[tag]
-        // @attribute <e@entity.equipment.chestplate>
-        // @returns dItem
+        // @attribute <EntityTag.equipment.chestplate>
+        // @returns ItemTag
         // @group inventory
         // @description
         // Returns the item the entity is wearing as a chestplate.
@@ -100,18 +100,18 @@ public class EntityEquipment implements Property {
         else if (attribute.startsWith("equipment.chestplate") ||
                 attribute.startsWith("equipment.chest")) {
             if (entity.getLivingEntity().getEquipment().getChestplate() != null) {
-                return new dItem(entity.getLivingEntity().getEquipment().getChestplate())
+                return new ItemTag(entity.getLivingEntity().getEquipment().getChestplate())
                         .getAttribute(attribute.fulfill(2));
             }
             else {
-                return new dItem(Material.AIR)
+                return new ItemTag(Material.AIR)
                         .getAttribute(attribute.fulfill(2));
             }
         }
 
         // <--[tag]
-        // @attribute <e@entity.equipment.helmet>
-        // @returns dItem
+        // @attribute <EntityTag.equipment.helmet>
+        // @returns ItemTag
         // @group inventory
         // @description
         // Returns the item the entity is wearing as a helmet.
@@ -119,18 +119,18 @@ public class EntityEquipment implements Property {
         else if (attribute.startsWith("equipment.helmet") ||
                 attribute.startsWith("equipment.head")) {
             if (entity.getLivingEntity().getEquipment().getHelmet() != null) {
-                return new dItem(entity.getLivingEntity().getEquipment().getHelmet())
+                return new ItemTag(entity.getLivingEntity().getEquipment().getHelmet())
                         .getAttribute(attribute.fulfill(2));
             }
             else {
-                return new dItem(Material.AIR)
+                return new ItemTag(Material.AIR)
                         .getAttribute(attribute.fulfill(2));
             }
         }
 
         // <--[tag]
-        // @attribute <e@entity.equipment.leggings>
-        // @returns dItem
+        // @attribute <EntityTag.equipment.leggings>
+        // @returns ItemTag
         // @group inventory
         // @description
         // Returns the item the entity is wearing as leggings.
@@ -138,17 +138,17 @@ public class EntityEquipment implements Property {
         else if (attribute.startsWith("equipment.leggings") ||
                 attribute.startsWith("equipment.legs")) {
             if (entity.getLivingEntity().getEquipment().getLeggings() != null) {
-                return new dItem(entity.getLivingEntity().getEquipment().getLeggings())
+                return new ItemTag(entity.getLivingEntity().getEquipment().getLeggings())
                         .getAttribute(attribute.fulfill(2));
             }
             else {
-                return new dItem(Material.AIR)
+                return new ItemTag(Material.AIR)
                         .getAttribute(attribute.fulfill(2));
             }
         }
 
         // <--[tag]
-        // @attribute <e@entity.equipment>
+        // @attribute <EntityTag.equipment>
         // @returns ListTag
         // @group inventory
         // @description
@@ -166,20 +166,20 @@ public class EntityEquipment implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name equipment
-        // @input ListTag(dItem)
+        // @input ListTag(ItemTag)
         // @description
         // Sets the entity's worn equipment.
         // Input list is boots|leggings|chestplate|helmet
         // @tags
-        // <e@entity.equipment>
+        // <EntityTag.equipment>
         // -->
         if (mechanism.matches("equipment")) {
             ListTag list = ListTag.valueOf(mechanism.getValue().asString());
             ItemStack[] stacks = new ItemStack[list.size()];
             for (int i = 0; i < list.size(); i++) {
-                stacks[i] = dItem.valueOf(list.get(i), mechanism.context).getItemStack();
+                stacks[i] = ItemTag.valueOf(list.get(i), mechanism.context).getItemStack();
             }
             entity.getLivingEntity().getEquipment().setArmorContents(stacks);
         }

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen;
 
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.scripts.containers.core.VersionScriptContainer;
 import com.denizenscript.denizen.utilities.DenizenAPI;
@@ -430,7 +430,7 @@ public class DenizenCommandHandler {
             min = 2, max = 20, permission = "denizen.notable.basic")
     public void addnotable(CommandContext args, CommandSender sender) throws CommandException {
 
-        NotableManager.saveAs(new dLocation(((Player) sender).getLocation()), args.getString(1));
+        NotableManager.saveAs(new LocationTag(((Player) sender).getLocation()), args.getString(1));
         Messaging.send(sender, "Created new notable called " + (args.getString(1)));
     }
 
@@ -440,6 +440,6 @@ public class DenizenCommandHandler {
             min = 1, max = 1, permission = "denizen.notable.basic")
     public void listnotable(CommandContext args, CommandSender sender) throws CommandException {
 
-        Messaging.send(sender, NotableManager.getAllType(dLocation.class).toString());
+        Messaging.send(sender, NotableManager.getAllType(LocationTag.class).toString());
     }
 }

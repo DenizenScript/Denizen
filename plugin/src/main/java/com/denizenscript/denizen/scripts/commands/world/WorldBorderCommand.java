@@ -2,9 +2,9 @@ package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dPlayer;
-import com.denizenscript.denizen.objects.dWorld;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -40,13 +40,13 @@ public class WorldBorderCommand extends AbstractCommand {
     // reset: Resets the world border to its vanilla defaults for a world, or to the current world border for players.
     //
     // @Tags
-    // <l@location.is_within_border>
-    // <w@world.border_size>
-    // <w@world.border_center>
-    // <w@world.border_damage>
-    // <w@world.border_damage_buffer>
-    // <w@world.border_warning_distance>
-    // <w@world.border_warning_time>
+    // <LocationTag.is_within_border>
+    // <WorldTag.border_size>
+    // <WorldTag.border_center>
+    // <WorldTag.border_damage>
+    // <WorldTag.border_damage_buffer>
+    // <WorldTag.border_warning_distance>
+    // <WorldTag.border_warning_time>
     //
     // @Usage
     // Use to set the size of a world border.
@@ -67,9 +67,9 @@ public class WorldBorderCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("center")
-                    && arg.matchesArgumentType(dLocation.class)
+                    && arg.matchesArgumentType(LocationTag.class)
                     && arg.matchesPrefix("center")) {
-                scriptEntry.addObject("center", arg.asType(dLocation.class));
+                scriptEntry.addObject("center", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("damage")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
@@ -107,12 +107,12 @@ public class WorldBorderCommand extends AbstractCommand {
                 scriptEntry.addObject("warningtime", arg.asType(DurationTag.class));
             }
             else if (!scriptEntry.hasObject("world")
-                    && arg.matchesArgumentType(dWorld.class)) {
-                scriptEntry.addObject("world", arg.asType(dWorld.class));
+                    && arg.matchesArgumentType(WorldTag.class)) {
+                scriptEntry.addObject("world", arg.asType(WorldTag.class));
             }
             else if (!scriptEntry.hasObject("players")
-                    && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("players", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
+                    && arg.matchesArgumentList(PlayerTag.class)) {
+                scriptEntry.addObject("players", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("reset")
                     && arg.matches("reset")) {
@@ -145,9 +145,9 @@ public class WorldBorderCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        dWorld world = (dWorld) scriptEntry.getObject("world");
-        List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("players");
-        dLocation center = (dLocation) scriptEntry.getObject("center");
+        WorldTag world = (WorldTag) scriptEntry.getObject("world");
+        List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
+        LocationTag center = (LocationTag) scriptEntry.getObject("center");
         ElementTag size = scriptEntry.getElement("size");
         ElementTag currSize = scriptEntry.getElement("current_size");
         ElementTag damage = scriptEntry.getElement("damage");
@@ -175,14 +175,14 @@ public class WorldBorderCommand extends AbstractCommand {
         // Handle client-side world borders
         if (players != null) {
             if (reset.asBoolean()) {
-                for (dPlayer player : players) {
+                for (PlayerTag player : players) {
                     NMSHandler.getInstance().getPacketHelper().resetWorldBorder(player.getPlayerEntity());
                 }
                 return;
             }
 
             WorldBorder wb;
-            for (dPlayer player : players) {
+            for (PlayerTag player : players) {
                 wb = player.getWorld().getWorldBorder();
                 NMSHandler.getInstance().getPacketHelper().setWorldBorder(
                         player.getPlayerEntity(),

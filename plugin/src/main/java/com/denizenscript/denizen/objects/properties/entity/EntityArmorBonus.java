@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -10,17 +10,17 @@ import com.denizenscript.denizencore.tags.Attribute;
 public class EntityArmorBonus implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        if (!(entity instanceof dEntity)) {
+        if (!(entity instanceof EntityTag)) {
             return false;
         }
-        return ((dEntity) entity).isLivingEntity();
+        return ((EntityTag) entity).isLivingEntity();
     }
 
     public static EntityArmorBonus getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
-        return new EntityArmorBonus((dEntity) entity);
+        return new EntityArmorBonus((EntityTag) entity);
     }
 
     public static final String[] handledTags = new String[] {
@@ -36,11 +36,11 @@ public class EntityArmorBonus implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityArmorBonus(dEntity ent) {
+    private EntityArmorBonus(EntityTag ent) {
         entity = ent;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     /////////
     // Property Methods
@@ -76,9 +76,9 @@ public class EntityArmorBonus implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.armor_bonus>
+        // @attribute <EntityTag.armor_bonus>
         // @returns ElementTag(Decimal)
-        // @mechanism dEntity.armor_bonus
+        // @mechanism EntityTag.armor_bonus
         // @group attributes
         // @description
         // Returns the entity's base armor bonus.
@@ -95,13 +95,13 @@ public class EntityArmorBonus implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name armor_bonus
         // @input Element(Decimal)
         // @description
         // Sets the entity's base armor bonus.
         // @tags
-        // <e@entity.armor_bonus>
+        // <EntityTag.armor_bonus>
         // -->
         if (mechanism.matches("armor_bonus") && mechanism.requireDouble()) {
             entity.getLivingEntity().getAttribute(org.bukkit.attribute.Attribute.GENERIC_ARMOR)

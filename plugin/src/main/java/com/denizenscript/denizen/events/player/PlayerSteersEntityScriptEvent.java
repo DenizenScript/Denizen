@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -25,7 +25,7 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
     // @Triggers every tick that a player is controlling a vehicle.
     //
     // @Context
-    // <context.entity> returns the dEntity being steered by the player.
+    // <context.entity> returns the EntityTag being steered by the player.
     // <context.sideways> returns an Element(Decimal) where a positive number signifies leftward movement.
     // <context.forward> returns an Element(Decimal) where a positive number signifies forward movement.
     // <context.jump> returns an Element(Boolean) that signifies whether the player is attempting to jump with the entity.
@@ -39,8 +39,8 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
 
     public static PlayerSteersEntityScriptEvent instance;
     public boolean enabled;
-    public dEntity entity;
-    public dPlayer player;
+    public EntityTag entity;
+    public PlayerTag player;
     public ElementTag sideways;
     public ElementTag forward;
     public ElementTag jump;

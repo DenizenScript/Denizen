@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.trade;
 
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dTrade;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.TradeTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
@@ -12,14 +12,14 @@ import org.bukkit.inventory.MerchantRecipe;
 public class TradeResult implements Property {
 
     public static boolean describes(ObjectTag recipe) {
-        return recipe instanceof dTrade;
+        return recipe instanceof TradeTag;
     }
 
     public static TradeResult getFrom(ObjectTag recipe) {
         if (!describes(recipe)) {
             return null;
         }
-        return new TradeResult((dTrade) recipe);
+        return new TradeResult((TradeTag) recipe);
     }
 
     public static final String[] handledTags = new String[] {
@@ -30,9 +30,9 @@ public class TradeResult implements Property {
             "result"
     };
 
-    private dTrade recipe;
+    private TradeTag recipe;
 
-    public TradeResult(dTrade recipe) {
+    public TradeResult(TradeTag recipe) {
         this.recipe = recipe;
     }
 
@@ -40,7 +40,7 @@ public class TradeResult implements Property {
         if (recipe.getRecipe() == null) {
             return null;
         }
-        return (new dItem(recipe.getRecipe().getResult())).identify();
+        return (new ItemTag(recipe.getRecipe().getResult())).identify();
     }
 
     public String getPropertyId() {
@@ -53,14 +53,14 @@ public class TradeResult implements Property {
         }
 
         // <--[tag]
-        // @attribute <trade@trade.result>
-        // @returns dItem
-        // @mechanism dTrade.result
+        // @attribute <TradeTag.result>
+        // @returns ItemTag
+        // @mechanism TradeTag.result
         // @description
         // Returns what the trade will give the player.
         // -->
         if (attribute.startsWith("result")) {
-            return new dItem(recipe.getRecipe().getResult()).getAttribute(attribute.fulfill(1));
+            return new ItemTag(recipe.getRecipe().getResult()).getAttribute(attribute.fulfill(1));
         }
 
         return null;
@@ -69,16 +69,16 @@ public class TradeResult implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dTrade
+        // @object TradeTag
         // @name result
-        // @input dItem
+        // @input ItemTag
         // @description
         // Sets what the trade will give the player.
         // @tags
-        // <trade@trade.result>
+        // <TradeTag.result>
         // -->
-        if (mechanism.matches("result") && mechanism.requireObject(dItem.class)) {
-            ItemStack item = mechanism.valueAsType(dItem.class).getItemStack();
+        if (mechanism.matches("result") && mechanism.requireObject(ItemTag.class)) {
+            ItemStack item = mechanism.valueAsType(ItemTag.class).getItemStack();
             MerchantRecipe oldRecipe = recipe.getRecipe();
 
             MerchantRecipe newRecipe = new MerchantRecipe(item, oldRecipe.getUses(), oldRecipe.getMaxUses(), oldRecipe.hasExperienceReward());

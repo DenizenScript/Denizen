@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.world;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -28,9 +28,9 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
     // @Triggers when a lingering splash potion breaks open
     //
     // @Context
-    // <context.potion> returns a dItem of the potion that broke open.
-    // <context.location> returns the dLocation the splash potion broke open at.
-    // <context.entity> returns a dEntity of the splash potion.
+    // <context.potion> returns a ItemTag of the potion that broke open.
+    // <context.location> returns the LocationTag the splash potion broke open at.
+    // <context.entity> returns a EntityTag of the splash potion.
     // <context.radius> returns the radius of the effect cloud.
     // <context.duration> returns the lingering duration of the effect cloud.
     //
@@ -42,11 +42,11 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
 
     public static LingeringPotionSplashScriptEvent instance;
     public LingeringPotionSplashEvent event;
-    public dLocation location;
+    public LocationTag location;
     public ElementTag duration;
-    public dEntity entity;
+    public EntityTag entity;
     public ElementTag radius;
-    public dItem item;
+    public ItemTag item;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
@@ -107,9 +107,9 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
     @EventHandler
     public void onLingeringPotionSplash(LingeringPotionSplashEvent event) {
         AreaEffectCloud cloud = event.getAreaEffectCloud();
-        item = new dItem(event.getEntity().getItem());
+        item = new ItemTag(event.getEntity().getItem());
         duration = new ElementTag(cloud.getDuration());
-        entity = new dEntity(event.getEntity());
+        entity = new EntityTag(event.getEntity());
         location = entity.getLocation();
         radius = new ElementTag(cloud.getRadius());
         this.event = event;

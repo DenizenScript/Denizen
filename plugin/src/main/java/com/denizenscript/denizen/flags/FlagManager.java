@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.flags;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dNPC;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.objects.*;
@@ -36,7 +36,7 @@ public class FlagManager {
     }
 
     // Static methods
-    public static boolean playerHasFlag(dPlayer player, String flagName) {
+    public static boolean playerHasFlag(PlayerTag player, String flagName) {
         if (player == null || flagName == null) {
             return false;
         }
@@ -44,7 +44,7 @@ public class FlagManager {
                 .getPlayerFlag(player, flagName).size() > 0;
     }
 
-    public static boolean entityHasFlag(dEntity entity, String flagName) {
+    public static boolean entityHasFlag(EntityTag entity, String flagName) {
         if (entity == null || flagName == null) {
             return false;
         }
@@ -52,7 +52,7 @@ public class FlagManager {
                 .getEntityFlag(entity, flagName).size() > 0;
     }
 
-    public static boolean npcHasFlag(dNPC npc, String flagName) {
+    public static boolean npcHasFlag(NPCTag npc, String flagName) {
         if (npc == null || flagName == null) {
             return false;
         }
@@ -72,7 +72,7 @@ public class FlagManager {
         DenizenAPI.getCurrentInstance().getSaves().set("NPCs." + npcid, null);
     }
 
-    public static void clearEntityFlags(dEntity entity) {
+    public static void clearEntityFlags(EntityTag entity) {
         DenizenAPI.getCurrentInstance().getSaves().set("Entities." + entity.getSaveName(), null);
     }
 
@@ -99,14 +99,14 @@ public class FlagManager {
      * it will be populated with the current values. If the flag does NOT exist,
      * it will be created with blank values.
      */
-    public Flag getPlayerFlag(dPlayer player, String flagName) {
+    public Flag getPlayerFlag(PlayerTag player, String flagName) {
         if (player == null) {
             return new Flag("players.00.UNKNOWN.Flags." + flagName.toUpperCase(), flagName, "p@null");
         }
         return new Flag("Players." + player.getSaveName() + ".Flags." + flagName.toUpperCase(), flagName, player.identify());
     }
 
-    public Flag getEntityFlag(dEntity entity, String flagName) {
+    public Flag getEntityFlag(EntityTag entity, String flagName) {
         if (entity == null) {
             return new Flag("Entities.00.UNKNOWN.Flags." + flagName.toUpperCase(), flagName, "e@null");
         }
@@ -129,7 +129,7 @@ public class FlagManager {
         }
     }
 
-    public void shrinkPlayerFlags(dPlayer player, Collection<String> set) {
+    public void shrinkPlayerFlags(PlayerTag player, Collection<String> set) {
         for (String str : new HashSet<>(set)) {
             if (!playerHasFlag(player, str)) {
                 set.remove(str);
@@ -137,7 +137,7 @@ public class FlagManager {
         }
     }
 
-    public void shrinkEntityFlags(dEntity entity, Collection<String> set) {
+    public void shrinkEntityFlags(EntityTag entity, Collection<String> set) {
         for (String str : new HashSet<>(set)) {
             if (!entityHasFlag(entity, str)) {
                 set.remove(str);
@@ -156,12 +156,12 @@ public class FlagManager {
     /**
      * Returns a list of flag names currently attached to a player.
      */
-    public Set<String> listPlayerFlags(dPlayer player) {
+    public Set<String> listPlayerFlags(PlayerTag player) {
         ConfigurationSection section = denizen.getSaves().getConfigurationSection("Players." + player.getSaveName() + ".Flags");
         return section != null ? _filterExpirations(section.getValues(true).keySet()) : null;
     }
 
-    public Set<String> listEntityFlags(dEntity entity) {
+    public Set<String> listEntityFlags(EntityTag entity) {
         ConfigurationSection section = denizen.getSaves().getConfigurationSection("Entities." + entity.getSaveName() + ".Flags");
         return section != null ? _filterExpirations(section.getValues(true).keySet()) : null;
     }
@@ -256,13 +256,13 @@ public class FlagManager {
                 List<String> world_script_events = new ArrayList<>();
 
                 Map<String, ObjectTag> context = new HashMap<>();
-                dPlayer player = null;
-                if (dPlayer.matches(OldOwner)) {
-                    player = dPlayer.valueOf(OldOwner);
+                PlayerTag player = null;
+                if (PlayerTag.matches(OldOwner)) {
+                    player = PlayerTag.valueOf(OldOwner);
                 }
-                dNPC npc = null;
-                if (Depends.citizens != null && dNPC.matches(OldOwner)) {
-                    npc = dNPC.valueOf(OldOwner);
+                NPCTag npc = null;
+                if (Depends.citizens != null && NPCTag.matches(OldOwner)) {
+                    npc = NPCTag.valueOf(OldOwner);
                 }
 
                 String type;
@@ -547,17 +547,17 @@ public class FlagManager {
                 List<String> world_script_events = new ArrayList<>();
 
                 Map<String, ObjectTag> context = new HashMap<>();
-                dPlayer player = null;
-                if (dPlayer.matches(oldOwner)) {
-                    player = dPlayer.valueOf(oldOwner);
+                PlayerTag player = null;
+                if (PlayerTag.matches(oldOwner)) {
+                    player = PlayerTag.valueOf(oldOwner);
                 }
-                dNPC npc = null;
-                if (Depends.citizens != null && dNPC.matches(oldOwner)) {
-                    npc = dNPC.valueOf(oldOwner);
+                NPCTag npc = null;
+                if (Depends.citizens != null && NPCTag.matches(oldOwner)) {
+                    npc = NPCTag.valueOf(oldOwner);
                 }
-                dEntity entity = null;
-                if (dEntity.matches(oldOwner)) {
-                    entity = dEntity.valueOf(oldOwner);
+                EntityTag entity = null;
+                if (EntityTag.matches(oldOwner)) {
+                    entity = EntityTag.valueOf(oldOwner);
                 }
 
                 String type;
@@ -644,17 +644,17 @@ public class FlagManager {
                         List<String> world_script_events = new ArrayList<>();
 
                         Map<String, ObjectTag> context = new HashMap<>();
-                        dPlayer player = null;
-                        if (dPlayer.matches(oldOwner)) {
-                            player = dPlayer.valueOf(oldOwner);
+                        PlayerTag player = null;
+                        if (PlayerTag.matches(oldOwner)) {
+                            player = PlayerTag.valueOf(oldOwner);
                         }
-                        dNPC npc = null;
-                        if (Depends.citizens != null && dNPC.matches(oldOwner)) {
-                            npc = dNPC.valueOf(oldOwner);
+                        NPCTag npc = null;
+                        if (Depends.citizens != null && NPCTag.matches(oldOwner)) {
+                            npc = NPCTag.valueOf(oldOwner);
                         }
-                        dEntity entity = null;
-                        if (dEntity.matches(oldOwner)) {
-                            entity = dEntity.valueOf(oldOwner);
+                        EntityTag entity = null;
+                        if (EntityTag.matches(oldOwner)) {
+                            entity = EntityTag.valueOf(oldOwner);
                         }
 
                         String type;

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.npc.traits;
 
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.npc.EngageCommand;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizen.scripts.triggers.TriggerRegistry;
@@ -180,7 +180,7 @@ public class TriggerTrait extends Trait implements Listener {
     }
 
 
-    public boolean triggerCooldownOnly(AbstractTrigger triggerClass, dPlayer player) {
+    public boolean triggerCooldownOnly(AbstractTrigger triggerClass, PlayerTag player) {
         // Check cool down, return false if not yet met
         if (!DenizenAPI.getCurrentInstance().getTriggerRegistry().checkCooldown(npc, player, triggerClass, getCooldownType(triggerClass.getName()))) {
             return false;
@@ -205,12 +205,12 @@ public class TriggerTrait extends Trait implements Listener {
     // <context.trigger_type> return the type of trigger fired
     //
     // -->
-    public TriggerContext trigger(AbstractTrigger triggerClass, dPlayer player) {
+    public TriggerContext trigger(AbstractTrigger triggerClass, PlayerTag player) {
         return trigger(triggerClass, player, null);
     }
 
 
-    public TriggerContext trigger(AbstractTrigger triggerClass, dPlayer player, Map<String, ObjectTag> context) {
+    public TriggerContext trigger(AbstractTrigger triggerClass, PlayerTag player, Map<String, ObjectTag> context) {
 
         String trigger_type = triggerClass.getName();
 

@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dTrade;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.TradeTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -15,15 +15,15 @@ import java.util.ArrayList;
 public class EntityTrades implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity
-                && ((dEntity) entity).getBukkitEntity() instanceof Merchant;
+        return entity instanceof EntityTag
+                && ((EntityTag) entity).getBukkitEntity() instanceof Merchant;
     }
 
     public static EntityTrades getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
-        return new EntityTrades((dEntity) entity);
+        return new EntityTrades((EntityTag) entity);
     }
 
     public static final String[] handledTags = new String[] {
@@ -36,18 +36,18 @@ public class EntityTrades implements Property {
 
     public ListTag getTradeRecipes() {
         if (entity.getBukkitEntity() instanceof Merchant) {
-            ArrayList<dTrade> recipes = new ArrayList<>();
+            ArrayList<TradeTag> recipes = new ArrayList<>();
             for (MerchantRecipe recipe : ((Merchant) entity.getBukkitEntity()).getRecipes()) {
-                recipes.add(new dTrade(recipe));
+                recipes.add(new TradeTag(recipe));
             }
             return new ListTag(recipes);
         }
         return null;
     }
 
-    private dEntity entity;
+    private EntityTag entity;
 
-    public EntityTrades(dEntity entity) {
+    public EntityTrades(EntityTag entity) {
         this.entity = entity;
     }
 
@@ -68,9 +68,9 @@ public class EntityTrades implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.trades>
-        // @returns ListTag(dTrade)
-        // @mechanism dEntity.trades
+        // @attribute <EntityTag.trades>
+        // @returns ListTag(TradeTag)
+        // @mechanism EntityTag.trades
         // @description
         // Returns a list of the Villager's trade recipes.
         // -->
@@ -84,17 +84,17 @@ public class EntityTrades implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name trades
-        // @input ListTag(dTrade)
+        // @input ListTag(TradeTag)
         // @description
         // Sets the trades that the entity will offer.
         // @tags
-        // <e@entity.trades>
+        // <EntityTag.trades>
         // -->
         if (mechanism.matches("trades")) {
             ArrayList<MerchantRecipe> recipes = new ArrayList<>();
-            for (dTrade recipe : mechanism.valueAsType(ListTag.class).filter(dTrade.class, mechanism.context)) {
+            for (TradeTag recipe : mechanism.valueAsType(ListTag.class).filter(TradeTag.class, mechanism.context)) {
                 recipes.add(recipe.getRecipe());
             }
             ((Merchant) entity.getBukkitEntity()).setRecipes(recipes);

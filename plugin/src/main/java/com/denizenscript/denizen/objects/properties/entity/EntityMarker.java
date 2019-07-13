@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -12,7 +12,7 @@ import org.bukkit.entity.EntityType;
 public class EntityMarker implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.ARMOR_STAND;
+        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntityType() == EntityType.ARMOR_STAND;
     }
 
     public static EntityMarker getFrom(ObjectTag entity) {
@@ -20,7 +20,7 @@ public class EntityMarker implements Property {
             return null;
         }
         else {
-            return new EntityMarker((dEntity) entity);
+            return new EntityMarker((EntityTag) entity);
         }
     }
 
@@ -37,11 +37,11 @@ public class EntityMarker implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityMarker(dEntity entity) {
+    private EntityMarker(EntityTag entity) {
         dentity = entity;
     }
 
-    dEntity dentity;
+    EntityTag dentity;
 
     /////////
     // Property Methods
@@ -74,9 +74,9 @@ public class EntityMarker implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.marker>
+        // @attribute <EntityTag.marker>
         // @returns ElementTag(Boolean)
-        // @mechanism dEntity.marker
+        // @mechanism EntityTag.marker
         // @group properties
         // @description
         // If the entity is an armor stand, returns whether the armor stand is a marker.
@@ -93,13 +93,13 @@ public class EntityMarker implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name marker
         // @input Element(Boolean)
         // @description
         // Changes the marker state of an armor stand.
         // @tags
-        // <e@entity.marker>
+        // <EntityTag.marker>
         // -->
 
         if (mechanism.matches("marker") && mechanism.requireBoolean()) {

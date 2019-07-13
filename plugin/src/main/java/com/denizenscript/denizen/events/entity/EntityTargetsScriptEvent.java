@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dCuboid;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.CuboidTag;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -36,7 +36,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     // <context.target> returns the targeted entity.
     //
     // @Determine
-    // dEntity to make the entity target a different entity instead.
+    // EntityTag to make the entity target a different entity instead.
     //
     // @Player when the entity being targetted is a player.
     //
@@ -47,10 +47,10 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     public static EntityTargetsScriptEvent instance;
-    public dEntity entity;
+    public EntityTag entity;
     public ElementTag reason;
-    public dEntity target;
-    private dLocation location;
+    public EntityTag target;
+    private LocationTag location;
     public EntityTargetEvent event;
 
     @Override
@@ -89,16 +89,16 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (dEntity.matches(determination)) {
-            target = dEntity.valueOf(determination);
+        if (EntityTag.matches(determination)) {
+            target = EntityTag.valueOf(determination);
         }
         return super.applyDetermination(container, determination);
     }
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? EntityTag.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? EntityTag.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -112,7 +112,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
         else if (name.equals("cuboids")) {
             Debug.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
             ListTag cuboids = new ListTag();
-            for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+            for (CuboidTag cuboid : CuboidTag.getNotableCuboidsContaining(location)) {
                 cuboids.add(cuboid.identifySimple());
             }
             return cuboids;
@@ -125,10 +125,10 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
 
     @EventHandler
     public void onEntityTargets(EntityTargetEvent event) {
-        entity = new dEntity(event.getEntity());
+        entity = new EntityTag(event.getEntity());
         reason = new ElementTag(event.getReason().toString());
-        target = event.getTarget() != null ? new dEntity(event.getTarget()) : null;
-        location = new dLocation(event.getEntity().getLocation());
+        target = event.getTarget() != null ? new EntityTag(event.getTarget()) : null;
+        location = new LocationTag(event.getEntity().getLocation());
         this.event = event;
         fire(event);
     }

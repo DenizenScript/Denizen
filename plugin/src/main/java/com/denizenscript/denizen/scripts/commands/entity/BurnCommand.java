@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -31,7 +31,7 @@ public class BurnCommand extends AbstractCommand {
     // in a 5 second burn.
     //
     // @Tags
-    // <e@entity.fire_time>
+    // <EntityTag.fire_time>
     //
     // @Usage
     // Use to set an entity on fire.
@@ -48,9 +48,9 @@ public class BurnCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class)) {
+                    && arg.matchesArgumentList(EntityTag.class)) {
 
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesArgumentType(DurationTag.class)) {
@@ -76,7 +76,7 @@ public class BurnCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) {
 
         // Get objects
-        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         DurationTag duration = (DurationTag) scriptEntry.getObject("duration");
 
         // Report to dB
@@ -86,7 +86,7 @@ public class BurnCommand extends AbstractCommand {
         }
 
         // Go through all the entities and set them on fire
-        for (dEntity entity : entities) {
+        for (EntityTag entity : entities) {
             if (entity.isSpawned()) {
                 entity.getBukkitEntity().setFireTicks(duration.getTicksAsInt());
             }

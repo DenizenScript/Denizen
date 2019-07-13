@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.npc.traits;
 
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
 import net.citizensnpcs.api.event.NPCPushEvent;
@@ -159,7 +159,7 @@ public class PushableTrait extends Trait implements Listener {
                     }
                 }
                 if (pusher != null) {
-                    DenizenAPI.getDenizenNPC(npc).action("push", dPlayer.mirrorBukkitPlayer(pusher));
+                    DenizenAPI.getDenizenNPC(npc).action("push", PlayerTag.mirrorBukkitPlayer(pusher));
                     pushedTimer = System.currentTimeMillis() + (delay * 1000);
                 }
             } // End push action

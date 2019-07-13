@@ -167,9 +167,9 @@ public class ServerTags {
 
         // <--[tag]
         // @attribute <server.parse_bukkit_item[<serial>]>
-        // @returns dItem
+        // @returns ItemTag
         // @description
-        // Returns the dItem resultant from parsing Bukkit item serialization data (under subkey "item").
+        // Returns the ItemTag resultant from parsing Bukkit item serialization data (under subkey "item").
         // -->
         if (attribute.startsWith("parse_bukkit_item")
                 && attribute.hasContext(1)) {
@@ -178,7 +178,7 @@ public class ServerTags {
                 config.loadFromString(attribute.getContext(1));
                 ItemStack item = config.getItemStack("item");
                 if (item != null) {
-                    event.setReplaced(new dItem(item).getAttribute(attribute.fulfill(1)));
+                    event.setReplaced(new ItemTag(item).getAttribute(attribute.fulfill(1)));
                 }
             }
             catch (Exception ex) {
@@ -648,7 +648,7 @@ public class ServerTags {
 
         // <--[tag]
         // @attribute <server.event_handlers[<event_name>]>
-        // @returns ListTag(dScript)
+        // @returns ListTag(ScriptTag)
         // @description
         // Returns a list of all world scripts that will handle a given event name.
         // This tag will ignore ObjectTag identifiers (see <@link language dobject>).
@@ -682,7 +682,7 @@ public class ServerTags {
 
         // <--[tag]
         // @attribute <server.selected_npc>
-        // @returns dNPC
+        // @returns NPCTag
         // @description
         // Returns the server's currently selected NPC.
         // -->
@@ -693,14 +693,14 @@ public class ServerTags {
                 return;
             }
             else {
-                event.setReplaced(new dNPC(npc).getAttribute(attribute.fulfill(1)));
+                event.setReplaced(new NPCTag(npc).getAttribute(attribute.fulfill(1)));
             }
             return;
         }
 
         // <--[tag]
         // @attribute <server.list_npcs_named[<name>]>
-        // @returns ListTag(dNPC)
+        // @returns ListTag(NPCTag)
         // @description
         // Returns a list of NPCs with a certain name.
         // -->
@@ -708,7 +708,7 @@ public class ServerTags {
             ListTag npcs = new ListTag();
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
                 if (npc.getName().equalsIgnoreCase(attribute.getContext(1))) {
-                    npcs.add(dNPC.mirrorCitizensNPC(npc).identify());
+                    npcs.add(NPCTag.mirrorCitizensNPC(npc).identify());
                 }
             }
             event.setReplaced(npcs.getAttribute(attribute.fulfill(1)));
@@ -912,10 +912,10 @@ public class ServerTags {
             // @attribute <server.group_prefix[<group>].world[<world>]>
             // @returns ElementTag
             // @description
-            // Returns an ElementTag of a group's chat prefix for the specified dWorld.
+            // Returns an ElementTag of a group's chat prefix for the specified WorldTag.
             // -->
             if (attribute.getAttribute(2).startsWith("world")) {
-                dWorld world = dWorld.valueOf(attribute.getContext(2));
+                WorldTag world = WorldTag.valueOf(attribute.getContext(2));
                 if (world != null) {
                     event.setReplaced(new ElementTag(Depends.chat.getGroupPrefix(world.getWorld(), group))
                             .getAttribute(attribute.fulfill(2)));
@@ -953,10 +953,10 @@ public class ServerTags {
             // @attribute <server.group_suffix[<group>].world[<world>]>
             // @returns ElementTag
             // @description
-            // Returns an ElementTag of a group's chat suffix for the specified dWorld.
+            // Returns an ElementTag of a group's chat suffix for the specified WorldTag.
             // -->
             if (attribute.getAttribute(2).startsWith("world")) {
-                dWorld world = dWorld.valueOf(attribute.getContext(2));
+                WorldTag world = WorldTag.valueOf(attribute.getContext(2));
                 if (world != null) {
                     event.setReplaced(new ElementTag(Depends.chat.getGroupSuffix(world.getWorld(), group))
                             .getAttribute(attribute.fulfill(2)));
@@ -1002,7 +1002,7 @@ public class ServerTags {
 
         // <--[tag]
         // @attribute <server.list_scripts>
-        // @returns ListTag(dScript)
+        // @returns ListTag(ScriptTag)
         // @description
         // Gets a list of all scripts currently loaded into Denizen.
         // -->
@@ -1017,7 +1017,7 @@ public class ServerTags {
 
         // <--[tag]
         // @attribute <server.match_player[<name>]>
-        // @returns dPlayer
+        // @returns PlayerTag
         // @description
         // Returns the online player that best matches the input name.
         // EG, in a group of 'bo', 'bob', and 'bobby'... input 'bob' returns p@bob,
@@ -1037,7 +1037,7 @@ public class ServerTags {
             }
 
             if (matchPlayer != null) {
-                event.setReplaced(new dPlayer(matchPlayer).getAttribute(attribute.fulfill(1)));
+                event.setReplaced(new PlayerTag(matchPlayer).getAttribute(attribute.fulfill(1)));
             }
 
             return;
@@ -1045,7 +1045,7 @@ public class ServerTags {
 
         // <--[tag]
         // @attribute <server.match_offline_player[<name>]>
-        // @returns dPlayer
+        // @returns PlayerTag
         // @description
         // Returns any player (online or offline) that best matches the input name.
         // EG, in a group of 'bo', 'bob', and 'bobby'... input 'bob' returns p@bob,
@@ -1054,7 +1054,7 @@ public class ServerTags {
         if (attribute.startsWith("match_offline_player") && attribute.hasContext(1)) {
             UUID matchPlayer = null;
             String matchInput = CoreUtilities.toLowerCase(attribute.getContext(1));
-            for (Map.Entry<String, UUID> entry : dPlayer.getAllPlayers().entrySet()) {
+            for (Map.Entry<String, UUID> entry : PlayerTag.getAllPlayers().entrySet()) {
                 if (CoreUtilities.toLowerCase(entry.getKey()).equals(matchInput)) {
                     matchPlayer = entry.getValue();
                     break;
@@ -1065,7 +1065,7 @@ public class ServerTags {
             }
 
             if (matchPlayer != null) {
-                event.setReplaced(new dPlayer(matchPlayer).getAttribute(attribute.fulfill(1)));
+                event.setReplaced(new PlayerTag(matchPlayer).getAttribute(attribute.fulfill(1)));
             }
 
             return;
@@ -1073,7 +1073,7 @@ public class ServerTags {
 
         // <--[tag]
         // @attribute <server.list_npcs_assigned[<assignment_script>]>
-        // @returns ListTag(dNPC)
+        // @returns ListTag(NPCTag)
         // @description
         // Returns a list of all NPCs assigned to a specified script.
         // -->
@@ -1088,7 +1088,7 @@ public class ServerTags {
                 for (NPC npc : CitizensAPI.getNPCRegistry()) {
                     if (npc.hasTrait(AssignmentTrait.class) && npc.getTrait(AssignmentTrait.class).hasAssignment()
                             && npc.getTrait(AssignmentTrait.class).getAssignment().getName().equalsIgnoreCase(script.getName())) {
-                        npcs.add(dNPC.mirrorCitizensNPC(npc).identify());
+                        npcs.add(NPCTag.mirrorCitizensNPC(npc).identify());
                     }
                 }
                 event.setReplaced(npcs.getAttribute(attribute.fulfill(1)));
@@ -1098,7 +1098,7 @@ public class ServerTags {
 
         // <--[tag]
         // @attribute <server.list_online_players_flagged[<flag_name>]>
-        // @returns ListTag(dPlayer)
+        // @returns ListTag(PlayerTag)
         // @description
         // Returns a list of all online players with a specified flag set.
         // -->
@@ -1107,8 +1107,8 @@ public class ServerTags {
             String flag = attribute.getContext(1);
             ListTag players = new ListTag();
             for (Player player : Bukkit.getOnlinePlayers()) {
-                if (DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag(new dPlayer(player), flag).size() > 0) {
-                    players.add(new dPlayer(player).identify());
+                if (DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag(new PlayerTag(player), flag).size() > 0) {
+                    players.add(new PlayerTag(player).identify());
                 }
             }
             event.setReplaced(players.getAttribute(attribute.fulfill(1)));
@@ -1117,7 +1117,7 @@ public class ServerTags {
 
         // <--[tag]
         // @attribute <server.list_players_flagged[<flag_name>]>
-        // @returns ListTag(dPlayer)
+        // @returns ListTag(PlayerTag)
         // @description
         // Returns a list of all players with a specified flag set.
         // -->
@@ -1125,9 +1125,9 @@ public class ServerTags {
                 && attribute.hasContext(1)) {
             String flag = attribute.getContext(1);
             ListTag players = new ListTag();
-            for (Map.Entry<String, UUID> entry : dPlayer.getAllPlayers().entrySet()) {
-                if (DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag(new dPlayer(entry.getValue()), flag).size() > 0) {
-                    players.add(new dPlayer(entry.getValue()).identify());
+            for (Map.Entry<String, UUID> entry : PlayerTag.getAllPlayers().entrySet()) {
+                if (DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag(new PlayerTag(entry.getValue()), flag).size() > 0) {
+                    players.add(new PlayerTag(entry.getValue()).identify());
                 }
             }
             event.setReplaced(players.getAttribute(attribute.fulfill(1)));
@@ -1136,7 +1136,7 @@ public class ServerTags {
 
         // <--[tag]
         // @attribute <server.list_spawned_npcs_flagged[<flag_name>]>
-        // @returns ListTag(dNPC)
+        // @returns ListTag(NPCTag)
         // @description
         // Returns a list of all spawned NPCs with a specified flag set.
         // -->
@@ -1145,7 +1145,7 @@ public class ServerTags {
             String flag = attribute.getContext(1);
             ListTag npcs = new ListTag();
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                dNPC dNpc = dNPC.mirrorCitizensNPC(npc);
+                NPCTag dNpc = NPCTag.mirrorCitizensNPC(npc);
                 if (dNpc.isSpawned() && FlagManager.npcHasFlag(dNpc, flag)) {
                     npcs.add(dNpc.identify());
                 }
@@ -1156,7 +1156,7 @@ public class ServerTags {
 
         // <--[tag]
         // @attribute <server.list_npcs_flagged[<flag_name>]>
-        // @returns ListTag(dNPC)
+        // @returns ListTag(NPCTag)
         // @description
         // Returns a list of all NPCs with a specified flag set.
         // -->
@@ -1165,7 +1165,7 @@ public class ServerTags {
             String flag = attribute.getContext(1);
             ListTag npcs = new ListTag();
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                dNPC dNpc = dNPC.mirrorCitizensNPC(npc);
+                NPCTag dNpc = NPCTag.mirrorCitizensNPC(npc);
                 if (FlagManager.npcHasFlag(dNpc, flag)) {
                     npcs.add(dNpc.identify());
                 }
@@ -1176,14 +1176,14 @@ public class ServerTags {
 
         // <--[tag]
         // @attribute <server.list_npcs>
-        // @returns ListTag(dNPC)
+        // @returns ListTag(NPCTag)
         // @description
         // Returns a list of all NPCs.
         // -->
         if (attribute.startsWith("list_npcs") && Depends.citizens != null) {
             ListTag npcs = new ListTag();
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                npcs.add(dNPC.mirrorCitizensNPC(npc).identify());
+                npcs.add(NPCTag.mirrorCitizensNPC(npc).identify());
             }
             event.setReplaced(npcs.getAttribute(attribute.fulfill(1)));
             return;
@@ -1191,14 +1191,14 @@ public class ServerTags {
 
         // <--[tag]
         // @attribute <server.list_worlds>
-        // @returns ListTag(dWorld)
+        // @returns ListTag(WorldTag)
         // @description
         // Returns a list of all worlds.
         // -->
         if (attribute.startsWith("list_worlds")) {
             ListTag worlds = new ListTag();
             for (World world : Bukkit.getWorlds()) {
-                worlds.add(dWorld.mirrorBukkitWorld(world).identify());
+                worlds.add(WorldTag.mirrorBukkitWorld(world).identify());
             }
             event.setReplaced(worlds.getAttribute(attribute.fulfill(1)));
             return;
@@ -1206,14 +1206,14 @@ public class ServerTags {
 
         // <--[tag]
         // @attribute <server.list_plugins>
-        // @returns ListTag(dPlugin)
+        // @returns ListTag(PluginTag)
         // @description
-        // Gets a list of currently enabled dPlugins from the server.
+        // Gets a list of currently enabled PluginTags from the server.
         // -->
         if (attribute.startsWith("list_plugins")) {
             ListTag plugins = new ListTag();
             for (Plugin plugin : Bukkit.getServer().getPluginManager().getPlugins()) {
-                plugins.add(new dPlugin(plugin).identify());
+                plugins.add(new PluginTag(plugin).identify());
             }
             event.setReplaced(plugins.getAttribute(attribute.fulfill(1)));
             return;
@@ -1221,14 +1221,14 @@ public class ServerTags {
 
         // <--[tag]
         // @attribute <server.list_players>
-        // @returns ListTag(dPlayer)
+        // @returns ListTag(PlayerTag)
         // @description
         // Returns a list of all players that have ever played on the server, online or not.
         // -->
         if (attribute.startsWith("list_players")) {
             ListTag players = new ListTag();
             for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
-                players.add(dPlayer.mirrorBukkitPlayer(player).identify());
+                players.add(PlayerTag.mirrorBukkitPlayer(player).identify());
             }
             event.setReplaced(players.getAttribute(attribute.fulfill(1)));
             return;
@@ -1236,14 +1236,14 @@ public class ServerTags {
 
         // <--[tag]
         // @attribute <server.list_online_players>
-        // @returns ListTag(dPlayer)
+        // @returns ListTag(PlayerTag)
         // @description
         // Returns a list of all online players.
         // -->
         if (attribute.startsWith("list_online_players")) {
             ListTag players = new ListTag();
             for (Player player : Bukkit.getOnlinePlayers()) {
-                players.add(dPlayer.mirrorBukkitPlayer(player).identify());
+                players.add(PlayerTag.mirrorBukkitPlayer(player).identify());
             }
             event.setReplaced(players.getAttribute(attribute.fulfill(1)));
             return;
@@ -1251,7 +1251,7 @@ public class ServerTags {
 
         // <--[tag]
         // @attribute <server.list_offline_players>
-        // @returns ListTag(dPlayer)
+        // @returns ListTag(PlayerTag)
         // @description
         // Returns a list of all offline players.
         // -->
@@ -1259,7 +1259,7 @@ public class ServerTags {
             ListTag players = new ListTag();
             for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                 if (!player.isOnline()) {
-                    players.add(dPlayer.mirrorBukkitPlayer(player).identify());
+                    players.add(PlayerTag.mirrorBukkitPlayer(player).identify());
                 }
             }
             event.setReplaced(players.getAttribute(attribute.fulfill(1)));
@@ -1268,14 +1268,14 @@ public class ServerTags {
 
         // <--[tag]
         // @attribute <server.list_banned_players>
-        // @returns ListTag(dPlayer)
+        // @returns ListTag(PlayerTag)
         // @description
         // Returns a list of all banned players.
         // -->
         if (attribute.startsWith("list_banned_players")) {
             ListTag banned = new ListTag();
             for (OfflinePlayer player : Bukkit.getBannedPlayers()) {
-                banned.add(dPlayer.mirrorBukkitPlayer(player).identify());
+                banned.add(PlayerTag.mirrorBukkitPlayer(player).identify());
             }
             event.setReplaced(banned.getAttribute(attribute.fulfill(1)));
             return;
@@ -1374,14 +1374,14 @@ public class ServerTags {
 
         // <--[tag]
         // @attribute <server.list_ops>
-        // @returns ListTag(dPlayer)
+        // @returns ListTag(PlayerTag)
         // @description
         // Returns a list of all ops, online or not.
         // -->
         if (attribute.startsWith("list_ops")) {
             ListTag players = new ListTag();
             for (OfflinePlayer player : Bukkit.getOperators()) {
-                players.add(dPlayer.mirrorBukkitPlayer(player).identify());
+                players.add(PlayerTag.mirrorBukkitPlayer(player).identify());
             }
             event.setReplaced(players.getAttribute(attribute.fulfill(1)));
             return;
@@ -1389,7 +1389,7 @@ public class ServerTags {
 
         // <--[tag]
         // @attribute <server.list_online_ops>
-        // @returns ListTag(dPlayer)
+        // @returns ListTag(PlayerTag)
         // @description
         // Returns a list of all online ops.
         // -->
@@ -1397,7 +1397,7 @@ public class ServerTags {
             ListTag players = new ListTag();
             for (OfflinePlayer player : Bukkit.getOperators()) {
                 if (player.isOnline()) {
-                    players.add(dPlayer.mirrorBukkitPlayer(player).identify());
+                    players.add(PlayerTag.mirrorBukkitPlayer(player).identify());
                 }
             }
             event.setReplaced(players.getAttribute(attribute.fulfill(1)));
@@ -1406,7 +1406,7 @@ public class ServerTags {
 
         // <--[tag]
         // @attribute <server.list_offline_ops>
-        // @returns ListTag(dPlayer)
+        // @returns ListTag(PlayerTag)
         // @description
         // Returns a list of all offline ops.
         // -->
@@ -1414,7 +1414,7 @@ public class ServerTags {
             ListTag players = new ListTag();
             for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                 if (player.isOp() && !player.isOnline()) {
-                    players.add(dPlayer.mirrorBukkitPlayer(player).identify());
+                    players.add(PlayerTag.mirrorBukkitPlayer(player).identify());
                 }
             }
             event.setReplaced(players.getAttribute(attribute.fulfill(1)));
@@ -1440,7 +1440,7 @@ public class ServerTags {
         // -->
         else if (attribute.startsWith("entity_is_spawned")
                 && attribute.hasContext(1)) {
-            dEntity ent = dEntity.valueOf(attribute.getContext(1), new BukkitTagContext(null, null, false, null, false, null));
+            EntityTag ent = EntityTag.valueOf(attribute.getContext(1), new BukkitTagContext(null, null, false, null, false, null));
             event.setReplaced(new ElementTag((ent != null && ent.isUnique() && ent.isSpawned()) ? "true" : "false")
                     .getAttribute(attribute.fulfill(1)));
         }
@@ -1453,7 +1453,7 @@ public class ServerTags {
         // -->
         else if (attribute.startsWith("player_is_valid")
                 && attribute.hasContext(1)) {
-            event.setReplaced(new ElementTag(dPlayer.playerNameIsValid(attribute.getContext(1)))
+            event.setReplaced(new ElementTag(PlayerTag.playerNameIsValid(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1)));
         }
 
@@ -1465,7 +1465,7 @@ public class ServerTags {
         // -->
         else if (attribute.startsWith("npc_is_valid")
                 && attribute.hasContext(1)) {
-            dNPC npc = dNPC.valueOf(attribute.getContext(1), new BukkitTagContext(null, null, false, null, false, null));
+            NPCTag npc = NPCTag.valueOf(attribute.getContext(1), new BukkitTagContext(null, null, false, null, false, null));
             event.setReplaced(new ElementTag((npc != null && npc.isValid()))
                     .getAttribute(attribute.fulfill(1)));
         }
@@ -1520,7 +1520,7 @@ public class ServerTags {
 
         // <--[tag]
         // @attribute <server.list_plugins_handling_event[<bukkit event>]>
-        // @returns ListTag(dPlugin)
+        // @returns ListTag(PluginTag)
         // @description
         // Returns a list of all plugins that handle a given Bukkit event.
         // Can specify by ScriptEvent name ("PlayerBreaksBlock"), or by full Bukkit class name ("org.bukkit.event.block.BlockBreakEvent").
@@ -1570,7 +1570,7 @@ public class ServerTags {
                 HashSet<String> deduplicationSet = new HashSet<>();
                 for (RegisteredListener listener : handlers.getRegisteredListeners()) {
                     if (deduplicationSet.add(listener.getPlugin().getName())) {
-                        result.addObject(new dPlugin(listener.getPlugin()));
+                        result.addObject(new PluginTag(listener.getPlugin()));
                     }
                 }
                 return result;

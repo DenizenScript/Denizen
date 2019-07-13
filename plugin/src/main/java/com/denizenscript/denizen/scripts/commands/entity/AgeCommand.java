@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.properties.entity.EntityAge;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
@@ -31,7 +31,7 @@ public class AgeCommand extends AbstractCommand {
     // specified.
     //
     // @Tags
-    // <e@entity.age>
+    // <EntityTag.age>
     //
     // @Usage
     // Use to make an ageable entity a permanant baby.
@@ -56,8 +56,8 @@ public class AgeCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class)) {
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
+                    && arg.matchesArgumentList(EntityTag.class)) {
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("agetype")
                     && arg.matchesEnum(AgeType.values())) {
@@ -91,7 +91,7 @@ public class AgeCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) {
 
         // Get objects
-        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         AgeType ageType = (AgeType) scriptEntry.getObject("agetype");
         int age = scriptEntry.getElement("age").asInt();
         boolean lock = scriptEntry.hasObject("lock");
@@ -105,7 +105,7 @@ public class AgeCommand extends AbstractCommand {
         }
 
         // Go through all the entities and set their ages
-        for (dEntity entity : entities) {
+        for (EntityTag entity : entities) {
             if (entity.isSpawned()) {
 
                 // Check if entity specified can be described by 'EntityAge'

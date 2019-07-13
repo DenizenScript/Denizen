@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dWorld;
+import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -28,12 +28,12 @@ public class WeatherCommand extends AbstractCommand {
     // Logging off will reset personal weather.
     //
     // @Tags
-    // <b@biome.downfall_type>
-    // <p@player.weather>
-    // <w@world.has_storm>
-    // <w@world.weather_duration>
-    // <w@world.thundering>
-    // <w@world.thunder_duration>
+    // <BiomeTag.downfall_type>
+    // <PlayerTag.weather>
+    // <WorldTag.has_storm>
+    // <WorldTag.weather_duration>
+    // <WorldTag.thundering>
+    // <WorldTag.thunder_duration>
     //
     // @Usage
     // Makes the weather sunny
@@ -63,8 +63,8 @@ public class WeatherCommand extends AbstractCommand {
                 scriptEntry.addObject("type", Type.valueOf(arg.getValue().toUpperCase()));
             }
             else if (!scriptEntry.hasObject("world")
-                    && arg.matchesArgumentType(dWorld.class)) {
-                scriptEntry.addObject("world", arg.asType(dWorld.class));
+                    && arg.matchesArgumentType(WorldTag.class)) {
+                scriptEntry.addObject("world", arg.asType(WorldTag.class));
             }
             else if (!scriptEntry.hasObject("value")
                     && arg.matchesEnum(Value.values())) {
@@ -84,8 +84,8 @@ public class WeatherCommand extends AbstractCommand {
         // If the world has not been specified, try to use the NPC's or player's
         // world, or default to "world" if necessary
         scriptEntry.defaultObject("world",
-                Utilities.entryHasNPC(scriptEntry) ? new dWorld(Utilities.getEntryNPC(scriptEntry).getWorld()) : null,
-                Utilities.entryHasPlayer(scriptEntry) ? new dWorld(Utilities.getEntryPlayer(scriptEntry).getWorld()) : null,
+                Utilities.entryHasNPC(scriptEntry) ? new WorldTag(Utilities.getEntryNPC(scriptEntry).getWorld()) : null,
+                Utilities.entryHasPlayer(scriptEntry) ? new WorldTag(Utilities.getEntryPlayer(scriptEntry).getWorld()) : null,
                 Bukkit.getWorlds().get(0));
     }
 
@@ -94,7 +94,7 @@ public class WeatherCommand extends AbstractCommand {
         // Fetch objects
         Value value = Value.valueOf(((ElementTag) scriptEntry.getObject("value"))
                 .asString().toUpperCase());
-        dWorld world = (dWorld) scriptEntry.getObject("world");
+        WorldTag world = (WorldTag) scriptEntry.getObject("world");
         Type type = scriptEntry.hasObject("type") ?
                 (Type) scriptEntry.getObject("type") : Type.GLOBAL;
 

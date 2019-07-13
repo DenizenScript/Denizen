@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -28,10 +28,10 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
     // @Triggers when a player consumes an item.
     //
     // @Context
-    // <context.item> returns the dItem.
+    // <context.item> returns the ItemTag.
     //
     // @Determine
-    // dItem to change the item being consumed.
+    // ItemTag to change the item being consumed.
     //
     // -->
 
@@ -41,7 +41,7 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
 
     public static PlayerConsumesScriptEvent instance;
 
-    public dItem item;
+    public ItemTag item;
     public PlayerItemConsumeEvent event;
 
     @Override
@@ -62,8 +62,8 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (dItem.matches(determination)) {
-            dItem newitem = dItem.valueOf(determination, dEntity.getPlayerFrom(event.getPlayer()), null);
+        if (ItemTag.matches(determination)) {
+            ItemTag newitem = ItemTag.valueOf(determination, EntityTag.getPlayerFrom(event.getPlayer()), null);
             if (newitem != null) {
                 event.setItem(newitem.getItemStack());
                 return true;
@@ -79,7 +79,7 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
     @Override
     public ScriptEntryData getScriptEntryData() {
         // TODO: Store the player / npc?
-        return new BukkitScriptEntryData(event != null ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
+        return new BukkitScriptEntryData(event != null ? EntityTag.getPlayerFrom(event.getPlayer()) : null, null);
     }
 
     @Override
@@ -92,10 +92,10 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
 
     @EventHandler
     public void onPlayerConsumes(PlayerItemConsumeEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        item = new dItem(event.getItem());
+        item = new ItemTag(event.getItem());
         this.event = event;
         fire(event);
     }

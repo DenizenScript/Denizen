@@ -5,8 +5,8 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
 import com.denizenscript.denizen.nms.util.Advancement;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -93,18 +93,18 @@ public class AdvancementCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("grant")
                     && arg.matchesPrefix("grant", "give", "g")
-                    && arg.matchesArgumentList(dPlayer.class)) {
+                    && arg.matchesArgumentList(PlayerTag.class)) {
                 scriptEntry.addObject("grant", arg.asType(ListTag.class));
             }
             else if (!scriptEntry.hasObject("revoke")
                     && arg.matchesPrefix("revoke", "take", "r")
-                    && arg.matchesArgumentList(dPlayer.class)) {
+                    && arg.matchesArgumentList(PlayerTag.class)) {
                 scriptEntry.addObject("revoke", arg.asType(ListTag.class));
             }
             else if (!scriptEntry.hasObject("icon")
                     && arg.matchesPrefix("icon", "i")
-                    && arg.matchesArgumentType(dItem.class)) {
-                scriptEntry.addObject("icon", arg.asType(dItem.class));
+                    && arg.matchesArgumentType(ItemTag.class)) {
+                scriptEntry.addObject("icon", arg.asType(ItemTag.class));
             }
             else if (!scriptEntry.hasObject("title")
                     && arg.matchesPrefix("title", "text", "t")) {
@@ -157,7 +157,7 @@ public class AdvancementCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify an ID!");
         }
 
-        scriptEntry.defaultObject("icon", new dItem(Material.AIR));
+        scriptEntry.defaultObject("icon", new ItemTag(Material.AIR));
         scriptEntry.defaultObject("title", new ElementTag(""));
         scriptEntry.defaultObject("description", new ElementTag(""));
         scriptEntry.defaultObject("background", new ElementTag("minecraft:textures/gui/advancements/backgrounds/stone.png"));
@@ -179,7 +179,7 @@ public class AdvancementCommand extends AbstractCommand {
         ElementTag delete = scriptEntry.getElement("delete");
         ListTag grant = scriptEntry.getdObject("grant");
         ListTag revoke = scriptEntry.getdObject("revoke");
-        dItem icon = scriptEntry.getdObject("icon");
+        ItemTag icon = scriptEntry.getdObject("icon");
         ElementTag title = scriptEntry.getElement("title");
         ElementTag description = scriptEntry.getElement("description");
         ElementTag background = scriptEntry.getElement("background");
@@ -239,7 +239,7 @@ public class AdvancementCommand extends AbstractCommand {
         }
         else if (grant != null) {
             Advancement advancement = customRegistered.get(key);
-            for (dPlayer target : grant.filter(dPlayer.class, scriptEntry)) {
+            for (PlayerTag target : grant.filter(PlayerTag.class, scriptEntry)) {
                 Player player = target.getPlayerEntity();
                 if (player != null) {
                     advancementHelper.grant(advancement, player);
@@ -248,7 +248,7 @@ public class AdvancementCommand extends AbstractCommand {
         }
         else /*if (revoke != null)*/ {
             Advancement advancement = customRegistered.get(key);
-            for (dPlayer target : revoke.filter(dPlayer.class, scriptEntry)) {
+            for (PlayerTag target : revoke.filter(PlayerTag.class, scriptEntry)) {
                 Player player = target.getPlayerEntity();
                 if (player != null) {
                     advancementHelper.revoke(advancement, player);

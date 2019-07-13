@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -15,12 +15,12 @@ public class EntityProfession implements Property {
 
 
     public static boolean describes(ObjectTag entity) {
-        if (!(entity instanceof dEntity)) {
+        if (!(entity instanceof EntityTag)) {
             return false;
         }
-        return ((dEntity) entity).getBukkitEntityType() == EntityType.VILLAGER
-                || ((dEntity) entity).getBukkitEntityType() == EntityType.ZOMBIE
-                || ((dEntity) entity).getBukkitEntityType() == EntityType.ZOMBIE_VILLAGER;
+        return ((EntityTag) entity).getBukkitEntityType() == EntityType.VILLAGER
+                || ((EntityTag) entity).getBukkitEntityType() == EntityType.ZOMBIE
+                || ((EntityTag) entity).getBukkitEntityType() == EntityType.ZOMBIE_VILLAGER;
     }
 
     public static EntityProfession getFrom(ObjectTag entity) {
@@ -28,7 +28,7 @@ public class EntityProfession implements Property {
             return null;
         }
         else {
-            return new EntityProfession((dEntity) entity);
+            return new EntityProfession((EntityTag) entity);
         }
     }
 
@@ -45,11 +45,11 @@ public class EntityProfession implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityProfession(dEntity entity) {
+    private EntityProfession(EntityTag entity) {
         professional = entity;
     }
 
-    dEntity professional;
+    EntityTag professional;
 
     private Villager.Profession getProfession() {
         if (professional.getBukkitEntityType() == EntityType.ZOMBIE_VILLAGER) {
@@ -95,9 +95,9 @@ public class EntityProfession implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.profession>
+        // @attribute <EntityTag.profession>
         // @returns ElementTag
-        // @mechanism dEntity.profession
+        // @mechanism EntityTag.profession
         // @group properties
         // @description
         // If the entity can have professions, returns the entity's profession.
@@ -116,7 +116,7 @@ public class EntityProfession implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name profession
         // @input Element
         // @description
@@ -124,7 +124,7 @@ public class EntityProfession implements Property {
         // Currently, only Villager-type entities can have professions.
         // For the list of possible professions, refer to <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Villager.Profession.html>
         // @tags
-        // <e@entity.profession>
+        // <EntityTag.profession>
         // -->
 
         if (mechanism.matches("profession") && mechanism.requireEnum(false, Villager.Profession.values())) {

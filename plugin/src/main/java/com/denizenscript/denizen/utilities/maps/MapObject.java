@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.utilities.maps;
 
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.tags.TagManager;
@@ -32,13 +32,13 @@ public abstract class MapObject {
         this.debug = debug;
     }
 
-    public void update(dPlayer player, UUID uuid) {
+    public void update(PlayerTag player, UUID uuid) {
         currentX.put(uuid, getX(player, uuid));
         currentY.put(uuid, getY(player, uuid));
         currentVisibility.put(uuid, ArgumentHelper.getBooleanFrom(tag(visibilityTag, player)));
     }
 
-    public int getX(dPlayer player, UUID uuid) {
+    public int getX(PlayerTag player, UUID uuid) {
         //if (!currentX.containsKey(uuid)) {
         int x = (int) ArgumentHelper.getDoubleFrom(tag(xTag, player));
         currentX.put(uuid, x);
@@ -51,7 +51,7 @@ public abstract class MapObject {
         return x;
     }
 
-    public int getY(dPlayer player, UUID uuid) {
+    public int getY(PlayerTag player, UUID uuid) {
         //if (!currentY.containsKey(uuid)) {
         int y = (int) ArgumentHelper.getDoubleFrom(tag(yTag, player));
         currentY.put(uuid, y);
@@ -64,14 +64,14 @@ public abstract class MapObject {
         return y;
     }
 
-    public boolean isVisibleTo(dPlayer player, UUID uuid) {
+    public boolean isVisibleTo(PlayerTag player, UUID uuid) {
         if (!currentVisibility.containsKey(uuid)) {
             currentVisibility.put(uuid, tag(visibilityTag, player).equalsIgnoreCase("true"));
         }
         return currentVisibility.get(uuid);
     }
 
-    protected String tag(String arg, dPlayer player) {
+    protected String tag(String arg, PlayerTag player) {
         // Short, reusable TagManager call
         return TagManager.tag(arg, new BukkitTagContext(player, player.getSelectedNPC(), false, null, debug, null));
     }
@@ -86,6 +86,6 @@ public abstract class MapObject {
         return data;
     }
 
-    public abstract void render(MapView mapView, MapCanvas mapCanvas, dPlayer player, UUID uuid);
+    public abstract void render(MapView mapView, MapCanvas mapCanvas, PlayerTag player, UUID uuid);
 
 }

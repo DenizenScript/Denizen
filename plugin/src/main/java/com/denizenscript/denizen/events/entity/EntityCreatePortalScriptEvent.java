@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -27,7 +27,7 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
     // @Triggers when an entity creates a portal.
     //
     // @Context
-    // <context.entity> returns the dEntity that created the portal.
+    // <context.entity> returns the EntityTag that created the portal.
     // <context.portal_type> returns the type of portal: CUSTOM, ENDER, NETHER.
     //
     // @Player if the entity that created the portal is a player.
@@ -39,7 +39,7 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
     }
 
     public static EntityCreatePortalScriptEvent instance;
-    public dEntity entity;
+    public EntityTag entity;
     public ElementTag portal_type;
     public EntityCreatePortalEvent event;
 
@@ -74,8 +74,8 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? EntityTag.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? EntityTag.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -91,13 +91,13 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
 
     @EventHandler
     public void onEntityCreatesPortal(EntityCreatePortalEvent event) {
-        entity = new dEntity(event.getEntity());
+        entity = new EntityTag(event.getEntity());
         portal_type = new ElementTag(event.getPortalType().toString());
         // TODO: Add this back?
 /*
         blocks = new ListTag();
         for (int i=0; i < event.getBlocks().size(); i++) {
-            dLocation tempLoc = new dLocation(event.getBlocks().get(i).getBlock().getLocation());
+            LocationTag tempLoc = new LocationTag(event.getBlocks().get(i).getBlock().getLocation());
             blocks.add(tempLoc.identifySimple());
         }
 */

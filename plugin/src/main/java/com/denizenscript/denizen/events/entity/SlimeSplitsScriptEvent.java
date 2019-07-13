@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -25,7 +25,7 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
     // @Triggers when a slime splits into smaller slimes.
     //
     // @Context
-    // <context.entity> returns the dEntity of the slime.
+    // <context.entity> returns the EntityTag of the slime.
     // <context.count> returns an Element(Number) of the number of smaller slimes it will split into.
     //
     // @Determine
@@ -38,7 +38,7 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     public static SlimeSplitsScriptEvent instance;
-    public dEntity entity;
+    public EntityTag entity;
     public int count;
     public SlimeSplitEvent event;
 
@@ -98,7 +98,7 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
 
     @EventHandler
     public void onSlimeSplits(SlimeSplitEvent event) {
-        entity = new dEntity(event.getEntity());
+        entity = new EntityTag(event.getEntity());
         count = event.getCount();
         this.event = event;
         fire(event);

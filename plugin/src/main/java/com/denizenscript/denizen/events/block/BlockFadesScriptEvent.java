@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.block;
 
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -25,8 +25,8 @@ public class BlockFadesScriptEvent extends BukkitScriptEvent implements Listener
     // @Triggers when a block fades, melts or disappears based on world conditions.
     //
     // @Context
-    // <context.location> returns the dLocation the block faded at.
-    // <context.material> returns the dMaterial of the block that faded.
+    // <context.location> returns the LocationTag the block faded at.
+    // <context.material> returns the MaterialTag of the block that faded.
     //
     // -->
 
@@ -35,8 +35,8 @@ public class BlockFadesScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     public static BlockFadesScriptEvent instance;
-    public dLocation location;
-    public dMaterial material;
+    public LocationTag location;
+    public MaterialTag material;
     public BlockFadeEvent event;
 
     @Override
@@ -79,8 +79,8 @@ public class BlockFadesScriptEvent extends BukkitScriptEvent implements Listener
 
     @EventHandler
     public void onBlockFades(BlockFadeEvent event) {
-        location = new dLocation(event.getBlock().getLocation());
-        material = new dMaterial(event.getBlock());
+        location = new LocationTag(event.getBlock().getLocation());
+        material = new MaterialTag(event.getBlock());
         this.event = event;
         fire(event);
     }

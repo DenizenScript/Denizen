@@ -5,8 +5,8 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.midi.MidiUtil;
 import com.denizenscript.denizen.utilities.midi.NoteBlockReceiver;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -64,12 +64,12 @@ public class MidiCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("cancel", "");
             }
             else if (!scriptEntry.hasObject("location") &&
-                    arg.matchesArgumentType(dLocation.class)) {
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                    arg.matchesArgumentType(LocationTag.class)) {
+                scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("entities") &&
-                    arg.matchesArgumentList(dEntity.class)) {
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
+                    arg.matchesArgumentList(EntityTag.class)) {
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("volume") &&
                     arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double) &&
@@ -128,8 +128,8 @@ public class MidiCommand extends AbstractCommand implements Holdable {
             return;
         }
 
-        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-        dLocation location = (dLocation) scriptEntry.getObject("location");
+        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
+        LocationTag location = (LocationTag) scriptEntry.getObject("location");
         float tempo = scriptEntry.getElement("tempo").asFloat();
         float volume = scriptEntry.getElement("volume").asFloat();
 

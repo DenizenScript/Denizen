@@ -2,8 +2,8 @@ package com.denizenscript.denizen.scripts.commands.npc;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dNPC;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -30,8 +30,8 @@ public class PoseCommand extends AbstractCommand {
     // is the pitch and yaw.
     //
     // @Tags
-    // <n@npc.has_pose[<name>]>
-    // <n@npc.pose[<name>]>
+    // <NPCTag.has_pose[<name>]>
+    // <NPCTag.pose[<name>]>
     //
     // @Usage
     // Make an NPC assume a pose.
@@ -65,8 +65,8 @@ public class PoseCommand extends AbstractCommand {
             else if (arg.matches("player")) {
                 scriptEntry.addObject("target", TargetType.PLAYER);
             }
-            else if (arg.matchesArgumentType(dLocation.class)) {
-                scriptEntry.addObject("pose_loc", arg.asType(dLocation.class));
+            else if (arg.matchesArgumentType(LocationTag.class)) {
+                scriptEntry.addObject("pose_loc", arg.asType(LocationTag.class));
             }
 
         }
@@ -103,10 +103,10 @@ public class PoseCommand extends AbstractCommand {
 
         // Get objects
         TargetType target = (TargetType) scriptEntry.getObject("target");
-        dNPC npc = Utilities.getEntryNPC(scriptEntry);
+        NPCTag npc = Utilities.getEntryNPC(scriptEntry);
         Action action = (Action) scriptEntry.getObject("action");
         String id = (String) scriptEntry.getObject("pose_id");
-        dLocation pose_loc = (dLocation) scriptEntry.getObject("pose_loc");
+        LocationTag pose_loc = (LocationTag) scriptEntry.getObject("pose_loc");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {

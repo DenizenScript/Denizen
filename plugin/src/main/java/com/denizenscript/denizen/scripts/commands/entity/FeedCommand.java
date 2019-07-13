@@ -4,8 +4,8 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.npc.traits.HungerTrait;
-import com.denizenscript.denizen.objects.dNPC;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -29,8 +29,8 @@ public class FeedCommand extends AbstractCommand {
     // NOTE: This command is outdated and bound to be updated.
     //
     // @Tags
-    // <p@player.food_level>
-    // <p@player.food_level.formatted>
+    // <PlayerTag.food_level>
+    // <PlayerTag.food_level.formatted>
     //
     // @Usage
     // Use to feed the player for 5 foodpoints or 2.5 bars.
@@ -49,15 +49,15 @@ public class FeedCommand extends AbstractCommand {
                     && !scriptEntry.hasObject("amount")) {
                 scriptEntry.addObject("amount", arg.asElement());
             }
-            else if (arg.matchesArgumentType(dPlayer.class)
+            else if (arg.matchesArgumentType(PlayerTag.class)
                     && !scriptEntry.hasObject("targetplayer")
                     && !scriptEntry.hasObject("targetnpc")) {
-                scriptEntry.addObject("targetplayer", arg.asType(dPlayer.class));
+                scriptEntry.addObject("targetplayer", arg.asType(PlayerTag.class));
             }
-            else if (Depends.citizens != null && arg.matchesArgumentType(dNPC.class)
+            else if (Depends.citizens != null && arg.matchesArgumentType(NPCTag.class)
                     && !scriptEntry.hasObject("targetplayer")
                     && !scriptEntry.hasObject("targetnpc")) {
-                scriptEntry.addObject("targetnpc", arg.asType(dNPC.class));
+                scriptEntry.addObject("targetnpc", arg.asType(NPCTag.class));
             }
 
             // Backwards compatibility
@@ -100,8 +100,8 @@ public class FeedCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        dPlayer player = (dPlayer) scriptEntry.getObject("targetplayer");
-        dNPC npc = (dNPC) scriptEntry.getObject("targetnpc");
+        PlayerTag player = (PlayerTag) scriptEntry.getObject("targetplayer");
+        NPCTag npc = (NPCTag) scriptEntry.getObject("targetnpc");
         ElementTag amount = scriptEntry.getElement("amount");
 
         if (scriptEntry.dbCallShouldDebug()) {

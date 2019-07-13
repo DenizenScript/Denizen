@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -32,11 +32,11 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
     // @Triggers when two entities breed.
     //
     // @Context
-    // <context.breeder> returns the dEntity responsible for breeding, if it exists.
-    // <context.child> returns the child dEntity.
-    // <context.mother> returns the parent dEntity creating the child. The child will spawn at the mother's location.
-    // <context.father> returns the other parent dEntity.
-    // <context.item> returns the dItem used to initiate breeding, if it exists.
+    // <context.breeder> returns the EntityTag responsible for breeding, if it exists.
+    // <context.child> returns the child EntityTag.
+    // <context.mother> returns the parent EntityTag creating the child. The child will spawn at the mother's location.
+    // <context.father> returns the other parent EntityTag.
+    // <context.item> returns the ItemTag used to initiate breeding, if it exists.
     // <context.experience> returns the amount of experience granted by breeding.
     //
     // @Determine
@@ -49,11 +49,11 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     public static EntityBreedScriptEvent instance;
-    private dEntity entity;
-    private dEntity breeder;
-    private dEntity father;
-    private dEntity mother;
-    private dItem item;
+    private EntityTag entity;
+    private EntityTag breeder;
+    private EntityTag father;
+    private EntityTag mother;
+    private ItemTag item;
     private int experience;
     public EntityBreedEvent event;
 
@@ -117,17 +117,17 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
     @EventHandler
     public void onEntityBreeds(EntityBreedEvent event) {
         Entity entity = event.getEntity();
-        this.entity = new dEntity(entity);
-        breeder = new dEntity(event.getBreeder());
-        father = new dEntity(event.getFather());
-        mother = new dEntity(event.getMother());
-        item = new dItem(event.getBredWith());
+        this.entity = new EntityTag(entity);
+        breeder = new EntityTag(event.getBreeder());
+        father = new EntityTag(event.getFather());
+        mother = new EntityTag(event.getMother());
+        item = new ItemTag(event.getBredWith());
         experience = event.getExperience();
         boolean wasCancelled = event.isCancelled();
         this.event = event;
-        dEntity.rememberEntity(entity);
+        EntityTag.rememberEntity(entity);
         fire(event);
-        dEntity.forgetEntity(entity);
+        EntityTag.forgetEntity(entity);
         event.setExperience(experience);
 
         // Prevent entities from continuing to breed with each other

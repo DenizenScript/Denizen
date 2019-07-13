@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dCuboid;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.CuboidTag;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -33,8 +33,8 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Context
     // <context.cause> returns the cause of the entity breaking. Causes: ENTITY, EXPLOSION, OBSTRUCTION, PHYSICS, and DEFAULT.
-    // <context.entity> returns the dEntity that broke the hanging entity, if any.
-    // <context.hanging> returns the dEntity of the hanging.
+    // <context.entity> returns the EntityTag that broke the hanging entity, if any.
+    // <context.hanging> returns the EntityTag of the hanging.
     // -->
 
     public HangingBreaksScriptEvent() {
@@ -43,9 +43,9 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
 
     public static HangingBreaksScriptEvent instance;
     public ElementTag cause;
-    public dEntity entity;
-    public dEntity hanging;
-    public dLocation location;
+    public EntityTag entity;
+    public EntityTag hanging;
+    public LocationTag location;
     public HangingBreakEvent event;
 
     @Override
@@ -87,8 +87,8 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity != null && entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
-                entity != null && entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(entity != null && entity.isPlayer() ? EntityTag.getPlayerFrom(event.getEntity()) : null,
+                entity != null && entity.isCitizensNPC() ? EntityTag.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
         else if (name.equals("cuboids")) {
             Debug.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
             ListTag cuboids = new ListTag();
-            for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+            for (CuboidTag cuboid : CuboidTag.getNotableCuboidsContaining(location)) {
                 cuboids.add(cuboid.identifySimple());
             }
             return cuboids;
@@ -118,11 +118,11 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
 
     @EventHandler
     public void onHangingBreaks(HangingBreakEvent event) {
-        hanging = new dEntity(event.getEntity());
+        hanging = new EntityTag(event.getEntity());
         cause = new ElementTag(event.getCause().name());
-        location = new dLocation(hanging.getLocation());
+        location = new LocationTag(hanging.getLocation());
         if (event instanceof HangingBreakByEntityEvent) {
-            entity = new dEntity(((HangingBreakByEntityEvent) event).getRemover());
+            entity = new EntityTag(((HangingBreakByEntityEvent) event).getRemover());
         }
         else {
             entity = null;

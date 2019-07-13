@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dMaterial;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -45,8 +45,8 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
     public Statistic statistic;
     public Integer previous_value;
     public Integer new_value;
-    public dMaterial material;
-    public dEntity entity;
+    public MaterialTag material;
+    public EntityTag entity;
     public PlayerStatisticIncrementEvent event;
 
     @Override
@@ -77,7 +77,7 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(dPlayer.mirrorBukkitPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(PlayerTag.mirrorBukkitPlayer(event.getPlayer()), null);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
 
     @EventHandler
     public void onPlayerStatisticIncrements(PlayerStatisticIncrementEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
         material = null;
@@ -112,10 +112,10 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
         previous_value = null;
         statistic = event.getStatistic();
         if (statistic.getType() == Statistic.Type.BLOCK || statistic.getType() == Statistic.Type.ITEM) {
-            material = new dMaterial(event.getMaterial());
+            material = new MaterialTag(event.getMaterial());
         }
         else if (statistic.getType() == Statistic.Type.ENTITY) {
-            entity = new dEntity(DenizenEntityType.getByName(event.getEntityType().name()));
+            entity = new EntityTag(DenizenEntityType.getByName(event.getEntityType().name()));
         }
         previous_value = event.getPreviousValue();
         new_value = event.getNewValue();

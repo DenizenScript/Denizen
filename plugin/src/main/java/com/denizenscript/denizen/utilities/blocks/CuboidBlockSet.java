@@ -4,8 +4,8 @@ import com.denizenscript.denizen.nms.util.jnbt.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.BlockData;
-import com.denizenscript.denizen.objects.dCuboid;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.CuboidTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.scripts.commands.world.SchematicCommand;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import org.bukkit.Location;
@@ -28,7 +28,7 @@ public class CuboidBlockSet implements BlockSet {
     public CuboidBlockSet() {
     }
 
-    public CuboidBlockSet(dCuboid cuboid, Location center) {
+    public CuboidBlockSet(CuboidTag cuboid, Location center) {
         Location low = cuboid.pairs.get(0).low;
         Location high = cuboid.pairs.get(0).high;
         x_width = (high.getX() - low.getX()) + 1;
@@ -65,10 +65,10 @@ public class CuboidBlockSet implements BlockSet {
         return blocks;
     }
 
-    public dCuboid getCuboid(Location loc) {
+    public CuboidTag getCuboid(Location loc) {
         Location low = loc.clone().subtract(center_x, center_y, center_z);
         Location high = low.clone().add(x_width, y_length, z_height);
-        return new dCuboid(low, high);
+        return new CuboidTag(low, high);
     }
 
     public class IntHolder {
@@ -295,7 +295,7 @@ public class CuboidBlockSet implements BlockSet {
                         int index = y * width * length + z * width + x;
                         BlockVector pt = new BlockVector(x, y, z);
                         // TODO: 1.13 - move away from legacy IDs somehow?
-                        dMaterial dMat = OldMaterialsHelper.getMaterialFrom(OldMaterialsHelper.getLegacyMaterial(blocks[index]), blockData[index]);
+                        MaterialTag dMat = OldMaterialsHelper.getMaterialFrom(OldMaterialsHelper.getLegacyMaterial(blocks[index]), blockData[index]);
                         BlockData block = dMat.getNmsBlockData();
                         if (tileEntitiesMap.containsKey(pt)) {
                             CompoundTag otag = NMSHandler.getInstance().createCompoundTag(tileEntitiesMap.get(pt));

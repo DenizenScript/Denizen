@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -12,7 +12,7 @@ import org.bukkit.entity.EntityType;
 public class EntityBasePlate implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.ARMOR_STAND;
+        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntityType() == EntityType.ARMOR_STAND;
     }
 
     public static EntityBasePlate getFrom(ObjectTag entity) {
@@ -20,7 +20,7 @@ public class EntityBasePlate implements Property {
             return null;
         }
         else {
-            return new EntityBasePlate((dEntity) entity);
+            return new EntityBasePlate((EntityTag) entity);
         }
     }
 
@@ -37,11 +37,11 @@ public class EntityBasePlate implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityBasePlate(dEntity entity) {
+    private EntityBasePlate(EntityTag entity) {
         dentity = entity;
     }
 
-    dEntity dentity;
+    EntityTag dentity;
 
     /////////
     // Property Methods
@@ -74,9 +74,9 @@ public class EntityBasePlate implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.base_plate>
+        // @attribute <EntityTag.base_plate>
         // @returns ElementTag(Boolean)
-        // @mechanism dEntity.base_plate
+        // @mechanism EntityTag.base_plate
         // @group properties
         // @description
         // If the entity is an armor stand, returns whether the armor stand has a base plate.
@@ -93,13 +93,13 @@ public class EntityBasePlate implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name base_plate
         // @input Element(Boolean)
         // @description
         // Changes the base plate state of an armor stand.
         // @tags
-        // <e@entity.base_plate>
+        // <EntityTag.base_plate>
         // -->
 
         if (mechanism.matches("base_plate") && mechanism.requireBoolean()) {

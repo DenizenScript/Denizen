@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dInventory;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.InventoryTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -35,9 +35,9 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
     // @Triggers when a player drags in an inventory.
     //
     // @Context
-    // <context.item> returns the dItem the player has dragged.
-    // <context.inventory> returns the dInventory (the 'top' inventory, regardless of which slot was clicked).
-    // <context.clicked_inventory> returns the dInventory that was clicked in.
+    // <context.item> returns the ItemTag the player has dragged.
+    // <context.inventory> returns the InventoryTag (the 'top' inventory, regardless of which slot was clicked).
+    // <context.clicked_inventory> returns the InventoryTag that was clicked in.
     // <context.slots> returns a ListTag of the slot numbers dragged through.
     // <context.raw_slots> returns a ListTag of the raw slot numbers dragged through.
     //
@@ -50,9 +50,9 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
     public static PlayerDragsInInvScriptEvent instance;
 
     public Inventory inventory;
-    public dItem item;
-    private dPlayer entity;
-    private dInventory dInv;
+    public ItemTag item;
+    private PlayerTag entity;
+    private InventoryTag dInv;
     public InventoryDragEvent event;
 
     @Override
@@ -115,7 +115,7 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
             return item;
         }
         else if (name.equals("clicked_inventory")) {
-            return dInventory.mirrorBukkitInventory(event.getView()
+            return InventoryTag.mirrorBukkitInventory(event.getView()
                     .getInventory(event.getRawSlots().stream().findFirst().orElse(0)));
         }
         return super.getContext(name);
@@ -123,13 +123,13 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
 
     @EventHandler
     public void onPlayerDragsInInv(InventoryDragEvent event) {
-        if (dEntity.isCitizensNPC(event.getWhoClicked())) {
+        if (EntityTag.isCitizensNPC(event.getWhoClicked())) {
             return;
         }
-        entity = dEntity.getPlayerFrom(event.getWhoClicked());
+        entity = EntityTag.getPlayerFrom(event.getWhoClicked());
         inventory = event.getInventory();
-        dInv = dInventory.mirrorBukkitInventory(inventory);
-        item = new dItem(event.getOldCursor());
+        dInv = InventoryTag.mirrorBukkitInventory(inventory);
+        item = new ItemTag(event.getOldCursor());
         boolean wasCancelled = event.isCancelled();
         this.event = event;
         fire(event);

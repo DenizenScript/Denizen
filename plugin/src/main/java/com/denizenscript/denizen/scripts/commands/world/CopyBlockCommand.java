@@ -3,8 +3,8 @@ package com.denizenscript.denizen.scripts.commands.world;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.BlockData;
-import com.denizenscript.denizen.objects.dCuboid;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.CuboidTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -34,7 +34,7 @@ public class CopyBlockCommand extends AbstractCommand {
     // This effectively moves the block to the target location.
     //
     // @Tags
-    // <l@location.material>
+    // <LocationTag.material>
     //
     // @Usage
     // Use to copy the block the player is looking at to their current location
@@ -51,22 +51,22 @@ public class CopyBlockCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             // CopyBlock can move a single 'location' ...
-            if (arg.matchesArgumentType(dLocation.class)
+            if (arg.matchesArgumentType(LocationTag.class)
                     && !scriptEntry.hasObject("location")
                     && !arg.matchesPrefix("t", "to")) {
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
 
             // ... or and entire cuboid ...
-            else if (arg.matchesArgumentType(dCuboid.class)
+            else if (arg.matchesArgumentType(CuboidTag.class)
                     && !scriptEntry.hasObject("cuboid")) {
-                scriptEntry.addObject("cuboid", arg.asType(dCuboid.class));
+                scriptEntry.addObject("cuboid", arg.asType(CuboidTag.class));
             }
 
             // ... to a location.
-            else if (arg.matchesArgumentType(dLocation.class)
+            else if (arg.matchesArgumentType(LocationTag.class)
                     && arg.matchesPrefix("t", "to")) {
-                scriptEntry.addObject("destination", arg.asType(dLocation.class));
+                scriptEntry.addObject("destination", arg.asType(LocationTag.class));
             }
             else if (arg.matches("remove_original")) {
                 scriptEntry.addObject("remove", new ElementTag(true));
@@ -92,9 +92,9 @@ public class CopyBlockCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        dLocation copy_location = (dLocation) scriptEntry.getObject("location");
-        dLocation destination = (dLocation) scriptEntry.getObject("destination");
-        dCuboid copy_cuboid = (dCuboid) scriptEntry.getObject("cuboid");
+        LocationTag copy_location = (LocationTag) scriptEntry.getObject("location");
+        LocationTag destination = (LocationTag) scriptEntry.getObject("destination");
+        CuboidTag copy_cuboid = (CuboidTag) scriptEntry.getObject("cuboid");
         ElementTag remove_original = (ElementTag) scriptEntry.getObject("remove");
 
         if (scriptEntry.dbCallShouldDebug()) {
@@ -116,14 +116,14 @@ public class CopyBlockCommand extends AbstractCommand {
         for (Location loc : locations) {
 
             Block source = loc.getBlock();
-            BlockState sourceState = dLocation.getBlockStateFor(source);
+            BlockState sourceState = LocationTag.getBlockStateFor(source);
             Block update = destination.getBlock();
 
             // TODO: 1.13 - confirm this works
             BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(source);
             blockData.setBlock(update, false);
 
-            BlockState updateState = dLocation.getBlockStateFor(update);
+            BlockState updateState = LocationTag.getBlockStateFor(update);
 
             // Note: only a BlockState, not a Block, is actually an instance
             // of InventoryHolder

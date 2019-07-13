@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.commands.player;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -66,8 +66,8 @@ public class TitleCommand extends AbstractCommand {
                 scriptEntry.addObject("fade_out", arg.asType(DurationTag.class));
             }
             else if (arg.matchesPrefix("targets", "target")
-                    && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
+                    && arg.matchesArgumentList(PlayerTag.class)) {
+                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
 
         }
@@ -90,7 +90,7 @@ public class TitleCommand extends AbstractCommand {
         DurationTag fade_in = scriptEntry.getdObject("fade_in");
         DurationTag stay = scriptEntry.getdObject("stay");
         DurationTag fade_out = scriptEntry.getdObject("fade_out");
-        List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
+        List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
 
         if (scriptEntry.dbCallShouldDebug()) {
 
@@ -104,7 +104,7 @@ public class TitleCommand extends AbstractCommand {
 
         }
 
-        for (dPlayer player : targets) {
+        for (PlayerTag player : targets) {
             if (player.isValid() && player.isOnline()) {
                 NMSHandler.getInstance().getPacketHelper().showTitle(player.getPlayerEntity(),
                         title != null ? title.asString() : "",

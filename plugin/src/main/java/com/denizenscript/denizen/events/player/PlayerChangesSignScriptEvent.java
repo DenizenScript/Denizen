@@ -33,10 +33,10 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     // @Triggers when a player changes a sign.
     //
     // @Context
-    // <context.location> returns the dLocation of the sign.
+    // <context.location> returns the LocationTag of the sign.
     // <context.new> returns the new sign text as a ListTag.
     // <context.old> returns the old sign text as a ListTag.
-    // <context.material> returns the dMaterial of the sign.
+    // <context.material> returns the MaterialTag of the sign.
     //
     // @Determine
     // ListTag to change the lines (Uses escaping, see <@link language Property Escaping>)
@@ -48,10 +48,10 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     }
 
     public static PlayerChangesSignScriptEvent instance;
-    public dLocation location;
+    public LocationTag location;
     public ListTag new_sign;
     public ListTag old_sign;
-    public dMaterial material;
+    public MaterialTag material;
     public ListTag new_text;
     public SignChangeEvent event;
 
@@ -60,7 +60,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
         String lower = CoreUtilities.toLowerCase(s);
         String sign = CoreUtilities.getXthArg(2, lower);
         return lower.startsWith("player changes")
-                && (sign.equals("sign") || dMaterial.matches(sign));
+                && (sign.equals("sign") || MaterialTag.matches(sign));
     }
 
     @Override
@@ -68,7 +68,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
 
         String mat = path.eventArgLowerAt(2);
         if (!mat.equals("sign")
-                && (!(dLocation.getBlockStateFor(event.getBlock()) instanceof Sign)
+                && (!(LocationTag.getBlockStateFor(event.getBlock()) instanceof Sign)
                 && (!mat.equals(material.identifyNoIdentifier()) && !mat.equals(material.identifyFullNoIdentifier())))) {
             return false;
         }
@@ -96,7 +96,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(dPlayer.mirrorBukkitPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(PlayerTag.mirrorBukkitPlayer(event.getPlayer()), null);
     }
 
     @Override
@@ -116,7 +116,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
         else if (name.equals("cuboids")) {
             Debug.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
             ListTag cuboids = new ListTag();
-            for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+            for (CuboidTag cuboid : CuboidTag.getNotableCuboidsContaining(location)) {
                 cuboids.add(cuboid.identifySimple());
             }
             return cuboids;
@@ -126,16 +126,16 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
 
     @EventHandler
     public void onPlayerChangesSign(SignChangeEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        BlockState state = dLocation.getBlockStateFor(event.getBlock());
+        BlockState state = LocationTag.getBlockStateFor(event.getBlock());
         if (!(state instanceof Sign)) {
             return;
         }
         Sign sign = (Sign) state;
-        material = new dMaterial(event.getBlock());
-        location = new dLocation(event.getBlock().getLocation());
+        material = new MaterialTag(event.getBlock());
+        location = new LocationTag(event.getBlock().getLocation());
         old_sign = new ListTag(Arrays.asList(sign.getLines()));
         new_sign = new ListTag(Arrays.asList(event.getLines()));
         new_text = null;

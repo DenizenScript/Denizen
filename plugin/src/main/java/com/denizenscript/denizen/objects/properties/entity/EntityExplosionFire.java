@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -11,12 +11,12 @@ import org.bukkit.entity.Explosive;
 public class EntityExplosionFire implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity
-                && ((dEntity) entity).getBukkitEntity() instanceof Explosive;
+        return entity instanceof EntityTag
+                && ((EntityTag) entity).getBukkitEntity() instanceof Explosive;
     }
 
     public static EntityExplosionFire getFrom(ObjectTag entity) {
-        return describes(entity) ? new EntityExplosionFire((dEntity) entity) : null;
+        return describes(entity) ? new EntityExplosionFire((EntityTag) entity) : null;
     }
 
     public static final String[] handledTags = new String[] {
@@ -35,11 +35,11 @@ public class EntityExplosionFire implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityExplosionFire(dEntity ent) {
+    private EntityExplosionFire(EntityTag ent) {
         entity = ent;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     /////////
     // Property Methods
@@ -67,9 +67,9 @@ public class EntityExplosionFire implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.explosion_fire>
+        // @attribute <EntityTag.explosion_fire>
         // @returns ElementTag(Boolean)
-        // @mechanism dEntity.explosion_fire
+        // @mechanism EntityTag.explosion_fire
         // @group properties
         // @description
         // If this entity is explosive, returns whether its explosion creates fire.
@@ -86,13 +86,13 @@ public class EntityExplosionFire implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name explosion_fire
         // @input Element(Boolean)
         // @description
         // If this entity is explosive, sets whether its explosion creates fire.
         // @tags
-        // <e@entity.explosion_fire>
+        // <EntityTag.explosion_fire>
         // -->
         if (mechanism.matches("explosion_fire") && mechanism.requireBoolean()) {
             ((Explosive) entity.getBukkitEntity()).setIsIncendiary(mechanism.getValue().asBoolean());

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -12,8 +12,8 @@ import org.bukkit.inventory.meta.Repairable;
 public class ItemRepairCost implements Property {
 
     public static boolean describes(ObjectTag item) {
-        return item instanceof dItem
-                && ((dItem) item).getItemStack().getItemMeta() instanceof Repairable;
+        return item instanceof ItemTag
+                && ((ItemTag) item).getItemStack().getItemMeta() instanceof Repairable;
     }
 
     public static ItemRepairCost getFrom(ObjectTag _item) {
@@ -21,7 +21,7 @@ public class ItemRepairCost implements Property {
             return null;
         }
         else {
-            return new ItemRepairCost((dItem) _item);
+            return new ItemRepairCost((ItemTag) _item);
         }
     }
 
@@ -34,11 +34,11 @@ public class ItemRepairCost implements Property {
     };
 
 
-    private ItemRepairCost(dItem _item) {
+    private ItemRepairCost(ItemTag _item) {
         item = _item;
     }
 
-    dItem item;
+    ItemTag item;
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -48,9 +48,9 @@ public class ItemRepairCost implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.repair_cost>
+        // @attribute <ItemTag.repair_cost>
         // @returns ElementTag(Number)
-        // @mechanism dItem.repair_cost
+        // @mechanism ItemTag.repair_cost
         // @group properties
         // @description
         // Returns the current repair cost (on an anvil) for this item.
@@ -85,13 +85,13 @@ public class ItemRepairCost implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name repair_cost
         // @input Element(Number)
         // @description
         // Changes the repair cost (on an anvil) of the item.
         // @tags
-        // <i@item.repair_cost>
+        // <ItemTag.repair_cost>
         // -->
         if (mechanism.matches("repair_cost") && mechanism.requireInteger()) {
             Repairable meta = ((Repairable) item.getItemStack().getItemMeta());

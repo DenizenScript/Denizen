@@ -2,7 +2,7 @@ package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.npc.traits.HealthTrait;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -15,8 +15,8 @@ import java.util.List;
 public class EntityHealth implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity
-                && ((dEntity) entity).isLivingEntity();
+        return entity instanceof EntityTag
+                && ((EntityTag) entity).isLivingEntity();
     }
 
     public static EntityHealth getFrom(ObjectTag entity) {
@@ -24,7 +24,7 @@ public class EntityHealth implements Property {
             return null;
         }
         else {
-            return new EntityHealth((dEntity) entity);
+            return new EntityHealth((EntityTag) entity);
         }
     }
 
@@ -41,11 +41,11 @@ public class EntityHealth implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityHealth(dEntity ent) {
+    private EntityHealth(EntityTag ent) {
         entity = ent;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     /////////
     // Property Methods
@@ -61,7 +61,7 @@ public class EntityHealth implements Property {
         return "health_data";
     }
 
-    public static String getHealthFormatted(dEntity entity, Attribute attribute) {
+    public static String getHealthFormatted(EntityTag entity, Attribute attribute) {
         double maxHealth = entity.getLivingEntity().getMaxHealth();
         if (attribute.hasContext(2)) {
             maxHealth = attribute.getIntContext(2);
@@ -96,7 +96,7 @@ public class EntityHealth implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.health.formatted>
+        // @attribute <EntityTag.health.formatted>
         // @returns ElementTag
         // @group attributes
         // @description
@@ -108,7 +108,7 @@ public class EntityHealth implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.health.max>
+        // @attribute <EntityTag.health.max>
         // @returns ElementTag(Decimal)
         // @group attributes
         // @description
@@ -120,7 +120,7 @@ public class EntityHealth implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.health.percentage>
+        // @attribute <EntityTag.health.percentage>
         // @returns ElementTag(Decimal)
         // @group attributes
         // @description
@@ -136,7 +136,7 @@ public class EntityHealth implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.health>
+        // @attribute <EntityTag.health>
         // @returns ElementTag(Decimal)
         // @group attributes
         // @description
@@ -154,15 +154,15 @@ public class EntityHealth implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name max_health
         // @input Element(Number)
         // @description
         // Sets the maximum health the entity may have.
         // The entity must be living.
         // @tags
-        // <e@entity.health>
-        // <e@entity.health.max>
+        // <EntityTag.health>
+        // <EntityTag.health.max>
         // -->
         if (mechanism.matches("max_health") && mechanism.requireDouble()) {
             if (entity.isCitizensNPC()) {
@@ -183,15 +183,15 @@ public class EntityHealth implements Property {
 
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name health_data
         // @input Element(Decimal)/Element(Decimal)
         // @description
         // Sets the amount of health the entity has, and the maximum health it has.
         // The entity must be living.
         // @tags
-        // <e@entity.health>
-        // <e@entity.health.max>
+        // <EntityTag.health>
+        // <EntityTag.health.max>
         // -->
         if (mechanism.matches("health_data")) {
             if (entity.isLivingEntity()) {
@@ -205,15 +205,15 @@ public class EntityHealth implements Property {
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name health
         // @input Element(Decimal)
         // @description
         // Sets the amount of health the entity has.
         // The entity must be living.
         // @tags
-        // <e@entity.health>
-        // <e@entity.health.max>
+        // <EntityTag.health>
+        // <EntityTag.health.max>
         // -->
         if (mechanism.matches("health") && mechanism.requireDouble()) {
             if (entity.isLivingEntity()) {

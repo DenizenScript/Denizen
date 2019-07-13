@@ -8,8 +8,8 @@ import com.denizenscript.denizen.events.player.ResourcePackStatusScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.util.TradeOffer;
 import com.denizenscript.denizen.nms.util.jnbt.StringTag;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.player.GlowCommand;
 import com.denizenscript.denizen.scripts.commands.server.ExecuteCommand;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
@@ -38,7 +38,7 @@ public class DenizenPacketHandler implements PacketHandler {
                 ResourcePackStatusScriptEvent event = ResourcePackStatusScriptEvent.instance;
                 // TODO: get hash on server?... last sent hash? event.hash = new Element(hash);
                 event.status = new ElementTag(resourcePackStatus.getStatus());
-                event.player = dPlayer.mirrorBukkitPlayer(player);
+                event.player = PlayerTag.mirrorBukkitPlayer(player);
                 event.fire();
             }
         });
@@ -52,8 +52,8 @@ public class DenizenPacketHandler implements PacketHandler {
                         @Override
                         public Boolean call() throws Exception {
                             PlayerSteersEntityScriptEvent event = PlayerSteersEntityScriptEvent.instance;
-                            event.player = dPlayer.mirrorBukkitPlayer(player);
-                            event.entity = player.isInsideVehicle() ? new dEntity(player.getVehicle()) : null;
+                            event.player = PlayerTag.mirrorBukkitPlayer(player);
+                            event.entity = player.isInsideVehicle() ? new EntityTag(player.getVehicle()) : null;
                             event.sideways = new ElementTag(steerVehicle.getLeftwardInput());
                             event.forward = new ElementTag(steerVehicle.getForwardInput());
                             event.jump = new ElementTag(steerVehicle.getJumpInput());
@@ -91,7 +91,7 @@ public class DenizenPacketHandler implements PacketHandler {
                         event.system = new ElementTag(pos == 1);
                         event.messageModified = false;
                         event.rawJsonModified = false;
-                        event.player = dPlayer.mirrorBukkitPlayer(player);
+                        event.player = PlayerTag.mirrorBukkitPlayer(player);
                         event.cancelled = false;
                         event.fire();
                         if (event.messageModified) {

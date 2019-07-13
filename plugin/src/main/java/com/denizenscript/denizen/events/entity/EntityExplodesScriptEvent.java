@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -33,12 +33,12 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
     //
     // @Context
     // <context.blocks> returns a ListTag of blocks that the entity blew up.
-    // <context.entity> returns the dEntity that exploded.
-    // <context.location> returns the dLocation the entity blew up at.
+    // <context.entity> returns the EntityTag that exploded.
+    // <context.location> returns the LocationTag the entity blew up at.
     // <context.strength> returns an Element(Decimal) of the strength of the explosion.
     //
     // @Determine
-    // ListTag(dLocation) to set a new lists of blocks that are to be affected by the explosion.
+    // ListTag(LocationTag) to set a new lists of blocks that are to be affected by the explosion.
     // Element(Decimal) to change the strength of the explosion.
     //
     // -->
@@ -48,9 +48,9 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
     }
 
     public static EntityExplodesScriptEvent instance;
-    public dEntity entity;
+    public EntityTag entity;
     public ListTag blocks;
-    public dLocation location;
+    public LocationTag location;
     public float strength;
     private Boolean blockSet;
     public EntityExplodeEvent event;
@@ -90,7 +90,7 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
             blocks = new ListTag();
             blockSet = true;
             for (String loc : ListTag.valueOf(determination)) {
-                dLocation location = dLocation.valueOf(loc);
+                LocationTag location = LocationTag.valueOf(loc);
                 if (location == null) {
                     Debug.echoError("Invalid location '" + loc + "' check [" + getName() + "]: '  for " + container.getName());
                 }
@@ -105,8 +105,8 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? EntityTag.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? EntityTag.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -128,13 +128,13 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
 
     @EventHandler
     public void onEntityExplodes(EntityExplodeEvent event) {
-        entity = new dEntity(event.getEntity());
-        location = new dLocation(event.getLocation());
+        entity = new EntityTag(event.getEntity());
+        location = new LocationTag(event.getLocation());
         strength = event.getYield();
         blocks = new ListTag();
         blockSet = false;
         for (Block block : event.blockList()) {
-            blocks.add(new dLocation(block.getLocation()).identify());
+            blocks.add(new LocationTag(block.getLocation()).identify());
         }
         this.event = event;
         fire(event);
@@ -143,7 +143,7 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
             if (blocks.size() > 0) {
                 event.blockList().clear();
                 for (String loc : blocks) {
-                    dLocation location = dLocation.valueOf(loc);
+                    LocationTag location = LocationTag.valueOf(loc);
                     event.blockList().add(location.getWorld().getBlockAt(location));
                 }
             }

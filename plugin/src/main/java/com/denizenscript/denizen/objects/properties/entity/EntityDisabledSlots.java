@@ -2,7 +2,7 @@ package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -18,7 +18,7 @@ import java.util.*;
 public class EntityDisabledSlots implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.ARMOR_STAND;
+        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntityType() == EntityType.ARMOR_STAND;
     }
 
     public static EntityDisabledSlots getFrom(ObjectTag entity) {
@@ -26,7 +26,7 @@ public class EntityDisabledSlots implements Property {
             return null;
         }
         else {
-            return new EntityDisabledSlots((dEntity) entity);
+            return new EntityDisabledSlots((EntityTag) entity);
         }
     }
 
@@ -43,11 +43,11 @@ public class EntityDisabledSlots implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityDisabledSlots(dEntity entity) {
+    private EntityDisabledSlots(EntityTag entity) {
         dentity = entity;
     }
 
-    dEntity dentity;
+    EntityTag dentity;
 
     public enum Action {
         ALL(0), REMOVE(8), PLACE(16);
@@ -101,9 +101,9 @@ public class EntityDisabledSlots implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.disabled_slots.raw>
+        // @attribute <EntityTag.disabled_slots.raw>
         // @returns ElementTag(Number)
-        // @mechanism dEntity.disabled_slots_raw
+        // @mechanism EntityTag.disabled_slots_raw
         // @group properties
         // @description
         // If the entity is an armor stand, returns its raw disabled slots value.
@@ -115,9 +115,9 @@ public class EntityDisabledSlots implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.disabled_slots>
+        // @attribute <EntityTag.disabled_slots>
         // @returns ListTag
-        // @mechanism dEntity.disabled_slots
+        // @mechanism EntityTag.disabled_slots
         // @group properties
         // @description
         // If the entity is an armor stand, returns a list of its disabled slots in the form li@slot/action|...
@@ -133,22 +133,22 @@ public class EntityDisabledSlots implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name disabled_slots_raw
         // @input Element(Number)
         // @description
         // Sets the raw disabled slots value of an armor stand.
         // See <@link url https://minecraft.gamepedia.com/Armor_Stand/ED>
         // @tags
-        // <e@entity.disabled_slots>
-        // <e@entity.disabled_slots.raw>
+        // <EntityTag.disabled_slots>
+        // <EntityTag.disabled_slots.raw>
         // -->
         if (mechanism.matches("disabled_slots_raw") && mechanism.requireInteger()) {
             CustomNBT.addCustomNBT(dentity.getBukkitEntity(), CustomNBT.KEY_DISABLED_SLOTS, mechanism.getValue().asInt());
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name disabled_slots
         // @input ListTag
         // @description
@@ -160,8 +160,8 @@ public class EntityDisabledSlots implements Property {
         // NOTE: Minecraft contains a bug where disabling HAND/ALL still allows item removal.
         // To fully disable hand interaction, disable HAND/ALL and HAND/REMOVE.
         // @tags
-        // <e@entity.disabled_slots>
-        // <e@entity.disabled_slots.raw>
+        // <EntityTag.disabled_slots>
+        // <EntityTag.disabled_slots.raw>
         // -->
         if (mechanism.matches("disabled_slots")) {
             if (!mechanism.hasValue()) {

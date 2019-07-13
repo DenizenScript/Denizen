@@ -6,7 +6,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.enums.CustomEntityType;
 import com.denizenscript.denizen.nms.interfaces.CustomEntity;
 import com.denizenscript.denizen.nms.interfaces.CustomEntityHelper;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
@@ -83,8 +83,8 @@ public class DenizenEntityType {
             if (name.equals("DROPPED_ITEM")) {
                 ItemStack itemStack = new ItemStack(Material.STONE);
                 for (Mechanism mechanism : mechanisms) {
-                    if (mechanism.matches("item") && mechanism.requireObject(dItem.class)) {
-                        itemStack = mechanism.valueAsType(dItem.class).getItemStack();
+                    if (mechanism.matches("item") && mechanism.requireObject(ItemTag.class)) {
+                        itemStack = mechanism.valueAsType(ItemTag.class).getItemStack();
                         break;
                     }
                 }
@@ -119,8 +119,8 @@ public class DenizenEntityType {
                     case ITEM_PROJECTILE:
                         ItemStack itemStack = new ItemStack(Material.STONE);
                         for (Mechanism mechanism : mechanisms) {
-                            if (mechanism.matches("item") && mechanism.requireObject(dItem.class)) {
-                                itemStack = mechanism.valueAsType(dItem.class).getItemStack();
+                            if (mechanism.matches("item") && mechanism.requireObject(ItemTag.class)) {
+                                itemStack = mechanism.valueAsType(ItemTag.class).getItemStack();
                             }
                         }
                         return customEntityHelper.spawnItemProjectile(location, itemStack);

@@ -3,8 +3,8 @@ package com.denizenscript.denizen.scripts.commands.item;
 import com.denizenscript.denizen.scripts.containers.core.BookScriptContainer;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.TagRunnable;
@@ -101,11 +101,11 @@ public class ScribeCommand extends AbstractCommand {
     // Read more about book-scripts here: <@link language book script containers>
     //
     // @Tags
-    // <i@item.book.author>
-    // <i@item.book.title>
-    // <i@item.book.page_count>
-    // <i@item.book.page[<#>]>
-    // <i@item.book.pages>
+    // <ItemTag.book.author>
+    // <ItemTag.book.title>
+    // <ItemTag.book.page_count>
+    // <ItemTag.book.page[<#>]>
+    // <ItemTag.book.pages>
     //
     //
     // @Usage
@@ -147,13 +147,13 @@ public class ScribeCommand extends AbstractCommand {
                 scriptEntry.addObject("script", arg.asType(ScriptTag.class));
             }
             else if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class)) {
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                    && arg.matchesArgumentType(LocationTag.class)) {
+                scriptEntry.addObject("location", arg.asType(LocationTag.class));
                 scriptEntry.addObject("action", BookAction.DROP);
             }
             else if (!scriptEntry.hasObject("item")
-                    && arg.matchesArgumentType(dItem.class)) {
-                scriptEntry.addObject("item", arg.asType(dItem.class));
+                    && arg.matchesArgumentType(ItemTag.class)) {
+                scriptEntry.addObject("item", arg.asType(ItemTag.class));
 
             }
             else {
@@ -162,7 +162,7 @@ public class ScribeCommand extends AbstractCommand {
         }
 
         scriptEntry.defaultObject("action", BookAction.GIVE);
-        scriptEntry.defaultObject("item", new dItem(Material.WRITTEN_BOOK));
+        scriptEntry.defaultObject("item", new ItemTag(Material.WRITTEN_BOOK));
 
         // Must contain a book script
         if (!scriptEntry.hasObject("script")) {
@@ -176,9 +176,9 @@ public class ScribeCommand extends AbstractCommand {
 
         // Retrieve objects from ScriptEntry
         BookAction action = (BookAction) scriptEntry.getObject("action");
-        dItem book = (dItem) scriptEntry.getObject("item");
+        ItemTag book = (ItemTag) scriptEntry.getObject("item");
         ScriptTag script = (ScriptTag) scriptEntry.getObject("script");
-        dLocation location = (dLocation) scriptEntry.getObject("location");
+        LocationTag location = (LocationTag) scriptEntry.getObject("location");
 
         BookScriptContainer bookScript = (BookScriptContainer) script.getContainer();
 

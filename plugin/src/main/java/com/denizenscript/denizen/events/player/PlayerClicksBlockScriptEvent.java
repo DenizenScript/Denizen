@@ -35,9 +35,9 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     // @Triggers when a player clicks on a block or in the air.
     //
     // @Context
-    // <context.item> returns the dItem the player is clicking with.
-    // <context.location> returns the dLocation the player is clicking on.
-    // <context.relative> returns a dLocation of the air block in front of the clicked block.
+    // <context.item> returns the ItemTag the player is clicking with.
+    // <context.location> returns the LocationTag the player is clicking on.
+    // <context.relative> returns a LocationTag of the air block in front of the clicked block.
     // <context.click_type> returns an ElementTag of the Spigot API click type <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/block/Action.html>.
     // <context.hand> returns an ElementTag of the used hand.
     //
@@ -49,12 +49,12 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
 
     PlayerClicksBlockScriptEvent instance;
     PlayerInteractEvent event;
-    dItem item;
-    dLocation location;
+    ItemTag item;
+    LocationTag location;
     ElementTag click_type;
     ElementTag hand;
-    dLocation relative;
-    dMaterial blockMaterial;
+    LocationTag relative;
+    MaterialTag blockMaterial;
 
     private boolean couldMatchIn(String lower) {
         int index = CoreUtilities.split(lower, ' ').indexOf("in");
@@ -63,7 +63,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         }
 
         String in = CoreUtilities.getXthArg(index + 1, lower);
-        if (dInventory.matches(in) || in.equalsIgnoreCase("inventory")) {
+        if (InventoryTag.matches(in) || in.equalsIgnoreCase("inventory")) {
             return false;
         }
         if (in.equalsIgnoreCase("notable")) {
@@ -100,7 +100,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         return true;
     }
 
-    public boolean nonSwitchWithCheck(ScriptPath path, dItem held) {
+    public boolean nonSwitchWithCheck(ScriptPath path, ItemTag held) {
         int index;
         for (index = 0; index < path.eventArgsLower.length; index++) {
             if (path.eventArgsLower[index].equals("with")) {
@@ -128,7 +128,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
                 || lower.startsWith("player left clicks")
                 || (lower.startsWith("player right clicks")
                 && !matchHelpList.contains(CoreUtilities.getXthArg(3, lower))
-                && !dEntity.matches(CoreUtilities.getXthArg(3, lower))))
+                && !EntityTag.matches(CoreUtilities.getXthArg(3, lower))))
                 && couldMatchIn(lower);  // Avoid matching "clicks in inventory"
     }
 
@@ -150,7 +150,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
 
-        if (!nonSwitchWithCheck(path, new dItem(event.getItem()))) {
+        if (!nonSwitchWithCheck(path, new ItemTag(event.getItem()))) {
             return false;
         }
 
@@ -181,7 +181,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(dEntity.getPlayerFrom(event.getPlayer()), null);
+        return new BukkitScriptEntryData(EntityTag.getPlayerFrom(event.getPlayer()), null);
     }
 
     @Override
@@ -209,11 +209,11 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         if (event.getAction() == Action.PHYSICAL) {
             return;
         }
-        blockMaterial = event.hasBlock() ? new dMaterial(event.getClickedBlock()) : new dMaterial(Material.AIR);
+        blockMaterial = event.hasBlock() ? new MaterialTag(event.getClickedBlock()) : new MaterialTag(Material.AIR);
         hand = new ElementTag(event.getHand().name());
-        item = new dItem(event.getItem());
-        location = event.hasBlock() ? new dLocation(event.getClickedBlock().getLocation()) : null;
-        relative = event.hasBlock() ? new dLocation(event.getClickedBlock().getRelative(event.getBlockFace()).getLocation()) : null;
+        item = new ItemTag(event.getItem());
+        location = event.hasBlock() ? new LocationTag(event.getClickedBlock().getLocation()) : null;
+        relative = event.hasBlock() ? new LocationTag(event.getClickedBlock().getRelative(event.getBlockFace()).getLocation()) : null;
         click_type = new ElementTag(event.getAction().name());
         cancelled = event.isCancelled() && event.useItemInHand() == Event.Result.DENY; // Spigot is dumb!
         this.event = event;

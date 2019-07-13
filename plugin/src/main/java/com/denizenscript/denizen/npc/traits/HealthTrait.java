@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.npc.traits;
 
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dNPC;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.tags.BukkitTagContext;
@@ -114,8 +114,8 @@ public class HealthTrait extends Trait implements Listener {
     }
 
     public Location getRespawnLocation() {
-        return dLocation.valueOf(TagManager.tag(respawnLocation, new BukkitTagContext(null,
-                dNPC.mirrorCitizensNPC(npc), false, null, false, null)));
+        return LocationTag.valueOf(TagManager.tag(respawnLocation, new BukkitTagContext(null,
+                NPCTag.mirrorCitizensNPC(npc), false, null, false, null)));
     }
 
     public void setRespawnable(boolean respawnable) {
@@ -274,7 +274,7 @@ public class HealthTrait extends Trait implements Listener {
             return;
         }
 
-        loc = dLocation.valueOf(TagManager.tag(respawnLocation, // TODO: debug option?
+        loc = LocationTag.valueOf(TagManager.tag(respawnLocation, // TODO: debug option?
                 new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), false, null, true, null)));
 
         if (loc == null) {

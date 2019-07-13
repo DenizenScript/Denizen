@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -25,8 +25,8 @@ public class EntityEntersPortalScriptEvent extends BukkitScriptEvent implements 
     // @Triggers when an entity enters a portal.
     //
     // @Context
-    // <context.entity> returns the dEntity.
-    // <context.location> returns the dLocation of the portal block touched by the entity.
+    // <context.entity> returns the EntityTag.
+    // <context.location> returns the LocationTag of the portal block touched by the entity.
     //
     // @Player when the entity that entered the portal is a player
     //
@@ -39,8 +39,8 @@ public class EntityEntersPortalScriptEvent extends BukkitScriptEvent implements 
     }
 
     public static EntityEntersPortalScriptEvent instance;
-    public dEntity entity;
-    public dLocation location;
+    public EntityTag entity;
+    public LocationTag location;
     public EntityPortalEnterEvent event;
 
     @Override
@@ -75,8 +75,8 @@ public class EntityEntersPortalScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? EntityTag.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? EntityTag.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -92,8 +92,8 @@ public class EntityEntersPortalScriptEvent extends BukkitScriptEvent implements 
 
     @EventHandler
     public void onEntityEntersPortal(EntityPortalEnterEvent event) {
-        entity = new dEntity(event.getEntity());
-        location = new dLocation(event.getLocation());
+        entity = new EntityTag(event.getEntity());
+        location = new LocationTag(event.getLocation());
         this.event = event;
         fire(event);
     }

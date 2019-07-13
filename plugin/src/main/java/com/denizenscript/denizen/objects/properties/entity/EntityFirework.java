@@ -2,8 +2,8 @@ package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.utilities.MaterialCompat;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
@@ -16,7 +16,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 public class EntityFirework implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.FIREWORK;
+        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntityType() == EntityType.FIREWORK;
     }
 
     public static EntityFirework getFrom(ObjectTag entity) {
@@ -24,7 +24,7 @@ public class EntityFirework implements Property {
             return null;
         }
         else {
-            return new EntityFirework((dEntity) entity);
+            return new EntityFirework((EntityTag) entity);
         }
     }
 
@@ -41,11 +41,11 @@ public class EntityFirework implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityFirework(dEntity entity) {
+    private EntityFirework(EntityTag entity) {
         firework = entity;
     }
 
-    dEntity firework;
+    EntityTag firework;
 
     /////////
     // Property Methods
@@ -55,7 +55,7 @@ public class EntityFirework implements Property {
     public String getPropertyString() {
         ItemStack item = new ItemStack(MaterialCompat.FIREWORK_ROCKET);
         item.setItemMeta(((Firework) firework.getBukkitEntity()).getFireworkMeta());
-        return new dItem(item).identify();
+        return new ItemTag(item).identify();
     }
 
     @Override
@@ -75,9 +75,9 @@ public class EntityFirework implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.firework_item>
-        // @returns dItem
-        // @mechanism dEntity.firework_item
+        // @attribute <EntityTag.firework_item>
+        // @returns ItemTag
+        // @mechanism EntityTag.firework_item
         // @group properties
         // @description
         // If the entity is a firework, returns the firework item used to launch it.
@@ -85,7 +85,7 @@ public class EntityFirework implements Property {
         if (attribute.startsWith("firework_item")) {
             ItemStack item = new ItemStack(MaterialCompat.FIREWORK_ROCKET);
             item.setItemMeta(((Firework) firework.getBukkitEntity()).getFireworkMeta());
-            return new dItem(item).getAttribute(attribute.fulfill(1));
+            return new ItemTag(item).getAttribute(attribute.fulfill(1));
         }
 
         return null;
@@ -95,16 +95,16 @@ public class EntityFirework implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name firework_item
-        // @input dItem
+        // @input ItemTag
         // @description
         // Changes the firework effect on this entity, using a firework item.
         // @tags
-        // <e@entity.firework_item>
+        // <EntityTag.firework_item>
         // -->
-        if (mechanism.matches("firework_item") && mechanism.requireObject(dItem.class)) {
-            dItem item = mechanism.valueAsType(dItem.class);
+        if (mechanism.matches("firework_item") && mechanism.requireObject(ItemTag.class)) {
+            ItemTag item = mechanism.valueAsType(ItemTag.class);
             if (item != null && item.getItemStack().getItemMeta() instanceof FireworkMeta) {
                 ((Firework) firework.getBukkitEntity()).setFireworkMeta((FireworkMeta) item.getItemStack().getItemMeta());
             }
@@ -114,13 +114,13 @@ public class EntityFirework implements Property {
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name detonate
         // @input None
         // @description
         // If the entity is a firework, detonates it.
         // @tags
-        // <e@entity.firework_item>
+        // <EntityTag.firework_item>
         // -->
         if (mechanism.matches("detonate")) {
             ((Firework) firework.getBukkitEntity()).detonate();

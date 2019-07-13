@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.dColor;
+import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
@@ -24,10 +24,10 @@ public class ColorTags {
             return;
         }
 
-        dColor color = null;
+        ColorTag color = null;
 
         if (event.hasNameContext()) {
-            color = dColor.valueOf(event.getNameContext(), event.getAttributes().context);
+            color = ColorTag.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
         if (color == null) {

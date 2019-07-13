@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.events.world;
 
 
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
-import com.denizenscript.denizen.objects.dWorld;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -32,8 +32,8 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
     // @Triggers when a structure (a tree or a mushroom) grows in a world.
     //
     // @Context
-    // <context.world> returns the dWorld the structure grew in.
-    // <context.location> returns the dLocation the structure grew at.
+    // <context.world> returns the WorldTag the structure grew in.
+    // <context.location> returns the LocationTag the structure grew at.
     // <context.structure> returns an ElementTag of the structure's type.
     // <context.blocks> returns a ListTag of all block locations to be modified.
     // <context.new_materials> returns a ListTag of the new block materials, to go with <context.blocks>.
@@ -45,8 +45,8 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
     }
 
     public static StructureGrowsScriptEvent instance;
-    public dWorld world;
-    public dLocation location;
+    public WorldTag world;
+    public LocationTag location;
     public ElementTag structure;
     public ListTag blocks;
     public ListTag new_materials;
@@ -57,7 +57,7 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
         String block = CoreUtilities.getXthArg(0, lower);
-        dMaterial mat = dMaterial.valueOf(block);
+        MaterialTag mat = MaterialTag.valueOf(block);
         return cmd.equals("grows")
                 && (block.equals("structure") || (mat != null && mat.isStructure()));
     }
@@ -110,14 +110,14 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
 
     @EventHandler
     public void onStructureGrow(StructureGrowEvent event) {
-        world = new dWorld(event.getWorld());
-        location = new dLocation(event.getLocation());
+        world = new WorldTag(event.getWorld());
+        location = new LocationTag(event.getLocation());
         structure = new ElementTag(event.getSpecies().name());
         blocks = new ListTag();
         new_materials = new ListTag();
         for (BlockState block : event.getBlocks()) {
-            blocks.add(new dLocation(block.getLocation()).identify());
-            new_materials.add(new dMaterial(block.getType(), block.getRawData()).identify());
+            blocks.add(new LocationTag(block.getLocation()).identify());
+            new_materials.add(new MaterialTag(block.getType(), block.getRawData()).identify());
         }
         this.event = event;
         fire(event);

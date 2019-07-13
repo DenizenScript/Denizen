@@ -3,8 +3,8 @@ package com.denizenscript.denizen.scripts.containers.core;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
-import com.denizenscript.denizen.objects.dNPC;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -210,12 +210,12 @@ public class InteractScriptContainer extends ScriptContainer {
      * @return a list of ScriptEntries from the script or an empty list if no script was found
      */
     public List<ScriptEntry> getEntriesFor(Class<? extends AbstractTrigger> trigger,
-                                           dPlayer player, dNPC npc, String id) {
+                                           PlayerTag player, NPCTag npc, String id) {
         return getEntriesFor(trigger, player, npc, id, false);
     }
 
     public List<ScriptEntry> getEntriesFor(Class<? extends AbstractTrigger> trigger,
-                                           dPlayer player, dNPC npc, String id, boolean quiet) {
+                                           PlayerTag player, NPCTag npc, String id, boolean quiet) {
         // Get the trigger name
         String triggerName = DenizenAPI.getCurrentInstance()
                 .getTriggerRegistry().get(trigger).getName().toUpperCase();
@@ -274,7 +274,7 @@ public class InteractScriptContainer extends ScriptContainer {
      */
 
     public Map<String, String> getIdMapFor(Class<? extends AbstractTrigger> trigger,
-                                           dPlayer player) {
+                                           PlayerTag player) {
         // Get the trigger name
         String triggerName = DenizenAPI.getCurrentInstance()
                 .getTriggerRegistry().get(trigger).getName().toUpperCase();
@@ -306,7 +306,7 @@ public class InteractScriptContainer extends ScriptContainer {
     }
 
     public String getTriggerOptionFor(Class<? extends AbstractTrigger> trigger,
-                                      dPlayer player, String id, String option) {
+                                      PlayerTag player, String id, String option) {
         // Get the trigger name
         String triggerName = DenizenAPI.getCurrentInstance()
                 .getTriggerRegistry().get(trigger).getName().toUpperCase();
@@ -317,7 +317,7 @@ public class InteractScriptContainer extends ScriptContainer {
     }
 
     public boolean hasTriggerOptionFor(Class<? extends AbstractTrigger> trigger,
-                                       dPlayer player, String id, String option) {
+                                       PlayerTag player, String id, String option) {
         // Get the trigger name
         String triggerName = DenizenAPI.getCurrentInstance()
                 .getTriggerRegistry().get(trigger).getName().toUpperCase();

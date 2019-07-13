@@ -3,9 +3,9 @@ package com.denizenscript.denizen.scripts.commands.world;
 import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dColor;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.ColorTag;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -40,10 +40,10 @@ public class FireworkCommand extends AbstractCommand {
     // flicker option means the firework will explode with a flicker effect.
     //
     // @Tags
-    // <e@entity.firework_item>
-    // <i@item.is_firework>
-    // <i@item.firework>
-    // <entry[saveName].launched_firework> returns a dEntity of the firework that was launched.
+    // <EntityTag.firework_item>
+    // <ItemTag.is_firework>
+    // <ItemTag.firework>
+    // <entry[saveName].launched_firework> returns a EntityTag of the firework that was launched.
     //
     // @Usage
     // Use to launch a star firework which explodes yellow and fades to white afterwards at the player's location
@@ -69,8 +69,8 @@ public class FireworkCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class)) {
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                    && arg.matchesArgumentType(LocationTag.class)) {
+                scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("type")
                     && arg.matches("random")) {
@@ -94,13 +94,13 @@ public class FireworkCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("primary")
                     && arg.matchesPrefix("primary")
-                    && arg.matchesArgumentList(dColor.class)) {
-                scriptEntry.addObject("primary", arg.asType(ListTag.class).filter(dColor.class, scriptEntry));
+                    && arg.matchesArgumentList(ColorTag.class)) {
+                scriptEntry.addObject("primary", arg.asType(ListTag.class).filter(ColorTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("fade")
                     && arg.matchesPrefix("fade")
-                    && arg.matchesArgumentList(dColor.class)) {
-                scriptEntry.addObject("fade", arg.asType(ListTag.class).filter(dColor.class, scriptEntry));
+                    && arg.matchesArgumentList(ColorTag.class)) {
+                scriptEntry.addObject("fade", arg.asType(ListTag.class).filter(ColorTag.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
@@ -114,7 +114,7 @@ public class FireworkCommand extends AbstractCommand {
 
         scriptEntry.defaultObject("type", new ElementTag("ball"));
         scriptEntry.defaultObject("power", new ElementTag(1));
-        scriptEntry.defaultObject("primary", Arrays.asList(dColor.valueOf("yellow")));
+        scriptEntry.defaultObject("primary", Arrays.asList(ColorTag.valueOf("yellow")));
     }
 
     @SuppressWarnings("unchecked")
@@ -122,16 +122,16 @@ public class FireworkCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) {
         // Get objects
 
-        final dLocation location = scriptEntry.hasObject("location") ?
-                (dLocation) scriptEntry.getObject("location") :
+        final LocationTag location = scriptEntry.hasObject("location") ?
+                (LocationTag) scriptEntry.getObject("location") :
                 Utilities.getEntryNPC(scriptEntry).getLocation();
 
         ElementTag type = (ElementTag) scriptEntry.getObject("type");
         ElementTag power = (ElementTag) scriptEntry.getObject("power");
         boolean flicker = scriptEntry.hasObject("flicker");
         boolean trail = scriptEntry.hasObject("trail");
-        List<dColor> primary = (List<dColor>) scriptEntry.getObject("primary");
-        List<dColor> fade = (List<dColor>) scriptEntry.getObject("fade");
+        List<ColorTag> primary = (List<ColorTag>) scriptEntry.getObject("primary");
+        List<ColorTag> fade = (List<ColorTag>) scriptEntry.getObject("fade");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
@@ -165,6 +165,6 @@ public class FireworkCommand extends AbstractCommand {
         fireworkMeta.addEffects(fireworkBuilder.build());
         firework.setFireworkMeta(fireworkMeta);
 
-        scriptEntry.addObject("launched_firework", new dEntity(firework));
+        scriptEntry.addObject("launched_firework", new EntityTag(firework));
     }
 }

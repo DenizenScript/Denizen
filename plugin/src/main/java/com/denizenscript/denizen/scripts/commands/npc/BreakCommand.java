@@ -3,9 +3,9 @@ package com.denizenscript.denizen.scripts.commands.npc;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
-import com.denizenscript.denizen.objects.dNPC;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -37,8 +37,8 @@ public class BreakCommand extends AbstractCommand implements Holdable {
     // breaking the block from within. To specify the radius, prefix the radius with 'radius:'.
     //
     // @Tags
-    // <n@npc.navigator.is_navigating>
-    // <n@npc.navigator.target_location>
+    // <NPCTag.navigator.is_navigating>
+    // <NPCTag.navigator.target_location>
     //
     // @Usage
     // Use to make the npc break a block at 17,64,-87 in world.
@@ -59,12 +59,12 @@ public class BreakCommand extends AbstractCommand implements Holdable {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class)) {
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                    && arg.matchesArgumentType(LocationTag.class)) {
+                scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("npc")
-                    && arg.matchesArgumentType(dNPC.class)) {
-                scriptEntry.addObject("npc", arg.asType(dNPC.class));
+                    && arg.matchesArgumentType(NPCTag.class)) {
+                scriptEntry.addObject("npc", arg.asType(NPCTag.class));
             }
             else if (!scriptEntry.hasObject("radius")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
@@ -108,12 +108,12 @@ public class BreakCommand extends AbstractCommand implements Holdable {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        final dLocation location = (dLocation) scriptEntry.getObject("location");
-        final dNPC npc = (dNPC) scriptEntry.getObject("npc");
+        final LocationTag location = (LocationTag) scriptEntry.getObject("location");
+        final NPCTag npc = (NPCTag) scriptEntry.getObject("npc");
         ElementTag radius = scriptEntry.getElement("radius");
 
         final HashMap<String, ObjectTag> context = new HashMap<>();
-        dMaterial material = new dMaterial(location.getBlock());
+        MaterialTag material = new MaterialTag(location.getBlock());
         context.put("location", location);
         context.put("material", material);
 

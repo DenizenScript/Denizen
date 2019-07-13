@@ -5,8 +5,8 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
-import com.denizenscript.denizen.objects.dInventory;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.InventoryTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -38,7 +38,7 @@ public class GiveCommand extends AbstractCommand {
     // If an economy is registered, specifying money instead of a item will give money to the player's economy.
     //
     // @Tags
-    // <p@player.money>
+    // <PlayerTag.money>
     //
     // @Usage
     // Use to give money to the player.
@@ -89,14 +89,14 @@ public class GiveCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("items")
                     && !scriptEntry.hasObject("type")
-                    && (arg.matchesArgumentList(dItem.class) || arg.startsWith("item:"))) {
+                    && (arg.matchesArgumentList(ItemTag.class) || arg.startsWith("item:"))) {
                 scriptEntry.addObject("items", ListTag.valueOf(arg.raw_value.startsWith("item:") ?
-                        arg.raw_value.substring("item:".length()) : arg.raw_value).filter(dItem.class, scriptEntry));
+                        arg.raw_value.substring("item:".length()) : arg.raw_value).filter(ItemTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("inventory")
                     && arg.matchesPrefix("t", "to")
-                    && arg.matchesArgumentType(dInventory.class)) {
-                scriptEntry.addObject("inventory", arg.asType(dInventory.class));
+                    && arg.matchesArgumentType(InventoryTag.class)) {
+                scriptEntry.addObject("inventory", arg.asType(InventoryTag.class));
             }
             else if (!scriptEntry.hasObject("slot")
                     && arg.matchesPrefix("slot")) {
@@ -135,16 +135,16 @@ public class GiveCommand extends AbstractCommand {
 
         ElementTag engrave = scriptEntry.getElement("engrave");
         ElementTag unlimit_stack_size = scriptEntry.getElement("unlimit_stack_size");
-        dInventory inventory = (dInventory) scriptEntry.getObject("inventory");
+        InventoryTag inventory = (InventoryTag) scriptEntry.getObject("inventory");
         ElementTag qty = scriptEntry.getElement("qty");
         Type type = (Type) scriptEntry.getObject("type");
         ElementTag slot = scriptEntry.getElement("slot");
 
         Object items_object = scriptEntry.getObject("items");
-        List<dItem> items = null;
+        List<ItemTag> items = null;
 
         if (items_object != null) {
-            items = (List<dItem>) items_object;
+            items = (List<ItemTag>) items_object;
         }
 
         if (scriptEntry.dbCallShouldDebug()) {
@@ -178,7 +178,7 @@ public class GiveCommand extends AbstractCommand {
             case ITEM:
                 boolean set_quantity = scriptEntry.hasObject("set_quantity");
                 boolean limited = !unlimit_stack_size.asBoolean();
-                for (dItem item : items) {
+                for (ItemTag item : items) {
                     ItemStack is = item.getItemStack();
                     if (is.getType() == Material.AIR) {
                         Debug.echoError("Cannot give air!");

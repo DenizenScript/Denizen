@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
@@ -46,9 +46,9 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
     //
     // @Determine
     // ElementTag to change the message.
-    // "FORMAT:" + dScript to set the format script the message should use.
+    // "FORMAT:" + ScriptTag to set the format script the message should use.
     // "RAW_FORMAT:" + ElementTag to set the format directly (without a format script). (Use with caution, avoid if possible).
-    // "RECIPIENTS:" + ListTag(dPlayer) to set the list of players that will receive the message.
+    // "RECIPIENTS:" + ListTag(PlayerTag) to set the list of players that will receive the message.
     //
     // -->
 
@@ -62,7 +62,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
     public AsyncPlayerChatEvent apcEvent;
     public ElementTag message;
     public ElementTag format;
-    public dPlayer player;
+    public PlayerTag player;
     public Set<Player> recipients;
 
     public SyncChatHandler sch = new SyncChatHandler();
@@ -121,9 +121,9 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
         else if (lower.startsWith("recipients:")) {
             String rec_new = determination.substring("recipients:".length());
             ListTag recs = ListTag.valueOf(rec_new);
-            List<dPlayer> players = recs.filter(dPlayer.class, container);
+            List<PlayerTag> players = recs.filter(PlayerTag.class, container);
             recipients.clear();
-            for (dPlayer player : players) {
+            for (PlayerTag player : players) {
                 recipients.add(player.getPlayerEntity());
             }
         }
@@ -152,7 +152,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
         if (name.equals("recipients")) {
             ListTag list = new ListTag();
             for (Player tplayer : recipients) {
-                list.add(dPlayer.mirrorBukkitPlayer(tplayer).identify());
+                list.add(PlayerTag.mirrorBukkitPlayer(tplayer).identify());
             }
             return list;
         }
@@ -167,7 +167,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
             recipients = new HashSet<>(event.getRecipients());
             pcEvent = event;
             apcEvent = null;
-            player = dEntity.getPlayerFrom(event.getPlayer());
+            player = EntityTag.getPlayerFrom(event.getPlayer());
             fire(event);
             event.setMessage(message.asString());
             event.setFormat(format.asString());
@@ -184,7 +184,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
             recipients = new HashSet<>(event.getRecipients());
             pcEvent = null;
             apcEvent = event;
-            player = dEntity.getPlayerFrom(event.getPlayer());
+            player = EntityTag.getPlayerFrom(event.getPlayer());
             fire(event);
             event.setMessage(message.asString());
             event.setFormat(format.asString());

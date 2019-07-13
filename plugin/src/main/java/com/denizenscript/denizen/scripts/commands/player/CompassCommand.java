@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -32,7 +32,7 @@ public class CompassCommand extends AbstractCommand {
     // Reset argument will turn the direction to default (spawn or bed)
     //
     // @Tags
-    // <p@player.compass_target>
+    // <PlayerTag.compass_target>
     //
     // @Usage
     // Use to reset the compass direction to its default
@@ -44,7 +44,7 @@ public class CompassCommand extends AbstractCommand {
     //
     // @Usage
     // Use to point with a compass to the world's spawn location
-    // - compass <w@world.spawn_location>
+    // - compass <WorldTag.spawn_location>
     // -->
 
     @Override
@@ -55,8 +55,8 @@ public class CompassCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class)) {
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                    && arg.matchesArgumentType(LocationTag.class)) {
+                scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("reset")
                     && arg.matches("reset")) {
@@ -81,7 +81,7 @@ public class CompassCommand extends AbstractCommand {
 
         // Fetch required objects
 
-        dLocation location = scriptEntry.getdObject("location");
+        LocationTag location = scriptEntry.getdObject("location");
         ElementTag reset = scriptEntry.getElement("reset");
         Player player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
 

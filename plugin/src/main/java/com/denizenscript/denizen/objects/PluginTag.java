@@ -12,13 +12,13 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.HashMap;
 
-public class dPlugin implements ObjectTag {
+public class PluginTag implements ObjectTag {
 
     // <--[language]
-    // @name dPlugin
+    // @name PluginTag
     // @group Object System
     // @description
-    // A dPlugin represents a Bukkit plugin on the server.
+    // A PluginTag represents a Bukkit plugin on the server.
     //
     // For format info, see <@link language pl@>
     //
@@ -28,11 +28,11 @@ public class dPlugin implements ObjectTag {
     // @name pl@
     // @group Object Fetcher System
     // @description
-    // pl@ refers to the 'object identifier' of a dPlugin. The 'pl@' is notation for Denizen's Object
-    // Fetcher. The constructor for a dPlugin is the plugin's registered name.
+    // pl@ refers to the 'object identifier' of a PluginTag. The 'pl@' is notation for Denizen's Object
+    // Fetcher. The constructor for a PluginTag is the plugin's registered name.
     // For example, 'pl@Denizen'.
     //
-    // For general info, see <@link language dPlugin>
+    // For general info, see <@link language PluginTag>
     //
     // -->
 
@@ -41,19 +41,19 @@ public class dPlugin implements ObjectTag {
     ////////////////
 
 
-    public static dPlugin valueOf(String string) {
+    public static PluginTag valueOf(String string) {
         return valueOf(string, null);
     }
 
     /**
-     * Gets a dPlugin from a string format.
+     * Gets a PluginTag from a string format.
      *
      * @param string The plugin in string form. (pl@PluginName)
-     * @return The dPlugin value. If the string is incorrectly formatted or
+     * @return The PluginTag value. If the string is incorrectly formatted or
      * the specified plugin is invalid, this is null.
      */
     @Fetchable("pl")
-    public static dPlugin valueOf(String string, TagContext context) {
+    public static PluginTag valueOf(String string, TagContext context) {
 
         if (string == null) {
             return null;
@@ -65,7 +65,7 @@ public class dPlugin implements ObjectTag {
             // Attempt to match from plugin list, as PluginManager#getPlugin is case sensitive
             for (Plugin plugin : Bukkit.getServer().getPluginManager().getPlugins()) {
                 if (string.equalsIgnoreCase(plugin.getName())) {
-                    return new dPlugin(plugin);
+                    return new PluginTag(plugin);
                 }
             }
         }
@@ -94,7 +94,7 @@ public class dPlugin implements ObjectTag {
     //   Constructors
     //////////////////
 
-    public dPlugin(Plugin plugin) {
+    public PluginTag(Plugin plugin) {
         this.plugin = plugin;
     }
 
@@ -147,7 +147,7 @@ public class dPlugin implements ObjectTag {
     }
 
     @Override
-    public dPlugin setPrefix(String prefix) {
+    public PluginTag setPrefix(String prefix) {
         this.prefix = prefix;
         return this;
     }
@@ -155,7 +155,7 @@ public class dPlugin implements ObjectTag {
     public static void registerTags() {
 
         // <--[tag]
-        // @attribute <pl@plugin.name>
+        // @attribute <PluginTag.name>
         // @returns ElementTag
         // @description
         // Gets the name of this plugin.
@@ -163,13 +163,13 @@ public class dPlugin implements ObjectTag {
         registerTag("name", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((dPlugin) object).plugin.getName())
+                return new ElementTag(((PluginTag) object).plugin.getName())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
-        // @attribute <pl@plugin.version>
+        // @attribute <PluginTag.version>
         // @returns ElementTag
         // @description
         // Gets the version for the plugin specified.
@@ -177,13 +177,13 @@ public class dPlugin implements ObjectTag {
         registerTag("version", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((dPlugin) object).plugin.getDescription().getVersion())
+                return new ElementTag(((PluginTag) object).plugin.getDescription().getVersion())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
-        // @attribute <pl@plugin.description>
+        // @attribute <PluginTag.description>
         // @returns ElementTag
         // @description
         // Gets the description for the plugin specified.
@@ -191,13 +191,13 @@ public class dPlugin implements ObjectTag {
         registerTag("description", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((dPlugin) object).plugin.getDescription().getDescription())
+                return new ElementTag(((PluginTag) object).plugin.getDescription().getDescription())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
-        // @attribute <pl@plugin.authors>
+        // @attribute <PluginTag.authors>
         // @returns ListTag
         // @description
         // Gets the list of authors for the plugin specified.
@@ -205,16 +205,16 @@ public class dPlugin implements ObjectTag {
         registerTag("authors", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                return new ListTag(((dPlugin) object).plugin.getDescription().getAuthors())
+                return new ListTag(((PluginTag) object).plugin.getDescription().getAuthors())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
         // <--[tag]
-        // @attribute <pl@plugin.type>
+        // @attribute <PluginTag.type>
         // @returns ElementTag
         // @description
-        // Always returns 'Plugin' for dPlugin objects. All objects fetchable by the Object Fetcher will return the
+        // Always returns 'Plugin' for PluginTag objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         registerTag("type", new TagRunnable() {

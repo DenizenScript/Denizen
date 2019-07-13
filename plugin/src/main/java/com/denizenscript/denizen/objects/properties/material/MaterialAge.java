@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.material;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -12,9 +12,9 @@ import org.bukkit.block.data.Ageable;
 public class MaterialAge implements Property {
 
     public static boolean describes(ObjectTag material) {
-        return material instanceof dMaterial
-                && ((dMaterial) material).hasModernData()
-                && ((dMaterial) material).getModernData().data instanceof Ageable;
+        return material instanceof MaterialTag
+                && ((MaterialTag) material).hasModernData()
+                && ((MaterialTag) material).getModernData().data instanceof Ageable;
     }
 
     public static MaterialAge getFrom(ObjectTag _material) {
@@ -22,7 +22,7 @@ public class MaterialAge implements Property {
             return null;
         }
         else {
-            return new MaterialAge((dMaterial) _material);
+            return new MaterialAge((MaterialTag) _material);
         }
     }
 
@@ -35,11 +35,11 @@ public class MaterialAge implements Property {
     };
 
 
-    private MaterialAge(dMaterial _material) {
+    private MaterialAge(MaterialTag _material) {
         material = _material;
     }
 
-    dMaterial material;
+    MaterialTag material;
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -49,7 +49,7 @@ public class MaterialAge implements Property {
         }
 
         // <--[tag]
-        // @attribute <m@material.maximum_age>
+        // @attribute <MaterialTag.maximum_age>
         // @returns ElementTag(Number)
         // @group properties
         // @description
@@ -60,9 +60,9 @@ public class MaterialAge implements Property {
         }
 
         // <--[tag]
-        // @attribute <m@material.age>
+        // @attribute <MaterialTag.age>
         // @returns ElementTag(Number)
-        // @mechanism dMaterial.age
+        // @mechanism MaterialTag.age
         // @group properties
         // @description
         // Returns the current age for an ageable material.
@@ -100,14 +100,14 @@ public class MaterialAge implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dMaterial
+        // @object MaterialTag
         // @name age
         // @input Element(Number)
         // @description
         // Sets an ageable material's current age.
         // @tags
-        // <m@material.age>
-        // <m@material.maximum_age>
+        // <MaterialTag.age>
+        // <MaterialTag.maximum_age>
         // -->
         if ((mechanism.matches("age") || mechanism.matches("plant_growth")) && mechanism.requireInteger()) {
             int age = mechanism.getValue().asInt();

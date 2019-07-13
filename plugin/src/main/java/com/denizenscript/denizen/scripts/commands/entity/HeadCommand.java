@@ -3,8 +3,8 @@ package com.denizenscript.denizen.scripts.commands.entity;
 import com.denizenscript.denizen.utilities.MaterialCompat;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -34,8 +34,8 @@ public class HeadCommand extends AbstractCommand {
     // to the player attached to the script queue. It accepts a single entity or list of entities.
     //
     // @Tags
-    // <i@item.skin>
-    // <i@item.has_skin>
+    // <ItemTag.skin>
+    // <ItemTag.has_skin>
     //
     // @Usage
     // Use to stick an awesome head on your head with the head command.
@@ -56,9 +56,9 @@ public class HeadCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("material")
-                    && arg.matchesArgumentType(dMaterial.class)
+                    && arg.matchesArgumentType(MaterialTag.class)
                     && !arg.matchesPrefix("skin", "s")) {
-                scriptEntry.addObject("material", arg.asType(dMaterial.class));
+                scriptEntry.addObject("material", arg.asType(MaterialTag.class));
             }
             else if (!scriptEntry.hasObject("skin")
                     && (arg.matchesPrefix("skin", "s"))) {
@@ -70,8 +70,8 @@ public class HeadCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()));
             }
             else if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class)) {
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
+                    && arg.matchesArgumentList(EntityTag.class)) {
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
@@ -92,9 +92,9 @@ public class HeadCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         ElementTag skin = scriptEntry.getElement("skin");
-        dMaterial material = scriptEntry.getdObject("material");
+        MaterialTag material = scriptEntry.getdObject("material");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
@@ -119,7 +119,7 @@ public class HeadCommand extends AbstractCommand {
 
         // Loop through entities, apply the item/skin
 
-        for (dEntity entity : entities) {
+        for (EntityTag entity : entities) {
             if (entity.isCitizensNPC()) {
                 if (!entity.getDenizenNPC().getCitizen().hasTrait(Equipment.class)) {
                     entity.getDenizenNPC().getCitizen().addTrait(Equipment.class);

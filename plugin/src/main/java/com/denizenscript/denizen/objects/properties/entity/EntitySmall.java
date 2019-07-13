@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -12,8 +12,8 @@ public class EntitySmall implements Property {
 
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity &&
-                ((dEntity) entity).getBukkitEntity() instanceof ArmorStand;
+        return entity instanceof EntityTag &&
+                ((EntityTag) entity).getBukkitEntity() instanceof ArmorStand;
     }
 
     public static EntitySmall getFrom(ObjectTag entity) {
@@ -21,7 +21,7 @@ public class EntitySmall implements Property {
             return null;
         }
         else {
-            return new EntitySmall((dEntity) entity);
+            return new EntitySmall((EntityTag) entity);
         }
     }
 
@@ -38,11 +38,11 @@ public class EntitySmall implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntitySmall(dEntity entity) {
+    private EntitySmall(EntityTag entity) {
         this.entity = entity;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     /////////
     // Property Methods
@@ -74,9 +74,9 @@ public class EntitySmall implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_small>
+        // @attribute <EntityTag.is_small>
         // @returns ElementTag(Boolean)
-        // @mechanism dEntity.is_small
+        // @mechanism EntityTag.is_small
         // @group properties
         // @description
         // Returns whether the armor stand is small.
@@ -93,13 +93,13 @@ public class EntitySmall implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name is_small
         // @input Element(Boolean)
         // @description
         // Sets whether the armor stand is small.
         // @tags
-        // <e@entity.is_small>
+        // <EntityTag.is_small>
         // -->
         if (mechanism.matches("is_small") && mechanism.requireBoolean()) {
             ((ArmorStand) entity.getBukkitEntity()).setSmall(mechanism.getValue().asBoolean());

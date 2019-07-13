@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dInventory;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -26,7 +26,7 @@ public class PlayerOpensInvScriptEvent extends BukkitScriptEvent implements List
     // @Triggers when a player opens an inventory. (EG, chests, not the player's main inventory.)
     //
     // @Context
-    // <context.inventory> returns the dInventory.
+    // <context.inventory> returns the InventoryTag.
     //
     // -->
 
@@ -36,7 +36,7 @@ public class PlayerOpensInvScriptEvent extends BukkitScriptEvent implements List
 
     public static PlayerOpensInvScriptEvent instance;
 
-    public dInventory inventory;
+    public InventoryTag inventory;
     public InventoryOpenEvent event;
 
     @Override
@@ -74,7 +74,7 @@ public class PlayerOpensInvScriptEvent extends BukkitScriptEvent implements List
     @Override
     public ScriptEntryData getScriptEntryData() {
         // TODO: Store the player / npc?
-        return new BukkitScriptEntryData(event != null ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
+        return new BukkitScriptEntryData(event != null ? EntityTag.getPlayerFrom(event.getPlayer()) : null, null);
     }
 
     @Override
@@ -87,10 +87,10 @@ public class PlayerOpensInvScriptEvent extends BukkitScriptEvent implements List
 
     @EventHandler
     public void onPlayerOpensInv(InventoryOpenEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        inventory = dInventory.mirrorBukkitInventory(event.getInventory());
+        inventory = InventoryTag.mirrorBukkitInventory(event.getInventory());
         this.event = event;
         fire(event);
     }

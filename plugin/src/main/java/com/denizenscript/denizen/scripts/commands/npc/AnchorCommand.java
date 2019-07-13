@@ -2,8 +2,8 @@ package com.denizenscript.denizen.scripts.commands.npc;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dNPC;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -35,9 +35,9 @@ public class AnchorCommand extends AbstractCommand {
     // NPC desired, can create a link, or alternatively override the default linked npc.
     //
     // @Tags
-    // <n@npc.anchor[anchor_name]>
-    // <n@npc.anchor.list>
-    // <n@npc.has_anchors>
+    // <NPCTag.anchor[anchor_name]>
+    // <NPCTag.anchor.list>
+    // <NPCTag.has_anchors>
     //
     // @Usage
     // Use to add and remove anchors to an NPC.
@@ -73,8 +73,8 @@ public class AnchorCommand extends AbstractCommand {
                 scriptEntry.addObject("id", arg.asElement());
             }
             else if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class)) {
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                    && arg.matchesArgumentType(LocationTag.class)) {
+                scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
             else {
                 arg.reportUnhandled();
@@ -98,10 +98,10 @@ public class AnchorCommand extends AbstractCommand {
 
         // Get objects
         Action action = (Action) scriptEntry.getObject("action");
-        dLocation location = (dLocation) scriptEntry.getObject("location");
+        LocationTag location = (LocationTag) scriptEntry.getObject("location");
         ElementTag range = (ElementTag) scriptEntry.getObject("range");
         ElementTag id = (ElementTag) scriptEntry.getObject("id");
-        dNPC npc = Utilities.getEntryNPC(scriptEntry);
+        NPCTag npc = Utilities.getEntryNPC(scriptEntry);
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {

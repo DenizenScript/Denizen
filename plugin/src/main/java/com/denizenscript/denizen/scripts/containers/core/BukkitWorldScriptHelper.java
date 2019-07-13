@@ -39,11 +39,11 @@ public class BukkitWorldScriptHelper implements Listener {
                 .registerEvents(this, DenizenAPI.getCurrentInstance());
     }
 
-    public static String doEvents(List<String> events, dNPC npc, dPlayer player, Map<String, ObjectTag> context) {
+    public static String doEvents(List<String> events, NPCTag npc, PlayerTag player, Map<String, ObjectTag> context) {
         return doEvents(events, npc, player, context, false);
     }
 
-    public static String doEvents(List<String> events, dNPC npc, dPlayer player, Map<String, ObjectTag> context, boolean useids) {
+    public static String doEvents(List<String> events, NPCTag npc, PlayerTag player, Map<String, ObjectTag> context, boolean useids) {
         List<String> determ;
         if (useids) {
             determ = OldEventManager.doEvents(events, new BukkitScriptEntryData(player, npc), context, true);
@@ -121,7 +121,7 @@ public class BukkitWorldScriptHelper implements Listener {
                 hour = hour - 24;
             }
 
-            dWorld currentWorld = new dWorld(world);
+            WorldTag currentWorld = new WorldTag(world);
 
             if (!current_time.containsKey(currentWorld.identifySimple())
                     || current_time.get(currentWorld.identifySimple()) != hour) {
@@ -157,7 +157,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // A max-size stack of the clicked item is put on the cursor.
     // COLLECT_TO_CURSOR
     // The inventory is searched for the same material, and they are put on the cursor up to
-    //      m@material.max_stack_size.
+    //      MaterialTag.max_stack_size.
     // DROP_ALL_CURSOR
     // The entire cursor item is dropped.
     // DROP_ALL_SLOT
@@ -208,9 +208,9 @@ public class BukkitWorldScriptHelper implements Listener {
     //
     // @Triggers when a player clicks in an inventory.
     // @Context
-    // <context.item> returns the dItem the player has clicked on.
-    // <context.inventory> returns the dInventory (the 'top' inventory, regardless of which slot was clicked).
-    // <context.clicked_inventory> returns the dInventory that was clicked in.
+    // <context.item> returns the ItemTag the player has clicked on.
+    // <context.inventory> returns the InventoryTag (the 'top' inventory, regardless of which slot was clicked).
+    // <context.clicked_inventory> returns the InventoryTag that was clicked in.
     // <context.cursor_item> returns the item the Player is clicking with.
     // <context.click> returns an ElementTag with the name of the click type. Click type list: <@link url http://bit.ly/2IjY198>
     // <context.slot_type> returns an ElementTag with the name of the slot type that was clicked.
@@ -222,7 +222,7 @@ public class BukkitWorldScriptHelper implements Listener {
     //
     // @Determine
     // "CANCELLED" to stop the player from clicking.
-    // dItem to set the current item for the event.
+    // ItemTag to set the current item for the event.
     //
     // -->
     @EventHandler
@@ -231,11 +231,11 @@ public class BukkitWorldScriptHelper implements Listener {
         // TODO: make this a script event...
 
         Map<String, ObjectTag> context = new HashMap<>();
-        dItem item = new dItem(Material.AIR);
-        dItem holding;
+        ItemTag item = new ItemTag(Material.AIR);
+        ItemTag holding;
 
-        dInventory inventory = dInventory.mirrorBukkitInventory(event.getInventory());
-        final dPlayer player = dEntity.getPlayerFrom(event.getWhoClicked());
+        InventoryTag inventory = InventoryTag.mirrorBukkitInventory(event.getInventory());
+        final PlayerTag player = EntityTag.getPlayerFrom(event.getWhoClicked());
         String type = event.getInventory().getType().name();
         String click = event.getClick().name();
         String slotType = event.getSlotType().name();
@@ -259,7 +259,7 @@ public class BukkitWorldScriptHelper implements Listener {
         }
 
         if (event.getCursor() != null) {
-            holding = new dItem(event.getCursor());
+            holding = new ItemTag(event.getCursor());
             context.put("cursor_item", holding);
 
             events.add(interaction + "in inventory with " + holding.identifySimple());
@@ -283,7 +283,7 @@ public class BukkitWorldScriptHelper implements Listener {
         }
 
         if (event.getCurrentItem() != null) {
-            item = new dItem(event.getCurrentItem());
+            item = new ItemTag(event.getCurrentItem());
 
             events.add("player clicks " +
                     item.identifySimple() + " in inventory");
@@ -321,7 +321,7 @@ public class BukkitWorldScriptHelper implements Listener {
             }
 
             if (event.getCursor() != null) {
-                holding = new dItem(event.getCursor());
+                holding = new ItemTag(event.getCursor());
 
                 final String[] itemStrings = new String[] {
                         item.identifySimple(),
@@ -361,7 +361,7 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("slot", new ElementTag(event.getSlot() + 1));
         context.put("raw_slot", new ElementTag(event.getRawSlot() + 1));
         if (event.getClickedInventory() != null) {
-            context.put("clicked_inventory", dInventory.mirrorBukkitInventory(event.getClickedInventory()));
+            context.put("clicked_inventory", InventoryTag.mirrorBukkitInventory(event.getClickedInventory()));
         }
         context.put("is_shift_click", new ElementTag(event.isShiftClick()));
         context.put("action", new ElementTag(event.getAction().name()));
@@ -382,10 +382,10 @@ public class BukkitWorldScriptHelper implements Listener {
                 }
             }.runTaskLater(DenizenAPI.getCurrentInstance(), 1);
         }
-        else if (dItem.matches(determination)) {
-            dItem dit = dItem.valueOf(determination, player, null);
+        else if (ItemTag.matches(determination)) {
+            ItemTag dit = ItemTag.valueOf(determination, player, null);
             if (dit == null) {
-                Debug.echoError("Invalid dItem: " + dit);
+                Debug.echoError("Invalid ItemTag: " + dit);
             }
             else {
                 event.setCurrentItem(dit.getItemStack());
@@ -399,7 +399,7 @@ public class BukkitWorldScriptHelper implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoins(PlayerJoinEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
         if (ScoreboardHelper.viewerMap.containsKey(event.getPlayer().getName())) {
@@ -428,11 +428,11 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void playerLogin(PlayerLoginEvent event) {
 
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
 
-        dPlayer.notePlayer(event.getPlayer());
+        PlayerTag.notePlayer(event.getPlayer());
     }
 
 }

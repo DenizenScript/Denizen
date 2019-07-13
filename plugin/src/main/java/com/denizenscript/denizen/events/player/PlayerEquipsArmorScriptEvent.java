@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.BukkitScriptEntryData;
@@ -44,7 +44,7 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
     // @Triggers when a player (un)equips armor.
     //
     // @Context
-    // <context.armor> returns the dItem that was (un)equipped.
+    // <context.armor> returns the ItemTag that was (un)equipped.
     // <context.reason> returns the reason that the armor was (un)equipped. Can be "INVENTORY", "INTERACT", "DISPENSER", or "BREAK".
     // -->
 
@@ -56,8 +56,8 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
     public ElementTag equipType;
     public ElementTag armorType;
     public ElementTag reason;
-    public dItem armor;
-    public dPlayer player;
+    public ItemTag armor;
+    public PlayerTag player;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
@@ -159,8 +159,8 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
         equipType = new ElementTag("equips");
         armorType = new ElementTag(type);
         reason = new ElementTag(reasonString);
-        armor = new dItem(newItem);
-        player = dPlayer.mirrorBukkitPlayer(bukkitPlayer);
+        armor = new ItemTag(newItem);
+        player = PlayerTag.mirrorBukkitPlayer(bukkitPlayer);
         cancelled = false;
         fire();
     }
@@ -169,8 +169,8 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
         equipType = new ElementTag("unequips");
         armorType = new ElementTag(type);
         reason = new ElementTag(reasonString);
-        armor = new dItem(oldItem);
-        player = dPlayer.mirrorBukkitPlayer(bukkitPlayer);
+        armor = new ItemTag(oldItem);
+        player = PlayerTag.mirrorBukkitPlayer(bukkitPlayer);
         cancelled = false;
         fire();
     }
@@ -194,7 +194,7 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
     public void onBlockDispense(final BlockDispenseEvent event) {
         final Location location = event.getBlock().getLocation();
         for (Player player : location.getWorld().getPlayers()) {
-            if (!dEntity.isNPC(player) && Utilities.checkLocation(player, location, 2.5)) {
+            if (!EntityTag.isNPC(player) && Utilities.checkLocation(player, location, 2.5)) {
                 handleChangedArmor(player, "DISPENSER");
             }
         }

@@ -4,7 +4,7 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
-import com.denizenscript.denizen.objects.dInventory;
+import com.denizenscript.denizen.objects.InventoryTag;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class InventoryScriptHelper implements Listener {
 
     public static Map<String, InventoryScriptContainer> inventory_scripts = new ConcurrentHashMap<>(8, 0.9f, 1);
-    public static Map<String, dInventory> notableInventories = new HashMap<>();
+    public static Map<String, InventoryTag> notableInventories = new HashMap<>();
     public static Map<Inventory, String> tempInventoryScripts = new HashMap<>();
 
     public InventoryScriptHelper() {

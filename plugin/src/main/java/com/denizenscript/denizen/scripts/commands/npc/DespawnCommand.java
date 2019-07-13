@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.npc;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dNPC;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -31,7 +31,7 @@ public class DespawnCommand extends AbstractCommand {
     // or interactable, but they still exist and can be respawned.
     //
     // @Tags
-    // <n@npc.is_spawned>
+    // <NPCTag.is_spawned>
     //
     // @Usage
     // Use to despawn the linked NPC.
@@ -48,8 +48,8 @@ public class DespawnCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("npcs")
-                    && arg.matchesArgumentList(dNPC.class)) {
-                scriptEntry.addObject("npcs", arg.asType(ListTag.class).filter(dNPC.class, scriptEntry));
+                    && arg.matchesArgumentList(NPCTag.class)) {
+                scriptEntry.addObject("npcs", arg.asType(ListTag.class).filter(NPCTag.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
@@ -72,7 +72,7 @@ public class DespawnCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) {
 
         // Get objects
-        List<dNPC> npcs = (List<dNPC>) scriptEntry.getObject("npcs");
+        List<NPCTag> npcs = (List<NPCTag>) scriptEntry.getObject("npcs");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
@@ -80,7 +80,7 @@ public class DespawnCommand extends AbstractCommand {
                     ArgumentHelper.debugObj("NPCs", npcs.toString()));
         }
 
-        for (dNPC npc : npcs) {
+        for (NPCTag npc : npcs) {
             if (npc.isSpawned()) {
                 if (npc.getCitizen().hasTrait(Spawned.class)) {
                     npc.getCitizen().getTrait(Spawned.class).setSpawned(false);

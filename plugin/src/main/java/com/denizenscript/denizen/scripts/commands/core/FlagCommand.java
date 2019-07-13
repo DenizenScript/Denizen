@@ -5,9 +5,9 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.flags.FlagManager.Flag;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dNPC;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
@@ -45,15 +45,15 @@ public class FlagCommand extends AbstractCommand implements Listener {
     //
     //
     // @Tags
-    // <p@player.flag[<flag>]>
-    // <p@player.has_flag[<flag_name>]>
-    // <p@player.list_flags[(regex:)<search>]>
-    // <n@npc.flag[<flag>]>
-    // <n@npc.has_flag[<flag_name>]>
-    // <n@npc.list_flags[(regex:)<search>]>
-    // <e@entity.flag[<flag_name>]>
-    // <e@entity.has_flag[<flag_name>]>
-    // <e@entity.list_flags[(regex:)<search>]>
+    // <PlayerTag.flag[<flag>]>
+    // <PlayerTag.has_flag[<flag_name>]>
+    // <PlayerTag.list_flags[(regex:)<search>]>
+    // <NPCTag.flag[<flag>]>
+    // <NPCTag.has_flag[<flag_name>]>
+    // <NPCTag.list_flags[(regex:)<search>]>
+    // <EntityTag.flag[<flag_name>]>
+    // <EntityTag.has_flag[<flag_name>]>
+    // <EntityTag.list_flags[(regex:)<search>]>
     // <server.flag[<flag>]>
     // <server.has_flag[<flag_name>]>
     // <server.list_flags[(regex:)<search>]>
@@ -136,37 +136,37 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 scriptEntry.addObject("flag_target", Utilities.getEntryPlayer(scriptEntry));
             }
 
-            // Allow a p@player or n@npc entity to specify the target to be flagged.
+            // Allow a PlayerTag or NPCTag entity to specify the target to be flagged.
             // Don't check if the player/npc is valid until after the argument
             // is being processed to make sure the objects don't accidentally get set
             // as the name of the flag..
             else if (!scriptEntry.hasObject("flag_target")
                     && arg.startsWith("n@") && !arg.hasPrefix()) {
-                if (dNPC.valueOf(arg.getValue()) == null) // TODO: Optimize
+                if (NPCTag.valueOf(arg.getValue()) == null) // TODO: Optimize
                 {
                     throw new InvalidArgumentsException("Invalid NPC target.");
                 }
                 specified_target = true;
-                scriptEntry.addObject("flag_target", arg.asType(dNPC.class));
+                scriptEntry.addObject("flag_target", arg.asType(NPCTag.class));
 
             }
             else if (!scriptEntry.hasObject("flag_target")
                     && arg.startsWith("p@") && !arg.hasPrefix()) {
-                if (dPlayer.valueOf(arg.getValue()) == null) // TODO: Optimize
+                if (PlayerTag.valueOf(arg.getValue()) == null) // TODO: Optimize
                 {
                     throw new InvalidArgumentsException("Invalid Player target.");
                 }
                 specified_target = true;
-                scriptEntry.addObject("flag_target", arg.asType(dPlayer.class));
+                scriptEntry.addObject("flag_target", arg.asType(PlayerTag.class));
             }
             else if (!scriptEntry.hasObject("flag_target")
                     && !arg.hasPrefix()) {
-                if (dEntity.valueOf(arg.getValue()) == null) // TODO: Optimize
+                if (EntityTag.valueOf(arg.getValue()) == null) // TODO: Optimize
                 {
                     throw new InvalidArgumentsException("Invalid Entity target.");
                 }
                 specified_target = true;
-                scriptEntry.addObject("flag_target", arg.asType(dEntity.class));
+                scriptEntry.addObject("flag_target", arg.asType(EntityTag.class));
             }
 
 
@@ -305,14 +305,14 @@ public class FlagCommand extends AbstractCommand implements Listener {
         if (flag_target instanceof ElementTag) {
             flag = DenizenAPI.getCurrentInstance().flagManager().getGlobalFlag(name.asString());
         }
-        else if (flag_target instanceof dPlayer) {
-            flag = DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag((dPlayer) flag_target, name.asString());
+        else if (flag_target instanceof PlayerTag) {
+            flag = DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag((PlayerTag) flag_target, name.asString());
         }
-        else if (flag_target instanceof dNPC) {
-            flag = DenizenAPI.getCurrentInstance().flagManager().getNPCFlag(((dNPC) flag_target).getId(), name.asString());
+        else if (flag_target instanceof NPCTag) {
+            flag = DenizenAPI.getCurrentInstance().flagManager().getNPCFlag(((NPCTag) flag_target).getId(), name.asString());
         }
-        else if (flag_target instanceof dEntity) {
-            flag = DenizenAPI.getCurrentInstance().flagManager().getEntityFlag((dEntity) flag_target, name.asString());
+        else if (flag_target instanceof EntityTag) {
+            flag = DenizenAPI.getCurrentInstance().flagManager().getEntityFlag((EntityTag) flag_target, name.asString());
         }
         else {
             Debug.echoError("Could not fetch a flag for this entity: " + flag_target.debug());

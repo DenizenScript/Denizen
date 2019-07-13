@@ -31,9 +31,9 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     // @Triggers when a player steps onto a material.
     //
     // @Context
-    // <context.location> returns a dLocation of the block the player is stepping on.
-    // <context.previous_location> returns a dLocation of where the player was before stepping onto the block.
-    // <context.new_location> returns a dLocation of where the player is now.
+    // <context.location> returns a LocationTag of the block the player is stepping on.
+    // <context.previous_location> returns a LocationTag of where the player was before stepping onto the block.
+    // <context.new_location> returns a LocationTag of where the player is now.
     //
     // -->
 
@@ -42,9 +42,9 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     public static PlayerStepsOnScriptEvent instance;
-    public dLocation location;
-    public dLocation previous_location;
-    public dLocation new_location;
+    public LocationTag location;
+    public LocationTag previous_location;
+    public LocationTag new_location;
     public PlayerMoveEvent event;
 
     @Override
@@ -56,7 +56,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     public boolean matches(ScriptPath path) {
 
         String mat = path.eventArgLowerAt(3);
-        dMaterial material = new dMaterial(location.getBlock());
+        MaterialTag material = new MaterialTag(location.getBlock());
         if (!tryMaterial(material, mat)) {
             return false;
         }
@@ -80,7 +80,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(dPlayer.mirrorBukkitPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(PlayerTag.mirrorBukkitPlayer(event.getPlayer()), null);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
         else if (name.equals("cuboids")) {
             Debug.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
             ListTag cuboids = new ListTag();
-            for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+            for (CuboidTag cuboid : CuboidTag.getNotableCuboidsContaining(location)) {
                 cuboids.add(cuboid.identifySimple());
             }
             return cuboids;
@@ -107,22 +107,22 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
 
     @EventHandler
     public void onPlayerStepsOn(PlayerMoveEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
         if (event.getTo().getBlock().getLocation().equals(event.getFrom().getBlock().getLocation())) {
             return;
         }
-        location = new dLocation(event.getTo().clone().subtract(0, 1, 0));
-        previous_location = new dLocation(event.getFrom());
-        new_location = new dLocation(event.getTo());
+        location = new LocationTag(event.getTo().clone().subtract(0, 1, 0));
+        previous_location = new LocationTag(event.getFrom());
+        new_location = new LocationTag(event.getTo());
         this.event = event;
         fire(event);
     }
 
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
         PlayerMoveEvent evt = new PlayerMoveEvent(event.getPlayer(), event.getFrom(), event.getTo());

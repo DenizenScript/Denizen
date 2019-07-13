@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -33,7 +33,7 @@ public class ResourcePackStatusScriptEvent extends BukkitScriptEvent {
 
     public ElementTag hash;
     public ElementTag status;
-    public dPlayer player;
+    public PlayerTag player;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {

@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.npc.actions;
 
-import com.denizenscript.denizen.objects.dNPC;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
@@ -27,12 +27,12 @@ public class ActionHandler {
         this.denizen = denizen;
     }
 
-    public String doAction(String actionName, dNPC npc, dPlayer player, AssignmentScriptContainer assignment) {
+    public String doAction(String actionName, NPCTag npc, PlayerTag player, AssignmentScriptContainer assignment) {
         return doAction(actionName, npc, player, assignment, null);
     }
 
 
-    public String doAction(String actionName, dNPC npc, dPlayer player, AssignmentScriptContainer assignment, Map<String, ObjectTag> context) {
+    public String doAction(String actionName, NPCTag npc, PlayerTag player, AssignmentScriptContainer assignment, Map<String, ObjectTag> context) {
 
         if (context == null) {
             context = new HashMap<>();

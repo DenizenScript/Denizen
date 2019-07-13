@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.MaterialCompat;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -29,7 +29,7 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
     // @Context
     // <context.entity> returns the firework that exploded.
     // <context.item>  returns the firework item.
-    // <context.location> returns the dLocation the firework exploded at.
+    // <context.location> returns the LocationTag the firework exploded at.
     //
     // -->
 
@@ -39,8 +39,8 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
 
     public static FireworkBurstsScriptEvent instance;
     public FireworkExplodeEvent event;
-    public dEntity entity;
-    public dLocation location;
+    public EntityTag entity;
+    public LocationTag location;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
@@ -76,15 +76,15 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
         else if (name.equals("item")) {
             ItemStack itemStack = new ItemStack(MaterialCompat.FIREWORK_ROCKET);
             itemStack.setItemMeta(event.getEntity().getFireworkMeta());
-            return new dItem(itemStack);
+            return new ItemTag(itemStack);
         }
         return super.getContext(name);
     }
 
     @EventHandler
     public void onFireworkBursts(FireworkExplodeEvent event) {
-        entity = new dEntity(event.getEntity());
-        location = new dLocation(entity.getLocation());
+        entity = new EntityTag(event.getEntity());
+        location = new LocationTag(entity.getLocation());
         this.event = event;
         fire(event);
     }

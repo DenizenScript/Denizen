@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -35,7 +35,7 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
     // @Context
     // <context.entity> returns the entity that caught fire.
     // <context.duration> returns the length of the burn.
-    // <context.source> returns the dEntity or dLocation that caused the fire, if any. NOTE: Currently, if the source is a dLocation, the tag will return a null. It is expected that this will be fixed by Spigot in the future.
+    // <context.source> returns the EntityTag or LocationTag that caused the fire, if any. NOTE: Currently, if the source is a LocationTag, the tag will return a null. It is expected that this will be fixed by Spigot in the future.
     // <context.source_type> returns the type of the source, which can be: ENTITY, LOCATION, NONE.
     //
     // @Determine
@@ -52,7 +52,7 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
     }
 
     public static EntityCombustsScriptEvent instance;
-    public dEntity entity;
+    public EntityTag entity;
     private int burntime;
     public EntityCombustEvent event;
 
@@ -91,8 +91,8 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? EntityTag.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? EntityTag.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -105,12 +105,12 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
         }
         else if (name.equals("source")) {
             if (event instanceof EntityCombustByEntityEvent) {
-                return new dEntity(((EntityCombustByEntityEvent) event).getCombuster());
+                return new EntityTag(((EntityCombustByEntityEvent) event).getCombuster());
             }
             else if (event instanceof EntityCombustByBlockEvent) {
                 Block combuster = ((EntityCombustByBlockEvent) event).getCombuster();
                 if (combuster != null) {
-                    return new dLocation(combuster.getLocation());
+                    return new LocationTag(combuster.getLocation());
                 }
             }
         }
@@ -128,7 +128,7 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
 
     @EventHandler
     public void onEntityCombusts(EntityCombustEvent event) {
-        entity = new dEntity(event.getEntity());
+        entity = new EntityTag(event.getEntity());
         burntime = event.getDuration();
         this.event = event;
         fire(event);

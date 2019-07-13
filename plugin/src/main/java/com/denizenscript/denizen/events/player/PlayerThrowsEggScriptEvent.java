@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -30,11 +30,11 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
     // @Triggers when a player throws an egg.
     //
     // @Context
-    // <context.egg> returns the dEntity of the egg.
+    // <context.egg> returns the EntityTag of the egg.
     // <context.is_hatching> returns an ElementTag with a value of "true" if the egg will hatch and "false" otherwise.
     //
     // @Determine
-    // dEntity to set the type of the hatching entity.
+    // EntityTag to set the type of the hatching entity.
     //
     // -->
 
@@ -43,7 +43,7 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     public static PlayerThrowsEggScriptEvent instance;
-    public dEntity egg;
+    public EntityTag egg;
     public Boolean is_hatching;
     private EntityType type;
     public PlayerEggThrowEvent event;
@@ -74,9 +74,9 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         String lower = CoreUtilities.toLowerCase(determination);
-        if (dEntity.matches(lower)) {
+        if (EntityTag.matches(lower)) {
             is_hatching = true;
-            type = dEntity.valueOf(determination).getBukkitEntityType();
+            type = EntityTag.valueOf(determination).getBukkitEntityType();
             return true;
         }
         return super.applyDetermination(container, determination);
@@ -84,7 +84,7 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(new PlayerTag(event.getPlayer()), null);
     }
 
     @Override
@@ -100,14 +100,14 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
 
     @EventHandler
     public void onPlayerThrowsEgg(PlayerEggThrowEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
         Debug.log("Is this even firing?");
         is_hatching = event.isHatching();
         Entity eggEntity = event.getEgg();
-        dEntity.rememberEntity(eggEntity);
-        egg = new dEntity(event.getEgg());
+        EntityTag.rememberEntity(eggEntity);
+        egg = new EntityTag(event.getEgg());
         type = event.getHatchingType();
         this.event = event;
         cancelled = false;
@@ -115,7 +115,7 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
         if (cancelled) {
             is_hatching = false;
         }
-        dEntity.forgetEntity(eggEntity);
+        EntityTag.forgetEntity(eggEntity);
         event.setHatching(is_hatching);
         event.setHatchingType(type);
     }

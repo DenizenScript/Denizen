@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.block;
 
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.utilities.MaterialCompat;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -29,8 +29,8 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
     // @Triggers when a block's physics update.
     //
     // @Context
-    // <context.location> returns a dLocation of the block the physics is affecting.
-    // <context.new_material> returns a dMaterial of what the block is becoming.
+    // <context.location> returns a LocationTag of the block the physics is affecting.
+    // <context.new_material> returns a MaterialTag of what the block is becoming.
     //
     // -->
 
@@ -40,9 +40,9 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
 
     public static BlockPhysicsScriptEvent instance;
 
-    public dLocation location;
-    public dMaterial new_material;
-    public dMaterial material;
+    public LocationTag location;
+    public MaterialTag new_material;
+    public MaterialTag material;
     public BlockPhysicsEvent event;
 
     @Override
@@ -92,9 +92,9 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
                 || MaterialCompat.isRepeater(changedType)) {
             return;
         }
-        location = new dLocation(event.getBlock().getLocation());
-        new_material = new dMaterial(changedType);
-        material = new dMaterial(location.getBlock());
+        location = new LocationTag(event.getBlock().getLocation());
+        new_material = new MaterialTag(changedType);
+        material = new MaterialTag(location.getBlock());
         this.event = event;
         fire(event);
     }

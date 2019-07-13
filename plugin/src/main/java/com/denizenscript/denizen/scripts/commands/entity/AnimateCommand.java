@@ -4,7 +4,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.AnimationHelper;
 import com.denizenscript.denizen.nms.interfaces.EntityAnimation;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -63,9 +63,9 @@ public class AnimateCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class)) {
+                    && arg.matchesArgumentList(EntityTag.class)) {
                 // Entity arg
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
 
             if (!scriptEntry.hasObject("animation") &&
@@ -100,7 +100,7 @@ public class AnimateCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) {
 
         // Get objects
-        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         PlayerAnimation animation = scriptEntry.hasObject("animation") ?
                 (PlayerAnimation) scriptEntry.getObject("animation") : null;
         EntityEffect effect = scriptEntry.hasObject("effect") ?
@@ -118,7 +118,7 @@ public class AnimateCommand extends AbstractCommand {
         }
 
         // Go through all the entities and animate them
-        for (dEntity entity : entities) {
+        for (EntityTag entity : entities) {
             if (entity.isSpawned()) {
 
                 try {

@@ -9,7 +9,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.abstracts.ModernBlockData;
 import com.denizenscript.denizen.nms.interfaces.BlockData;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -44,7 +44,7 @@ public class SwitchCommand extends AbstractCommand {
     // Works on any interactable blocks.
     //
     // @Tags
-    // <l@location.switched>
+    // <LocationTag.switched>
     //
     // @Usage
     // At the player's location, switch the state of the block to on, no matter what state it was in before.
@@ -69,7 +69,7 @@ public class SwitchCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("locations") &&
-                    arg.matchesArgumentList(dLocation.class)) {
+                    arg.matchesArgumentList(LocationTag.class)) {
                 scriptEntry.addObject("locations", arg.asType(ListTag.class));
             }
             else if (!scriptEntry.hasObject("duration") &&
@@ -107,7 +107,7 @@ public class SwitchCommand extends AbstractCommand {
                     + ArgumentHelper.debugObj("switchstate", switchState.name()));
         }
 
-        for (final dLocation interactLocation : interactLocations.filter(dLocation.class, scriptEntry)) {
+        for (final LocationTag interactLocation : interactLocations.filter(LocationTag.class, scriptEntry)) {
             switchBlock(scriptEntry, interactLocation, switchState, player);
 
             // If duration set, schedule a delayed task.

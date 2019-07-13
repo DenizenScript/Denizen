@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -42,11 +42,11 @@ public class HurtCommand extends AbstractCommand {
     // To make the source only be included in the initial damage event, and not the application of damage, specify 'source_once'.
     //
     // @Tags
-    // <e@entity.health>
-    // <e@entity.last_damage.amount>
-    // <e@entity.last_damage.cause>
-    // <e@entity.last_damage.duration>
-    // <e@entity.last_damage.max_duration>
+    // <EntityTag.health>
+    // <EntityTag.last_damage.amount>
+    // <EntityTag.last_damage.cause>
+    // <EntityTag.last_damage.duration>
+    // <EntityTag.last_damage.max_duration>
     //
     // @Usage
     // Use to hurt the player for 1 HP.
@@ -73,12 +73,12 @@ public class HurtCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("source")
                     && arg.matchesPrefix("source", "s")
-                    && arg.matchesArgumentType(dEntity.class)) {
-                scriptEntry.addObject("source", arg.asType(dEntity.class));
+                    && arg.matchesArgumentType(EntityTag.class)) {
+                scriptEntry.addObject("source", arg.asType(EntityTag.class));
             }
             else if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class)) {
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
+                    && arg.matchesArgumentList(EntityTag.class)) {
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("cause")
                     && arg.matchesEnum(EntityDamageEvent.DamageCause.values())) {
@@ -98,7 +98,7 @@ public class HurtCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("entities")) {
-            List<dEntity> entities = new ArrayList<>();
+            List<EntityTag> entities = new ArrayList<>();
             if (Utilities.getEntryPlayer(scriptEntry) != null) {
                 entities.add(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity());
             }
@@ -117,8 +117,8 @@ public class HurtCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-        dEntity source = (dEntity) scriptEntry.getObject("source");
+        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
+        EntityTag source = (EntityTag) scriptEntry.getObject("source");
         ElementTag amountElement = scriptEntry.getElement("amount");
         ElementTag cause = scriptEntry.getElement("cause");
         ElementTag source_once = scriptEntry.getElement("source_once");
@@ -134,7 +134,7 @@ public class HurtCommand extends AbstractCommand {
         }
 
         double amount = amountElement.asDouble();
-        for (dEntity entity : entities) {
+        for (EntityTag entity : entities) {
             if (entity.getLivingEntity() == null) {
                 Debug.echoDebug(scriptEntry, entity + " is not a living entity!");
                 continue;

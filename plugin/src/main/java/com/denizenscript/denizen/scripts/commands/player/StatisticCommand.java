@@ -2,9 +2,9 @@ package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dMaterial;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -32,8 +32,8 @@ public class StatisticCommand extends AbstractCommand {
     //
     //
     // @Tags
-    // <p@player.statistic[<statistic>]>
-    // <p@player.statistic[<statistic>].qualifier[<material>/<entity>]>
+    // <PlayerTag.statistic[<statistic>]>
+    // <PlayerTag.statistic[<statistic>].qualifier[<material>/<entity>]>
     //
     // @Usage
     // TODO: Document Command Details
@@ -54,7 +54,7 @@ public class StatisticCommand extends AbstractCommand {
             }
             else if (arg.matchesPrefix("players")
                     && !scriptEntry.hasObject("players")
-                    && arg.matchesArgumentList(dPlayer.class)) {
+                    && arg.matchesArgumentList(PlayerTag.class)) {
                 scriptEntry.addObject("players", arg.asType(ListTag.class));
                 specified_players = true;
             }
@@ -69,11 +69,11 @@ public class StatisticCommand extends AbstractCommand {
             else if (arg.matchesPrefix("qualifier", "q")
                     && !scriptEntry.hasObject("material")
                     && !scriptEntry.hasObject("entity")) {
-                if (arg.matchesArgumentType(dMaterial.class)) {
-                    scriptEntry.addObject("material", arg.asType(dMaterial.class));
+                if (arg.matchesArgumentType(MaterialTag.class)) {
+                    scriptEntry.addObject("material", arg.asType(MaterialTag.class));
                 }
-                else if (arg.matchesArgumentType(dEntity.class)) {
-                    scriptEntry.addObject("entity", arg.asType(dEntity.class));
+                else if (arg.matchesArgumentType(EntityTag.class)) {
+                    scriptEntry.addObject("entity", arg.asType(EntityTag.class));
                 }
             }
 
@@ -118,8 +118,8 @@ public class StatisticCommand extends AbstractCommand {
         ListTag players = scriptEntry.getdObject("players");
         ElementTag statistic = scriptEntry.getElement("statistic");
         ElementTag amount = scriptEntry.getElement("amount");
-        dMaterial material = scriptEntry.getdObject("material");
-        dEntity entity = scriptEntry.getdObject("entity");
+        MaterialTag material = scriptEntry.getdObject("material");
+        EntityTag entity = scriptEntry.getdObject("entity");
 
         if (scriptEntry.dbCallShouldDebug()) {
 
@@ -138,17 +138,17 @@ public class StatisticCommand extends AbstractCommand {
                 Material mat = material.getMaterial();
                 switch (act) {
                     case ADD:
-                        for (dPlayer player : players.filter(dPlayer.class, scriptEntry)) {
+                        for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
                             player.incrementStatistic(stat, mat, amt);
                         }
                         break;
                     case TAKE:
-                        for (dPlayer player : players.filter(dPlayer.class, scriptEntry)) {
+                        for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
                             player.decrementStatistic(stat, mat, amt);
                         }
                         break;
                     case SET:
-                        for (dPlayer player : players.filter(dPlayer.class, scriptEntry)) {
+                        for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
                             player.setStatistic(stat, mat, amt);
                         }
                         break;
@@ -159,17 +159,17 @@ public class StatisticCommand extends AbstractCommand {
                 EntityType ent = entity.getBukkitEntityType();
                 switch (act) {
                     case ADD:
-                        for (dPlayer player : players.filter(dPlayer.class, scriptEntry)) {
+                        for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
                             player.incrementStatistic(stat, ent, amt);
                         }
                         break;
                     case TAKE:
-                        for (dPlayer player : players.filter(dPlayer.class, scriptEntry)) {
+                        for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
                             player.decrementStatistic(stat, ent, amt);
                         }
                         break;
                     case SET:
-                        for (dPlayer player : players.filter(dPlayer.class, scriptEntry)) {
+                        for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
                             player.setStatistic(stat, ent, amt);
                         }
                         break;

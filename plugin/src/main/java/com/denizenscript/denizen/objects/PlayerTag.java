@@ -46,14 +46,14 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
+public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
 
 
     // <--[language]
-    // @name dPlayer
+    // @name PlayerTag
     // @group Object System
     // @description
-    // A dPlayer represents a player in the game.
+    // A PlayerTag represents a player in the game.
     //
     // For format info, see <@link language p@>
     //
@@ -64,19 +64,19 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
     /////////////////
 
 
-    public static dPlayer mirrorBukkitPlayer(OfflinePlayer player) {
+    public static PlayerTag mirrorBukkitPlayer(OfflinePlayer player) {
         if (player == null) {
             return null;
         }
         else {
-            return new dPlayer(player);
+            return new PlayerTag(player);
         }
     }
 
     static Map<String, UUID> playerNames = new HashMap<>();
 
     /**
-     * Notes that the player exists, for easy dPlayer valueOf handling.
+     * Notes that the player exists, for easy PlayerTag valueOf handling.
      */
     public static void notePlayer(OfflinePlayer player) {
         if (player.getName() == null) {
@@ -105,31 +105,31 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
     // @name p@
     // @group Object Fetcher System
     // @description
-    // p@ refers to the 'object identifier' of a dPlayer. The 'p@' is notation for Denizen's Object
-    // Fetcher. The only valid constructor for a dPlayer is the UUID of the player the object should be
+    // p@ refers to the 'object identifier' of a PlayerTag. The 'p@' is notation for Denizen's Object
+    // Fetcher. The only valid constructor for a PlayerTag is the UUID of the player the object should be
     // associated with.
     //
-    // For general info, see <@link language dPlayer>
+    // For general info, see <@link language PlayerTag>
     //
     // -->
 
 
-    public static dPlayer valueOf(String string) {
+    public static PlayerTag valueOf(String string) {
         return valueOf(string, null);
     }
 
     @Fetchable("p")
-    public static dPlayer valueOf(String string, TagContext context) {
+    public static PlayerTag valueOf(String string, TagContext context) {
         return valueOfInternal(string, context, true);
     }
 
     public static SlowWarning playerByNameWarning = new SlowWarning("");
 
-    public static dPlayer valueOfInternal(String string, boolean announce) {
+    public static PlayerTag valueOfInternal(String string, boolean announce) {
         return valueOfInternal(string, null, announce);
     }
 
-    public static dPlayer valueOfInternal(String string, TagContext context, boolean defaultAnnounce) {
+    public static PlayerTag valueOfInternal(String string, TagContext context, boolean defaultAnnounce) {
         if (string == null) {
             return null;
         }
@@ -145,7 +145,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
                 if (uuid != null) {
                     OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
                     if (player != null) {
-                        return new dPlayer(player);
+                        return new PlayerTag(player);
                     }
                 }
             }
@@ -162,7 +162,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
                         " (or use tag server.match_player)! Player named '" + player.getName() + "' has UUID: " + player.getUniqueId();
                 playerByNameWarning.warn(context == null ? null : context.entry);
             }
-            return new dPlayer(player);
+            return new PlayerTag(player);
         }
 
         if (announce) {
@@ -212,18 +212,18 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
     //   CONSTRUCTORS
     /////////////////
 
-    public dPlayer(OfflinePlayer player) {
+    public PlayerTag(OfflinePlayer player) {
         offlinePlayer = player;
     }
 
-    public dPlayer(UUID uuid) {
+    public PlayerTag(UUID uuid) {
         offlinePlayer = Bukkit.getOfflinePlayer(uuid);
     }
 
-    public dPlayer(Player player) {
+    public PlayerTag(Player player) {
         this((OfflinePlayer) player);
-        if (dEntity.isNPC(player)) {
-            throw new IllegalStateException("NPCs are not allowed as dPlayer objects!");
+        if (EntityTag.isNPC(player)) {
+            throw new IllegalStateException("NPCs are not allowed as PlayerTag objects!");
         }
     }
 
@@ -254,15 +254,15 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     @Override
-    public dEntity getDenizenEntity() {
-        return new dEntity(getPlayerEntity());
+    public EntityTag getDenizenEntity() {
+        return new EntityTag(getPlayerEntity());
     }
 
-    public dNPC getSelectedNPC() {
+    public NPCTag getSelectedNPC() {
         if (Depends.citizens != null && CitizensAPI.hasImplementation()) {
             NPC npc = CitizensAPI.getDefaultNPCSelector().getSelected(getPlayerEntity());
             if (npc != null) {
-                return dNPC.mirrorCitizensNPC(npc);
+                return NPCTag.mirrorCitizensNPC(npc);
             }
         }
         return null;
@@ -283,12 +283,12 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         return baseID.substring(0, 2) + "." + baseID;
     }
 
-    public dLocation getLocation() {
+    public LocationTag getLocation() {
         if (isOnline()) {
-            return new dLocation(getPlayerEntity().getLocation());
+            return new LocationTag(getPlayerEntity().getLocation());
         }
         else {
-            return new dLocation(getNBTEditor().getLocation());
+            return new LocationTag(getNBTEditor().getLocation());
         }
     }
 
@@ -337,9 +337,9 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
     }
 
-    public dLocation getEyeLocation() {
+    public LocationTag getEyeLocation() {
         if (isOnline()) {
-            return new dLocation(getPlayerEntity().getEyeLocation());
+            return new LocationTag(getPlayerEntity().getEyeLocation());
         }
         else {
             return null;
@@ -355,12 +355,12 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
     }
 
-    public dInventory getInventory() {
+    public InventoryTag getInventory() {
         if (isOnline()) {
-            return dInventory.mirrorBukkitInventory(getPlayerEntity().getInventory());
+            return InventoryTag.mirrorBukkitInventory(getPlayerEntity().getInventory());
         }
         else {
-            return new dInventory(getNBTEditor());
+            return new InventoryTag(getNBTEditor());
         }
     }
 
@@ -374,11 +374,11 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         return null;
     }
 
-    public dInventory getWorkbench() {
+    public InventoryTag getWorkbench() {
         if (isOnline()) {
             CraftingInventory workbench = getBukkitWorkbench();
             if (workbench != null) {
-                return new dInventory(workbench, getPlayerEntity());
+                return new InventoryTag(workbench, getPlayerEntity());
             }
         }
         return null;
@@ -393,12 +393,12 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
     }
 
-    public dInventory getEnderChest() {
+    public InventoryTag getEnderChest() {
         if (isOnline()) {
-            return new dInventory(getPlayerEntity().getEnderChest(), getPlayerEntity());
+            return new InventoryTag(getPlayerEntity().getEnderChest(), getPlayerEntity());
         }
         else {
-            return new dInventory(getNBTEditor(), true);
+            return new InventoryTag(getNBTEditor(), true);
         }
     }
 
@@ -597,7 +597,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     @Override
-    public dPlayer setPrefix(String prefix) {
+    public PlayerTag setPrefix(String prefix) {
         this.prefix = prefix;
         return this;
     }
@@ -648,7 +648,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         //   OFFLINE ATTRIBUTES
         /////////////////
 
-        // Defined in dEntity
+        // Defined in EntityTag
         if (attribute.startsWith("is_player")) {
             return new ElementTag(true).getAttribute(attribute.fulfill(1));
         }
@@ -658,7 +658,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <p@player.chat_history_list>
+        // @attribute <PlayerTag.chat_history_list>
         // @returns ListTag
         // @description
         // Returns a list of the last 10 things the player has said, less
@@ -671,7 +671,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.chat_history[#]>
+        // @attribute <PlayerTag.chat_history[#]>
         // @returns ElementTag
         // @description
         // Returns the last thing the player said.
@@ -696,7 +696,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.flag[<flag_name>]>
+        // @attribute <PlayerTag.flag[<flag_name>]>
         // @returns Flag ListTag
         // @description
         // Returns the specified flag from the player.
@@ -722,7 +722,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.has_flag[<flag_name>]>
+        // @attribute <PlayerTag.has_flag[<flag_name>]>
         // @returns ElementTag(Boolean)
         // @description
         // Returns true if the Player has the specified flag, otherwise returns false.
@@ -734,7 +734,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.list_flags[(regex:)<search>]>
+        // @attribute <PlayerTag.list_flags[(regex:)<search>]>
         // @returns ListTag
         // @description
         // Returns a list of a player's flag names, with an optional search for
@@ -798,20 +798,20 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <p@player.money>
+        // @attribute <PlayerTag.money>
         // @returns ElementTag(Decimal)
         // @plugin Vault
         // @description
         // Returns the amount of money the player has with the registered Economy system.
         // May work offline depending on economy provider.
-        // @mechanism dPlayer.money
+        // @mechanism PlayerTag.money
         // -->
 
         if (attribute.startsWith("money")) {
             if (Depends.economy != null) {
 
                 // <--[tag]
-                // @attribute <p@player.money.formatted>
+                // @attribute <PlayerTag.money.formatted>
                 // @returns ElementTag
                 // @plugin Vault
                 // @description
@@ -823,7 +823,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
                 }
 
                 // <--[tag]
-                // @attribute <p@player.money.currency_singular>
+                // @attribute <PlayerTag.money.currency_singular>
                 // @returns ElementTag
                 // @plugin Vault
                 // @description
@@ -836,7 +836,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
                 }
 
                 // <--[tag]
-                // @attribute <p@player.money.currency>
+                // @attribute <PlayerTag.money.currency>
                 // @returns ElementTag
                 // @plugin Vault
                 // @description
@@ -866,8 +866,8 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <p@player.target[(<entity>|...)]>
-        // @returns dEntity
+        // @attribute <PlayerTag.target[(<entity>|...)]>
+        // @returns EntityTag
         // @description
         // Returns the entity that the player is looking at, within a maximum range of 50 blocks,
         // or null if the player is not looking at an entity.
@@ -879,8 +879,8 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
             int attribs = 1;
 
             // <--[tag]
-            // @attribute <p@player.target[(<entity>|...)].within[(<#>)]>
-            // @returns dEntity
+            // @attribute <PlayerTag.target[(<entity>|...)].within[(<#>)]>
+            // @returns EntityTag
             // @description
             // Returns the living entity that the player is looking at within the specified range limit,
             // or null if the player is not looking at an entity.
@@ -908,15 +908,15 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
                     if (entity instanceof LivingEntity) {
                         for (ObjectTag obj : list.objectForms) {
                             boolean valid = false;
-                            dEntity filterEntity = null;
-                            if (obj instanceof dEntity) {
-                                filterEntity = (dEntity) obj;
+                            EntityTag filterEntity = null;
+                            if (obj instanceof EntityTag) {
+                                filterEntity = (EntityTag) obj;
                             }
                             else if (CoreUtilities.toLowerCase(obj.toString()).equals("npc")) {
-                                valid = dEntity.isCitizensNPC(entity);
+                                valid = EntityTag.isCitizensNPC(entity);
                             }
                             else {
-                                filterEntity = dEntity.getEntityFor(obj, attribute.context);
+                                filterEntity = EntityTag.getEntityFor(obj, attribute.context);
                                 if (filterEntity == null) {
                                     Debug.echoError("Trying to filter 'player.target[...]' tag with invalid input: " + obj.toString());
                                     continue;
@@ -975,7 +975,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
                                 (bz - .50 <= ez && ez <= bz + 1.50) &&
                                 (by - 1 <= ey && ey <= by + 2.5)) {
                             // Entity is close enough, so return it
-                            return new dEntity(possibleTarget).getDenizenObject().getAttribute(attribute.fulfill(attribs));
+                            return new EntityTag(possibleTarget).getDenizenObject().getAttribute(attribute.fulfill(attribs));
                         }
                     }
                 }
@@ -983,7 +983,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
             return null;
         }
 
-        // workaround for <e@entity.list_effects>
+        // workaround for <EntityTag.list_effects>
         if (attribute.startsWith("list_effects")) {
             ListTag effects = new ListTag();
             for (PotionEffect effect : getPlayerEntity().getActivePotionEffects()) {
@@ -1035,10 +1035,10 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.type>
+        // @attribute <PlayerTag.type>
         // @returns ElementTag
         // @description
-        // Always returns 'Player' for dPlayer objects. All objects fetchable by the Object Fetcher will return the
+        // Always returns 'Player' for PlayerTag objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         if (attribute.startsWith("type")) {
@@ -1046,7 +1046,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.save_name>
+        // @attribute <PlayerTag.save_name>
         // @returns ElementTag
         // @description
         // Returns the ID used to save the player in Denizen's saves.yml file.
@@ -1062,23 +1062,23 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <p@player.bed_spawn>
-        // @returns dLocation
+        // @attribute <PlayerTag.bed_spawn>
+        // @returns LocationTag
         // @description
         // Returns the location of the player's bed spawn location, null if
         // it doesn't exist.
         // Works with offline players.
-        // @mechanism dPlayer.bed_spawn_location
+        // @mechanism PlayerTag.bed_spawn_location
         // -->
         if (attribute.startsWith("bed_spawn")) {
             if (getOfflinePlayer().getBedSpawnLocation() == null) {
                 return null;
             }
-            return new dLocation(getOfflinePlayer().getBedSpawnLocation())
+            return new LocationTag(getOfflinePlayer().getBedSpawnLocation())
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // If online, let dEntity handle location tags since there are more options
+        // If online, let EntityTag handle location tags since there are more options
         // for online Players
 
         if (attribute.startsWith("location") && !isOnline()) {
@@ -1086,7 +1086,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         if (attribute.startsWith("world") && !isOnline()) {
-            return new dWorld(getWorld()).getAttribute(attribute.fulfill(1));
+            return new WorldTag(getWorld()).getAttribute(attribute.fulfill(1));
         }
 
 
@@ -1095,13 +1095,13 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <p@player.item_cooldown[<material>]>
+        // @attribute <PlayerTag.item_cooldown[<material>]>
         // @returns DurationTag
         // @description
         // Returns the cooldown duration remaining on player's material.
         // -->
         if (attribute.startsWith("item_cooldown")) {
-            dMaterial mat = new ElementTag(attribute.getContext(1)).asType(dMaterial.class, attribute.context);
+            MaterialTag mat = new ElementTag(attribute.getContext(1)).asType(MaterialTag.class, attribute.context);
             if (mat != null) {
                 return new DurationTag((long) getPlayerEntity().getCooldown(mat.getMaterial()))
                         .getAttribute(attribute.fulfill(1));
@@ -1109,7 +1109,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.first_played>
+        // @attribute <PlayerTag.first_played>
         // @returns DurationTag
         // @description
         // Returns the millisecond time of when the player first logged on to this server.
@@ -1126,7 +1126,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.has_played_before>
+        // @attribute <PlayerTag.has_played_before>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player has played before.
@@ -1139,11 +1139,11 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.absorption_health>
+        // @attribute <PlayerTag.absorption_health>
         // @returns ElementTag(Decimal)
         // @description
         // Returns the player's absorption health.
-        // @mechanism dPlayer.absorption_health
+        // @mechanism PlayerTag.absorption_health
         // -->
         if (attribute.startsWith("absorption_health")) {
             return new ElementTag(NMSHandler.getInstance().getPlayerHelper().getAbsorption(getPlayerEntity()))
@@ -1151,7 +1151,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.health.is_scaled>
+        // @attribute <PlayerTag.health.is_scaled>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player's health bar is currently being scaled.
@@ -1162,7 +1162,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.health.scale>
+        // @attribute <PlayerTag.health.scale>
         // @returns ElementTag(Decimal)
         // @description
         // Returns the current scale for the player's health bar
@@ -1173,7 +1173,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.exhaustion>
+        // @attribute <PlayerTag.exhaustion>
         // @returns ElementTag(Decimal)
         // @description
         // Returns how fast the food level drops (exhaustion).
@@ -1183,7 +1183,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // Handle dEntity oxygen tags here to allow getting them when the player is offline
+        // Handle EntityTag oxygen tags here to allow getting them when the player is offline
         if (attribute.startsWith("oxygen.max")) {
             return new DurationTag((long) getMaximumAir()).getAttribute(attribute.fulfill(2));
         }
@@ -1194,7 +1194,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
 
         // Same with health tags
         if (attribute.startsWith("health.formatted")) {
-            return EntityHealth.getHealthFormatted(new dEntity(getPlayerEntity()), attribute);
+            return EntityHealth.getHealthFormatted(new EntityTag(getPlayerEntity()), attribute);
         }
 
         if (attribute.startsWith("health.percentage")) {
@@ -1215,7 +1215,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.is_banned>
+        // @attribute <PlayerTag.is_banned>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player is banned.
@@ -1232,7 +1232,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.is_online>
+        // @attribute <PlayerTag.is_online>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player is currently online.
@@ -1243,12 +1243,12 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.is_op>
+        // @attribute <PlayerTag.is_op>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player is a full server operator.
         // Works with offline players.
-        // @mechanism dPlayer.is_op
+        // @mechanism PlayerTag.is_op
         // -->
         if (attribute.startsWith("is_op")) {
             return new ElementTag(getOfflinePlayer().isOp())
@@ -1256,12 +1256,12 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.is_whitelisted>
+        // @attribute <PlayerTag.is_whitelisted>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player is whitelisted.
         // Works with offline players.
-        // @mechanism dPlayer.is_whitelisted
+        // @mechanism PlayerTag.is_whitelisted
         // -->
         if (attribute.startsWith("is_whitelisted")) {
             return new ElementTag(getOfflinePlayer().isWhitelisted())
@@ -1269,7 +1269,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.last_played>
+        // @attribute <PlayerTag.last_played>
         // @returns DurationTag
         // @description
         // Returns the datestamp of when the player was last seen in duration.
@@ -1294,7 +1294,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.groups>
+        // @attribute <PlayerTag.groups>
         // @returns ListTag
         // @description
         // Returns a list of all groups the player is in.
@@ -1325,7 +1325,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
             }
 
             // <--[tag]
-            // @attribute <p@player.ban_info.expiration>
+            // @attribute <PlayerTag.ban_info.expiration>
             // @returns DurationTag
             // @description
             // Returns the expiration of the player's ban, if they are banned.
@@ -1337,7 +1337,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
             }
 
             // <--[tag]
-            // @attribute <p@player.ban_info.reason>
+            // @attribute <PlayerTag.ban_info.reason>
             // @returns ElementTag
             // @description
             // Returns the reason for the player's ban, if they are banned.
@@ -1348,7 +1348,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
             }
 
             // <--[tag]
-            // @attribute <p@player.ban_info.created>
+            // @attribute <PlayerTag.ban_info.created>
             // @returns DurationTag
             // @description
             // Returns when the player's ban was created, if they are banned.
@@ -1359,7 +1359,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
             }
 
             // <--[tag]
-            // @attribute <p@player.ban_info.source>
+            // @attribute <PlayerTag.ban_info.source>
             // @returns ElementTag
             // @description
             // Returns the source of the player's ban, if they are banned.
@@ -1373,12 +1373,12 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.in_group[<group_name>]>
+        // @attribute <PlayerTag.in_group[<group_name>]>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player is in the specified group.
         // This requires an online player - if the player may be offline, consider using
-        // <@link tag p@player.in_group[group_name].global>.
+        // <@link tag PlayerTag.in_group[group_name].global>.
         // -->
         if (attribute.startsWith("in_group")) {
             if (Depends.permissions == null) {
@@ -1391,7 +1391,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
             String group = attribute.getContext(1);
 
             // <--[tag]
-            // @attribute <p@player.in_group[<group_name>].global>
+            // @attribute <PlayerTag.in_group[<group_name>].global>
             // @returns ElementTag(Boolean)
             // @description
             // Returns whether the player has the group with no regard to the
@@ -1407,7 +1407,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
             }
 
             // <--[tag]
-            // @attribute <p@player.in_group[<group_name>].world[<world>]>
+            // @attribute <PlayerTag.in_group[<group_name>].world[<world>]>
             // @returns ElementTag(Boolean)
             // @description
             // Returns whether the player has the group in regards to a specific world.
@@ -1429,7 +1429,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.has_permission[permission.node]>
+        // @attribute <PlayerTag.has_permission[permission.node]>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player has the specified node.
@@ -1441,7 +1441,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
             String permission = attribute.getContext(1);
 
             // <--[tag]
-            // @attribute <p@player.has_permission[permission.node].global>
+            // @attribute <PlayerTag.has_permission[permission.node].global>
             // @returns ElementTag(Boolean)
             // @description
             // Returns whether the player has the specified node, regardless of world.
@@ -1463,7 +1463,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
             }
 
             // <--[tag]
-            // @attribute <p@player.has_permission[permission.node].world[<world name>]>
+            // @attribute <PlayerTag.has_permission[permission.node].world[<world name>]>
             // @returns ElementTag(Boolean)
             // @description
             // Returns whether the player has the specified node in regards to the
@@ -1497,10 +1497,10 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <p@player.inventory>
-        // @returns dInventory
+        // @attribute <PlayerTag.inventory>
+        // @returns InventoryTag
         // @description
-        // Returns a dInventory of the player's current inventory.
+        // Returns a InventoryTag of the player's current inventory.
         // Works with offline players.
         // -->
         if (attribute.startsWith("inventory")) {
@@ -1508,8 +1508,8 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.enderchest>
-        // @returns dInventory
+        // @attribute <PlayerTag.enderchest>
+        // @returns InventoryTag
         // @description
         // Gets the player's enderchest inventory.
         // Works with offline players.
@@ -1535,19 +1535,19 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.open_inventory>
-        // @returns dInventory
+        // @attribute <PlayerTag.open_inventory>
+        // @returns InventoryTag
         // @description
         // Gets the inventory the player currently has open. If the player has no open
         // inventory, this returns the player's inventory.
         // -->
         if (attribute.startsWith("open_inventory")) {
-            return dInventory.mirrorBukkitInventory(getPlayerEntity().getOpenInventory().getTopInventory())
+            return InventoryTag.mirrorBukkitInventory(getPlayerEntity().getOpenInventory().getTopInventory())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
-        // @attribute <p@player.selected_trade_index>
+        // @attribute <PlayerTag.selected_trade_index>
         // @returns ElementTag(Number)
         // @description
         // Returns the index of the trade the player is currently viewing, if any.
@@ -1561,8 +1561,8 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
 
         // This is almost completely broke and only works if the player has placed items in the trade slots.
         // [tag]
-        // @attribute <p@player.selected_trade>
-        // @returns dTrade
+        // @attribute <PlayerTag.selected_trade>
+        // @returns TradeTag
         // @description
         // Returns the trade the player is currently viewing, if any.
         //
@@ -1571,25 +1571,25 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
             Inventory playerInventory = getPlayerEntity().getOpenInventory().getTopInventory();
             if (playerInventory instanceof MerchantInventory
                     && ((MerchantInventory) playerInventory).getSelectedRecipe() != null) {
-                return new dTrade(((MerchantInventory) playerInventory).getSelectedRecipe()).getAttribute(attribute.fulfill(1));
+                return new TradeTag(((MerchantInventory) playerInventory).getSelectedRecipe()).getAttribute(attribute.fulfill(1));
             }
         }
         */
 
         // <--[tag]
-        // @attribute <p@player.item_on_cursor>
-        // @returns dItem
+        // @attribute <PlayerTag.item_on_cursor>
+        // @returns ItemTag
         // @description
         // Returns the item on the player's cursor, if any. This includes
         // chest interfaces, inventories, and hotbars, etc.
         // -->
         if (attribute.startsWith("item_on_cursor")) {
-            return new dItem(getPlayerEntity().getItemOnCursor())
+            return new ItemTag(getPlayerEntity().getItemOnCursor())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
-        // @attribute <p@player.item_in_hand.slot>
+        // @attribute <PlayerTag.item_in_hand.slot>
         // @returns ElementTag(Number)
         // @description
         // Returns the slot location of the player's selected item.
@@ -1600,7 +1600,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.sidebar.lines>
+        // @attribute <PlayerTag.sidebar.lines>
         // @returns ListTag
         // @description
         // Returns the current lines set on the player's Sidebar via the Sidebar command.
@@ -1614,7 +1614,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.sidebar.title>
+        // @attribute <PlayerTag.sidebar.title>
         // @returns ElementTag
         // @description
         // Returns the current title set on the player's Sidebar via the Sidebar command.
@@ -1628,11 +1628,11 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.sidebar.scores>
+        // @attribute <PlayerTag.sidebar.scores>
         // @returns ListTag
         // @description
         // Returns the current scores set on the player's Sidebar via the Sidebar command,
-        // in the same order as <@link tag p@player.sidebar.lines>.
+        // in the same order as <@link tag PlayerTag.sidebar.lines>.
         // -->
         if (attribute.startsWith("sidebar.scores")) {
             Sidebar sidebar = SidebarCommand.getSidebar(this);
@@ -1647,11 +1647,11 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.skin_blob>
+        // @attribute <PlayerTag.skin_blob>
         // @returns ElementTag
         // @description
         // Returns the player's current skin blob.
-        // @mechanism dPlayer.skin_blob
+        // @mechanism PlayerTag.skin_blob
         // -->
         if (attribute.startsWith("skin_blob")) {
             return new ElementTag(NMSHandler.getInstance().getProfileEditor().getPlayerSkinBlob(getPlayerEntity()))
@@ -1662,7 +1662,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
             attribute.fulfill(1);
 
             // <--[tag]
-            // @attribute <p@player.attack_cooldown.duration>
+            // @attribute <PlayerTag.attack_cooldown.duration>
             // @returns DurationTag
             // @description
             // Returns the amount of time that passed since the start of the attack cooldown.
@@ -1674,7 +1674,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
 
 
             // <--[tag]
-            // @attribute <p@player.attack_cooldown.max_duration>
+            // @attribute <PlayerTag.attack_cooldown.max_duration>
             // @returns DurationTag
             // @description
             // Returns the maximum amount of time that can pass before the player's main hand has returned
@@ -1689,7 +1689,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
 
 
             // <--[tag]
-            // @attribute <p@player.attack_cooldown.percent>
+            // @attribute <PlayerTag.attack_cooldown.percent>
             // @returns ElementTag(Decimal)
             // @description
             // Returns the progress of the attack cooldown. 0 means that the attack cooldown has just
@@ -1712,10 +1712,10 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <p@player.selected_npc>
-        // @returns dNPC
+        // @attribute <PlayerTag.selected_npc>
+        // @returns NPCTag
         // @description
-        // Returns the dNPC that the player currently has selected with
+        // Returns the NPCTag that the player currently has selected with
         // '/npc select', null if no player selected.
         // -->
         if (attribute.startsWith("selected_npc")) {
@@ -1730,14 +1730,14 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <p@player.entity>
-        // @returns dEntity
+        // @attribute <PlayerTag.entity>
+        // @returns EntityTag
         // @description
-        // Returns the dEntity object of the player.
-        // (Note: This should never actually be needed. <p@player> is considered a valid dEntity by script commands.)
+        // Returns the EntityTag object of the player.
+        // (Note: This should never actually be needed. <PlayerTag> is considered a valid EntityTag by script commands.)
         // -->
         if (attribute.startsWith("entity") && !attribute.startsWith("entity_")) {
-            return new dEntity(getPlayerEntity())
+            return new EntityTag(getPlayerEntity())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1747,7 +1747,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <p@player.ip>
+        // @attribute <PlayerTag.ip>
         // @returns ElementTag
         // @description
         // Returns the player's IP address host name.
@@ -1756,7 +1756,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
                 attribute.startsWith("host_name")) {
             attribute = attribute.fulfill(1);
             // <--[tag]
-            // @attribute <p@player.ip.address_only>
+            // @attribute <PlayerTag.ip.address_only>
             // @returns ElementTag
             // @description
             // Returns the player's IP address.
@@ -1767,7 +1767,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
             }
             String host = getPlayerEntity().getAddress().getHostName();
             // <--[tag]
-            // @attribute <p@player.ip.address>
+            // @attribute <PlayerTag.ip.address>
             // @returns ElementTag
             // @description
             // Returns the player's IP address.
@@ -1781,7 +1781,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.name.display>
+        // @attribute <PlayerTag.name.display>
         // @returns ElementTag
         // @description
         // Returns the display name of the player, which may contain
@@ -1793,7 +1793,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.name.list>
+        // @attribute <PlayerTag.name.list>
         // @returns ElementTag
         // @description
         // Returns the name of the player as shown in the player list.
@@ -1804,7 +1804,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.nameplate>
+        // @attribute <PlayerTag.nameplate>
         // @returns ElementTag
         // @description
         // Returns the displayed text in the nameplate of the player.
@@ -1815,7 +1815,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.name>
+        // @attribute <PlayerTag.name>
         // @returns ElementTag
         // @description
         // Returns the name of the player.
@@ -1829,26 +1829,26 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <p@player.compass_target>
-        // @returns dLocation
+        // @attribute <PlayerTag.compass_target>
+        // @returns LocationTag
         // @description
         // Returns the location of the player's compass target.
         // -->
         if (attribute.startsWith("compass_target")) {
             Location target = getPlayerEntity().getCompassTarget();
             if (target != null) {
-                return new dLocation(target).getAttribute(attribute.fulfill(1));
+                return new LocationTag(target).getAttribute(attribute.fulfill(1));
             }
         }
 
         // <--[tag]
-        // @attribute <p@player.chunk_loaded[<chunk>]>
+        // @attribute <PlayerTag.chunk_loaded[<chunk>]>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player has the chunk loaded on their client.
         // -->
         if (attribute.startsWith("chunk_loaded") && attribute.hasContext(1)) {
-            dChunk chunk = dChunk.valueOf(attribute.getContext(1));
+            ChunkTag chunk = ChunkTag.valueOf(attribute.getContext(1));
             if (chunk == null) {
                 return null;
             }
@@ -1861,11 +1861,11 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <p@player.can_fly>
+        // @attribute <PlayerTag.can_fly>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player is allowed to fly.
-        // @mechanism dPlayer.can_fly
+        // @mechanism PlayerTag.can_fly
         // -->
         if (attribute.startsWith("can_fly") || attribute.startsWith("allowed_flight")) {
             return new ElementTag(getPlayerEntity().getAllowFlight())
@@ -1873,7 +1873,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.fly_speed>
+        // @attribute <PlayerTag.fly_speed>
         // @returns ElementTag(Decimal)
         // @description
         // Returns the speed the player can fly at.
@@ -1884,7 +1884,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.food_level.formatted>
+        // @attribute <PlayerTag.food_level.formatted>
         // @returns ElementTag
         // @description
         // Returns a 'formatted' value of the player's current food level.
@@ -1914,7 +1914,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.saturation>
+        // @attribute <PlayerTag.saturation>
         // @returns ElementTag(Decimal)
         // @description
         // Returns the current saturation of the player.
@@ -1925,7 +1925,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.food_level>
+        // @attribute <PlayerTag.food_level>
         // @returns ElementTag(Number)
         // @description
         // Returns the current food level of the player.
@@ -1936,7 +1936,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.gamemode>
+        // @attribute <PlayerTag.gamemode>
         // @returns ElementTag
         // @description
         // Returns the name of the gamemode the player is currently set to.
@@ -1944,7 +1944,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         if (attribute.startsWith("gamemode")) {
             attribute = attribute.fulfill(1);
             // <--[tag]
-            // @attribute <p@player.gamemode.id>
+            // @attribute <PlayerTag.gamemode.id>
             // @returns ElementTag(Number)
             // @description
             // Returns the gamemode ID of the player. 0 = survival, 1 = creative, 2 = adventure, 3 = spectator
@@ -1958,7 +1958,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.is_blocking>
+        // @attribute <PlayerTag.is_blocking>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player is currently blocking.
@@ -1969,7 +1969,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.ping>
+        // @attribute <PlayerTag.ping>
         // @returns ElementTag(Number)
         // @description
         // Returns the player's current ping.
@@ -1980,7 +1980,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.is_flying>
+        // @attribute <PlayerTag.is_flying>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player is currently flying.
@@ -1991,7 +1991,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.is_sleeping>
+        // @attribute <PlayerTag.is_sleeping>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player is currently sleeping.
@@ -2002,7 +2002,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.is_sneaking>
+        // @attribute <PlayerTag.is_sneaking>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player is currently sneaking.
@@ -2013,7 +2013,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.is_sprinting>
+        // @attribute <PlayerTag.is_sprinting>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player is currently sprinting.
@@ -2024,7 +2024,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.has_achievement[<achievement>]>
+        // @attribute <PlayerTag.has_achievement[<achievement>]>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the player has the specified achievement.
@@ -2035,7 +2035,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.statistic[<statistic>]>
+        // @attribute <PlayerTag.statistic[<statistic>]>
         // @returns ElementTag(Number)
         // @description
         // Returns the player's current value for the specified statistic.
@@ -2047,7 +2047,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
             }
 
             // <--[tag]
-            // @attribute <p@player.statistic[<statistic>].qualifier[<material>/<entity>]>
+            // @attribute <PlayerTag.statistic[<statistic>].qualifier[<material>/<entity>]>
             // @returns ElementTag(Number)
             // @description
             // Returns the player's current value for the specified statistic, with the
@@ -2056,12 +2056,12 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
             if (attribute.getAttribute(2).startsWith("qualifier")) {
                 ObjectTag obj = ObjectFetcher.pickObjectFor(attribute.getContext(2), attribute.context);
                 try {
-                    if (obj instanceof dMaterial) {
-                        return new ElementTag(getPlayerEntity().getStatistic(statistic, ((dMaterial) obj).getMaterial()))
+                    if (obj instanceof MaterialTag) {
+                        return new ElementTag(getPlayerEntity().getStatistic(statistic, ((MaterialTag) obj).getMaterial()))
                                 .getAttribute(attribute.fulfill(2));
                     }
-                    else if (obj instanceof dEntity) {
-                        return new ElementTag(getPlayerEntity().getStatistic(statistic, ((dEntity) obj).getBukkitEntityType()))
+                    else if (obj instanceof EntityTag) {
+                        return new ElementTag(getPlayerEntity().getStatistic(statistic, ((EntityTag) obj).getBukkitEntityType()))
                                 .getAttribute(attribute.fulfill(2));
                     }
                     else {
@@ -2083,7 +2083,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.time_asleep>
+        // @attribute <PlayerTag.time_asleep>
         // @returns DurationTag
         // @description
         // Returns the time the player has been asleep.
@@ -2094,7 +2094,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.time>
+        // @attribute <PlayerTag.time>
         // @returns ElementTag(Number)
         // @description
         // Returns the time the player is currently experiencing. This time could differ from
@@ -2107,7 +2107,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.walk_speed>
+        // @attribute <PlayerTag.walk_speed>
         // @returns ElementTag(Decimal)
         // @description
         // Returns the speed the player can walk at.
@@ -2118,9 +2118,9 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.weather>
+        // @attribute <PlayerTag.weather>
         // @returns ElementTag
-        // @mechanism dPlayer.weather
+        // @mechanism PlayerTag.weather
         // @description
         // Returns the type of weather the player is experiencing. This will be different
         // from the weather currently in the world that the player is residing in if
@@ -2138,7 +2138,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.xp.level>
+        // @attribute <PlayerTag.xp.level>
         // @returns ElementTag(Number)
         // @description
         // Returns the number of XP levels the player has.
@@ -2149,7 +2149,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.xp.to_next_level>
+        // @attribute <PlayerTag.xp.to_next_level>
         // @returns ElementTag(Number)
         // @description
         // Returns the amount of XP needed to get to the next level.
@@ -2160,7 +2160,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.xp.total>
+        // @attribute <PlayerTag.xp.total>
         // @returns ElementTag(Number)
         // @description
         // Returns the total amount of experience points.
@@ -2171,7 +2171,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <p@player.xp>
+        // @attribute <PlayerTag.xp>
         // @returns ElementTag(Decimal)
         // @description
         // Returns the percentage of experience points to the next level.
@@ -2184,14 +2184,14 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         if (Depends.chat != null) {
 
             // <--[tag]
-            // @attribute <p@player.chat_prefix>
+            // @attribute <PlayerTag.chat_prefix>
             // @returns ElementTag
             // @plugin Vault
             // @description
             // Returns the player's chat prefix.
             // NOTE: May work with offline players.
             // Requires a Vault-compatible chat plugin.
-            // @mechanism dPlayer.chat_prefix
+            // @mechanism PlayerTag.chat_prefix
             // -->
             if (attribute.startsWith("chat_prefix")) {
                 String prefix = Depends.chat.getPlayerPrefix(getWorld().getName(), getOfflinePlayer());
@@ -2202,14 +2202,14 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
             }
 
             // <--[tag]
-            // @attribute <p@player.chat_suffix>
+            // @attribute <PlayerTag.chat_suffix>
             // @returns ElementTag
             // @plugin Vault
             // @description
             // Returns the player's chat suffix.
             // NOTE: May work with offline players.
             // Requires a Vault-compatible chat plugin.
-            // @mechanism dPlayer.chat_suffix
+            // @mechanism PlayerTag.chat_suffix
             // -->
             else if (attribute.startsWith("chat_suffix")) {
                 String suffix = Depends.chat.getPlayerSuffix(getWorld().getName(), getOfflinePlayer());
@@ -2225,7 +2225,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
             return returned;
         }
 
-        return new dEntity(getPlayerEntity()).getAttribute(attribute);
+        return new EntityTag(getPlayerEntity()).getAttribute(attribute);
     }
 
 
@@ -2237,7 +2237,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name respawn
         // @input None
         // @description
@@ -2248,7 +2248,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name vision
         // @input Element
         // @description
@@ -2266,28 +2266,28 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name level
         // @input Element(Number)
         // @description
         // Sets the level on the player. Does not affect the current progression
         // of experience towards next level.
         // @tags
-        // <p@player.xp.level>
+        // <PlayerTag.xp.level>
         // -->
         if (mechanism.matches("level") && mechanism.requireInteger()) {
             setLevel(mechanism.getValue().asInt());
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name item_slot
         // @input Element(Number)
         // @description
         // Sets the inventory slot that the player has selected.
         // Works with offline players.
         // @tags
-        // <p@player.item_in_hand.slot>
+        // <PlayerTag.item_in_hand.slot>
         // -->
         if (mechanism.matches("item_slot") && mechanism.requireInteger()) {
             if (isOnline()) {
@@ -2299,7 +2299,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name window_property
         // @input Element
         // @description
@@ -2327,21 +2327,21 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name item_on_cursor
-        // @input dItem
+        // @input ItemTag
         // @description
         // Sets the item on the player's cursor. This includes
         // chest interfaces, inventories, and hotbars, etc.
         // @tags
-        // <p@player.item_on_cursor>
+        // <PlayerTag.item_on_cursor>
         // -->
-        if (mechanism.matches("item_on_cursor") && mechanism.requireObject(dItem.class)) {
-            getPlayerEntity().setItemOnCursor(mechanism.valueAsType(dItem.class).getItemStack());
+        if (mechanism.matches("item_on_cursor") && mechanism.requireObject(ItemTag.class)) {
+            getPlayerEntity().setItemOnCursor(mechanism.valueAsType(ItemTag.class).getItemStack());
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name award_achievement
         // @input Element
         // @description
@@ -2361,20 +2361,20 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name absorption_health
         // @input Element(Decimal)
         // @description
         // Sets the player's absorption health.
         // @tags
-        // <p@player.absorption_health>
+        // <PlayerTag.absorption_health>
         // -->
         if (mechanism.matches("absorption_health") && mechanism.requireFloat()) {
             NMSHandler.getInstance().getPlayerHelper().setAbsorption(getPlayerEntity(), mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name fake_absorption_health
         // @input Element(Decimal)
         // @description
@@ -2385,7 +2385,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name health_scale
         // @input Element(Decimal)
         // @description
@@ -2394,21 +2394,21 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         // standard.
         // Player relogging will reset this mechanism.
         // @tags
-        // <p@player.health.scale>
+        // <PlayerTag.health.scale>
         // -->
         if (mechanism.matches("health_scale") && mechanism.requireDouble()) {
             getPlayerEntity().setHealthScale(mechanism.getValue().asDouble());
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name scale_health
         // @input Element(Boolean)
         // @description
         // Enables or disables the health scale mechanism.getValue(). Disabling will result in the standard
         // amount of hearts being shown.
         // @tags
-        // <p@player.health.is_scaled>
+        // <PlayerTag.health.is_scaled>
         // -->
         if (mechanism.matches("scale_health") && mechanism.requireBoolean()) {
             getPlayerEntity().setHealthScaled(mechanism.getValue().asBoolean());
@@ -2424,23 +2424,23 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name redo_attack_cooldown
         // @input None
         // @description
         // Forces the player to wait for the full attack cooldown duration for the item in their hand.
         // NOTE: The clientside attack cooldown indicator will not reflect this change!
         // @tags
-        // <p@player.attack_cooldown.time_passed>
-        // <p@player.attack_cooldown.max_duration>
-        // <p@player.attack_cooldown.percent_done>
+        // <PlayerTag.attack_cooldown.time_passed>
+        // <PlayerTag.attack_cooldown.max_duration>
+        // <PlayerTag.attack_cooldown.percent_done>
         // -->
         if (mechanism.matches("redo_attack_cooldown")) {
             NMSHandler.getInstance().getPlayerHelper().setAttackCooldown(getPlayerEntity(), 0);
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name reset_attack_cooldown
         // @input None
         // @description
@@ -2448,9 +2448,9 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         // NOTE: This will do nothing if the player's attack speed attribute is set to 0.
         // NOTE: The clientside attack cooldown indicator will not reflect this change!
         // @tags
-        // <p@player.attack_cooldown.time_passed>
-        // <p@player.attack_cooldown.max_duration>
-        // <p@player.attack_cooldown.percent_done>
+        // <PlayerTag.attack_cooldown.time_passed>
+        // <PlayerTag.attack_cooldown.max_duration>
+        // <PlayerTag.attack_cooldown.percent_done>
         // -->
         if (mechanism.matches("reset_attack_cooldown")) {
             PlayerHelper playerHelper = NMSHandler.getInstance().getPlayerHelper();
@@ -2458,7 +2458,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name attack_cooldown_percent
         // @input Element(Decimal)
         // @description
@@ -2466,9 +2466,9 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         // 0 means the cooldown has just begun, while 1 means the cooldown has been completed.
         // NOTE: The clientside attack cooldown indicator will not reflect this change!
         // @tags
-        // <p@player.attack_cooldown.time_passed>
-        // <p@player.attack_cooldown.max_duration>
-        // <p@player.attack_cooldown.percent_done>
+        // <PlayerTag.attack_cooldown.time_passed>
+        // <PlayerTag.attack_cooldown.max_duration>
+        // <PlayerTag.attack_cooldown.percent_done>
         // -->
         if (mechanism.matches("attack_cooldown_percent") && mechanism.requireFloat()) {
             float percent = mechanism.getValue().asFloat();
@@ -2484,7 +2484,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name attack_cooldown
         // @input Duration
         // @description
@@ -2492,9 +2492,9 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         // attack cooldown, then the cooldown is considered finished.
         // NOTE: The clientside attack cooldown indicator will not reflect this change!
         // @tags
-        // <p@player.attack_cooldown.time_passed>
-        // <p@player.attack_cooldown.max_duration>
-        // <p@player.attack_cooldown.percent_done>
+        // <PlayerTag.attack_cooldown.time_passed>
+        // <PlayerTag.attack_cooldown.max_duration>
+        // <PlayerTag.attack_cooldown.percent_done>
         // -->
         if (mechanism.matches("attack_cooldown") && mechanism.requireObject(DurationTag.class)) {
             NMSHandler.getInstance().getPlayerHelper().setAttackCooldown(getPlayerEntity(),
@@ -2502,7 +2502,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name resource_pack
         // @input Element
         // @description
@@ -2515,20 +2515,20 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name saturation
         // @input Element(Decimal)
         // @description
         // Sets the current food saturation level of a player.
         // @tags
-        // <p@player.saturation>
+        // <PlayerTag.saturation>
         // -->
         if (mechanism.matches("saturation") && mechanism.requireFloat()) {
             getPlayerEntity().setSaturation(mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name send_map
         // @input Element(Number)
         // @description
@@ -2547,100 +2547,100 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name food_level
         // @input Element(Number)
         // @description
         // Sets the current food level of a player. Typically, '20' is full.
         // @tags
-        // <p@player.food_level>
+        // <PlayerTag.food_level>
         // -->
         if (mechanism.matches("food_level") && mechanism.requireInteger()) {
             setFoodLevel(mechanism.getValue().asInt());
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name bed_spawn_location
-        // @input dLocation
+        // @input LocationTag
         // @description
         // Sets the bed location that the player respawns at.
         // @tags
-        // <p@player.bed_spawn>
+        // <PlayerTag.bed_spawn>
         // -->
-        if (mechanism.matches("bed_spawn_location") && mechanism.requireObject(dLocation.class)) {
-            setBedSpawnLocation(mechanism.valueAsType(dLocation.class));
+        if (mechanism.matches("bed_spawn_location") && mechanism.requireObject(LocationTag.class)) {
+            setBedSpawnLocation(mechanism.valueAsType(LocationTag.class));
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name can_fly
         // @input Element(Boolean)
         // @description
         // Sets whether the player is allowed to fly.
         // @tags
-        // <p@player.can_fly>
+        // <PlayerTag.can_fly>
         // -->
         if (mechanism.matches("can_fly") && mechanism.requireBoolean()) {
             getPlayerEntity().setAllowFlight(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name fly_speed
         // @input Element(Decimal)
         // @description
         // Sets the fly speed of the player. Valid range is 0.0 to 1.0
         // @tags
-        // <p@player.fly_speed>
+        // <PlayerTag.fly_speed>
         // -->
         if (mechanism.matches("fly_speed") && mechanism.requireFloat()) {
             setFlySpeed(mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name flying
         // @input Element(Boolean)
         // @description
         // Sets whether the player is flying.
         // @tags
-        // <p@player.is_flying>
+        // <PlayerTag.is_flying>
         // -->
         if (mechanism.matches("flying") && mechanism.requireBoolean()) {
             getPlayerEntity().setFlying(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name sprinting
         // @input Element(Boolean)
         // @description
         // Sets whether the player is sprinting.
         // @tags
-        // <p@player.is_sprinting>
+        // <PlayerTag.is_sprinting>
         // -->
         if (mechanism.matches("sprinting") && mechanism.requireBoolean()) {
             getPlayerEntity().setSprinting(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name gamemode
         // @input Element
         // @description
         // Sets the game mode of the player.
         // Valid gamemodes are survival, creative, adventure, and spectator.
         // @tags
-        // <p@player.gamemode>
-        // <p@player.gamemode.id>
+        // <PlayerTag.gamemode>
+        // <PlayerTag.gamemode.id>
         // -->
         if (mechanism.matches("gamemode") && mechanism.requireEnum(false, GameMode.values())) {
             setGameMode(GameMode.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name kick
         // @input Element
         // @description
@@ -2653,7 +2653,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name weather
         // @input Element
         // @description
@@ -2661,47 +2661,47 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         // in the world, and will block any world weather changes until the 'reset_weather'
         // mechanism is used. Valid weather: CLEAR, DOWNFALL
         // @tags
-        // <p@player.weather>
+        // <PlayerTag.weather>
         // -->
         if (mechanism.matches("weather") && mechanism.requireEnum(false, WeatherType.values())) {
             getPlayerEntity().setPlayerWeather(WeatherType.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name reset_weather
         // @input None
         // @description
         // Resets the weather on the Player to the conditions currently taking place in the Player's
         // current world.
         // @tags
-        // <p@player.weather>
+        // <PlayerTag.weather>
         // -->
         if (mechanism.matches("reset_weather")) {
             getPlayerEntity().resetPlayerWeather();
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name player_list_name
         // @input Element
         // @description
         // Sets the entry that is shown in the 'player list' that is shown when pressing tab.
         // @tags
-        // <p@player.name.list>
+        // <PlayerTag.name.list>
         // -->
         if (mechanism.matches("player_list_name")) {
             getPlayerEntity().setPlayerListName(mechanism.getValue().asString());
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name display_name
         // @input Element
         // @description
         // Sets the name displayed for the player when chatting.
         // @tags
-        // <p@player.name.display>
+        // <PlayerTag.name.display>
         // -->
         if (mechanism.matches("display_name")) {
             getPlayerEntity().setDisplayName(mechanism.getValue().asString());
@@ -2709,35 +2709,35 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name show_workbench
-        // @input dLocation
+        // @input LocationTag
         // @description
         // Shows the player a workbench GUI corresponding to a given location.
         // @tags
         // None
         // -->
-        if (mechanism.matches("show_workbench") && mechanism.requireObject(dLocation.class)) {
-            getPlayerEntity().openWorkbench(mechanism.valueAsType(dLocation.class), true);
+        if (mechanism.matches("show_workbench") && mechanism.requireObject(LocationTag.class)) {
+            getPlayerEntity().openWorkbench(mechanism.valueAsType(LocationTag.class), true);
             return;
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name location
-        // @input dLocation
+        // @input LocationTag
         // @description
         // If the player is online, teleports the player to a given location.
         // Otherwise, sets the player's next spawn location.
         // @tags
-        // <p@player.location>
+        // <PlayerTag.location>
         // -->
-        if (mechanism.matches("location") && mechanism.requireObject(dLocation.class)) {
-            setLocation(mechanism.valueAsType(dLocation.class));
+        if (mechanism.matches("location") && mechanism.requireObject(LocationTag.class)) {
+            setLocation(mechanism.valueAsType(LocationTag.class));
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name time
         // @input Element(Number)
         // @description
@@ -2747,14 +2747,14 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         // will reset this mechanism to match the world's current time. Valid range is 0-24000.
         // The value is relative to the current world time, and will continue moving at the same rate as current world time moves.
         // @tags
-        // <p@player.time>
+        // <PlayerTag.time>
         // -->
         if (mechanism.matches("time") && mechanism.requireInteger()) {
             getPlayerEntity().setPlayerTime(mechanism.getValue().asInt(), true);
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name freeze_time
         // @input Element(Number)
         // @description
@@ -2764,7 +2764,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         // the world are experiencing. Using the 'reset_time' mechanism, or relogging your player
         // will reset this mechanism to match the world's current time. Valid range is 0-24000.
         // @tags
-        // <p@player.time>
+        // <PlayerTag.time>
         // -->
         if (mechanism.matches("freeze_time")) {
             if (mechanism.requireInteger("Invalid integer specified. Assuming current world time.")) {
@@ -2776,60 +2776,60 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name reset_time
         // @input None
         // @description
         // Resets any altered time that has been applied to this player. Using this will make
         // the Player's time match the world's current time.
         // @tags
-        // <p@player.time>
+        // <PlayerTag.time>
         // -->
         if (mechanism.matches("reset_time")) {
             getPlayerEntity().resetPlayerTime();
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name walk_speed
         // @input Element(Decimal)
         // @description
         // Sets the walk speed of the player. The standard value is '0.2'. Valid range is 0.0 to 1.0
         // @tags
-        // <p@player.walk_speed>
+        // <PlayerTag.walk_speed>
         // -->
         if (mechanism.matches("walk_speed") && mechanism.requireFloat()) {
             getPlayerEntity().setWalkSpeed(mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name exhaustion
         // @input Element(Decimal)
         // @description
         // Sets the exhaustion level of a player.
         // @tags
-        // <p@player.exhaustion>
+        // <PlayerTag.exhaustion>
         // -->
         if (mechanism.matches("exhaustion") && mechanism.requireFloat()) {
             getPlayerEntity().setExhaustion(mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name show_entity
-        // @input dEntity
+        // @input EntityTag
         // @description
         // Shows the player a previously hidden entity.
         // -->
-        if (mechanism.matches("show_entity") && mechanism.requireObject(dEntity.class)) {
-            NMSHandler.getInstance().getEntityHelper().unhideEntity(getPlayerEntity(), mechanism.valueAsType(dEntity.class).getBukkitEntity());
+        if (mechanism.matches("show_entity") && mechanism.requireObject(EntityTag.class)) {
+            NMSHandler.getInstance().getEntityHelper().unhideEntity(getPlayerEntity(), mechanism.valueAsType(EntityTag.class).getBukkitEntity());
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name hide_entity
-        // @input dEntity(|Element(Boolean))
+        // @input EntityTag(|Element(Boolean))
         // @description
         // Hides an entity from the player. You can optionally also specify a boolean to determine
         // whether the entity should be kept in the tab list (players only).
@@ -2837,8 +2837,8 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         if (mechanism.matches("hide_entity")) {
             if (!mechanism.getValue().asString().isEmpty()) {
                 String[] split = mechanism.getValue().asString().split("[\\|" + ListTag.internal_escape + "]", 2);
-                if (split.length > 0 && new ElementTag(split[0]).matchesType(dEntity.class)) {
-                    dEntity entity = mechanism.valueAsType(dEntity.class);
+                if (split.length > 0 && new ElementTag(split[0]).matchesType(EntityTag.class)) {
+                    EntityTag entity = mechanism.valueAsType(EntityTag.class);
                     if (!entity.isSpawned()) {
                         Debug.echoError("Can't hide the unspawned entity '" + split[0] + "'!");
                     }
@@ -2860,7 +2860,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name show_boss_bar
         // @input (Element(Number)|)Element
         // @description
@@ -2890,7 +2890,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name fake_experience
         // @input Element(Decimal)(|Element(Number))
         // @description
@@ -2925,7 +2925,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name fake_health
         // @input Element(Decimal)(|Element(Number)(|Element(Decimal)))
         // @description
@@ -2969,9 +2969,9 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name fake_equipment
-        // @input dEntity(|Element|dItem)
+        // @input EntityTag(|Element|dItem)
         // @description
         // Shows the player fake equipment on the specified living entity, which has
         // no real non-visual effects, in the form Entity|Slot|Item, where the slot
@@ -2984,11 +2984,11 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         if (mechanism.matches("fake_equipment")) {
             if (!mechanism.getValue().asString().isEmpty()) {
                 String[] split = mechanism.getValue().asString().split("[\\|" + ListTag.internal_escape + "]", 3);
-                if (split.length > 0 && new ElementTag(split[0]).matchesType(dEntity.class)) {
+                if (split.length > 0 && new ElementTag(split[0]).matchesType(EntityTag.class)) {
                     String slot = split.length > 1 ? split[1].toUpperCase() : null;
                     if (split.length > 1 && (new ElementTag(slot).matchesEnum(EquipmentSlot.values())
                             || slot.equals("MAIN_HAND") || slot.equals("BOOTS"))) {
-                        if (split.length > 2 && new ElementTag(split[2]).matchesType(dItem.class)) {
+                        if (split.length > 2 && new ElementTag(split[2]).matchesType(ItemTag.class)) {
                             if (slot.equals("MAIN_HAND")) {
                                 slot = "HAND";
                             }
@@ -2996,12 +2996,12 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
                                 slot = "FEET";
                             }
                             NMSHandler.getInstance().getPacketHelper().showEquipment(getPlayerEntity(),
-                                    new ElementTag(split[0]).asType(dEntity.class, mechanism.context).getLivingEntity(),
+                                    new ElementTag(split[0]).asType(EntityTag.class, mechanism.context).getLivingEntity(),
                                     EquipmentSlot.valueOf(slot),
-                                    new ElementTag(split[2]).asType(dItem.class, mechanism.context).getItemStack());
+                                    new ElementTag(split[2]).asType(ItemTag.class, mechanism.context).getItemStack());
                         }
                         else if (split.length > 2) {
-                            Debug.echoError("'" + split[2] + "' is not a valid dItem!");
+                            Debug.echoError("'" + split[2] + "' is not a valid ItemTag!");
                         }
                     }
                     else if (split.length > 1) {
@@ -3009,17 +3009,17 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
                     }
                     else {
                         NMSHandler.getInstance().getPacketHelper().resetEquipment(getPlayerEntity(),
-                                new ElementTag(split[0]).asType(dEntity.class, mechanism.context).getLivingEntity());
+                                new ElementTag(split[0]).asType(EntityTag.class, mechanism.context).getLivingEntity());
                     }
                 }
                 else {
-                    Debug.echoError("'" + split[0] + "' is not a valid dEntity!");
+                    Debug.echoError("'" + split[0] + "' is not a valid EntityTag!");
                 }
             }
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name fov_multiplier
         // @input Element(Decimal)
         // @description
@@ -3037,7 +3037,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name item_message
         // @input Element
         // @description
@@ -3049,7 +3049,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name show_endcredits
         // @input None
         // @description
@@ -3060,7 +3060,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name show_demo
         // @input None
         // @description
@@ -3071,21 +3071,21 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name spectate
-        // @input dEntity
+        // @input EntityTag
         // @description
         // Forces the player to spectate from the entity's point of view.
         // Note: They cannot cancel the spectating without a re-log -- you
         // must make them spectate themselves to cancel the effect.
         // (i.e. - adjust <player> "spectate:<player>")
         // -->
-        if (mechanism.matches("spectate") && mechanism.requireObject(dEntity.class)) {
-            NMSHandler.getInstance().getPacketHelper().forceSpectate(getPlayerEntity(), mechanism.valueAsType(dEntity.class).getBukkitEntity());
+        if (mechanism.matches("spectate") && mechanism.requireObject(EntityTag.class)) {
+            NMSHandler.getInstance().getPacketHelper().forceSpectate(getPlayerEntity(), mechanism.valueAsType(EntityTag.class).getBukkitEntity());
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name open_book
         // @input None
         // @description
@@ -3098,7 +3098,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name open_offhand_book
         // @input None
         // @description
@@ -3111,15 +3111,15 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name show_book
-        // @input dItem
+        // @input ItemTag
         // @description
         // Displays a book to a player.
         // -->
         if (mechanism.matches("show_book")
-                && mechanism.requireObject(dItem.class)) {
-            dItem book = mechanism.valueAsType(dItem.class);
+                && mechanism.requireObject(ItemTag.class)) {
+            ItemTag book = mechanism.valueAsType(ItemTag.class);
             if (!book.getItemStack().hasItemMeta() || !(book.getItemStack().getItemMeta() instanceof BookMeta)) {
                 Debug.echoError("show_book mechanism must have a book as input.");
                 return;
@@ -3132,21 +3132,21 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name edit_sign
-        // @input dLocation
+        // @input LocationTag
         // @description
         // Allows the player to edit an existing sign. To create a
         // sign, see <@link command Sign>.
         // -->
-        if (mechanism.matches("edit_sign") && mechanism.requireObject(dLocation.class)) {
-            if (!NMSHandler.getInstance().getPacketHelper().showSignEditor(getPlayerEntity(), mechanism.valueAsType(dLocation.class))) {
+        if (mechanism.matches("edit_sign") && mechanism.requireObject(LocationTag.class)) {
+            if (!NMSHandler.getInstance().getPacketHelper().showSignEditor(getPlayerEntity(), mechanism.valueAsType(LocationTag.class))) {
                 Debug.echoError("Can't edit non-sign materials!");
             }
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name tab_list_info
         // @input Element(|Element)
         // @description
@@ -3175,18 +3175,18 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name sign_update
-        // @input dLocation|dList
+        // @input LocationTag|dList
         // @description
         // Shows the player fake lines on a sign.
         // -->
         if (mechanism.matches("sign_update")) {
             if (!mechanism.getValue().asString().isEmpty()) {
                 String[] split = mechanism.getValue().asString().split("[\\|" + ListTag.internal_escape + "]", 2);
-                if (dLocation.matches(split[0]) && split.length > 1) {
+                if (LocationTag.matches(split[0]) && split.length > 1) {
                     ListTag lines = ListTag.valueOf(split[1]);
-                    getPlayerEntity().sendSignChange(dLocation.valueOf(split[0]), lines.toArray(4));
+                    getPlayerEntity().sendSignChange(LocationTag.valueOf(split[0]), lines.toArray(4));
                 }
                 else {
                     Debug.echoError("Must specify a valid location and at least one sign line!");
@@ -3198,9 +3198,9 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name banner_update
-        // @input dLocation|Element(|dList)
+        // @input LocationTag|Element(|dList)
         // @description
         // Shows the player a fake base color and, optionally, patterns on a banner. Input must be
         // in the form: "LOCATION|BASE_COLOR(|COLOR/PATTERN|...)"
@@ -3225,8 +3225,8 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
                         }
                     }
                 }
-                if (dLocation.matches(split[0]) && split.length > 1) {
-                    dLocation location = dLocation.valueOf(split[0]);
+                if (LocationTag.matches(split[0]) && split.length > 1) {
+                    LocationTag location = LocationTag.valueOf(split[0]);
                     DyeColor base;
                     try {
                         base = DyeColor.valueOf(split[1].toUpperCase());
@@ -3244,7 +3244,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name stop_sound
         // @input Element
         // @description
@@ -3268,7 +3268,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name action_bar
         // @input Element
         // @description
@@ -3279,7 +3279,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name update_advancements
         // @input None
         // @description
@@ -3290,7 +3290,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name name
         // @input Element
         // @description
@@ -3307,7 +3307,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name skin
         // @input Element
         // @description
@@ -3325,7 +3325,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name skin_blob
         // @input Element
         // @description
@@ -3336,33 +3336,33 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name is_whitelisted
         // @input Element(Boolean)
         // @description
         // Changes whether the player is whitelisted or not.
         // @tags
-        // <p@player.is_whitelisted>
+        // <PlayerTag.is_whitelisted>
         // -->
         if (mechanism.matches("is_whitelisted") && mechanism.requireBoolean()) {
             getPlayerEntity().setWhitelisted(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name is_op
         // @input Element(Boolean)
         // @description
         // Changes whether the player is a server operator or not.
         // @tags
-        // <p@player.is_op>
+        // <PlayerTag.is_op>
         // -->
         if (mechanism.matches("is_op") && mechanism.requireBoolean()) {
             getOfflinePlayer().setOp(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
-        // @object dPlayer
+        // @object PlayerTag
         // @name money
         // @input Element(Number)
         // @plugin Vault
@@ -3370,7 +3370,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
         // Set the amount of money a player has with the linked economy system (through Vault).
         // (Only if supported by the registered Economy system.)
         // @tags
-        // <p@player.money>
+        // <PlayerTag.money>
         // -->
         if (mechanism.matches("money") && mechanism.requireDouble() && Depends.economy != null) {
             double bal = Depends.economy.getBalance(getOfflinePlayer());
@@ -3385,7 +3385,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
 
         if (Depends.chat != null) {
             // <--[mechanism]
-            // @object dPlayer
+            // @object PlayerTag
             // @name chat_prefix
             // @input Element
             // @plugin Vault
@@ -3393,14 +3393,14 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
             // Set the player's chat prefix.
             // Requires a Vault-compatible chat plugin.
             // @tags
-            // <p@player.chat_prefix>
+            // <PlayerTag.chat_prefix>
             // -->
             if (mechanism.matches("chat_prefix")) {
                 Depends.chat.setPlayerPrefix(getPlayerEntity(), mechanism.getValue().asString());
             }
 
             // <--[mechanism]
-            // @object dPlayer
+            // @object PlayerTag
             // @name chat_suffix
             // @input Element
             // @plugin Vault
@@ -3408,7 +3408,7 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
             // Set the player's chat suffix.
             // Requires a Vault-compatible chat plugin.
             // @tags
-            // <p@player.chat_suffix>
+            // <PlayerTag.chat_suffix>
             // -->
             if (mechanism.matches("chat_suffix")) {
                 Depends.chat.setPlayerSuffix(getPlayerEntity(), mechanism.getValue().asString());
@@ -3417,10 +3417,10 @@ public class dPlayer implements ObjectTag, Adjustable, EntityFormObject {
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);
 
-        // Pass along to dEntity mechanism handler if not already handled.
+        // Pass along to EntityTag mechanism handler if not already handled.
         if (!mechanism.fulfilled()) {
             if (isOnline()) {
-                new dEntity(getPlayerEntity()).adjust(mechanism);
+                new EntityTag(getPlayerEntity()).adjust(mechanism);
             }
         }
 

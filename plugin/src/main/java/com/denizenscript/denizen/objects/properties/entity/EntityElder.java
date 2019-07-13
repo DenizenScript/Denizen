@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -12,7 +12,7 @@ import org.bukkit.entity.Guardian;
 public class EntityElder implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.GUARDIAN;
+        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntityType() == EntityType.GUARDIAN;
     }
 
     public static EntityElder getFrom(ObjectTag entity) {
@@ -20,7 +20,7 @@ public class EntityElder implements Property {
             return null;
         }
         else {
-            return new EntityElder((dEntity) entity);
+            return new EntityElder((EntityTag) entity);
         }
     }
 
@@ -37,11 +37,11 @@ public class EntityElder implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityElder(dEntity entity) {
+    private EntityElder(EntityTag entity) {
         this.entity = entity;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     private boolean getElder() {
         return ((Guardian) (entity.getBukkitEntity())).isElder();
@@ -86,9 +86,9 @@ public class EntityElder implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.elder>
+        // @attribute <EntityTag.elder>
         // @returns ElementTag(Boolean)
-        // @mechanism dEntity.elder
+        // @mechanism EntityTag.elder
         // @group properties
         // @description
         // If the entity is a guardian, returns whether it is elder.
@@ -105,13 +105,13 @@ public class EntityElder implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name elder
         // @input Element(Boolean)
         // @description
         // Changes the elder state of a Guardian.
         // @tags
-        // <e@entity.elder>
+        // <EntityTag.elder>
         // -->
 
         if (mechanism.matches("elder") && mechanism.requireBoolean()) {

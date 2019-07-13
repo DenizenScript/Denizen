@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.BookScriptContainer;
 import com.denizenscript.denizen.utilities.MaterialCompat;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -45,8 +45,8 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
     ElementTag signing;
     ElementTag title;
     ElementTag pages;
-    dItem book;
-    dPlayer player;
+    ItemTag book;
+    PlayerTag player;
     BookMeta bookMeta;
 
     @Override
@@ -80,7 +80,7 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
         else if (ScriptTag.matches(determination)) {
             ScriptTag script = ScriptTag.valueOf(determination);
             if (script.getContainer() instanceof BookScriptContainer) {
-                dItem dBook = ((BookScriptContainer) script.getContainer()).getBookFrom(player, null);
+                ItemTag dBook = ((BookScriptContainer) script.getContainer()).getBookFrom(player, null);
                 bookMeta = (BookMeta) dBook.getItemStack().getItemMeta();
                 if (dBook.getMaterial().getMaterial() == MaterialCompat.WRITABLE_BOOK) {
                     signing = new ElementTag(false);
@@ -114,12 +114,12 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
 
     @EventHandler
     public void onPlayerEditsBook(PlayerEditBookEvent event) {
-        player = dPlayer.mirrorBukkitPlayer(event.getPlayer());
+        player = PlayerTag.mirrorBukkitPlayer(event.getPlayer());
         signing = new ElementTag(event.isSigning());
         bookMeta = event.getNewBookMeta();
         pages = new ElementTag(bookMeta.getPageCount());
         title = event.isSigning() ? new ElementTag(bookMeta.getTitle()) : null;
-        book = new dItem(event.getPlayer().getInventory().getItem(event.getSlot()));
+        book = new ItemTag(event.getPlayer().getInventory().getItem(event.getSlot()));
         this.event = event;
         fire(event);
         event.setNewBookMeta(bookMeta);

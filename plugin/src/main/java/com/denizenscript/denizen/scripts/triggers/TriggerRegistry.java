@@ -4,7 +4,7 @@ import com.denizenscript.denizen.scripts.triggers.core.ChatTrigger;
 import com.denizenscript.denizen.scripts.triggers.core.DamageTrigger;
 import com.denizenscript.denizen.scripts.triggers.core.ProximityTrigger;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.triggers.core.ClickTrigger;
 import net.citizensnpcs.api.npc.NPC;
 
@@ -84,7 +84,7 @@ public class TriggerRegistry {
      * Not to be confused with Script Cool-downs.
      */
 
-    public boolean checkCooldown(NPC npc, dPlayer player, AbstractTrigger triggerClass, CooldownType cooldownType) {
+    public boolean checkCooldown(NPC npc, PlayerTag player, AbstractTrigger triggerClass, CooldownType cooldownType) {
         switch (cooldownType) {
             case NPC:
                 // Check npcCooldown
@@ -117,7 +117,7 @@ public class TriggerRegistry {
         return false;
     }
 
-    public void setCooldown(NPC npc, dPlayer player, AbstractTrigger triggerClass, double seconds, CooldownType cooldownType) {
+    public void setCooldown(NPC npc, PlayerTag player, AbstractTrigger triggerClass, double seconds, CooldownType cooldownType) {
         Map<String, Long> triggerMap = new HashMap<>();
         boolean noCooldown = seconds <= 0;
 

@@ -2,8 +2,8 @@ package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dMaterial;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -27,7 +27,7 @@ public class ItemCooldownCommand extends AbstractCommand {
     // Places a cooldown on a material in a player's inventory.
     //
     // @Tags
-    // <p@player.item_cooldown[<material>]>
+    // <PlayerTag.item_cooldown[<material>]>
     //
     // @Usage
     // Places a 1 second cooldown on using an ender pearl.
@@ -45,9 +45,9 @@ public class ItemCooldownCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("materials")
-                    && (arg.matchesArgumentType(dMaterial.class)
+                    && (arg.matchesArgumentType(MaterialTag.class)
                     || arg.matchesArgumentType(ListTag.class))) {
-                scriptEntry.addObject("materials", arg.asType(ListTag.class).filter(dMaterial.class, scriptEntry));
+                scriptEntry.addObject("materials", arg.asType(ListTag.class).filter(MaterialTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesPrefix("d", "duration")
@@ -69,9 +69,9 @@ public class ItemCooldownCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        ArrayList<dMaterial> materials = (ArrayList<dMaterial>) scriptEntry.getObject("materials");
+        ArrayList<MaterialTag> materials = (ArrayList<MaterialTag>) scriptEntry.getObject("materials");
         DurationTag duration = scriptEntry.getdObject("duration");
-        dPlayer player = Utilities.getEntryPlayer(scriptEntry);
+        PlayerTag player = Utilities.getEntryPlayer(scriptEntry);
 
         if (player == null) {
             Debug.echoError("Invalid linked player.");
@@ -84,7 +84,7 @@ public class ItemCooldownCommand extends AbstractCommand {
 
         }
 
-        for (dMaterial mat : materials) {
+        for (MaterialTag mat : materials) {
             player.getPlayerEntity().setCooldown(mat.getMaterial(), duration.getTicksAsInt());
         }
     }

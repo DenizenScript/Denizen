@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -30,7 +30,7 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
     // @Triggers when a sheep is dyed by a player.
     //
     // @Context
-    // <context.entity> returns the dEntity of the sheep.
+    // <context.entity> returns the EntityTag of the sheep.
     // <context.color> returns an ElementTag of the color the sheep is being dyed.
     //
     // @Determine
@@ -45,7 +45,7 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
     }
 
     public static SheepDyedScriptEvent instance;
-    public dEntity entity;
+    public EntityTag entity;
     public DyeColor color;
     public SheepDyeWoolEvent event;
 
@@ -107,7 +107,7 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
 
     @EventHandler
     public void onSheepDyed(SheepDyeWoolEvent event) {
-        entity = new dEntity(event.getEntity());
+        entity = new EntityTag(event.getEntity());
         color = DyeColor.valueOf(event.getColor().toString());
         this.event = event;
         fire(event);

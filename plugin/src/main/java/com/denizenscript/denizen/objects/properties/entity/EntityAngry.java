@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -13,8 +13,8 @@ import org.bukkit.entity.Wolf;
 public class EntityAngry implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity && (((dEntity) entity).getBukkitEntityType() == EntityType.WOLF
-                || ((dEntity) entity).getBukkitEntityType() == EntityType.PIG_ZOMBIE);
+        return entity instanceof EntityTag && (((EntityTag) entity).getBukkitEntityType() == EntityType.WOLF
+                || ((EntityTag) entity).getBukkitEntityType() == EntityType.PIG_ZOMBIE);
     }
 
     public static EntityAngry getFrom(ObjectTag entity) {
@@ -22,7 +22,7 @@ public class EntityAngry implements Property {
             return null;
         }
         else {
-            return new EntityAngry((dEntity) entity);
+            return new EntityAngry((EntityTag) entity);
         }
     }
 
@@ -39,11 +39,11 @@ public class EntityAngry implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityAngry(dEntity entity) {
+    private EntityAngry(EntityTag entity) {
         this.entity = entity;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     /////////
     // Property Methods
@@ -87,9 +87,9 @@ public class EntityAngry implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.angry>
+        // @attribute <EntityTag.angry>
         // @returns ElementTag(Boolean)
-        // @mechanism dEntity.angry
+        // @mechanism EntityTag.angry
         // @group properties
         // @description
         // If the entity is a wolf, returns whether the wolf is angry.
@@ -112,13 +112,13 @@ public class EntityAngry implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name angry
         // @input Element(Boolean)
         // @description
         // Changes the anger state of a Wolf or PigZombie.
         // @tags
-        // <e@entity.angry>
+        // <EntityTag.angry>
         // -->
 
         if (mechanism.matches("angry") && mechanism.requireBoolean()) {

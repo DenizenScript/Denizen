@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -29,8 +29,8 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
     // @Triggers when an entity is tamed.
     //
     // @Context
-    // <context.entity> returns a dEntity of the tamed entity.
-    // <context.owner> returns a dEntity of the owner.
+    // <context.entity> returns a EntityTag of the tamed entity.
+    // <context.owner> returns a EntityTag of the owner.
     //
     // @Player when a player tames an entity and using the 'players tames entity' event.
     //
@@ -41,8 +41,8 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     public static EntityTamesScriptEvent instance;
-    public dEntity entity;
-    public dEntity owner;
+    public EntityTag entity;
+    public EntityTag owner;
     public EntityTameEvent event;
 
 
@@ -99,8 +99,8 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
 
     @EventHandler
     public void onEntityTames(EntityTameEvent event) {
-        entity = new dEntity(event.getEntity());
-        owner = new dEntity((Entity) event.getOwner());
+        entity = new EntityTag(event.getEntity());
+        owner = new EntityTag((Entity) event.getOwner());
         this.event = event;
         fire(event);
     }

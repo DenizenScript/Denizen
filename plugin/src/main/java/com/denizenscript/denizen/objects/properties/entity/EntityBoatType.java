@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -13,7 +13,7 @@ import org.bukkit.entity.EntityType;
 public class EntityBoatType implements Property {
 
     public static boolean describes(ObjectTag object) {
-        return object instanceof dEntity && ((dEntity) object).getBukkitEntityType() == EntityType.BOAT;
+        return object instanceof EntityTag && ((EntityTag) object).getBukkitEntityType() == EntityType.BOAT;
     }
 
     public static EntityBoatType getFrom(ObjectTag object) {
@@ -21,7 +21,7 @@ public class EntityBoatType implements Property {
             return null;
         }
         else {
-            return new EntityBoatType((dEntity) object);
+            return new EntityBoatType((EntityTag) object);
         }
     }
 
@@ -38,11 +38,11 @@ public class EntityBoatType implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityBoatType(dEntity entity) {
+    private EntityBoatType(EntityTag entity) {
         this.entity = entity;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     /////////
     // Property Methods
@@ -65,9 +65,9 @@ public class EntityBoatType implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.boat_type>
+        // @attribute <EntityTag.boat_type>
         // @returns ElementTag
-        // @mechanism dEntity.boat_type
+        // @mechanism EntityTag.boat_type
         // @group properties
         // @description
         // Returns the wood type of the boat.
@@ -84,14 +84,14 @@ public class EntityBoatType implements Property {
     @Override
     public void adjust(Mechanism mechanism) {
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name boat_type
         // @input Element
         // @description
         // Changes the wood type of the boat.
         // Valid wood types: GENERIC, REDWOOD, BIRCH, JUNGLE, ACACIA, DARK_OAK.
         // @tags
-        // <e@entity.boat_type>
+        // <EntityTag.boat_type>
         // -->
 
         if (mechanism.matches("boat_type")) {

@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.properties.inventory.InventoryContents;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dInventory;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.InventoryTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -14,8 +14,8 @@ import org.bukkit.inventory.InventoryHolder;
 public class EntityInventory implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity
-                && ((dEntity) entity).getBukkitEntity() instanceof InventoryHolder;
+        return entity instanceof EntityTag
+                && ((EntityTag) entity).getBukkitEntity() instanceof InventoryHolder;
     }
 
     public static EntityInventory getFrom(ObjectTag entity) {
@@ -23,7 +23,7 @@ public class EntityInventory implements Property {
             return null;
         }
         else {
-            return new EntityInventory((dEntity) entity);
+            return new EntityInventory((EntityTag) entity);
         }
     }
 
@@ -40,11 +40,11 @@ public class EntityInventory implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityInventory(dEntity ent) {
+    private EntityInventory(EntityTag ent) {
         entity = ent;
     }
 
-    dEntity entity;
+    EntityTag entity;
 
     /////////
     // Property Methods
@@ -73,14 +73,14 @@ public class EntityInventory implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.inventory>
-        // @returns dInventory
+        // @attribute <EntityTag.inventory>
+        // @returns InventoryTag
         // @group inventory
         // @description
         // Returns the entity's inventory, if it has one.
         // -->
         if (attribute.startsWith("inventory")) {
-            dInventory inventory = entity.getInventory();
+            InventoryTag inventory = entity.getInventory();
             if (inventory != null) {
                 return inventory.getAttribute(attribute.fulfill(1));
             }
@@ -97,22 +97,22 @@ public class EntityInventory implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name inventory_contents
-        // @input ListTag(dItem)
+        // @input ListTag(ItemTag)
         // @description
         // Clears the entity's inventory and sets it's item list to match the input.
         // @tags
-        // <e@entity.inventory>
-        // <in@inventory.list_contents>
+        // <EntityTag.inventory>
+        // <InventoryTag.list_contents>
         // -->
         if (mechanism.matches("inventory_contents")) {
             ListTag list = ListTag.valueOf(mechanism.getValue().asString());
-            dInventory inv = entity.getInventory();
+            InventoryTag inv = entity.getInventory();
             inv.clear();
             int i = 0;
             for (String str : list) {
-                inv.setSlots(i, dItem.valueOf(str, mechanism.context).getItemStack());
+                inv.setSlots(i, ItemTag.valueOf(str, mechanism.context).getItemStack());
                 i++;
             }
         }

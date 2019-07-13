@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.block;
 
-import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -31,14 +31,14 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     // @Triggers when a block dispenses an item.
     //
     // @Context
-    // <context.location> returns the dLocation of the dispenser.
-    // <context.item> returns the dItem of the item being dispensed.
-    // <context.velocity> returns a dLocation vector of the velocity the item will be shot at.
+    // <context.location> returns the LocationTag of the dispenser.
+    // <context.item> returns the ItemTag of the item being dispensed.
+    // <context.velocity> returns a LocationTag vector of the velocity the item will be shot at.
     //
     // @Determine
     // Element(Decimal) (DEPRECATED) to multiply the velocity by the given amount.
-    // dLocation to set the velocity the item will be shot at.
-    // dItem to set the item being shot.
+    // LocationTag to set the velocity the item will be shot at.
+    // ItemTag to set the item being shot.
     //
     // -->
 
@@ -47,10 +47,10 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     }
 
     public static BlockDispensesScriptEvent instance;
-    public dLocation location;
-    public dItem item;
-    private dLocation velocity;
-    private dMaterial material;
+    public LocationTag location;
+    public ItemTag item;
+    private LocationTag velocity;
+    private MaterialTag material;
     public BlockDispenseEvent event;
 
     @Override
@@ -79,11 +79,11 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (ArgumentHelper.matchesDouble(determination)) {
-            velocity = new dLocation(velocity.multiply(ArgumentHelper.getDoubleFrom(determination)));
+            velocity = new LocationTag(velocity.multiply(ArgumentHelper.getDoubleFrom(determination)));
             return true;
         }
-        else if (dLocation.matches(determination)) {
-            dLocation vel = dLocation.valueOf(determination);
+        else if (LocationTag.matches(determination)) {
+            LocationTag vel = LocationTag.valueOf(determination);
             if (vel == null) {
                 Debug.echoError("[" + getName() + "] Invalid velocity!");
             }
@@ -91,8 +91,8 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
                 velocity = vel;
             }
         }
-        else if (dItem.matches(determination)) {
-            dItem it = dItem.valueOf(determination, container);
+        else if (ItemTag.matches(determination)) {
+            ItemTag it = ItemTag.valueOf(determination, container);
             if (it == null) {
                 Debug.echoError("[" + getName() + "] Invalid item!");
             }
@@ -119,10 +119,10 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
 
     @EventHandler
     public void onBlockDispenses(BlockDispenseEvent event) {
-        location = new dLocation(event.getBlock().getLocation());
-        material = new dMaterial(event.getBlock());
-        item = new dItem(event.getItem());
-        velocity = new dLocation(null, event.getVelocity().getX(), event.getVelocity().getY(), event.getVelocity().getZ());
+        location = new LocationTag(event.getBlock().getLocation());
+        material = new MaterialTag(event.getBlock());
+        item = new ItemTag(event.getItem());
+        velocity = new LocationTag(null, event.getVelocity().getX(), event.getVelocity().getY(), event.getVelocity().getZ());
         this.event = event;
         fire(event);
         event.setVelocity(velocity.toVector());

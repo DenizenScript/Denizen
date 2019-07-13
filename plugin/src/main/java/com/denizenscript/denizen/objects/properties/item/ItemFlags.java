@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -15,7 +15,7 @@ public class ItemFlags implements Property {
 
     public static boolean describes(ObjectTag item) {
         // All items can have flags
-        return item instanceof dItem && ((dItem) item).getItemStack().getType() != Material.AIR;
+        return item instanceof ItemTag && ((ItemTag) item).getItemStack().getType() != Material.AIR;
     }
 
     public static ItemFlags getFrom(ObjectTag _item) {
@@ -23,7 +23,7 @@ public class ItemFlags implements Property {
             return null;
         }
         else {
-            return new ItemFlags((dItem) _item);
+            return new ItemFlags((ItemTag) _item);
         }
     }
 
@@ -36,7 +36,7 @@ public class ItemFlags implements Property {
     };
 
 
-    private ItemFlags(dItem _item) {
+    private ItemFlags(ItemTag _item) {
         item = _item;
     }
 
@@ -51,7 +51,7 @@ public class ItemFlags implements Property {
         return output;
     }
 
-    dItem item;
+    ItemTag item;
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -61,9 +61,9 @@ public class ItemFlags implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.flags>
+        // @attribute <ItemTag.flags>
         // @returns ListTag
-        // @mechanism dItem.flags
+        // @mechanism ItemTag.flags
         // @group properties
         // @description
         // Returns a list of flags set on this item.
@@ -99,13 +99,13 @@ public class ItemFlags implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name flags
         // @input ListTag
         // @description
         // Sets the item's meta flag set.
         // @tags
-        // <i@item.flags>
+        // <ItemTag.flags>
         // -->
 
         if (mechanism.matches("flags")) {

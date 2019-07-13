@@ -3,8 +3,8 @@ package com.denizenscript.denizen.scripts.commands.entity;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dWorld;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -35,7 +35,7 @@ public class RemoveCommand extends AbstractCommand {
     //
     //
     // @Tags
-    // <e@entity.is_spawned>
+    // <EntityTag.is_spawned>
     //
     // @Usage
     // Use to remove the entity the player is looking at.
@@ -56,16 +56,16 @@ public class RemoveCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class)) {
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
+                    && arg.matchesArgumentList(EntityTag.class)) {
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("region")
                     && arg.matchesPrefix("region", "r")) {
                 scriptEntry.addObject("region", arg.asElement());
             }
             else if (!scriptEntry.hasObject("world")
-                    && arg.matchesArgumentType(dWorld.class)) {
-                scriptEntry.addObject("world", arg.asType(dWorld.class));
+                    && arg.matchesArgumentType(WorldTag.class)) {
+                scriptEntry.addObject("world", arg.asType(WorldTag.class));
             }
             else {
                 arg.reportUnhandled();
@@ -82,9 +82,9 @@ public class RemoveCommand extends AbstractCommand {
         // world, or default to the specified world in the server properties if necessary
 
         scriptEntry.defaultObject("world",
-                (Utilities.entryHasNPC(scriptEntry) && Utilities.getEntryNPC(scriptEntry).isSpawned()) ? new dWorld(Utilities.getEntryNPC(scriptEntry).getWorld()) : null,
-                (Utilities.entryHasPlayer(scriptEntry) && Utilities.getEntryPlayer(scriptEntry).isOnline()) ? new dWorld(Utilities.getEntryPlayer(scriptEntry).getWorld()) : null,
-                new dWorld(Bukkit.getWorlds().get(0)));
+                (Utilities.entryHasNPC(scriptEntry) && Utilities.getEntryNPC(scriptEntry).isSpawned()) ? new WorldTag(Utilities.getEntryNPC(scriptEntry).getWorld()) : null,
+                (Utilities.entryHasPlayer(scriptEntry) && Utilities.getEntryPlayer(scriptEntry).isOnline()) ? new WorldTag(Utilities.getEntryPlayer(scriptEntry).getWorld()) : null,
+                new WorldTag(Bukkit.getWorlds().get(0)));
     }
 
     @SuppressWarnings("unchecked")
@@ -92,8 +92,8 @@ public class RemoveCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) {
 
         // Get objects
-        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-        dWorld world = (dWorld) scriptEntry.getObject("world");
+        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
+        WorldTag world = (WorldTag) scriptEntry.getObject("world");
         ElementTag region = (ElementTag) scriptEntry.getObject("region");
 
         // Report to dB
@@ -106,7 +106,7 @@ public class RemoveCommand extends AbstractCommand {
 
         // Go through all of our entities and remove them
 
-        for (dEntity entity : entities) {
+        for (EntityTag entity : entities) {
 
             conditionsMet = true;
 
@@ -146,7 +146,7 @@ public class RemoveCommand extends AbstractCommand {
                 for (Entity worldEntity : world.getEntities()) {
 
                     // If this entity from the world is of the same type
-                    // as our current dEntity, and all other applicable
+                    // as our current EntityTag, and all other applicable
                     // conditions are met, remove it
 
                     if (entity.getEntityType().equals(DenizenEntityType.getByEntity(worldEntity))) {

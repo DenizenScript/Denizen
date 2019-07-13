@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.dChunk;
+import com.denizenscript.denizen.objects.ChunkTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
@@ -24,10 +24,10 @@ public class ChunkTags {
             return;
         }
 
-        dChunk chunk = null;
+        ChunkTag chunk = null;
 
         if (event.hasNameContext()) {
-            chunk = dChunk.valueOf(event.getNameContext(), event.getAttributes().context);
+            chunk = ChunkTag.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
         if (chunk == null) {

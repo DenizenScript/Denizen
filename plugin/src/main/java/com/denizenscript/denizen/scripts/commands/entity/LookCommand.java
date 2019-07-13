@@ -4,8 +4,8 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -33,8 +33,8 @@ public class LookCommand extends AbstractCommand {
     // location.
     //
     // @Tags
-    // <l@location.yaw>
-    // <l@location.pitch>
+    // <LocationTag.yaw>
+    // <LocationTag.pitch>
     //
     // @Usage
     // Use to point an npc towards a spot.
@@ -51,8 +51,8 @@ public class LookCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class)) {
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                    && arg.matchesArgumentType(LocationTag.class)) {
+                scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesArgumentType(DurationTag.class)
@@ -60,9 +60,9 @@ public class LookCommand extends AbstractCommand {
                 scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
             else if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class)) {
+                    && arg.matchesArgumentList(EntityTag.class)) {
                 // Entity arg
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
@@ -84,8 +84,8 @@ public class LookCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        final dLocation loc = (dLocation) scriptEntry.getObject("location");
-        final List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+        final LocationTag loc = (LocationTag) scriptEntry.getObject("location");
+        final List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         final DurationTag duration = (DurationTag) scriptEntry.getObject("duration");
 
         if (scriptEntry.dbCallShouldDebug()) {
@@ -95,7 +95,7 @@ public class LookCommand extends AbstractCommand {
 
         }
 
-        for (dEntity entity : entities) {
+        for (EntityTag entity : entities) {
             if (entity.isSpawned()) {
                 NMSHandler.getInstance().getEntityHelper().faceLocation(entity.getBukkitEntity(), loc);
             }
@@ -110,7 +110,7 @@ public class LookCommand extends AbstractCommand {
                         this.cancel();
                         return;
                     }
-                    for (dEntity entity : entities) {
+                    for (EntityTag entity : entities) {
                         if (entity.isSpawned()) {
                             NMSHandler.getInstance().getEntityHelper().faceLocation(entity.getBukkitEntity(), loc);
                         }

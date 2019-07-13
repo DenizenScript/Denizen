@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.world;
 
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -28,12 +28,12 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
     // @Triggers when a piston extends.
     //
     // @Context
-    // <context.location> returns the dLocation of the piston.
-    // <context.material> returns the dMaterial of the piston.
+    // <context.location> returns the LocationTag of the piston.
+    // <context.material> returns the MaterialTag of the piston.
     // <context.length> returns an ElementTag of the number of blocks that will be moved by the piston.
     // <context.blocks> returns a ListTag of all block locations about to be moved.
     // <context.sticky> returns an ElementTag of whether the piston is sticky.
-    // <context.relative> returns a dLocation of the block in front of the piston.
+    // <context.relative> returns a LocationTag of the block in front of the piston.
     //
     // -->
 
@@ -42,12 +42,12 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     public static PistonExtendsScriptEvent instance;
-    public dLocation location;
-    public dMaterial material;
+    public LocationTag location;
+    public MaterialTag material;
     public ElementTag length;
     public ListTag blocks;
     public ElementTag sticky;
-    public dLocation relative;
+    public LocationTag relative;
     public BlockPistonExtendEvent event;
 
     @Override
@@ -99,13 +99,13 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
 
     @EventHandler
     public void onPistonExtends(BlockPistonExtendEvent event) {
-        location = new dLocation(event.getBlock().getLocation());
-        material = new dMaterial(event.getBlock());
+        location = new LocationTag(event.getBlock().getLocation());
+        material = new MaterialTag(event.getBlock());
         sticky = new ElementTag(event.isSticky() ? "true" : "false");
-        relative = new dLocation(event.getBlock().getRelative(event.getDirection()).getLocation());
+        relative = new LocationTag(event.getBlock().getRelative(event.getDirection()).getLocation());
         blocks = new ListTag();
         for (Block block : event.getBlocks()) {
-            blocks.add(new dLocation(block.getLocation()).identify());
+            blocks.add(new LocationTag(block.getLocation()).identify());
         }
         length = new ElementTag(blocks.size());
         this.event = event;

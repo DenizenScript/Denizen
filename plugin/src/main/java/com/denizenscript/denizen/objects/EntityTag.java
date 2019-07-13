@@ -43,16 +43,16 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
+public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
 
     // <--[language]
-    // @name dEntity
+    // @name EntityTag
     // @group Object System
     // @description
-    // A dEntity represents a spawned entity, or a generic entity type.
+    // A EntityTag represents a spawned entity, or a generic entity type.
     //
     // Note that players and NPCs are valid dEntities, but are generally represented by the more specific
-    // dPlayer and dNPC objects.
+    // PlayerTag and NPCTag objects.
     //
     // For format info, see <@link language e@>
     //
@@ -62,11 +62,11 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
     // @name e@
     // @group Object Fetcher System
     // @description
-    // e@ refers to the 'object identifier' of a dEntity. The 'e@' is notation for Denizen's Object
-    // Fetcher. The constructor for a dEntity is a spawned entity's UUID, or an entity type.
+    // e@ refers to the 'object identifier' of a EntityTag. The 'e@' is notation for Denizen's Object
+    // Fetcher. The constructor for a EntityTag is a spawned entity's UUID, or an entity type.
     // For example, 'e@zombie'.
     //
-    // For general info, see <@link language dEntity>
+    // For general info, see <@link language EntityTag>
     //
     // -->
 
@@ -103,9 +103,9 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         return entity != null && Depends.citizens != null && CitizensAPI.hasImplementation() && CitizensAPI.getNPCRegistry().isNPC(entity);
     }
 
-    public static dNPC getNPCFrom(Entity entity) {
+    public static NPCTag getNPCFrom(Entity entity) {
         if (isCitizensNPC(entity)) {
-            return dNPC.fromEntity(entity);
+            return NPCTag.fromEntity(entity);
         }
         else {
             return null;
@@ -116,22 +116,22 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         return entity != null && entity instanceof Player && !isNPC(entity);
     }
 
-    public static dPlayer getPlayerFrom(Entity entity) {
+    public static PlayerTag getPlayerFrom(Entity entity) {
         if (isPlayer(entity)) {
-            return dPlayer.mirrorBukkitPlayer((Player) entity);
+            return PlayerTag.mirrorBukkitPlayer((Player) entity);
         }
         else {
             return null;
         }
     }
 
-    public dItem getItemInHand() {
+    public ItemTag getItemInHand() {
         if (isLivingEntity() && getLivingEntity().getEquipment() != null) {
             ItemStack its = getLivingEntity().getEquipment().getItemInHand();
             if (its == null) {
                 return null;
             }
-            return new dItem(its.clone());
+            return new ItemTag(its.clone());
         }
         return null;
     }
@@ -141,27 +141,27 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
     //    OBJECT FETCHER
     ////////////////
 
-    public static dEntity getEntityFor(ObjectTag object, TagContext context) {
-        if (object instanceof dEntity) {
-            return (dEntity) object;
+    public static EntityTag getEntityFor(ObjectTag object, TagContext context) {
+        if (object instanceof EntityTag) {
+            return (EntityTag) object;
         }
-        else if (object instanceof dPlayer && ((dPlayer) object).isOnline()) {
-            return new dEntity(((dPlayer) object).getPlayerEntity());
+        else if (object instanceof PlayerTag && ((PlayerTag) object).isOnline()) {
+            return new EntityTag(((PlayerTag) object).getPlayerEntity());
         }
-        else if (object instanceof dNPC) {
-            return new dEntity((dNPC) object);
+        else if (object instanceof NPCTag) {
+            return new EntityTag((NPCTag) object);
         }
         else {
             return valueOf(object.toString(), context);
         }
     }
 
-    public static dEntity valueOf(String string) {
+    public static EntityTag valueOf(String string) {
         return valueOf(string, null);
     }
 
     @Fetchable("e")
-    public static dEntity valueOf(String string, TagContext context) {
+    public static EntityTag valueOf(String string, TagContext context) {
         if (string == null) {
             return null;
         }
@@ -172,7 +172,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         // Handle objects with properties through the object fetcher
         m = ObjectFetcher.DESCRIBED_PATTERN.matcher(string);
         if (m.matches()) {
-            return ObjectFetcher.getObjectFrom(dEntity.class, string, context);
+            return ObjectFetcher.getObjectFrom(EntityTag.class, string, context);
         }
 
 
@@ -190,7 +190,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
                 randomType = EntityType.values()[CoreUtilities.getRandom().nextInt(EntityType.values().length)];
             }
 
-            return new dEntity(DenizenEntityType.getByName(randomType.name()), "RANDOM");
+            return new EntityTag(DenizenEntityType.getByName(randomType.name()), "RANDOM");
         }
 
         ///////
@@ -207,17 +207,17 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
             // NPC entity
             if (entityGroup.matches("N@")) {
 
-                dNPC npc = dNPC.valueOf(string);
+                NPCTag npc = NPCTag.valueOf(string);
 
                 if (npc != null) {
                     if (npc.isSpawned()) {
-                        return new dEntity(npc);
+                        return new EntityTag(npc);
                     }
                     else {
                         if (context != null && context.debug) {
                             Debug.echoDebug(context.entry, "NPC '" + string + "' is not spawned, errors may follow!");
                         }
-                        return new dEntity(npc);
+                        return new EntityTag(npc);
                     }
                 }
                 else {
@@ -228,10 +228,10 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
 
             // Player entity
             else if (entityGroup.matches("P@")) {
-                LivingEntity returnable = dPlayer.valueOf(m.group(2)).getPlayerEntity();
+                LivingEntity returnable = PlayerTag.valueOf(m.group(2)).getPlayerEntity();
 
                 if (returnable != null) {
-                    return new dEntity(returnable);
+                    return new EntityTag(returnable);
                 }
                 else if (context == null || context.debug) {
                     Debug.echoError("Invalid Player! '" + m.group(2)
@@ -245,7 +245,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
                     UUID entityID = UUID.fromString(m.group(2));
                     Entity entity = getEntityForID(entityID);
                     if (entity != null) {
-                        return new dEntity(entity);
+                        return new EntityTag(entity);
                     }
                     return null;
                 }
@@ -290,7 +290,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
 
             // Handle custom DenizenEntityTypes
             if (DenizenEntityType.isRegistered(m.group(1))) {
-                return new dEntity(DenizenEntityType.getByName(m.group(1)), data1, data2);
+                return new EntityTag(DenizenEntityType.getByName(m.group(1)), data1, data2);
             }
         }
 
@@ -298,7 +298,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
             UUID entityID = UUID.fromString(string);
             Entity entity = getEntityForID(entityID);
             if (entity != null) {
-                return new dEntity(entity);
+                return new EntityTag(entity);
             }
             return null;
         }
@@ -307,7 +307,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         if (context == null || context.debug) {
-            Debug.log("valueOf dEntity returning null: " + string);
+            Debug.log("valueOf EntityTag returning null: " + string);
         }
 
         return null;
@@ -372,7 +372,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
     //   CONSTRUCTORS
     //////////////////
 
-    public dEntity(Entity entity) {
+    public EntityTag(Entity entity) {
         if (entity != null) {
             this.entity = entity;
             entityScript = EntityScriptHelper.getEntityScript(entity);
@@ -388,7 +388,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     @Deprecated
-    public dEntity(EntityType entityType) {
+    public EntityTag(EntityType entityType) {
         if (entityType != null) {
             this.entity = null;
             this.entity_type = DenizenEntityType.getByName(entityType.name());
@@ -399,13 +399,13 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     @Deprecated
-    public dEntity(EntityType entityType, ArrayList<Mechanism> mechanisms) {
+    public EntityTag(EntityType entityType, ArrayList<Mechanism> mechanisms) {
         this(entityType);
         this.mechanisms = mechanisms;
     }
 
     @Deprecated
-    public dEntity(EntityType entityType, String data1) {
+    public EntityTag(EntityType entityType, String data1) {
         if (entityType != null) {
             this.entity = null;
             this.entity_type = DenizenEntityType.getByName(entityType.name());
@@ -417,7 +417,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     @Deprecated
-    public dEntity(EntityType entityType, String data1, String data2) {
+    public EntityTag(EntityType entityType, String data1, String data2) {
         if (entityType != null) {
             this.entity = null;
             this.entity_type = DenizenEntityType.getByName(entityType.name());
@@ -429,7 +429,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
     }
 
-    public dEntity(DenizenEntityType entityType) {
+    public EntityTag(DenizenEntityType entityType) {
         if (entityType != null) {
             this.entity = null;
             this.entity_type = entityType;
@@ -439,12 +439,12 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
     }
 
-    public dEntity(DenizenEntityType entityType, ArrayList<Mechanism> mechanisms) {
+    public EntityTag(DenizenEntityType entityType, ArrayList<Mechanism> mechanisms) {
         this(entityType);
         this.mechanisms = mechanisms;
     }
 
-    public dEntity(DenizenEntityType entityType, String data1) {
+    public EntityTag(DenizenEntityType entityType, String data1) {
         if (entityType != null) {
             this.entity = null;
             this.entity_type = entityType;
@@ -455,7 +455,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
     }
 
-    public dEntity(DenizenEntityType entityType, String data1, String data2) {
+    public EntityTag(DenizenEntityType entityType, String data1, String data2) {
         if (entityType != null) {
             this.entity = null;
             this.entity_type = entityType;
@@ -467,7 +467,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
     }
 
-    public dEntity(dNPC npc) {
+    public EntityTag(NPCTag npc) {
         if (Depends.citizens == null) {
             return;
         }
@@ -496,7 +496,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
     private String data1 = null;
     private String data2 = null;
     private DespawnedEntity despawned_entity = null;
-    private dNPC npc = null;
+    private NPCTag npc = null;
     private UUID uuid = null;
     private String entityScript = null;
 
@@ -532,14 +532,14 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     @Override
-    public dEntity getDenizenEntity() {
+    public EntityTag getDenizenEntity() {
         return this;
     }
 
     /**
      * Get the ObjectTag that most accurately describes this entity,
      * useful for automatically saving dEntities to contexts as
-     * dNPCs and dPlayers
+     * NPCTags and PlayerTags
      *
      * @return The ObjectTag
      */
@@ -554,7 +554,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
             return getDenizenNPC();
         }
         else if (isPlayer()) {
-            return new dPlayer(getPlayer());
+            return new PlayerTag(getPlayer());
         }
         else {
             return this;
@@ -562,7 +562,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     /**
-     * Get the Bukkit entity corresponding to this dEntity
+     * Get the Bukkit entity corresponding to this EntityTag
      *
      * @return the underlying Bukkit entity
      */
@@ -572,7 +572,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     /**
-     * Get the living entity corresponding to this dEntity
+     * Get the living entity corresponding to this EntityTag
      *
      * @return The living entity
      */
@@ -587,7 +587,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     /**
-     * Check whether this dEntity is a living entity
+     * Check whether this EntityTag is a living entity
      *
      * @return true or false
      */
@@ -601,12 +601,12 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     /**
-     * Get the dNPC corresponding to this dEntity
+     * Get the NPCTag corresponding to this EntityTag
      *
-     * @return The dNPC
+     * @return The NPCTag
      */
 
-    public dNPC getDenizenNPC() {
+    public NPCTag getDenizenNPC() {
         if (npc != null) {
             return npc;
         }
@@ -616,7 +616,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     /**
-     * Check whether this dEntity is an NPC
+     * Check whether this EntityTag is an NPC
      *
      * @return true or false
      */
@@ -630,7 +630,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     /**
-     * Get the Player corresponding to this dEntity
+     * Get the Player corresponding to this EntityTag
      *
      * @return The Player
      */
@@ -645,14 +645,14 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     /**
-     * Get the dPlayer corresponding to this dEntity
+     * Get the PlayerTag corresponding to this EntityTag
      *
-     * @return The dPlayer
+     * @return The PlayerTag
      */
 
-    public dPlayer getDenizenPlayer() {
+    public PlayerTag getDenizenPlayer() {
         if (isPlayer()) {
-            return new dPlayer(getPlayer());
+            return new PlayerTag(getPlayer());
         }
         else {
             return null;
@@ -660,7 +660,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     /**
-     * Check whether this dEntity is a Player
+     * Check whether this EntityTag is a Player
      *
      * @return true or false
      */
@@ -670,7 +670,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     /**
-     * Get this dEntity as a Projectile
+     * Get this EntityTag as a Projectile
      *
      * @return The Projectile
      */
@@ -681,7 +681,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     /**
-     * Check whether this dEntity is a Projectile
+     * Check whether this EntityTag is a Projectile
      *
      * @return true or false
      */
@@ -693,12 +693,12 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
     /**
      * Get this Projectile entity's shooter
      *
-     * @return A dEntity of the shooter
+     * @return A EntityTag of the shooter
      */
 
-    public dEntity getShooter() {
+    public EntityTag getShooter() {
         if (hasShooter()) {
-            return new dEntity((LivingEntity) getProjectile().getShooter());
+            return new EntityTag((LivingEntity) getProjectile().getShooter());
         }
         else {
             return null;
@@ -709,7 +709,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
      * Set this Projectile entity's shooter
      */
 
-    public void setShooter(dEntity shooter) {
+    public void setShooter(EntityTag shooter) {
         if (isProjectile() && shooter.isLivingEntity()) {
             getProjectile().setShooter(shooter.getLivingEntity());
         }
@@ -736,14 +736,14 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     /**
-     * Returns this entity's dInventory.
+     * Returns this entity's InventoryTag.
      *
-     * @return the entity's dInventory
+     * @return the entity's InventoryTag
      */
 
-    public dInventory getInventory() {
+    public InventoryTag getInventory() {
         return hasInventory() ? isCitizensNPC() ? getDenizenNPC().getDenizenInventory()
-                : dInventory.mirrorBukkitInventory(getBukkitInventory()) : null;
+                : InventoryTag.mirrorBukkitInventory(getBukkitInventory()) : null;
     }
 
     public String getName() {
@@ -773,7 +773,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         ItemStack[] equipment = getLivingEntity().getEquipment().getArmorContents();
         ListTag equipmentList = new ListTag();
         for (ItemStack item : equipment) {
-            equipmentList.add(new dItem(item).identify());
+            equipmentList.add(new ItemTag(item).identify());
         }
         return equipmentList;
     }
@@ -796,10 +796,10 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
      * @return The Location
      */
 
-    public dLocation getLocation() {
+    public LocationTag getLocation() {
 
         if (entity != null) {
-            return new dLocation(entity.getLocation());
+            return new LocationTag(entity.getLocation());
         }
 
         return null;
@@ -811,16 +811,16 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
      * @return The location
      */
 
-    public dLocation getEyeLocation() {
+    public LocationTag getEyeLocation() {
 
         if (isPlayer()) {
-            return new dLocation(getPlayer().getEyeLocation());
+            return new LocationTag(getPlayer().getEyeLocation());
         }
         else if (!isGeneric() && isLivingEntity()) {
-            return new dLocation(getLivingEntity().getEyeLocation());
+            return new LocationTag(getLivingEntity().getEyeLocation());
         }
         else if (!isGeneric()) {
-            return new dLocation(getBukkitEntity().getLocation());
+            return new LocationTag(getBukkitEntity().getLocation());
         }
 
         return null;
@@ -916,7 +916,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
                             return;
                         }
                         else {
-                            dNPC npc = new dNPC(net.citizensnpcs.api.CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, data1));
+                            NPCTag npc = new NPCTag(net.citizensnpcs.api.CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, data1));
                             npc.getCitizen().spawn(location);
                             entity = npc.getEntity();
                             uuid = entity.getUniqueId();
@@ -926,9 +926,9 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
 
                         Material material = null;
 
-                        if (data1 != null && dMaterial.matches(data1)) {
+                        if (data1 != null && MaterialTag.matches(data1)) {
 
-                            material = dMaterial.valueOf(data1).getMaterial();
+                            material = MaterialTag.valueOf(data1).getMaterial();
 
                             // If we did not get a block with "RANDOM", or we got
                             // air or portals, keep trying
@@ -938,7 +938,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
                                             material == MaterialCompat.NETHER_PORTAL ||
                                             material == MaterialCompat.END_PORTAL)) {
 
-                                material = dMaterial.valueOf(data1).getMaterial();
+                                material = MaterialTag.valueOf(data1).getMaterial();
                             }
                         }
 
@@ -978,7 +978,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
                 }
             }
             else {
-                Debug.echoError("Cannot spawn a null dEntity!");
+                Debug.echoError("Cannot spawn a null EntityTag!");
             }
 
             if (!isUnique()) {
@@ -1003,7 +1003,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
             spawnAt(despawned_entity.location);
         }
         else if (entity == null) {
-            Debug.echoError("Cannot respawn a null dEntity!");
+            Debug.echoError("Cannot respawn a null EntityTag!");
         }
 
     }
@@ -1059,7 +1059,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         ItemStack[] equipment = null;
         String custom_script = null;
 
-        public DespawnedEntity(dEntity entity) {
+        public DespawnedEntity(EntityTag entity) {
             if (entity != null) {
                 // Save some important info to rebuild the entity
                 health = entity.getLivingEntity().getHealth();
@@ -1073,7 +1073,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
     }
 
-    public int comparesTo(dEntity entity) {
+    public int comparesTo(EntityTag entity) {
         // Never matches a null
         if (entity == null) {
             return 0;
@@ -1138,7 +1138,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     @Override
-    public dEntity setPrefix(String prefix) {
+    public EntityTag setPrefix(String prefix) {
         this.prefix = prefix;
         return this;
     }
@@ -1323,10 +1323,10 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.type>
+        // @attribute <EntityTag.type>
         // @returns ElementTag
         // @description
-        // Always returns 'Entity' for dEntity objects. All objects fetchable by the Object Fetcher will return the
+        // Always returns 'Entity' for EntityTag objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         if (attribute.startsWith("type")) {
@@ -1338,7 +1338,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <e@entity.entity_type>
+        // @attribute <EntityTag.entity_type>
         // @returns ElementTag
         // @group data
         // @description
@@ -1349,7 +1349,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_spawned>
+        // @attribute <EntityTag.is_spawned>
         // @returns ElementTag(Boolean)
         // @group data
         // @description
@@ -1361,7 +1361,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.eid>
+        // @attribute <EntityTag.eid>
         // @returns ElementTag(Number)
         // @group data
         // @description
@@ -1373,7 +1373,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.uuid>
+        // @attribute <EntityTag.uuid>
         // @returns ElementTag
         // @group data
         // @description
@@ -1386,7 +1386,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.scriptname>
+        // @attribute <EntityTag.scriptname>
         // @returns ElementTag
         // @group data
         // @description
@@ -1401,7 +1401,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.has_flag[<flag_name>]>
+        // @attribute <EntityTag.has_flag[<flag_name>]>
         // @returns ElementTag(Boolean)
         // @description
         // Returns true if the entity has the specified flag, otherwise returns false.
@@ -1422,7 +1422,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.flag[<flag_name>]>
+        // @attribute <EntityTag.flag[<flag_name>]>
         // @returns Flag ListTag
         // @description
         // Returns the specified flag from the entity.
@@ -1455,7 +1455,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.list_flags[(regex:)<search>]>
+        // @attribute <EntityTag.list_flags[(regex:)<search>]>
         // @returns ListTag
         // @description
         // Returns a list of an entity's flag names, with an optional search for
@@ -1508,11 +1508,11 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <e@entity.custom_id>
+        // @attribute <EntityTag.custom_id>
         // @returns ScriptTag/Element
         // @group data
         // @description
-        // If the entity has a script ID, returns the dScript of that ID.
+        // If the entity has a script ID, returns the ScriptTag of that ID.
         // Otherwise, returns the name of the entity type.
         // -->
         if (attribute.startsWith("custom_id")) {
@@ -1527,7 +1527,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.name>
+        // @attribute <EntityTag.name>
         // @returns ElementTag
         // @group data
         // @description
@@ -1546,39 +1546,39 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
 
 
         // <--[tag]
-        // @attribute <e@entity.saddle>
-        // @returns dItem
+        // @attribute <EntityTag.saddle>
+        // @returns ItemTag
         // @group inventory
         // @description
-        // If the entity is a horse or pig, returns the saddle as a dItem, or i@air if none.
+        // If the entity is a horse or pig, returns the saddle as a ItemTag, or i@air if none.
         // -->
         if (attribute.startsWith("saddle")) {
             if (getLivingEntity().getType() == EntityType.HORSE) {
-                return new dItem(((Horse) getLivingEntity()).getInventory().getSaddle())
+                return new ItemTag(((Horse) getLivingEntity()).getInventory().getSaddle())
                         .getAttribute(attribute.fulfill(1));
             }
             else if (getLivingEntity().getType() == EntityType.PIG) {
-                return new dItem(((Pig) getLivingEntity()).hasSaddle() ? Material.SADDLE : Material.AIR)
+                return new ItemTag(((Pig) getLivingEntity()).hasSaddle() ? Material.SADDLE : Material.AIR)
                         .getAttribute(attribute.fulfill(1));
             }
         }
 
         // <--[tag]
-        // @attribute <e@entity.horse_armor>
-        // @returns dItem
+        // @attribute <EntityTag.horse_armor>
+        // @returns ItemTag
         // @group inventory
         // @description
         // If the entity is a horse, returns the item equipped as the horses armor, or i@air if none.
         // -->
         if (attribute.startsWith("horse_armor") || attribute.startsWith("horse_armour")) {
             if (getLivingEntity().getType() == EntityType.HORSE) {
-                return new dItem(((Horse) getLivingEntity()).getInventory().getArmor())
+                return new ItemTag(((Horse) getLivingEntity()).getInventory().getArmor())
                         .getAttribute(attribute.fulfill(1));
             }
         }
 
         // <--[tag]
-        // @attribute <e@entity.has_saddle>
+        // @attribute <EntityTag.has_saddle>
         // @returns ElementTag(Boolean)
         // @group inventory
         // @description
@@ -1596,33 +1596,33 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.item_in_hand>
-        // @returns dItem
+        // @attribute <EntityTag.item_in_hand>
+        // @returns ItemTag
         // @group inventory
         // @description
         // Returns the item the entity is holding, or i@air if none.
         // -->
         if (attribute.startsWith("item_in_hand") ||
                 attribute.startsWith("iteminhand")) {
-            return new dItem(NMSHandler.getInstance().getEntityHelper().getItemInHand(getLivingEntity()))
+            return new ItemTag(NMSHandler.getInstance().getEntityHelper().getItemInHand(getLivingEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
-        // @attribute <e@entity.item_in_offhand>
-        // @returns dItem
+        // @attribute <EntityTag.item_in_offhand>
+        // @returns ItemTag
         // @group inventory
         // @description
         // Returns the item the entity is holding in their off hand, or i@air if none.
         // -->
         if (attribute.startsWith("item_in_offhand") ||
                 attribute.startsWith("iteminoffhand")) {
-            return new dItem(NMSHandler.getInstance().getEntityHelper().getItemInOffHand(getLivingEntity()))
+            return new ItemTag(NMSHandler.getInstance().getEntityHelper().getItemInOffHand(getLivingEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_trading>
+        // @attribute <EntityTag.is_trading>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the villager entity is trading.
@@ -1634,15 +1634,15 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.trading_with>
-        // @returns dPlayer
+        // @attribute <EntityTag.trading_with>
+        // @returns PlayerTag
         // @description
         // Returns the player who is trading with the villager entity, or null if it is not trading.
         // -->
         if (attribute.startsWith("trading_with")) {
             if (entity instanceof Merchant
                     && ((Merchant) entity).getTrader() != null) {
-                return new dEntity(((Merchant) entity).getTrader()).getAttribute(attribute.fulfill(1));
+                return new EntityTag(((Merchant) entity).getTrader()).getAttribute(attribute.fulfill(1));
             }
         }
 
@@ -1652,8 +1652,8 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <e@entity.map_trace>
-        // @returns dLocation
+        // @attribute <EntityTag.map_trace>
+        // @returns LocationTag
         // @group location
         // @description
         // Returns a 2D location indicating where on the map the entity's looking at.
@@ -1680,20 +1680,20 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
                     x = 128f - (basez * 128f);
                 }
                 y = 128f - (basey * 128f);
-                return new dLocation(null, Math.round(x), Math.round(y)).getAttribute(attribute.fulfill(1));
+                return new LocationTag(null, Math.round(x), Math.round(y)).getAttribute(attribute.fulfill(1));
             }
         }
 
         // <--[tag]
-        // @attribute <e@entity.can_see[<entity>]>
+        // @attribute <EntityTag.can_see[<entity>]>
         // @returns ElementTag(Boolean)
         // @group location
         // @description
         // Returns whether the entity can see the specified other entity (has an uninterrupted line-of-sight).
         // -->
         if (attribute.startsWith("can_see")) {
-            if (isLivingEntity() && attribute.hasContext(1) && dEntity.matches(attribute.getContext(1))) {
-                dEntity toEntity = dEntity.valueOf(attribute.getContext(1));
+            if (isLivingEntity() && attribute.hasContext(1) && EntityTag.matches(attribute.getContext(1))) {
+                EntityTag toEntity = EntityTag.valueOf(attribute.getContext(1));
                 if (toEntity != null && toEntity.isSpawned()) {
                     return new ElementTag(getLivingEntity().hasLineOfSight(toEntity.getBukkitEntity())).getAttribute(attribute.fulfill(1));
                 }
@@ -1701,19 +1701,19 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.eye_location>
-        // @returns dLocation
+        // @attribute <EntityTag.eye_location>
+        // @returns LocationTag
         // @group location
         // @description
         // Returns the location of the entity's eyes.
         // -->
         if (attribute.startsWith("eye_location")) {
-            return new dLocation(getEyeLocation())
+            return new LocationTag(getEyeLocation())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
-        // @attribute <e@entity.eye_height>
+        // @attribute <EntityTag.eye_height>
         // @returns ElementTag(Boolean)
         // @group location
         // @description
@@ -1727,16 +1727,16 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.location.cursor_on[<range>]>
-        // @returns dLocation
+        // @attribute <EntityTag.location.cursor_on[<range>]>
+        // @returns LocationTag
         // @group location
         // @description
         // Returns the location of the block the entity is looking at.
         // Optionally, specify a maximum range to find the location from.
         // -->
         // <--[tag]
-        // @attribute <e@entity.location.cursor_on[<range>].ignore[<material>|...]>
-        // @returns dLocation
+        // @attribute <EntityTag.location.cursor_on[<range>].ignore[<material>|...]>
+        // @returns LocationTag
         // @group location
         // @description
         // Returns the location of the block the entity is looking at, ignoring
@@ -1753,43 +1753,43 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
             set.add(Material.AIR);
             attribute = attribute.fulfill(2);
             if (attribute.startsWith("ignore") && attribute.hasContext(1)) {
-                List<dMaterial> ignoreList = ListTag.valueOf(attribute.getContext(1)).filter(dMaterial.class, attribute.context);
-                for (dMaterial material : ignoreList) {
+                List<MaterialTag> ignoreList = ListTag.valueOf(attribute.getContext(1)).filter(MaterialTag.class, attribute.context);
+                for (MaterialTag material : ignoreList) {
                     set.add(material.getMaterial());
                 }
                 attribute = attribute.fulfill(1);
             }
-            return new dLocation(getLivingEntity().getTargetBlock(set, range).getLocation()).getAttribute(attribute);
+            return new LocationTag(getLivingEntity().getTargetBlock(set, range).getLocation()).getAttribute(attribute);
         }
 
         // <--[tag]
-        // @attribute <e@entity.location.standing_on>
-        // @returns dLocation
+        // @attribute <EntityTag.location.standing_on>
+        // @returns LocationTag
         // @group location
         // @description
         // Returns the location of what the entity is standing on.
         // Works with offline players.
         // -->
         if (attribute.startsWith("location.standing_on")) {
-            return new dLocation(entity.getLocation().clone().add(0, -0.5f, 0))
+            return new LocationTag(entity.getLocation().clone().add(0, -0.5f, 0))
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
-        // @attribute <e@entity.location>
-        // @returns dLocation
+        // @attribute <EntityTag.location>
+        // @returns LocationTag
         // @group location
         // @description
         // Returns the location of the entity.
         // Works with offline players.
         // -->
         if (attribute.startsWith("location")) {
-            return new dLocation(entity.getLocation())
+            return new LocationTag(entity.getLocation())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
-        // @attribute <e@entity.body_yaw>
+        // @attribute <EntityTag.body_yaw>
         // @returns ElementTag(Decimal)
         // @group location
         // @description
@@ -1801,27 +1801,27 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.velocity>
-        // @returns dLocation
+        // @attribute <EntityTag.velocity>
+        // @returns LocationTag
         // @group location
         // @description
         // Returns the movement velocity of the entity.
         // Note: Does not accurately calculate player clientside movement velocity.
         // -->
         if (attribute.startsWith("velocity")) {
-            return new dLocation(entity.getVelocity().toLocation(entity.getWorld()))
+            return new LocationTag(entity.getVelocity().toLocation(entity.getWorld()))
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
-        // @attribute <e@entity.world>
-        // @returns dWorld
+        // @attribute <EntityTag.world>
+        // @returns WorldTag
         // @group location
         // @description
         // Returns the world the entity is in. Works with offline players.
         // -->
         if (attribute.startsWith("world")) {
-            return new dWorld(entity.getWorld())
+            return new WorldTag(entity.getWorld())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1831,7 +1831,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <e@entity.can_pickup_items>
+        // @attribute <EntityTag.can_pickup_items>
         // @returns ElementTag(Boolean)
         // @group attributes
         // @description
@@ -1845,19 +1845,19 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.fallingblock_material>
-        // @returns dMaterial
+        // @attribute <EntityTag.fallingblock_material>
+        // @returns MaterialTag
         // @group attributes
         // @description
         // Returns the material of a fallingblock-type entity.
         // -->
         if (attribute.startsWith("fallingblock_material") && entity instanceof FallingBlock) {
-            return new dMaterial(NMSHandler.getInstance().getEntityHelper().getBlockDataFor((FallingBlock) entity))
+            return new MaterialTag(NMSHandler.getInstance().getEntityHelper().getBlockDataFor((FallingBlock) entity))
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
-        // @attribute <e@entity.fall_distance>
+        // @attribute <EntityTag.fall_distance>
         // @returns ElementTag(Decimal)
         // @group attributes
         // @description
@@ -1869,7 +1869,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.fire_time>
+        // @attribute <EntityTag.fire_time>
         // @returns DurationTag
         // @group attributes
         // @description
@@ -1881,7 +1881,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.on_fire>
+        // @attribute <EntityTag.on_fire>
         // @returns ElementTag(Boolean)
         // @group attributes
         // @description
@@ -1892,53 +1892,53 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.leash_holder>
-        // @returns dEntity
+        // @attribute <EntityTag.leash_holder>
+        // @returns EntityTag
         // @group attributes
         // @description
         // Returns the leash holder of entity.
         // -->
         if (attribute.startsWith("leash_holder") || attribute.startsWith("get_leash_holder")) {
             if (isLivingEntity() && getLivingEntity().isLeashed()) {
-                return new dEntity(getLivingEntity().getLeashHolder())
+                return new EntityTag(getLivingEntity().getLeashHolder())
                         .getAttribute(attribute.fulfill(1));
             }
         }
 
         // <--[tag]
-        // @attribute <e@entity.passengers>
-        // @returns ListTag(dEntity)
+        // @attribute <EntityTag.passengers>
+        // @returns ListTag(EntityTag)
         // @group attributes
         // @description
         // Returns a list of the entity's passengers, if any.
         // -->
         if (attribute.startsWith("passengers") || attribute.startsWith("get_passengers")) {
-            ArrayList<dEntity> passengers = new ArrayList<>();
+            ArrayList<EntityTag> passengers = new ArrayList<>();
             for (Entity ent : entity.getPassengers()) {
-                passengers.add(new dEntity(ent));
+                passengers.add(new EntityTag(ent));
             }
             return new ListTag(passengers).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
-        // @attribute <e@entity.passenger>
-        // @returns dEntity
+        // @attribute <EntityTag.passenger>
+        // @returns EntityTag
         // @group attributes
         // @description
         // Returns the entity's passenger, if any.
         // -->
         if (attribute.startsWith("passenger") || attribute.startsWith("get_passenger")) {
             if (!entity.isEmpty()) {
-                return new dEntity(entity.getPassenger())
+                return new EntityTag(entity.getPassenger())
                         .getAttribute(attribute.fulfill(1));
             }
         }
 
         // <--[tag]
-        // @attribute <e@entity.shooter>
-        // @returns dEntity
+        // @attribute <EntityTag.shooter>
+        // @returns EntityTag
         // @group attributes
-        // @Mechanism dEntity.shooter
+        // @Mechanism EntityTag.shooter
         // @description
         // Returns the entity's shooter, if any.
         // -->
@@ -1950,8 +1950,8 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.left_shoulder>
-        // @returns dEntity
+        // @attribute <EntityTag.left_shoulder>
+        // @returns EntityTag
         // @description
         // Returns the entity on the entity's left shoulder.
         // Only applies to player-typed entities.
@@ -1960,13 +1960,13 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         // -->
         if (getLivingEntity() instanceof HumanEntity
                 && attribute.startsWith("left_shoulder")) {
-            return new dEntity(((HumanEntity) getLivingEntity()).getShoulderEntityLeft())
+            return new EntityTag(((HumanEntity) getLivingEntity()).getShoulderEntityLeft())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
-        // @attribute <e@entity.right_shoulder>
-        // @returns dEntity
+        // @attribute <EntityTag.right_shoulder>
+        // @returns EntityTag
         // @description
         // Returns the entity on the entity's right shoulder.
         // Only applies to player-typed entities.
@@ -1975,26 +1975,26 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         // -->
         if (getLivingEntity() instanceof HumanEntity
                 && attribute.startsWith("right_shoulder")) {
-            return new dEntity(((HumanEntity) getLivingEntity()).getShoulderEntityRight())
+            return new EntityTag(((HumanEntity) getLivingEntity()).getShoulderEntityRight())
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
-        // @attribute <e@entity.vehicle>
-        // @returns dEntity
+        // @attribute <EntityTag.vehicle>
+        // @returns EntityTag
         // @group attributes
         // @description
-        // If the entity is in a vehicle, returns the vehicle as a dEntity.
+        // If the entity is in a vehicle, returns the vehicle as a EntityTag.
         // -->
         if (attribute.startsWith("vehicle") || attribute.startsWith("get_vehicle")) {
             if (entity.isInsideVehicle()) {
-                return new dEntity(entity.getVehicle())
+                return new EntityTag(entity.getVehicle())
                         .getAttribute(attribute.fulfill(1));
             }
         }
 
         // <--[tag]
-        // @attribute <e@entity.can_breed>
+        // @attribute <EntityTag.can_breed>
         // @returns ElementTag(Boolean)
         // @group attributes
         // @description
@@ -2006,7 +2006,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.breeding>
+        // @attribute <EntityTag.breeding>
         // @returns ElementTag(Boolean)
         // @group attributes
         // @description
@@ -2018,7 +2018,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.has_passenger>
+        // @attribute <EntityTag.has_passenger>
         // @returns ElementTag(Boolean)
         // @group attributes
         // @description
@@ -2030,7 +2030,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_empty>
+        // @attribute <EntityTag.is_empty>
         // @returns ElementTag(Boolean)
         // @group attributes
         // @description
@@ -2042,7 +2042,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_inside_vehicle>
+        // @attribute <EntityTag.is_inside_vehicle>
         // @returns ElementTag(Boolean)
         // @group attributes
         // @description
@@ -2054,7 +2054,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_leashed>
+        // @attribute <EntityTag.is_leashed>
         // @returns ElementTag(Boolean)
         // @group attributes
         // @description
@@ -2066,7 +2066,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_sheared>
+        // @attribute <EntityTag.is_sheared>
         // @returns ElementTag(Boolean)
         // @group attributes
         // @description
@@ -2078,7 +2078,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_on_ground>
+        // @attribute <EntityTag.is_on_ground>
         // @returns ElementTag(Boolean)
         // @group attributes
         // @description
@@ -2090,7 +2090,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_persistent>
+        // @attribute <EntityTag.is_persistent>
         // @returns ElementTag(Boolean)
         // @group attributes
         // @description
@@ -2102,7 +2102,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_collidable>
+        // @attribute <EntityTag.is_collidable>
         // @returns ElementTag(Boolean)
         // @mechanism collidable
         // @group attributes
@@ -2115,8 +2115,8 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.killer>
-        // @returns dPlayer
+        // @attribute <EntityTag.killer>
+        // @returns PlayerTag
         // @group attributes
         // @description
         // Returns the player that last killed the entity.
@@ -2127,7 +2127,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.last_damage.amount>
+        // @attribute <EntityTag.last_damage.amount>
         // @returns ElementTag(Decimal)
         // @group attributes
         // @description
@@ -2139,7 +2139,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.last_damage.cause>
+        // @attribute <EntityTag.last_damage.cause>
         // @returns ElementTag
         // @group attributes
         // @description
@@ -2152,9 +2152,9 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.last_damage.duration>
+        // @attribute <EntityTag.last_damage.duration>
         // @returns DurationTag
-        // @mechanism dEntity.no_damage_duration
+        // @mechanism EntityTag.no_damage_duration
         // @group attributes
         // @description
         // Returns the duration of the last damage taken by the entity.
@@ -2165,9 +2165,9 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.last_damage.max_duration>
+        // @attribute <EntityTag.last_damage.max_duration>
         // @returns DurationTag
-        // @mechanism dEntity.max_no_damage_duration
+        // @mechanism EntityTag.max_no_damage_duration
         // @group attributes
         // @description
         // Returns the maximum duration of the last damage taken by the entity.
@@ -2178,7 +2178,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.oxygen.max>
+        // @attribute <EntityTag.oxygen.max>
         // @returns DurationTag
         // @group attributes
         // @description
@@ -2191,7 +2191,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.oxygen>
+        // @attribute <EntityTag.oxygen>
         // @returns DurationTag
         // @group attributes
         // @description
@@ -2204,7 +2204,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.remove_when_far>
+        // @attribute <EntityTag.remove_when_far>
         // @returns ElementTag(Boolean)
         // @group attributes
         // @description
@@ -2216,25 +2216,25 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.target>
-        // @returns dEntity
+        // @attribute <EntityTag.target>
+        // @returns EntityTag
         // @group attributes
         // @description
         // Returns the target entity of the creature, if any.
-        // Note: use <n@npc.navigator.target_entity> for NPC's.
+        // Note: use <NPCTag.navigator.target_entity> for NPC's.
         // -->
         if (attribute.startsWith("target")) {
             if (getBukkitEntity() instanceof Creature) {
                 Entity target = ((Creature) getLivingEntity()).getTarget();
                 if (target != null) {
-                    return new dEntity(target).getAttribute(attribute.fulfill(1));
+                    return new EntityTag(target).getAttribute(attribute.fulfill(1));
                 }
             }
             return null;
         }
 
         // <--[tag]
-        // @attribute <e@entity.time_lived>
+        // @attribute <EntityTag.time_lived>
         // @returns DurationTag
         // @group attributes
         // @description
@@ -2246,7 +2246,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.pickup_delay>
+        // @attribute <EntityTag.pickup_delay>
         // @returns DurationTag
         // @group attributes
         // @description
@@ -2258,7 +2258,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_in_block>
+        // @attribute <EntityTag.is_in_block>
         // @returns ElementTag(Boolean)
         // @group attributes
         // @description
@@ -2272,8 +2272,8 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.attached_block>
-        // @returns dLocation
+        // @attribute <EntityTag.attached_block>
+        // @returns LocationTag
         // @group attributes
         // @description
         // Returns the location of the block that the arrow/trident entity is attached to.
@@ -2282,16 +2282,16 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
             if (getBukkitEntity() instanceof Arrow) {
                 Block attachedBlock = ((Arrow) getBukkitEntity()).getAttachedBlock();
                 if (attachedBlock != null) {
-                    return new dLocation(attachedBlock.getLocation()).getAttribute(attribute.fulfill(1));
+                    return new LocationTag(attachedBlock.getLocation()).getAttribute(attribute.fulfill(1));
                 }
             }
             return null;
         }
 
         // <--[tag]
-        // @attribute <e@entity.gliding>
+        // @attribute <EntityTag.gliding>
         // @returns ElementTag(Boolean)
-        // @mechanism dEntity.gliding
+        // @mechanism EntityTag.gliding
         // @group attributes
         // @description
         // Returns whether this entity is gliding.
@@ -2302,9 +2302,9 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.swimming>
+        // @attribute <EntityTag.swimming>
         // @returns ElementTag(Boolean)
-        // @mechanism dEntity.swimming
+        // @mechanism EntityTag.swimming
         // @group attributes
         // @description
         // Returns whether this entity is swimming.
@@ -2315,9 +2315,9 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.glowing>
+        // @attribute <EntityTag.glowing>
         // @returns ElementTag(Boolean)
-        // @mechanism dEntity.glowing
+        // @mechanism EntityTag.glowing
         // @group attributes
         // @description
         // Returns whether this entity is glowing.
@@ -2332,7 +2332,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <e@entity.is_living>
+        // @attribute <EntityTag.is_living>
         // @returns ElementTag(Boolean)
         // @group data
         // @description
@@ -2344,7 +2344,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_monster>
+        // @attribute <EntityTag.is_monster>
         // @returns ElementTag(Boolean)
         // @group data
         // @description
@@ -2356,7 +2356,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_mob>
+        // @attribute <EntityTag.is_mob>
         // @returns ElementTag(Boolean)
         // @group data
         // @description
@@ -2368,7 +2368,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_npc>
+        // @attribute <EntityTag.is_npc>
         // @returns ElementTag(Boolean)
         // @group data
         // @description
@@ -2380,7 +2380,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_player>
+        // @attribute <EntityTag.is_player>
         // @returns ElementTag(Boolean)
         // @group data
         // @description
@@ -2393,7 +2393,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_projectile>
+        // @attribute <EntityTag.is_projectile>
         // @returns ElementTag(Boolean)
         // @group data
         // @description
@@ -2409,14 +2409,14 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <e@entity.tameable>
+        // @attribute <EntityTag.tameable>
         // @returns ElementTag(Boolean)
         // @group properties
         // @description
         // Returns whether the entity is tameable.
         // If this returns true, it will enable access to:
-        // <@link mechanism dEntity.tame>, <@link mechanism dEntity.owner>,
-        // <@link tag e@entity.is_tamed>, and <@link tag e@entity.owner>
+        // <@link mechanism EntityTag.tame>, <@link mechanism EntityTag.owner>,
+        // <@link tag EntityTag.is_tamed>, and <@link tag EntityTag.owner>
         // -->
         if (attribute.startsWith("tameable") || attribute.startsWith("is_tameable")) {
             return new ElementTag(EntityTame.describes(this))
@@ -2424,15 +2424,15 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.ageable>
+        // @attribute <EntityTag.ageable>
         // @returns ElementTag(Boolean)
         // @group properties
         // @description
         // Returns whether the entity is ageable.
         // If this returns true, it will enable access to:
-        // <@link mechanism dEntity.age>, <@link mechanism dEntity.age_lock>,
-        // <@link tag e@entity.is_baby>, <@link tag e@entity.age>,
-        // and <@link tag e@entity.is_age_locked>
+        // <@link mechanism EntityTag.age>, <@link mechanism EntityTag.age_lock>,
+        // <@link tag EntityTag.is_baby>, <@link tag EntityTag.age>,
+        // and <@link tag EntityTag.is_age_locked>
         // -->
         if (attribute.startsWith("ageable") || attribute.startsWith("is_ageable")) {
             return new ElementTag(EntityAge.describes(this))
@@ -2440,13 +2440,13 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.colorable>
+        // @attribute <EntityTag.colorable>
         // @returns ElementTag(Boolean)
         // @group properties
         // @description
         // Returns whether the entity can be colored.
         // If this returns true, it will enable access to:
-        // <@link mechanism dEntity.color> and <@link tag e@entity.color>
+        // <@link mechanism EntityTag.color> and <@link tag EntityTag.color>
         // -->
         if (attribute.startsWith("colorable") || attribute.startsWith("is_colorable")) {
             return new ElementTag(EntityColor.describes(this))
@@ -2454,7 +2454,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.experience>
+        // @attribute <EntityTag.experience>
         // @returns ElementTag(Number)
         // @group properties
         // @description
@@ -2466,7 +2466,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.fuse_ticks>
+        // @attribute <EntityTag.fuse_ticks>
         // @returns ElementTag(Number)
         // @group properties
         // @description
@@ -2478,7 +2478,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.dragon_phase>
+        // @attribute <EntityTag.dragon_phase>
         // @returns ElementTag(Number)
         // @group properties
         // @description
@@ -2491,7 +2491,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.describe>
+        // @attribute <EntityTag.describe>
         // @returns ElementTag(Boolean)
         // @group properties
         // @description
@@ -2548,37 +2548,37 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name item_in_hand
-        // @input dItem
+        // @input ItemTag
         // @description
         // Sets the item in the entity's hand.
         // The entity must be living.
         // @tags
-        // <e@entity.item_in_hand>
+        // <EntityTag.item_in_hand>
         // -->
         if (mechanism.matches("item_in_hand")) {
-            NMSHandler.getInstance().getEntityHelper().setItemInHand(getLivingEntity(), mechanism.valueAsType(dItem.class).getItemStack());
+            NMSHandler.getInstance().getEntityHelper().setItemInHand(getLivingEntity(), mechanism.valueAsType(ItemTag.class).getItemStack());
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name item_in_offhand
-        // @input dItem
+        // @input ItemTag
         // @description
         // Sets the item in the entity's offhand.
         // The entity must be living.
         // @tags
-        // <e@entity.item_in_offhand>
+        // <EntityTag.item_in_offhand>
         // -->
         if (mechanism.matches("item_in_offhand")) {
-            NMSHandler.getInstance().getEntityHelper().setItemInOffHand(getLivingEntity(), mechanism.valueAsType(dItem.class).getItemStack());
+            NMSHandler.getInstance().getEntityHelper().setItemInOffHand(getLivingEntity(), mechanism.valueAsType(ItemTag.class).getItemStack());
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name attach_to
-        // @input dEntity(|dLocation(|Element(Boolean)))
+        // @input EntityTag(|dLocation(|Element(Boolean)))
         // @description
         // Attaches this entity's client-visible motion to another entity.
         // Optionally, specify an offset vector as well.
@@ -2593,12 +2593,12 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
                 Vector offset = null;
                 boolean rotateWith = true;
                 if (list.size() > 1) {
-                    offset = dLocation.valueOf(list.get(1)).toVector();
+                    offset = LocationTag.valueOf(list.get(1)).toVector();
                     if (list.size() > 2) {
                         rotateWith = new ElementTag(list.get(2)).asBoolean();
                     }
                 }
-                NMSHandler.getInstance().forceAttachMove(entity, dEntity.valueOf(list.get(0)).getBukkitEntity(), offset, rotateWith);
+                NMSHandler.getInstance().forceAttachMove(entity, EntityTag.valueOf(list.get(0)).getBukkitEntity(), offset, rotateWith);
             }
             else {
                 NMSHandler.getInstance().forceAttachMove(entity, null, null, false);
@@ -2606,48 +2606,48 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name shooter
-        // @input dEntity
+        // @input EntityTag
         // @description
         // Sets the entity's shooter.
         // The entity must be a projectile.
         // @tags
-        // <e@entity.shooter>
+        // <EntityTag.shooter>
         // -->
         if (mechanism.matches("shooter")) {
-            setShooter(mechanism.valueAsType(dEntity.class));
+            setShooter(mechanism.valueAsType(EntityTag.class));
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name can_pickup_items
         // @input Element(Boolean)
         // @description
         // Sets whether the entity can pick up items.
         // The entity must be living.
         // @tags
-        // <e@entity.can_pickup_items>
+        // <EntityTag.can_pickup_items>
         // -->
         if (mechanism.matches("can_pickup_items") && mechanism.requireBoolean()) {
             getLivingEntity().setCanPickupItems(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name fall_distance
         // @input Element(Decimal)
         // @description
         // Sets the fall distance.
         // @tags
-        // <e@entity.fall_distance>
+        // <EntityTag.fall_distance>
         // -->
         if (mechanism.matches("fall_distance") && mechanism.requireFloat()) {
             entity.setFallDistance(mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name fallingblock_drop_item
         // @input Element(Boolean)
         // @description
@@ -2659,7 +2659,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name fallingblock_hurt_entities
         // @input Element(Boolean)
         // @description
@@ -2671,74 +2671,74 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name fire_time
         // @input Duration
         // @description
         // Sets the entity's current fire time (time before the entity stops being on fire).
         // @tags
-        // <e@entity.fire_time>
+        // <EntityTag.fire_time>
         // -->
         if (mechanism.matches("fire_time") && mechanism.requireObject(DurationTag.class)) {
             entity.setFireTicks(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name leash_holder
-        // @input dEntity
+        // @input EntityTag
         // @description
         // Sets the entity holding this entity by leash.
         // The entity must be living.
         // @tags
-        // <e@entity.leashed>
-        // <e@entity.leash_holder>
+        // <EntityTag.leashed>
+        // <EntityTag.leash_holder>
         // -->
-        if (mechanism.matches("leash_holder") && mechanism.requireObject(dEntity.class)) {
-            getLivingEntity().setLeashHolder(mechanism.valueAsType(dEntity.class).getBukkitEntity());
+        if (mechanism.matches("leash_holder") && mechanism.requireObject(EntityTag.class)) {
+            getLivingEntity().setLeashHolder(mechanism.valueAsType(EntityTag.class).getBukkitEntity());
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name can_breed
         // @input Element(Boolean)
         // @description
         // Sets whether the entity is capable of mating with another of its kind.
         // The entity must be living and 'ageable'.
         // @tags
-        // <e@entity.can_breed>
+        // <EntityTag.can_breed>
         // -->
         if (mechanism.matches("can_breed") && mechanism.requireBoolean()) {
             ((Ageable) getLivingEntity()).setBreed(true);
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name breed
         // @input Element(Boolean)
         // @description
         // Sets whether the entity is trying to mate with another of its kind.
         // The entity must be living and an animal.
         // @tags
-        // <e@entity.can_breed>
+        // <EntityTag.can_breed>
         // -->
         if (mechanism.matches("breed") && mechanism.requireBoolean()) {
             NMSHandler.getInstance().getEntityHelper().setBreeding((Animals) getLivingEntity(), mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name passengers
-        // @input ListTag(dEntity)
+        // @input ListTag(EntityTag)
         // @description
         // Sets the passengers of this entity.
         // @tags
-        // <e@entity.passengers>
-        // <e@entity.empty>
+        // <EntityTag.passengers>
+        // <EntityTag.empty>
         // -->
         if (mechanism.matches("passengers")) {
             entity.eject();
-            for (dEntity ent : mechanism.valueAsType(ListTag.class).filter(dEntity.class, mechanism.context)) {
+            for (EntityTag ent : mechanism.valueAsType(ListTag.class).filter(EntityTag.class, mechanism.context)) {
                 if (ent.isSpawned() && comparesTo(ent) != 1) {
                     entity.addPassenger(ent.getBukkitEntity());
                 }
@@ -2746,56 +2746,56 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name passenger
-        // @input dEntity
+        // @input EntityTag
         // @description
         // Sets the passenger of this entity.
         // @tags
-        // <e@entity.passenger>
-        // <e@entity.empty>
+        // <EntityTag.passenger>
+        // <EntityTag.empty>
         // -->
-        if (mechanism.matches("passenger") && mechanism.requireObject(dEntity.class)) {
-            entity.setPassenger(mechanism.valueAsType(dEntity.class).getBukkitEntity());
+        if (mechanism.matches("passenger") && mechanism.requireObject(EntityTag.class)) {
+            entity.setPassenger(mechanism.valueAsType(EntityTag.class).getBukkitEntity());
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name time_lived
         // @input Duration
         // @description
         // Sets the amount of time this entity has lived for.
         // @tags
-        // <e@entity.time_lived>
+        // <EntityTag.time_lived>
         // -->
         if (mechanism.matches("time_lived") && mechanism.requireObject(DurationTag.class)) {
             entity.setTicksLived(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name remaining_air
         // @input Element(Number)
         // @description
         // Sets how much air the entity has remaining before it drowns.
         // The entity must be living.
         // @tags
-        // <e@entity.oxygen>
-        // <e@entity.oxygen.max>
+        // <EntityTag.oxygen>
+        // <EntityTag.oxygen.max>
         // -->
         if (mechanism.matches("remaining_air") && mechanism.requireInteger()) {
             getLivingEntity().setRemainingAir(mechanism.getValue().asInt());
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name remove_effects
         // @input None
         // @description
         // Removes all potion effects from the entity.
         // The entity must be living.
         // @tags
-        // <e@entity.has_effect[<effect>]>
+        // <EntityTag.has_effect[<effect>]>
         // -->
         if (mechanism.matches("remove_effects")) {
             for (PotionEffect potionEffect : this.getLivingEntity().getActivePotionEffects()) {
@@ -2804,7 +2804,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name release_left_shoulder
         // @input None
         // @description
@@ -2815,9 +2815,9 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
                 && mechanism.matches("release_left_shoulder")) {
             Entity bukkitEnt = ((HumanEntity) getLivingEntity()).getShoulderEntityLeft();
             if (bukkitEnt != null) {
-                dEntity ent = new dEntity(bukkitEnt);
+                EntityTag ent = new EntityTag(bukkitEnt);
                 String escript = ent.getEntityScript();
-                ent = dEntity.valueOf("e@" + (escript != null && escript.length() > 0 ? escript : ent.getEntityType().getLowercaseName())
+                ent = EntityTag.valueOf("e@" + (escript != null && escript.length() > 0 ? escript : ent.getEntityType().getLowercaseName())
                         + PropertyParser.getPropertiesString(ent));
                 ent.spawnAt(getEyeLocation());
                 ((HumanEntity) getLivingEntity()).setShoulderEntityLeft(null);
@@ -2825,7 +2825,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name release_right_shoulder
         // @input None
         // @description
@@ -2836,9 +2836,9 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
                 && mechanism.matches("release_right_shoulder")) {
             Entity bukkitEnt = ((HumanEntity) getLivingEntity()).getShoulderEntityRight();
             if (bukkitEnt != null) {
-                dEntity ent = new dEntity(bukkitEnt);
+                EntityTag ent = new EntityTag(bukkitEnt);
                 String escript = ent.getEntityScript();
-                ent = dEntity.valueOf("e@" + (escript != null && escript.length() > 0 ? escript : ent.getEntityType().getLowercaseName())
+                ent = EntityTag.valueOf("e@" + (escript != null && escript.length() > 0 ? escript : ent.getEntityType().getLowercaseName())
                         + PropertyParser.getPropertiesString(ent));
                 ent.spawnAt(getEyeLocation());
                 ((HumanEntity) getLivingEntity()).setShoulderEntityRight(null);
@@ -2846,9 +2846,9 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name left_shoulder
-        // @input dEntity
+        // @input EntityTag
         // @description
         // Sets the entity's left shoulder entity.
         // Only applies to player-typed entities.
@@ -2856,13 +2856,13 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         // NOTE: This mechanism will remove the current shoulder entity from the world.
         // Also note the client will currently only render parrot entities.
         // @tags
-        // <e@entity.left_shoulder>
+        // <EntityTag.left_shoulder>
         // -->
         if (getLivingEntity() instanceof HumanEntity
                 && mechanism.matches("left_shoulder")) {
             if (mechanism.hasValue()) {
-                if (mechanism.requireObject(dEntity.class)) {
-                    ((HumanEntity) getLivingEntity()).setShoulderEntityLeft(mechanism.valueAsType(dEntity.class).getBukkitEntity());
+                if (mechanism.requireObject(EntityTag.class)) {
+                    ((HumanEntity) getLivingEntity()).setShoulderEntityLeft(mechanism.valueAsType(EntityTag.class).getBukkitEntity());
                 }
             }
             else {
@@ -2871,9 +2871,9 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name right_shoulder
-        // @input dEntity
+        // @input EntityTag
         // @description
         // Sets the entity's right shoulder entity.
         // Only applies to player-typed entities.
@@ -2881,13 +2881,13 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         // NOTE: This mechanism will remove the current shoulder entity from the world.
         // Also note the client will currently only render parrot entities.
         // @tags
-        // <e@entity.right_shoulder>
+        // <EntityTag.right_shoulder>
         // -->
         if (getLivingEntity() instanceof HumanEntity
                 && mechanism.matches("right_shoulder")) {
             if (mechanism.hasValue()) {
-                if (mechanism.requireObject(dEntity.class)) {
-                    ((HumanEntity) getLivingEntity()).setShoulderEntityRight(mechanism.valueAsType(dEntity.class).getBukkitEntity());
+                if (mechanism.requireObject(EntityTag.class)) {
+                    ((HumanEntity) getLivingEntity()).setShoulderEntityRight(mechanism.valueAsType(EntityTag.class).getBukkitEntity());
                 }
             }
             else {
@@ -2896,27 +2896,27 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name remove_when_far_away
         // @input Element(Boolean)
         // @description
         // Sets whether the entity should be removed entirely when despawned.
         // The entity must be living.
         // @tags
-        // <e@entity.remove_when_far>
+        // <EntityTag.remove_when_far>
         // -->
         if (mechanism.matches("remove_when_far_away") && mechanism.requireBoolean()) {
             getLivingEntity().setRemoveWhenFarAway(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name sheared
         // @input Element(Boolean)
         // @description
         // Sets whether the sheep is sheared.
         // @tags
-        // <e@entity.is_sheared>
+        // <EntityTag.is_sheared>
         // -->
         if (mechanism.matches("sheared") && mechanism.requireBoolean()
                 && getBukkitEntity() instanceof Sheep) {
@@ -2924,14 +2924,14 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name collidable
         // @input Element(Boolean)
         // @description
         // Sets whether the entity is collidable.
         // NOTE: To disable collision between two entities, set this mechanism to false on both entities.
         // @tags
-        // <e@entity.is_collidable>
+        // <EntityTag.is_collidable>
         // -->
         if (mechanism.matches("collidable")
                 && mechanism.requireBoolean()) {
@@ -2939,73 +2939,73 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name no_damage_duration
         // @input Duration
         // @description
         // Sets the duration in which the entity will take no damage.
         // @tags
-        // <e@entity.last_damage.duration>
-        // <e@entity.last_damage.max_duration>
+        // <EntityTag.last_damage.duration>
+        // <EntityTag.last_damage.max_duration>
         // -->
         if (mechanism.matches("no_damage_duration") && mechanism.requireObject(DurationTag.class)) {
             getLivingEntity().setNoDamageTicks(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name max_no_damage_duration
         // @input Duration
         // @description
         // Sets the maximum duration in which the entity will take no damage.
         // @tags
-        // <e@entity.last_damage.duration>
-        // <e@entity.last_damage.max_duration>
+        // <EntityTag.last_damage.duration>
+        // <EntityTag.last_damage.max_duration>
         // -->
         if (mechanism.matches("max_no_damage_duration") && mechanism.requireObject(DurationTag.class)) {
             getLivingEntity().setMaximumNoDamageTicks(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name velocity
-        // @input dLocation
+        // @input LocationTag
         // @description
         // Sets the entity's movement velocity.
         // @tags
-        // <e@entity.velocity>
+        // <EntityTag.velocity>
         // -->
-        if (mechanism.matches("velocity") && mechanism.requireObject(dLocation.class)) {
-            setVelocity(mechanism.valueAsType(dLocation.class).toVector());
+        if (mechanism.matches("velocity") && mechanism.requireObject(LocationTag.class)) {
+            setVelocity(mechanism.valueAsType(LocationTag.class).toVector());
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name move
-        // @input dLocation
+        // @input LocationTag
         // @description
         // Forces an entity to move in the direction of the velocity specified.
         // -->
-        if (mechanism.matches("move") && mechanism.requireObject(dLocation.class)) {
-            NMSHandler.getInstance().getEntityHelper().move(getBukkitEntity(), mechanism.valueAsType(dLocation.class).toVector());
+        if (mechanism.matches("move") && mechanism.requireObject(LocationTag.class)) {
+            NMSHandler.getInstance().getEntityHelper().move(getBukkitEntity(), mechanism.valueAsType(LocationTag.class).toVector());
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name interact_with
-        // @input dLocation
+        // @input LocationTag
         // @description
         // Makes a player-type entity interact with a block.
         // @tags
         // None
         // -->
-        if (mechanism.matches("interact_with") && mechanism.requireObject(dLocation.class)) {
-            dLocation interactLocation = mechanism.valueAsType(dLocation.class);
+        if (mechanism.matches("interact_with") && mechanism.requireObject(LocationTag.class)) {
+            LocationTag interactLocation = mechanism.valueAsType(LocationTag.class);
             NMSHandler.getInstance().getEntityHelper().forceInteraction(getPlayer(), interactLocation);
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name play_death
         // @input None
         // @description
@@ -3018,13 +3018,13 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name pickup_delay
         // @input Duration
         // @description
         // Sets the pickup delay of this Item Entity.
         // @tags
-        // <e@entity.pickup_delay>
+        // <EntityTag.pickup_delay>
         // -->
         if ((mechanism.matches("pickup_delay") || mechanism.matches("pickupdelay")) &&
                 getBukkitEntity() instanceof Item && mechanism.requireObject(DurationTag.class)) {
@@ -3032,26 +3032,26 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name gliding
         // @input Element(Boolean)
         // @description
         // Sets whether this entity is gliding.
         // @tags
-        // <e@entity.gliding>
+        // <EntityTag.gliding>
         // -->
         if (mechanism.matches("gliding") && mechanism.requireBoolean()) {
             getLivingEntity().setGliding(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name glowing
         // @input Element(Boolean)
         // @description
         // Sets whether this entity is glowing.
         // @tags
-        // <e@entity.glowing>
+        // <EntityTag.glowing>
         // -->
         if (mechanism.matches("glowing") && mechanism.requireBoolean()) {
             getBukkitEntity().setGlowing(mechanism.getValue().asBoolean());
@@ -3061,13 +3061,13 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name dragon_phase
         // @input Element
         // @description
         // Sets an EnderDragon's combat phase.
         // @tags
-        // <e@entity.dragon_phase>
+        // <EntityTag.dragon_phase>
         // -->
         if (mechanism.matches("dragon_phase")) {
             EnderDragon ed = (EnderDragon) getLivingEntity();
@@ -3075,33 +3075,33 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name experience
         // @input Element(Number)
         // @description
         // Sets the experience value of this experience orb entity.
         // @tags
-        // <e@entity.experience>
+        // <EntityTag.experience>
         // -->
         if (mechanism.matches("experience") && getBukkitEntity() instanceof ExperienceOrb && mechanism.requireInteger()) {
             ((ExperienceOrb) getBukkitEntity()).setExperience(mechanism.getValue().asInt());
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name fuse_ticks
         // @input Element(Number)
         // @description
         // Sets the number of ticks until the TNT blows up after being primed.
         // @tags
-        // <e@entity.fuse_ticks>
+        // <EntityTag.fuse_ticks>
         // -->
         if (mechanism.matches("fuse_ticks") && getBukkitEntity() instanceof TNTPrimed && mechanism.requireInteger()) {
             ((TNTPrimed) getBukkitEntity()).setFuseTicks(mechanism.getValue().asInt());
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name show_to_players
         // @input None
         // @description
@@ -3112,7 +3112,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name hide_from_players
         // @input None
         // @description
@@ -3123,7 +3123,7 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name mirror_player
         // @input Element(Boolean)
         // @description
@@ -3155,13 +3155,13 @@ public class dEntity implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name swimming
         // @input Element(Boolean)
         // @description
         // Sets whether the entity is swimming.
         // @tags
-        // <e@entity.swimming>
+        // <EntityTag.swimming>
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && mechanism.matches("swimming")
                 && mechanism.requireBoolean()) {

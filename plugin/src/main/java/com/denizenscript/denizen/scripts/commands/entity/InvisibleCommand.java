@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.commands.entity;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.npc.traits.InvisibleTrait;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -66,8 +66,8 @@ public class InvisibleCommand extends AbstractCommand {
                 scriptEntry.addObject("target", Utilities.getEntryNPC(scriptEntry).getDenizenEntity());
             }
             else if (!scriptEntry.hasObject("target")
-                    && arg.matchesArgumentType(dEntity.class)) {
-                scriptEntry.addObject("target", arg.asType(dEntity.class));
+                    && arg.matchesArgumentType(EntityTag.class)) {
+                scriptEntry.addObject("target", arg.asType(EntityTag.class));
             }
             else {
                 arg.reportUnhandled();
@@ -78,7 +78,7 @@ public class InvisibleCommand extends AbstractCommand {
             scriptEntry.addObject("state", new ElementTag("TRUE"));
         }
 
-        if (!scriptEntry.hasObject("target") || !((dEntity) scriptEntry.getdObject("target")).isValid()) {
+        if (!scriptEntry.hasObject("target") || !((EntityTag) scriptEntry.getdObject("target")).isValid()) {
             throw new InvalidArgumentsException("Must specify a valid target!");
         }
     }
@@ -87,7 +87,7 @@ public class InvisibleCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
         // Get objects
         ElementTag state = scriptEntry.getElement("state");
-        dEntity target = (dEntity) scriptEntry.getObject("target");
+        EntityTag target = (EntityTag) scriptEntry.getObject("target");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {

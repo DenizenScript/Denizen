@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.commands.npc;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dNPC;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
@@ -27,7 +27,7 @@ public class PauseCommand extends AbstractCommand {
     // TODO: Document Command Details
     //
     // @Tags
-    // <n@npc.navigator.is_navigating>
+    // <NPCTag.navigator.is_navigating>
     //
     // @Usage
     // Use to pause an NPC's waypoint navigation indefinitely.
@@ -55,7 +55,7 @@ public class PauseCommand extends AbstractCommand {
     // TODO: Document Command Details
     //
     // @Tags
-    // <n@npc.navigator.is_navigating>
+    // <NPCTag.navigator.is_navigating>
     //
     // @Usage
     // Use to pause an NPC's waypoint navigation indefinitely.
@@ -77,8 +77,6 @@ public class PauseCommand extends AbstractCommand {
 
     int duration;
     PauseType pauseType;
-    dNPC dNPC;
-    Player player;
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -86,14 +84,6 @@ public class PauseCommand extends AbstractCommand {
         // Set defaults with information from the ScriptEntry
         duration = -1;
         pauseType = null;
-        dNPC = null;
-        player = null;
-        if (Utilities.getEntryNPC(scriptEntry) != null) {
-            dNPC = Utilities.getEntryNPC(scriptEntry);
-        }
-        if (Utilities.getEntryPlayer(scriptEntry) != null) {
-            player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
-        }
 
         // Parse arguments
         // TODO: UPDATE COMMAND PARSING
@@ -117,14 +107,21 @@ public class PauseCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
-        pause(dNPC, pauseType, !scriptEntry.getCommandName().equalsIgnoreCase("RESUME"));
+        Player player = null;
+        NPCTag npc = null;
+        if (Utilities.getEntryNPC(scriptEntry) != null) {
+            npc = Utilities.getEntryNPC(scriptEntry);
+        }
+        if (Utilities.getEntryPlayer(scriptEntry) != null) {
+            player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
+        }
+        pause(npc, pauseType, !scriptEntry.getCommandName().equalsIgnoreCase("RESUME"));
 
         // If duration...
         if (duration > 0) {
-            if (durations.containsKey(dNPC.getCitizen().getId() + pauseType.name())) {
+            if (durations.containsKey(npc.getCitizen().getId() + pauseType.name())) {
                 try {
-                    DenizenAPI.getCurrentInstance().getServer().getScheduler().cancelTask(durations.get(dNPC.getCitizen().getId() + pauseType.name()));
+                    DenizenAPI.getCurrentInstance().getServer().getScheduler().cancelTask(durations.get(npc.getCitizen().getId() + pauseType.name()));
                 }
                 catch (Exception e) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "There was an error pausing that!");
@@ -134,21 +131,22 @@ public class PauseCommand extends AbstractCommand {
             }
             Debug.echoDebug(scriptEntry, "Running delayed task: Unpause " + pauseType.toString());
 
+            final NPCTag theNpc = npc;
             final ScriptEntry se = scriptEntry;
-            durations.put(dNPC.getId() + pauseType.name(), DenizenAPI.getCurrentInstance()
+            durations.put(npc.getId() + pauseType.name(), DenizenAPI.getCurrentInstance()
                     .getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
                             new Runnable() {
                                 @Override
                                 public void run() {
                                     Debug.echoDebug(se, "Running delayed task: Pausing " + pauseType.toString());
-                                    pause(dNPC, pauseType, false);
+                                    pause(theNpc, pauseType, false);
 
                                 }
                             }, duration * 20));
         }
     }
 
-    public void pause(dNPC denizen, PauseType pauseType, boolean pause) {
+    public void pause(NPCTag denizen, PauseType pauseType, boolean pause) {
         switch (pauseType) {
 
             case WAYPOINTS:

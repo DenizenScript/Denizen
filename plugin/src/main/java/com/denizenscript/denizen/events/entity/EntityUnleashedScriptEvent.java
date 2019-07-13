@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -25,7 +25,7 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
     // @Triggers when an entity is unleashed.
     //
     // @Context
-    // <context.entity> returns the dEntity.
+    // <context.entity> returns the EntityTag.
     // <context.reason> returns an ElementTag of the reason for the unleashing.
     // Reasons include DISTANCE, HOLDER_GONE, PLAYER_UNLEASH, and UNKNOWN
     //
@@ -38,7 +38,7 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     public static EntityUnleashedScriptEvent instance;
-    public dEntity entity;
+    public EntityTag entity;
     public ElementTag reason;
     public EntityUnleashEvent event;
 
@@ -90,7 +90,7 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
 
     @EventHandler
     public void onEntityUnleashed(EntityUnleashEvent event) {
-        entity = new dEntity(event.getEntity());
+        entity = new EntityTag(event.getEntity());
         reason = new ElementTag(event.getReason().toString());
         this.event = event;
         fire(event);

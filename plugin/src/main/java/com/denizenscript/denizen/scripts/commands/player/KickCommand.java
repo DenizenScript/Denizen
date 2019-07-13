@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -50,8 +50,8 @@ public class KickCommand extends AbstractCommand {
                 scriptEntry.addObject("reason", arg.asElement());
             }
             else if (arg.matchesPrefix("targets", "target", "players")
-                    || arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(dPlayer.class, scriptEntry));
+                    || arg.matchesArgumentList(PlayerTag.class)) {
+                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
         }
 
@@ -67,7 +67,7 @@ public class KickCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         ElementTag reason = scriptEntry.getElement("reason");
-        List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
+        List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
 
         if (scriptEntry.dbCallShouldDebug()) {
 
@@ -77,7 +77,7 @@ public class KickCommand extends AbstractCommand {
 
         }
 
-        for (dPlayer player : targets) {
+        for (PlayerTag player : targets) {
             if (player.isValid() && player.isOnline()) {
                 player.getPlayerEntity().kickPlayer(reason.toString());
             }

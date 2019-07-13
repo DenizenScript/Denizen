@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -12,14 +12,14 @@ import org.bukkit.entity.Arrow;
 public class EntityPickupStatus implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntity() instanceof Arrow;
+        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntity() instanceof Arrow;
     }
 
     public static EntityPickupStatus getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
-        return new EntityPickupStatus((dEntity) entity);
+        return new EntityPickupStatus((EntityTag) entity);
     }
 
     public static final String[] handledTags = {
@@ -35,11 +35,11 @@ public class EntityPickupStatus implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityPickupStatus(dEntity entity) {
+    private EntityPickupStatus(EntityTag entity) {
         dentity = entity;
     }
 
-    dEntity dentity;
+    EntityTag dentity;
 
     /////////
     // Property Methods
@@ -67,9 +67,9 @@ public class EntityPickupStatus implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.pickup_status>
+        // @attribute <EntityTag.pickup_status>
         // @returns ElementTag
-        // @mechanism dEntity.pickup_status
+        // @mechanism EntityTag.pickup_status
         // @group properties
         // @description
         // If the entity is an arrow or trident, returns the pickup status of the arrow/trident.
@@ -86,14 +86,14 @@ public class EntityPickupStatus implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name pickup_status
         // @input Element
         // @description
         // Changes the pickup status of an arrow/trident.
         // Available pickup statuses can be found here: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Arrow.PickupStatus.html>
         // @tags
-        // <e@entity.pickup_status>
+        // <EntityTag.pickup_status>
         // -->
 
         if (mechanism.matches("pickup_status")) {

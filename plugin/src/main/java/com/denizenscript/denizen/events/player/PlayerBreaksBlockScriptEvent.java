@@ -36,13 +36,13 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     // @Triggers when a player breaks a block.
     //
     // @Context
-    // <context.location> returns the dLocation the block was broken at.
-    // <context.material> returns the dMaterial of the block that was broken.
+    // <context.location> returns the LocationTag the block was broken at.
+    // <context.material> returns the MaterialTag of the block that was broken.
     // <context.xp> returns how much XP will be dropped.
     //
     // @Determine
     // "NOTHING" to make the block drop no items.
-    // ListTag(dItem) to make the block drop a specified list of items.
+    // ListTag(ItemTag) to make the block drop a specified list of items.
     // Element(Number) to set the amount of xp to drop.
     //
     // -->
@@ -52,8 +52,8 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     }
 
     public static PlayerBreaksBlockScriptEvent instance;
-    public dLocation location;
-    public dMaterial material;
+    public LocationTag location;
+    public MaterialTag material;
     public ElementTag xp;
     public BlockBreakEvent event;
 
@@ -71,12 +71,12 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         if (!runInCheck(path, location)) {
             return false;
         }
-        if (!runWithCheck(path, new dItem(event.getPlayer().getItemInHand()))) {
+        if (!runWithCheck(path, new ItemTag(event.getPlayer().getItemInHand()))) {
             return false;
         }
         // Deprecated in favor of with: format
         if (path.eventArgLowerAt(3).equals("with")
-                && !tryItem(new dItem(event.getPlayer().getItemInHand()), path.eventArgLowerAt(4))) {
+                && !tryItem(new ItemTag(event.getPlayer().getItemInHand()), path.eventArgLowerAt(4))) {
             return false;
         }
         return true;
@@ -98,11 +98,11 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         else if (ArgumentHelper.matchesInteger(determination)) {
             xp = Argument.valueOf(lower).asElement();
         }
-        else if (Argument.valueOf(lower).matchesArgumentList(dItem.class)) {
+        else if (Argument.valueOf(lower).matchesArgumentList(ItemTag.class)) {
             cancelled = true;
             block.setType(Material.AIR);
 
-            for (dItem newItem : ListTag.valueOf(determination).filter(dItem.class, container)) {
+            for (ItemTag newItem : ListTag.valueOf(determination).filter(ItemTag.class, container)) {
                 block.getWorld().dropItemNaturally(block.getLocation(), newItem.getItemStack()); // Drop each item
             }
         }
@@ -114,7 +114,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(dPlayer.mirrorBukkitPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(PlayerTag.mirrorBukkitPlayer(event.getPlayer()), null);
     }
 
     @Override
@@ -128,7 +128,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         else if (name.equals("cuboids")) {
             Debug.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
             ListTag cuboids = new ListTag();
-            for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+            for (CuboidTag cuboid : CuboidTag.getNotableCuboidsContaining(location)) {
                 cuboids.add(cuboid.identifySimple());
             }
             return cuboids;
@@ -141,11 +141,11 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
 
     @EventHandler
     public void onPlayerBreaksBlock(BlockBreakEvent event) {
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        material = new dMaterial(event.getBlock());
-        location = new dLocation(event.getBlock().getLocation());
+        material = new MaterialTag(event.getBlock());
+        location = new LocationTag(event.getBlock().getLocation());
         xp = new ElementTag(event.getExpToDrop());
         this.event = event;
         fire(event);

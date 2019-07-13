@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.block;
 
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -25,9 +25,9 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
     // @Triggers when an attempt is made to build a block on another block. Not necessarily caused by players.
     //
     // @Context
-    // <context.location> returns the dLocation of the block the player is trying to build on.
-    // <context.old_material> returns the dMaterial of the block the player is trying to build on.
-    // <context.new_material> Deprecated, returns the dMaterial of the block the player is trying to build.
+    // <context.location> returns the LocationTag of the block the player is trying to build on.
+    // <context.old_material> returns the MaterialTag of the block the player is trying to build on.
+    // <context.new_material> Deprecated, returns the MaterialTag of the block the player is trying to build.
     //
     // @Determine
     // "BUILDABLE" to allow the building.
@@ -39,9 +39,9 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     public static BlockBuiltScriptEvent instance;
-    public dLocation location;
-    public dMaterial old_material;
-    public dMaterial new_material;
+    public LocationTag location;
+    public MaterialTag old_material;
+    public MaterialTag new_material;
     public BlockCanBuildEvent event;
 
     @Override
@@ -99,9 +99,9 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
 
     @EventHandler
     public void onBlockBuilt(BlockCanBuildEvent event) {
-        location = new dLocation(event.getBlock().getLocation());
-        old_material = new dMaterial(event.getBlock());
-        new_material = new dMaterial(event.getMaterial()); // Deprecated because it doesn't have proper data
+        location = new LocationTag(event.getBlock().getLocation());
+        old_material = new MaterialTag(event.getBlock());
+        new_material = new MaterialTag(event.getMaterial()); // Deprecated because it doesn't have proper data
         cancelled = !event.isBuildable();
         this.event = event;
         fire(event);

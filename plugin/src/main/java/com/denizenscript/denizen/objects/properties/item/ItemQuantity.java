@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -11,7 +11,7 @@ public class ItemQuantity implements Property {
 
     public static boolean describes(ObjectTag item) {
         // all items can have a quantity
-        return item instanceof dItem;
+        return item instanceof ItemTag;
     }
 
     public static ItemQuantity getFrom(ObjectTag _item) {
@@ -19,7 +19,7 @@ public class ItemQuantity implements Property {
             return null;
         }
         else {
-            return new ItemQuantity((dItem) _item);
+            return new ItemQuantity((ItemTag) _item);
         }
     }
 
@@ -32,11 +32,11 @@ public class ItemQuantity implements Property {
     };
 
 
-    private ItemQuantity(dItem _item) {
+    private ItemQuantity(ItemTag _item) {
         item = _item;
     }
 
-    dItem item;
+    ItemTag item;
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -46,12 +46,12 @@ public class ItemQuantity implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.quantity>
+        // @attribute <ItemTag.quantity>
         // @returns ElementTag(Number)
-        // @mechanism dItem.quantity
+        // @mechanism ItemTag.quantity
         // @group properties
         // @description
-        // Returns the number of items in the dItem's itemstack.
+        // Returns the number of items in the ItemTag's itemstack.
         // -->
         if (attribute.startsWith("quantity") || attribute.startsWith("qty")) {
             return new ElementTag(item.getItemStack().getAmount())
@@ -59,12 +59,12 @@ public class ItemQuantity implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.max_stack>
+        // @attribute <ItemTag.max_stack>
         // @returns ElementTag(Number)
         // @group properties
         // @description
         // Returns the max number of this item possible in a single stack of this type.
-        // For use with <@link tag i@item.quantity> and <@link mechanism dItem.quantity>.
+        // For use with <@link tag ItemTag.quantity> and <@link mechanism ItemTag.quantity>.
         // -->
         if (attribute.startsWith("max_stack")) {
             return new ElementTag(item.getItemStack().getMaxStackSize())
@@ -94,14 +94,14 @@ public class ItemQuantity implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name quantity
         // @input Element(Number)
         // @description
         // Changes the number of items in this stack.
         // @tags
-        // <i@item.quantity>
-        // <i@item.max_stack>
+        // <ItemTag.quantity>
+        // <ItemTag.max_stack>
         // -->
 
         if (mechanism.matches("quantity") && mechanism.requireInteger()) {

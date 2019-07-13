@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.dPlugin;
+import com.denizenscript.denizen.objects.PluginTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
@@ -24,10 +24,10 @@ public class PluginTags {
             return;
         }
 
-        dPlugin plugin = null;
+        PluginTag plugin = null;
 
         if (event.hasNameContext()) {
-            plugin = dPlugin.valueOf(event.getNameContext(), event.getAttributes().context);
+            plugin = PluginTag.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
         if (plugin == null) {

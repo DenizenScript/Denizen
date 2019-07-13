@@ -19,7 +19,7 @@ public class DisengageCommand extends AbstractCommand {
     // @Description
     // Re-enables any toggled triggers that have been disabled by disengage. Using
     // disengage inside scripts must have an NPC to reference, or one may be specified
-    // by supplying a valid dNPC object with the npc argument.
+    // by supplying a valid NPCTag object with the npc argument.
     //
     // This is mostly regarded as an 'interact script command', though it may be used inside
     // other script types. This is because disengage works with the trigger system, which is an
@@ -31,7 +31,7 @@ public class DisengageCommand extends AbstractCommand {
     // See <@link command Engage>
     //
     // @Tags
-    // <n@npc.is_engaged>
+    // <NPCTag.is_engaged>
     //
     // @Usage
     // Use to reenable an NPC's triggers, disabled via 'engage'.

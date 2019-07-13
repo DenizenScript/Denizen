@@ -4,8 +4,8 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.ItemHelper;
-import com.denizenscript.denizen.objects.dColor;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ColorTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -25,11 +25,11 @@ import org.bukkit.potion.PotionType;
 public class ItemPotion implements Property {
 
     public static boolean describes(ObjectTag item) {
-        return item instanceof dItem
-                && (((dItem) item).getItemStack().getType() == Material.POTION
-                || ((dItem) item).getItemStack().getType() == Material.SPLASH_POTION
-                || ((dItem) item).getItemStack().getType() == Material.LINGERING_POTION
-                || ((dItem) item).getItemStack().getType() == Material.TIPPED_ARROW);
+        return item instanceof ItemTag
+                && (((ItemTag) item).getItemStack().getType() == Material.POTION
+                || ((ItemTag) item).getItemStack().getType() == Material.SPLASH_POTION
+                || ((ItemTag) item).getItemStack().getType() == Material.LINGERING_POTION
+                || ((ItemTag) item).getItemStack().getType() == Material.TIPPED_ARROW);
     }
 
     public static ItemPotion getFrom(ObjectTag _item) {
@@ -37,7 +37,7 @@ public class ItemPotion implements Property {
             return null;
         }
         else {
-            return new ItemPotion((dItem) _item);
+            return new ItemPotion((ItemTag) _item);
         }
     }
 
@@ -50,11 +50,11 @@ public class ItemPotion implements Property {
     };
 
 
-    private ItemPotion(dItem item) {
+    private ItemPotion(ItemTag item) {
         this.item = item;
     }
 
-    dItem item;
+    ItemTag item;
 
 
     @Override
@@ -70,7 +70,7 @@ public class ItemPotion implements Property {
         effects.add(meta.getBasePotionData().getType()
                 + "," + meta.getBasePotionData().isUpgraded()
                 + "," + meta.getBasePotionData().isExtended()
-                + (meta.hasColor() ? "," + new dColor(meta.getColor()).identify().replace(",", "&comma") : "")
+                + (meta.hasColor() ? "," + new ColorTag(meta.getColor()).identify().replace(",", "&comma") : "")
         );
         for (PotionEffect pot : meta.getCustomEffects()) {
             StringBuilder sb = new StringBuilder();
@@ -80,7 +80,7 @@ public class ItemPotion implements Property {
                     .append(pot.isAmbient()).append(",")
                     .append(pot.hasParticles());
             if (pot.getColor() != null) {
-                sb.append(",").append(new dColor(pot.getColor()).identify().replace(",", "&comma"));
+                sb.append(",").append(new ColorTag(pot.getColor()).identify().replace(",", "&comma"));
             }
             effects.add(sb.toString());
         }
@@ -104,9 +104,9 @@ public class ItemPotion implements Property {
 
 
         // <--[tag]
-        // @attribute <i@item.potion_base>
+        // @attribute <ItemTag.potion_base>
         // @returns ElementTag
-        // @mechanism dItem.potion_effects
+        // @mechanism ItemTag.potion_effects
         // @group properties
         // @description
         // Returns the potion effect on this item.
@@ -116,14 +116,14 @@ public class ItemPotion implements Property {
             PotionMeta meta = ((PotionMeta) item.getItemStack().getItemMeta());
             return new ElementTag(meta.getBasePotionData().getType().name() + "," + (meta.getBasePotionData().isUpgraded() ? 2 : 1)
                     + "," + meta.getBasePotionData().isExtended() + "," + (item.getItemStack().getType() == Material.SPLASH_POTION)
-                    + (meta.hasColor() ? "," + new dColor(meta.getColor()).identify() : "")
+                    + (meta.hasColor() ? "," + new ColorTag(meta.getColor()).identify() : "")
             ).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
-        // @attribute <i@item.has_potion_effect>
+        // @attribute <ItemTag.has_potion_effect>
         // @returns ElementTag(Boolean)
-        // @mechanism dItem.potion
+        // @mechanism ItemTag.potion
         // @description
         // Returns whether the potion has a potion effect.
         // -->
@@ -145,9 +145,9 @@ public class ItemPotion implements Property {
 
 
                 // <--[tag]
-                // @attribute <i@item.potion_effect[<#>].is_splash>
+                // @attribute <ItemTag.potion_effect[<#>].is_splash>
                 // @returns ElementTag(Boolean)
-                // @mechanism dItem.potion_effects
+                // @mechanism ItemTag.potion_effects
                 // @group properties
                 // @description
                 // Returns whether the potion is a splash potion.
@@ -158,9 +158,9 @@ public class ItemPotion implements Property {
                 }
 
                 // <--[tag]
-                // @attribute <i@item.potion_effect[<#>].is_extended>
+                // @attribute <ItemTag.potion_effect[<#>].is_extended>
                 // @returns ElementTag(Boolean)
-                // @mechanism dItem.potion_effects
+                // @mechanism ItemTag.potion_effects
                 // @group properties
                 // @description
                 // Returns whether the potion effect is extended.
@@ -171,9 +171,9 @@ public class ItemPotion implements Property {
                 }
 
                 // <--[tag]
-                // @attribute <i@item.potion_effect[<#>].level>
+                // @attribute <ItemTag.potion_effect[<#>].level>
                 // @returns ElementTag(Number)
-                // @mechanism dItem.potion_effects
+                // @mechanism ItemTag.potion_effects
                 // @group properties
                 // @description
                 // Returns the potion effect's level.
@@ -184,9 +184,9 @@ public class ItemPotion implements Property {
                 }
 
                 // <--[tag]
-                // @attribute <i@item.potion_effect[<#>].is_ambient>
+                // @attribute <ItemTag.potion_effect[<#>].is_ambient>
                 // @returns ElementTag(Boolean)
-                // @mechanism dItem.potion_effects
+                // @mechanism ItemTag.potion_effects
                 // @group properties
                 // @description
                 // Returns whether the potion effect is ambient.
@@ -197,9 +197,9 @@ public class ItemPotion implements Property {
                 }
 
                 // <--[tag]
-                // @attribute <i@item.potion_effect[<#>].color>
-                // @returns dColor
-                // @mechanism dItem.potion_effects
+                // @attribute <ItemTag.potion_effect[<#>].color>
+                // @returns ColorTag
+                // @mechanism ItemTag.potion_effects
                 // @group properties
                 // @description
                 // Returns the potion effect's color.
@@ -210,14 +210,14 @@ public class ItemPotion implements Property {
                         Debug.echoError("Custom effects with the color option are not supported as of Minecraft version 1.13.");
                         return null;
                     }
-                    return new dColor(meta.getCustomEffects().get(potN).getColor())
+                    return new ColorTag(meta.getCustomEffects().get(potN).getColor())
                             .getAttribute(attribute.fulfill(1));
                 }
 
                 // <--[tag]
-                // @attribute <i@item.potion_effect[<#>].icon>
+                // @attribute <ItemTag.potion_effect[<#>].icon>
                 // @returns ElementTag(Boolean)
-                // @mechanism dItem.potion_effects
+                // @mechanism ItemTag.potion_effects
                 // @group properties
                 // @description
                 // Returns whether the potion effect shows an icon.
@@ -227,9 +227,9 @@ public class ItemPotion implements Property {
                 }
 
                 // <--[tag]
-                // @attribute <i@item.potion_effect[<#>].has_particles>
+                // @attribute <ItemTag.potion_effect[<#>].has_particles>
                 // @returns ElementTag(Boolean)
-                // @mechanism dItem.potion_effects
+                // @mechanism ItemTag.potion_effects
                 // @group properties
                 // @description
                 // Returns whether the potion effect has particles.
@@ -240,9 +240,9 @@ public class ItemPotion implements Property {
                 }
 
                 // <--[tag]
-                // @attribute <i@item.potion_effect[<#>].duration>
+                // @attribute <ItemTag.potion_effect[<#>].duration>
                 // @returns ElementTag(Number)
-                // @mechanism dItem.potion_effects
+                // @mechanism ItemTag.potion_effects
                 // @group properties
                 // @description
                 // Returns the duration in ticks of the potion.
@@ -253,9 +253,9 @@ public class ItemPotion implements Property {
                 }
 
                 // <--[tag]
-                // @attribute <i@item.potion_effect[<#>].amplifier>
+                // @attribute <ItemTag.potion_effect[<#>].amplifier>
                 // @returns ElementTag(Number)
-                // @mechanism dItem.potion_effects
+                // @mechanism ItemTag.potion_effects
                 // @group properties
                 // @description
                 // Returns the amplifier level of the potion effect.
@@ -266,9 +266,9 @@ public class ItemPotion implements Property {
                 }
 
                 // <--[tag]
-                // @attribute <i@item.potion_effect[<#>].type>
+                // @attribute <ItemTag.potion_effect[<#>].type>
                 // @returns ElementTag
-                // @mechanism dItem.potion_effects
+                // @mechanism ItemTag.potion_effects
                 // @group properties
                 // @description
                 // Returns the type of the potion effect.
@@ -284,9 +284,9 @@ public class ItemPotion implements Property {
                 }
 
                 // <--[tag]
-                // @attribute <i@item.potion_effect[<#>]>
+                // @attribute <ItemTag.potion_effect[<#>]>
                 // @returns ElementTag
-                // @mechanism dItem.potion_effects
+                // @mechanism ItemTag.potion_effects
                 // @group properties
                 // @warning Don't use this directly, use its sub-tags!
                 // @description
@@ -306,7 +306,7 @@ public class ItemPotion implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name potion_effects
         // @input ListTag
         // @description
@@ -315,14 +315,14 @@ public class ItemPotion implements Property {
         // For example: SPEED,true,false|SPEED,2,200,false,true,true
         // NOTE: In pre-1.13 Minecraft versions, you could set a color in the custom effects list instead of "icon".
         // @tags
-        // <i@item.potion_effect[<#>]>
-        // <i@item.potion_effect[<#>].type>
-        // <i@item.potion_effect[<#>].duration>
-        // <i@item.potion_effect[<#>].amplifier>
-        // <i@item.potion_effect[<#>].is_ambient>
-        // <i@item.potion_effect[<#>].has_particles>
-        // <i@item.potion_effect[<#>].color>
-        // <i@item.potion_effect[<#>].icon>
+        // <ItemTag.potion_effect[<#>]>
+        // <ItemTag.potion_effect[<#>].type>
+        // <ItemTag.potion_effect[<#>].duration>
+        // <ItemTag.potion_effect[<#>].amplifier>
+        // <ItemTag.potion_effect[<#>].is_ambient>
+        // <ItemTag.potion_effect[<#>].has_particles>
+        // <ItemTag.potion_effect[<#>].color>
+        // <ItemTag.potion_effect[<#>].icon>
         // <server.list_potion_types>
         // <server.list_potion_effects>
         // -->
@@ -334,7 +334,7 @@ public class ItemPotion implements Property {
                     CoreUtilities.toLowerCase(d1[2]).equals("true"),
                     CoreUtilities.toLowerCase(d1[1]).equals("true")));
             if (d1.length > 3) {
-                meta.setColor(dColor.valueOf(d1[3].replace("&comma", ",")).getColor());
+                meta.setColor(ColorTag.valueOf(d1[3].replace("&comma", ",")).getColor());
             }
             meta.clearCustomEffects();
             ItemHelper itemHelper = NMSHandler.getInstance().getItemHelper();
@@ -361,8 +361,8 @@ public class ItemPotion implements Property {
                     }
                     else {
                         String check = d2[5].replace("&comma", ",");
-                        if (dColor.matches(check)) {
-                            color = dColor.valueOf(check).getColor();
+                        if (ColorTag.matches(check)) {
+                            color = ColorTag.valueOf(check).getColor();
                         }
                     }
                 }

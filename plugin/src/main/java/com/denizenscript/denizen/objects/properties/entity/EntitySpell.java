@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -11,7 +11,7 @@ import org.bukkit.entity.Spellcaster;
 public class EntitySpell implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntity() instanceof Spellcaster;
+        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntity() instanceof Spellcaster;
     }
 
     public static EntitySpell getFrom(ObjectTag entity) {
@@ -19,7 +19,7 @@ public class EntitySpell implements Property {
             return null;
         }
         else {
-            return new EntitySpell((dEntity) entity);
+            return new EntitySpell((EntityTag) entity);
         }
     }
 
@@ -36,11 +36,11 @@ public class EntitySpell implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntitySpell(dEntity entity) {
+    private EntitySpell(EntityTag entity) {
         dentity = entity;
     }
 
-    dEntity dentity;
+    EntityTag dentity;
 
     /////////
     // Property Methods
@@ -68,9 +68,9 @@ public class EntitySpell implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.spell>
+        // @attribute <EntityTag.spell>
         // @returns ElementTag
-        // @mechanism dEntity.spell
+        // @mechanism EntityTag.spell
         // @group properties
         // @description
         // Returns the spell the entity is currently casting.
@@ -88,13 +88,13 @@ public class EntitySpell implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name spell
         // @input Element
         // @description
         // Sets the spell the entity should cast. Valid spells are: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Spellcaster.Spell.html>
         // @tags
-        // <e@entity.spell>
+        // <EntityTag.spell>
         // -->
 
         if (mechanism.matches("spell") && mechanism.requireEnum(false, Spellcaster.Spell.values())) {

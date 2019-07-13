@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.world;
 
 
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dWorld;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -29,7 +29,7 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
     // @Triggers when a portal is created.
     //
     // @Context
-    // <context.world> returns the dWorld the portal was created in.
+    // <context.world> returns the WorldTag the portal was created in.
     // <context.reason> returns an ElementTag of the reason the portal was created. (FIRE or OBC_DESTINATION)
     // <context.blocks> returns a ListTag of all the blocks that will become portal blocks.
     //
@@ -40,7 +40,7 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     public static PortalCreateScriptEvent instance;
-    public dWorld world;
+    public WorldTag world;
     public ElementTag reason;
     public ListTag blocks;
     public PortalCreateEvent event;
@@ -56,7 +56,7 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
         if (rCheck.length() > 0 && !rCheck.equals(CoreUtilities.toLowerCase(reason.asString()))) {
             return false;
         }
-        return runInCheck(path, dLocation.valueOf(blocks.get(0)));
+        return runInCheck(path, LocationTag.valueOf(blocks.get(0)));
     }
 
     @Override
@@ -85,11 +85,11 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
 
     @EventHandler
     public void onPortalCreate(PortalCreateEvent event) {
-        world = new dWorld(event.getWorld());
+        world = new WorldTag(event.getWorld());
         reason = new ElementTag(event.getReason().toString());
         blocks = new ListTag();
         for (Location location : NMSHandler.getInstance().getBlockHelper().getBlocksList(event)) {
-            blocks.add(new dLocation(location).identify());
+            blocks.add(new LocationTag(location).identify());
         }
         this.event = event;
         fire(event);

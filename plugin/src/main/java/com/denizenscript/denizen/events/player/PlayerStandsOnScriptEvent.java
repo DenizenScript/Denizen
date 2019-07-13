@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.dEntity;
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dMaterial;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -28,8 +28,8 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
     //
     // @Triggers when a player stands on a pressure plate, tripwire, or redstone ore.
     // @Context
-    // <context.location> returns the dLocation the player is interacting with.
-    // <context.material> returns the dMaterial the player is interacting with.
+    // <context.location> returns the LocationTag the player is interacting with.
+    // <context.material> returns the MaterialTag the player is interacting with.
     //
     // @Determine
     //
@@ -41,8 +41,8 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
 
     PlayerStandsOnScriptEvent instance;
     PlayerInteractEvent event;
-    dLocation location;
-    dMaterial material;
+    LocationTag location;
+    MaterialTag material;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
@@ -79,7 +79,7 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(dEntity.getPlayerFrom(event.getPlayer()), null);
+        return new BukkitScriptEntryData(EntityTag.getPlayerFrom(event.getPlayer()), null);
     }
 
     @Override
@@ -98,8 +98,8 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
         if (event.getAction() != Action.PHYSICAL) {
             return;
         }
-        material = new dMaterial(event.getClickedBlock());
-        location = new dLocation(event.getClickedBlock().getLocation());
+        material = new MaterialTag(event.getClickedBlock());
+        location = new LocationTag(event.getClickedBlock().getLocation());
         this.event = event;
         fire(event);
     }

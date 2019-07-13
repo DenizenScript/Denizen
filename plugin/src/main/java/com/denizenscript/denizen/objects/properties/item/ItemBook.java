@@ -2,7 +2,7 @@ package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.utilities.MaterialCompat;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public class ItemBook implements Property {
 
     public static boolean describes(ObjectTag item) {
-        Material material = ((dItem) item).getItemStack().getType();
+        Material material = ((ItemTag) item).getItemStack().getType();
         return (material == Material.WRITTEN_BOOK || material == MaterialCompat.WRITABLE_BOOK);
     }
 
@@ -30,7 +30,7 @@ public class ItemBook implements Property {
             return null;
         }
         else {
-            return new ItemBook((dItem) _item);
+            return new ItemBook((ItemTag) _item);
         }
     }
 
@@ -43,11 +43,11 @@ public class ItemBook implements Property {
     };
 
 
-    private ItemBook(dItem _item) {
+    private ItemBook(ItemTag _item) {
         item = _item;
     }
 
-    dItem item;
+    ItemTag item;
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -63,9 +63,9 @@ public class ItemBook implements Property {
             if (item.getItemStack().getType() == Material.WRITTEN_BOOK) {
 
                 // <--[tag]
-                // @attribute <i@item.book.author>
+                // @attribute <ItemTag.book.author>
                 // @returns ElementTag
-                // @mechanism dItem.book
+                // @mechanism ItemTag.book
                 // @group properties
                 // @description
                 // Returns the author of the book.
@@ -76,9 +76,9 @@ public class ItemBook implements Property {
                 }
 
                 // <--[tag]
-                // @attribute <i@item.book.title>
+                // @attribute <ItemTag.book.title>
                 // @returns ElementTag
-                // @mechanism dItem.book
+                // @mechanism ItemTag.book
                 // @group properties
                 // @description
                 // Returns the title of the book.
@@ -90,9 +90,9 @@ public class ItemBook implements Property {
             }
 
             // <--[tag]
-            // @attribute <i@item.book.page_count>
+            // @attribute <ItemTag.book.page_count>
             // @returns ElementTag(Number)
-            // @mechanism dItem.book
+            // @mechanism ItemTag.book
             // @group properties
             // @description
             // Returns the number of pages in the book.
@@ -103,9 +103,9 @@ public class ItemBook implements Property {
             }
 
             // <--[tag]
-            // @attribute <i@item.book.page[<#>]>
+            // @attribute <ItemTag.book.page[<#>]>
             // @returns ElementTag
-            // @mechanism dItem.book
+            // @mechanism ItemTag.book
             // @group properties
             // @description
             // Returns the page specified from the book as an element.
@@ -116,9 +116,9 @@ public class ItemBook implements Property {
             }
 
             // <--[tag]
-            // @attribute <i@item.book.raw_page[<#>]>
+            // @attribute <ItemTag.book.raw_page[<#>]>
             // @returns ElementTag
-            // @mechanism dItem.book
+            // @mechanism ItemTag.book
             // @group properties
             // @description
             // Returns the page specified from the book as an element containing raw JSON.
@@ -140,9 +140,9 @@ public class ItemBook implements Property {
             }
 
             // <--[tag]
-            // @attribute <i@item.book.pages>
+            // @attribute <ItemTag.book.pages>
             // @returns ListTag
-            // @mechanism dItem.book
+            // @mechanism ItemTag.book
             // @group properties
             // @description
             // Returns the plain-text pages of the book as a ListTag.
@@ -153,9 +153,9 @@ public class ItemBook implements Property {
             }
 
             // <--[tag]
-            // @attribute <i@item.book.raw_pages>
+            // @attribute <ItemTag.book.raw_pages>
             // @returns ListTag
-            // @mechanism dItem.book
+            // @mechanism ItemTag.book
             // @group properties
             // @description
             // Returns the pages of the book as a ListTag of raw JSON.
@@ -169,9 +169,9 @@ public class ItemBook implements Property {
             }
 
             // <--[tag]
-            // @attribute <i@item.book>
+            // @attribute <ItemTag.book>
             // @returns ElementTag
-            // @mechanism dItem.book
+            // @mechanism ItemTag.book
             // @group properties
             // @description
             // Returns full information on the book item, in the format
@@ -226,16 +226,16 @@ public class ItemBook implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name book_raw_pages
         // @input ListTag
         // @description
         // Changes the raw JSON pages of a book item.
         // See <@link language Property Escaping>
         // @tags
-        // <i@item.book.page_count>
-        // <i@item.book.raw_page[<#>]>
-        // <i@item.book.raw_pages>
+        // <ItemTag.book.page_count>
+        // <ItemTag.book.raw_page[<#>]>
+        // <ItemTag.book.raw_pages>
         // -->
 
         if (mechanism.matches("book_raw_pages")) {
@@ -250,16 +250,16 @@ public class ItemBook implements Property {
         }
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name book_pages
         // @input ListTag
         // @description
         // Changes the plain-text pages of a book item.
         // See <@link language Property Escaping>
         // @tags
-        // <i@item.book.page_count>
-        // <i@item.book.page[<#>]>
-        // <i@item.book.pages>
+        // <ItemTag.book.page_count>
+        // <ItemTag.book.page[<#>]>
+        // <ItemTag.book.pages>
         // -->
 
         if (mechanism.matches("book_pages")) {
@@ -274,13 +274,13 @@ public class ItemBook implements Property {
         }
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name book_author
         // @input Element
         // @description
         // Changes the author of a book item.
         // @tags
-        // <i@item.book.author>
+        // <ItemTag.book.author>
         // -->
 
         if (mechanism.matches("book_author")) {
@@ -295,13 +295,13 @@ public class ItemBook implements Property {
         }
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name book_title
         // @input Element
         // @description
         // Changes the title of a book item.
         // @tags
-        // <i@item.book.title>
+        // <ItemTag.book.title>
         // -->
 
         if (mechanism.matches("book_title")) {
@@ -316,22 +316,22 @@ public class ItemBook implements Property {
         }
 
         // <--[mechanism]
-        // @object dItem
+        // @object ItemTag
         // @name book
         // @input Element
         // @description
         // Changes the information on a book item.
         // See <@link language Property Escaping>
         // @tags
-        // <i@item.is_book>
-        // <i@item.book.author>
-        // <i@item.book.title>
-        // <i@item.book.page_count>
-        // <i@item.book.page[<#>]>
-        // <i@item.book.pages>
-        // <i@item.book.raw_page[<#>]>
-        // <i@item.book.raw_pages>
-        // <i@item.book>
+        // <ItemTag.is_book>
+        // <ItemTag.book.author>
+        // <ItemTag.book.title>
+        // <ItemTag.book.page_count>
+        // <ItemTag.book.page[<#>]>
+        // <ItemTag.book.pages>
+        // <ItemTag.book.raw_page[<#>]>
+        // <ItemTag.book.raw_pages>
+        // <ItemTag.book>
         // -->
 
         if (mechanism.matches("book")) {

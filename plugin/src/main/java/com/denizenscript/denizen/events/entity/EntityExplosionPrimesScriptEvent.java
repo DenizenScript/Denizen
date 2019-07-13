@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -27,7 +27,7 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
     // @Triggers when an entity decides to explode.
     //
     // @Context
-    // <context.entity> returns the dEntity.
+    // <context.entity> returns the EntityTag.
     // <context.radius> returns an ElementTag of the explosion's radius.
     // <context.fire> returns an ElementTag with a value of "true" if the explosion will create fire and "false" otherwise.
     // -->
@@ -37,7 +37,7 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
     }
 
     public static EntityExplosionPrimesScriptEvent instance;
-    public dEntity entity;
+    public EntityTag entity;
     public Float radius;
     public Boolean fire;
     public ExplosionPrimeEvent event;
@@ -97,7 +97,7 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
 
     @EventHandler
     public void onEntityExplosionPrimes(ExplosionPrimeEvent event) {
-        entity = new dEntity(event.getEntity());
+        entity = new EntityTag(event.getEntity());
         radius = event.getRadius();
         fire = event.getFire();
         this.event = event;

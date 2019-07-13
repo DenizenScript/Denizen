@@ -4,7 +4,7 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -39,8 +39,8 @@ public class RotateCommand extends AbstractCommand implements Holdable {
     // You can use "cancel" to prematurely stop the ongoing rotation (useful when set to infinite)
     //
     // @Tags
-    // <e@entity.location.yaw>
-    // <e@entity.location.pitch>
+    // <EntityTag.location.yaw>
+    // <EntityTag.location.pitch>
     //
     // @Usage
     // Use to rotate the player's yaw by 10 every tick for 3 seconds total
@@ -97,9 +97,9 @@ public class RotateCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("pitch", arg.asElement());
             }
             else if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class)) {
+                    && arg.matchesArgumentList(EntityTag.class)) {
 
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(dEntity.class, scriptEntry));
+                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
@@ -126,7 +126,7 @@ public class RotateCommand extends AbstractCommand implements Holdable {
     @Override
     public void execute(final ScriptEntry scriptEntry) {
 
-        final List<dEntity> entities = new ArrayList<>((List<dEntity>) scriptEntry.getObject("entities"));
+        final List<EntityTag> entities = new ArrayList<>((List<EntityTag>) scriptEntry.getObject("entities"));
         final DurationTag duration = (DurationTag) scriptEntry.getObject("duration");
         final DurationTag frequency = (DurationTag) scriptEntry.getObject("frequency");
         final ElementTag yaw = (ElementTag) scriptEntry.getObject("yaw");
@@ -146,7 +146,7 @@ public class RotateCommand extends AbstractCommand implements Holdable {
 
         // Add entities to the rotatingEntities list or remove
         // them from it
-        for (dEntity entity : entities) {
+        for (EntityTag entity : entities) {
             if (cancel) {
                 rotatingEntities.remove(entity.getUUID());
             }
@@ -167,7 +167,7 @@ public class RotateCommand extends AbstractCommand implements Holdable {
 
             // Track entities that are no longer used, to remove them from
             // the regular list
-            Collection<dEntity> unusedEntities = new LinkedList<>();
+            Collection<EntityTag> unusedEntities = new LinkedList<>();
 
             @Override
             public void run() {
@@ -177,7 +177,7 @@ public class RotateCommand extends AbstractCommand implements Holdable {
                     this.cancel();
                 }
                 else if (infinite || ticks < maxTicks) {
-                    for (dEntity entity : entities) {
+                    for (EntityTag entity : entities) {
                         if (entity.isSpawned() && rotatingEntities.contains(entity.getUUID())) {
                             NMSHandler.getInstance().getEntityHelper().rotate(entity.getBukkitEntity(),
                                     NMSHandler.getInstance().getEntityHelper().normalizeYaw(entity.getLocation().getYaw() + yaw.asFloat()),
@@ -191,7 +191,7 @@ public class RotateCommand extends AbstractCommand implements Holdable {
 
                     // Remove any entities that are no longer spawned
                     if (!unusedEntities.isEmpty()) {
-                        for (dEntity unusedEntity : unusedEntities) {
+                        for (EntityTag unusedEntity : unusedEntities) {
                             entities.remove(unusedEntity);
                         }
                         unusedEntities.clear();

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -25,7 +25,7 @@ public class VehicleCreatedScriptEvent extends BukkitScriptEvent implements List
     // @Triggers when a vehicle is created.
     //
     // @Context
-    // <context.vehicle> returns the dEntity of the vehicle.
+    // <context.vehicle> returns the EntityTag of the vehicle.
     //
     // -->
 
@@ -34,7 +34,7 @@ public class VehicleCreatedScriptEvent extends BukkitScriptEvent implements List
     }
 
     public static VehicleCreatedScriptEvent instance;
-    public dEntity vehicle;
+    public EntityTag vehicle;
     public VehicleCreateEvent event;
 
     @Override
@@ -80,10 +80,10 @@ public class VehicleCreatedScriptEvent extends BukkitScriptEvent implements List
     @EventHandler
     public void onVehicleCreated(VehicleCreateEvent event) {
         Entity entity = event.getVehicle();
-        dEntity.rememberEntity(entity);
-        vehicle = new dEntity(entity);
+        EntityTag.rememberEntity(entity);
+        vehicle = new EntityTag(entity);
         this.event = event;
         fire(event);
-        dEntity.forgetEntity(entity);
+        EntityTag.forgetEntity(entity);
     }
 }

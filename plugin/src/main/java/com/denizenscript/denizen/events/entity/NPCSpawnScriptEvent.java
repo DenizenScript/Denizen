@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.objects.dNPC;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -35,8 +35,8 @@ public class NPCSpawnScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     public static NPCSpawnScriptEvent instance;
-    public dNPC npc;
-    public dLocation location;
+    public NPCTag npc;
+    public LocationTag location;
     public NPCSpawnEvent event;
 
     @Override
@@ -79,8 +79,8 @@ public class NPCSpawnScriptEvent extends BukkitScriptEvent implements Listener {
 
     @EventHandler
     public void onNPCSpawn(NPCSpawnEvent event) {
-        this.npc = new dNPC(event.getNPC());
-        location = new dLocation(event.getLocation());
+        this.npc = new NPCTag(event.getNPC());
+        location = new LocationTag(event.getLocation());
         this.event = event;
         fire(event);
     }

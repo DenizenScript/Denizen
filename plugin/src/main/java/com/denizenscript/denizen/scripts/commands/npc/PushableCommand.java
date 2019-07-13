@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.commands.npc;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.npc.traits.PushableTrait;
-import com.denizenscript.denizen.objects.dNPC;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -65,7 +65,7 @@ public class PushableCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        dNPC denizenNPC = Utilities.getEntryNPC(scriptEntry);
+        NPCTag denizenNPC = Utilities.getEntryNPC(scriptEntry);
         if (denizenNPC == null) {
             Debug.echoError("No valid NPC attached to this queue!");
             return;

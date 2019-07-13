@@ -2,8 +2,8 @@ package com.denizenscript.denizen.objects.properties.bukkit;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
-import com.denizenscript.denizen.objects.dNPC;
-import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.QueueTag;
@@ -46,13 +46,13 @@ public class BukkitQueueProperties implements Property {
 
         // <--[tag]
         // @attribute <QueueTag.npc>
-        // @returns dNPC
+        // @returns NPCTag
         // @mechanism ScriptQueue.linked_npc
         // @description
-        // Returns the dNPC linked to a queue.
+        // Returns the NPCTag linked to a queue.
         // -->
         if (attribute.startsWith("npc")) {
-            dNPC npc = null;
+            NPCTag npc = null;
             if (queue.getLastEntryExecuted() != null) {
                 npc = ((BukkitScriptEntryData) queue.getLastEntryExecuted().entryData).getNPC();
             }
@@ -72,13 +72,13 @@ public class BukkitQueueProperties implements Property {
 
         // <--[tag]
         // @attribute <QueueTag.player>
-        // @returns dPlayer
+        // @returns PlayerTag
         // @mechanism ScriptQueue.linked_player
         // @description
-        // Returns the dPlayer linked to a queue.
+        // Returns the PlayerTag linked to a queue.
         // -->
         if (attribute.startsWith("player")) {
-            dPlayer player = null;
+            PlayerTag player = null;
             if (queue.getLastEntryExecuted() != null) {
                 player = ((BukkitScriptEntryData) queue.getLastEntryExecuted().entryData).getPlayer();
             }
@@ -114,14 +114,14 @@ public class BukkitQueueProperties implements Property {
         // <--[mechanism]
         // @object ScriptQueue
         // @name linked_player
-        // @input dPlayer
+        // @input PlayerTag
         // @description
         // Sets the linked player for the remainder of the queue.
         // @tags
         // <QueueTag.player>
         // -->
-        if (mechanism.matches("linked_player") && mechanism.requireObject(dPlayer.class)) {
-            dPlayer player = mechanism.valueAsType(dPlayer.class);
+        if (mechanism.matches("linked_player") && mechanism.requireObject(PlayerTag.class)) {
+            PlayerTag player = mechanism.valueAsType(PlayerTag.class);
             for (ScriptEntry entry : queue.getEntries()) {
                 BukkitScriptEntryData data = (BukkitScriptEntryData) entry.entryData;
                 data.setPlayer(player);
@@ -131,14 +131,14 @@ public class BukkitQueueProperties implements Property {
         // <--[mechanism]
         // @object ScriptQueue
         // @name linked_npc
-        // @input dNPC
+        // @input NPCTag
         // @description
         // Sets the linked NPC for the remainder of the queue.
         // @tags
         // <QueueTag.npc>
         // -->
-        if (mechanism.matches("linked_npc") && mechanism.requireObject(dNPC.class)) {
-            dNPC npc = mechanism.valueAsType(dNPC.class);
+        if (mechanism.matches("linked_npc") && mechanism.requireObject(NPCTag.class)) {
+            NPCTag npc = mechanism.valueAsType(NPCTag.class);
             for (ScriptEntry entry : queue.getEntries()) {
                 BukkitScriptEntryData data = (BukkitScriptEntryData) entry.entryData;
                 data.setNPC(npc);

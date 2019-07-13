@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -12,7 +12,7 @@ import org.bukkit.entity.EntityType;
 public class EntityArms implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.ARMOR_STAND;
+        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntityType() == EntityType.ARMOR_STAND;
     }
 
     public static EntityArms getFrom(ObjectTag entity) {
@@ -20,7 +20,7 @@ public class EntityArms implements Property {
             return null;
         }
         else {
-            return new EntityArms((dEntity) entity);
+            return new EntityArms((EntityTag) entity);
         }
     }
 
@@ -37,11 +37,11 @@ public class EntityArms implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityArms(dEntity entity) {
+    private EntityArms(EntityTag entity) {
         dentity = entity;
     }
 
-    dEntity dentity;
+    EntityTag dentity;
 
     /////////
     // Property Methods
@@ -74,9 +74,9 @@ public class EntityArms implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.arms>
+        // @attribute <EntityTag.arms>
         // @returns ElementTag(Boolean)
-        // @mechanism dEntity.arms
+        // @mechanism EntityTag.arms
         // @group properties
         // @description
         // If the entity is an armor stand, returns whether the armor stand has arms.
@@ -93,13 +93,13 @@ public class EntityArms implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object dEntity
+        // @object EntityTag
         // @name arms
         // @input Element(Boolean)
         // @description
         // Changes the arms state of an armor stand.
         // @tags
-        // <e@entity.arms>
+        // <EntityTag.arms>
         // -->
 
         if (mechanism.matches("arms") && mechanism.requireBoolean()) {
