@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
-import net.aufdemrand.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.dObject;
 
 public interface EntityFormObject extends dObject {
 

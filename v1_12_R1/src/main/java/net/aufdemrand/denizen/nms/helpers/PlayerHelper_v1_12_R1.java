@@ -6,7 +6,7 @@ import net.aufdemrand.denizen.nms.impl.ImprovedOfflinePlayer_v1_12_R1;
 import net.aufdemrand.denizen.nms.impl.packets.handlers.AbstractListenerPlayIn_v1_12_R1;
 import net.aufdemrand.denizen.nms.interfaces.PlayerHelper;
 import net.aufdemrand.denizen.nms.util.ReflectionHelper;
-import net.aufdemrand.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;

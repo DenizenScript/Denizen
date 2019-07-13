@@ -2,12 +2,12 @@ package net.aufdemrand.denizen.scripts.containers.core;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.maps.*;
-import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
-import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import net.aufdemrand.denizencore.utilities.NaturalOrderComparator;
-import net.aufdemrand.denizencore.utilities.YamlConfiguration;
-import net.aufdemrand.denizencore.utilities.text.StringHolder;
+import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.NaturalOrderComparator;
+import com.denizenscript.denizencore.utilities.YamlConfiguration;
+import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.map.MapView;
 
 import java.util.ArrayList;

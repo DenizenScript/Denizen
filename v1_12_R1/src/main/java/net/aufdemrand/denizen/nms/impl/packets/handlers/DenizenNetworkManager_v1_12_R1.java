@@ -16,7 +16,7 @@ import net.aufdemrand.denizen.nms.impl.packets.PacketOutWindowItems_v1_12_R1;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketHandler;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
 import net.aufdemrand.denizen.nms.util.ReflectionHelper;
-import net.aufdemrand.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_12_R1.*;
 import net.minecraft.server.v1_12_R1.Entity;
 import net.minecraft.server.v1_12_R1.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;

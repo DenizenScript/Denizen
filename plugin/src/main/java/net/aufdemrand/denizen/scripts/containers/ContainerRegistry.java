@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.scripts.containers;
 
 import net.aufdemrand.denizen.scripts.containers.core.*;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizencore.scripts.ScriptRegistry;
+import com.denizenscript.denizencore.scripts.ScriptRegistry;
 
 public class ContainerRegistry {
 

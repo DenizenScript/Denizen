@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.nms.impl.packets;
 
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketOutEntityMetadata;
 import net.aufdemrand.denizen.nms.util.ReflectionHelper;
-import net.aufdemrand.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_13_R2.DataWatcher;
 import net.minecraft.server.v1_13_R2.PacketPlayOutEntityMetadata;
 

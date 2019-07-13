@@ -1,11 +1,14 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
+import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.Mechanism;
+import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.dScript;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.objects.properties.Property;
-import net.aufdemrand.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.Property;
+import com.denizenscript.denizencore.tags.Attribute;
 
 public class ItemScript implements Property {
 

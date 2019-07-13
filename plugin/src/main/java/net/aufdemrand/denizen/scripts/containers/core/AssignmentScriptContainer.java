@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
-import net.aufdemrand.denizencore.utilities.YamlConfiguration;
+import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
+import com.denizenscript.denizencore.utilities.YamlConfiguration;
 
 public class AssignmentScriptContainer extends ScriptContainer {
 

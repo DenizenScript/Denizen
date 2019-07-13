@@ -3,7 +3,7 @@ package net.aufdemrand.denizen.utilities.nbt;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.util.jnbt.*;
 import net.aufdemrand.denizen.objects.properties.entity.EntityDisabledSlots.Action;
-import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.EquipmentSlot;

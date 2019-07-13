@@ -6,7 +6,7 @@ import net.aufdemrand.denizen.nms.interfaces.SoundHelper;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 

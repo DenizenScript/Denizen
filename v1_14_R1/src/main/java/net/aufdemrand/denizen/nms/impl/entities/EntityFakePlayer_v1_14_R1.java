@@ -4,7 +4,7 @@ import com.mojang.authlib.GameProfile;
 import net.aufdemrand.denizen.nms.Handler_v1_14_R1;
 import net.aufdemrand.denizen.nms.impl.network.FakeNetworkManager_v1_14_R1;
 import net.aufdemrand.denizen.nms.impl.network.FakePlayerConnection_v1_14_R1;
-import net.aufdemrand.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_14_R1.CraftServer;

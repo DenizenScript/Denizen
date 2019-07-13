@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.utilities.command;
 
 import net.aufdemrand.denizen.utilities.command.exceptions.CommandException;
-import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;

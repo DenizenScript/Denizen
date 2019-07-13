@@ -3,7 +3,7 @@ package net.aufdemrand.denizen.nms.impl.packets;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketOutTradeList;
 import net.aufdemrand.denizen.nms.util.ReflectionHelper;
 import net.aufdemrand.denizen.nms.util.TradeOffer;
-import net.aufdemrand.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_14_R1.MerchantRecipe;
 import net.minecraft.server.v1_14_R1.MerchantRecipeList;
 import net.minecraft.server.v1_14_R1.PacketPlayOutOpenWindowMerchant;

@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.nms.helpers;
 
 import net.aufdemrand.denizen.nms.interfaces.ChunkHelper;
 import net.aufdemrand.denizen.nms.util.ReflectionHelper;
-import net.aufdemrand.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.World;
 import org.bukkit.Chunk;

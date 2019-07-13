@@ -4,12 +4,12 @@ import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
-import net.aufdemrand.denizencore.objects.dScript;
-import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
-import net.aufdemrand.denizencore.tags.TagManager;
-import net.aufdemrand.denizencore.tags.core.EscapeTags;
-import net.aufdemrand.denizencore.utilities.YamlConfiguration;
+import com.denizenscript.denizencore.objects.dScript;
+import com.denizenscript.denizencore.scripts.ScriptEntry;
+import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
+import com.denizenscript.denizencore.tags.TagManager;
+import com.denizenscript.denizencore.tags.core.EscapeTags;
+import com.denizenscript.denizencore.utilities.YamlConfiguration;
 
 public class FormatScriptContainer extends ScriptContainer {
 

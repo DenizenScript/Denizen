@@ -3,7 +3,7 @@ package net.aufdemrand.denizen.nms.impl.packets;
 import io.netty.buffer.Unpooled;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketOutTradeList;
 import net.aufdemrand.denizen.nms.util.TradeOffer;
-import net.aufdemrand.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_13_R2.PacketDataSerializer;
 import net.minecraft.server.v1_13_R2.PacketPlayOutCustomPayload;
 import org.bukkit.craftbukkit.v1_13_R2.inventory.CraftItemStack;

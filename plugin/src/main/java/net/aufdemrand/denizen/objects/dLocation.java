@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
+import com.denizenscript.denizencore.objects.*;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
@@ -18,13 +19,12 @@ import net.aufdemrand.denizen.utilities.blocks.DirectionalBlocksHelper;
 import net.aufdemrand.denizen.utilities.blocks.OldMaterialsHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
-import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.objects.notable.Notable;
-import net.aufdemrand.denizencore.objects.notable.Note;
-import net.aufdemrand.denizencore.tags.Attribute;
-import net.aufdemrand.denizencore.tags.TagContext;
-import net.aufdemrand.denizencore.tags.core.EscapeTags;
-import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.objects.notable.Notable;
+import com.denizenscript.denizencore.objects.notable.Note;
+import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.tags.TagContext;
+import com.denizenscript.denizencore.tags.core.EscapeTags;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.banner.PatternType;
@@ -42,7 +42,6 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 import java.util.Comparator;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class dLocation extends org.bukkit.Location implements dObject, Notable, Adjustable {

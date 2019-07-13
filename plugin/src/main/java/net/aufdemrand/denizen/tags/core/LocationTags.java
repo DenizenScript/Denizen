@@ -1,11 +1,11 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizencore.objects.TagRunnable;
-import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
-import net.aufdemrand.denizencore.tags.TagManager;
-import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import net.aufdemrand.denizencore.utilities.debugging.SlowWarning;
+import com.denizenscript.denizencore.objects.TagRunnable;
+import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
+import com.denizenscript.denizencore.tags.TagManager;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.SlowWarning;
 
 public class LocationTags {
 

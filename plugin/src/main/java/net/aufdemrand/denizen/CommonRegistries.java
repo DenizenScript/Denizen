@@ -3,7 +3,7 @@ package net.aufdemrand.denizen;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.tags.core.*;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizencore.objects.ObjectFetcher;
+import com.denizenscript.denizencore.objects.ObjectFetcher;
 
 public class CommonRegistries {
 

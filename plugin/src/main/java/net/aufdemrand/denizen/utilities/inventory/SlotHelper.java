@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.utilities.inventory;
 
-import net.aufdemrand.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.aH;
 import org.bukkit.inventory.EquipmentSlot;
 
 import java.util.HashMap;

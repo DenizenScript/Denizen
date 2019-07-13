@@ -15,11 +15,11 @@ import net.aufdemrand.denizen.objects.properties.inventory.InventoryTitle;
 import net.aufdemrand.denizen.objects.properties.item.*;
 import net.aufdemrand.denizen.objects.properties.material.*;
 import net.aufdemrand.denizen.objects.properties.trade.*;
-import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizencore.objects.dList;
-import net.aufdemrand.denizencore.objects.dScript;
-import net.aufdemrand.denizencore.objects.properties.PropertyParser;
-import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
+import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.dScript;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 
 public class PropertyRegistry {
 

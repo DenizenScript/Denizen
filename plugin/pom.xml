@@ -24,7 +24,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.aufdemrand</groupId>
+            <groupId>com.denizenscript</groupId>
             <artifactId>denizencore</artifactId>
             <version>${dcore.version}</version>
             <scope>compile</scope>
@@ -111,7 +111,7 @@
                             <minimizeJar>true</minimizeJar>
                             <filters>
                                 <filter>
-                                    <artifact>net.aufdemrand:denizencore</artifact>
+                                    <artifact>com.denizenscript:denizencore</artifact>
                                     <includes>
                                         <include>**</include>
                                     </includes>

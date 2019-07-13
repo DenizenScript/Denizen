@@ -6,8 +6,8 @@ import net.aufdemrand.denizen.scripts.triggers.core.ClickTrigger;
 import net.aufdemrand.denizen.scripts.triggers.core.DamageTrigger;
 import net.aufdemrand.denizen.scripts.triggers.core.ProximityTrigger;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.interfaces.RegistrationableInstance;
-import net.aufdemrand.denizencore.interfaces.dRegistry;
+import com.denizenscript.denizencore.interfaces.RegistrationableInstance;
+import com.denizenscript.denizencore.interfaces.dRegistry;
 import net.citizensnpcs.api.npc.NPC;
 
 import java.util.HashMap;

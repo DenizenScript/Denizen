@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.utilities.debugging;
 
 import net.aufdemrand.denizen.scripts.containers.core.VersionScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.tags.core.EscapeTags;
+import com.denizenscript.denizencore.tags.core.EscapeTags;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 

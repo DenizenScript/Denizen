@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.nms.impl.network;
 
-import net.aufdemrand.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_12_R1.EnumProtocolDirection;
 import net.minecraft.server.v1_12_R1.NetworkManager;
 

@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.utilities.maps;
 
 import net.aufdemrand.denizen.objects.dColor;
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.aH;
 import org.bukkit.Color;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;

@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.nms.util;
 
-import net.aufdemrand.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.dB;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;

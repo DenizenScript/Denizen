@@ -5,7 +5,7 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.command.messaging.Messaging;
-import net.aufdemrand.denizencore.scripts.ScriptRegistry;
+import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.command.Command;
 import net.citizensnpcs.api.command.CommandContext;

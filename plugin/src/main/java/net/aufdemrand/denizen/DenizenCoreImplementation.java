@@ -11,19 +11,19 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizencore.DenizenImplementation;
-import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizencore.objects.dList;
-import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.ScriptEntryData;
-import net.aufdemrand.denizencore.scripts.ScriptHelper;
-import net.aufdemrand.denizencore.scripts.ScriptRegistry;
-import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
-import net.aufdemrand.denizencore.tags.TagContext;
-import net.aufdemrand.denizencore.tags.TagManager;
-import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import net.aufdemrand.denizencore.utilities.YamlConfiguration;
-import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
+import com.denizenscript.denizencore.DenizenImplementation;
+import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.scripts.ScriptEntry;
+import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import com.denizenscript.denizencore.scripts.ScriptHelper;
+import com.denizenscript.denizencore.scripts.ScriptRegistry;
+import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
+import com.denizenscript.denizencore.tags.TagContext;
+import com.denizenscript.denizencore.tags.TagManager;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.YamlConfiguration;
+import com.denizenscript.denizencore.utilities.debugging.Debuggable;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -96,12 +96,12 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     }
 
     @Override
-    public void debugEntry(Debuggable debuggable, net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement debugElement, String s) {
+    public void debugEntry(Debuggable debuggable, com.denizenscript.denizencore.utilities.debugging.dB.DebugElement debugElement, String s) {
         dB.echoDebug(debuggable, debugElement, s);
     }
 
     @Override
-    public void debugEntry(Debuggable debuggable, net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement debugElement) {
+    public void debugEntry(Debuggable debuggable, com.denizenscript.denizencore.utilities.debugging.dB.DebugElement debugElement) {
         dB.echoDebug(debuggable, debugElement);
     }
 
@@ -129,13 +129,13 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     }
 
     @Override
-    public void buildCoreContainers(net.aufdemrand.denizencore.utilities.YamlConfiguration config) {
+    public void buildCoreContainers(YamlConfiguration config) {
         ScriptRegistry._buildCoreYamlScriptContainers(config);
     }
 
     @Override
     public List<YamlConfiguration> getOutsideScripts() {
-        List<net.aufdemrand.denizencore.utilities.YamlConfiguration> files = new ArrayList<>();
+        List<YamlConfiguration> files = new ArrayList<>();
         try {
             files.add(ScriptHelper.loadConfig("Denizen.jar/util.dsc", DenizenAPI.getCurrentInstance().getResource("util.dsc")));
         }
@@ -154,7 +154,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     public void debugQueueExecute(ScriptEntry entry, String queue, String execute) {
         Consumer<String> altDebug = entry.getResidingQueue().debugOutput;
         entry.getResidingQueue().debugOutput = null;
-        dB.echoDebug(entry, net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement.Header,
+        dB.echoDebug(entry, com.denizenscript.denizencore.utilities.debugging.dB.DebugElement.Header,
                 ChatColor.LIGHT_PURPLE + "Queue '" + queue + ChatColor.LIGHT_PURPLE + "' Executing: " + execute);
         entry.getResidingQueue().debugOutput = altDebug;
     }

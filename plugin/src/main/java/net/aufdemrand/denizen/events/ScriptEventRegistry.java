@@ -7,7 +7,7 @@ import net.aufdemrand.denizen.events.world.*;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizencore.events.ScriptEvent;
+import com.denizenscript.denizencore.events.ScriptEvent;
 
 public class ScriptEventRegistry {
 

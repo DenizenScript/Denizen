@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.flags;
 
+import com.denizenscript.denizencore.objects.*;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.core.FlagSmartEvent;
@@ -8,10 +9,9 @@ import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizencore.DenizenCore;
-import net.aufdemrand.denizencore.events.OldEventManager;
-import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.DenizenCore;
+import com.denizenscript.denizencore.events.OldEventManager;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.*;

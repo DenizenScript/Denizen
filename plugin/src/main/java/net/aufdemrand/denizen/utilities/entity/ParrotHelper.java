@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.utilities.entity;
 
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizencore.objects.Mechanism;
+import com.denizenscript.denizencore.objects.Mechanism;
 import org.bukkit.entity.Parrot;
 
 public class ParrotHelper {

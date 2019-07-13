@@ -2,9 +2,9 @@ package net.aufdemrand.denizen;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.objects.Duration;
-import net.aufdemrand.denizencore.scripts.ScriptHelper;
-import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.objects.Duration;
+import com.denizenscript.denizencore.scripts.ScriptHelper;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.nio.charset.Charset;

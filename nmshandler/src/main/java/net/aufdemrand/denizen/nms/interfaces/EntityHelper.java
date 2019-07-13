@@ -3,7 +3,7 @@ package net.aufdemrand.denizen.nms.interfaces;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.util.BoundingBox;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
-import net.aufdemrand.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;

@@ -1,13 +1,13 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
+import com.denizenscript.denizencore.objects.*;
 import net.aufdemrand.denizen.objects.dColor;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.AreaEffectCloudHelper;
-import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.objects.properties.Property;
-import net.aufdemrand.denizencore.tags.Attribute;
-import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.objects.properties.Property;
+import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;

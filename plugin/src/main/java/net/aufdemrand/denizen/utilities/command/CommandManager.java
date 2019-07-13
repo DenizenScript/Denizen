@@ -5,7 +5,7 @@ import com.google.common.collect.ListMultimap;
 import net.aufdemrand.denizen.utilities.command.exceptions.*;
 import net.aufdemrand.denizen.utilities.command.messaging.Messaging;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;

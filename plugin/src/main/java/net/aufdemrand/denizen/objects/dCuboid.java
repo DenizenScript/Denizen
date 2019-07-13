@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
+import com.denizenscript.denizencore.objects.*;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.interfaces.BlockData;
@@ -8,12 +9,11 @@ import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.objects.notable.Notable;
-import net.aufdemrand.denizencore.objects.notable.Note;
-import net.aufdemrand.denizencore.tags.Attribute;
-import net.aufdemrand.denizencore.tags.TagContext;
-import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.objects.notable.Notable;
+import com.denizenscript.denizencore.objects.notable.Note;
+import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.tags.TagContext;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
@@ -1034,7 +1034,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                         boolean contained = false;
                         for (LocationPair pair : cub2.pairs) {
                             if (!pair.low.getWorld().getName().equalsIgnoreCase(pair2.low.getWorld().getName())) {
-                                if (net.aufdemrand.denizencore.utilities.debugging.dB.verbose) {
+                                if (com.denizenscript.denizencore.utilities.debugging.dB.verbose) {
                                     dB.log("Worlds don't match!");
                                 }
                                 return new Element("false").getAttribute(attribute.fulfill(1));

@@ -1,16 +1,17 @@
 package net.aufdemrand.denizen.objects.properties.bukkit;
 
+import com.denizenscript.denizencore.utilities.debugging.dB;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
-import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizencore.objects.Mechanism;
-import net.aufdemrand.denizencore.objects.dObject;
-import net.aufdemrand.denizencore.objects.properties.Property;
-import net.aufdemrand.denizencore.scripts.ScriptRegistry;
-import net.aufdemrand.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.Mechanism;
+import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.properties.Property;
+import com.denizenscript.denizencore.scripts.ScriptRegistry;
+import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.ChatColor;
 
 import javax.xml.bind.DatatypeConverter;
@@ -267,7 +268,7 @@ public class BukkitElementProperties implements Property {
                 && attribute.hasContext(1)) {
             FormatScriptContainer format = ScriptRegistry.getScriptContainer(attribute.getContext(1));
             if (format == null) {
-                net.aufdemrand.denizencore.utilities.debugging.dB.echoError("Could not find format script matching '" + attribute.getContext(1) + "'");
+                dB.echoError("Could not find format script matching '" + attribute.getContext(1) + "'");
                 return null;
             }
             else {

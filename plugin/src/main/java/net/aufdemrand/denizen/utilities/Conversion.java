@@ -2,9 +2,9 @@ package net.aufdemrand.denizen.utilities;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.aH.Argument;
-import net.aufdemrand.denizencore.objects.dList;
-import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import com.denizenscript.denizencore.objects.aH.Argument;
+import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.scripts.ScriptEntry;
 import org.bukkit.Color;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;

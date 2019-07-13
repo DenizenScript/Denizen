@@ -12,7 +12,7 @@ import net.aufdemrand.denizen.nms.interfaces.FakeArrow;
 import net.aufdemrand.denizen.nms.interfaces.FakePlayer;
 import net.aufdemrand.denizen.nms.interfaces.ItemProjectile;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
-import net.aufdemrand.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_12_R1.PlayerInteractManager;
 import net.minecraft.server.v1_12_R1.WorldServer;
 import org.bukkit.Bukkit;

@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.events.core;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.events.OldSmartEvent;
+import com.denizenscript.denizencore.events.OldSmartEvent;
 import org.bukkit.event.Listener;
 
 import java.util.Set;

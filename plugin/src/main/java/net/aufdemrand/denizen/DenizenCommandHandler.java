@@ -12,10 +12,10 @@ import net.aufdemrand.denizen.utilities.command.exceptions.CommandException;
 import net.aufdemrand.denizen.utilities.command.messaging.Messaging;
 import net.aufdemrand.denizen.utilities.debugging.DebugSubmit;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.DenizenCore;
-import net.aufdemrand.denizencore.scripts.ScriptHelper;
-import net.aufdemrand.denizencore.scripts.ScriptRegistry;
-import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
+import com.denizenscript.denizencore.DenizenCore;
+import com.denizenscript.denizencore.scripts.ScriptHelper;
+import com.denizenscript.denizencore.scripts.ScriptRegistry;
+import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -184,16 +184,16 @@ public class DenizenCommandHandler {
             if (!dB.showDebug) {
                 dB.toggle();
             }
-            net.aufdemrand.denizencore.utilities.debugging.dB.showEventsTrimming = !net.aufdemrand.denizencore.utilities.debugging.dB.showEventsTrimming;
-            Messaging.sendInfo(sender, (net.aufdemrand.denizencore.utilities.debugging.dB.showEventsTrimming ? "Denizen dBugger is now logging all " +
+            com.denizenscript.denizencore.utilities.debugging.dB.showEventsTrimming = !com.denizenscript.denizencore.utilities.debugging.dB.showEventsTrimming;
+            Messaging.sendInfo(sender, (com.denizenscript.denizencore.utilities.debugging.dB.showEventsTrimming ? "Denizen dBugger is now logging all " +
                     "world events." : "Denizen dBugger is now hiding world events."));
         }
         if (args.hasFlag('b')) {
             if (!dB.showDebug) {
                 dB.toggle();
             }
-            net.aufdemrand.denizencore.utilities.debugging.dB.showScriptBuilder = !net.aufdemrand.denizencore.utilities.debugging.dB.showScriptBuilder;
-            Messaging.sendInfo(sender, (net.aufdemrand.denizencore.utilities.debugging.dB.showScriptBuilder ? "Denizen dBugger is now logging the " +
+            com.denizenscript.denizencore.utilities.debugging.dB.showScriptBuilder = !com.denizenscript.denizencore.utilities.debugging.dB.showScriptBuilder;
+            Messaging.sendInfo(sender, (com.denizenscript.denizencore.utilities.debugging.dB.showScriptBuilder ? "Denizen dBugger is now logging the " +
                     "ScriptBuilder." : "Denizen dBugger is now hiding ScriptBuilder logging."));
         }
         if (args.hasFlag('r')) {
@@ -209,9 +209,9 @@ public class DenizenCommandHandler {
             if (!dB.showDebug) {
                 dB.toggle();
             }
-            net.aufdemrand.denizencore.utilities.debugging.dB.verbose =
-                    !net.aufdemrand.denizencore.utilities.debugging.dB.verbose;
-            Messaging.sendInfo(sender, (net.aufdemrand.denizencore.utilities.debugging.dB.verbose ? "Denizen dBugger is now verbose." :
+            com.denizenscript.denizencore.utilities.debugging.dB.verbose =
+                    !com.denizenscript.denizencore.utilities.debugging.dB.verbose;
+            Messaging.sendInfo(sender, (com.denizenscript.denizencore.utilities.debugging.dB.verbose ? "Denizen dBugger is now verbose." :
                     "Denizen dBugger verbosity disabled."));
         }
         if (args.hasFlag('x')) {

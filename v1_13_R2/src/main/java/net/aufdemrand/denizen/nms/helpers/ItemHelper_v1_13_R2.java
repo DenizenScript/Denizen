@@ -9,7 +9,7 @@ import net.aufdemrand.denizen.nms.interfaces.ItemHelper;
 import net.aufdemrand.denizen.nms.util.EntityAttributeModifier;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.nms.util.jnbt.*;
-import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.minecraft.server.v1_13_R2.GameProfileSerializer;
 import net.minecraft.server.v1_13_R2.NBTTagCompound;
 import org.bukkit.Color;

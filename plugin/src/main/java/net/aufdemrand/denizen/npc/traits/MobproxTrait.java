@@ -4,7 +4,7 @@ import net.aufdemrand.denizen.flags.FlagManager.Flag;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.dObject;
 import net.citizensnpcs.api.event.NPCTraitCommandAttachEvent;
 import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.ChatColor;

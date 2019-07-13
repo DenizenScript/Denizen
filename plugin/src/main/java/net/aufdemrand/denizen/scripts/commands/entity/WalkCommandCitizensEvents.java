@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
 import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import com.denizenscript.denizencore.scripts.ScriptEntry;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
 import net.citizensnpcs.api.ai.event.NavigationEvent;

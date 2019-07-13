@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.nms.enums;
 
-import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 
 public enum EntityAttribute {
     GENERIC_MAX_HEALTH("generic.maxHealth"),

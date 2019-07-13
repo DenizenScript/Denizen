@@ -20,7 +20,7 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>net.aufdemrand</groupId>
+            <groupId>com.denizenscript</groupId>
             <artifactId>denizencore</artifactId>
             <version>${dcore.version}</version>
             <scope>provided</scope>
