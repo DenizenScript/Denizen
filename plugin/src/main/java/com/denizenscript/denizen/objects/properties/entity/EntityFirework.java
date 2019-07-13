@@ -1,0 +1,129 @@
+package com.denizenscript.denizen.objects.properties.entity;
+
+import com.denizenscript.denizen.utilities.MaterialCompat;
+import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizen.objects.dItem;
+import com.denizenscript.denizencore.objects.Mechanism;
+import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.properties.Property;
+import com.denizenscript.denizencore.tags.Attribute;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
+
+public class EntityFirework implements Property {
+
+    public static boolean describes(dObject entity) {
+        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.FIREWORK;
+    }
+
+    public static EntityFirework getFrom(dObject entity) {
+        if (!describes(entity)) {
+            return null;
+        }
+        else {
+            return new EntityFirework((dEntity) entity);
+        }
+    }
+
+    public static final String[] handledTags = new String[] {
+            "firework_item"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "firework_item", "detonate"
+    };
+
+
+    ///////////////////
+    // Instance Fields and Methods
+    /////////////
+
+    private EntityFirework(dEntity entity) {
+        firework = entity;
+    }
+
+    dEntity firework;
+
+    /////////
+    // Property Methods
+    ///////
+
+    @Override
+    public String getPropertyString() {
+        ItemStack item = new ItemStack(MaterialCompat.FIREWORK_ROCKET);
+        item.setItemMeta(((Firework) firework.getBukkitEntity()).getFireworkMeta());
+        return new dItem(item).identify();
+    }
+
+    @Override
+    public String getPropertyId() {
+        return "firework_item";
+    }
+
+    ///////////
+    // dObject Attributes
+    ////////
+
+    @Override
+    public String getAttribute(Attribute attribute) {
+
+        if (attribute == null) {
+            return null;
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.firework_item>
+        // @returns dItem
+        // @mechanism dEntity.firework_item
+        // @group properties
+        // @description
+        // If the entity is a firework, returns the firework item used to launch it.
+        // -->
+        if (attribute.startsWith("firework_item")) {
+            ItemStack item = new ItemStack(MaterialCompat.FIREWORK_ROCKET);
+            item.setItemMeta(((Firework) firework.getBukkitEntity()).getFireworkMeta());
+            return new dItem(item).getAttribute(attribute.fulfill(1));
+        }
+
+        return null;
+    }
+
+    @Override
+    public void adjust(Mechanism mechanism) {
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name firework_item
+        // @input dItem
+        // @description
+        // Changes the firework effect on this entity, using a firework item.
+        // @tags
+        // <e@entity.firework_item>
+        // -->
+        if (mechanism.matches("firework_item") && mechanism.requireObject(dItem.class)) {
+            dItem item = mechanism.valueAsType(dItem.class);
+            if (item != null && item.getItemStack().getItemMeta() instanceof FireworkMeta) {
+                ((Firework) firework.getBukkitEntity()).setFireworkMeta((FireworkMeta) item.getItemStack().getItemMeta());
+            }
+            else {
+                dB.echoError("'" + mechanism.getValue().asString() + "' is not a valid firework item.");
+            }
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name detonate
+        // @input None
+        // @description
+        // If the entity is a firework, detonates it.
+        // @tags
+        // <e@entity.firework_item>
+        // -->
+        if (mechanism.matches("detonate")) {
+            ((Firework) firework.getBukkitEntity()).detonate();
+        }
+    }
+}

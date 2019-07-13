@@ -1,7 +1,7 @@
 name: Denizen
 authors: ['The DenizenScript Team']
 version: ${project.version} (build ${BUILD_NUMBER}-${BUILD_CLASS})
-main: net.aufdemrand.denizen.Denizen
+main: com.denizenscript.denizen.Denizen
 softdepend: [Citizens, Vault]
 
 api-version: 1.13

@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
+        <groupId>com.denizenscript</groupId>
         <artifactId>denizen-parent</artifactId>
-        <groupId>net.aufdemrand</groupId>
         <version>1.1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -31,25 +31,25 @@
         </dependency>
         <!-- NMS Modules -->
         <dependency>
-            <groupId>net.aufdemrand</groupId>
+            <groupId>com.denizenscript</groupId>
             <artifactId>denizen-nmshandler</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>net.aufdemrand</groupId>
+            <groupId>com.denizenscript</groupId>
             <artifactId>denizen-v1_12_R1</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>net.aufdemrand</groupId>
+            <groupId>com.denizenscript</groupId>
             <artifactId>denizen-v1_13_R2</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>net.aufdemrand</groupId>
+            <groupId>com.denizenscript</groupId>
             <artifactId>denizen-v1_14_R1</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
@@ -123,13 +123,13 @@
                                     </includes>
                                 </filter>
                                 <filter>
-                                    <artifact>net.aufdemrand:denizen-v**</artifact>
+                                    <artifact>com.denizenscript:denizen-v**</artifact>
                                     <includes>
                                         <include>**</include>
                                     </includes>
                                 </filter>
                                 <filter>
-                                    <artifact>net.aufdemrand:denizen-nmshandler</artifact>
+                                    <artifact>com.denizenscript:denizen-nmshandler</artifact>
                                     <includes>
                                         <include>**</include>
                                     </includes>

@@ -1,0 +1,126 @@
+package com.denizenscript.denizen.scripts.commands.player;
+
+import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.objects.dPlayer;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.scripts.ScriptEntry;
+import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+
+public class OxygenCommand extends AbstractCommand {
+
+    // <--[command]
+    // @Name Oxygen
+    // @Syntax oxygen [<#>] (type:{remaining}/maximum) (mode:{set}/add/remove)
+    // @Required 1
+    // @Short Gives or takes breath from the player.
+    // @Group player
+    //
+    // @Description
+    // Used to add to, remove from or set the amount of current oxygen of a player. Also allows for the changing of the
+    // player's maximum oxygen level. Value is in ticks, so 30 equals to 1 bubble.
+    //
+    // @Tags
+    // <p@player.oxygen>
+    // <p@player.oxygen.max>
+    //
+    // @Usage
+    // Use to set the player's current oxygen level to 5 bubbles.
+    // - oxygen 150
+    //
+    // @Usage
+    // Use to add 1 bubble to the player's current oxygen level.
+    // - oxygen 30 mode:add
+    //
+    // @Usage
+    // Use to set the player's maximum oxygen level to 20 bubbles.
+    // - oxygen 600 type:maximum
+    // -->
+
+    public enum Type {MAXIMUM, REMAINING}
+
+    public enum Mode {SET, ADD, REMOVE}
+
+    @Override
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+
+        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+
+            if (!scriptEntry.hasObject("type")
+                    && arg.matchesPrefix("type", "t")
+                    && arg.matchesEnum(Type.values())) {
+                scriptEntry.addObject("type", arg.asElement());
+            }
+            else if (!scriptEntry.hasObject("mode")
+                    && arg.matchesPrefix("mode", "m")
+                    && arg.matchesEnum(Mode.values())) {
+                scriptEntry.addObject("mode", arg.asElement());
+            }
+            else if (!scriptEntry.hasObject("amount")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                scriptEntry.addObject("amount", arg.asElement());
+            }
+
+        }
+
+        if (!Utilities.entryHasPlayer(scriptEntry) || !Utilities.getEntryPlayer(scriptEntry).isValid()) {
+            throw new InvalidArgumentsException("Must have player context!");
+        }
+
+        if (!scriptEntry.hasObject("amount")) {
+            throw new InvalidArgumentsException("Must specify a valid amount!");
+        }
+
+        scriptEntry.defaultObject("type", new Element("REMAINING")).defaultObject("mode", new Element("SET"));
+
+    }
+
+    @Override
+    public void execute(ScriptEntry scriptEntry) {
+
+        Element type = scriptEntry.getElement("type");
+        Element mode = scriptEntry.getElement("mode");
+        Element amount = scriptEntry.getElement("amount");
+
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), type.debug() + mode.debug() + amount.debug());
+
+        }
+
+        dPlayer player = Utilities.getEntryPlayer(scriptEntry);
+
+        switch (Type.valueOf(type.asString().toUpperCase())) {
+            case MAXIMUM:
+                switch (Mode.valueOf(mode.asString().toUpperCase())) {
+                    case SET:
+                        player.setMaximumAir(amount.asInt());
+                        break;
+                    case ADD:
+                        player.setMaximumAir(player.getMaximumAir() + amount.asInt());
+                        break;
+                    case REMOVE:
+                        player.setMaximumAir(player.getMaximumAir() - amount.asInt());
+                        break;
+                }
+                return;
+            case REMAINING:
+                switch (Mode.valueOf(mode.asString().toUpperCase())) {
+                    case SET:
+                        player.setRemainingAir(amount.asInt());
+                        break;
+
+                    case ADD:
+                        player.setRemainingAir(player.getRemainingAir() + amount.asInt());
+                        break;
+
+                    case REMOVE:
+                        player.setRemainingAir(player.getRemainingAir() - amount.asInt());
+                        break;
+                }
+                return;
+        }
+    }
+}

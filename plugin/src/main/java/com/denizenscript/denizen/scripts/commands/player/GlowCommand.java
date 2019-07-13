@@ -1,0 +1,136 @@
+package com.denizenscript.denizen.scripts.commands.player;
+
+import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.depends.Depends;
+import com.denizenscript.denizen.objects.dEntity;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Element;
+import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.scripts.ScriptEntry;
+import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.entity.LivingEntity;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.UUID;
+
+public class GlowCommand extends AbstractCommand {
+
+    // <--[command]
+    // @Name Glow
+    // @Syntax glow [<entity>|...] (<should glow>)
+    // @Required 1
+    // @Short Makes the linked player see the chosen entities as glowing.
+    // @Group player
+    //
+    // @Description
+    // Makes the link player see the chosen entities as glowing.
+    // BE WARNED, THIS COMMAND IS HIGHLY EXPERIMENTAL AND MAY NOT WORK AS EXPECTED.
+    // This command works by globally enabling the glow effect, then whitelisting who is allowed to see it.
+    // This command does it's best to disable glow effect when the entity is unloaded, but does not guarantee it.
+    //
+    // @Tags
+    // <e@entity.glowing>
+    //
+    // @Usage
+    // Use to make the player's target glow.
+    // - glow <player.target>
+    //
+    // @Usage
+    // Use to make the player's target not glow.
+    // - glow <player.target> false
+    // -->
+
+    public static HashMap<Integer, HashSet<UUID>> glowViewers = new HashMap<>();
+
+    public static void unGlow(LivingEntity e) {
+        if (glowViewers.containsKey(e.getEntityId())) {
+            glowViewers.remove(e.getEntityId());
+            e.setGlowing(false);
+            if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(e)) {
+                CitizensAPI.getNPCRegistry().getNPC(e).data().setPersistent(NPC.GLOWING_METADATA, false);
+            }
+        }
+    }
+
+    @Override
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+
+        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+
+            if (!scriptEntry.hasObject("entities")
+                    && arg.matchesArgumentList(dEntity.class)) {
+                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
+            }
+            else if (!scriptEntry.hasObject("glowing")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Boolean)) {
+                scriptEntry.addObject("glowing", arg.asElement());
+            }
+            else {
+                arg.reportUnhandled();
+            }
+        }
+
+        scriptEntry.defaultObject("glowing", new Element("true"));
+
+        if (!Utilities.entryHasPlayer(scriptEntry)) {
+            throw new InvalidArgumentsException("Must have a valid player link!");
+        }
+
+        if (!scriptEntry.hasObject("entities")) {
+            throw new InvalidArgumentsException("Must specify entities to make glow!");
+        }
+    }
+
+    @Override
+    public void execute(ScriptEntry scriptEntry) {
+
+        final ArrayList<dEntity> entities = (ArrayList<dEntity>) scriptEntry.getObject("entities");
+        Element glowing = scriptEntry.getElement("glowing");
+
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), aH.debugList("entities", entities) + glowing.debug());
+
+        }
+
+        boolean shouldGlow = glowing.asBoolean();
+
+        final UUID puuid = Utilities.getEntryPlayer(scriptEntry).getOfflinePlayer().getUniqueId();
+
+        if (puuid == null) {
+            dB.echoError(scriptEntry.getResidingQueue(), "Invalid/non-spawned player link!");
+            return;
+        }
+
+        for (dEntity ent : entities) {
+            if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(ent.getLivingEntity())) {
+                CitizensAPI.getNPCRegistry().getNPC(ent.getLivingEntity()).data().setPersistent(NPC.GLOWING_METADATA, shouldGlow);
+            }
+            if (shouldGlow) {
+                HashSet<UUID> players = glowViewers.get(ent.getLivingEntity().getEntityId());
+                if (players == null) {
+                    players = new HashSet<>();
+                    glowViewers.put(ent.getLivingEntity().getEntityId(), players);
+                }
+                players.add(puuid);
+            }
+            else {
+                HashSet<UUID> players = glowViewers.get(ent.getLivingEntity().getEntityId());
+                if (players != null) {
+                    players.remove(puuid);
+                    shouldGlow = !players.isEmpty();
+                    if (!shouldGlow) {
+                        glowViewers.remove(ent.getLivingEntity().getEntityId());
+                    }
+                }
+            }
+            ent.getLivingEntity().setGlowing(shouldGlow);
+        }
+    }
+}
