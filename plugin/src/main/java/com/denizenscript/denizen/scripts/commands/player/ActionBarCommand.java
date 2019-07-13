@@ -7,8 +7,9 @@ import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
@@ -51,7 +52,7 @@ public class ActionBarCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (arg.matchesPrefix("format", "f")) {
                 String formatStr = arg.getValue();
@@ -100,7 +101,7 @@ public class ActionBarCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), text.debug() + aH.debugList("Targets", targets));
+            dB.report(scriptEntry, getName(), text.debug() + ArgumentHelper.debugList("Targets", targets));
 
         }
         if (format != null) {

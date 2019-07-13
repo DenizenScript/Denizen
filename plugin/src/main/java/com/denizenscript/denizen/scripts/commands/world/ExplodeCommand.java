@@ -4,8 +4,9 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
@@ -51,7 +52,7 @@ public class ExplodeCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Iterate through arguments
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class)) {
@@ -59,7 +60,7 @@ public class ExplodeCommand extends AbstractCommand {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
             else if (!scriptEntry.hasObject("power")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Float)
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Float)
                     && arg.matchesPrefix("power", "p")) {
 
                 scriptEntry.addObject("power", arg.asElement());
@@ -102,10 +103,10 @@ public class ExplodeCommand extends AbstractCommand {
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             dB.report(scriptEntry, getName(),
-                    (aH.debugObj("location", location.toString()) +
-                            aH.debugObj("power", power) +
-                            aH.debugObj("breakblocks", breakblocks) +
-                            aH.debugObj("fire", fire)));
+                    (ArgumentHelper.debugObj("location", location.toString()) +
+                            ArgumentHelper.debugObj("power", power) +
+                            ArgumentHelper.debugObj("breakblocks", breakblocks) +
+                            ArgumentHelper.debugObj("fire", fire)));
         }
 
         location.getWorld().createExplosion

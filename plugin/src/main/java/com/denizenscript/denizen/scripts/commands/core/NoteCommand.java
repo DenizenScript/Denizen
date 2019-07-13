@@ -3,10 +3,7 @@ package com.denizenscript.denizen.scripts.commands.core;
 import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.ObjectFetcher;
-import com.denizenscript.denizencore.objects.aH;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -54,7 +51,7 @@ public class NoteCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (arg.matchesPrefix("as", "i", "id")) {
                 scriptEntry.addObject("id", arg.asElement());
@@ -91,7 +88,7 @@ public class NoteCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), aH.debugObj("object", object) + id.debug() + remove.debug());
+            dB.report(scriptEntry, getName(), ArgumentHelper.debugObj("object", object) + id.debug() + remove.debug());
 
         }
 

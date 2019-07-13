@@ -4,7 +4,7 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dObject;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -82,8 +82,8 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.matchesInteger(determination)) {
-            amount = new Element(aH.getDoubleFrom(determination));
+        if (ArgumentHelper.matchesInteger(determination)) {
+            amount = new Element(ArgumentHelper.getDoubleFrom(determination));
             return true;
         }
         return super.applyDetermination(container, determination);

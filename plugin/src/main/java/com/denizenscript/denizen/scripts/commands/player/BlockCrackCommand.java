@@ -7,8 +7,9 @@ import com.denizenscript.denizen.nms.interfaces.PacketHelper;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -55,14 +56,14 @@ public class BlockCrackCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (arg.matchesPrefix("players")
                     && arg.matchesArgumentList(dPlayer.class)) {
                 scriptEntry.addObject("players", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
             }
             else if (arg.matchesPrefix("progress")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
                 scriptEntry.addObject("progress", arg.asElement());
             }
             else if (arg.matchesArgumentType(dLocation.class)) {
@@ -107,7 +108,7 @@ public class BlockCrackCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), aH.debugList("players", players)
+            dB.report(scriptEntry, getName(), ArgumentHelper.debugList("players", players)
                     + progress.debug() + location.debug() + stack.debug());
 
         }

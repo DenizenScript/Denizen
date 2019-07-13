@@ -3,7 +3,7 @@ package com.denizenscript.denizen.nms.interfaces;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.util.BoundingBox;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -23,7 +23,7 @@ import java.util.*;
 public abstract class EntityHelper {
 
     public void setRiptide(Entity entity, boolean state) {
-        dB.echoError("Riptide control not available on this server version.");
+        Debug.echoError("Riptide control not available on this server version.");
     }
 
     public void setCarriedItem(Enderman entity, ItemStack item) {

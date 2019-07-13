@@ -5,8 +5,9 @@ import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -53,7 +54,7 @@ public class SpawnCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
@@ -72,7 +73,7 @@ public class SpawnCommand extends AbstractCommand {
                 scriptEntry.addObject("target", arg.asType(dEntity.class));
             }
             else if (!scriptEntry.hasObject("spread")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
                 scriptEntry.addObject("spread", arg.asElement());
             }
             else if (!scriptEntry.hasObject("persistent")
@@ -113,11 +114,11 @@ public class SpawnCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), aH.debugObj("entities", entities.toString()) +
+            dB.report(scriptEntry, getName(), ArgumentHelper.debugObj("entities", entities.toString()) +
                     location.debug() +
                     (spread != null ? spread.debug() : "") +
                     (target != null ? target.debug() : "") +
-                    (persistent ? aH.debugObj("persistent", "true") : ""));
+                    (persistent ? ArgumentHelper.debugObj("persistent", "true") : ""));
         }
 
         // Keep a dList of entities that can be called using <entry[name].spawned_entities>

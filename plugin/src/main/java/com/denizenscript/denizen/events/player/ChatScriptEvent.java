@@ -14,6 +14,7 @@ import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -108,7 +109,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
             }
             else {
                 String formatstr = formatscr.getFormatText(null, player);
-                if (com.denizenscript.denizencore.utilities.debugging.dB.verbose) {
+                if (Debug.verbose) {
                     dB.log("Setting format to " + formatstr);
                 }
                 format = new Element(formatstr);

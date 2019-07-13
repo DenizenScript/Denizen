@@ -6,7 +6,8 @@ import com.denizenscript.denizen.nms.abstracts.AnimationHelper;
 import com.denizenscript.denizen.nms.interfaces.EntityAnimation;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -59,7 +60,7 @@ public class AnimateCommand extends AbstractCommand {
 
         AnimationHelper animationHelper = NMSHandler.getInstance().getAnimationHelper();
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
@@ -110,10 +111,10 @@ public class AnimateCommand extends AbstractCommand {
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             dB.report(scriptEntry, getName(), (animation != null ?
-                    aH.debugObj("animation", animation.name()) : effect != null ?
-                    aH.debugObj("effect", effect.name()) :
-                    aH.debugObj("animation", nmsAnimation)) +
-                    aH.debugObj("entities", entities.toString()));
+                    ArgumentHelper.debugObj("animation", animation.name()) : effect != null ?
+                    ArgumentHelper.debugObj("effect", effect.name()) :
+                    ArgumentHelper.debugObj("animation", nmsAnimation)) +
+                    ArgumentHelper.debugObj("entities", entities.toString()));
         }
 
         // Go through all the entities and animate them

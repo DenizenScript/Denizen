@@ -5,8 +5,9 @@ import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.npc.traits.HealthTrait;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -59,7 +60,7 @@ public class HealthCommand extends AbstractCommand {
 
         // Interpret arguments
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("target")
                     && arg.matches("player")) {
@@ -69,7 +70,7 @@ public class HealthCommand extends AbstractCommand {
                 scriptEntry.addObject("target", Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()));
             }
             else if (!scriptEntry.hasObject("qty")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
                 scriptEntry.addObject("qty", arg.asElement());
             }
             else if (!scriptEntry.hasObject("target")
@@ -112,7 +113,7 @@ public class HealthCommand extends AbstractCommand {
 
             dB.report(scriptEntry, getName(), (qty != null ? qty.debug() : "") +
                     (action != null ? action.debug() : "") +
-                    aH.debugObj("target", targets.toString()));
+                    ArgumentHelper.debugObj("target", targets.toString()));
 
         }
 

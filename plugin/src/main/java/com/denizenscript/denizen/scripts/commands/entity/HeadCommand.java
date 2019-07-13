@@ -6,8 +6,9 @@ import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dMaterial;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -52,7 +53,7 @@ public class HeadCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("material")
                     && arg.matchesArgumentType(dMaterial.class)
@@ -98,7 +99,7 @@ public class HeadCommand extends AbstractCommand {
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             dB.report(scriptEntry, getName(),
-                    aH.debugObj("entities", entities.toString()) +
+                    ArgumentHelper.debugObj("entities", entities.toString()) +
                             (skin != null ? skin.debug() : "") + (material != null ? material.debug() : ""));
         }
 

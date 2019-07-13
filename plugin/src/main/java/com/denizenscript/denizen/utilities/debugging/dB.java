@@ -14,8 +14,9 @@ import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.debugging.Debuggable;
-import com.denizenscript.denizencore.utilities.debugging.dB.DebugElement;
+import com.denizenscript.denizencore.utilities.debugging.Debug.DebugElement;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -194,7 +195,7 @@ public class dB {
             return;
         }
         echo(ChatColor.LIGHT_PURPLE + " " + ChatColor.WHITE + trimMessage(message), caller);
-        if (com.denizenscript.denizencore.utilities.debugging.dB.verbose && caller != null) {
+        if (Debug.verbose && caller != null) {
             echo(ChatColor.GRAY + "(Verbose) Caller = " + caller, caller);
         }
     }
@@ -285,7 +286,7 @@ public class dB {
             fullMessage += ChatColor.GRAY + " ... " + ChatColor.RED + "Enable debug on the script for more information.";
         }
         finalOutputDebugText(fullMessage, source);
-        if (com.denizenscript.denizencore.utilities.debugging.dB.verbose && depthCorrectError == 0) {
+        if (Debug.verbose && depthCorrectError == 0) {
             depthCorrectError++;
             try {
                 throw new RuntimeException("Verbose info for above error");

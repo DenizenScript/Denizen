@@ -5,8 +5,9 @@ import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -61,14 +62,14 @@ public class GlowCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("glowing")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Boolean)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Boolean)) {
                 scriptEntry.addObject("glowing", arg.asElement());
             }
             else {
@@ -95,7 +96,7 @@ public class GlowCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), aH.debugList("entities", entities) + glowing.debug());
+            dB.report(scriptEntry, getName(), ArgumentHelper.debugList("entities", entities) + glowing.debug());
 
         }
 

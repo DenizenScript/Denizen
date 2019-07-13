@@ -9,11 +9,7 @@ import com.denizenscript.denizen.objects.dEllipsoid;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dMaterial;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
-import com.denizenscript.denizencore.objects.dScript;
+import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.Holdable;
@@ -83,7 +79,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Parse arguments
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
 
             if (arg.matchesArgumentType(dCuboid.class)
@@ -107,17 +103,17 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             }
             else if (!scriptEntry.hasObject("radius")
                     && arg.matchesPrefix("radius", "r")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
                 scriptEntry.addObject("radius", new Element(arg.getValue()));
             }
             else if (!scriptEntry.hasObject("height")
                     && arg.matchesPrefix("height", "h")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
                 scriptEntry.addObject("height", new Element(arg.getValue()));
             }
             else if (!scriptEntry.hasObject("depth")
                     && arg.matchesPrefix("depth", "d")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
                 scriptEntry.addObject("depth", new Element(arg.getValue()));
             }
             else if (arg.matches("no_physics")) {
@@ -186,7 +182,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), (locations == null ? location_list.debug() : aH.debugList("locations", locations))
+            dB.report(scriptEntry, getName(), (locations == null ? location_list.debug() : ArgumentHelper.debugList("locations", locations))
                     + materials.debug()
                     + physics.debug()
                     + radiusElement.debug()

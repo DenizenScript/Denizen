@@ -5,7 +5,7 @@ import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dObject;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -51,12 +51,12 @@ public class PlayerLevelsUpScriptEvent extends BukkitScriptEvent implements List
         String[] data = path.eventArgsLower;
         for (int index = 3; index < data.length; index++) {
             if (data[index].equals("from")) {
-                if (aH.getIntegerFrom(data[index + 1]) != old_level) {
+                if (ArgumentHelper.getIntegerFrom(data[index + 1]) != old_level) {
                     return false;
                 }
             }
             if (data[index].equals("to")) {
-                if (aH.getIntegerFrom(data[index + 1]) != new_level) {
+                if (ArgumentHelper.getIntegerFrom(data[index + 1]) != new_level) {
                     return false;
                 }
             }

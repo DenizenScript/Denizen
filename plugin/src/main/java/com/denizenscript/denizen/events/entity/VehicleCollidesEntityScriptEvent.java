@@ -3,8 +3,8 @@ package com.denizenscript.denizen.events.entity;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
 import com.denizenscript.denizencore.objects.dObject;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -85,7 +85,7 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        aH.Argument arg = aH.Argument.valueOf(determination);
+        Argument arg = Argument.valueOf(determination);
         if (arg.matchesPrefix("pickup")) {
             pickup_cancel = !arg.asElement().asBoolean();
             return true;

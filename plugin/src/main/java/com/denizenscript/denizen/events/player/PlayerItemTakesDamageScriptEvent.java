@@ -8,7 +8,7 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dObject;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -80,7 +80,7 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.matchesInteger(determination)) {
+        if (ArgumentHelper.matchesInteger(determination)) {
             damage = new Element(determination);
             return true;
         }

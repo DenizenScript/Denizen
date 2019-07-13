@@ -5,8 +5,9 @@ import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.objects.dMaterial;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Duration;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -41,7 +42,7 @@ public class ItemCooldownCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("materials")
                     && (arg.matchesArgumentType(dMaterial.class)
@@ -79,7 +80,7 @@ public class ItemCooldownCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), aH.debugList("materials", materials) + duration.debug());
+            dB.report(scriptEntry, getName(), ArgumentHelper.debugList("materials", materials) + duration.debug());
 
         }
 

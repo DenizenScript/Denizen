@@ -3,7 +3,8 @@ package com.denizenscript.denizen.scripts.commands.player;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.entity.Player;
@@ -84,9 +85,9 @@ public class ExperienceCommand extends AbstractCommand {
         boolean level = false;
         boolean silent = false;
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
-            if (arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+            if (arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
                 amount = arg.asElement().asInt();
             }
             else if (arg.matches("SET", "GIVE", "TAKE")) {
@@ -121,9 +122,9 @@ public class ExperienceCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, name, aH.debugObj("Type", type.toString())
-                    + aH.debugObj("Quantity", level ? quantity + " levels" : quantity)
-                    + aH.debugObj("Player", Utilities.getEntryPlayer(scriptEntry).getName()));
+            dB.report(scriptEntry, name, ArgumentHelper.debugObj("Type", type.toString())
+                    + ArgumentHelper.debugObj("Quantity", level ? quantity + " levels" : quantity)
+                    + ArgumentHelper.debugObj("Player", Utilities.getEntryPlayer(scriptEntry).getName()));
 
         }
 

@@ -62,7 +62,7 @@ public class DropCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("action")
                     && !arg.matchesPrefix("qty")
@@ -91,11 +91,11 @@ public class DropCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("speed")
                     && arg.matchesPrefix("speed")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
                 scriptEntry.addObject("speed", arg.asElement());
             }
             else if (!scriptEntry.hasObject("qty")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer))
             // Quantity arg
             {
                 scriptEntry.addObject("qty", arg.asElement().setPrefix("qty"));
@@ -151,7 +151,7 @@ public class DropCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
             dB.report(scriptEntry, getName(),
                     action.debug() + location.debug() + qty.debug()
-                            + (items != null ? aH.debugList("items", items) : "")
+                            + (items != null ? ArgumentHelper.debugList("items", items) : "")
                             + (entity != null ? entity.debug() : "")
                             + (speed != null ? speed.debug() : "")
                             + (delay != null ? delay.debug() : ""));

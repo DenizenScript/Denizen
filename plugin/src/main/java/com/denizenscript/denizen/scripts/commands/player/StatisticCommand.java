@@ -6,8 +6,9 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dMaterial;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -45,7 +46,7 @@ public class StatisticCommand extends AbstractCommand {
 
         boolean specified_players = false;
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("action")
                     && arg.matchesEnum(Action.values())) {
@@ -62,7 +63,7 @@ public class StatisticCommand extends AbstractCommand {
                 scriptEntry.addObject("statistic", arg.asElement());
             }
             else if (!scriptEntry.hasObject("amount")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
                 scriptEntry.addObject("amount", arg.asElement());
             }
             else if (arg.matchesPrefix("qualifier", "q")

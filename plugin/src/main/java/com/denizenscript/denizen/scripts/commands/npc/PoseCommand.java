@@ -5,7 +5,8 @@ import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.trait.Poses;
@@ -53,7 +54,7 @@ public class PoseCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Parse Arguments
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (arg.matches("add", "assume", "remove")) {
                 scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));
@@ -110,11 +111,11 @@ public class PoseCommand extends AbstractCommand {
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             dB.report(scriptEntry, getName(),
-                    aH.debugObj("Target", target.toString())
+                    ArgumentHelper.debugObj("Target", target.toString())
                             + (target == TargetType.PLAYER ? Utilities.getEntryPlayer(scriptEntry).debug() : "")
                             + npc.debug()
-                            + aH.debugObj("Action", action.toString())
-                            + aH.debugObj("Id", id)
+                            + ArgumentHelper.debugObj("Action", action.toString())
+                            + ArgumentHelper.debugObj("Id", id)
                             + (pose_loc != null ? pose_loc.debug() : ""));
         }
 

@@ -4,10 +4,7 @@ import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -96,10 +93,10 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
             cancelled = true;
             block.setType(Material.AIR);
         }
-        else if (aH.matchesInteger(determination)) {
-            xp = aH.Argument.valueOf(lower).asElement();
+        else if (ArgumentHelper.matchesInteger(determination)) {
+            xp = Argument.valueOf(lower).asElement();
         }
-        else if (aH.Argument.valueOf(lower).matchesArgumentList(dItem.class)) {
+        else if (Argument.valueOf(lower).matchesArgumentList(dItem.class)) {
             cancelled = true;
             block.setType(Material.AIR);
 

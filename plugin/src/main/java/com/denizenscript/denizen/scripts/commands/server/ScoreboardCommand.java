@@ -5,8 +5,9 @@ import com.denizenscript.denizen.utilities.ScoreboardHelper;
 import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -101,7 +102,7 @@ public class ScoreboardCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Initialize necessary fields
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("action")
                     && arg.matchesEnum(Action.values())) {
@@ -124,7 +125,7 @@ public class ScoreboardCommand extends AbstractCommand {
                 scriptEntry.addObject("criteria", arg.asElement());
             }
             else if (!scriptEntry.hasObject("score")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
                 scriptEntry.addObject("score", arg.asElement());
             }
             else if (!scriptEntry.hasObject("displayslot")
@@ -178,7 +179,7 @@ public class ScoreboardCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
             dB.report(scriptEntry, getName(), action.debug() +
                     id.debug() +
-                    (viewers != null ? aH.debugObj("viewers", viewers.toString()) : "") +
+                    (viewers != null ? ArgumentHelper.debugObj("viewers", viewers.toString()) : "") +
                     (objective != null ? objective.debug() : "") +
                     (act.equals(Action.ADD) && objective != null
                             ? criteria.debug()

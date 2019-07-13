@@ -2,7 +2,7 @@ package com.denizenscript.denizen.nms.impl.packets;
 
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutWindowItems;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_14_R1.ItemStack;
 import net.minecraft.server.v1_14_R1.NonNullList;
 import net.minecraft.server.v1_14_R1.PacketPlayOutWindowItems;
@@ -27,7 +27,7 @@ public class PacketOutWindowItems_v1_14_R1 implements PacketOutWindowItems {
             }
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
     }
 
@@ -46,7 +46,7 @@ public class PacketOutWindowItems_v1_14_R1 implements PacketOutWindowItems {
             CONTENTS.set(internal, nms);
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
     }
 

@@ -6,8 +6,9 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -38,18 +39,18 @@ public class FollowCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Parse Arguments
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
             if (!scriptEntry.hasObject("stop") &&
                     arg.matches("STOP")) {
                 scriptEntry.addObject("stop", new Element(true));
             }
             else if (!scriptEntry.hasObject("lead") &&
-                    arg.matchesPrimitive(aH.PrimitiveType.Double) &&
+                    arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double) &&
                     arg.matchesPrefix("l", "lead")) {
                 scriptEntry.addObject("lead", arg.asElement());
             }
             else if (!scriptEntry.hasObject("max") &&
-                    arg.matchesPrimitive(aH.PrimitiveType.Double) &&
+                    arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double) &&
                     arg.matchesPrefix("max")) {
                 scriptEntry.addObject("max", arg.asElement());
             }
@@ -58,7 +59,7 @@ public class FollowCommand extends AbstractCommand {
                 scriptEntry.addObject("allow_wander", new Element(true));
             }
             else if (!scriptEntry.hasObject("speed") &&
-                    arg.matchesPrimitive(aH.PrimitiveType.Percentage) &&
+                    arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Percentage) &&
                     arg.matchesPrefix("s", "speed")) {
                 scriptEntry.addObject("speed", arg.asElement());
             }
@@ -111,7 +112,7 @@ public class FollowCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
             dB.report(scriptEntry, getName(),
                     (Utilities.getEntryPlayer(scriptEntry) != null ? Utilities.getEntryPlayer(scriptEntry).debug() : "")
-                            + (!stop.asBoolean() ? aH.debugObj("Action", "FOLLOW") : aH.debugObj("Action", "STOP"))
+                            + (!stop.asBoolean() ? ArgumentHelper.debugObj("Action", "FOLLOW") : ArgumentHelper.debugObj("Action", "STOP"))
                             + (lead != null ? lead.debug() : "")
                             + (maxRange != null ? maxRange.debug() : "")
                             + allowWander.debug()

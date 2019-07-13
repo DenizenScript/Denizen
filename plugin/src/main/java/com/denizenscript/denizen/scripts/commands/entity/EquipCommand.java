@@ -7,7 +7,8 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -71,7 +72,7 @@ public class EquipCommand extends AbstractCommand {
         Map<String, dItem> equipment = new HashMap<>();
 
         // Initialize necessary fields
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
@@ -142,8 +143,8 @@ public class EquipCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), aH.debugObj("entities", entities.toString()) +
-                    aH.debugObj("equipment", equipment.toString()));
+            dB.report(scriptEntry, getName(), ArgumentHelper.debugObj("entities", entities.toString()) +
+                    ArgumentHelper.debugObj("equipment", equipment.toString()));
         }
 
         for (dEntity entity : entities) {

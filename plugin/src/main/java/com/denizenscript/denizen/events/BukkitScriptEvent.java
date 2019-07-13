@@ -4,7 +4,7 @@ import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.tags.TagContext;
@@ -58,7 +58,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             REGISTERED_LISTENER_EXECUTOR_FIELD.setAccessible(true);
         }
         catch (NoSuchFieldException ex) {
-            dB.echoError(ex);
+            Debug.echoError(ex);
         }
     }
 
@@ -67,7 +67,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return (EventExecutor) REGISTERED_LISTENER_EXECUTOR_FIELD.get(listener);
         }
         catch (IllegalAccessException ex) {
-            dB.echoError(ex);
+            Debug.echoError(ex);
         }
         return null;
     }
@@ -151,8 +151,8 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                     eventPaths.remove(path);
                 }
                 catch (IllegalArgumentException ex) {
-                    dB.echoError("Invalid 'bukkit_priority' switch for event '" + path.event + "' in script '" + path.container.getName() + "'.");
-                    dB.echoError(ex);
+                    Debug.echoError("Invalid 'bukkit_priority' switch for event '" + path.event + "' in script '" + path.container.getName() + "'.");
+                    Debug.echoError(ex);
                 }
             }
         }
@@ -214,7 +214,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                     return dEllipsoid.getNotableEllipsoidsContaining(location).size() > 0;
                 }
                 else {
-                    dB.echoError("Invalid event 'IN ...' check [" + getName() + "] ('in notable ???'): '" + path.event + "' for " + path.container.getName());
+                    Debug.echoError("Invalid event 'IN ...' check [" + getName() + "] ('in notable ???'): '" + path.event + "' for " + path.container.getName());
                     return false;
                 }
             }
@@ -238,14 +238,14 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return ellipsoid.contains(location);
         }
         else {
-            dB.echoError("Invalid event 'in:<area>' switch [" + getName() + "] ('in:???'): '" + path.event + "' for " + path.container.getName());
+            Debug.echoError("Invalid event 'in:<area>' switch [" + getName() + "] ('in:???'): '" + path.event + "' for " + path.container.getName());
             return false;
         }
     }
 
     public boolean tryLocation(dLocation location, String comparedto) {
         if (comparedto == null || comparedto.length() == 0) {
-            dB.echoError("Null or empty location string to compare");
+            Debug.echoError("Null or empty location string to compare");
             return false;
         }
         if (comparedto.equals("notable")) {
@@ -254,7 +254,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         comparedto = "l@" + comparedto;
         dLocation loc = dLocation.valueOf(comparedto);
         if (loc == null) {
-            dB.echoError("Invalid location in location comparison string: " + comparedto);
+            Debug.echoError("Invalid location in location comparison string: " + comparedto);
             return false;
         }
         return loc.getBlock().equals(location.getBlock());

@@ -5,7 +5,7 @@ import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dScript;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -129,7 +129,7 @@ public class EconomyScriptContainer extends ScriptContainer {
 
         @Override
         public int fractionalDigits() {
-            return aH.getIntegerFrom(backingScript.getString("digits", "2"));
+            return ArgumentHelper.getIntegerFrom(backingScript.getString("digits", "2"));
         }
 
         @Override
@@ -149,7 +149,7 @@ public class EconomyScriptContainer extends ScriptContainer {
 
         @Override
         public double getBalance(OfflinePlayer player) {
-            return aH.getDoubleFrom(autoTag(backingScript.getString("balance"), player));
+            return ArgumentHelper.getDoubleFrom(autoTag(backingScript.getString("balance"), player));
         }
 
         @Override
@@ -168,7 +168,7 @@ public class EconomyScriptContainer extends ScriptContainer {
 
         @Override
         public boolean has(OfflinePlayer player, double amount) {
-            return aH.getBooleanFrom(autoTagAmount(backingScript.getString("has"), player, amount));
+            return ArgumentHelper.getBooleanFrom(autoTagAmount(backingScript.getString("has"), player, amount));
         }
 
         @Override

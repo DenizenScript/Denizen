@@ -18,7 +18,7 @@ import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_14_R1.Entity;
 import net.minecraft.server.v1_14_R1.IInventory;
 import net.minecraft.server.v1_14_R1.INamableTileEntity;
@@ -212,8 +212,8 @@ public class Handler_v1_14_R1 extends NMSHandler {
             }
         }
         catch (Exception e) {
-            if (dB.verbose) {
-                dB.echoError(e);
+            if (Debug.verbose) {
+                Debug.echoError(e);
             }
         }
         return null;
@@ -235,7 +235,7 @@ public class Handler_v1_14_R1 extends NMSHandler {
                 return (String) INVENTORY_TITLE.get(nms);
             }
             catch (IllegalAccessException e) {
-                dB.echoError(e);
+                Debug.echoError(e);
             }
         }
         return "Chest";

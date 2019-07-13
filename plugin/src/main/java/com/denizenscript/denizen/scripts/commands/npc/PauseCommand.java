@@ -5,7 +5,7 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.trait.waypoint.Waypoints;
@@ -99,12 +99,12 @@ public class PauseCommand extends AbstractCommand {
         // TODO: UPDATE COMMAND PARSING
         for (String arg : scriptEntry.getArguments()) {
 
-            if (aH.matchesDuration(arg)) {
-                duration = aH.getIntegerFrom(arg);
+            if (ArgumentHelper.matchesDuration(arg)) {
+                duration = ArgumentHelper.getIntegerFrom(arg);
 
             }
-            else if (aH.matchesArg("WAYPOINTS", arg) || aH.matchesArg("NAVIGATION", arg)
-                    || aH.matchesArg("ACTIVITY", arg) || aH.matchesArg("WAYPOINTS", arg)) {
+            else if (ArgumentHelper.matchesArg("WAYPOINTS", arg) || ArgumentHelper.matchesArg("NAVIGATION", arg)
+                    || ArgumentHelper.matchesArg("ACTIVITY", arg) || ArgumentHelper.matchesArg("WAYPOINTS", arg)) {
                 // Could also maybe do for( ... : PauseType.values()) ... not sure which is faster.
                 pauseType = PauseType.valueOf(arg.toUpperCase());
 

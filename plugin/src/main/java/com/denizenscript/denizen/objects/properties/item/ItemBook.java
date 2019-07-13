@@ -5,7 +5,7 @@ import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizencore.objects.Element;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.objects.dObject;
 import com.denizenscript.denizencore.objects.properties.Property;
@@ -110,7 +110,7 @@ public class ItemBook implements Property {
             // @description
             // Returns the page specified from the book as an element.
             // -->
-            if ((attribute.startsWith("page") || attribute.startsWith("get_page")) && attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1))) {
+            if ((attribute.startsWith("page") || attribute.startsWith("get_page")) && attribute.hasContext(1) && ArgumentHelper.matchesInteger(attribute.getContext(1))) {
                 return new Element(bookInfo.getPage(attribute.getIntContext(1)))
                         .getAttribute(attribute.fulfill(1));
             }
@@ -123,7 +123,7 @@ public class ItemBook implements Property {
             // @description
             // Returns the page specified from the book as an element containing raw JSON.
             // -->
-            if ((attribute.startsWith("raw_page") || attribute.startsWith("get_raw_page")) && attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1))) {
+            if ((attribute.startsWith("raw_page") || attribute.startsWith("get_raw_page")) && attribute.hasContext(1) && ArgumentHelper.matchesInteger(attribute.getContext(1))) {
                 return new Element(ComponentSerializer.toString(bookInfo.spigot().getPage(attribute.getIntContext(1))))
                         .getAttribute(attribute.fulfill(1));
             }

@@ -5,8 +5,9 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -61,7 +62,7 @@ public class PlaySoundCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Iterate through arguments
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("locations")
                     && !scriptEntry.hasObject("entities")
@@ -74,17 +75,17 @@ public class PlaySoundCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("volume")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
                     && arg.matchesPrefix("volume, v")) {
                 scriptEntry.addObject("volume", arg.asElement());
             }
             else if (!scriptEntry.hasObject("pitch")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
                     && arg.matchesPrefix("pitch, p")) {
                 scriptEntry.addObject("pitch", arg.asElement());
             }
             else if (!scriptEntry.hasObject("sound")
-                    && arg.matchesPrimitive(aH.PrimitiveType.String)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.String)) {
                 scriptEntry.addObject("sound", arg.asElement());
             }
             else if (!scriptEntry.hasObject("custom")
@@ -130,8 +131,8 @@ public class PlaySoundCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
 
             dB.report(scriptEntry, getName(),
-                    (locations != null ? aH.debugObj("locations", locations.toString()) : "") +
-                            (players != null ? aH.debugObj("entities", players.toString()) : "") +
+                    (locations != null ? ArgumentHelper.debugObj("locations", locations.toString()) : "") +
+                            (players != null ? ArgumentHelper.debugObj("entities", players.toString()) : "") +
                             sound.debug() +
                             volume.debug() +
                             pitch.debug() +

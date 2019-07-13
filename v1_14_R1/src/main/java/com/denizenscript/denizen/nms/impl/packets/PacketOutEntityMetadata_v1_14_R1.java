@@ -2,7 +2,7 @@ package com.denizenscript.denizen.nms.impl.packets;
 
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutEntityMetadata;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_14_R1.DataWatcher;
 import net.minecraft.server.v1_14_R1.PacketPlayOutEntityMetadata;
 
@@ -23,7 +23,7 @@ public class PacketOutEntityMetadata_v1_14_R1 implements PacketOutEntityMetadata
             metadata = (List<DataWatcher.Item<?>>) METADATA.get(internal);
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
     }
 

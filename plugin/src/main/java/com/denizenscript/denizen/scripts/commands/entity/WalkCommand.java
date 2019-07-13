@@ -4,6 +4,7 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.utilities.depends.Depends;
+import com.denizenscript.denizencore.objects.Argument;
 import com.google.common.base.Function;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dEntity;
@@ -11,7 +12,7 @@ import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -50,7 +51,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
 
         // Interpret arguments
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("lookat")
                     && arg.matchesPrefix("lookat")
@@ -58,7 +59,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("lookat", arg.asType(dLocation.class));
             }
             else if (!scriptEntry.hasObject("speed")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Percentage)
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Percentage)
                     && arg.matchesPrefix("s, speed")) {
                 scriptEntry.addObject("speed", arg.asElement());
             }
@@ -67,7 +68,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("auto_range", new Element(true));
             }
             else if (!scriptEntry.hasObject("radius")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
                     && arg.matchesPrefix("radius")) {
                 scriptEntry.addObject("radius", arg.asElement());
             }
@@ -135,7 +136,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                     + (radius != null ? radius.debug() : "")
                     + (lookat != null ? lookat.debug() : "")
                     + stop.debug()
-                    + (aH.debugObj("entities", entities)));
+                    + (ArgumentHelper.debugObj("entities", entities)));
 
         }
 

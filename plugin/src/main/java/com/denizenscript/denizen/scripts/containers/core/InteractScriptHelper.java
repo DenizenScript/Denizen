@@ -7,7 +7,7 @@ import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.scripts.commands.core.CooldownCommand;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
-import com.denizenscript.denizencore.utilities.debugging.dB.DebugElement;
+import com.denizenscript.denizencore.utilities.debugging.Debug.DebugElement;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;

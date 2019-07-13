@@ -6,7 +6,7 @@ import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dObject;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -79,8 +79,8 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.matchesInteger(determination)) {
-            experience = aH.getIntegerFrom(determination);
+        if (ArgumentHelper.matchesInteger(determination)) {
+            experience = ArgumentHelper.getIntegerFrom(determination);
             return true;
         }
         return super.applyDetermination(container, determination);

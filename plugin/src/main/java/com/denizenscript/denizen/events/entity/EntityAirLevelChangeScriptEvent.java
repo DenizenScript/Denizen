@@ -4,7 +4,7 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dObject;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -76,8 +76,8 @@ public class EntityAirLevelChangeScriptEvent extends BukkitScriptEvent implement
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.matchesInteger(determination)) {
-            air = aH.getIntegerFrom(determination);
+        if (ArgumentHelper.matchesInteger(determination)) {
+            air = ArgumentHelper.getIntegerFrom(determination);
             return true;
         }
         return super.applyDetermination(container, determination);

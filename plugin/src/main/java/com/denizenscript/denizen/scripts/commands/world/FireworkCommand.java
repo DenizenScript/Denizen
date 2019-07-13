@@ -7,8 +7,9 @@ import com.denizenscript.denizen.objects.dColor;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -65,7 +66,7 @@ public class FireworkCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Initialize necessary fields
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class)) {
@@ -80,7 +81,7 @@ public class FireworkCommand extends AbstractCommand {
                 scriptEntry.addObject("type", arg.asElement());
             }
             else if (!scriptEntry.hasObject("power")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
                 scriptEntry.addObject("power", arg.asElement());
             }
             else if (!scriptEntry.hasObject("flicker")
@@ -137,10 +138,10 @@ public class FireworkCommand extends AbstractCommand {
             dB.report(scriptEntry, getName(), location.debug() +
                     type.debug() +
                     power.debug() +
-                    (flicker ? aH.debugObj("flicker", flicker) : "") +
-                    (trail ? aH.debugObj("trail", trail) : "") +
-                    aH.debugObj("primary colors", primary.toString()) +
-                    (fade != null ? aH.debugObj("fade colors", fade.toString()) : ""));
+                    (flicker ? ArgumentHelper.debugObj("flicker", flicker) : "") +
+                    (trail ? ArgumentHelper.debugObj("trail", trail) : "") +
+                    ArgumentHelper.debugObj("primary colors", primary.toString()) +
+                    (fade != null ? ArgumentHelper.debugObj("fade colors", fade.toString()) : ""));
         }
 
         Firework firework = location.getWorld().spawn(location, Firework.class);

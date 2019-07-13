@@ -11,10 +11,7 @@ import com.denizenscript.denizen.nms.abstracts.ModernBlockData;
 import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Duration;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.CitizensAPI;
@@ -66,7 +63,7 @@ public class SwitchCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("locations") &&
                     arg.matchesArgumentList(dLocation.class)) {
@@ -103,8 +100,8 @@ public class SwitchCommand extends AbstractCommand {
         // Switch the Block
         if (scriptEntry.dbCallShouldDebug()) {
             dB.report(scriptEntry, getName(), interactLocations.debug()
-                    + aH.debugObj("duration", duration + "t")
-                    + aH.debugObj("switchstate", switchState.name()));
+                    + ArgumentHelper.debugObj("duration", duration + "t")
+                    + ArgumentHelper.debugObj("switchstate", switchState.name()));
         }
 
         for (final dLocation interactLocation : interactLocations.filter(dLocation.class, scriptEntry)) {

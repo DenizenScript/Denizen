@@ -7,7 +7,7 @@ import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dObject;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -79,7 +79,7 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.matchesInteger(determination)) {
+        if (ArgumentHelper.matchesInteger(determination)) {
             repairCost = new Element(determination);
             return true;
         }

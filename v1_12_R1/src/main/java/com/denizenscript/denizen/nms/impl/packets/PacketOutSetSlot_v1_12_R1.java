@@ -2,7 +2,7 @@ package com.denizenscript.denizen.nms.impl.packets;
 
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutSetSlot;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_12_R1.ItemStack;
 import net.minecraft.server.v1_12_R1.PacketPlayOutSetSlot;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
@@ -22,7 +22,7 @@ public class PacketOutSetSlot_v1_12_R1 implements PacketOutSetSlot {
             itemStack = CraftItemStack.asBukkitCopy(nms);
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
     }
 
@@ -37,7 +37,7 @@ public class PacketOutSetSlot_v1_12_R1 implements PacketOutSetSlot {
             ITEM_STACK.set(internal, CraftItemStack.asNMSCopy(itemStack));
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
     }
 

@@ -5,10 +5,7 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Duration;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
-import com.denizenscript.denizencore.objects.dScript;
+import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.event.Listener;
@@ -47,7 +44,7 @@ public class ZapCommand extends AbstractCommand implements Listener {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             // If the scripter uses the 'script:step' format, handle it.
             if (!scriptEntry.hasObject("script")
@@ -102,7 +99,7 @@ public class ZapCommand extends AbstractCommand implements Listener {
 
             dB.report(scriptEntry, getName(), Utilities.getEntryPlayer(scriptEntry).debug() + script.debug()
                     + (scriptEntry.hasObject("step")
-                    ? scriptEntry.getElement("step").debug() : aH.debugObj("step", "++ (inc)"))
+                    ? scriptEntry.getElement("step").debug() : ArgumentHelper.debugObj("step", "++ (inc)"))
                     + (duration != null ? duration.debug() : ""));
 
         }
@@ -118,8 +115,8 @@ public class ZapCommand extends AbstractCommand implements Listener {
             // ie. if currentStep = 1, new step should = 2
             // If the currentStep is a number, increment it. If not, set it
             // to '1' so it can be incremented next time.
-            if (aH.matchesInteger(currentStep)) {
-                step = String.valueOf(aH.getIntegerFrom(currentStep) + 1);
+            if (ArgumentHelper.matchesInteger(currentStep)) {
+                step = String.valueOf(ArgumentHelper.getIntegerFrom(currentStep) + 1);
             }
             else {
                 step = "1";

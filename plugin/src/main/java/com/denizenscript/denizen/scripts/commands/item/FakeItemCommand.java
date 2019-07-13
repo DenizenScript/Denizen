@@ -9,10 +9,7 @@ import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Duration;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.scheduling.OneTimeSchedulable;
@@ -53,7 +50,7 @@ public class FakeItemCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         /* Match arguments to expected variables */
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("slot")
                     && arg.matchesPrefix("slot")) {
@@ -106,8 +103,8 @@ public class FakeItemCommand extends AbstractCommand {
         final Element player_only = scriptEntry.getElement("player_only");
 
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), aH.debugList("items", items) + elSlot.debug() + duration.debug()
-                    + aH.debugList("players", players) + player_only.debug());
+            dB.report(scriptEntry, getName(), ArgumentHelper.debugList("items", items) + elSlot.debug() + duration.debug()
+                    + ArgumentHelper.debugList("players", players) + player_only.debug());
         }
 
         int slot = SlotHelper.nameToIndex(elSlot.asString());

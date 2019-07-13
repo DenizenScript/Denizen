@@ -4,8 +4,9 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -48,10 +49,10 @@ public class HealCommand extends AbstractCommand {
 
         boolean specified_targets = false;
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("amount")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
                 scriptEntry.addObject("amount", arg.asElement());
             }
             else if (!scriptEntry.hasObject("entities")
@@ -103,7 +104,7 @@ public class HealCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), amountelement.debug() + aH.debugObj("entities", entities));
+            dB.report(scriptEntry, getName(), amountelement.debug() + ArgumentHelper.debugObj("entities", entities));
 
         }
         if (amountelement.asDouble() == -1) {

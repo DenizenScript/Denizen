@@ -425,7 +425,7 @@ public class FlagManager {
          */
         public void remove(Object obj, int index) {
             checkExpired();
-            boolean isDouble = aH.matchesDouble((String) obj);
+            boolean isDouble = ArgumentHelper.matchesDouble((String) obj);
 
             value.mustBeList();
             // No index? Match object and remove it.
@@ -443,7 +443,7 @@ public class FlagManager {
 
                     // Evaluate as number
                     try {
-                        if (isDouble && aH.matchesDouble(val) && Double.valueOf(val).equals(Double.valueOf((String) obj))) {
+                        if (isDouble && ArgumentHelper.matchesDouble(val) && Double.valueOf(val).equals(Double.valueOf((String) obj))) {
                             value.values.remove(x);
                             value.size--;
                             break;

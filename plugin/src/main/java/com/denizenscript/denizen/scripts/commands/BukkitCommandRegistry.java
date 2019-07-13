@@ -36,7 +36,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         }
     }
 
-    @Override
     public void registerCoreMembers() {
 
         registerCoreCommands();

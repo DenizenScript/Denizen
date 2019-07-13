@@ -6,7 +6,7 @@ import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.objects.dObject;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
@@ -82,8 +82,8 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.matchesDouble(determination)) {
-            strength = aH.getFloatFrom(determination);
+        if (ArgumentHelper.matchesDouble(determination)) {
+            strength = ArgumentHelper.getFloatFrom(determination);
             return true;
         }
         if (dList.matches(determination)) {

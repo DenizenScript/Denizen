@@ -8,7 +8,7 @@ import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.npc.dNPCRegistry;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dObject;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -176,7 +176,7 @@ public class AssignmentTrait extends Trait {
             entriesPresent = true;
             for (String scriptEntry : assignmentScript.getStringList("INTERACT SCRIPTS")) {
                 String[] split = scriptEntry.split(" ", 2);
-                if (split.length == 2 && aH.matchesInteger(split[0])) {
+                if (split.length == 2 && ArgumentHelper.matchesInteger(split[0])) {
                     paginator.addLine("<a>" + split[0] + "<b> " + split[1]);
                 }
                 else {

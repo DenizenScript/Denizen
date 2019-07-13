@@ -8,8 +8,9 @@ import com.denizenscript.denizen.utilities.midi.NoteBlockReceiver;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -56,7 +57,7 @@ public class MidiCommand extends AbstractCommand implements Holdable {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("cancel")
                     && (arg.matches("cancel") || arg.matches("stop"))) {
@@ -71,12 +72,12 @@ public class MidiCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("volume") &&
-                    arg.matchesPrimitive(aH.PrimitiveType.Double) &&
+                    arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double) &&
                     arg.matchesPrefix("volume", "vol", "v")) {
                 scriptEntry.addObject("volume", arg.asElement());
             }
             else if (!scriptEntry.hasObject("tempo") &&
-                    arg.matchesPrimitive(aH.PrimitiveType.Double)) {
+                    arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
                 scriptEntry.addObject("tempo", arg.asElement());
             }
             else if (!scriptEntry.hasObject("file")) {
@@ -134,12 +135,12 @@ public class MidiCommand extends AbstractCommand implements Holdable {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
-                    (file != null ? aH.debugObj("file", file.getPath()) : "") +
-                    (entities != null ? aH.debugObj("entities", entities.toString()) : "") +
+            dB.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
+                    (file != null ? ArgumentHelper.debugObj("file", file.getPath()) : "") +
+                    (entities != null ? ArgumentHelper.debugObj("entities", entities.toString()) : "") +
                     (location != null ? location.debug() : "") +
-                    aH.debugObj("tempo", tempo) +
-                    aH.debugObj("volume", volume));
+                    ArgumentHelper.debugObj("tempo", tempo) +
+                    ArgumentHelper.debugObj("volume", volume));
         }
 
         // Play the midi

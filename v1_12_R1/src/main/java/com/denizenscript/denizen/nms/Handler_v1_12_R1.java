@@ -21,7 +21,7 @@ import com.denizenscript.denizen.nms.interfaces.packets.PacketHandler;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_12_R1.MinecraftServer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -202,8 +202,8 @@ public class Handler_v1_12_R1 extends NMSHandler {
             }
         }
         catch (Exception e) {
-            if (dB.verbose) {
-                dB.echoError(e);
+            if (Debug.verbose) {
+                Debug.echoError(e);
             }
         }
         return null;

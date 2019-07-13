@@ -4,8 +4,9 @@ import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.properties.entity.EntityAge;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -52,7 +53,7 @@ public class AgeCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
@@ -63,7 +64,7 @@ public class AgeCommand extends AbstractCommand {
                 scriptEntry.addObject("agetype", AgeType.valueOf(arg.getValue().toUpperCase()));
             }
             else if (!scriptEntry.hasObject("age")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
                 scriptEntry.addObject("age", arg.asElement());
             }
             else if (!scriptEntry.hasObject("lock")
@@ -97,10 +98,10 @@ public class AgeCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), (lock ? aH.debugObj("lock", lock) : "") +
-                    (ageType != null ? aH.debugObj("agetype", ageType)
-                            : aH.debugObj("age", age)) +
-                    aH.debugObj("entities", entities.toString()));
+            dB.report(scriptEntry, getName(), (lock ? ArgumentHelper.debugObj("lock", lock) : "") +
+                    (ageType != null ? ArgumentHelper.debugObj("agetype", ageType)
+                            : ArgumentHelper.debugObj("age", age)) +
+                    ArgumentHelper.debugObj("entities", entities.toString()));
         }
 
         // Go through all the entities and set their ages

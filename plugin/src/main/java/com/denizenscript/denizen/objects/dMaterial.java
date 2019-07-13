@@ -15,6 +15,7 @@ import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -101,7 +102,7 @@ public class dMaterial implements dObject, Adjustable {
         }
         int data = 0;
         if (index >= 0) {
-            data = aH.getIntegerFrom(string.substring(index + 1));
+            data = ArgumentHelper.getIntegerFrom(string.substring(index + 1));
             string = string.substring(0, index);
         }
         Material m = Material.getMaterial(string);
@@ -140,7 +141,7 @@ public class dMaterial implements dObject, Adjustable {
                 return OldMaterialsHelper.getMaterialFrom(mat.material, data);
             }
         }
-        int matid = aH.getIntegerFrom(string);
+        int matid = ArgumentHelper.getIntegerFrom(string);
         if (matid != 0) {
             // It's always an error (except in the 'matches' call) to use a material ID number instead of a name.
             if (context != noDebugContext) {
@@ -162,7 +163,7 @@ public class dMaterial implements dObject, Adjustable {
         }
         int data = 0;
         if (index >= 0) {
-            data = aH.getIntegerFrom(string.substring(index + 1));
+            data = ArgumentHelper.getIntegerFrom(string.substring(index + 1));
             string = string.substring(0, index);
         }
         Material m = Material.getMaterial(string);
@@ -884,7 +885,7 @@ public class dMaterial implements dObject, Adjustable {
         TagRunnable tr = registeredTags.get(attrLow);
         if (tr != null) {
             if (!tr.name.equals(attrLow)) {
-                com.denizenscript.denizencore.utilities.debugging.dB.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
+                Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
                         "Using deprecated form of tag '" + tr.name + "': '" + attrLow + "'.");
             }
             return tr.run(attribute, this);

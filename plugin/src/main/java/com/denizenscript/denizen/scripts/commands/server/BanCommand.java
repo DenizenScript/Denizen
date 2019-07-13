@@ -3,10 +3,7 @@ package com.denizenscript.denizen.scripts.commands.server;
 import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Duration;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.BanList;
@@ -86,7 +83,7 @@ public class BanCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("action") && (arg.matchesPrefix("action")
                     || arg.matchesEnum(Actions.values()))) {
@@ -146,7 +143,7 @@ public class BanCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
             dB.report(scriptEntry, getName(),
                     action.debug() +
-                            (targets != null ? aH.debugObj("targets", targets) : "") +
+                            (targets != null ? ArgumentHelper.debugObj("targets", targets) : "") +
                             (addresses != null ? addresses.debug() : "") +
                             reason.debug() +
                             (duration != null ? duration.debug() : "") +

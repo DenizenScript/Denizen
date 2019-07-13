@@ -7,8 +7,9 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Duration;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -47,7 +48,7 @@ public class LookCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class)) {
@@ -90,7 +91,7 @@ public class LookCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
 
             dB.report(scriptEntry, getName(), loc.debug() +
-                    aH.debugObj("entities", entities.toString()));
+                    ArgumentHelper.debugObj("entities", entities.toString()));
 
         }
 

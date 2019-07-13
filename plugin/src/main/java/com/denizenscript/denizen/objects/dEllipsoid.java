@@ -2,7 +2,7 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizencore.objects.*;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.Note;
 import com.denizenscript.denizencore.tags.Attribute;
@@ -89,9 +89,9 @@ public class dEllipsoid implements dObject, Notable {
         }
 
         dLocation location = new dLocation(world.getWorld(),
-                aH.getDoubleFrom(split.get(0)), aH.getDoubleFrom(split.get(1)), aH.getDoubleFrom(split.get(2)));
-        dLocation size = new dLocation(null, aH.getDoubleFrom(split.get(4)),
-                aH.getDoubleFrom(split.get(5)), aH.getDoubleFrom(split.get(6)));
+                ArgumentHelper.getDoubleFrom(split.get(0)), ArgumentHelper.getDoubleFrom(split.get(1)), ArgumentHelper.getDoubleFrom(split.get(2)));
+        dLocation size = new dLocation(null, ArgumentHelper.getDoubleFrom(split.get(4)),
+                ArgumentHelper.getDoubleFrom(split.get(5)), ArgumentHelper.getDoubleFrom(split.get(6)));
         return new dEllipsoid(location, size);
     }
 
@@ -331,7 +331,7 @@ public class dEllipsoid implements dObject, Notable {
         TagRunnable tr = registeredTags.get(attrLow);
         if (tr != null) {
             if (!tr.name.equals(attrLow)) {
-                dB.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
+                Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
                         "Using deprecated form of tag '" + tr.name + "': '" + attrLow + "'.");
             }
             return tr.run(attribute, this);

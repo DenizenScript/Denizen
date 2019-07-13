@@ -4,7 +4,7 @@ import com.mojang.authlib.GameProfile;
 import com.denizenscript.denizen.nms.Handler_v1_14_R1;
 import com.denizenscript.denizen.nms.impl.network.FakeNetworkManager_v1_14_R1;
 import com.denizenscript.denizen.nms.impl.network.FakePlayerConnection_v1_14_R1;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_14_R1.CraftServer;
@@ -18,7 +18,7 @@ public class EntityFakePlayer_v1_14_R1 extends EntityPlayer {
             Handler_v1_14_R1.ENTITY_BUKKITYENTITY.set(this, new CraftFakePlayer_v1_14_R1((CraftServer) Bukkit.getServer(), this));
         }
         catch (Exception ex) {
-            dB.echoError(ex);
+            Debug.echoError(ex);
         }
         playerinteractmanager.setGameMode(EnumGamemode.SURVIVAL);
         NetworkManager networkManager = new FakeNetworkManager_v1_14_R1(EnumProtocolDirection.CLIENTBOUND);

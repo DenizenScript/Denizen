@@ -676,7 +676,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (attribute.startsWith("chat_history")) {
             int x = 1;
-            if (attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1))) {
+            if (attribute.hasContext(1) && ArgumentHelper.matchesInteger(attribute.getContext(1))) {
                 x = attribute.getIntContext(1);
             }
             // No playerchathistory? Return null.
@@ -884,7 +884,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             // -->
             if (attribute.getAttribute(2).startsWith("within") &&
                     attribute.hasContext(2) &&
-                    aH.matchesInteger(attribute.getContext(2))) {
+                    ArgumentHelper.matchesInteger(attribute.getContext(2))) {
                 attribs = 2;
                 range = attribute.getIntContext(2);
             }

@@ -6,7 +6,7 @@ import com.denizenscript.denizen.nms.impl.ImprovedOfflinePlayer_v1_14_R1;
 import com.denizenscript.denizen.nms.impl.packets.handlers.AbstractListenerPlayIn_v1_14_R1;
 import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -41,7 +41,7 @@ public class PlayerHelper_v1_14_R1 extends PlayerHelper {
             return Math.max(80 - Math.max(FLY_TICKS.getInt(conn), VEHICLE_FLY_TICKS.getInt(conn)), 0);
         }
         catch (IllegalAccessException e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
         return 80;
     }
@@ -59,7 +59,7 @@ public class PlayerHelper_v1_14_R1 extends PlayerHelper {
             VEHICLE_FLY_TICKS.setInt(conn, ticks);
         }
         catch (IllegalAccessException e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
     }
 
@@ -79,7 +79,7 @@ public class PlayerHelper_v1_14_R1 extends PlayerHelper {
             return ATTACK_COOLDOWN_TICKS.getInt(((CraftPlayer) player).getHandle());
         }
         catch (IllegalAccessException e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
         return -1;
     }
@@ -103,7 +103,7 @@ public class PlayerHelper_v1_14_R1 extends PlayerHelper {
             ATTACK_COOLDOWN_TICKS.setInt(((CraftPlayer) player).getHandle(), ticks);
         }
         catch (IllegalAccessException e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
 
     }

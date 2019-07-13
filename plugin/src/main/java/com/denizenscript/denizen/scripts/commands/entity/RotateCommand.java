@@ -6,10 +6,7 @@ import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Duration;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.Holdable;
@@ -60,7 +57,7 @@ public class RotateCommand extends AbstractCommand implements Holdable {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("cancel")
                     && (arg.matches("cancel") || arg.matches("stop"))) {
@@ -86,13 +83,13 @@ public class RotateCommand extends AbstractCommand implements Holdable {
             }
             else if (!scriptEntry.hasObject("yaw")
                     && arg.matchesPrefix("yaw", "y", "rotation", "r")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Float)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Float)) {
 
                 scriptEntry.addObject("yaw", arg.asElement());
             }
             else if (!scriptEntry.hasObject("pitch")
                     && arg.matchesPrefix("pitch", "p", "tilt", "t")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Float)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Float)) {
 
                 scriptEntry.addObject("pitch", arg.asElement());
             }
@@ -136,9 +133,9 @@ public class RotateCommand extends AbstractCommand implements Holdable {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
-                    aH.debugObj("entities", entities.toString()) +
-                    (infinite ? aH.debugObj("duration", "infinite") : duration.debug()) +
+            dB.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
+                    ArgumentHelper.debugObj("entities", entities.toString()) +
+                    (infinite ? ArgumentHelper.debugObj("duration", "infinite") : duration.debug()) +
                     frequency.debug() +
                     yaw.debug() +
                     pitch.debug());

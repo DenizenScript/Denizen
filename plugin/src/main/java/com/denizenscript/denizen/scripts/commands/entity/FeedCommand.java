@@ -7,8 +7,9 @@ import com.denizenscript.denizen.npc.traits.HungerTrait;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
@@ -43,8 +44,8 @@ public class FeedCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
-            if (arg.matchesPrimitive(aH.PrimitiveType.Integer)
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
+            if (arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)
                     && !scriptEntry.hasObject("amount")) {
                 scriptEntry.addObject("amount", arg.asElement());
             }

@@ -5,7 +5,7 @@ import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dObject;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -129,8 +129,8 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.matchesDouble(determination)) {
-            damage = new Element(aH.getDoubleFrom(determination));
+        if (ArgumentHelper.matchesDouble(determination)) {
+            damage = new Element(ArgumentHelper.getDoubleFrom(determination));
             return true;
         }
         return super.applyDetermination(container, determination);

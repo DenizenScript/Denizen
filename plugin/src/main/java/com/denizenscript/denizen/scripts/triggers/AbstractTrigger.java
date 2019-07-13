@@ -7,22 +7,20 @@ import com.denizenscript.denizen.npc.traits.TriggerTrait;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.events.OldEventManager;
-import com.denizenscript.denizencore.interfaces.RegistrationableInstance;
 import com.denizenscript.denizencore.objects.dObject;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.queues.core.TimedQueue;
-import com.denizenscript.denizencore.utilities.debugging.dB.DebugElement;
+import com.denizenscript.denizencore.utilities.debugging.Debug.DebugElement;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Location;
 
 import java.util.*;
 
-public abstract class AbstractTrigger implements RegistrationableInstance {
+public abstract class AbstractTrigger {
 
     protected String name;
 
-    @Override
     public AbstractTrigger as(String triggerName) {
         this.name = triggerName.toUpperCase();
         // Register command with Registry
@@ -32,7 +30,6 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
     }
 
 
-    @Override
     public String getName() {
         // Return the name of the trigger specified upon registration.
         return name;
@@ -45,7 +42,6 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
      * Can be '@Override'n by a Trigger which requires a method when bukkit sends a
      * onDisable() to Denizen. (ie. Server shuts down or restarts)
      */
-    @Override
     public void onDisable() {
         // Nothing to do here on this level of abstraction.
     }
@@ -57,7 +53,6 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
      * Can be '@Override'n by a Trigger which requires a method when bukkit sends a
      * onEnable() to Denizen. (ie. Server shuts down or restarts)
      */
-    @Override
     public void onEnable() {
         // Nothing to do here on this level of abstraction.
     }
@@ -69,7 +64,6 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
      * Can be '@Override'n by a Trigger which requires a method when being enabled via
      * the Trigger Registry, usually upon startup.
      */
-    @Override
     public AbstractTrigger activate() {
         // Nothing to do here on this level of abstraction.
         return this;

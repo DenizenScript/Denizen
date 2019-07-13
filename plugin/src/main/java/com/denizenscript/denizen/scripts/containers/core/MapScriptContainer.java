@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.utilities.maps.*;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.NaturalOrderComparator;
@@ -76,13 +76,13 @@ public class MapScriptContainer extends ScriptContainer {
 
     public void applyTo(MapView mapView) {
         DenizenMapRenderer renderer = new DenizenMapRenderer(mapView.getRenderers(),
-                aH.getBooleanFrom(getString("AUTO UPDATE", "true")));
+                ArgumentHelper.getBooleanFrom(getString("AUTO UPDATE", "true")));
         boolean debug = true;
         if (contains("ORIGINAL")) {
-            renderer.displayOriginal = aH.getBooleanFrom(getString("ORIGINAL"));
+            renderer.displayOriginal = ArgumentHelper.getBooleanFrom(getString("ORIGINAL"));
         }
         if (contains("DEBUG")) {
-            debug = aH.getBooleanFrom(getString("DEBUG"));
+            debug = ArgumentHelper.getBooleanFrom(getString("DEBUG"));
         }
         if (contains("OBJECTS")) {
             YamlConfiguration objectsSection = getConfigurationSection("OBJECTS");
@@ -102,7 +102,7 @@ public class MapScriptContainer extends ScriptContainer {
                 String x = objectSection.getString("X", "0");
                 String y = objectSection.getString("Y", "0");
                 String visible = objectSection.getString("VISIBLE", "true");
-                boolean worldC = objectSection.contains("WORLD_COORDINATES") && aH.getBooleanFrom(objectSection.getString("WORLD_COORDINATES", "false"));
+                boolean worldC = objectSection.contains("WORLD_COORDINATES") && ArgumentHelper.getBooleanFrom(objectSection.getString("WORLD_COORDINATES", "false"));
                 if (type.equals("IMAGE")) {
                     if (!objectSection.contains("IMAGE")) {
                         dB.echoError("Map script '" + getName() + "'s image '" + objectKey
@@ -110,8 +110,8 @@ public class MapScriptContainer extends ScriptContainer {
                         return;
                     }
                     String image = objectSection.getString("IMAGE");
-                    int width = aH.getIntegerFrom(objectSection.getString("WIDTH", "0"));
-                    int height = aH.getIntegerFrom(objectSection.getString("HEIGHT", "0"));
+                    int width = ArgumentHelper.getIntegerFrom(objectSection.getString("WIDTH", "0"));
+                    int height = ArgumentHelper.getIntegerFrom(objectSection.getString("HEIGHT", "0"));
                     if (CoreUtilities.toLowerCase(image).endsWith(".gif")) {
                         renderer.addObject(new MapAnimatedImage(x, y, visible, debug, image, width, height));
                     }

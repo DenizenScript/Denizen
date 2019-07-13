@@ -6,7 +6,8 @@ import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -53,7 +54,7 @@ public class LeashCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("cancel")
                     && arg.matches("cancel", "stop")) {
@@ -123,9 +124,9 @@ public class LeashCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
-                    aH.debugObj("entities", entities.toString()) +
-                    (holder != null ? aH.debugObj("holder", holder) : aH.debugObj("holder", holderLoc)));
+            dB.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
+                    ArgumentHelper.debugObj("entities", entities.toString()) +
+                    (holder != null ? ArgumentHelper.debugObj("holder", holder) : ArgumentHelper.debugObj("holder", holderLoc)));
         }
 
         // Go through all the entities and leash/unleash them

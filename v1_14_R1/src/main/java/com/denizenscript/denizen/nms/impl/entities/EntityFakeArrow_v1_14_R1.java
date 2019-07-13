@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.nms.impl.entities;
 
 import com.denizenscript.denizen.nms.Handler_v1_14_R1;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_14_R1.EntitySpectralArrow;
 import net.minecraft.server.v1_14_R1.EntityTypes;
 import net.minecraft.server.v1_14_R1.ItemStack;
@@ -20,7 +20,7 @@ public class EntityFakeArrow_v1_14_R1 extends EntitySpectralArrow {
             Handler_v1_14_R1.ENTITY_BUKKITYENTITY.set(this, new CraftFakeArrow_v1_14_R1((CraftServer) Bukkit.getServer(), this));
         }
         catch (Exception ex) {
-            dB.echoError(ex);
+            Debug.echoError(ex);
         }
         setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         world.addEntity(this);

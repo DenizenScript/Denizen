@@ -5,8 +5,9 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Duration;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dScript;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -62,7 +63,7 @@ public class CooldownCommand extends AbstractCommand {
 
         // Parse arguments.. we need a type, duration, and script.
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             // Type may be PLAYER or GLOBAL.. must not have a prefix.
             if (!arg.hasPrefix() && arg.matchesEnum(Type.values())) {
@@ -107,7 +108,7 @@ public class CooldownCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), aH.debugObj("Type", type.name())
+            dB.report(scriptEntry, getName(), ArgumentHelper.debugObj("Type", type.name())
                     + script.debug()
                     + (type.name().equalsIgnoreCase("player") ? Utilities.getEntryPlayer(scriptEntry).debug() : "")
                     + duration.debug());

@@ -2,7 +2,7 @@ package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.*;
-import com.denizenscript.denizencore.objects.aH.Argument;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import org.bukkit.Color;

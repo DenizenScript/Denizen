@@ -10,8 +10,9 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -50,7 +51,7 @@ public class FlyCommand extends AbstractCommand {
 
         // Initialize necessary fields
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("cancel")
                     && arg.matches("cancel")) {
@@ -81,12 +82,12 @@ public class FlyCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("rotationthreshold")
                     && arg.matchesPrefix("rotationthreshold", "rotation", "r")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Float)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Float)) {
 
                 scriptEntry.addObject("rotationThreshold", arg.asElement());
             }
             else if (!scriptEntry.hasObject("speed")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
 
                 scriptEntry.addObject("speed", arg.asElement());
             }
@@ -187,13 +188,13 @@ public class FlyCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
-                    aH.debugObj("origin", origin) +
-                    aH.debugObj("entities", entities.toString()) +
-                    aH.debugObj("speed", speed) +
-                    aH.debugObj("rotation threshold degrees", rotationThreshold) +
-                    (freeflight ? aH.debugObj("controller", controller)
-                            : aH.debugObj("destinations", destinations.toString())));
+            dB.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
+                    ArgumentHelper.debugObj("origin", origin) +
+                    ArgumentHelper.debugObj("entities", entities.toString()) +
+                    ArgumentHelper.debugObj("speed", speed) +
+                    ArgumentHelper.debugObj("rotation threshold degrees", rotationThreshold) +
+                    (freeflight ? ArgumentHelper.debugObj("controller", controller)
+                            : ArgumentHelper.debugObj("destinations", destinations.toString())));
         }
 
         // Mount or dismount all of the entities

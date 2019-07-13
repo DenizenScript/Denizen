@@ -12,7 +12,7 @@ import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -49,10 +49,10 @@ public class BlockHelper_v1_14_R1 implements BlockHelper {
             return (T) f.get(cbs);
         }
         catch (IllegalAccessException e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
         catch (NoSuchFieldException e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
         return null;
     }

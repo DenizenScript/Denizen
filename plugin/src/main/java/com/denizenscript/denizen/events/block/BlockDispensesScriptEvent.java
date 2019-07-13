@@ -5,7 +5,7 @@ import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dMaterial;
 import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dObject;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -78,8 +78,8 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.matchesDouble(determination)) {
-            velocity = new dLocation(velocity.multiply(aH.getDoubleFrom(determination)));
+        if (ArgumentHelper.matchesDouble(determination)) {
+            velocity = new dLocation(velocity.multiply(ArgumentHelper.getDoubleFrom(determination)));
             return true;
         }
         else if (dLocation.matches(determination)) {

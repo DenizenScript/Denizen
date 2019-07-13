@@ -4,7 +4,8 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.npc.traits.SittingTrait;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.npc.NPC;
@@ -37,7 +38,7 @@ public class StandCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry)
             throws InvalidArgumentsException {
         //stand should have no additional arguments
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
             arg.reportUnhandled();
         }
         if (!Utilities.entryHasNPC(scriptEntry)) {
@@ -58,7 +59,7 @@ public class StandCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), aH.debugObj("npc", Utilities.getEntryNPC(scriptEntry)));
+            dB.report(scriptEntry, getName(), ArgumentHelper.debugObj("npc", Utilities.getEntryNPC(scriptEntry)));
 
         }
 

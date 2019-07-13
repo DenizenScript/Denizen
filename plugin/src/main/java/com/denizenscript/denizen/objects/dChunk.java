@@ -8,6 +8,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
@@ -244,8 +245,8 @@ public class dChunk implements dObject, Adjustable {
                     dB.echoError("The tag ch@chunk.add[<#>,<#>] requires two values!");
                     return null;
                 }
-                int x = aH.getIntegerFrom(coords.get(0));
-                int z = aH.getIntegerFrom(coords.get(1));
+                int x = ArgumentHelper.getIntegerFrom(coords.get(0));
+                int z = ArgumentHelper.getIntegerFrom(coords.get(1));
                 dChunk chunk = (dChunk) object;
 
                 return new dChunk(chunk.world, chunk.chunkX + x, chunk.chunkZ + z)
@@ -272,8 +273,8 @@ public class dChunk implements dObject, Adjustable {
                     dB.echoError("The tag ch@chunk.sub[<#>,<#>] requires two values!");
                     return null;
                 }
-                int x = aH.getIntegerFrom(coords.get(0));
-                int z = aH.getIntegerFrom(coords.get(1));
+                int x = ArgumentHelper.getIntegerFrom(coords.get(0));
+                int z = ArgumentHelper.getIntegerFrom(coords.get(1));
                 dChunk chunk = (dChunk) object;
 
                 return new dChunk(chunk.world, chunk.chunkX - x, chunk.chunkZ - z)
@@ -463,7 +464,7 @@ public class dChunk implements dObject, Adjustable {
         registerTag("is_flat", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                int tolerance = attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1)) ?
+                int tolerance = attribute.hasContext(1) && ArgumentHelper.matchesInteger(attribute.getContext(1)) ?
                         Integer.valueOf(attribute.getContext(1)) : 2;
                 int[] heightMap = ((dChunk) object).getHeightMap();
                 int x = heightMap[0];
@@ -553,7 +554,7 @@ public class dChunk implements dObject, Adjustable {
         TagRunnable tr = registeredTags.get(attrLow);
         if (tr != null) {
             if (!tr.name.equals(attrLow)) {
-                com.denizenscript.denizencore.utilities.debugging.dB.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
+                Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
                         "Using deprecated form of tag '" + tr.name + "': '" + attrLow + "'.");
             }
             return tr.run(attribute, this);

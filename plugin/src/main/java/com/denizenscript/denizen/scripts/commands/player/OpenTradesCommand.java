@@ -6,8 +6,9 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.objects.dTrade;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -56,7 +57,7 @@ public class OpenTradesCommand extends AbstractCommand {
 
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("trades")
                     && !scriptEntry.hasObject("entity")
@@ -100,10 +101,10 @@ public class OpenTradesCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
 
             dB.report(scriptEntry, getName(),
-                    (entity != null ? aH.debugObj("entity", entity) : "")
-                            + (trades != null ? aH.debugList("trades", trades) : "")
-                            + (title.isEmpty() ? aH.debugObj("title", title) : "")
-                            + aH.debugList("players", players));
+                    (entity != null ? ArgumentHelper.debugObj("entity", entity) : "")
+                            + (trades != null ? ArgumentHelper.debugList("trades", trades) : "")
+                            + (title.isEmpty() ? ArgumentHelper.debugObj("title", title) : "")
+                            + ArgumentHelper.debugList("players", players));
 
         }
 

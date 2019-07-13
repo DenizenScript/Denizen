@@ -8,8 +8,9 @@ import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizen.objects.dInventory;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -58,7 +59,7 @@ public class TakeCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("type")
                     && arg.matches("money", "coins")) {
@@ -70,7 +71,7 @@ public class TakeCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("qty")
                     && arg.matchesPrefix("q", "qty", "quantity")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
                 scriptEntry.addObject("qty", arg.asElement());
             }
             else if (!scriptEntry.hasObject("items")
@@ -163,12 +164,12 @@ public class TakeCommand extends AbstractCommand {
         }
 
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), aH.debugObj("Type", type.name())
+            dB.report(scriptEntry, getName(), ArgumentHelper.debugObj("Type", type.name())
                             + qty.debug()
                             + (inventory != null ? inventory.debug() : "")
                             + (displayname != null ? displayname.debug() : "")
                             + (scriptitem != null ? scriptitem.debug() : "")
-                            + aH.debugObj("Items", items)
+                            + ArgumentHelper.debugObj("Items", items)
                             + (slot != null ? slot.debug() : "")
                             + (nbtKey != null ? nbtKey.debug() : "")
                             + (titleAuthor != null ? titleAuthor.debug() : ""));

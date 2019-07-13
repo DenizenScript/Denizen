@@ -10,8 +10,9 @@ import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -104,7 +105,7 @@ public class SidebarCommand extends AbstractCommand {
 
         Action action = Action.SET;
 
-        for (aH.Argument arg : aH.interpret(scriptEntry.getOriginalArguments())) {
+        for (Argument arg : ArgumentHelper.interpret(scriptEntry.getOriginalArguments())) {
 
             if (!scriptEntry.hasObject("action")
                     && arg.matchesEnum(Action.values())) {
@@ -229,14 +230,14 @@ public class SidebarCommand extends AbstractCommand {
                 start = new Element(TagManager.tag(elStart.asString(), context));
             }
             debug = (title != null ? title.debug() : "") +
-                    (scores != null ? aH.debugObj("scores", scores) : "") +
-                    (value != null ? aH.debugObj("value", value) : "") +
+                    (scores != null ? ArgumentHelper.debugObj("scores", scores) : "") +
+                    (value != null ? ArgumentHelper.debugObj("value", value) : "") +
                     (increment != null ? increment.debug() : "") +
                     (start != null ? start.debug() : "");
         }
 
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), action.debug() + debug + aH.debugObj("players", players.debug()));
+            dB.report(scriptEntry, getName(), action.debug() + debug + ArgumentHelper.debugObj("players", players.debug()));
         }
 
         switch (Action.valueOf(action.asString())) {

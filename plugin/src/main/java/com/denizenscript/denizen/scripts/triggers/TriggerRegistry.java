@@ -6,15 +6,13 @@ import com.denizenscript.denizen.scripts.triggers.core.ProximityTrigger;
 import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.scripts.triggers.core.ClickTrigger;
-import com.denizenscript.denizencore.interfaces.RegistrationableInstance;
-import com.denizenscript.denizencore.interfaces.dRegistry;
 import net.citizensnpcs.api.npc.NPC;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class TriggerRegistry implements dRegistry {
+public class TriggerRegistry {
 
     ////////
     // Registry
@@ -23,9 +21,8 @@ public class TriggerRegistry implements dRegistry {
     private Map<String, AbstractTrigger> instances = new HashMap<>();
     private Map<Class<? extends AbstractTrigger>, String> classes = new HashMap<>();
 
-    @Override
     public void disableCoreMembers() {
-        for (RegistrationableInstance member : instances.values()) {
+        for (AbstractTrigger member : instances.values()) {
             try {
                 member.onDisable();
             }
@@ -36,8 +33,7 @@ public class TriggerRegistry implements dRegistry {
         }
     }
 
-    @Override
-    public <T extends RegistrationableInstance> T get(Class<T> clazz) {
+    public <T extends AbstractTrigger> T get(Class<T> clazz) {
         if (classes.containsKey(clazz)) {
             return clazz.cast(instances.get(classes.get(clazz)));
         }
@@ -46,7 +42,6 @@ public class TriggerRegistry implements dRegistry {
         }
     }
 
-    @Override
     public AbstractTrigger get(String triggerName) {
         if (instances.containsKey(triggerName.toUpperCase())) {
             return instances.get(triggerName.toUpperCase());
@@ -56,19 +51,16 @@ public class TriggerRegistry implements dRegistry {
         }
     }
 
-    @Override
     public Map<String, AbstractTrigger> list() {
         return instances;
     }
 
-    @Override
-    public boolean register(String triggerName, RegistrationableInstance instance) {
-        this.instances.put(triggerName.toUpperCase(), (AbstractTrigger) instance);
+    public boolean register(String triggerName, AbstractTrigger instance) {
+        this.instances.put(triggerName.toUpperCase(), instance);
         this.classes.put(((AbstractTrigger) instance).getClass(), triggerName.toUpperCase());
         return true;
     }
 
-    @Override
     public void registerCoreMembers() {
         new ClickTrigger().activate().as("Click");
         new ChatTrigger().activate().as("Chat");

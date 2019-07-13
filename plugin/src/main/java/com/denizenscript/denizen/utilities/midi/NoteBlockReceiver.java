@@ -6,7 +6,7 @@ import com.denizenscript.denizen.nms.interfaces.SoundHelper;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 
@@ -99,7 +99,7 @@ public class NoteBlockReceiver implements Receiver, MetaEventListener {
         }
 
         if (channelPatches == null) {
-            dB.echoError("Trying to play notes on closed midi NoteBlockReceiver!");
+            Debug.echoError("Trying to play notes on closed midi NoteBlockReceiver!");
             return;
         }
 

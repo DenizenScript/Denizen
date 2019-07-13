@@ -1,10 +1,10 @@
 package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizencore.objects.Argument;
 import com.google.common.base.Splitter;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.scripts.commands.server.ScoreboardCommand;
-import com.denizenscript.denizencore.objects.aH;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
@@ -108,7 +108,7 @@ public class ScoreboardHelper {
                 o.setDisplayName(obj);
 
                 // Only set display slot if it's valid
-                if (aH.Argument.valueOf(displaySlot).matchesEnum(DisplaySlot.values())) {
+                if (Argument.valueOf(displaySlot).matchesEnum(DisplaySlot.values())) {
                     o.setDisplaySlot(DisplaySlot.valueOf(displaySlot.toUpperCase()));
                 }
 

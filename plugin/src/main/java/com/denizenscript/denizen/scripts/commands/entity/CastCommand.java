@@ -4,10 +4,7 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Duration;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.potion.PotionEffect;
@@ -57,7 +54,7 @@ public class CastCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Iterate through arguments
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("remove")
                     && arg.matches("remove", "cancel")) {
@@ -78,7 +75,7 @@ public class CastCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("amplifier")
                     && arg.matchesPrefix("power", "p", "amplifier", "a")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
                 scriptEntry.addObject("amplifier", arg.asElement());
             }
             else if (!scriptEntry.hasObject("effect")
@@ -129,9 +126,9 @@ public class CastCommand extends AbstractCommand {
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             dB.report(scriptEntry, getName(),
-                    aH.debugObj("Target(s)", entities.toString())
-                            + aH.debugObj("Effect", effect.getName())
-                            + aH.debugObj("Amplifier", amplifier)
+                    ArgumentHelper.debugObj("Target(s)", entities.toString())
+                            + ArgumentHelper.debugObj("Effect", effect.getName())
+                            + ArgumentHelper.debugObj("Amplifier", amplifier)
                             + duration.debug()
                             + ambient.debug()
                             + showParticles.debug());

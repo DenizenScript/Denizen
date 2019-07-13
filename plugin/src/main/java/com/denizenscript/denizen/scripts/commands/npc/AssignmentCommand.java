@@ -4,7 +4,8 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.npc.traits.AssignmentTrait;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dScript;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -48,7 +49,7 @@ public class AssignmentCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Parse Arguments
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (arg.matchesEnum(Action.values())
                     && !scriptEntry.hasObject("action")) {
@@ -92,7 +93,7 @@ public class AssignmentCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), aH.debugObj("action", scriptEntry.getObject("action")) + (script != null ? script.debug() : ""));
+            dB.report(scriptEntry, getName(), ArgumentHelper.debugObj("action", scriptEntry.getObject("action")) + (script != null ? script.debug() : ""));
         }
 
         // Perform desired action

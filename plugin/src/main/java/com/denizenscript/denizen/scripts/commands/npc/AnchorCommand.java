@@ -6,8 +6,8 @@ import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
-import com.denizenscript.denizencore.objects.aH.Argument;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.trait.Anchors;
@@ -57,14 +57,14 @@ public class AnchorCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Parse Arguments
-        for (Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        for (Argument arg : ArgumentHelper.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("action")
                     && arg.matchesEnum(Action.values())) {
                 scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));
             }
             else if (!scriptEntry.hasObject("range")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
                     && arg.matchesPrefix("range", "r")) {
                 scriptEntry.addObject("range", arg.asElement());
             }

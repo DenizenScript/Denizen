@@ -16,6 +16,7 @@ import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -184,16 +185,16 @@ public class DenizenCommandHandler {
             if (!dB.showDebug) {
                 dB.toggle();
             }
-            com.denizenscript.denizencore.utilities.debugging.dB.showEventsTrimming = !com.denizenscript.denizencore.utilities.debugging.dB.showEventsTrimming;
-            Messaging.sendInfo(sender, (com.denizenscript.denizencore.utilities.debugging.dB.showEventsTrimming ? "Denizen dBugger is now logging all " +
+            Debug.showEventsTrimming = !Debug.showEventsTrimming;
+            Messaging.sendInfo(sender, (Debug.showEventsTrimming ? "Denizen dBugger is now logging all " +
                     "world events." : "Denizen dBugger is now hiding world events."));
         }
         if (args.hasFlag('b')) {
             if (!dB.showDebug) {
                 dB.toggle();
             }
-            com.denizenscript.denizencore.utilities.debugging.dB.showScriptBuilder = !com.denizenscript.denizencore.utilities.debugging.dB.showScriptBuilder;
-            Messaging.sendInfo(sender, (com.denizenscript.denizencore.utilities.debugging.dB.showScriptBuilder ? "Denizen dBugger is now logging the " +
+            Debug.showScriptBuilder = !Debug.showScriptBuilder;
+            Messaging.sendInfo(sender, (Debug.showScriptBuilder ? "Denizen dBugger is now logging the " +
                     "ScriptBuilder." : "Denizen dBugger is now hiding ScriptBuilder logging."));
         }
         if (args.hasFlag('r')) {
@@ -209,9 +210,9 @@ public class DenizenCommandHandler {
             if (!dB.showDebug) {
                 dB.toggle();
             }
-            com.denizenscript.denizencore.utilities.debugging.dB.verbose =
-                    !com.denizenscript.denizencore.utilities.debugging.dB.verbose;
-            Messaging.sendInfo(sender, (com.denizenscript.denizencore.utilities.debugging.dB.verbose ? "Denizen dBugger is now verbose." :
+            Debug.verbose =
+                    !Debug.verbose;
+            Messaging.sendInfo(sender, (Debug.verbose ? "Denizen dBugger is now verbose." :
                     "Denizen dBugger verbosity disabled."));
         }
         if (args.hasFlag('x')) {

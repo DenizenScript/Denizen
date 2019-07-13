@@ -5,10 +5,7 @@ import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Duration;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
@@ -45,7 +42,7 @@ public class TitleCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (arg.matchesPrefix("title")) {
                 scriptEntry.addObject("title", arg.asElement());
@@ -100,7 +97,7 @@ public class TitleCommand extends AbstractCommand {
                             fade_in.debug() +
                             stay.debug() +
                             fade_out.debug() +
-                            aH.debugObj("targets", targets));
+                            ArgumentHelper.debugObj("targets", targets));
 
         }
 

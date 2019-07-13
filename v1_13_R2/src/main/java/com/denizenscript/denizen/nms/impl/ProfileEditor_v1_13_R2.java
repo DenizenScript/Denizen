@@ -11,7 +11,7 @@ import com.mojang.authlib.properties.Property;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_13_R2.EntityPlayer;
 import net.minecraft.server.v1_13_R2.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_13_R2.PacketPlayOutNamedEntitySpawn;
@@ -108,7 +108,7 @@ public class ProfileEditor_v1_13_R2 extends ProfileEditor {
             return false;
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
             return true;
         }
     }
@@ -129,7 +129,7 @@ public class ProfileEditor_v1_13_R2 extends ProfileEditor {
                 }
             }
             catch (Exception e) {
-                dB.echoError(e);
+                Debug.echoError(e);
             }
         }
     }

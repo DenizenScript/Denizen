@@ -5,8 +5,9 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
@@ -52,7 +53,7 @@ public class NarrateCommand extends AbstractCommand {
         }
 
         // Iterate through arguments
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
             if (!scriptEntry.hasObject("format")
                     && arg.matchesPrefix("format", "f")) {
                 String formatStr = arg.getValue();
@@ -103,9 +104,9 @@ public class NarrateCommand extends AbstractCommand {
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             dB.report(scriptEntry, getName(),
-                    aH.debugObj("Narrating", text)
-                            + aH.debugList("Targets", targets)
-                            + (format != null ? aH.debugObj("Format", format.getName()) : ""));
+                    ArgumentHelper.debugObj("Narrating", text)
+                            + ArgumentHelper.debugList("Targets", targets)
+                            + (format != null ? ArgumentHelper.debugObj("Format", format.getName()) : ""));
         }
 
         if (targets == null) {

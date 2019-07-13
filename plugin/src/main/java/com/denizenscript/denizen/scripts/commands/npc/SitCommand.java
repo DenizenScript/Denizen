@@ -5,7 +5,8 @@ import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.npc.traits.SittingTrait;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.entity.*;
@@ -35,7 +36,7 @@ public class SitCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
             if (arg.matchesArgumentType(dLocation.class)
                     && !scriptEntry.hasObject("location")) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
@@ -62,7 +63,7 @@ public class SitCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), aH.debugObj("npc", Utilities.getEntryNPC(scriptEntry))
+            dB.report(scriptEntry, getName(), ArgumentHelper.debugObj("npc", Utilities.getEntryNPC(scriptEntry))
                     + (location != null ? location.debug() : ""));
 
         }

@@ -14,7 +14,7 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -52,7 +52,7 @@ public class Utilities {
             return true;
         }
         catch (Exception ex) {
-            dB.echoError(ex);
+            Debug.echoError(ex);
             return false;
         }
     }
@@ -85,8 +85,8 @@ public class Utilities {
             if (lown.endsWith("/")) {
                 lown = lown.substring(0, lown.length() - 1);
             }
-            if (dB.verbose) {
-                dB.log("Checking file : " + lown);
+            if (Debug.verbose) {
+                Debug.log("Checking file : " + lown);
             }
             if (!Settings.allowStrangeYAMLSaves() &&
                     !f.getCanonicalPath().startsWith(new File(".").getCanonicalPath())) {
@@ -95,7 +95,7 @@ public class Utilities {
             return isFileCanonicalStringSafeToWrite(lown) && isFileCanonicalStringSafeToWrite(lown + "/");
         }
         catch (Exception ex) {
-            dB.echoError(ex);
+            Debug.echoError(ex);
             return false;
         }
     }
@@ -461,11 +461,11 @@ public class Utilities {
                     return;
                 }
             }
-            dB.echoError(fileName + " not found in the jar!");
+            Debug.echoError(fileName + " not found in the jar!");
 
         }
         catch (IOException e) {
-            dB.echoError(e);
+            Debug.echoError(e);
 
         }
         finally {
@@ -474,7 +474,7 @@ public class Utilities {
                     jar.close();
                 }
                 catch (IOException e) {
-                    dB.echoError(e);
+                    Debug.echoError(e);
                 }
             }
         }

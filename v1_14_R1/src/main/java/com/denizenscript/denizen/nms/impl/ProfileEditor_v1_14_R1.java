@@ -11,7 +11,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_14_R1.EntityPlayer;
 import net.minecraft.server.v1_14_R1.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_14_R1.PacketPlayOutNamedEntitySpawn;
@@ -108,7 +108,7 @@ public class ProfileEditor_v1_14_R1 extends ProfileEditor {
             return false;
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
             return true;
         }
     }
@@ -129,7 +129,7 @@ public class ProfileEditor_v1_14_R1 extends ProfileEditor {
                 }
             }
             catch (Exception e) {
-                dB.echoError(e);
+                Debug.echoError(e);
             }
         }
     }

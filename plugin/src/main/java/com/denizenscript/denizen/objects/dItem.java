@@ -22,6 +22,7 @@ import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.debugging.Debuggable;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -198,7 +199,7 @@ public class dItem implements dObject, Notable, Adjustable {
             try {
                 String material = m.group(1).toUpperCase();
 
-                if (aH.matchesInteger(material)) {
+                if (ArgumentHelper.matchesInteger(material)) {
                     if (!nope) {
                         dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release. For item input of '" + string + "'.");
                     }
@@ -1006,7 +1007,7 @@ public class dItem implements dObject, Notable, Adjustable {
         TagRunnable tr = registeredTags.get(attrLow);
         if (tr != null) {
             if (!tr.name.equals(attrLow)) {
-                com.denizenscript.denizencore.utilities.debugging.dB.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
+                Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
                         "Using deprecated form of tag '" + tr.name + "': '" + attrLow + "'.");
             }
             return tr.run(attribute, this);

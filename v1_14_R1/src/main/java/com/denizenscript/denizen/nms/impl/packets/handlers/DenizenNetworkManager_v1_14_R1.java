@@ -10,7 +10,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.impl.ProfileEditor_v1_14_R1;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
@@ -113,7 +113,7 @@ public class DenizenNetworkManager_v1_14_R1 extends NetworkManager {
             return reter;
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
             return null;
         }
     }
@@ -189,7 +189,7 @@ public class DenizenNetworkManager_v1_14_R1 extends NetworkManager {
                 }
             }
             catch (Exception e) {
-                dB.echoError(e);
+                Debug.echoError(e);
             }
         }
         else if (packet instanceof PacketPlayOutEntityVelocity) {
@@ -216,7 +216,7 @@ public class DenizenNetworkManager_v1_14_R1 extends NetworkManager {
                 }
             }
             catch (Exception e) {
-                dB.echoError(e);
+                Debug.echoError(e);
             }
         }
         else if (packet instanceof PacketPlayOutEntityTeleport) {
@@ -260,7 +260,7 @@ public class DenizenNetworkManager_v1_14_R1 extends NetworkManager {
                 }
             }
             catch (Exception e) {
-                dB.echoError(e);
+                Debug.echoError(e);
             }
         }
         else if (packet instanceof PacketPlayOutNamedEntitySpawn
@@ -396,7 +396,7 @@ public class DenizenNetworkManager_v1_14_R1 extends NetworkManager {
             managerField = ReflectionHelper.getFinalSetter(PlayerConnection.class, "networkManager");
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
         protocolDirectionField = directionField;
         networkManagerField = managerField;
@@ -408,7 +408,7 @@ public class DenizenNetworkManager_v1_14_R1 extends NetworkManager {
             direction = (EnumProtocolDirection) protocolDirectionField.get(networkManager);
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
         return direction;
     }
@@ -418,7 +418,7 @@ public class DenizenNetworkManager_v1_14_R1 extends NetworkManager {
             networkManagerField.invoke(playerConnection, networkManager);
         }
         catch (Throwable ex) {
-            dB.echoError(ex);
+            Debug.echoError(ex);
         }
     }
 }

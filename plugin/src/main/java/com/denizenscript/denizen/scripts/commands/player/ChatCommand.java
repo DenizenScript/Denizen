@@ -7,8 +7,9 @@ import com.denizenscript.denizen.npc.speech.DenizenSpeechContext;
 import com.denizenscript.denizen.npc.speech.DenizenSpeechController;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -71,7 +72,7 @@ public class ChatCommand extends AbstractCommand {
         boolean specified_targets = false;
         boolean specified_talker = false;
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
             // Default target is the attached Player, if none specified otherwise.
             if (arg.matchesPrefix("target", "targets", "t")) {
                 if (arg.matchesArgumentList(dEntity.class)) {
@@ -92,7 +93,7 @@ public class ChatCommand extends AbstractCommand {
 
             }
             else if (arg.matchesPrefix("range", "r")) {
-                if (arg.matchesPrimitive(aH.PrimitiveType.Double)) {
+                if (arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
                     scriptEntry.addObject("range", arg.asElement());
                 }
             }

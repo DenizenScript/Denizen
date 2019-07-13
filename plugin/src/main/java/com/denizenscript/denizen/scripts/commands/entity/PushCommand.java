@@ -10,11 +10,7 @@ import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Duration;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dScript;
+import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.Holdable;
@@ -57,7 +53,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("origin")
                     && arg.matchesPrefix("origin", "o", "source", "shooter", "s")) {
@@ -85,7 +81,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
             else if (!scriptEntry.hasObject("speed")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
                     && arg.matchesPrefix("speed", "s")) {
 
                 scriptEntry.addObject("speed", arg.asElement());
@@ -192,16 +188,16 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), aH.debugObj("origin", originEntity != null ? originEntity : originLocation) +
-                    aH.debugObj("entities", entities.toString()) +
-                    aH.debugObj("destination", destination) +
-                    aH.debugObj("speed", speed) +
-                    aH.debugObj("max ticks", maxTicks) +
+            dB.report(scriptEntry, getName(), ArgumentHelper.debugObj("origin", originEntity != null ? originEntity : originLocation) +
+                    ArgumentHelper.debugObj("entities", entities.toString()) +
+                    ArgumentHelper.debugObj("destination", destination) +
+                    ArgumentHelper.debugObj("speed", speed) +
+                    ArgumentHelper.debugObj("max ticks", maxTicks) +
                     (script != null ? script.debug() : "") +
                     force_along.debug() +
                     precision.debug() +
-                    (no_rotate ? aH.debugObj("no_rotate", "true") : "") +
-                    (no_damage ? aH.debugObj("no_damage", "true") : "") +
+                    (no_rotate ? ArgumentHelper.debugObj("no_rotate", "true") : "") +
+                    (no_damage ? ArgumentHelper.debugObj("no_damage", "true") : "") +
                     (definitions != null ? definitions.debug() : ""));
         }
 

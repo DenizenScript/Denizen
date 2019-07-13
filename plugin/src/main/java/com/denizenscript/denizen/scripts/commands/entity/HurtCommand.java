@@ -4,8 +4,9 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -63,11 +64,11 @@ public class HurtCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("amount")
-                    && (arg.matchesPrimitive(aH.PrimitiveType.Double)
-                    || arg.matchesPrimitive(aH.PrimitiveType.Integer))) {
+                    && (arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
+                    || arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer))) {
                 scriptEntry.addObject("amount", arg.asElement());
             }
             else if (!scriptEntry.hasObject("source")
@@ -125,7 +126,7 @@ public class HurtCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
 
             dB.report(scriptEntry, getName(), amountElement.debug()
-                    + aH.debugList("entities", entities)
+                    + ArgumentHelper.debugList("entities", entities)
                     + (source_once == null ? "" : source_once.debug())
                     + (cause == null ? "" : cause.debug())
                     + (source == null ? "" : source.debug()));

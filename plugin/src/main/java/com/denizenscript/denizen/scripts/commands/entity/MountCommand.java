@@ -7,7 +7,8 @@ import com.denizenscript.denizen.utilities.entity.Position;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -57,7 +58,7 @@ public class MountCommand extends AbstractCommand {
 
         List<dEntity> entities = null;
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("cancel")
                     && arg.matches("cancel")) {
@@ -114,9 +115,9 @@ public class MountCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
-                    aH.debugObj("location", location) +
-                    aH.debugObj("entities", entities.toString()));
+            dB.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
+                    ArgumentHelper.debugObj("location", location) +
+                    ArgumentHelper.debugObj("entities", entities.toString()));
         }
 
         // Mount or dismount all of the entities

@@ -3,7 +3,7 @@ package com.denizenscript.denizen.events.entity;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dObject;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -78,8 +78,8 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.matchesInteger(determination)) {
-            count = aH.getIntegerFrom(determination);
+        if (ArgumentHelper.matchesInteger(determination)) {
+            count = ArgumentHelper.getIntegerFrom(determination);
             return true;
         }
         return super.applyDetermination(container, determination);

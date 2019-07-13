@@ -2,8 +2,9 @@ package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -54,7 +55,7 @@ public class CreateWorldCommand extends AbstractCommand {
 
         // Interpret arguments
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("generator")
                     && arg.matchesPrefix("generator", "g")) {
@@ -76,7 +77,7 @@ public class CreateWorldCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("seed")
                     && arg.matchesPrefix("seed", "s")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
                 scriptEntry.addObject("seed", arg.asElement());
             }
             else if (!scriptEntry.hasObject("world_name")) {

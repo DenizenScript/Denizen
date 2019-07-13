@@ -3,7 +3,7 @@ package com.denizenscript.denizen.utilities.maps;
 import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.NaturalOrderComparator;
 import org.bukkit.Bukkit;
@@ -76,8 +76,8 @@ public class DenizenMapManager {
                 String xTag = objectsData.getString(objectKey + ".x");
                 String yTag = objectsData.getString(objectKey + ".y");
                 String visibilityTag = objectsData.getString(objectKey + ".visibility");
-                boolean debug = aH.getBooleanFrom(objectsData.getString(objectKey + ".debug", "false"));
-                boolean worldC = aH.getBooleanFrom(objectsData.getString(objectKey + ".world_coordinates", "false"));
+                boolean debug = ArgumentHelper.getBooleanFrom(objectsData.getString(objectKey + ".debug", "false"));
+                boolean worldC = ArgumentHelper.getBooleanFrom(objectsData.getString(objectKey + ".world_coordinates", "false"));
                 MapObject object = null;
                 if (type.equals("CURSOR")) {
                     object = new MapCursor(xTag, yTag, visibilityTag, debug,

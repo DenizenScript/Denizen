@@ -9,8 +9,9 @@ import com.denizenscript.denizen.utilities.maps.MapImage;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dWorld;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dScript;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -59,7 +60,7 @@ public class MapCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("new")
                     && arg.matchesPrefix("new")
@@ -86,12 +87,12 @@ public class MapCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("width")
                     && arg.matchesPrefix("width")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
                 scriptEntry.addObject("width", arg.asElement());
             }
             else if (!scriptEntry.hasObject("height")
                     && arg.matchesPrefix("height")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
                 scriptEntry.addObject("height", arg.asElement());
             }
             else if (!scriptEntry.hasObject("script")
@@ -101,16 +102,16 @@ public class MapCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("x-value")
                     && arg.matchesPrefix("x")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
                 scriptEntry.addObject("x-value", arg.asElement());
             }
             else if (!scriptEntry.hasObject("y-value")
                     && arg.matchesPrefix("y")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
                 scriptEntry.addObject("y-value", arg.asElement());
             }
             else if (!scriptEntry.hasObject("map-id")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
                 scriptEntry.addObject("map-id", arg.asElement());
             }
 

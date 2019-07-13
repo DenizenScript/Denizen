@@ -6,10 +6,7 @@ import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.utilities.entity.Position;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -96,7 +93,7 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.Argument.valueOf(determination).matchesArgumentList(dEntity.class)) {
+        if (Argument.valueOf(determination).matchesArgumentList(dEntity.class)) {
             cancelled = true;
 
             // Get the list of entities

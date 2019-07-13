@@ -6,7 +6,7 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.Duration;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.tags.TagManager;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.DespawnReason;
@@ -94,7 +94,7 @@ public class HealthTrait extends Trait implements Listener {
     }
 
     public void setRespawnLocation(String string) {
-        if (aH.matchesLocation("location:" + string)) {
+        if (ArgumentHelper.matchesLocation("location:" + string)) {
             respawnLocation = string;
         }
     }
@@ -104,7 +104,7 @@ public class HealthTrait extends Trait implements Listener {
     }
 
     public void setRespawnDelay(String string) {
-        if (aH.matchesDuration("duration:" + string)) {
+        if (ArgumentHelper.matchesDuration("duration:" + string)) {
             respawnDelay = string;
         }
     }

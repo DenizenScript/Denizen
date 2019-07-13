@@ -3,7 +3,7 @@ package com.denizenscript.denizen.nms.impl.packets;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutTradeList;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
 import com.denizenscript.denizen.nms.util.TradeOffer;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_14_R1.MerchantRecipe;
 import net.minecraft.server.v1_14_R1.MerchantRecipeList;
 import net.minecraft.server.v1_14_R1.PacketPlayOutOpenWindowMerchant;
@@ -35,7 +35,7 @@ public class PacketOutTradeList_v1_14_R1 implements PacketOutTradeList {
             }
         }
         catch (IllegalAccessException e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
     }
 
@@ -59,7 +59,7 @@ public class PacketOutTradeList_v1_14_R1 implements PacketOutTradeList {
             RECIPE_LIST.set(internal, list);
         }
         catch (IllegalAccessException e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
     }
 

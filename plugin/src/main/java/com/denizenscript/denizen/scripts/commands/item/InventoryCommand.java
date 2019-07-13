@@ -9,10 +9,7 @@ import com.denizenscript.denizen.objects.dInventory;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.aH;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
@@ -116,7 +113,7 @@ public class InventoryCommand extends AbstractCommand {
 
         boolean isAdjust = false;
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             // Check for a dList of actions
             if (!scriptEntry.hasObject("actions")
@@ -205,7 +202,7 @@ public class InventoryCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
             dB.report(scriptEntry, getName(),
-                    aH.debugObj("actions", actions.toString())
+                    ArgumentHelper.debugObj("actions", actions.toString())
                             + (destination.debug())
                             + (origin != null ? origin.debug() : "")
                             + (mechanism != null ? mechanism.debug() : "")

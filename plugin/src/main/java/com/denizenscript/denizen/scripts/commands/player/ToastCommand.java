@@ -9,8 +9,9 @@ import com.denizenscript.denizen.nms.util.Advancement;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -59,7 +60,7 @@ public class ToastCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("targets")
                     && arg.matchesPrefix("target", "targets", "t")
@@ -118,7 +119,7 @@ public class ToastCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
             dB.report(scriptEntry, name, text.debug() + frame.debug() + icon.debug()
-                    + background.debug() + aH.debugList("targets", targets));
+                    + background.debug() + ArgumentHelper.debugList("targets", targets));
         }
 
         NamespacedKey backgroundKey;

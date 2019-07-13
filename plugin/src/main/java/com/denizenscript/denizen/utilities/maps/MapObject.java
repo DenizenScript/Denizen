@@ -2,7 +2,7 @@ package com.denizenscript.denizen.utilities.maps;
 
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.tags.TagManager;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapView;
@@ -35,12 +35,12 @@ public abstract class MapObject {
     public void update(dPlayer player, UUID uuid) {
         currentX.put(uuid, getX(player, uuid));
         currentY.put(uuid, getY(player, uuid));
-        currentVisibility.put(uuid, aH.getBooleanFrom(tag(visibilityTag, player)));
+        currentVisibility.put(uuid, ArgumentHelper.getBooleanFrom(tag(visibilityTag, player)));
     }
 
     public int getX(dPlayer player, UUID uuid) {
         //if (!currentX.containsKey(uuid)) {
-        int x = (int) aH.getDoubleFrom(tag(xTag, player));
+        int x = (int) ArgumentHelper.getDoubleFrom(tag(xTag, player));
         currentX.put(uuid, x);
         //}
         if (worldCoordinates && lastMap != null) {
@@ -53,7 +53,7 @@ public abstract class MapObject {
 
     public int getY(dPlayer player, UUID uuid) {
         //if (!currentY.containsKey(uuid)) {
-        int y = (int) aH.getDoubleFrom(tag(yTag, player));
+        int y = (int) ArgumentHelper.getDoubleFrom(tag(yTag, player));
         currentY.put(uuid, y);
         //}
         if (worldCoordinates && lastMap != null) {

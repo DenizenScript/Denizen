@@ -4,12 +4,13 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.milkbowl.vault.economy.Economy;
 
 import java.util.Arrays;
@@ -60,16 +61,16 @@ public class MoneyCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         if (Depends.economy == null) {
-            dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
+            Debug.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
             return;
         }
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
             if (!scriptEntry.hasObject("action") && arg.matchesEnum(Action.values())) {
                 scriptEntry.addObject("action", arg.asElement());
             }
             else if (!scriptEntry.hasObject("quantity") && arg.matchesPrefix("quantity", "qty", "q")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
                 scriptEntry.addObject("quantity", arg.asElement());
             }
             else if (!scriptEntry.hasObject("players") && arg.matchesPrefix("to", "from", "players", "player") &&
@@ -105,7 +106,7 @@ public class MoneyCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), aH.debugList("Player(s)", players) + action.debug() + quantity.debug());
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugList("Player(s)", players) + action.debug() + quantity.debug());
 
         }
         Economy eco = Depends.economy;

@@ -8,8 +8,9 @@ import com.denizenscript.denizen.nms.util.Advancement;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -72,7 +73,7 @@ public class AdvancementCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("id")
                     && arg.matchesPrefix("id")) {
@@ -124,27 +125,27 @@ public class AdvancementCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("toast")
                     && arg.matchesPrefix("toast", "show")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Boolean)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Boolean)) {
                 scriptEntry.addObject("toast", arg.asElement());
             }
             else if (!scriptEntry.hasObject("announce")
                     && arg.matchesPrefix("announce", "chat")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Boolean)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Boolean)) {
                 scriptEntry.addObject("announce", arg.asElement());
             }
             else if (!scriptEntry.hasObject("hidden")
                     && arg.matchesPrefix("hidden", "hide", "h")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Boolean)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Boolean)) {
                 scriptEntry.addObject("hidden", arg.asElement());
             }
             else if (!scriptEntry.hasObject("x")
                     && arg.matchesPrefix("x")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Float)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Float)) {
                 scriptEntry.addObject("x", arg.asElement());
             }
             else if (!scriptEntry.hasObject("y")
                     && arg.matchesPrefix("y")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Float)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Float)) {
                 scriptEntry.addObject("y", arg.asElement());
             }
             else {

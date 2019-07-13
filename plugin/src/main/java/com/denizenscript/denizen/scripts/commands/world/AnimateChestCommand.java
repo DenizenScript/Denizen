@@ -7,8 +7,9 @@ import com.denizenscript.denizen.nms.interfaces.PacketHelper;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -66,7 +67,7 @@ public class AnimateChestCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
             if (!scriptEntry.hasObject("action")
                     && arg.matchesEnum(ChestAction.values())) {
                 scriptEntry.addObject("action", arg.asElement());
@@ -77,7 +78,7 @@ public class AnimateChestCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("sound")
                     && arg.matchesPrefix("sound")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Boolean)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Boolean)) {
                 scriptEntry.addObject("sound", arg.asElement());
             }
             else if (!scriptEntry.hasObject("players")
@@ -123,10 +124,10 @@ public class AnimateChestCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
             dB.report(scriptEntry, getName(), location.debug()
-                    + aH.debugObj("block type", location.getBlock().getType().name())
+                    + ArgumentHelper.debugObj("block type", location.getBlock().getType().name())
                     + action.debug()
                     + sound.debug()
-                    + aH.debugObj("players", players.toString()));
+                    + ArgumentHelper.debugObj("players", players.toString()));
         }
 
         PacketHelper packetHelper = NMSHandler.getInstance().getPacketHelper();

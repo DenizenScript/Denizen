@@ -9,10 +9,7 @@ import com.denizenscript.denizen.objects.dCuboid;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dMaterial;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.TagRunnable;
-import com.denizenscript.denizencore.objects.aH;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.Holdable;
@@ -113,7 +110,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("type")
                     && arg.matchesEnum(Type.values())) {
@@ -128,7 +125,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                 scriptEntry.addObject("filename", arg.asElement());
             }
             else if (!scriptEntry.hasObject("angle")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
                 scriptEntry.addObject("angle", arg.asElement());
             }
             else if (!scriptEntry.hasObject("location")

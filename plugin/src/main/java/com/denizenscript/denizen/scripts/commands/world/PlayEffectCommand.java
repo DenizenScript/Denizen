@@ -7,8 +7,9 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.ParticleHelper;
 import com.denizenscript.denizen.nms.interfaces.Particle;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -83,7 +84,7 @@ public class PlayEffectCommand extends AbstractCommand {
         ParticleHelper particleHelper = NMSHandler.getInstance().getParticleHelper();
 
         // Iterate through arguments
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentList(dLocation.class)) {
@@ -153,13 +154,13 @@ public class PlayEffectCommand extends AbstractCommand {
                 }
             }
             if (!scriptEntry.hasObject("radius")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
                     && arg.matchesPrefix("visibility", "v", "radius", "r")) {
 
                 scriptEntry.addObject("radius", arg.asElement());
             }
             else if (!scriptEntry.hasObject("data")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
                     && arg.matchesPrefix("data", "d")) {
 
                 scriptEntry.addObject("data", arg.asElement());
@@ -169,13 +170,13 @@ public class PlayEffectCommand extends AbstractCommand {
                 scriptEntry.addObject("special_data", arg.asElement());
             }
             else if (!scriptEntry.hasObject("qty")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)
                     && arg.matchesPrefix("qty", "q", "quantity")) {
 
                 scriptEntry.addObject("qty", arg.asElement());
             }
             else if (!scriptEntry.hasObject("offset")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
                     && arg.matchesPrefix("offset", "o")) {
 
                 double offset = arg.asElement().asDouble();
@@ -243,19 +244,19 @@ public class PlayEffectCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), (effect != null ? aH.debugObj("effect", effect.name()) :
-                    particleEffect != null ? aH.debugObj("special effect", particleEffect.getName()) :
+            dB.report(scriptEntry, getName(), (effect != null ? ArgumentHelper.debugObj("effect", effect.name()) :
+                    particleEffect != null ? ArgumentHelper.debugObj("special effect", particleEffect.getName()) :
                             (iconcrack != null ? iconcrack.debug()
                                     : blockcrack != null ? blockcrack.debug()
                                     : blockdust.debug())) +
-                    aH.debugObj("locations", locations.toString()) +
-                    (targets != null ? aH.debugObj("targets", targets.toString()) : "") +
+                    ArgumentHelper.debugObj("locations", locations.toString()) +
+                    (targets != null ? ArgumentHelper.debugObj("targets", targets.toString()) : "") +
                     radius.debug() +
                     data.debug() +
                     qty.debug() +
                     offset.debug() +
                     (special_data != null ? special_data.debug() : "") +
-                    (should_offset ? aH.debugObj("note", "Location will be offset 1 block-height upward (see documentation)") : ""));
+                    (should_offset ? ArgumentHelper.debugObj("note", "Location will be offset 1 block-height upward (see documentation)") : ""));
         }
 
         for (dLocation location : locations) {
@@ -317,7 +318,7 @@ public class PlayEffectCommand extends AbstractCommand {
                                 dB.echoError(scriptEntry.getResidingQueue(), "DustOptions special_data must have 2 list entries for particle: " + particleEffect.getName());
                             }
                             else {
-                                float size = aH.getFloatFrom(dataList.get(0));
+                                float size = ArgumentHelper.getFloatFrom(dataList.get(0));
                                 dColor color = dColor.valueOf(dataList.get(1));
                                 dataObject = new org.bukkit.Particle.DustOptions(color.getColor(), size);
                             }

@@ -8,8 +8,9 @@ import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizen.objects.dInventory;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -62,11 +63,11 @@ public class GiveCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         /* Match arguments to expected variables */
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("qty")
                     && arg.matchesPrefix("q", "qty", "quantity")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
                 scriptEntry.addObject("qty", arg.asElement());
                 scriptEntry.addObject("set_quantity", new Element(true));
             }
@@ -149,12 +150,12 @@ public class GiveCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
 
             dB.report(scriptEntry, getName(),
-                    aH.debugObj("Type", type.name())
+                    ArgumentHelper.debugObj("Type", type.name())
                             + (inventory != null ? inventory.debug() : "")
-                            + aH.debugObj("Quantity", qty.asDouble())
+                            + ArgumentHelper.debugObj("Quantity", qty.asDouble())
                             + engrave.debug()
                             + unlimit_stack_size.debug()
-                            + (items != null ? aH.debugObj("Items", items) : "")
+                            + (items != null ? ArgumentHelper.debugObj("Items", items) : "")
                             + slot.debug());
 
         }

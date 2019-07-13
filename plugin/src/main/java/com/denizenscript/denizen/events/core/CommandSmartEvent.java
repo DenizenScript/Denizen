@@ -9,7 +9,7 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizencore.events.OldSmartEvent;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.objects.dObject;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -159,7 +159,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
         // Add in cuboids context, with either the cuboids or an empty list
         context.put("cuboids", cuboid_context);
 
-        List<String> args = Arrays.asList(aH.buildArgs(message.split(" ").length > 1 ? message.split(" ", 2)[1] : ""));
+        List<String> args = Arrays.asList(ArgumentHelper.buildArgs(message.split(" ").length > 1 ? message.split(" ", 2)[1] : ""));
 
         // Fill context
         context.put("args", new dList(args));
@@ -198,8 +198,8 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
         events.add(command + " command");
         events.addAll(getAll(command));
 
-        List<String> args = Arrays.asList(aH.buildArgs(message.split(" ").length > 1 ? message.split(" ", 2)[1] : ""));
-        List<String> parsed_args = Arrays.asList(aH.buildArgs(event.getCommand().split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : ""));
+        List<String> args = Arrays.asList(ArgumentHelper.buildArgs(message.split(" ").length > 1 ? message.split(" ", 2)[1] : ""));
+        List<String> parsed_args = Arrays.asList(ArgumentHelper.buildArgs(event.getCommand().split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : ""));
 
         // Fill context
         context.put("args", new dList(args));

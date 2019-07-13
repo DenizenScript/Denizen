@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.utilities.inventory;
 
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import org.bukkit.inventory.EquipmentSlot;
 
 import java.util.HashMap;
@@ -107,8 +107,8 @@ public class SlotHelper {
         if (matched != null) {
             return matched;
         }
-        if (aH.matchesInteger(name)) {
-            return aH.getIntegerFrom(name) - 1;
+        if (ArgumentHelper.matchesInteger(name)) {
+            return ArgumentHelper.getIntegerFrom(name) - 1;
         }
         return -1;
     }

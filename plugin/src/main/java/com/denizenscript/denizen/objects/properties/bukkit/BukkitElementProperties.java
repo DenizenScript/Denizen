@@ -3,7 +3,7 @@ package com.denizenscript.denizen.objects.properties.bukkit;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.Element;
@@ -268,7 +268,7 @@ public class BukkitElementProperties implements Property {
                 && attribute.hasContext(1)) {
             FormatScriptContainer format = ScriptRegistry.getScriptContainer(attribute.getContext(1));
             if (format == null) {
-                dB.echoError("Could not find format script matching '" + attribute.getContext(1) + "'");
+                Debug.echoError("Could not find format script matching '" + attribute.getContext(1) + "'");
                 return null;
             }
             else {

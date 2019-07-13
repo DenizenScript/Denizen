@@ -2,7 +2,7 @@ package com.denizenscript.denizen.nms.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.ChunkHelper;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.World;
 import org.bukkit.Chunk;
@@ -35,7 +35,7 @@ public class ChunkHelper_v1_14_R1 implements ChunkHelper {
             chunkProviderServerThreadFieldSetter.invoke(provider, Thread.currentThread());
         }
         catch (Throwable ex) {
-            dB.echoError(ex);
+            Debug.echoError(ex);
         }
     }
 
@@ -50,7 +50,7 @@ public class ChunkHelper_v1_14_R1 implements ChunkHelper {
             resetServerThread = null;
         }
         catch (Throwable ex) {
-            dB.echoError(ex);
+            Debug.echoError(ex);
         }
     }
 

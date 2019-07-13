@@ -18,7 +18,7 @@ import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.nms.interfaces.FakePlayer;
 import com.denizenscript.denizen.npc.traits.MirrorTrait;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.tags.Attribute;
@@ -211,13 +211,13 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
                     }
                     else {
                         if (context != null && context.debug) {
-                            dB.echoDebug(context.entry, "NPC '" + string + "' is not spawned, errors may follow!");
+                            Debug.echoDebug(context.entry, "NPC '" + string + "' is not spawned, errors may follow!");
                         }
                         return new dEntity(npc);
                     }
                 }
                 else {
-                    dB.echoError("NPC '" + string
+                    Debug.echoError("NPC '" + string
                             + "' does not exist!");
                 }
             }
@@ -230,7 +230,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
                     return new dEntity(returnable);
                 }
                 else if (context == null || context.debug) {
-                    dB.echoError("Invalid Player! '" + m.group(2)
+                    Debug.echoError("Invalid Player! '" + m.group(2)
                             + "' could not be found. Has the player logged off?");
                 }
             }
@@ -303,7 +303,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         }
 
         if (context == null || context.debug) {
-            dB.log("valueOf dEntity returning null: " + string);
+            Debug.log("valueOf dEntity returning null: " + string);
         }
 
         return null;
@@ -379,7 +379,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             }
         }
         else {
-            dB.echoError("Entity referenced is null!");
+            Debug.echoError("Entity referenced is null!");
         }
     }
 
@@ -390,7 +390,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             this.entity_type = DenizenEntityType.getByName(entityType.name());
         }
         else {
-            dB.echoError("Entity_type referenced is null!");
+            Debug.echoError("Entity_type referenced is null!");
         }
     }
 
@@ -408,7 +408,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             this.data1 = data1;
         }
         else {
-            dB.echoError("Entity_type referenced is null!");
+            Debug.echoError("Entity_type referenced is null!");
         }
     }
 
@@ -421,7 +421,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             this.data2 = data2;
         }
         else {
-            dB.echoError("Entity_type referenced is null!");
+            Debug.echoError("Entity_type referenced is null!");
         }
     }
 
@@ -431,7 +431,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             this.entity_type = entityType;
         }
         else {
-            dB.echoError("DenizenEntityType referenced is null!");
+            Debug.echoError("DenizenEntityType referenced is null!");
         }
     }
 
@@ -447,7 +447,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             this.data1 = data1;
         }
         else {
-            dB.echoError("DenizenEntityType referenced is null!");
+            Debug.echoError("DenizenEntityType referenced is null!");
         }
     }
 
@@ -459,7 +459,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             this.data2 = data2;
         }
         else {
-            dB.echoError("DenizenEntityType referenced is null!");
+            Debug.echoError("DenizenEntityType referenced is null!");
         }
     }
 
@@ -477,7 +477,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             }
         }
         else {
-            dB.echoError("NPC referenced is null!");
+            Debug.echoError("NPC referenced is null!");
         }
 
     }
@@ -908,7 +908,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
                     if (entity_type.getName().equals("PLAYER")) {
                         if (Depends.citizens == null) {
-                            dB.echoError("Cannot spawn entity of type PLAYER!");
+                            Debug.echoError("Cannot spawn entity of type PLAYER!");
                             return;
                         }
                         else {
@@ -946,9 +946,9 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
                         byte materialData = 0;
 
                         // Get special data value from data2 if it is a valid integer
-                        if (data2 != null && aH.matchesInteger(data2)) {
+                        if (data2 != null && ArgumentHelper.matchesInteger(data2)) {
 
-                            materialData = (byte) aH.getIntegerFrom(data2);
+                            materialData = (byte) ArgumentHelper.getIntegerFrom(data2);
                         }
 
                         // This is currently the only way to spawn a falling block
@@ -961,8 +961,8 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
                         ent = entity_type.spawnNewEntity(location, mechanisms, entityScript);
                         entity = ent;
                         if (entity == null) {
-                            if (dB.verbose) {
-                                dB.echoError("Failed to spawn entity of type " + entity_type.getName());
+                            if (Debug.verbose) {
+                                Debug.echoError("Failed to spawn entity of type " + entity_type.getName());
                             }
                             return;
                         }
@@ -974,11 +974,11 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
                 }
             }
             else {
-                dB.echoError("Cannot spawn a null dEntity!");
+                Debug.echoError("Cannot spawn a null dEntity!");
             }
 
             if (!isUnique()) {
-                dB.echoError("Error spawning entity - bad entity type, blocked by another plugin, or tried to spawn in an unloaded chunk?");
+                Debug.echoError("Error spawning entity - bad entity type, blocked by another plugin, or tried to spawn in an unloaded chunk?");
                 return;
             }
 
@@ -999,7 +999,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             spawnAt(despawned_entity.location);
         }
         else if (entity == null) {
-            dB.echoError("Cannot respawn a null dEntity!");
+            Debug.echoError("Cannot respawn a null dEntity!");
         }
 
     }
@@ -1036,7 +1036,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
     public void target(LivingEntity target) {
 
         if (!isSpawned() || !(entity instanceof Creature)) {
-            dB.echoError(identify() + " is not a valid creature entity!");
+            Debug.echoError(identify() + " is not a valid creature entity!");
             return;
         }
 
@@ -1314,7 +1314,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             if (npc != null) {
                 return new Element(identify()).getAttribute(attribute);
             }
-            dB.echoError("dEntity has returned null.");
+            Debug.echoError("dEntity has returned null.");
             return null;
         }
 
@@ -1411,7 +1411,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
                 return null;
             }
             if (isPlayer() || isCitizensNPC()) {
-                dB.echoError("Reading flag for PLAYER or NPC as if it were an ENTITY!");
+                Debug.echoError("Reading flag for PLAYER or NPC as if it were an ENTITY!");
                 return null;
             }
             return new Element(FlagManager.entityHasFlag(this, flag_name)).getAttribute(attribute.fulfill(1));
@@ -1432,7 +1432,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
                 return null;
             }
             if (isPlayer() || isCitizensNPC()) {
-                dB.echoError("Reading flag for PLAYER or NPC as if it were an ENTITY!");
+                Debug.echoError("Reading flag for PLAYER or NPC as if it were an ENTITY!");
                 return null;
             }
             if (attribute.getAttribute(2).equalsIgnoreCase("is_expired")
@@ -1473,7 +1473,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
                         }
                     }
                     catch (Exception e) {
-                        dB.echoError(e);
+                        Debug.echoError(e);
                     }
                 }
                 else {
@@ -2520,7 +2520,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             mechanism.fulfill();
         }
         else {
-            dB.echoError("Cannot apply properties to an already-spawned entity!");
+            Debug.echoError("Cannot apply properties to an already-spawned entity!");
         }
     }
 
@@ -2535,10 +2535,10 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
         if (getBukkitEntity() == null) {
             if (isCitizensNPC()) {
-                dB.echoError("Cannot adjust not-spawned NPC " + getDenizenNPC());
+                Debug.echoError("Cannot adjust not-spawned NPC " + getDenizenNPC());
             }
             else {
-                dB.echoError("Cannot adjust entity " + this);
+                Debug.echoError("Cannot adjust entity " + this);
             }
             return;
         }

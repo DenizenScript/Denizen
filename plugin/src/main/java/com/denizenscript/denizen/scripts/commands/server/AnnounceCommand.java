@@ -6,8 +6,9 @@ import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -66,7 +67,7 @@ public class AnnounceCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Too many arguments! Did you forget a 'quote'?");
         }
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("type")
                     && arg.matches("to_ops")) {
@@ -117,10 +118,10 @@ public class AnnounceCommand extends AbstractCommand {
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             dB.report(scriptEntry, getName(),
-                    aH.debugObj("Message", text)
-                            + (format != null ? aH.debugObj("Format", format.getName()) : "")
-                            + aH.debugObj("Type", type.name())
-                            + (flag != null ? aH.debugObj("Flag_Name", flag) : ""));
+                    ArgumentHelper.debugObj("Message", text)
+                            + (format != null ? ArgumentHelper.debugObj("Format", format.getName()) : "")
+                            + ArgumentHelper.debugObj("Type", type.name())
+                            + (flag != null ? ArgumentHelper.debugObj("Flag_Name", flag) : ""));
         }
 
         String message = format != null ? format.getFormattedText(scriptEntry) : text.asString();

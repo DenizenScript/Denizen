@@ -5,8 +5,9 @@ import com.denizenscript.denizen.utilities.debugging.dB;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.trait.LookClose;
@@ -46,15 +47,15 @@ public class LookcloseCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Parse Arguments
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (arg.matches("realistic", "realistically")) {
                 scriptEntry.addObject("realistic", new Element(true));
             }
-            else if (arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+            else if (arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
                 scriptEntry.addObject("range", arg.asElement());
             }
-            else if (arg.matchesPrimitive(aH.PrimitiveType.Boolean)) {
+            else if (arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Boolean)) {
                 scriptEntry.addObject("toggle", arg.asElement());
             }
             else if (arg.matchesArgumentType(dNPC.class)) // TODO: better way of handling this?
@@ -80,9 +81,9 @@ public class LookcloseCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
 
             dB.report(scriptEntry, getName(), Utilities.getEntryNPC(scriptEntry).debug()
-                    + aH.debugObj("realistic", scriptEntry.getObject("realistic"))
-                    + aH.debugObj("range", scriptEntry.getObject("range"))
-                    + aH.debugObj("toggle", scriptEntry.getObject("toggle")));
+                    + ArgumentHelper.debugObj("realistic", scriptEntry.getObject("realistic"))
+                    + ArgumentHelper.debugObj("range", scriptEntry.getObject("range"))
+                    + ArgumentHelper.debugObj("toggle", scriptEntry.getObject("toggle")));
 
         }
 

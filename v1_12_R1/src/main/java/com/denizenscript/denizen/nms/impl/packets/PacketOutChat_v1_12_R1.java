@@ -2,7 +2,7 @@ package com.denizenscript.denizen.nms.impl.packets;
 
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutChat;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -38,7 +38,7 @@ public class PacketOutChat_v1_12_R1 implements PacketOutChat {
             position = (ChatMessageType) POSITION.get(internal);
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
     }
 
@@ -63,7 +63,7 @@ public class PacketOutChat_v1_12_R1 implements PacketOutChat {
             POSITION.set(internal, position);
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
     }
 
@@ -78,7 +78,7 @@ public class PacketOutChat_v1_12_R1 implements PacketOutChat {
             }
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
     }
 
@@ -93,7 +93,7 @@ public class PacketOutChat_v1_12_R1 implements PacketOutChat {
             }
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
     }
 

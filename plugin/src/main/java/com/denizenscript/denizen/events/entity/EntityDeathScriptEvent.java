@@ -6,10 +6,7 @@ import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -141,12 +138,12 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             keep_level = true;
         }
         // Change xp value only
-        else if (aH.matchesInteger(determination)) {
-            xp = aH.Argument.valueOf(lower).asElement().asInt();
+        else if (ArgumentHelper.matchesInteger(determination)) {
+            xp = Argument.valueOf(lower).asElement().asInt();
         }
 
         // Change dropped items if dList detected
-        else if (aH.Argument.valueOf(lower).matchesArgumentList(dItem.class)) {
+        else if (Argument.valueOf(lower).matchesArgumentList(dItem.class)) {
             drops.clear();
             dropItems = new ArrayList<>();
             dList drops_list = dList.valueOf(determination);

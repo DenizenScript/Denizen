@@ -2,7 +2,7 @@ package com.denizenscript.denizen.utilities.maps;
 
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
@@ -101,7 +101,7 @@ public class DenizenMapRenderer extends MapRenderer {
                 }
             }
             catch (Exception e) {
-                dB.echoError(e);
+                Debug.echoError(e);
                 mapView.removeRenderer(this);
             }
         }

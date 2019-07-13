@@ -2,7 +2,7 @@ package com.denizenscript.denizen.nms.impl;
 
 import com.denizenscript.denizen.nms.impl.jnbt.CompoundTag_v1_12_R1;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftInventory;
@@ -126,7 +126,7 @@ public class ImprovedOfflinePlayer_v1_12_R1 extends ImprovedOfflinePlayer {
             }
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
         return false;
     }
@@ -138,7 +138,7 @@ public class ImprovedOfflinePlayer_v1_12_R1 extends ImprovedOfflinePlayer {
                 NBTCompressedStreamTools.a(((CompoundTag_v1_12_R1) this.compound).toNMSTag(), new FileOutputStream(this.file));
             }
             catch (Exception e) {
-                dB.echoError(e);
+                Debug.echoError(e);
             }
         }
     }

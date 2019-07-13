@@ -10,10 +10,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
-import com.denizenscript.denizencore.objects.dList;
-import com.denizenscript.denizencore.objects.dScript;
+import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.Holdable;
@@ -81,7 +78,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("origin")
                     && arg.matchesPrefix("origin", "o", "source", "s")) {
@@ -109,13 +106,13 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                 scriptEntry.addObject("lead", arg.asType(dLocation.class));
             }
             else if (!scriptEntry.hasObject("height")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
                     && arg.matchesPrefix("height", "h")) {
 
                 scriptEntry.addObject("height", arg.asElement());
             }
             else if (!scriptEntry.hasObject("speed")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
                     && arg.matchesPrefix("speed")) {
 
                 scriptEntry.addObject("speed", arg.asElement());
@@ -138,13 +135,13 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
 
             // Don't document this argument; it is for debug purposes only
             else if (!scriptEntry.hasObject("gravity")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
                     && arg.matchesPrefix("gravity", "g")) {
 
                 scriptEntry.addObject("gravity", arg.asElement());
             }
             else if (!scriptEntry.hasObject("spread")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
                     && arg.matchesPrefix("spread")) {
                 scriptEntry.addObject("spread", arg.asElement());
             }
@@ -224,8 +221,8 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), aH.debugObj("origin", originEntity != null ? originEntity : originLocation) +
-                    aH.debugObj("entities", entities.toString()) +
+            dB.report(scriptEntry, getName(), ArgumentHelper.debugObj("origin", originEntity != null ? originEntity : originLocation) +
+                    ArgumentHelper.debugObj("entities", entities.toString()) +
                     destination.debug() +
                     height.debug() +
                     (gravity != null ? gravity.debug() : "") +
@@ -234,7 +231,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                     (shooter != null ? shooter.debug() : "") +
                     (spread != null ? spread.debug() : "") +
                     (lead != null ? lead.debug() : "") +
-                    (no_rotate ? aH.debugObj("no_rotate", "true") : "") +
+                    (no_rotate ? ArgumentHelper.debugObj("no_rotate", "true") : "") +
                     (definitions != null ? definitions.debug() : ""));
         }
 

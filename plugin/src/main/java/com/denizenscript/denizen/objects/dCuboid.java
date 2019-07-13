@@ -14,6 +14,7 @@ import com.denizenscript.denizencore.objects.notable.Note;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
@@ -1034,7 +1035,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                         boolean contained = false;
                         for (LocationPair pair : cub2.pairs) {
                             if (!pair.low.getWorld().getName().equalsIgnoreCase(pair2.low.getWorld().getName())) {
-                                if (com.denizenscript.denizencore.utilities.debugging.dB.verbose) {
+                                if (Debug.verbose) {
                                     dB.log("Worlds don't match!");
                                 }
                                 return new Element("false").getAttribute(attribute.fulfill(1));

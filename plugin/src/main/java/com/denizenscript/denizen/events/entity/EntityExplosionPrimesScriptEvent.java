@@ -2,8 +2,9 @@ package com.denizenscript.denizen.events.entity;
 
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dObject;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -68,13 +69,13 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.matchesDouble(determination)) {
-            radius = aH.getFloatFrom(determination);
+        if (ArgumentHelper.matchesDouble(determination)) {
+            radius = ArgumentHelper.getFloatFrom(determination);
             return true;
         }
-        if (aH.Argument.valueOf(determination)
-                .matchesPrimitive(aH.PrimitiveType.Boolean)) {
-            fire = aH.getBooleanFrom(determination);
+        if (Argument.valueOf(determination)
+                .matchesPrimitive(ArgumentHelper.PrimitiveType.Boolean)) {
+            fire = ArgumentHelper.getBooleanFrom(determination);
             return true;
         }
         return super.applyDetermination(container, determination);

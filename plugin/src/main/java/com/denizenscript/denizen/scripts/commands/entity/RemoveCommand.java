@@ -6,8 +6,9 @@ import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dWorld;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -52,7 +53,7 @@ public class RemoveCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
@@ -97,8 +98,8 @@ public class RemoveCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), aH.debugList("entities", entities) +
-                    (region != null ? aH.debugObj("region", region) : ""));
+            dB.report(scriptEntry, getName(), ArgumentHelper.debugList("entities", entities) +
+                    (region != null ? ArgumentHelper.debugObj("region", region) : ""));
         }
 
         boolean conditionsMet;

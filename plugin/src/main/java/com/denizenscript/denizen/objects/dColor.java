@@ -5,6 +5,7 @@ import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 
@@ -76,9 +77,9 @@ public class dColor implements dObject {
         Matcher m = rgbPattern.matcher(string);
 
         if (m.matches()) {
-            return new dColor(aH.getIntegerFrom(m.group(1)),
-                    aH.getIntegerFrom(m.group(2)),
-                    aH.getIntegerFrom(m.group(3)));
+            return new dColor(ArgumentHelper.getIntegerFrom(m.group(1)),
+                    ArgumentHelper.getIntegerFrom(m.group(2)),
+                    ArgumentHelper.getIntegerFrom(m.group(3)));
         }
 
         Field colorField = null;
@@ -416,7 +417,7 @@ public class dColor implements dObject {
         TagRunnable tr = registeredTags.get(attrLow);
         if (tr != null) {
             if (!tr.name.equals(attrLow)) {
-                com.denizenscript.denizencore.utilities.debugging.dB.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
+                Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
                         "Using deprecated form of tag '" + tr.name + "': '" + attrLow + "'.");
             }
             return tr.run(attribute, this);

@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.nms.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.SoundHelper;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -54,7 +54,7 @@ public class SoundHelper_v1_13_R2 implements SoundHelper {
             }
         }
         catch (Exception ex) {
-            dB.echoError(ex);
+            Debug.echoError(ex);
         }
         if (player == null) {
             location.getWorld().playSound(location, sound, categoryEnum, volume, pitch);
@@ -73,7 +73,7 @@ public class SoundHelper_v1_13_R2 implements SoundHelper {
             }
         }
         catch (Exception ex) {
-            dB.echoError(ex);
+            Debug.echoError(ex);
         }
         if (player == null) {
             location.getWorld().playSound(location, sound, categoryEnum, volume, pitch);

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.nms.util;
 
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -27,7 +27,7 @@ public class ReflectionHelper {
             return (T) field.get(object);
         }
         catch (Exception ex) {
-            dB.echoError(ex);
+            Debug.echoError(ex);
             return null;
         }
     }
@@ -56,7 +56,7 @@ public class ReflectionHelper {
             f.setAccessible(true);
         }
         catch (Exception ex) {
-            dB.echoError(ex);
+            Debug.echoError(ex);
         }
         return f;
     }
@@ -66,7 +66,7 @@ public class ReflectionHelper {
             return LOOKUP.unreflect(getMethod(clazz, method, params));
         }
         catch (Exception ex) {
-            dB.echoError(ex);
+            Debug.echoError(ex);
         }
         return null;
     }
@@ -102,7 +102,7 @@ public class ReflectionHelper {
             }
         }
         catch (Throwable ex) {
-            dB.echoError(ex);
+            Debug.echoError(ex);
             return null;
         }
         if (result == null) {
@@ -118,7 +118,7 @@ public class ReflectionHelper {
                 UNSAFE = getFields(Class.forName("sun.misc.Unsafe")).get("theUnsafe");
             }
             catch (Exception ex) {
-                dB.echoError(ex);
+                Debug.echoError(ex);
             }
             UNSAFE_STATIC_FIELD_OFFSET = getMethodHandle(UNSAFE.getClass(), "staticFieldOffset", Field.class).bindTo(UNSAFE);
             UNSAFE_FIELD_OFFSET = getMethodHandle(UNSAFE.getClass(), "objectFieldOffset", Field.class).bindTo(UNSAFE);

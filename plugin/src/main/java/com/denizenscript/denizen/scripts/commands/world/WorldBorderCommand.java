@@ -6,10 +6,7 @@ import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.objects.dWorld;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Duration;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
-import com.denizenscript.denizencore.objects.dList;
+import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.WorldBorder;
@@ -64,7 +61,7 @@ public class WorldBorderCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("center")
                     && arg.matchesArgumentType(dLocation.class)
@@ -72,22 +69,22 @@ public class WorldBorderCommand extends AbstractCommand {
                 scriptEntry.addObject("center", arg.asType(dLocation.class));
             }
             else if (!scriptEntry.hasObject("damage")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
                     && arg.matchesPrefix("damage")) {
                 scriptEntry.addObject("damage", arg.asElement());
             }
             else if (!scriptEntry.hasObject("damagebuffer")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
                     && arg.matchesPrefix("damagebuffer")) {
                 scriptEntry.addObject("damagebuffer", arg.asElement());
             }
             else if (!scriptEntry.hasObject("size")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
                     && arg.matchesPrefix("size")) {
                 scriptEntry.addObject("size", arg.asElement());
             }
             else if (!scriptEntry.hasObject("current_size")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
                     && arg.matchesPrefix("current_size")) {
                 scriptEntry.addObject("current_size", arg.asElement());
             }
@@ -97,7 +94,7 @@ public class WorldBorderCommand extends AbstractCommand {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
             else if (!scriptEntry.hasObject("warningdistance")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)
+                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)
                     && arg.matchesPrefix("warningdistance")) {
                 scriptEntry.addObject("warningdistance", arg.asElement());
             }
@@ -160,7 +157,7 @@ public class WorldBorderCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
 
             dB.report(scriptEntry, getName(), (world != null ? world.debug() : "")
-                    + (players != null ? aH.debugList("Player(s)", players) : "")
+                    + (players != null ? ArgumentHelper.debugList("Player(s)", players) : "")
                     + (center != null ? center.debug() : "")
                     + (size != null ? size.debug() : "")
                     + (currSize != null ? currSize.debug() : "")

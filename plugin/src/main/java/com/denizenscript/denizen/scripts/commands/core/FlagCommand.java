@@ -10,10 +10,7 @@ import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Duration;
-import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
-import com.denizenscript.denizencore.objects.dObject;
+import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.event.Listener;
@@ -108,7 +105,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
         boolean specified_target = false;
 
-        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
 
             // A duration on a flag will set it to expire after the
             // specified amount of time
@@ -294,8 +291,8 @@ public class FlagCommand extends AbstractCommand implements Listener {
         // Send information to debugger
         if (scriptEntry.dbCallShouldDebug()) {
             dB.report(scriptEntry, getName(),
-                    name.debug() + (index > 0 ? aH.debugObj("Index", String.valueOf(index)) : "")
-                            + aH.debugUniqueObj("Action/Value", action.toString(), (value != null ? value.asString() : "null"))
+                    name.debug() + (index > 0 ? ArgumentHelper.debugObj("Index", String.valueOf(index)) : "")
+                            + ArgumentHelper.debugUniqueObj("Action/Value", action.toString(), (value != null ? value.asString() : "null"))
                             + (duration != null ? duration.debug() : "")
                             + flag_target.debug());
         }

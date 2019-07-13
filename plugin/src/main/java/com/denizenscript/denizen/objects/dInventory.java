@@ -12,8 +12,8 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizencore.objects.aH.Argument;
-import com.denizenscript.denizencore.objects.aH.PrimitiveType;
+import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizencore.objects.ArgumentHelper.PrimitiveType;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.Note;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
@@ -1445,7 +1445,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             // -->
             if ((attribute.getAttribute(2).startsWith("quantity") || attribute.getAttribute(2).startsWith("qty")) &&
                     attribute.hasContext(2) &&
-                    aH.matchesInteger(attribute.getContext(2))) {
+                    ArgumentHelper.matchesInteger(attribute.getContext(2))) {
                 int qty = attribute.getIntContext(2);
                 attribs = 2;
                 items.get(0).setAmount(qty);
@@ -1489,7 +1489,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             // Returns the dInventory with a certain quantity of an item added.
             // -->
             if ((attribute.getAttribute(2).startsWith("quantity") || attribute.getAttribute(2).startsWith("qty")) &&
-                    attribute.hasContext(2) && aH.matchesInteger(attribute.getContext(2))) {
+                    attribute.hasContext(2) && ArgumentHelper.matchesInteger(attribute.getContext(2))) {
                 qty = attribute.getIntContext(2);
                 attribs = 2;
             }
@@ -1568,7 +1568,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             // -->
             if ((attribute.getAttribute(3).startsWith("quantity") || attribute.getAttribute(3).startsWith("qty")) &&
                     attribute.hasContext(3) &&
-                    aH.matchesInteger(attribute.getContext(3))) {
+                    ArgumentHelper.matchesInteger(attribute.getContext(3))) {
                 qty = attribute.getIntContext(3);
                 attribs = 3;
             }
@@ -1651,7 +1651,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             // -->
             if ((attribute.getAttribute(3).startsWith("quantity") || attribute.getAttribute(3).startsWith("qty")) &&
                     attribute.hasContext(3) &&
-                    aH.matchesInteger(attribute.getContext(3))) {
+                    ArgumentHelper.matchesInteger(attribute.getContext(3))) {
                 qty = attribute.getIntContext(3);
                 attribs = 3;
             }
@@ -1728,7 +1728,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             // -->
             if ((attribute.getAttribute(3).startsWith("quantity") || attribute.getAttribute(3).startsWith("qty")) &&
                     attribute.hasContext(3) &&
-                    aH.matchesInteger(attribute.getContext(3))) {
+                    ArgumentHelper.matchesInteger(attribute.getContext(3))) {
                 qty = attribute.getIntContext(3);
                 attribs = 3;
             }
@@ -1766,7 +1766,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             // -->
             if ((attribute.getAttribute(3).startsWith("quantity") || attribute.getAttribute(3).startsWith("qty")) &&
                     attribute.hasContext(3) &&
-                    aH.matchesInteger(attribute.getContext(3))) {
+                    ArgumentHelper.matchesInteger(attribute.getContext(3))) {
                 qty = attribute.getIntContext(3);
                 attribs = 3;
             }
@@ -1806,7 +1806,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             // -->
             if ((attribute.getAttribute(3).startsWith("quantity") || attribute.getAttribute(3).startsWith("qty")) &&
                     attribute.hasContext(3) &&
-                    aH.matchesInteger(attribute.getContext(3))) {
+                    ArgumentHelper.matchesInteger(attribute.getContext(3))) {
                 qty = attribute.getIntContext(3);
                 attribs = 3;
             }
@@ -1846,7 +1846,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             // Returns whether the inventory contains a certain quantity of any of the specified items.
             // -->
             if ((attribute.getAttribute(2).startsWith("quantity") || attribute.getAttribute(2).startsWith("qty"))
-                    && attribute.hasContext(2) && aH.matchesInteger(attribute.getContext(2))) {
+                    && attribute.hasContext(2) && ArgumentHelper.matchesInteger(attribute.getContext(2))) {
                 qty = attribute.getIntContext(2);
                 attribs = 2;
             }
@@ -1882,7 +1882,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             // Returns whether the inventory contains a certain quantity of all of the specified items.
             // -->
             if ((attribute.getAttribute(2).startsWith("quantity") || attribute.getAttribute(2).startsWith("qty"))
-                    && attribute.hasContext(2) && aH.matchesInteger(attribute.getContext(2))) {
+                    && attribute.hasContext(2) && ArgumentHelper.matchesInteger(attribute.getContext(2))) {
                 qty = attribute.getIntContext(2);
                 attribs = 2;
             }
@@ -2123,7 +2123,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         // -->
         if (attribute.startsWith("slot")
                 && attribute.hasContext(1)
-                && aH.matchesInteger(attribute.getContext(1))) {
+                && ArgumentHelper.matchesInteger(attribute.getContext(1))) {
             int slot = new Element(attribute.getContext(1)).asInt() - 1;
             if (slot < 0) {
                 slot = 0;

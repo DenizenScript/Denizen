@@ -94,8 +94,8 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
 
         string = string.toUpperCase().replace("N@", "");
         NPC npc;
-        if (aH.matchesInteger(string)) {
-            int id = aH.getIntegerFrom(string);
+        if (ArgumentHelper.matchesInteger(string)) {
+            int id = ArgumentHelper.getIntegerFrom(string);
 
             if (dNPCRegistry._isRegistered(id)) {
                 return dNPCRegistry.getDenizen(id);
@@ -134,8 +134,8 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         // Otherwise, let's do checks
         string = string.toUpperCase().replace("N@", "");
         NPC npc;
-        if (aH.matchesInteger(string)) {
-            npc = CitizensAPI.getNPCRegistry().getById(aH.getIntegerFrom(string));
+        if (ArgumentHelper.matchesInteger(string)) {
+            npc = CitizensAPI.getNPCRegistry().getById(ArgumentHelper.getIntegerFrom(string));
             if (npc != null) {
                 return true;
             }

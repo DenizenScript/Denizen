@@ -3,7 +3,7 @@ package com.denizenscript.denizen.events.entity;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dObject;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -98,8 +98,8 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.matchesDouble(determination)) {
-            damage = aH.getDoubleFrom(determination);
+        if (ArgumentHelper.matchesDouble(determination)) {
+            damage = ArgumentHelper.getDoubleFrom(determination);
             return true;
         }
         return super.applyDetermination(container, determination);

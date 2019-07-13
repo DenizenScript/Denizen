@@ -8,12 +8,12 @@ import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizencore.events.OldEventManager;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dObject;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
-import com.denizenscript.denizencore.utilities.debugging.dB.DebugElement;
+import com.denizenscript.denizencore.utilities.debugging.Debug.DebugElement;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,10 +50,10 @@ public class ActionHandler {
         }
 
         dB.report(assignment, "Action",
-                aH.debugObj("Type", "On " + actionName)
-                        + aH.debugObj("NPC", npc.toString())
+                ArgumentHelper.debugObj("Type", "On " + actionName)
+                        + ArgumentHelper.debugObj("NPC", npc.toString())
                         + assignment.getAsScriptArg().debug()
-                        + (player != null ? aH.debugObj("Player", player.getName()) : ""));
+                        + (player != null ? ArgumentHelper.debugObj("Player", player.getName()) : ""));
 
         // Fetch script from Actions
         List<ScriptEntry> script = assignment.getEntries(new BukkitScriptEntryData(player, npc), "actions.on " + actionName);

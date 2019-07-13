@@ -3,7 +3,7 @@ package com.denizenscript.denizen.events.world;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dObject;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -63,8 +63,8 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.matchesInteger(determination)) {
-            burntime = aH.getIntegerFrom(determination);
+        if (ArgumentHelper.matchesInteger(determination)) {
+            burntime = ArgumentHelper.getIntegerFrom(determination);
             return true;
         }
         return super.applyDetermination(container, determination);

@@ -12,7 +12,7 @@ import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizencore.DenizenImplementation;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
@@ -23,6 +23,7 @@ import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.debugging.Debuggable;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -96,12 +97,12 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     }
 
     @Override
-    public void debugEntry(Debuggable debuggable, com.denizenscript.denizencore.utilities.debugging.dB.DebugElement debugElement, String s) {
+    public void debugEntry(Debuggable debuggable, Debug.DebugElement debugElement, String s) {
         dB.echoDebug(debuggable, debugElement, s);
     }
 
     @Override
-    public void debugEntry(Debuggable debuggable, com.denizenscript.denizencore.utilities.debugging.dB.DebugElement debugElement) {
+    public void debugEntry(Debuggable debuggable, Debug.DebugElement debugElement) {
         dB.echoDebug(debuggable, debugElement);
     }
 
@@ -154,7 +155,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     public void debugQueueExecute(ScriptEntry entry, String queue, String execute) {
         Consumer<String> altDebug = entry.getResidingQueue().debugOutput;
         entry.getResidingQueue().debugOutput = null;
-        dB.echoDebug(entry, com.denizenscript.denizencore.utilities.debugging.dB.DebugElement.Header,
+        dB.echoDebug(entry, Debug.DebugElement.Header,
                 ChatColor.LIGHT_PURPLE + "Queue '" + queue + ChatColor.LIGHT_PURPLE + "' Executing: " + execute);
         entry.getResidingQueue().debugOutput = altDebug;
     }
@@ -195,7 +196,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     }
 
     @Override
-    public boolean handleCustomArgs(ScriptEntry scriptEntry, aH.Argument arg, boolean if_ignore) {
+    public boolean handleCustomArgs(ScriptEntry scriptEntry, Argument arg, boolean if_ignore) {
         // Fill player/off-line player
         if (arg.matchesPrefix("player") && !if_ignore) {
             dB.echoDebug(scriptEntry, "...replacing the linked player with " + arg.getValue());

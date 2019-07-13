@@ -116,7 +116,7 @@ public class DenizenCommand extends Command {
             }
             raw_args = rawArgsBuilder.substring(0, rawArgsBuilder.length() - 1);
         }
-        List<String> args = Arrays.asList(aH.buildArgs(raw_args));
+        List<String> args = Arrays.asList(ArgumentHelper.buildArgs(raw_args));
         context.put("args", new dList(args));
         context.put("raw_args", new Element(raw_args));
         context.put("alias", new Element(commandLabel));
@@ -170,7 +170,7 @@ public class DenizenCommand extends Command {
             }
             raw_args = rawArgsBuilder.substring(0, rawArgsBuilder.length() - 1);
         }
-        List<String> args = Arrays.asList(aH.buildArgs(raw_args));
+        List<String> args = Arrays.asList(ArgumentHelper.buildArgs(raw_args));
         context.put("args", new dList(args));
         context.put("raw_args", new Element(raw_args));
         context.put("alias", new Element(alias));

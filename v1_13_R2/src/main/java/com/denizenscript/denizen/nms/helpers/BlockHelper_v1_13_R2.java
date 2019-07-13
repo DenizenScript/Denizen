@@ -11,7 +11,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.denizenscript.denizen.nms.impl.blocks.BlockData_v1_13_R2;
 import com.denizenscript.denizen.nms.impl.jnbt.CompoundTag_v1_13_R2;
-import com.denizenscript.denizencore.utilities.debugging.dB;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_13_R2.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -48,10 +48,10 @@ public class BlockHelper_v1_13_R2 implements BlockHelper {
             return (T) f.get(cbs);
         }
         catch (IllegalAccessException e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
         catch (NoSuchFieldException e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
         return null;
     }

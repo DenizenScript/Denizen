@@ -7,7 +7,7 @@ import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dList;
 import com.denizenscript.denizencore.objects.dScript;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
@@ -130,7 +130,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                     dB.echoError("You can only set the size of chest inventories!");
                 }
                 else {
-                    size = aH.getIntegerFrom(TagManager.tag(getString("SIZE"), context));
+                    size = ArgumentHelper.getIntegerFrom(TagManager.tag(getString("SIZE"), context));
 
                     if (size == 0) {
                         dB.echoError("Inventory size can't be 0. Assuming default of inventory type...");

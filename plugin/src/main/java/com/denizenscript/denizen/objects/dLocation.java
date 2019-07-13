@@ -205,7 +205,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                             Double.valueOf(split.get(0)),
                             Double.valueOf(split.get(1)));
                 }
-                if (aH.matchesDouble(split.get(2))) {
+                if (ArgumentHelper.matchesDouble(split.get(2))) {
                     return new dLocation(null,
                             Double.valueOf(split.get(0)),
                             Double.valueOf(split.get(1)),
@@ -1358,8 +1358,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     if (context.contains(",")) {
                         String yaw = context.substring(0, context.indexOf(','));
                         String pitch = context.substring(context.indexOf(',') + 1);
-                        degrees = aH.getIntegerFrom(yaw);
-                        int pitchDegrees = aH.getIntegerFrom(pitch);
+                        degrees = ArgumentHelper.getIntegerFrom(yaw);
+                        int pitchDegrees = ArgumentHelper.getIntegerFrom(pitch);
                         if (dLocation.matches(attribute.getContext(1))) {
                             return new Element(NMSHandler.getInstance().getEntityHelper().isFacingLocation
                                     (this, dLocation.valueOf(attribute.getContext(1)), degrees, pitchDegrees))
@@ -1555,7 +1555,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     && attribute.getAttribute(2).startsWith("within")
                     && attribute.hasContext(2)) {
                 ArrayList<dLocation> found = new ArrayList<>();
-                int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
+                int radius = ArgumentHelper.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
                 List<dMaterial> materials = new ArrayList<>();
                 if (attribute.hasContext(1)) {
                     materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class, attribute.context);
@@ -1624,7 +1624,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     && attribute.getAttribute(2).startsWith("within")
                     && attribute.hasContext(2)) {
                 ArrayList<dLocation> found = new ArrayList<>();
-                double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
+                double radius = ArgumentHelper.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
                 List<dMaterial> materials = new ArrayList<>();
                 if (attribute.hasContext(1)) {
                     materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class, attribute.context);
@@ -1692,7 +1692,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     && attribute.getAttribute(2).startsWith("within")
                     && attribute.hasContext(2)) {
                 ArrayList<dPlayer> found = new ArrayList<>();
-                double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
+                double radius = ArgumentHelper.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
                 attribute.fulfill(2);
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (!player.isDead() && Utilities.checkLocation(this, player.getLocation(), radius)) {
@@ -1720,7 +1720,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     && attribute.getAttribute(2).startsWith("within")
                     && attribute.hasContext(2)) {
                 ArrayList<dNPC> found = new ArrayList<>();
-                double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
+                double radius = ArgumentHelper.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
                 attribute.fulfill(2);
                 for (dNPC npc : DenizenAPI.getSpawnedNPCs()) {
                     if (Utilities.checkLocation(this.getBlock().getLocation(), npc.getLocation(), radius)) {
@@ -1753,7 +1753,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     ent_list = dList.valueOf(attribute.getContext(1));
                 }
                 ArrayList<dEntity> found = new ArrayList<>();
-                double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
+                double radius = ArgumentHelper.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
                 attribute.fulfill(2);
                 for (Entity entity : getWorld().getEntities()) {
                     if (Utilities.checkLocation(this, entity.getLocation(), radius)) {
@@ -1792,7 +1792,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     && attribute.getAttribute(2).startsWith("within")
                     && attribute.hasContext(2)) {
                 ArrayList<dEntity> found = new ArrayList<>();
-                double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
+                double radius = ArgumentHelper.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
                 attribute.fulfill(2);
                 for (Entity entity : getWorld().getEntities()) {
                     if (entity instanceof LivingEntity
@@ -2033,9 +2033,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 && attribute.hasContext(1)) {
             String[] ints = attribute.getContext(1).replace("l@", "").split(",", 4); // TODO: Just dLocation.valueOf?
             if (ints.length >= 3) {
-                if ((aH.matchesDouble(ints[0]) || aH.matchesInteger(ints[0]))
-                        && (aH.matchesDouble(ints[1]) || aH.matchesInteger(ints[1]))
-                        && (aH.matchesDouble(ints[2]) || aH.matchesInteger(ints[2]))) {
+                if ((ArgumentHelper.matchesDouble(ints[0]) || ArgumentHelper.matchesInteger(ints[0]))
+                        && (ArgumentHelper.matchesDouble(ints[1]) || ArgumentHelper.matchesInteger(ints[1]))
+                        && (ArgumentHelper.matchesDouble(ints[2]) || ArgumentHelper.matchesInteger(ints[2]))) {
                     return new dLocation(this.clone().add(Double.valueOf(ints[0]),
                             Double.valueOf(ints[1]),
                             Double.valueOf(ints[2]))).getAttribute(attribute.fulfill(1));
@@ -2057,9 +2057,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 && attribute.hasContext(1)) {
             String[] ints = attribute.getContext(1).replace("l@", "").split(",", 4); // TODO: Just dLocation.valueOf?
             if (ints.length == 3 || ints.length == 4) {
-                if ((aH.matchesDouble(ints[0]) || aH.matchesInteger(ints[0]))
-                        && (aH.matchesDouble(ints[1]) || aH.matchesInteger(ints[1]))
-                        && (aH.matchesDouble(ints[2]) || aH.matchesInteger(ints[2]))) {
+                if ((ArgumentHelper.matchesDouble(ints[0]) || ArgumentHelper.matchesInteger(ints[0]))
+                        && (ArgumentHelper.matchesDouble(ints[1]) || ArgumentHelper.matchesInteger(ints[1]))
+                        && (ArgumentHelper.matchesDouble(ints[2]) || ArgumentHelper.matchesInteger(ints[2]))) {
                     return new dLocation(this.clone().subtract(Double.valueOf(ints[0]),
                             Double.valueOf(ints[1]),
                             Double.valueOf(ints[2]))).getAttribute(attribute.fulfill(1));

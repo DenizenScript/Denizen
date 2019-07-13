@@ -3,7 +3,7 @@ package com.denizenscript.denizen.events.entity;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dObject;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -83,8 +83,8 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.matchesDouble(determination)) {
-            power = aH.getFloatFrom(determination);
+        if (ArgumentHelper.matchesDouble(determination)) {
+            power = ArgumentHelper.getFloatFrom(determination);
             return true;
         }
         return super.applyDetermination(container, determination);

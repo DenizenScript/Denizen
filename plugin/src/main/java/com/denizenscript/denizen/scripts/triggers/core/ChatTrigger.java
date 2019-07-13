@@ -13,7 +13,7 @@ import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.Element;
-import com.denizenscript.denizencore.objects.aH;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dObject;
 import com.denizenscript.denizencore.scripts.commands.queue.DetermineCommand;
 import com.denizenscript.denizencore.tags.TagManager;
@@ -224,13 +224,13 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             return new ChatContext(message, false);
         }
 
-        dB.report(script, name, aH.debugObj("Player", player.getName())
-                + aH.debugObj("NPC", npc.toString())
-                + aH.debugObj("Radius(Max)", npc.getLocation().distance(player.getLocation())
+        dB.report(script, name, ArgumentHelper.debugObj("Player", player.getName())
+                + ArgumentHelper.debugObj("NPC", npc.toString())
+                + ArgumentHelper.debugObj("Radius(Max)", npc.getLocation().distance(player.getLocation())
                 + "(" + npc.getTriggerTrait().getRadius(name) + ")")
-                + aH.debugObj("Trigger text", message)
-                + aH.debugObj("LOS", String.valueOf(player.hasLineOfSight(npc.getEntity())))
-                + aH.debugObj("Facing", String.valueOf(NMSHandler.getInstance().getEntityHelper().isFacingEntity(player, npc.getEntity(), 45))));
+                + ArgumentHelper.debugObj("Trigger text", message)
+                + ArgumentHelper.debugObj("LOS", String.valueOf(player.hasLineOfSight(npc.getEntity())))
+                + ArgumentHelper.debugObj("Facing", String.valueOf(NMSHandler.getInstance().getEntityHelper().isFacingEntity(player, npc.getEntity(), 45))));
 
         // Check if the NPC has Chat Triggers for this step.
         String step = InteractScriptHelper.getCurrentStep(denizenPlayer, script.getName());
