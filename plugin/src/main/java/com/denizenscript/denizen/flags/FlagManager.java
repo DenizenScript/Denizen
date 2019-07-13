@@ -11,6 +11,9 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.core.FlagSmartEvent;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.OldEventManager;
+import com.denizenscript.denizencore.objects.core.DurationTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.configuration.ConfigurationSection;
 

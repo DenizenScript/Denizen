@@ -5,9 +5,10 @@ import com.denizenscript.denizen.DenizenCoreImplementation;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizencore.events.OldEventManager;
-import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.ScriptTag;
+import com.denizenscript.denizencore.objects.core.QueueTag;
+import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.CommandExecuter;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -254,7 +255,7 @@ public class Debug {
             Map<String, ObjectTag> context = new HashMap<>();
             context.put("message", new ElementTag(message));
             if (source != null) {
-                context.put("queue", source);
+                context.put("queue", new QueueTag(source));
             }
             if (script != null) {
                 context.put("script", script);
@@ -333,7 +334,7 @@ public class Debug {
             }
             context.put("message", new ElementTag(thrown.getMessage()));
             context.put("type", new ElementTag(thrown.getClass().getSimpleName()));
-            context.put("queue", source);
+            context.put("queue", new QueueTag(source));
             ScriptEntry entry = (source != null ? source.getLastEntryExecuted() : null);
             List<String> Determinations = OldEventManager.doEvents(Arrays.asList("server generates exception"),
                     entry == null ? new BukkitScriptEntryData(null, null) : entry.entryData, context);

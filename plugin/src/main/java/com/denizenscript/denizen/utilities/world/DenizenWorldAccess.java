@@ -6,7 +6,7 @@ import com.denizenscript.denizen.nms.interfaces.WorldAccess;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.scripts.commands.player.GlowCommand;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
-import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 

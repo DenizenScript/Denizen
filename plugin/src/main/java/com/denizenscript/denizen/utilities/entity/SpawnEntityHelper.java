@@ -2,7 +2,7 @@ package com.denizenscript.denizen.utilities.entity;
 
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
-import com.denizenscript.denizencore.objects.ElementTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;

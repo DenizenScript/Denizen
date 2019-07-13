@@ -3,7 +3,7 @@ package com.denizenscript.denizen.utilities;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.ListTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import org.bukkit.Color;
 import org.bukkit.entity.Entity;

@@ -6,6 +6,7 @@ import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.QueueTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
@@ -14,7 +15,7 @@ import com.denizenscript.denizencore.tags.Attribute;
 public class BukkitQueueProperties implements Property {
 
     public static boolean describes(ObjectTag script) {
-        return script instanceof ScriptQueue;
+        return script instanceof QueueTag;
     }
 
     public static BukkitQueueProperties getFrom(ObjectTag queue) {
@@ -22,7 +23,7 @@ public class BukkitQueueProperties implements Property {
             return null;
         }
         else {
-            return new BukkitQueueProperties((ScriptQueue) queue);
+            return new BukkitQueueProperties((QueueTag) queue);
         }
     }
 
@@ -34,8 +35,8 @@ public class BukkitQueueProperties implements Property {
             "linked_player", "linked_npc"
     };
 
-    private BukkitQueueProperties(ScriptQueue queue) {
-        this.queue = queue;
+    private BukkitQueueProperties(QueueTag queue) {
+        this.queue = queue.queue;
     }
 
     ScriptQueue queue;
@@ -44,7 +45,7 @@ public class BukkitQueueProperties implements Property {
     public String getAttribute(Attribute attribute) {
 
         // <--[tag]
-        // @attribute <q@queue.npc>
+        // @attribute <QueueTag.npc>
         // @returns dNPC
         // @mechanism ScriptQueue.linked_npc
         // @description
@@ -70,7 +71,7 @@ public class BukkitQueueProperties implements Property {
         }
 
         // <--[tag]
-        // @attribute <q@queue.player>
+        // @attribute <QueueTag.player>
         // @returns dPlayer
         // @mechanism ScriptQueue.linked_player
         // @description
@@ -117,7 +118,7 @@ public class BukkitQueueProperties implements Property {
         // @description
         // Sets the linked player for the remainder of the queue.
         // @tags
-        // <q@queue.player>
+        // <QueueTag.player>
         // -->
         if (mechanism.matches("linked_player") && mechanism.requireObject(dPlayer.class)) {
             dPlayer player = mechanism.valueAsType(dPlayer.class);
@@ -134,7 +135,7 @@ public class BukkitQueueProperties implements Property {
         // @description
         // Sets the linked NPC for the remainder of the queue.
         // @tags
-        // <q@queue.npc>
+        // <QueueTag.npc>
         // -->
         if (mechanism.matches("linked_npc") && mechanism.requireObject(dNPC.class)) {
             dNPC npc = mechanism.valueAsType(dNPC.class);
