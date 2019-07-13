@@ -246,6 +246,9 @@ public class Utilities {
                 closestDistance = npc.getStoredLocation().distanceSquared(location);
             }
         }
+        if (closestNPC == null) {
+            return null;
+        }
         return new NPCTag(closestNPC);
     }
 

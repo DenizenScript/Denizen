@@ -61,7 +61,7 @@ Traits:
 Triggers:
   Chat:
     Enabled: true
-    Use asynchronous event: true
+    Use asynchronous event: false
     Cooldown: 2s
     Range: 3
     Overhearing range: 4

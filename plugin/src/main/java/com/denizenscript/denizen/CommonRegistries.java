@@ -22,7 +22,7 @@ public class CommonRegistries {
     // ObjectTag is a broader term for a 'type' of object that more specifically represents something,
     // such as a LocationTag or ScriptTag, often times just referred to as a 'location' or 'script'. Denizen
     // employs many object types that you should be familiar with. You'll notice that many times objects
-    // are reference with their 'dObject notation' which is in the format of 'x@', the x being the specific
+    // are referenced with their 'ObjectTag notation' which is in the format of 'x@', the x being the specific
     // notation of an object type. Example: player objects use the p@ notation, and locations use l@.
     // The use of this notation is encouraged, but not always required.
     //
