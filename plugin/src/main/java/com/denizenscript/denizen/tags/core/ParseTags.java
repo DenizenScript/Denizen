@@ -9,8 +9,6 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 
 public class ParseTags {
 
-    // TODO: Move me to the core
-
     public ParseTags() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
@@ -21,14 +19,7 @@ public class ParseTags {
     }
 
     public void parseTags(ReplaceableTagEvent event) {
-        // <--[tag]
-        // @attribute <parse:<text to parse>>
-        // @returns ElementTag
-        // @description
-        // Returns the text with any tags in it parsed.
-        // WARNING: THIS TAG IS DANGEROUS TO USE, DO NOT USE IT UNLESS
-        // YOU KNOW WHAT YOU ARE DOING. USE AT YOUR OWN RISK.
-        // -->
+        // TODO: DEPRECATE (in favor of element.parsed)
         if (event.matches("parse")) {
             if (!event.hasValue()) {
                 Debug.echoError("Escape tag '" + event.raw_tag + "' does not have a value!");
