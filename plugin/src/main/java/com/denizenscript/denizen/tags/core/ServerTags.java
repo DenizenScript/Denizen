@@ -76,12 +76,6 @@ public class ServerTags {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
-                ternaryTag(event);
-            }
-        }, "ternary", "tern", "t");
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
                 serverTag(event);
             }
         }, "server", "svr", "global");
@@ -99,38 +93,6 @@ public class ServerTags {
         catch (Exception e) {
             Debug.echoError("Invalid math tag!");
             event.setReplaced("0.0");
-        }
-    }
-
-    public SlowWarning ternShorthand = new SlowWarning("Short-named tags are hard to read. Please use 'tern' instead of 't' as a root tag.");
-
-    // <--[tag]
-    // @attribute <tern[<condition>]:<element>||<element>>
-    // @returns ElementTag
-    // @description
-    // Returns either the first element, or 'fallback' element depending on
-    // the outcome of the condition. First element will show in a result of 'true',
-    // otherwise the fallback element will show.
-    // Example: '<tern[<player.is_spawned>]:Player is spawned! || Player is not spawned!>'
-    // -->
-    public void ternaryTag(ReplaceableTagEvent event) { // TODO: Core
-        if (!event.matches("ternary", "tern", "t")) {
-            return;
-        }
-        if (event.matches("t")) {
-            ternShorthand.warn(event.getScriptEntry());
-        }
-
-        // Fallback if nothing to evaluate
-        if (!event.hasNameContext()) {
-            return;
-        }
-
-        // Check evaluation. A result of 'true' will return the value. Anything else
-        // will result in the fallback.
-        if (event.getNameContext().equalsIgnoreCase("true")) {
-            event.setReplaced(new ElementTag(event.getValue().trim())
-                    .getAttribute(event.getAttributes().fulfill(1)));
         }
     }
 
