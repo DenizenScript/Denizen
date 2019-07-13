@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>com.denizenscript</groupId>
@@ -8,54 +9,52 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>denizen</artifactId>
+    <artifactId>denizen-dist</artifactId>
 
-    <name>Denizen</name>
-    <description>Scriptable Minecraft and Citizens2</description>
-
-    <!-- Dependencies -->
     <dependencies>
-        <!-- Required APIs -->
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>${craftbukkit.version}</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>com.denizenscript</groupId>
             <artifactId>denizencore</artifactId>
             <version>${dcore.version}</version>
             <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
-        <!-- NMS Modules -->
+        <dependency>
+            <groupId>com.denizenscript</groupId>
+            <artifactId>denizen</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
         <dependency>
             <groupId>com.denizenscript</groupId>
             <artifactId>denizen-nmshandler</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <!-- Basic dependencies -->
-        <dependency>
-            <groupId>net.citizensnpcs</groupId>
-            <artifactId>citizens</artifactId>
-            <version>${citizens.version}</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>LATEST</version>
+            <version>${project.parent.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>net.milkbowl.vault</groupId>
-            <artifactId>Vault</artifactId>
-            <version>1.5.6</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/Vault.jar</systemPath>
+            <groupId>com.denizenscript</groupId>
+            <artifactId>denizen-v1_12_R1</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.denizenscript</groupId>
+            <artifactId>denizen-v1_13_R2</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.denizenscript</groupId>
+            <artifactId>denizen-v1_14_R1</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.denizenscript</groupId>
+            <artifactId>denizen-paper</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -99,6 +98,12 @@
                                     </includes>
                                 </filter>
                                 <filter>
+                                    <artifact>com.denizenscript:denizen</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
                                     <artifact>org.json:json</artifact>
                                     <includes>
                                         <include>**</include>
@@ -106,6 +111,12 @@
                                 </filter>
                                 <filter>
                                     <artifact>com.denizenscript:denizen-v**</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>com.denizenscript:denizen-paper</artifact>
                                     <includes>
                                         <include>**</include>
                                     </includes>
@@ -120,6 +131,22 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <finalName>Denizen-${DENIZEN_VERSION}-b${BUILD_NUMBER}-${BUILD_CLASS}</finalName>
+                    <outputDirectory>../target</outputDirectory>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>Denizen/lib/</classpathPrefix>
+                        </manifest>
+                    </archive>
+                </configuration>
             </plugin>
 
             <plugin>

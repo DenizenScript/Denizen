@@ -24,6 +24,8 @@
         <module>v1_13_R2</module>
         <module>v1_14_R1</module>
         <module>plugin</module>
+        <module>paper</module>
+        <module>dist</module>
     </modules>
 
     <!-- Repositories -->
@@ -31,6 +33,10 @@
         <repository>
             <id>everything</id>
             <url>http://repo.citizensnpcs.co</url>
+        </repository>
+        <repository>
+            <id>papermc</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
     </repositories>
 

@@ -379,6 +379,18 @@ public class Denizen extends JavaPlugin {
         if (Settings.packetInterception()) {
             NMSHandler.getInstance().enablePacketInterception(new DenizenPacketHandler());
         }
+        try {
+            if (Class.forName("com.destroystokyo.paper.PaperConfig") != null) {
+                final Class<?> clazz = Class.forName("com.denizenscript.denizen.paper.PaperModule");
+                clazz.getMethod("init").invoke(null);
+            }
+        }
+        catch (ClassNotFoundException ex) {
+            // Ignore.
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
 
         // Run everything else on the first server tick
         getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
