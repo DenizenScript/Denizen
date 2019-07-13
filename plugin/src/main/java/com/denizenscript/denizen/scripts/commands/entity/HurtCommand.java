@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
@@ -125,7 +125,7 @@ public class HurtCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), amountElement.debug()
+            Debug.report(scriptEntry, getName(), amountElement.debug()
                     + ArgumentHelper.debugList("entities", entities)
                     + (source_once == null ? "" : source_once.debug())
                     + (cause == null ? "" : cause.debug())
@@ -136,7 +136,7 @@ public class HurtCommand extends AbstractCommand {
         double amount = amountElement.asDouble();
         for (dEntity entity : entities) {
             if (entity.getLivingEntity() == null) {
-                dB.echoDebug(scriptEntry, entity + " is not a living entity!");
+                Debug.echoDebug(scriptEntry, entity + " is not a living entity!");
                 continue;
             }
             if (cause == null) {

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.material;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dMaterial;
 import com.denizenscript.denizencore.objects.Element;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -112,7 +112,7 @@ public class MaterialLevel implements Property {
         if (mechanism.matches("level") && mechanism.requireInteger()) {
             int level = mechanism.getValue().asInt();
             if (level < 0 || level > getMax()) {
-                dB.echoError("Level value '" + level + "' is not valid. Must be between 0 and " + getMax() + " for material '" + material.realName() + "'.");
+                Debug.echoError("Level value '" + level + "' is not valid. Must be between 0 and " + getMax() + " for material '" + material.realName() + "'.");
                 return;
             }
             getLevelled().setLevel(level);

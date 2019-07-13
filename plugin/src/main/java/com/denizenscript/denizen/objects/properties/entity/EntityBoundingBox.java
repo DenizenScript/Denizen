@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.util.BoundingBox;
 import com.denizenscript.denizen.objects.dEntity;
@@ -132,7 +132,7 @@ public class EntityBoundingBox implements Property {
                 modifiedBoxes.add(entity.getUUID());
             }
             else {
-                dB.echoError("Must specify exactly 2 dLocations in the format '<low>|<high>'!");
+                Debug.echoError("Must specify exactly 2 dLocations in the format '<low>|<high>'!");
             }
         }
     }

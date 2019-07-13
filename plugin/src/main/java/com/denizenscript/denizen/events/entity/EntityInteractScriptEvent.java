@@ -4,7 +4,7 @@ import com.denizenscript.denizen.objects.dCuboid;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dMaterial;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.dList;
@@ -96,7 +96,7 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
             return location;
         }
         else if (name.equals("cuboids")) {
-            dB.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
+            Debug.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
             dList cuboids = new dList();
             for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
                 cuboids.add(cuboid.identifySimple());

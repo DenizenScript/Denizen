@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
@@ -104,7 +104,7 @@ public class HealCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), amountelement.debug() + ArgumentHelper.debugObj("entities", entities));
+            Debug.report(scriptEntry, getName(), amountelement.debug() + ArgumentHelper.debugObj("entities", entities));
 
         }
         if (amountelement.asDouble() == -1) {

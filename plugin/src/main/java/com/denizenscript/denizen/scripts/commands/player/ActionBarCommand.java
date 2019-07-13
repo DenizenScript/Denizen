@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dPlayer;
@@ -58,7 +58,7 @@ public class ActionBarCommand extends AbstractCommand {
                 String formatStr = arg.getValue();
                 FormatScriptContainer format = ScriptRegistry.getScriptContainer(formatStr);
                 if (format == null) {
-                    dB.echoError("Could not find format script matching '" + formatStr + '\'');
+                    Debug.echoError("Could not find format script matching '" + formatStr + '\'');
                 }
                 scriptEntry.addObject("format", format);
             }
@@ -101,7 +101,7 @@ public class ActionBarCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), text.debug() + ArgumentHelper.debugList("Targets", targets));
+            Debug.report(scriptEntry, getName(), text.debug() + ArgumentHelper.debugList("Targets", targets));
 
         }
         if (format != null) {
@@ -113,7 +113,7 @@ public class ActionBarCommand extends AbstractCommand {
                 NMSHandler.getInstance().getPacketHelper().sendActionBarMessage(player.getPlayerEntity(), text.asString());
             }
             else {
-                dB.echoError(scriptEntry.getResidingQueue(), "Tried to send action bar message to non-existent or offline player!");
+                Debug.echoError(scriptEntry.getResidingQueue(), "Tried to send action bar message to non-existent or offline player!");
             }
         }
 

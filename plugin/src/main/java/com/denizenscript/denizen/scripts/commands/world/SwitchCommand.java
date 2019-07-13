@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.commands.world;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.MaterialCompat;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
@@ -99,7 +99,7 @@ public class SwitchCommand extends AbstractCommand {
         final Player player = Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getPlayerEntity() : null;
         // Switch the Block
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), interactLocations.debug()
+            Debug.report(scriptEntry, getName(), interactLocations.debug()
                     + ArgumentHelper.debugObj("duration", duration + "t")
                     + ArgumentHelper.debugObj("switchstate", switchState.name()));
         }
@@ -117,7 +117,7 @@ public class SwitchCommand extends AbstractCommand {
                     catch (Exception e) {
                     }
                 }
-                dB.log("Setting delayed task 'SWITCH' for " + interactLocation.identify());
+                Debug.log("Setting delayed task 'SWITCH' for " + interactLocation.identify());
                 // Store new delayed task ID, for checking against, then schedule new delayed task.
                 taskMap.put(interactLocation, Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
                         new Runnable() {
@@ -217,12 +217,12 @@ public class SwitchCommand extends AbstractCommand {
 
                 }
                 catch (NullPointerException e) {
-                    dB.echoError("Cannot switch " + interactLocation.getBlock().getType().toString() + "!");
+                    Debug.echoError("Cannot switch " + interactLocation.getBlock().getType().toString() + "!");
                     return;
                 }
             }
 
-            dB.echoDebug(scriptEntry, "Switched " + interactLocation.getBlock().getType().toString() + "! Current state now: " +
+            Debug.echoDebug(scriptEntry, "Switched " + interactLocation.getBlock().getType().toString() + "! Current state now: " +
                     (switchState(interactLocation.getBlock()) ? "ON" : "OFF"));
         }
     }

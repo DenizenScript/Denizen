@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
@@ -59,7 +59,7 @@ public class NarrateCommand extends AbstractCommand {
                 String formatStr = arg.getValue();
                 FormatScriptContainer format = ScriptRegistry.getScriptContainer(formatStr);
                 if (format == null) {
-                    dB.echoError("Could not find format script matching '" + formatStr + '\'');
+                    Debug.echoError("Could not find format script matching '" + formatStr + '\'');
                 }
                 scriptEntry.addObject("format", format);
             }
@@ -103,7 +103,7 @@ public class NarrateCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(),
+            Debug.report(scriptEntry, getName(),
                     ArgumentHelper.debugObj("Narrating", text)
                             + ArgumentHelper.debugList("Targets", targets)
                             + (format != null ? ArgumentHelper.debugObj("Format", format.getName()) : ""));
@@ -119,7 +119,7 @@ public class NarrateCommand extends AbstractCommand {
                 player.getPlayerEntity().sendMessage(format != null ? format.getFormattedText(scriptEntry) : text);
             }
             else {
-                dB.echoError("Narrated to non-existent or offline player!");
+                Debug.echoError("Narrated to non-existent or offline player!");
             }
         }
     }

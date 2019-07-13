@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.events.core;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.events.OldSmartEvent;
 import org.bukkit.event.Listener;
 
@@ -40,7 +40,7 @@ public class FlagSmartEvent implements OldSmartEvent, Listener {
     @Override
     public void _initialize() {
         active = true;
-        dB.log("Loaded Flag SmartEvent.");
+        Debug.log("Loaded Flag SmartEvent.");
     }
 
 

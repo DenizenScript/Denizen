@@ -23,7 +23,7 @@ import com.denizenscript.denizen.utilities.command.CommandManager;
 import com.denizenscript.denizen.utilities.command.Injector;
 import com.denizenscript.denizen.utilities.command.messaging.Messaging;
 import com.denizenscript.denizen.utilities.debugging.StatsRecord;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.maps.DenizenMapManager;
@@ -33,7 +33,7 @@ import com.denizenscript.denizen.nms.interfaces.FakeArrow;
 import com.denizenscript.denizen.nms.interfaces.FakePlayer;
 import com.denizenscript.denizen.nms.interfaces.ItemProjectile;
 import com.denizenscript.denizen.npc.TraitRegistry;
-import com.denizenscript.denizen.npc.dNPCRegistry;
+import com.denizenscript.denizen.npc.DenizenNPCHelper;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.OldEventManager;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
@@ -85,14 +85,14 @@ public class Denizen extends JavaPlugin {
      */
     private BukkitCommandRegistry commandRegistry = new BukkitCommandRegistry();
     private TriggerRegistry triggerRegistry = new TriggerRegistry();
-    private dNPCRegistry dNPCRegistry;
+    private DenizenNPCHelper dNPCRegistry;
 
 
     public BukkitCommandRegistry getCommandRegistry() {
         return commandRegistry;
     }
 
-    public dNPCRegistry getNPCRegistry() {
+    public DenizenNPCHelper getNPCRegistry() {
         return dNPCRegistry;
     }
 
@@ -169,7 +169,7 @@ public class Denizen extends JavaPlugin {
             startedSuccessful = true;
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
 
         try {
@@ -178,18 +178,18 @@ public class Denizen extends JavaPlugin {
             reloadConfig();
 
             // Startup procedure
-            dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
-            dB.log(ChatColor.YELLOW + " _/_ _  ._  _ _  ");
-            dB.log(ChatColor.YELLOW + "(/(-/ )/ /_(-/ ) " + ChatColor.GRAY + " scriptable minecraft");
-            dB.log("");
-            dB.log(ChatColor.GRAY + "by: " + ChatColor.WHITE + "The DenizenScript team");
-            dB.log(ChatColor.GRAY + "Chat with us at: " + ChatColor.WHITE + " https://discord.gg/Q6pZGSR");
-            dB.log(ChatColor.GRAY + "Or learn more at: " + ChatColor.WHITE + " https://denizenscript.com");
-            dB.log(ChatColor.GRAY + "version: " + ChatColor.WHITE + versionTag);
-            dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
+            Debug.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
+            Debug.log(ChatColor.YELLOW + " _/_ _  ._  _ _  ");
+            Debug.log(ChatColor.YELLOW + "(/(-/ )/ /_(-/ ) " + ChatColor.GRAY + " scriptable minecraft");
+            Debug.log("");
+            Debug.log(ChatColor.GRAY + "by: " + ChatColor.WHITE + "The DenizenScript team");
+            Debug.log(ChatColor.GRAY + "Chat with us at: " + ChatColor.WHITE + " https://discord.gg/Q6pZGSR");
+            Debug.log(ChatColor.GRAY + "Or learn more at: " + ChatColor.WHITE + " https://denizenscript.com");
+            Debug.log(ChatColor.GRAY + "version: " + ChatColor.WHITE + versionTag);
+            Debug.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
 
         // mcstats.org
@@ -198,20 +198,20 @@ public class Denizen extends JavaPlugin {
             metrics.start();
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
         // bstats.org
         try {
             BStatsMetricsLite metrics = new BStatsMetricsLite(this);
         }
         catch (Throwable e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
 
         try {
             // If Citizens is enabled, Create the dNPC Registry
             if (Depends.citizens != null) {
-                dNPCRegistry = new dNPCRegistry(this);
+                dNPCRegistry = new DenizenNPCHelper(this);
             }
 
             // Create our CommandManager to handle '/denizen' commands
@@ -234,15 +234,15 @@ public class Denizen extends JavaPlugin {
             }
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
 
         try {
             DenizenCore.setCommandRegistry(getCommandRegistry());
-            getCommandRegistry().registerCoreMembers();
+            getCommandRegistry().registerCommands();
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
 
         try {
@@ -250,14 +250,14 @@ public class Denizen extends JavaPlugin {
             ScriptRegistry._registerCoreTypes();
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
 
         try {
             ContainerRegistry.registerMainContainers();
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
 
         try {
@@ -269,12 +269,12 @@ public class Denizen extends JavaPlugin {
             // Ensure the example Denizen.mid sound file is available
             if (!new File(getDataFolder() + "/midi/Denizen.mid").exists()) {
                 String sourceFile = URLDecoder.decode(Denizen.class.getProtectionDomain().getCodeSource().getLocation().getFile());
-                dB.log("Denizen.mid not found, extracting from " + sourceFile);
+                Debug.log("Denizen.mid not found, extracting from " + sourceFile);
                 Utilities.extractFile(new File(sourceFile), "Denizen.mid", getDataFolder() + "/midi/");
             }
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
 
         try {
@@ -287,7 +287,7 @@ public class Denizen extends JavaPlugin {
             currentConfig.close();
             String updated = ConfigUpdater.updateConfig(currentConfigString, properConfigString);
             if (updated != null) {
-                dB.log("Your config file is outdated. Automatically updating it...");
+                Debug.log("Your config file is outdated. Automatically updating it...");
                 FileOutputStream configOutput = new FileOutputStream(getDataFolder() + "/config.yml");
                 OutputStreamWriter writer = new OutputStreamWriter(configOutput);
                 writer.write(updated);
@@ -296,7 +296,7 @@ public class Denizen extends JavaPlugin {
             }
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
 
         try {
@@ -307,7 +307,7 @@ public class Denizen extends JavaPlugin {
             CommandScriptHelper cs_helper = new CommandScriptHelper();
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
 
         try {
@@ -317,7 +317,7 @@ public class Denizen extends JavaPlugin {
             }
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
 
         // Register Core Members in the Denizen Registries
@@ -327,7 +327,7 @@ public class Denizen extends JavaPlugin {
             }
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
 
         try {
@@ -354,7 +354,7 @@ public class Denizen extends JavaPlugin {
             ObjectFetcher._registerCoreObjects();
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
 
         try {
@@ -364,7 +364,7 @@ public class Denizen extends JavaPlugin {
             PropertyRegistry.registermainProperties();
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
 
         try {
@@ -373,7 +373,7 @@ public class Denizen extends JavaPlugin {
             }
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
 
         if (Settings.packetInterception()) {
@@ -399,18 +399,18 @@ public class Denizen extends JavaPlugin {
                     // Reload notables from notables.yml into memory
                     notableManager.reloadNotables();
 
-                    dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
+                    Debug.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
 
                     // Fire the 'on Server Start' world event
                     ws_helper.serverStartEvent();
 
                     if (Settings.allowStupidx()) {
-                        dB.echoError("Don't screw with bad config values.");
+                        Debug.echoError("Don't screw with bad config values.");
                         Bukkit.shutdown();
                     }
                 }
                 catch (Exception e) {
-                    dB.echoError(e);
+                    Debug.echoError(e);
                 }
             }
         }, 1);
@@ -635,7 +635,7 @@ public class Denizen extends JavaPlugin {
             }
 
             if (Settings.showExHelp()) {
-                if (dB.showDebug) {
+                if (Debug.showDebug) {
                     sender.sendMessage(ChatColor.YELLOW + "Executing dCommand... check the console for full debug output!");
                 }
                 else {
@@ -694,7 +694,7 @@ public class Denizen extends JavaPlugin {
                             return flag_manager.getPlayerFlag(player, flag);
                         }
                         else {
-                            dB.echoError("Player '" + owner + "' flag '" + flag + "' not found.");
+                            Debug.echoError("Player '" + owner + "' flag '" + flag + "' not found.");
                         }
                     }
                     else if (Depends.citizens != null && dNPC.matches(owner)) {
@@ -703,7 +703,7 @@ public class Denizen extends JavaPlugin {
                             return flag_manager.getNPCFlag(npc.getId(), flag);
                         }
                         else {
-                            dB.echoError("NPC '" + owner + "' flag '" + flag + "' not found.");
+                            Debug.echoError("NPC '" + owner + "' flag '" + flag + "' not found.");
                         }
                     }
                     else if (dEntity.matches(owner)) {
@@ -712,12 +712,12 @@ public class Denizen extends JavaPlugin {
                             return flag_manager.getEntityFlag(entity, flag);
                         }
                         else {
-                            dB.echoError("Entity '" + owner + "' flag '" + flag + "' not found.");
+                            Debug.echoError("Entity '" + owner + "' flag '" + flag + "' not found.");
                         }
                     }
                 }
                 else {
-                    dB.echoError("Invalid dFlag format: " + string);
+                    Debug.echoError("Invalid dFlag format: " + string);
                 }
             }
             else if (string.indexOf('@') == 2) {
@@ -726,7 +726,7 @@ public class Denizen extends JavaPlugin {
                     return flag_manager.getGlobalFlag(flag);
                 }
                 else {
-                    dB.echoError("Global flag '" + flag + "' not found.");
+                    Debug.echoError("Global flag '" + flag + "' not found.");
                 }
             }
         }

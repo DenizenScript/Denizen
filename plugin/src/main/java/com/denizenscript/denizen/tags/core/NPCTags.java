@@ -5,7 +5,7 @@ import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.npc.traits.AssignmentTrait;
@@ -70,7 +70,7 @@ public class NPCTags implements Listener {
             }
             else {
                 if (!event.hasAlternative()) {
-                    dB.echoError("Could not match '" + attribute.getContext(1) + "' to a valid NPC!");
+                    Debug.echoError("Could not match '" + attribute.getContext(1) + "' to a valid NPC!");
                 }
                 return;
             }
@@ -79,7 +79,7 @@ public class NPCTags implements Listener {
 
         if (n == null || !n.isValid()) {
             if (!event.hasAlternative()) {
-                dB.echoError("Invalid or missing NPC for tag <" + event.raw_tag + ">!");
+                Debug.echoError("Invalid or missing NPC for tag <" + event.raw_tag + ">!");
             }
             return;
         }

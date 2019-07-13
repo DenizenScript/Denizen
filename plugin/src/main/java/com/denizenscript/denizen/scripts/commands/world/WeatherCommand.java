@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dWorld;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
@@ -100,7 +100,7 @@ public class WeatherCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), ArgumentHelper.debugObj("type", type.name()) +
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("type", type.name()) +
                     (type.name().equalsIgnoreCase("player") ?
                             ArgumentHelper.debugObj("player", Utilities.getEntryPlayer(scriptEntry)) : "") +
                     (type.name().equalsIgnoreCase("global") ?

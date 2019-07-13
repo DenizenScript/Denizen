@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
@@ -90,7 +90,7 @@ public class LookCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), loc.debug() +
+            Debug.report(scriptEntry, getName(), loc.debug() +
                     ArgumentHelper.debugObj("entities", entities.toString()));
 
         }

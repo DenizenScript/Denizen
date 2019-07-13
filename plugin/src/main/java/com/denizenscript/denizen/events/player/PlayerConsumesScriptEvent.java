@@ -2,7 +2,7 @@ package com.denizenscript.denizen.events.player;
 
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dItem;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.dObject;
@@ -69,7 +69,7 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
                 return true;
             }
             else {
-                dB.echoError("Invalid event 'item' check [" + getName() + "] ('determine item ????'): '" + determination + "' for " + container.getName());
+                Debug.echoError("Invalid event 'item' check [" + getName() + "] ('determine item ????'): '" + determination + "' for " + container.getName());
             }
 
         }

@@ -2,7 +2,7 @@ package com.denizenscript.denizen.npc.speech;
 
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
@@ -94,7 +94,7 @@ public class DenizenChat implements VocalChord {
             if (context.isBystandersEnabled()) {
                 String[] format = Settings.chatMultipleTargetsFormat().split("%target%");
                 if (format.length <= 1) {
-                    dB.echoError("Invalid 'Commands.Chat.Options.Multiple targets format' in config.yml! Must have at least 1 %target%");
+                    Debug.echoError("Invalid 'Commands.Chat.Options.Multiple targets format' in config.yml! Must have at least 1 %target%");
                 }
                 StringBuilder parsed = new StringBuilder();
                 Iterator<Talkable> iter = context.iterator();

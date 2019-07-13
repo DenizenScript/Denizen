@@ -1,11 +1,10 @@
 package com.denizenscript.denizen.objects;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
@@ -69,7 +68,7 @@ public class dPlugin implements dObject {
             }
         }
         catch (Exception e) {
-            dB.echoError("Invalid plugin name specified, or plugin is not enabled: " + string);
+            Debug.echoError("Invalid plugin name specified, or plugin is not enabled: " + string);
         }
 
         return null;
@@ -249,7 +248,7 @@ public class dPlugin implements dObject {
         TagRunnable tr = registeredTags.get(attrLow);
         if (tr != null) {
             if (!tr.name.equals(attrLow)) {
-                Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
+                com.denizenscript.denizencore.utilities.debugging.Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
                         "Using deprecated form of tag '" + tr.name + "': '" + attrLow + "'.");
             }
             return tr.run(attribute, this);

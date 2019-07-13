@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.item;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.PacketHelper;
@@ -103,13 +103,13 @@ public class FakeItemCommand extends AbstractCommand {
         final Element player_only = scriptEntry.getElement("player_only");
 
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), ArgumentHelper.debugList("items", items) + elSlot.debug() + duration.debug()
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugList("items", items) + elSlot.debug() + duration.debug()
                     + ArgumentHelper.debugList("players", players) + player_only.debug());
         }
 
         int slot = SlotHelper.nameToIndex(elSlot.asString());
         if (slot == -1) {
-            dB.echoError(scriptEntry.getResidingQueue(), "The input '" + elSlot.asString() + "' is not a valid slot!");
+            Debug.echoError(scriptEntry.getResidingQueue(), "The input '" + elSlot.asString() + "' is not a valid slot!");
             return;
         }
         final boolean playerOnly = player_only.asBoolean();

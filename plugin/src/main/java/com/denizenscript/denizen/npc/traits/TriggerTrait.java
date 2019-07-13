@@ -5,9 +5,9 @@ import com.denizenscript.denizen.scripts.commands.npc.EngageCommand;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizen.scripts.triggers.TriggerRegistry;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.Settings;
-import com.denizenscript.denizen.npc.dNPCRegistry;
+import com.denizenscript.denizen.npc.DenizenNPCHelper;
 import com.denizenscript.denizencore.objects.Element;
 import com.denizenscript.denizencore.objects.dObject;
 import net.citizensnpcs.api.command.exception.CommandException;
@@ -36,10 +36,10 @@ public class TriggerTrait extends Trait implements Listener {
 
 
     public void report() {
-        dB.log("enabled: " + enabled.entrySet().toString());
-        dB.log("duration: " + duration.entrySet().toString());
-        dB.log("type: " + type.entrySet().toString());
-        dB.log("radius: " + radius.entrySet().toString());
+        Debug.log("enabled: " + enabled.entrySet().toString());
+        Debug.log("duration: " + duration.entrySet().toString());
+        Debug.log("type: " + type.entrySet().toString());
+        Debug.log("radius: " + radius.entrySet().toString());
     }
 
 
@@ -233,7 +233,7 @@ public class TriggerTrait extends Trait implements Listener {
             // On Unavailable Action
 
             // TODO: Should this be refactored?
-            if (dNPCRegistry.getDenizen(npc).action("unavailable", player, context).equalsIgnoreCase("available")) {
+            if (DenizenNPCHelper.getDenizen(npc).action("unavailable", player, context).equalsIgnoreCase("available")) {
                 // If determined available, continue on...
                 // else, return a 'non-triggered' state.
             }
@@ -247,7 +247,7 @@ public class TriggerTrait extends Trait implements Listener {
                 .setCooldown(npc, player, triggerClass, getCooldownDuration(trigger_type), getCooldownType(trigger_type));
 
         // Grab the determination of the action
-        String determination = dNPCRegistry.getDenizen(npc).action(trigger_type, player, context);
+        String determination = DenizenNPCHelper.getDenizen(npc).action(trigger_type, player, context);
 
         return new TriggerContext(determination, true);
     }

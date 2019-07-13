@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.server;
 
 import com.denizenscript.denizen.utilities.FakeOfflinePlayer;
 import com.denizenscript.denizen.utilities.ScoreboardHelper;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
@@ -177,7 +177,7 @@ public class ScoreboardCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), action.debug() +
+            Debug.report(scriptEntry, getName(), action.debug() +
                     id.debug() +
                     (viewers != null ? ArgumentHelper.debugObj("viewers", viewers.toString()) : "") +
                     (objective != null ? objective.debug() : "") +
@@ -212,7 +212,7 @@ public class ScoreboardCommand extends AbstractCommand {
 
         // Don't progress if we ended up with a null board
         if (board == null) {
-            dB.echoError(scriptEntry.getResidingQueue(), "Scoreboard " + id.asString() + " does not exist!");
+            Debug.echoError(scriptEntry.getResidingQueue(), "Scoreboard " + id.asString() + " does not exist!");
             return;
         }
 
@@ -266,7 +266,7 @@ public class ScoreboardCommand extends AbstractCommand {
             // If there is no objective and no viewers, but there are some lines,
             // the command cannot do anything at all, so print a message about that
             else if (viewers == null && !lines.isEmpty()) {
-                dB.echoDebug(scriptEntry, "Cannot add lines without specifying an objective!");
+                Debug.echoDebug(scriptEntry, "Cannot add lines without specifying an objective!");
             }
         }
         else if (act.equals(Action.REMOVE)) {
@@ -277,7 +277,7 @@ public class ScoreboardCommand extends AbstractCommand {
                 if (obj != null) {
                     // Remove the entire objective if no lines have been specified
                     if (lines.isEmpty()) {
-                        dB.echoDebug(scriptEntry, "Removing objective " + obj.getName() +
+                        Debug.echoDebug(scriptEntry, "Removing objective " + obj.getName() +
                                 " from scoreboard " + id.asString());
                         obj.unregister();
                     }
@@ -289,14 +289,14 @@ public class ScoreboardCommand extends AbstractCommand {
                     }
                 }
                 else {
-                    dB.echoError(scriptEntry.getResidingQueue(), "Objective " + objective.asString() +
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Objective " + objective.asString() +
                             " does not exist in scoreboard " + id.asString());
                 }
             }
             // If lines were specified, but an objective was not, remove the
             // lines from every objective
             else if (!lines.isEmpty()) {
-                dB.echoDebug(scriptEntry, "Removing lines " + lines.identify() +
+                Debug.echoDebug(scriptEntry, "Removing lines " + lines.identify() +
                         " from all objectives in scoreboard " + id.asString());
 
                 for (String line : lines) {
@@ -308,7 +308,7 @@ public class ScoreboardCommand extends AbstractCommand {
             // argument was not specified (because if it was, a list
             // of viewers should be removed instead)
             else if (viewers == null) {
-                dB.echoDebug(scriptEntry, "Removing scoreboard " + id.asString());
+                Debug.echoDebug(scriptEntry, "Removing scoreboard " + id.asString());
                 ScoreboardHelper.deleteScoreboard(id.asString());
             }
         }

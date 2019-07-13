@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.utilities.MaterialCompat;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -116,7 +116,7 @@ public class LeashCommand extends AbstractCommand {
                 Holder = holderLoc.getWorld().spawn(holderLoc, LeashHitch.class);
             }
             else {
-                dB.echoError(scriptEntry.getResidingQueue(), "Bad holder location specified - only fences are permitted!");
+                Debug.echoError(scriptEntry.getResidingQueue(), "Bad holder location specified - only fences are permitted!");
                 return;
             }
         }
@@ -124,7 +124,7 @@ public class LeashCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
+            Debug.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
                     ArgumentHelper.debugObj("entities", entities.toString()) +
                     (holder != null ? ArgumentHelper.debugObj("holder", holder) : ArgumentHelper.debugObj("holder", holderLoc)));
         }

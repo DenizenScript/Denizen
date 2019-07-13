@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.core;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
@@ -88,17 +88,17 @@ public class NoteCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), ArgumentHelper.debugObj("object", object) + id.debug() + remove.debug());
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("object", object) + id.debug() + remove.debug());
 
         }
 
         if (remove.asBoolean()) {
             if (NotableManager.isSaved(id.asString())) {
                 NotableManager.remove(id.asString());
-                dB.echoDebug(scriptEntry, "notable '" + id.asString() + "' removed");
+                Debug.echoDebug(scriptEntry, "notable '" + id.asString() + "' removed");
             }
             else {
-                dB.echoDebug(scriptEntry, id.asString() + " is not saved");
+                Debug.echoDebug(scriptEntry, id.asString() + " is not saved");
             }
             return;
         }
@@ -107,7 +107,7 @@ public class NoteCommand extends AbstractCommand {
         Class object_class = ObjectFetcher.getObjectClass(object_type);
 
         if (object_class == null) {
-            dB.echoError(scriptEntry.getResidingQueue(), "Invalid object type! Could not fetch '" + object_type + "'!");
+            Debug.echoError(scriptEntry.getResidingQueue(), "Invalid object type! Could not fetch '" + object_type + "'!");
             return;
         }
 
@@ -115,7 +115,7 @@ public class NoteCommand extends AbstractCommand {
         try {
 
             if (!ObjectFetcher.checkMatch(object_class, object)) {
-                dB.echoError(scriptEntry.getResidingQueue(), "'" + object
+                Debug.echoError(scriptEntry.getResidingQueue(), "'" + object
                         + "' is an invalid " + object_class.getSimpleName() + ".");
                 return;
             }
@@ -128,8 +128,8 @@ public class NoteCommand extends AbstractCommand {
 
         }
         catch (Exception e) {
-            dB.echoError(scriptEntry.getResidingQueue(), "Uh oh! Report this to the Denizen developers! Err: NoteCommandObjectReflection");
-            dB.echoError(scriptEntry.getResidingQueue(), e);
+            Debug.echoError(scriptEntry.getResidingQueue(), "Uh oh! Report this to the Denizen developers! Err: NoteCommandObjectReflection");
+            Debug.echoError(scriptEntry.getResidingQueue(), e);
         }
 
 

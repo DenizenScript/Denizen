@@ -14,7 +14,6 @@ import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.debugging.Debuggable;
 import com.denizenscript.denizencore.utilities.debugging.Debug.DebugElement;
 import org.bukkit.Bukkit;
@@ -65,7 +64,7 @@ import java.util.function.Consumer;
  * 16:05:05 [INFO] +> ...and important pieces of information can easily be spotted.
  * 16:05:05 [INFO] +---------------------+
  */
-public class dB {
+public class Debug {
 
     public static boolean showDebug = true;
     public static boolean showStackTraces = true;
@@ -195,7 +194,7 @@ public class dB {
             return;
         }
         echo(ChatColor.LIGHT_PURPLE + " " + ChatColor.WHITE + trimMessage(message), caller);
-        if (Debug.verbose && caller != null) {
+        if (com.denizenscript.denizencore.utilities.debugging.Debug.verbose && caller != null) {
             echo(ChatColor.GRAY + "(Verbose) Caller = " + caller, caller);
         }
     }
@@ -286,7 +285,7 @@ public class dB {
             fullMessage += ChatColor.GRAY + " ... " + ChatColor.RED + "Enable debug on the script for more information.";
         }
         finalOutputDebugText(fullMessage, source);
-        if (Debug.verbose && depthCorrectError == 0) {
+        if (com.denizenscript.denizencore.utilities.debugging.Debug.verbose && depthCorrectError == 0) {
             depthCorrectError++;
             try {
                 throw new RuntimeException("Verbose info for above error");
@@ -351,10 +350,10 @@ public class dB {
         boolean wasThrown = throwErrorEvent;
         throwErrorEvent = false;
         if (!showStackTraces) {
-            dB.echoError(source, "Exception! Enable '/denizen debug -s' for the nitty-gritty.");
+            Debug.echoError(source, "Exception! Enable '/denizen debug -s' for the nitty-gritty.");
         }
         else {
-            dB.echoError(source, "Internal exception was thrown!");
+            Debug.echoError(source, "Internal exception was thrown!");
             StringBuilder errorMesage = new StringBuilder();
             String prefix = "[Error Continued] ";
             boolean first = true;
@@ -404,9 +403,9 @@ public class dB {
         try {
             if (canGetClass) {
                 Class[] classes = new SecurityManagerTrick().getClassContext();
-                Class caller = classes.length > 2 ? classes[2] : dB.class;
+                Class caller = classes.length > 2 ? classes[2] : Debug.class;
                 if (caller == DenizenCoreImplementation.class) {
-                    caller = classes.length > 4 ? classes[4] : dB.class;
+                    caller = classes.length > 4 ? classes[4] : Debug.class;
                 }
                 callerName = classNameCache.get(caller);
                 if (callerName == null) {
@@ -632,8 +631,8 @@ public class dB {
             }
 
             // Record current buffer to the to-be-submitted buffer
-            if (dB.record) {
-                dB.Recording.append(URLEncoder.encode(dateFormat.format(new Date())
+            if (Debug.record) {
+                Debug.Recording.append(URLEncoder.encode(dateFormat.format(new Date())
                         + " [INFO] " + string.replace(ChatColor.COLOR_CHAR, (char) 0x01) + "\n"));
             }
 

@@ -4,7 +4,7 @@ import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.scripts.containers.core.BookScriptContainer;
 import com.denizenscript.denizen.utilities.MaterialCompat;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.Element;
@@ -87,7 +87,7 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
                 }
             }
             else {
-                dB.echoError("Script '" + determination + "' is valid, but not of type 'book'!");
+                Debug.echoError("Script '" + determination + "' is valid, but not of type 'book'!");
             }
         }
         return super.applyDetermination(container, determination);

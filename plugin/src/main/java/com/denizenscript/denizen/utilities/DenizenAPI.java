@@ -1,13 +1,11 @@
 package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.npc.dNPCRegistry;
+import com.denizenscript.denizen.npc.DenizenNPCHelper;
 import com.denizenscript.denizen.objects.dNPC;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-
-import java.util.Collection;
 
 /**
  * Provides some static methods for working with Denizen and Denizen-enabled NPCs
@@ -24,17 +22,7 @@ public class DenizenAPI {
      * @return a dNPC
      */
     public static dNPC getDenizenNPC(NPC npc) {
-        return dNPCRegistry.getDenizen(npc);
-    }
-
-    /**
-     * Similar to getting NPCs from Citizens' NPCRegistry, but this will filter out
-     * unspawned NPCs
-     *
-     * @return map of NPC, dNPC of all spawned NPCs
-     */
-    public static Collection<dNPC> getSpawnedNPCs() {
-        return dNPCRegistry.getSpawnedNPCs();
+        return DenizenNPCHelper.getDenizen(npc);
     }
 
     /**
@@ -49,7 +37,7 @@ public class DenizenAPI {
         return denizen;
     }
 
-    public static FileConfiguration _saves() {
+    public static FileConfiguration getSaves() {
         return getCurrentInstance().getSaves();
     }
 }

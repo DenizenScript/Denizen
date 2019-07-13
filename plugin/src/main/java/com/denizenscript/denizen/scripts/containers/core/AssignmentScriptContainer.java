@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 
@@ -50,7 +50,7 @@ public class AssignmentScriptContainer extends ScriptContainer {
     public AssignmentScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
         if (contains("INTERACT SCRIPTS") && getStringList("INTERACT SCRIPTS").size() > 1) {
-            dB.echoError("Assignment script '" + getName() + "' invalid: assignment scripts should only have ONE interact script in modern Denizen, not multiple!");
+            Debug.echoError("Assignment script '" + getName() + "' invalid: assignment scripts should only have ONE interact script in modern Denizen, not multiple!");
         }
     }
 }

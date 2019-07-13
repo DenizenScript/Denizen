@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.scripts.commands.core.CooldownCommand;
@@ -53,8 +53,8 @@ public class InteractScriptHelper {
         }
 
         // Alert the dBugger -- trying to find a good interact script!
-        if (dB.shouldDebug(assignmentScript)) {
-            dB.log(DebugElement.Header, "Getting interact script: n@" + npc.getName() + "/p@" + player.getName());
+        if (Debug.shouldDebug(assignmentScript)) {
+            Debug.log(DebugElement.Header, "Getting interact script: n@" + npc.getName() + "/p@" + player.getName());
         }
 
         //
@@ -80,7 +80,7 @@ public class InteractScriptHelper {
                     name = entry.split(" ", 2)[1].replace("^", "");
                 }
                 catch (Exception e) {
-                    dB.echoError("Invalid Interact assignment for '" + entry + "'. Is the script name missing?");
+                    Debug.echoError("Invalid Interact assignment for '" + entry + "'. Is the script name missing?");
                     continue;
                 }
             }
@@ -103,24 +103,24 @@ public class InteractScriptHelper {
                         interactableScripts.add(new PriorityPair(priority, entry.split(" ", 2)[1]));
                     }
                     else {
-                        if (dB.shouldDebug(interactScript)) {
-                            dB.log(ChatColor.GOLD + " ...but, isn't cooled down, yet! Skipping.");
+                        if (Debug.shouldDebug(interactScript)) {
+                            Debug.log(ChatColor.GOLD + " ...but, isn't cooled down, yet! Skipping.");
                         }
                     }
                 }
                 else {
                     // Alert the console
-                    dB.echoError("'" + entry + "' is not a valid Interact Script. Is there a duplicate script by this name?");
+                    Debug.echoError("'" + entry + "' is not a valid Interact Script. Is there a duplicate script by this name?");
                 }
             }
             catch (Exception e) {
                 // Had a problem checking requirements, most likely a Legacy Requirement with bad syntax. Alert the console!
-                dB.echoError(ChatColor.RED + "'" + entry + "' has a bad requirement, skipping.");
-                dB.echoError(e);
+                Debug.echoError(ChatColor.RED + "'" + entry + "' has a bad requirement, skipping.");
+                Debug.echoError(e);
             }
 
-            if (dB.shouldDebug(assignmentScript)) {
-                dB.log(DebugElement.Spacer, null);
+            if (Debug.shouldDebug(assignmentScript)) {
+                Debug.log(DebugElement.Spacer, null);
             }
             // Next entry!
         }
@@ -133,23 +133,23 @@ public class InteractScriptHelper {
         if (interactableScripts.size() == 1) {
             String script = interactableScripts.get(0).getName();
             InteractScriptContainer interactScript = ScriptRegistry.getScriptContainer(script.replace("^", ""));
-            if (dB.shouldDebug(interactScript)) {
-                dB.echoApproval("Highest scoring script is " + script + ".");
+            if (Debug.shouldDebug(interactScript)) {
+                Debug.echoApproval("Highest scoring script is " + script + ".");
             }
-            if (dB.shouldDebug(assignmentScript)) {
-                dB.log("Current step for this script is: " + getCurrentStep(player, script));
+            if (Debug.shouldDebug(assignmentScript)) {
+                Debug.log("Current step for this script is: " + getCurrentStep(player, script));
             }
-            if (dB.shouldDebug(interactScript)) {
-                dB.log(DebugElement.Footer, "");
+            if (Debug.shouldDebug(interactScript)) {
+                Debug.log(DebugElement.Footer, "");
             }
             return interactScript;
         }
 
         // Or, if list is empty.. no scripts meet requirements!
         else if (interactableScripts.isEmpty()) {
-            if (dB.shouldDebug(assignmentScript)) {
-                dB.log(ChatColor.YELLOW + "+> " + ChatColor.WHITE + "No scripts meet requirements!");
-                dB.log(DebugElement.Footer, "");
+            if (Debug.shouldDebug(assignmentScript)) {
+                Debug.log(ChatColor.YELLOW + "+> " + ChatColor.WHITE + "No scripts meet requirements!");
+                Debug.log(DebugElement.Footer, "");
             }
             return null;
         }
@@ -165,8 +165,8 @@ public class InteractScriptHelper {
             InteractScriptContainer interactScript = ScriptRegistry
                     .getScriptContainer(interactableScripts.get(a).name.replace("^", ""));
 
-            if (dB.shouldDebug(interactScript)) {
-                dB.log("Checking script '" + interactableScripts.get(a).getName() + "'.");
+            if (Debug.shouldDebug(interactScript)) {
+                Debug.log("Checking script '" + interactableScripts.get(a).getName() + "'.");
             }
 
             // Check for 'Overlay' assignment mode.
@@ -177,28 +177,28 @@ public class InteractScriptHelper {
                 // This is an Overlay Assignment, check for the appropriate Trigger Script...
                 // If Trigger exists, cool, this is our script.
                 if (interactScript.containsTriggerInStep(getCurrentStep(player, interactScript.getName()), trigger)) {
-                    if (dB.shouldDebug(interactScript)) {
-                        dB.log("...found trigger!");
-                        dB.echoApproval("Highest scoring script is " + interactScript.getName() + ".");
-                        dB.log("Current step for this script is: " + getCurrentStep(player, interactScript.getName()));
-                        dB.log(DebugElement.Footer, "");
+                    if (Debug.shouldDebug(interactScript)) {
+                        Debug.log("...found trigger!");
+                        Debug.echoApproval("Highest scoring script is " + interactScript.getName() + ".");
+                        Debug.log("Current step for this script is: " + getCurrentStep(player, interactScript.getName()));
+                        Debug.log(DebugElement.Footer, "");
                     }
                     return interactScript;
                 }
                 else {
-                    if (dB.shouldDebug(interactScript)) {
-                        dB.log("...no trigger on this overlay assignment. Skipping.");
+                    if (Debug.shouldDebug(interactScript)) {
+                        Debug.log("...no trigger on this overlay assignment. Skipping.");
                     }
                 }
             }
 
             // Not an Overlay Assignment, so return this script, which is the highest scoring.
             else {
-                if (dB.shouldDebug(interactScript)) {
-                    dB.log("...script is good!");
-                    dB.echoApproval("Highest scoring script is " + interactScript.getName() + ".");
-                    dB.log("Current step for this script is: " + getCurrentStep(player, interactScript.getName()));
-                    dB.log(DebugElement.Footer, "");
+                if (Debug.shouldDebug(interactScript)) {
+                    Debug.log("...script is good!");
+                    Debug.echoApproval("Highest scoring script is " + interactScript.getName() + ".");
+                    Debug.log("Current step for this script is: " + getCurrentStep(player, interactScript.getName()));
+                    Debug.log(DebugElement.Footer, "");
                 }
                 return interactScript;
             }
@@ -222,10 +222,10 @@ public class InteractScriptHelper {
             return null;
         }
         // Probe 'saves.yml' for the current step
-        if (DenizenAPI._saves().contains("Players." + player.getSaveName()
+        if (DenizenAPI.getSaves().contains("Players." + player.getSaveName()
                 + "." + "Scripts." + scriptName.toUpperCase()
                 + "." + "Current Step")) {
-            return DenizenAPI._saves().getString("Players." + player.getSaveName()
+            return DenizenAPI.getSaves().getString("Players." + player.getSaveName()
                     + "." + "Scripts." + scriptName.toUpperCase()
                     + "." + "Current Step").toUpperCase();
         }

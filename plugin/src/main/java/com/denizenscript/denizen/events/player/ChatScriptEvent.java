@@ -3,7 +3,7 @@ package com.denizenscript.denizen.events.player;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -14,7 +14,6 @@ import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -105,12 +104,12 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
             String name = determination.substring("format:".length());
             FormatScriptContainer formatscr = ScriptRegistry.getScriptContainer(name);
             if (formatscr == null) {
-                dB.echoError("Could not find format script matching '" + name + '\'');
+                Debug.echoError("Could not find format script matching '" + name + '\'');
             }
             else {
                 String formatstr = formatscr.getFormatText(null, player);
-                if (Debug.verbose) {
-                    dB.log("Setting format to " + formatstr);
+                if (com.denizenscript.denizencore.utilities.debugging.Debug.verbose) {
+                    Debug.log("Setting format to " + formatstr);
                 }
                 format = new Element(formatstr);
             }

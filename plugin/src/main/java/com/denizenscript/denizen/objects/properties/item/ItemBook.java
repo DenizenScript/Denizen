@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.utilities.MaterialCompat;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizencore.objects.Element;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -285,7 +285,7 @@ public class ItemBook implements Property {
 
         if (mechanism.matches("book_author")) {
             if (!item.getItemStack().getType().equals(Material.WRITTEN_BOOK)) {
-                dB.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
+                Debug.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
             }
             else {
                 BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
@@ -306,7 +306,7 @@ public class ItemBook implements Property {
 
         if (mechanism.matches("book_title")) {
             if (!item.getItemStack().getType().equals(Material.WRITTEN_BOOK)) {
-                dB.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
+                Debug.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
             }
             else {
                 BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
@@ -338,13 +338,13 @@ public class ItemBook implements Property {
             BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
             dList data = mechanism.valueAsType(dList.class);
             if (data.size() < 2) {
-                dB.echoError("Invalid book input!");
+                Debug.echoError("Invalid book input!");
             }
             else {
                 if (data.size() > 4 && data.get(0).equalsIgnoreCase("author")
                         && data.get(2).equalsIgnoreCase("title")) {
                     if (!item.getItemStack().getType().equals(Material.WRITTEN_BOOK)) {
-                        dB.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
+                        Debug.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
                     }
                     else {
                         meta.setAuthor(EscapeTags.unEscape(data.get(1)));
@@ -369,7 +369,7 @@ public class ItemBook implements Property {
                     meta.setPages(newPages);
                 }
                 else {
-                    dB.echoError("Invalid book input!");
+                    Debug.echoError("Invalid book input!");
                 }
                 item.getItemStack().setItemMeta(meta);
             }

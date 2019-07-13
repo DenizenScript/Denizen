@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.ParticleHelper;
 import com.denizenscript.denizen.nms.interfaces.Particle;
@@ -119,7 +119,7 @@ public class PlayEffectCommand extends AbstractCommand {
                         scriptEntry.addObject("iconcrack", item);
                     }
                     else {
-                        dB.echoError("Invalid iconcrack_[item]. Must be a valid dItem!");
+                        Debug.echoError("Invalid iconcrack_[item]. Must be a valid dItem!");
                     }
                     continue;
                 }
@@ -130,7 +130,7 @@ public class PlayEffectCommand extends AbstractCommand {
                         scriptEntry.addObject("blockcrack", material);
                     }
                     else {
-                        dB.echoError("Invalid blockcrack_[item]. Must be a valid dMaterial!");
+                        Debug.echoError("Invalid blockcrack_[item]. Must be a valid dMaterial!");
                     }
                     continue;
                 }
@@ -141,7 +141,7 @@ public class PlayEffectCommand extends AbstractCommand {
                         scriptEntry.addObject("blockdust", material);
                     }
                     else {
-                        dB.echoError("Invalid blockdust_[item]. Must be a valid dMaterial!");
+                        Debug.echoError("Invalid blockdust_[item]. Must be a valid dMaterial!");
                     }
                     continue;
                 }
@@ -244,7 +244,7 @@ public class PlayEffectCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), (effect != null ? ArgumentHelper.debugObj("effect", effect.name()) :
+            Debug.report(scriptEntry, getName(), (effect != null ? ArgumentHelper.debugObj("effect", effect.name()) :
                     particleEffect != null ? ArgumentHelper.debugObj("special effect", particleEffect.getName()) :
                             (iconcrack != null ? iconcrack.debug()
                                     : blockcrack != null ? blockcrack.debug()
@@ -310,12 +310,12 @@ public class PlayEffectCommand extends AbstractCommand {
                     else {
                         Object dataObject = null;
                         if (special_data == null) {
-                            dB.echoError(scriptEntry.getResidingQueue(), "Missing required special data for particle: " + particleEffect.getName());
+                            Debug.echoError(scriptEntry.getResidingQueue(), "Missing required special data for particle: " + particleEffect.getName());
                         }
                         else if (clazz == org.bukkit.Particle.DustOptions.class) {
                             dList dataList = dList.valueOf(special_data.asString());
                             if (dataList.size() != 2) {
-                                dB.echoError(scriptEntry.getResidingQueue(), "DustOptions special_data must have 2 list entries for particle: " + particleEffect.getName());
+                                Debug.echoError(scriptEntry.getResidingQueue(), "DustOptions special_data must have 2 list entries for particle: " + particleEffect.getName());
                             }
                             else {
                                 float size = ArgumentHelper.getFloatFrom(dataList.get(0));
@@ -324,7 +324,7 @@ public class PlayEffectCommand extends AbstractCommand {
                             }
                         }
                         else {
-                            dB.echoError(scriptEntry.getResidingQueue(), "Unknown particle data type: " + clazz.getCanonicalName() + " for particle: " + particleEffect.getName());
+                            Debug.echoError(scriptEntry.getResidingQueue(), "Unknown particle data type: " + clazz.getCanonicalName() + " for particle: " + particleEffect.getName());
                         }
                         particleEffect.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), dataObject);
                     }

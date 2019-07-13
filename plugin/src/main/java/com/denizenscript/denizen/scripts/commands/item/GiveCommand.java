@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.item;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
@@ -149,7 +149,7 @@ public class GiveCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(),
+            Debug.report(scriptEntry, getName(),
                     ArgumentHelper.debugObj("Type", type.name())
                             + (inventory != null ? inventory.debug() : "")
                             + ArgumentHelper.debugObj("Quantity", qty.asDouble())
@@ -167,7 +167,7 @@ public class GiveCommand extends AbstractCommand {
                     Depends.economy.depositPlayer(Utilities.getEntryPlayer(scriptEntry).getOfflinePlayer(), qty.asDouble());
                 }
                 else {
-                    dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
+                    Debug.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
                 }
                 break;
 
@@ -181,7 +181,7 @@ public class GiveCommand extends AbstractCommand {
                 for (dItem item : items) {
                     ItemStack is = item.getItemStack();
                     if (is.getType() == Material.AIR) {
-                        dB.echoError("Cannot give air!");
+                        Debug.echoError("Cannot give air!");
                         continue;
                     }
                     if (set_quantity) {
@@ -193,14 +193,14 @@ public class GiveCommand extends AbstractCommand {
                     }
                     int slotId = SlotHelper.nameToIndex(slot.asString());
                     if (slotId == -1) {
-                        dB.echoError(scriptEntry.getResidingQueue(), "The input '" + slot.asString() + "' is not a valid slot!");
+                        Debug.echoError(scriptEntry.getResidingQueue(), "The input '" + slot.asString() + "' is not a valid slot!");
                         return;
                     }
 
                     List<ItemStack> leftovers = inventory.addWithLeftovers(slotId, limited, is);
 
                     if (!leftovers.isEmpty()) {
-                        dB.echoDebug(scriptEntry, "The inventory didn't have enough space, the rest of the items have been placed on the floor.");
+                        Debug.echoDebug(scriptEntry, "The inventory didn't have enough space, the rest of the items have been placed on the floor.");
                         for (ItemStack leftoverItem : leftovers) {
                             inventory.getLocation().getWorld().dropItem(inventory.getLocation(), leftoverItem);
                         }

@@ -1,11 +1,10 @@
 package com.denizenscript.denizen.objects;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 
@@ -88,10 +87,10 @@ public class dColor implements dObject {
             colorField = Color.class.getField(string.toUpperCase());
         }
         catch (SecurityException e1) {
-            dB.echoError("Security exception getting color field!");
+            Debug.echoError("Security exception getting color field!");
         }
         catch (NoSuchFieldException e1) {
-            dB.echoError("No such color field '" + string + "'!");
+            Debug.echoError("No such color field '" + string + "'!");
         }
 
         if (colorField != null) {
@@ -145,7 +144,7 @@ public class dColor implements dObject {
             color = (Color) field.get(null);
         }
         catch (Exception e) {
-            dB.echoError("Exception trying to fetch color!");
+            Debug.echoError("Exception trying to fetch color!");
         }
     }
 
@@ -196,7 +195,7 @@ public class dColor implements dObject {
                 }
             }
             catch (Exception e) {
-                dB.echoError("Exception trying to fetch color: " + e.getClass().getCanonicalName() + ": " + e.getMessage());
+                Debug.echoError("Exception trying to fetch color: " + e.getClass().getCanonicalName() + ": " + e.getMessage());
             }
         }
         return "co@" + getColor().getRed() + "," + getColor().getGreen() + "," + getColor().getBlue();
@@ -353,7 +352,7 @@ public class dColor implements dObject {
             @Override
             public String run(Attribute attribute, dObject object) {
                 if (!attribute.hasContext(1)) {
-                    dB.echoError("The tag li@list.insert[...] must have a value.");
+                    Debug.echoError("The tag li@list.insert[...] must have a value.");
                     return null;
                 }
                 dColor mixed_with = dColor.valueOf(attribute.getContext(1));
@@ -361,7 +360,7 @@ public class dColor implements dObject {
                     return new dColor(((dColor) object).color.mixColors(mixed_with.getColor())).getAttribute(attribute.fulfill(1));
                 }
                 else {
-                    dB.echoError("'" + attribute.getContext(1) + "' is not a valid color!");
+                    Debug.echoError("'" + attribute.getContext(1) + "' is not a valid color!");
                     return null;
                 }
             }
@@ -417,7 +416,7 @@ public class dColor implements dObject {
         TagRunnable tr = registeredTags.get(attrLow);
         if (tr != null) {
             if (!tr.name.equals(attrLow)) {
-                Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
+                com.denizenscript.denizencore.utilities.debugging.Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
                         "Using deprecated form of tag '" + tr.name + "': '" + attrLow + "'.");
             }
             return tr.run(attribute, this);

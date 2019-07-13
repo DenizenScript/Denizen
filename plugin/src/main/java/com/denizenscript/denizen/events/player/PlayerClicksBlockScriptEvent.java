@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.player;
 
 import com.denizenscript.denizen.objects.*;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.Element;
@@ -91,7 +91,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         }
 
         if (!using.equals("hand") && !using.equals("off_hand") && !using.equals("either_hand")) {
-            dB.echoError("Invalid USING hand in " + getName() + " for '" + path.event + "' in " + path.container.getName());
+            Debug.echoError("Invalid USING hand in " + getName() + " for '" + path.event + "' in " + path.container.getName());
             return false;
         }
         if (!using.equals("either_hand") && !using.equalsIgnoreCase(hand.identify())) {

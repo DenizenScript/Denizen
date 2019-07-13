@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.utilities.world;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.entity.EntityDespawnScriptEvent;
 import com.denizenscript.denizen.nms.interfaces.WorldAccess;
 import com.denizenscript.denizen.objects.dEntity;
@@ -32,7 +32,7 @@ public class DenizenWorldAccess implements WorldAccess {
             dEntity.forgetEntity(entity);
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
         EntityScriptHelper.unlinkEntity(entity);
     }

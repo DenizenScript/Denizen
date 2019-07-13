@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.trade;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dTrade;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -104,7 +104,7 @@ public class TradeInputs implements Property {
             }
 
             if (ingredients.size() > 2) {
-                dB.echoError("Trade recipe input was given " + list.size() + " items. Only using the first two items!");
+                Debug.echoError("Trade recipe input was given " + list.size() + " items. Only using the first two items!");
                 ingredients = ingredients.subList(0, 2);
             }
 

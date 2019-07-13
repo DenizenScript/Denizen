@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.properties.entity.EntityAge;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -98,7 +98,7 @@ public class AgeCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), (lock ? ArgumentHelper.debugObj("lock", lock) : "") +
+            Debug.report(scriptEntry, getName(), (lock ? ArgumentHelper.debugObj("lock", lock) : "") +
                     (ageType != null ? ArgumentHelper.debugObj("agetype", ageType)
                             : ArgumentHelper.debugObj("age", age)) +
                     ArgumentHelper.debugObj("entities", entities.toString()));
@@ -130,7 +130,7 @@ public class AgeCommand extends AbstractCommand {
                     property.setLock(lock);
                 }
                 else {
-                    dB.echoError(scriptEntry.getResidingQueue(), entity.identify() + " is not ageable!");
+                    Debug.echoError(scriptEntry.getResidingQueue(), entity.identify() + " is not ageable!");
                 }
 
             }

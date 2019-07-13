@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizencore.objects.Element;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -122,7 +122,7 @@ public class ItemChargedProjectile implements Property {
                     meta.addChargedProjectile(projectile.getItemStack());
                 }
                 catch (IllegalArgumentException e) {
-                    dB.echoError("Charged crossbow projectiles may only be arrows or fireworks!");
+                    Debug.echoError("Charged crossbow projectiles may only be arrows or fireworks!");
                 }
             }
             item.getItemStack().setItemMeta(meta);
@@ -144,7 +144,7 @@ public class ItemChargedProjectile implements Property {
                 meta.addChargedProjectile(mechanism.valueAsType(dItem.class).getItemStack());
             }
             catch (IllegalArgumentException e) {
-                dB.echoError("Charged crossbow projectiles may only be arrows or fireworks!");
+                Debug.echoError("Charged crossbow projectiles may only be arrows or fireworks!");
             }
             item.getItemStack().setItemMeta(meta);
         }

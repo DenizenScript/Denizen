@@ -7,7 +7,7 @@ import com.denizenscript.denizen.scripts.commands.npc.*;
 import com.denizenscript.denizen.scripts.commands.player.*;
 import com.denizenscript.denizen.scripts.commands.server.*;
 import com.denizenscript.denizen.scripts.commands.world.*;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
@@ -32,11 +32,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         @Override
         public void execute(ScriptEntry scriptEntry) {
-            dB.echoError("The command '" + name + "' is only available when Citizens is on the server.");
+            Debug.echoError("The command '" + name + "' is only available when Citizens is on the server.");
         }
     }
 
-    public void registerCoreMembers() {
+    public void registerCommands() {
 
         registerCoreCommands();
 
@@ -220,6 +220,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCoreMember(WorldBorderCommand.class, "WORLDBORDER", "worldborder [<world>/<player>|...] (center:<location>) (size:<#.#>) (current_size:<#.#>) (damage:<#.#>) (damagebuffer:<#.#>) (warningdistance:<#>) (warningtime:<duration>) (duration:<duration>) (reset)", 2);
         registerCoreMember(ZapCommand.class, "ZAP", "zap (<script>) [<step>] (<duration>)", 0);
 
-        dB.echoApproval("Loaded core commands: " + instances.keySet().toString());
+        Debug.echoApproval("Loaded core commands: " + instances.keySet().toString());
     }
 }

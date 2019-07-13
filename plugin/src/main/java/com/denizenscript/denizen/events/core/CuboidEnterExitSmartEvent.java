@@ -5,7 +5,7 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.scripts.containers.core.BukkitWorldScriptHelper;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.events.OldSmartEvent;
 import com.denizenscript.denizencore.objects.Element;
 import com.denizenscript.denizencore.objects.dList;
@@ -77,7 +77,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
     public void _initialize() {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
                 .registerEvents(this, DenizenAPI.getCurrentInstance());
-        dB.log("Loaded Cuboid Enter & Exit SmartEvent.");
+        Debug.log("Loaded Cuboid Enter & Exit SmartEvent.");
     }
 
 

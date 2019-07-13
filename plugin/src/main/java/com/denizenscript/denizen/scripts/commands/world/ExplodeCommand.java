@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
@@ -102,7 +102,7 @@ public class ExplodeCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(),
+            Debug.report(scriptEntry, getName(),
                     (ArgumentHelper.debugObj("location", location.toString()) +
                             ArgumentHelper.debugObj("power", power) +
                             ArgumentHelper.debugObj("breakblocks", breakblocks) +

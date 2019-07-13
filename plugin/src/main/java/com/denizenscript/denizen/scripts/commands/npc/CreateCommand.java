@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.npc;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dNPC;
@@ -88,7 +88,7 @@ public class CreateCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), name.debug() + type.debug() + (loc != null ? loc.debug() : "")
+            Debug.report(scriptEntry, getName(), name.debug() + type.debug() + (loc != null ? loc.debug() : "")
                     + (traits != null ? traits.debug() : ""));
 
         }
@@ -126,7 +126,7 @@ public class CreateCommand extends AbstractCommand {
                     created.getCitizen().addTrait(trait);
                 }
                 else {
-                    dB.echoError(scriptEntry.getResidingQueue(), "Could not add trait to NPC: " + trait_name);
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Could not add trait to NPC: " + trait_name);
                 }
             }
         }

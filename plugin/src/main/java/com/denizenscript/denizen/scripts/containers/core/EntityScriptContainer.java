@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.objects.dPlayer;
@@ -91,8 +91,8 @@ public class EntityScriptContainer extends ScriptContainer {
             entity.setEntityScript(getName());
         }
         catch (Exception e) {
-            dB.echoError("Woah! An exception has been called with this entity script!");
-            dB.echoError(e);
+            Debug.echoError("Woah! An exception has been called with this entity script!");
+            Debug.echoError(e);
             entity = null;
         }
 

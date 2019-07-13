@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.player;
 
 import com.denizenscript.denizen.objects.*;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.Element;
@@ -110,7 +110,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
             return hand;
         }
         else if (name.equals("cuboids")) {
-            dB.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
+            Debug.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
             dList cuboids = new dList();
             for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
                 cuboids.add(cuboid.identifySimple());

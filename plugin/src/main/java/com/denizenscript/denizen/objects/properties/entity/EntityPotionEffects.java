@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.dEntity;
@@ -167,7 +167,7 @@ public class EntityPotionEffects implements Property {
                 }
                 PotionEffectType effectType = PotionEffectType.getByName(split.get(0));
                 if (effectType == null) {
-                    dB.echoError("Cannot apply potion effect '" + split.get(0) + "': unknown effect type.");
+                    Debug.echoError("Cannot apply potion effect '" + split.get(0) + "': unknown effect type.");
                     continue;
                 }
                 try {
@@ -193,7 +193,7 @@ public class EntityPotionEffects implements Property {
                     }
                 }
                 catch (NumberFormatException ex) {
-                    dB.echoError("Cannot apply potion effect '" + effect + "': invalid amplifier or duration number.");
+                    Debug.echoError("Cannot apply potion effect '" + effect + "': invalid amplifier or duration number.");
                     continue;
                 }
             }

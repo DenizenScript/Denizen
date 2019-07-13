@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.utilities.blocks;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.abstracts.ModernBlockData;
 import com.denizenscript.denizen.utilities.Utilities;
 import org.bukkit.block.Block;
@@ -73,7 +73,7 @@ public class DirectionalBlocksHelper {
     public static void setFacing(Block b, Vector faceVec) {
         BlockFace newFace = Utilities.faceFor(faceVec);
         if (newFace == null) {
-            dB.echoError("Direction '" + faceVec + "' does not appear to be a valid block face.");
+            Debug.echoError("Direction '" + faceVec + "' does not appear to be a valid block face.");
             return;
         }
         setFace(b, newFace);

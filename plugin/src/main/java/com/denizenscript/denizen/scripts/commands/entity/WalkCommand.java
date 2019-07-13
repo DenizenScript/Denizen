@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.objects.Argument;
 import com.google.common.base.Function;
@@ -130,7 +130,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), (loc != null ? loc.debug() : "")
+            Debug.report(scriptEntry, getName(), (loc != null ? loc.debug() : "")
                     + (speed != null ? speed.debug() : "")
                     + (auto_range != null ? auto_range.debug() : "")
                     + (radius != null ? radius.debug() : "")
@@ -151,7 +151,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                 dNPC npc = entity.getDenizenNPC();
                 npcs.add(npc);
                 if (!npc.isSpawned()) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "NPC " + npc.identify() + " is not spawned!");
+                    Debug.echoError(scriptEntry.getResidingQueue(), "NPC " + npc.identify() + " is not spawned!");
                     continue;
                 }
 

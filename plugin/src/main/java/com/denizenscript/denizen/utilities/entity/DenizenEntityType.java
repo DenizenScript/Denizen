@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.utilities.entity;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.enums.CustomEntityType;
@@ -128,7 +128,7 @@ public class DenizenEntityType {
             }
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
         return null;
     }

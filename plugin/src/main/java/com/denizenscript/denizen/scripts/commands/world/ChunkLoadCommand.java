@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -128,7 +128,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(),
+            Debug.report(scriptEntry, getName(),
                     action.debug()
                             + chunkloc.debug()
                             + length.debug());
@@ -146,7 +146,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                 else {
                     chunkDelays.put(chunkString, (long) 0);
                 }
-                dB.echoDebug(scriptEntry, "...added chunk " + chunk.getX() + ", " + chunk.getZ() + " with a delay of " + length.getSeconds() + " seconds.");
+                Debug.echoDebug(scriptEntry, "...added chunk " + chunk.getX() + ", " + chunk.getZ() + " with a delay of " + length.getSeconds() + " seconds.");
                 if (!chunk.isLoaded()) {
                     chunk.load();
                 }
@@ -171,14 +171,14 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                     if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
                         chunk.setForceLoaded(false);
                     }
-                    dB.echoDebug(scriptEntry, "...allowing unloading of chunk " + chunk.getX() + ", " + chunk.getZ());
+                    Debug.echoDebug(scriptEntry, "...allowing unloading of chunk " + chunk.getX() + ", " + chunk.getZ());
                 }
                 else {
-                    dB.echoError("Chunk was not on the load list!");
+                    Debug.echoError("Chunk was not on the load list!");
                 }
                 break;
             case REMOVEALL:
-                dB.echoDebug(scriptEntry, "...allowing unloading of all stored chunks");
+                Debug.echoDebug(scriptEntry, "...allowing unloading of all stored chunks");
                 if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
                     for (String chunkStr : chunkDelays.keySet()) {
                         dChunk loopChunk = dChunk.valueOf(chunkStr);

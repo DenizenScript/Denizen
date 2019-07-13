@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.npc;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
@@ -72,7 +72,7 @@ public class TraitCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(),
+            Debug.report(scriptEntry, getName(),
                     traitName.debug() +
                             toggle.debug() +
                             Utilities.getEntryNPC(scriptEntry).debug());
@@ -82,7 +82,7 @@ public class TraitCommand extends AbstractCommand {
         Class<? extends Trait> trait = CitizensAPI.getTraitFactory().getTraitClass(traitName.asString());
 
         if (trait == null) {
-            dB.echoError(scriptEntry.getResidingQueue(), "Trait not found: " + traitName.asString());
+            Debug.echoError(scriptEntry.getResidingQueue(), "Trait not found: " + traitName.asString());
             return;
         }
 
@@ -91,7 +91,7 @@ public class TraitCommand extends AbstractCommand {
             case TRUE:
             case ON:
                 if (npc.hasTrait(trait)) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "NPC already has trait '" + traitName.asString() + "'");
+                    Debug.echoError(scriptEntry.getResidingQueue(), "NPC already has trait '" + traitName.asString() + "'");
                 }
                 else {
                     npc.addTrait(trait);
@@ -101,7 +101,7 @@ public class TraitCommand extends AbstractCommand {
             case FALSE:
             case OFF:
                 if (!npc.hasTrait(trait)) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "NPC does not have trait '" + traitName.asString() + "'");
+                    Debug.echoError(scriptEntry.getResidingQueue(), "NPC does not have trait '" + traitName.asString() + "'");
                 }
                 else {
                     npc.removeTrait(trait);

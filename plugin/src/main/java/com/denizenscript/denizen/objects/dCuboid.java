@@ -2,7 +2,7 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.Settings;
@@ -14,7 +14,6 @@ import com.denizenscript.denizencore.objects.notable.Note;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
@@ -123,7 +122,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                 && dLocation.matches(positions.get(1))) {
             if (positions.size() % 2 != 0) {
                 if (context == null || context.debug) {
-                    dB.echoError("valueOf dCuboid returning null (Uneven number of locations): '" + string + "'.");
+                    Debug.echoError("valueOf dCuboid returning null (Uneven number of locations): '" + string + "'.");
                 }
                 return null;
             }
@@ -139,14 +138,14 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                 // Must be valid locations
                 if (pos_1 == null || pos_2 == null) {
                     if (context == null || context.debug) {
-                        dB.echoError("valueOf in dCuboid returning null (null locations): '" + string + "'.");
+                        Debug.echoError("valueOf in dCuboid returning null (null locations): '" + string + "'.");
                     }
                     return null;
                 }
                 // Must have worlds
                 if (pos_1.getWorldName() == null || pos_2.getWorldName() == null) {
                     if (context == null || context.debug) {
-                        dB.echoError("valueOf in dCuboid returning null (null worlds): '" + string + "'.");
+                        Debug.echoError("valueOf in dCuboid returning null (null worlds): '" + string + "'.");
                     }
                     return null;
                 }
@@ -170,7 +169,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         }
 
         if (context == null || context.debug) {
-            dB.echoError("valueOf dCuboid returning null: " + string);
+            Debug.echoError("valueOf dCuboid returning null: " + string);
         }
 
         return null;
@@ -290,11 +289,11 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
     public void addPair(Location point_1, Location point_2) {
         if (point_1.getWorld() != point_2.getWorld()) {
-            dB.echoError("Tried to make cross-world cuboid!");
+            Debug.echoError("Tried to make cross-world cuboid!");
             return;
         }
         if (pairs.size() > 0 && point_1.getWorld() != getWorld()) {
-            dB.echoError("Tried to make cross-world cuboid set!");
+            Debug.echoError("Tried to make cross-world cuboid set!");
             return;
         }
         // Make a new pair
@@ -828,7 +827,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         for (LocationPair pair : pairs) {
             if (pair.low.getWorld() == null || pair.high.getWorld() == null) {
-                dB.echoError("Null world for cuboid, returning invalid identity!");
+                Debug.echoError("Null world for cuboid, returning invalid identity!");
                 return "cu@null";
             }
             sb.append(pair.low.getBlockX()).append(',').append(pair.low.getBlockY())
@@ -968,7 +967,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 if (!attribute.hasContext(1)) {
-                    dB.echoError("The tag cu@cuboid.intersects[...] must have a value.");
+                    Debug.echoError("The tag cu@cuboid.intersects[...] must have a value.");
                     return null;
                 }
                 dCuboid cub2 = dCuboid.valueOf(attribute.getContext(1));
@@ -1007,7 +1006,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 if (!attribute.hasContext(1)) {
-                    dB.echoError("The tag cu@cuboid.contains_location[...] must have a value.");
+                    Debug.echoError("The tag cu@cuboid.contains_location[...] must have a value.");
                     return null;
                 }
                 dLocation loc = dLocation.valueOf(attribute.getContext(1));
@@ -1025,7 +1024,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 if (!attribute.hasContext(1)) {
-                    dB.echoError("The tag cu@cuboid.is_within[...] must have a value.");
+                    Debug.echoError("The tag cu@cuboid.is_within[...] must have a value.");
                     return null;
                 }
                 dCuboid cub2 = dCuboid.valueOf(attribute.getContext(1));
@@ -1035,8 +1034,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                         boolean contained = false;
                         for (LocationPair pair : cub2.pairs) {
                             if (!pair.low.getWorld().getName().equalsIgnoreCase(pair2.low.getWorld().getName())) {
-                                if (Debug.verbose) {
-                                    dB.log("Worlds don't match!");
+                                if (com.denizenscript.denizencore.utilities.debugging.Debug.verbose) {
+                                    Debug.log("Worlds don't match!");
                                 }
                                 return new Element("false").getAttribute(attribute.fulfill(1));
                             }
@@ -1089,7 +1088,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 if (!attribute.hasContext(1)) {
-                    dB.echoError("The tag cu@cuboid.get[...] must have a value.");
+                    Debug.echoError("The tag cu@cuboid.get[...] must have a value.");
                     return null;
                 }
                 else {
@@ -1118,7 +1117,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 if (!attribute.hasContext(1)) {
-                    dB.echoError("The tag cu@cuboid.set[...] must have a value.");
+                    Debug.echoError("The tag cu@cuboid.set[...] must have a value.");
                     return null;
                 }
                 else {
@@ -1126,12 +1125,12 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     attribute = attribute.fulfill(1);
                     if (!attribute.matches("at")) {
                         attribute.fulfill(1);
-                        dB.echoError("The tag cu@cuboid.set[...] must be followed by an 'at'.");
+                        Debug.echoError("The tag cu@cuboid.set[...] must be followed by an 'at'.");
                         return null;
                     }
                     if (!attribute.hasContext(1)) {
                         attribute.fulfill(1);
-                        dB.echoError("The tag cu@cuboid.set[...].at[...] must have an 'at' value.");
+                        Debug.echoError("The tag cu@cuboid.set[...].at[...] must have an 'at' value.");
                         return null;
                     }
                     int member = attribute.getIntContext(1);
@@ -1148,7 +1147,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                         return cloned.getAttribute(attribute.fulfill(1));
                     }
                     catch (CloneNotSupportedException ex) {
-                        dB.echoError(ex); // This should never happen
+                        Debug.echoError(ex); // This should never happen
                         return null;
                     }
                 }
@@ -1291,7 +1290,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 if (!attribute.hasContext(1)) {
-                    dB.echoError("The tag cu@cuboid.include[...] must have a value.");
+                    Debug.echoError("The tag cu@cuboid.include[...] must have a value.");
                     return null;
                 }
                 try {
@@ -1320,7 +1319,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     }
                 }
                 catch (CloneNotSupportedException ex) {
-                    dB.echoError(ex); // This should never happen
+                    Debug.echoError(ex); // This should never happen
                 }
                 return null;
             }
@@ -1336,7 +1335,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 if (!attribute.hasContext(1)) {
-                    dB.echoError("The tag cu@cuboid.include_x[...] must have a value.");
+                    Debug.echoError("The tag cu@cuboid.include_x[...] must have a value.");
                     return null;
                 }
                 try {
@@ -1351,7 +1350,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     return cuboid.getAttribute(attribute.fulfill(1));
                 }
                 catch (CloneNotSupportedException ex) {
-                    dB.echoError(ex); // This should never happen
+                    Debug.echoError(ex); // This should never happen
                 }
                 return null;
             }
@@ -1367,7 +1366,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 if (!attribute.hasContext(1)) {
-                    dB.echoError("The tag cu@cuboid.include_y[...] must have a value.");
+                    Debug.echoError("The tag cu@cuboid.include_y[...] must have a value.");
                     return null;
                 }
                 try {
@@ -1382,7 +1381,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     return cuboid.getAttribute(attribute.fulfill(1));
                 }
                 catch (CloneNotSupportedException ex) {
-                    dB.echoError(ex); // This should never happen
+                    Debug.echoError(ex); // This should never happen
                 }
                 return null;
             }
@@ -1398,7 +1397,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 if (!attribute.hasContext(1)) {
-                    dB.echoError("The tag cu@cuboid.include_z[...] must have a value.");
+                    Debug.echoError("The tag cu@cuboid.include_z[...] must have a value.");
                     return null;
                 }
                 try {
@@ -1413,7 +1412,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     return cuboid.getAttribute(attribute.fulfill(1));
                 }
                 catch (CloneNotSupportedException ex) {
-                    dB.echoError(ex); // This should never happen
+                    Debug.echoError(ex); // This should never happen
                 }
                 return null;
             }
@@ -1432,7 +1431,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 if (!attribute.hasContext(1)) {
-                    dB.echoError("The tag cu@cuboid.with_min[...] must have a value.");
+                    Debug.echoError("The tag cu@cuboid.with_min[...] must have a value.");
                     return null;
                 }
                 dCuboid cuboid = (dCuboid) object;
@@ -1454,7 +1453,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 if (!attribute.hasContext(1)) {
-                    dB.echoError("The tag cu@cuboid.with_max[...] must have a value.");
+                    Debug.echoError("The tag cu@cuboid.with_max[...] must have a value.");
                     return null;
                 }
                 dCuboid cuboid = (dCuboid) object;
@@ -1683,7 +1682,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         TagRunnable tr = registeredTags.get(attrLow);
         if (tr != null) {
             if (!tr.name.equals(attrLow)) {
-                dB.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
+                Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
                         "Using deprecated form of tag '" + tr.name + "': '" + attrLow + "'.");
             }
             return tr.run(attribute, this);
@@ -1699,7 +1698,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
     public void applyProperty(Mechanism mechanism) {
         if (NotableManager.isExactSavedObject(this)) {
-            dB.echoError("Cannot apply properties to noted objects.");
+            Debug.echoError("Cannot apply properties to noted objects.");
             return;
         }
         adjust(mechanism);

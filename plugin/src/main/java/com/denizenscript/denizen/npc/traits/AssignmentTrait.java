@@ -4,9 +4,9 @@ import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.Settings;
-import com.denizenscript.denizen.npc.dNPCRegistry;
+import com.denizenscript.denizen.npc.DenizenNPCHelper;
 import com.denizenscript.denizencore.objects.Element;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dObject;
@@ -56,7 +56,7 @@ public class AssignmentTrait extends Trait {
     public void load(DataKey key) throws NPCLoadException {
         // Check to make sure assignment is still valid. Throw a dB error if not.
         if (hasAssignment()) {
-            dB.echoError("Missing assignment '" + assignment + "' for NPC '"
+            Debug.echoError("Missing assignment '" + assignment + "' for NPC '"
                     + npc.getName() + "/" + npc.getId() + "! Perhaps the script has been removed?");
         }
         npc.getTrait(ConstantsTrait.class).rebuildAssignmentConstants();
@@ -99,7 +99,7 @@ public class AssignmentTrait extends Trait {
             // Reset Constants
             npc.getTrait(ConstantsTrait.class).rebuildAssignmentConstants();
             // 'On Assignment' action.
-            dNPCRegistry.getDenizen(npc).action("assignment", player);
+            DenizenNPCHelper.getDenizen(npc).action("assignment", player);
             return true;
         }
         else {
@@ -151,7 +151,7 @@ public class AssignmentTrait extends Trait {
      * @param player the player removing the assignment, can be null
      */
     public void removeAssignment(dPlayer player) {
-        dNPCRegistry.getDenizen(npc).action("remove assignment", player);
+        DenizenNPCHelper.getDenizen(npc).action("remove assignment", player);
         assignment = "";
     }
 

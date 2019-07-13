@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.objects.dWorld;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -98,7 +98,7 @@ public class GroupCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), action.debug() + (world != null ? world.debug() : "") + group.debug());
+            Debug.report(scriptEntry, getName(), action.debug() + (world != null ? world.debug() : "") + group.debug());
         }
 
         World bukkitWorld = null;
@@ -112,7 +112,7 @@ public class GroupCommand extends AbstractCommand {
         switch (Action.valueOf(action.asString().toUpperCase())) {
             case ADD:
                 if (inGroup) {
-                    dB.echoDebug(scriptEntry, "Player " + player.getName() + " is already in group " + group);
+                    Debug.echoDebug(scriptEntry, "Player " + player.getName() + " is already in group " + group);
                 }
                 else {
                     Depends.permissions.playerAddGroup((bukkitWorld == null ? null : bukkitWorld.getName()), player, group.asString());
@@ -120,7 +120,7 @@ public class GroupCommand extends AbstractCommand {
                 return;
             case REMOVE:
                 if (!inGroup) {
-                    dB.echoDebug(scriptEntry, "Player " + player.getName() + " is not in group " + group);
+                    Debug.echoDebug(scriptEntry, "Player " + player.getName() + " is not in group " + group);
                 }
                 else {
                     Depends.permissions.playerRemoveGroup((bukkitWorld == null ? null : bukkitWorld.getName()), player, group.asString());

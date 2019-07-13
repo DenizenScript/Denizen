@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.npc;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.npc.traits.SittingTrait;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -57,13 +57,13 @@ public class SitCommand extends AbstractCommand {
         if (Utilities.getEntryNPC(scriptEntry).getEntityType() != EntityType.PLAYER
                 && Utilities.getEntryNPC(scriptEntry).getEntityType() != EntityType.OCELOT
                 && Utilities.getEntryNPC(scriptEntry).getEntityType() != EntityType.WOLF) {
-            dB.echoError(scriptEntry.getResidingQueue(), "...only Player, ocelot, or wolf type NPCs can sit!");
+            Debug.echoError(scriptEntry.getResidingQueue(), "...only Player, ocelot, or wolf type NPCs can sit!");
             return;
         }
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), ArgumentHelper.debugObj("npc", Utilities.getEntryNPC(scriptEntry))
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("npc", Utilities.getEntryNPC(scriptEntry))
                     + (location != null ? location.debug() : ""));
 
         }
@@ -76,7 +76,7 @@ public class SitCommand extends AbstractCommand {
             SittingTrait trait = Utilities.getEntryNPC(scriptEntry).getCitizen().getTrait(SittingTrait.class);
             if (!Utilities.getEntryNPC(scriptEntry).getCitizen().hasTrait(SittingTrait.class)) {
                 Utilities.getEntryNPC(scriptEntry).getCitizen().addTrait(SittingTrait.class);
-                dB.echoDebug(scriptEntry, "...added sitting trait");
+                Debug.echoDebug(scriptEntry, "...added sitting trait");
             }
 
             if (location != null) {

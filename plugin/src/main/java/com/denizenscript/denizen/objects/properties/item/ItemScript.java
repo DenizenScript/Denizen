@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.Element;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.dObject;
@@ -117,7 +117,7 @@ public class ItemScript implements Property {
                 item.setItemScript((ItemScriptContainer) script.getContainer());
             }
             else {
-                dB.echoError("Script '" + script.getName() + "' is not an item script (but was specified as one).");
+                Debug.echoError("Script '" + script.getName() + "' is not an item script (but was specified as one).");
             }
         }
     }

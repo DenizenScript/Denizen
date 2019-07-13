@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.utilities.packets;
 
 import com.denizenscript.denizen.nms.interfaces.packets.*;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.player.PlayerReceivesMessageScriptEvent;
 import com.denizenscript.denizen.events.player.PlayerSteersEntityScriptEvent;
 import com.denizenscript.denizen.events.player.ResourcePackStatusScriptEvent;
@@ -68,7 +68,7 @@ public class DenizenPacketHandler implements PacketHandler {
                 return future.get();
             }
             catch (Exception e) {
-                dB.echoError(e);
+                Debug.echoError(e);
             }
         }
         return false;
@@ -115,7 +115,7 @@ public class DenizenPacketHandler implements PacketHandler {
                 return futureTask.get();
             }
             catch (Exception e) {
-                dB.echoError(e);
+                Debug.echoError(e);
                 return false;
             }
         }

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.dList;
@@ -110,7 +110,7 @@ public class ItemSignContents implements Property {
             }
             dList list = mechanism.valueAsType(dList.class);
             if (list.size() > 4) {
-                dB.echoError("Sign can only hold four lines!");
+                Debug.echoError("Sign can only hold four lines!");
             }
             else {
                 for (int i = 0; i < list.size(); i++) {

@@ -3,7 +3,7 @@ package com.denizenscript.denizen.objects;
 import com.denizenscript.denizen.objects.properties.entity.EntityHealth;
 import com.denizenscript.denizen.scripts.commands.player.SidebarCommand;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.BossBarHelper;
 import com.denizenscript.denizen.utilities.packets.ItemChangeMessage;
@@ -76,7 +76,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
      */
     public static void notePlayer(OfflinePlayer player) {
         if (player.getName() == null) {
-            dB.echoError("Null player " + player.toString());
+            Debug.echoError("Null player " + player.toString());
             return;
         }
         if (!playerNames.containsKey(CoreUtilities.toLowerCase(player.getName()))) {
@@ -162,7 +162,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         }
 
         if (announce) {
-            dB.log("Minor: Invalid Player! '" + string + "' could not be found.");
+            Debug.log("Minor: Invalid Player! '" + string + "' could not be found.");
         }
 
         return null;
@@ -509,7 +509,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             getPlayerEntity().setMaximumAir(air);
         }
         else {
-            dB.echoError("Cannot set the maximum air of an offline player!");
+            Debug.echoError("Cannot set the maximum air of an offline player!");
         }
     }
 
@@ -753,7 +753,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                         }
                     }
                     catch (Exception e) {
-                        dB.echoError(e);
+                        Debug.echoError(e);
                     }
                 }
                 else {
@@ -850,7 +850,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             }
             else {
                 if (!attribute.hasAlternative()) {
-                    dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
+                    Debug.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
                 }
                 return null;
             }
@@ -914,7 +914,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                             else {
                                 filterEntity = dEntity.getEntityFor(obj, attribute.context);
                                 if (filterEntity == null) {
-                                    dB.echoError("Trying to filter 'player.target[...]' tag with invalid input: " + obj.toString());
+                                    Debug.echoError("Trying to filter 'player.target[...]' tag with invalid input: " + obj.toString());
                                     continue;
                                 }
                             }
@@ -989,7 +989,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         }
 
         if (attribute.startsWith("list")) {
-            dB.echoError("DO NOT USE PLAYER.LIST AS A TAG, please use <server.list_online_players> and related tags!");
+            Debug.echoError("DO NOT USE PLAYER.LIST AS A TAG, please use <server.list_online_players> and related tags!");
             List<String> players = new ArrayList<>();
 
             if (attribute.startsWith("list.online")) {
@@ -1299,7 +1299,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         if (attribute.startsWith("groups")) {
             if (Depends.permissions == null) {
                 if (!attribute.hasAlternative()) {
-                    dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                    Debug.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
                 }
                 return null;
             }
@@ -1379,7 +1379,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         if (attribute.startsWith("in_group")) {
             if (Depends.permissions == null) {
                 if (!attribute.hasAlternative()) {
-                    dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                    Debug.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
                 }
                 return null;
             }
@@ -1449,7 +1449,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             if (attribute.getAttribute(2).startsWith("global")) {
                 if (Depends.permissions == null) {
                     if (!attribute.hasAlternative()) {
-                        dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                        Debug.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
                     }
                     return null;
                 }
@@ -1472,7 +1472,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             else if (attribute.getAttribute(2).startsWith("world")) {
                 if (Depends.permissions == null) {
                     if (!attribute.hasAlternative()) {
-                        dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                        Debug.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
                     }
                     return null;
                 }
@@ -1697,7 +1697,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                         .getAttackCooldownPercent(getPlayerEntity()) * 100).getAttribute(attribute.fulfill(1));
             }
 
-            dB.echoError("The tag 'player.attack_cooldown...' must be followed by a sub-tag.");
+            Debug.echoError("The tag 'player.attack_cooldown...' must be followed by a sub-tag.");
 
             return null;
         }
@@ -2065,7 +2065,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                     }
                 }
                 catch (Exception e) {
-                    dB.echoError("Invalid statistic: " + statistic + " for this player!");
+                    Debug.echoError("Invalid statistic: " + statistic + " for this player!");
                     return null;
                 }
             }
@@ -2073,7 +2073,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                 return new Element(getPlayerEntity().getStatistic(statistic)).getAttribute(attribute.fulfill(1));
             }
             catch (Exception e) {
-                dB.echoError("Invalid statistic: " + statistic + " for this player!");
+                Debug.echoError("Invalid statistic: " + statistic + " for this player!");
                 return null;
             }
         }
@@ -2226,7 +2226,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
 
     public void applyProperty(Mechanism mechanism) {
-        dB.echoError("Cannot apply properties to a player!");
+        Debug.echoError("Cannot apply properties to a player!");
     }
 
     @Override
@@ -2307,17 +2307,17 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         if (mechanism.matches("window_property")) {
             String[] split = mechanism.getValue().asString().split(",", 2);
             if (split.length != 2) {
-                dB.echoError("Invalid input! Must be in the form PROPERTY,VALUE");
+                Debug.echoError("Invalid input! Must be in the form PROPERTY,VALUE");
             }
             else {
                 try {
                     getPlayerEntity().setWindowProperty(InventoryView.Property.valueOf(split[0].toUpperCase()), Integer.parseInt(split[1]));
                 }
                 catch (NumberFormatException e) {
-                    dB.echoError("Input value must be a number!");
+                    Debug.echoError("Input value must be a number!");
                 }
                 catch (IllegalArgumentException e) {
-                    dB.echoError("Must specify a valid window property!");
+                    Debug.echoError("Must specify a valid window property!");
                 }
             }
         }
@@ -2475,7 +2475,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                         Math.round(playerHelper.getMaxAttackCooldownTicks(getPlayerEntity()) * mechanism.getValue().asFloat()));
             }
             else {
-                dB.echoError("Invalid percentage! \"" + percent + "\" is not between 0 and 1!");
+                Debug.echoError("Invalid percentage! \"" + percent + "\" is not between 0 and 1!");
             }
         }
 
@@ -2538,7 +2538,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                 getPlayerEntity().sendMap(map);
             }
             else {
-                dB.echoError("No map found for ID " + mechanism.getValue().asInt() + "!");
+                Debug.echoError("No map found for ID " + mechanism.getValue().asInt() + "!");
             }
         }
 
@@ -2836,7 +2836,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                 if (split.length > 0 && new Element(split[0]).matchesType(dEntity.class)) {
                     dEntity entity = mechanism.valueAsType(dEntity.class);
                     if (!entity.isSpawned()) {
-                        dB.echoError("Can't hide the unspawned entity '" + split[0] + "'!");
+                        Debug.echoError("Can't hide the unspawned entity '" + split[0] + "'!");
                     }
                     else if (split.length > 1 && new Element(split[1]).isBoolean()) {
                         NMSHandler.getInstance().getEntityHelper().hideEntity(getPlayerEntity(), entity.getBukkitEntity(),
@@ -2847,11 +2847,11 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                     }
                 }
                 else {
-                    dB.echoError("'" + split[0] + "' is not a valid entity!");
+                    Debug.echoError("'" + split[0] + "' is not a valid entity!");
                 }
             }
             else {
-                dB.echoError("Must specify an entity to hide!");
+                Debug.echoError("Must specify an entity to hide!");
             }
         }
 
@@ -2912,7 +2912,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                     }
                 }
                 else {
-                    dB.echoError("'" + split[0] + "' is not a valid decimal number!");
+                    Debug.echoError("'" + split[0] + "' is not a valid decimal number!");
                 }
             }
             else {
@@ -2956,7 +2956,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                     }
                 }
                 else {
-                    dB.echoError("'" + split[0] + "' is not a valid decimal number!");
+                    Debug.echoError("'" + split[0] + "' is not a valid decimal number!");
                 }
             }
             else {
@@ -2997,11 +2997,11 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                                     new Element(split[2]).asType(dItem.class, mechanism.context).getItemStack());
                         }
                         else if (split.length > 2) {
-                            dB.echoError("'" + split[2] + "' is not a valid dItem!");
+                            Debug.echoError("'" + split[2] + "' is not a valid dItem!");
                         }
                     }
                     else if (split.length > 1) {
-                        dB.echoError("'" + split[1] + "' is not a valid slot; must be HAND, OFF_HAND, BOOTS, LEGS, CHEST, or HEAD!");
+                        Debug.echoError("'" + split[1] + "' is not a valid slot; must be HAND, OFF_HAND, BOOTS, LEGS, CHEST, or HEAD!");
                     }
                     else {
                         NMSHandler.getInstance().getPacketHelper().resetEquipment(getPlayerEntity(),
@@ -3009,7 +3009,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                     }
                 }
                 else {
-                    dB.echoError("'" + split[0] + "' is not a valid dEntity!");
+                    Debug.echoError("'" + split[0] + "' is not a valid dEntity!");
                 }
             }
         }
@@ -3117,7 +3117,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                 && mechanism.requireObject(dItem.class)) {
             dItem book = mechanism.valueAsType(dItem.class);
             if (!book.getItemStack().hasItemMeta() || !(book.getItemStack().getItemMeta() instanceof BookMeta)) {
-                dB.echoError("show_book mechanism must have a book as input.");
+                Debug.echoError("show_book mechanism must have a book as input.");
                 return;
             }
             NMSHandler.getInstance().getPacketHelper().showEquipment(getPlayerEntity(), getPlayerEntity(),
@@ -3137,7 +3137,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("edit_sign") && mechanism.requireObject(dLocation.class)) {
             if (!NMSHandler.getInstance().getPacketHelper().showSignEditor(getPlayerEntity(), mechanism.valueAsType(dLocation.class))) {
-                dB.echoError("Can't edit non-sign materials!");
+                Debug.echoError("Can't edit non-sign materials!");
             }
         }
 
@@ -3162,7 +3162,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                     NMSHandler.getInstance().getPacketHelper().showTabListHeaderFooter(getPlayerEntity(), header, footer);
                 }
                 else {
-                    dB.echoError("Must specify a header and footer to show!");
+                    Debug.echoError("Must specify a header and footer to show!");
                 }
             }
             else {
@@ -3185,11 +3185,11 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                     getPlayerEntity().sendSignChange(dLocation.valueOf(split[0]), lines.toArray(4));
                 }
                 else {
-                    dB.echoError("Must specify a valid location and at least one sign line!");
+                    Debug.echoError("Must specify a valid location and at least one sign line!");
                 }
             }
             else {
-                dB.echoError("Must specify a valid location and at least one sign line!");
+                Debug.echoError("Must specify a valid location and at least one sign line!");
             }
         }
 
@@ -3217,7 +3217,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                                     PatternType.valueOf(splitList.get(1).toUpperCase())));
                         }
                         catch (Exception e) {
-                            dB.echoError("Could not apply pattern to banner: " + string);
+                            Debug.echoError("Could not apply pattern to banner: " + string);
                         }
                     }
                 }
@@ -3228,13 +3228,13 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                         base = DyeColor.valueOf(split[1].toUpperCase());
                     }
                     catch (Exception e) {
-                        dB.echoError("Could not apply base color to banner: " + split[1]);
+                        Debug.echoError("Could not apply base color to banner: " + split[1]);
                         return;
                     }
                     NMSHandler.getInstance().getPacketHelper().showBannerUpdate(getPlayerEntity(), location, base, patterns);
                 }
                 else {
-                    dB.echoError("Must specify a valid location and a base color!");
+                    Debug.echoError("Must specify a valid location and a base color!");
                 }
             }
         }
@@ -3258,7 +3258,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                     getPlayerEntity().stopSound("", SoundCategory.valueOf(mechanism.getValue().asString().toUpperCase()));
                 }
                 catch (Exception e) {
-                    dB.echoError("Invalid SoundCategory. Must specify a valid name.");
+                    Debug.echoError("Invalid SoundCategory. Must specify a valid name.");
                 }
             }
         }
@@ -3295,7 +3295,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         if (mechanism.matches("name")) {
             String name = mechanism.getValue().asString();
             if (name.length() > 16) {
-                dB.echoError("Must specify a name with no more than 16 characters.");
+                Debug.echoError("Must specify a name with no more than 16 characters.");
             }
             else {
                 NMSHandler.getInstance().getProfileEditor().setPlayerName(getPlayerEntity(), mechanism.getValue().asString());
@@ -3313,7 +3313,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         if (mechanism.matches("skin")) {
             String name = mechanism.getValue().asString();
             if (name.length() > 16) {
-                dB.echoError("Must specify a name with no more than 16 characters.");
+                Debug.echoError("Must specify a name with no more than 16 characters.");
             }
             else {
                 NMSHandler.getInstance().getProfileEditor().setPlayerSkin(getPlayerEntity(), mechanism.getValue().asString());

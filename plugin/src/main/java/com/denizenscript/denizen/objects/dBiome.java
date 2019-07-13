@@ -1,13 +1,12 @@
 package com.denizenscript.denizen.objects;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
 
@@ -301,7 +300,7 @@ public class dBiome implements dObject, Adjustable {
         TagRunnable tr = registeredTags.get(attrLow);
         if (tr != null) {
             if (!tr.name.equals(attrLow)) {
-                Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
+                com.denizenscript.denizencore.utilities.debugging.Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
                         "Using deprecated form of tag '" + tr.name + "': '" + attrLow + "'.");
             }
             return tr.run(attribute, this);
@@ -312,7 +311,7 @@ public class dBiome implements dObject, Adjustable {
 
     @Override
     public void applyProperty(Mechanism mechanism) {
-        dB.echoError("Cannot apply properties to a biome!");
+        Debug.echoError("Cannot apply properties to a biome!");
     }
 
     @Override

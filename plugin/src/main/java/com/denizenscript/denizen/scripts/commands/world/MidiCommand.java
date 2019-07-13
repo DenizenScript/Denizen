@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.midi.MidiUtil;
 import com.denizenscript.denizen.utilities.midi.NoteBlockReceiver;
 import com.denizenscript.denizen.objects.dEntity;
@@ -119,12 +119,12 @@ public class MidiCommand extends AbstractCommand implements Holdable {
         File file = !cancel ? new File(scriptEntry.getElement("file").asString()) : null;
 
         if (!cancel && !Utilities.canReadFile(file)) {
-            dB.echoError("Server config denies reading files in that location.");
+            Debug.echoError("Server config denies reading files in that location.");
             return;
         }
 
         if (!cancel && !file.exists()) {
-            dB.echoError(scriptEntry.getResidingQueue(), "Invalid file " + scriptEntry.getElement("file").asString());
+            Debug.echoError(scriptEntry.getResidingQueue(), "Invalid file " + scriptEntry.getElement("file").asString());
             return;
         }
 
@@ -135,7 +135,7 @@ public class MidiCommand extends AbstractCommand implements Holdable {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
+            Debug.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
                     (file != null ? ArgumentHelper.debugObj("file", file.getPath()) : "") +
                     (entities != null ? ArgumentHelper.debugObj("entities", entities.toString()) : "") +
                     (location != null ? location.debug() : "") +
@@ -153,7 +153,7 @@ public class MidiCommand extends AbstractCommand implements Holdable {
                 rec = MidiUtil.playMidi(file, tempo, volume, entities);
             }
             if (rec == null) {
-                dB.echoError(scriptEntry.getResidingQueue(), "Something went wrong playing a midi!");
+                Debug.echoError(scriptEntry.getResidingQueue(), "Something went wrong playing a midi!");
                 scriptEntry.setFinished(true);
             }
             else {

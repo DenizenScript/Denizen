@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.npc;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -110,7 +110,7 @@ public class PauseCommand extends AbstractCommand {
 
             }
             else {
-                dB.echoError(scriptEntry.getResidingQueue(), "Unknown argument '" + arg + "'");
+                Debug.echoError(scriptEntry.getResidingQueue(), "Unknown argument '" + arg + "'");
             }
         }
     }
@@ -127,12 +127,12 @@ public class PauseCommand extends AbstractCommand {
                     DenizenAPI.getCurrentInstance().getServer().getScheduler().cancelTask(durations.get(dNPC.getCitizen().getId() + pauseType.name()));
                 }
                 catch (Exception e) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "There was an error pausing that!");
-                    dB.echoError(scriptEntry.getResidingQueue(), e);
+                    Debug.echoError(scriptEntry.getResidingQueue(), "There was an error pausing that!");
+                    Debug.echoError(scriptEntry.getResidingQueue(), e);
                 }
 
             }
-            dB.echoDebug(scriptEntry, "Running delayed task: Unpause " + pauseType.toString());
+            Debug.echoDebug(scriptEntry, "Running delayed task: Unpause " + pauseType.toString());
 
             final ScriptEntry se = scriptEntry;
             durations.put(dNPC.getId() + pauseType.name(), DenizenAPI.getCurrentInstance()
@@ -140,7 +140,7 @@ public class PauseCommand extends AbstractCommand {
                             new Runnable() {
                                 @Override
                                 public void run() {
-                                    dB.echoDebug(se, "Running delayed task: Pausing " + pauseType.toString());
+                                    Debug.echoDebug(se, "Running delayed task: Pausing " + pauseType.toString());
                                     pause(dNPC, pauseType, false);
 
                                 }

@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.core;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -88,7 +88,7 @@ public class ResetCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(),
+            Debug.report(scriptEntry, getName(),
                     (players != null ? players.debug() : "")
                             + ArgumentHelper.debugObj("type", type)
                             + (script != null ? script.debug() : ""));

@@ -3,7 +3,7 @@ package com.denizenscript.denizen.objects;
 import com.denizenscript.denizen.scripts.containers.core.InventoryScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizencore.objects.*;
@@ -145,7 +145,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         while (true) {
             x++;
             if (x > 5000) {
-                dB.echoError("Inventory note failed - too many notes already!");
+                Debug.echoError("Inventory note failed - too many notes already!");
                 return;
             }
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
@@ -257,7 +257,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                 }
                 else {
                     if (!silent) {
-                        dB.echoError("That type of inventory does not exist!");
+                        Debug.echoError("That type of inventory does not exist!");
                     }
                 }
             }
@@ -286,7 +286,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                     dInventory workbench = dPlayer.valueOf(holder).getWorkbench();
                     if (workbench == null) {
                         if (!silent) {
-                            dB.echoError("Value of dInventory returning null (" + string + ")." +
+                            Debug.echoError("Value of dInventory returning null (" + string + ")." +
                                     " Specified player does not have an open workbench.");
                         }
                     }
@@ -313,14 +313,14 @@ public class dInventory implements dObject, Notable, Adjustable {
 
             // If the dInventory is invalid, alert the user and return null
             if (!silent) {
-                dB.echoError("Value of dInventory returning null. Invalid " +
+                Debug.echoError("Value of dInventory returning null. Invalid " +
                         type + " specified: " + holder);
             }
             return null;
         }
 
         if (!silent) {
-            dB.echoError("Value of dInventory returning null. Invalid dInventory specified: " + string);
+            Debug.echoError("Value of dInventory returning null. Invalid dInventory specified: " + string);
         }
         return null;
     }
@@ -402,7 +402,7 @@ public class dInventory implements dObject, Notable, Adjustable {
 
     public dInventory(int size, String title) {
         if (size <= 0 || size % 9 != 0) {
-            dB.echoError("InventorySize must be multiple of 9, and greater than 0.");
+            Debug.echoError("InventorySize must be multiple of 9, and greater than 0.");
             return;
         }
         inventory = Bukkit.getServer().createInventory(null, size, title);
@@ -550,7 +550,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             return;
         }
         else if (size <= 0 || size % 9 != 0) {
-            dB.echoError("InventorySize must be multiple of 9, and greater than 0.");
+            Debug.echoError("InventorySize must be multiple of 9, and greater than 0.");
             return;
         }
         else if (inventory == null) {
@@ -2220,7 +2220,7 @@ public class dInventory implements dObject, Notable, Adjustable {
 
     public void applyProperty(Mechanism mechanism) {
         if (NotableManager.isExactSavedObject(this)) {
-            dB.echoError("Cannot apply properties to noted objects.");
+            Debug.echoError("Cannot apply properties to noted objects.");
             return;
         }
         if (idType == null) {
@@ -2230,7 +2230,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             adjust(mechanism);
         }
         else if (!(idType.equals("location") && mechanism.matches("title"))) {
-            dB.echoError("Cannot apply properties to non-generic inventory!");
+            Debug.echoError("Cannot apply properties to non-generic inventory!");
         }
     }
 
@@ -2260,7 +2260,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                 ((Player) inventory.getHolder()).updateInventory();
             }
             else {
-                dB.echoError("Inventory is not a crafting inventory, cannot set matrix.");
+                Debug.echoError("Inventory is not a crafting inventory, cannot set matrix.");
             }
         }
 
@@ -2280,7 +2280,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                 ((Player) inventory.getHolder()).updateInventory();
             }
             else {
-                dB.echoError("Inventory is not a crafting inventory, cannot set result.");
+                Debug.echoError("Inventory is not a crafting inventory, cannot set result.");
             }
         }
     }

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.bukkit;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.objects.dPlayer;
@@ -59,7 +59,7 @@ public class BukkitQueueProperties implements Property {
                 npc = ((BukkitScriptEntryData) queue.getEntries().get(0).entryData).getNPC();
             }
             else {
-                dB.echoError(queue, "Can't determine a linked NPC.");
+                Debug.echoError(queue, "Can't determine a linked NPC.");
             }
             if (npc == null) {
                 return null;
@@ -85,7 +85,7 @@ public class BukkitQueueProperties implements Property {
                 player = ((BukkitScriptEntryData) queue.getEntries().get(0).entryData).getPlayer();
             }
             else {
-                dB.echoError(queue, "Can't determine a linked player.");
+                Debug.echoError(queue, "Can't determine a linked player.");
             }
             if (player == null) {
                 return null;

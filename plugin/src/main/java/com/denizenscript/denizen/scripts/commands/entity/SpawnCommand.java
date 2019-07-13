@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -114,7 +114,7 @@ public class SpawnCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), ArgumentHelper.debugObj("entities", entities.toString()) +
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("entities", entities.toString()) +
                     location.debug() +
                     (spread != null ? spread.debug() : "") +
                     (target != null ? target.debug() : "") +

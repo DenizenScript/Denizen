@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -112,7 +112,7 @@ public class EntityArmorPose implements Property {
             String name = attribute.getContext(1);
             PosePart posePart = PosePart.fromName(name);
             if (posePart == null) {
-                dB.echoError("Invalid pose part specified: " + name);
+                Debug.echoError("Invalid pose part specified: " + name);
                 return null;
             }
             else {
@@ -151,7 +151,7 @@ public class EntityArmorPose implements Property {
                 String angle = iterator.next();
                 PosePart posePart = PosePart.fromName(name);
                 if (posePart == null) {
-                    dB.echoError("Invalid pose part specified: " + name + "; ignoring next: " + angle);
+                    Debug.echoError("Invalid pose part specified: " + name + "; ignoring next: " + angle);
                 }
                 else {
                     posePart.setAngle(armorStand, toEulerAngle(dLocation.valueOf(angle)));

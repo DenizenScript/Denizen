@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.objects.Element;
@@ -137,14 +137,14 @@ public class EntityTame implements Property {
         if (mechanism.matches("tame")) {
             dList list = mechanism.valueAsType(dList.class);
             if (list.size() == 0) {
-                dB.echoError("Missing value for 'tame' mechanism!");
+                Debug.echoError("Missing value for 'tame' mechanism!");
                 return;
             }
             if (new Element(list.get(0)).isBoolean()) {
                 ((Tameable) entity.getBukkitEntity()).setTamed(mechanism.getValue().asBoolean());
             }
             else {
-                dB.echoError("Invalid boolean value!");
+                Debug.echoError("Invalid boolean value!");
             }
             if (list.size() > 1 && new Element(list.get(1)).matchesType(dPlayer.class)) {
                 ((Tameable) entity.getBukkitEntity()).setOwner(new Element(list.get(1)).asType(dPlayer.class, mechanism.context).getOfflinePlayer());

@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.objects.dTrade;
@@ -100,7 +100,7 @@ public class OpenTradesCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(),
+            Debug.report(scriptEntry, getName(),
                     (entity != null ? ArgumentHelper.debugObj("entity", entity) : "")
                             + (trades != null ? ArgumentHelper.debugList("trades", trades) : "")
                             + (title.isEmpty() ? ArgumentHelper.debugObj("title", title) : "")
@@ -110,7 +110,7 @@ public class OpenTradesCommand extends AbstractCommand {
 
         if (entity != null) {
             if (players.size() > 1) {
-                dB.echoError("No more than one player can access the same entity!");
+                Debug.echoError("No more than one player can access the same entity!");
                 return;
             }
             if (entity.getBukkitEntity() instanceof Merchant) {
@@ -119,11 +119,11 @@ public class OpenTradesCommand extends AbstractCommand {
                     player.getPlayerEntity().openMerchant((Merchant) entity.getBukkitEntity(), true);
                 }
                 else {
-                    dB.echoError("Tried to make a nonexistent or offline player trade with a villager entity!");
+                    Debug.echoError("Tried to make a nonexistent or offline player trade with a villager entity!");
                 }
                 return;
             }
-            dB.echoError("The specified entity isn't a merchant!");
+            Debug.echoError("The specified entity isn't a merchant!");
             return;
         }
 
@@ -139,7 +139,7 @@ public class OpenTradesCommand extends AbstractCommand {
                 player.getPlayerEntity().openMerchant(merchant, true);
             }
             else {
-                dB.echoError("Tried to make a nonexistent or offline player view a virtual trading inventory!");
+                Debug.echoError("Tried to make a nonexistent or offline player view a virtual trading inventory!");
             }
         }
     }

@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.item;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
@@ -164,7 +164,7 @@ public class TakeCommand extends AbstractCommand {
         }
 
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), ArgumentHelper.debugObj("Type", type.name())
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("Type", type.name())
                             + qty.debug()
                             + (inventory != null ? inventory.debug() : "")
                             + (displayname != null ? displayname.debug() : "")
@@ -187,7 +187,7 @@ public class TakeCommand extends AbstractCommand {
                 int theAmount = (int) qty.asDouble();
                 ItemStack newHandItem = new ItemStack(Material.AIR);
                 if (theAmount > inHandAmt) {
-                    dB.echoDebug(scriptEntry, "...player did not have enough of the item in hand, so Denizen just took as many as it could. To avoid this situation, use an IF <PLAYER.ITEM_IN_HAND.QTY>.");
+                    Debug.echoDebug(scriptEntry, "...player did not have enough of the item in hand, so Denizen just took as many as it could. To avoid this situation, use an IF <PLAYER.ITEM_IN_HAND.QTY>.");
                     Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().setItemInHand(newHandItem);
                 }
                 else {
@@ -212,7 +212,7 @@ public class TakeCommand extends AbstractCommand {
                     Depends.economy.withdrawPlayer(Utilities.getEntryPlayer(scriptEntry).getOfflinePlayer(), qty.asDouble());
                 }
                 else {
-                    dB.echoError(scriptEntry.getResidingQueue(), "No economy loaded! Have you installed Vault and a compatible economy plugin?");
+                    Debug.echoError(scriptEntry.getResidingQueue(), "No economy loaded! Have you installed Vault and a compatible economy plugin?");
                 }
                 break;
             }
@@ -223,7 +223,7 @@ public class TakeCommand extends AbstractCommand {
                     is.setAmount(qty.asInt());
 
                     if (!inventory.removeItem(item, item.getAmount())) {
-                        dB.echoDebug(scriptEntry, "Inventory does not contain at least "
+                        Debug.echoDebug(scriptEntry, "Inventory does not contain at least "
                                 + qty.asInt() + " of " + item.getFullString() +
                                 "... Taking as much as possible...");
                     }
@@ -234,7 +234,7 @@ public class TakeCommand extends AbstractCommand {
             case BYDISPLAY: {
                 int found_items = 0;
                 if (displayname == null) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "Must specify a displayname!");
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Must specify a displayname!");
                     return;
                 }
                 for (ItemStack it : inventory.getContents()) {
@@ -257,7 +257,7 @@ public class TakeCommand extends AbstractCommand {
             case NBT: {
                 int found_items = 0;
                 if (nbtKey == null) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "Must specify an NBT key!");
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Must specify an NBT key!");
                     return;
                 }
                 for (ItemStack it : inventory.getContents()) {
@@ -278,7 +278,7 @@ public class TakeCommand extends AbstractCommand {
 
             case SCRIPTNAME: {
                 if (scriptitem == null || scriptitem.getScriptName() == null) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "Must specify a valid script name!");
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Must specify a valid script name!");
                     return;
                 }
 
@@ -304,7 +304,7 @@ public class TakeCommand extends AbstractCommand {
             case SLOT: {
                 int slotId = SlotHelper.nameToIndex(slot.asString());
                 if (slotId == -1) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "The input '" + slot.asString() + "' is not a valid slot!");
+                    Debug.echoError(scriptEntry.getResidingQueue(), "The input '" + slot.asString() + "' is not a valid slot!");
                     return;
                 }
                 inventory.setSlots(slotId, new ItemStack(Material.AIR));

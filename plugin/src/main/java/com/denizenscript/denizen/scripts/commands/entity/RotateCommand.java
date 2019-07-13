@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -133,7 +133,7 @@ public class RotateCommand extends AbstractCommand implements Holdable {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
+            Debug.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
                     ArgumentHelper.debugObj("entities", entities.toString()) +
                     (infinite ? ArgumentHelper.debugObj("duration", "infinite") : duration.debug()) +
                     frequency.debug() +

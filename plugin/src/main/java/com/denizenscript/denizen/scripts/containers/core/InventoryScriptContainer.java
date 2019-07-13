@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.dInventory;
 import com.denizenscript.denizen.objects.dItem;
@@ -121,27 +121,27 @@ public class InventoryScriptContainer extends ScriptContainer {
                     inventory.setIdentifiers("script", getName());
                 }
                 else {
-                    dB.echoError("Invalid inventory type specified. Assuming \"CHEST\"");
+                    Debug.echoError("Invalid inventory type specified. Assuming \"CHEST\"");
                 }
             }
             int size = 0;
             if (contains("SIZE")) {
                 if (inventory != null && !getInventoryType().name().equalsIgnoreCase("CHEST")) {
-                    dB.echoError("You can only set the size of chest inventories!");
+                    Debug.echoError("You can only set the size of chest inventories!");
                 }
                 else {
                     size = ArgumentHelper.getIntegerFrom(TagManager.tag(getString("SIZE"), context));
 
                     if (size == 0) {
-                        dB.echoError("Inventory size can't be 0. Assuming default of inventory type...");
+                        Debug.echoError("Inventory size can't be 0. Assuming default of inventory type...");
                     }
                     if (size % 9 != 0) {
                         size = (int) Math.ceil(size / 9.0) * 9;
-                        dB.echoError("Inventory size must be a multiple of 9! Rounding up to " + size + "...");
+                        Debug.echoError("Inventory size must be a multiple of 9! Rounding up to " + size + "...");
                     }
                     if (size < 0) {
                         size = size * -1;
-                        dB.echoError("Inventory size must be a positive number! Inverting to " + size + "...");
+                        Debug.echoError("Inventory size must be a positive number! Inverting to " + size + "...");
                     }
 
                     inventory = new dInventory(size, contains("TITLE") ? TagManager.tag(getString("TITLE"), context) : "Chest");
@@ -161,7 +161,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                         continue;
                     }
                     if (!items.startsWith("[") || !items.endsWith("]")) {
-                        dB.echoError("Inventory script \"" + getName() + "\" has an invalid slots line: ["
+                        Debug.echoError("Inventory script \"" + getName() + "\" has an invalid slots line: ["
                                 + items + "]... Ignoring it");
                         continue;
                     }
@@ -170,7 +170,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                         if (contains("DEFINITIONS." + item)) {
                             dItem def = dItem.valueOf(TagManager.tag(getString("DEFINITIONS." + item), context), player, npc);
                             if (def == null) {
-                                dB.echoError("Invalid definition '" + item + "' in inventory script '" + getName() + "'"
+                                Debug.echoError("Invalid definition '" + item + "' in inventory script '" + getName() + "'"
                                         + "... Ignoring it and assuming \"AIR\"");
                                 finalItems[itemsAdded] = new ItemStack(Material.AIR);
                             }
@@ -183,15 +183,15 @@ public class InventoryScriptContainer extends ScriptContainer {
                                 finalItems[itemsAdded] = dItem.valueOf(item, player, npc).getItemStack();
                             }
                             catch (Exception ex) {
-                                dB.echoError("Inventory script \"" + getName() + "\" has an invalid slot item: ["
+                                Debug.echoError("Inventory script \"" + getName() + "\" has an invalid slot item: ["
                                         + item + "]...");
-                                dB.echoError(ex);
+                                Debug.echoError(ex);
                             }
                         }
                         else {
                             finalItems[itemsAdded] = new ItemStack(Material.AIR);
                             if (!item.isEmpty()) {
-                                dB.echoError("Inventory script \"" + getName() + "\" has an invalid slot item: ["
+                                Debug.echoError("Inventory script \"" + getName() + "\" has an invalid slot item: ["
                                         + item + "]... Ignoring it and assuming \"AIR\"");
                             }
                         }
@@ -244,8 +244,8 @@ public class InventoryScriptContainer extends ScriptContainer {
             }
         }
         catch (Exception e) {
-            dB.echoError("Woah! An exception has been called with this inventory script!");
-            dB.echoError(e);
+            Debug.echoError("Woah! An exception has been called with this inventory script!");
+            Debug.echoError(e);
             inventory = null;
         }
 

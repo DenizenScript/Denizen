@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -122,7 +122,7 @@ public class ExperienceCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, name, ArgumentHelper.debugObj("Type", type.toString())
+            Debug.report(scriptEntry, name, ArgumentHelper.debugObj("Type", type.toString())
                     + ArgumentHelper.debugObj("Quantity", level ? quantity + " levels" : quantity)
                     + ArgumentHelper.debugObj("Player", Utilities.getEntryPlayer(scriptEntry).getName()));
 

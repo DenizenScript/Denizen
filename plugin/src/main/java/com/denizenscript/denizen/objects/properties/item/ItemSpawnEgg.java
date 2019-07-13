@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.dItem;
@@ -137,7 +137,7 @@ public class ItemSpawnEgg implements Property {
                 item.getItemStack().setItemMeta(sem);
             }
             catch (IllegalArgumentException e) {
-                dB.echoError(mechanism.getValue().asString().toUpperCase() + " is not a valid spawn egg entity!");
+                Debug.echoError(mechanism.getValue().asString().toUpperCase() + " is not a valid spawn egg entity!");
             }
         }
     }

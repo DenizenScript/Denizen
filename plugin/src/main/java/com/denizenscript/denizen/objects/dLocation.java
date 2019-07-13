@@ -3,13 +3,12 @@ package com.denizenscript.denizen.objects;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.objects.properties.material.MaterialSwitchFace;
 import com.denizenscript.denizen.scripts.commands.world.SwitchCommand;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.MaterialCompat;
 import com.denizenscript.denizen.utilities.PathFinder;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.DirectionalBlocksHelper;
 import com.denizenscript.denizen.utilities.blocks.OldMaterialsHelper;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.Settings;
@@ -25,6 +24,8 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.core.EscapeTags;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.banner.PatternType;
@@ -189,7 +190,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             }
             catch (Exception e) {
                 if (context == null || context.debug) {
-                    dB.log("Minor: valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                    Debug.log("Minor: valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
                 }
                 return null;
             }
@@ -219,7 +220,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             }
             catch (Exception e) {
                 if (context == null || context.debug) {
-                    dB.log("Minor: valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                    Debug.log("Minor: valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
                 }
                 return null;
             }
@@ -245,7 +246,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             }
             catch (Exception e) {
                 if (context == null || context.debug) {
-                    dB.log("Minor: valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                    Debug.log("Minor: valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
                 }
                 return null;
             }
@@ -266,7 +267,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             }
             catch (Exception e) {
                 if (context == null || context.debug) {
-                    dB.log("Minor: valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                    Debug.log("Minor: valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
                 }
                 return null;
             }
@@ -297,14 +298,14 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             }
             catch (Exception e) {
                 if (context == null || context.debug) {
-                    dB.log("Minor: valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                    Debug.log("Minor: valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
                 }
                 return null;
             }
         }
 
         if (context == null || context.debug) {
-            dB.log("Minor: valueOf dLocation returning null: " + string);
+            Debug.log("Minor: valueOf dLocation returning null: " + string);
         }
 
         return null;
@@ -989,7 +990,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (attribute.startsWith("flowerpot_contents")) {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-                dB.echoError("As of Minecraft version 1.13 potted flowers each have their own material, such as POTTED_CACTUS.");
+                Debug.echoError("As of Minecraft version 1.13 potted flowers each have their own material, such as POTTED_CACTUS.");
             }
             else if (getBlock().getType() == Material.FLOWER_POT) {
                 MaterialData contents = NMSHandler.getInstance().getBlockHelper().getFlowerpotContents(getBlock());
@@ -1722,9 +1723,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 ArrayList<dNPC> found = new ArrayList<>();
                 double radius = ArgumentHelper.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
                 attribute.fulfill(2);
-                for (dNPC npc : DenizenAPI.getSpawnedNPCs()) {
-                    if (Utilities.checkLocation(this.getBlock().getLocation(), npc.getLocation(), radius)) {
-                        found.add(npc);
+                for (NPC npc : CitizensAPI.getNPCRegistry()) {
+                    if (npc.isSpawned() && Utilities.checkLocation(this.getBlock().getLocation(), npc.getStoredLocation(), radius)) {
+                        found.add(new dNPC(npc));
                     }
                 }
 
@@ -2153,7 +2154,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 dLocation toLocation = dLocation.valueOf(attribute.getContext(1));
                 if (!getWorldName().equalsIgnoreCase(toLocation.getWorldName())) {
                     if (!attribute.hasAlternative()) {
-                        dB.echoError("Can't measure distance between two different worlds!");
+                        Debug.echoError("Can't measure distance between two different worlds!");
                     }
                     return null;
                 }
@@ -2227,7 +2228,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
 
                 if (!getWorldName().equalsIgnoreCase(toLocation.getWorldName())) {
                     if (!attribute.hasAlternative()) {
-                        dB.echoError("Can't measure distance between two different worlds!");
+                        Debug.echoError("Can't measure distance between two different worlds!");
                     }
                     return null;
                 }
@@ -2495,7 +2496,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 }
                 else {
                     if (!attribute.hasAlternative()) {
-                        dB.echoError("Block is a single-block chest.");
+                        Debug.echoError("Block is a single-block chest.");
                     }
                     return null;
                 }
@@ -2535,12 +2536,12 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             }
             else {
                 if (!attribute.hasAlternative()) {
-                    dB.echoError("Block of type " + getBlock().getType().name() + " isn't supported by other_block.");
+                    Debug.echoError("Block of type " + getBlock().getType().name() + " isn't supported by other_block.");
                 }
                 return null;
             }
             if (!attribute.hasAlternative()) {
-                dB.echoError("Block of type " + getBlock().getType().name() + " doesn't have an other block.");
+                Debug.echoError("Block of type " + getBlock().getType().name() + " doesn't have an other block.");
             }
             return null;
         }
@@ -2569,14 +2570,14 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
     }
 
     public void applyProperty(Mechanism mechanism) {
-        dB.echoError("Cannot apply properties to a location!");
+        Debug.echoError("Cannot apply properties to a location!");
     }
 
     @Override
     public void adjust(Mechanism mechanism) {
 
         if (mechanism.matches("data") && mechanism.hasValue()) {
-            dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
+            Debug.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
             BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(getBlock().getType(), (byte) mechanism.getValue().asInt());
             blockData.setBlock(getBlock(), false);
         }
@@ -2675,7 +2676,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             }
             dList list = mechanism.valueAsType(dList.class);
             if (list.size() > 4) {
-                dB.echoError("Sign can only hold four lines!");
+                Debug.echoError("Sign can only hold four lines!");
             }
             else {
                 for (int i = 0; i < list.size(); i++) {
@@ -2702,7 +2703,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             Material material = getBlock().getType();
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)
                     && material != Material.PLAYER_HEAD && material != Material.PLAYER_WALL_HEAD) {
-                dB.echoError("As of Minecraft version 1.13 you may only set the skin of a PLAYER_HEAD or PLAYER_WALL_HEAD.");
+                Debug.echoError("As of Minecraft version 1.13 you may only set the skin of a PLAYER_HEAD or PLAYER_WALL_HEAD.");
             }
             else if (blockState instanceof Skull) {
                 dList list = mechanism.valueAsType(dList.class);
@@ -2745,7 +2746,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (mechanism.matches("flowerpot_contents") && mechanism.requireObject(dMaterial.class)) {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-                dB.echoError("As of Minecraft version 1.13 potted flowers each have their own material, such as POTTED_CACTUS.");
+                Debug.echoError("As of Minecraft version 1.13 potted flowers each have their own material, such as POTTED_CACTUS.");
             }
             else if (getBlock().getType() == Material.FLOWER_POT) {
                 MaterialData data = mechanism.valueAsType(dMaterial.class).getMaterialData();
@@ -2883,7 +2884,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                             PatternType.valueOf(split.get(1).toUpperCase())));
                 }
                 catch (Exception e) {
-                    dB.echoError("Could not apply pattern to banner: " + string);
+                    Debug.echoError("Could not apply pattern to banner: " + string);
                 }
             }
             Banner banner = (Banner) getBlockState();
@@ -2919,7 +2920,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (mechanism.matches("generate_tree") && mechanism.requireEnum(false, TreeType.values())) {
             boolean generated = getWorld().generateTree(this, TreeType.valueOf(mechanism.getValue().asString().toUpperCase()));
             if (!generated) {
-                dB.echoError("Could not generate tree at " + identifySimple() + ". Make sure this location can naturally generate a tree!");
+                Debug.echoError("Could not generate tree at " + identifySimple() + ". Make sure this location can naturally generate a tree!");
             }
         }
 

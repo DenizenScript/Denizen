@@ -4,7 +4,7 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.DenizenAliasHelpTopic;
 import com.denizenscript.denizen.utilities.DenizenCommand;
 import com.denizenscript.denizen.utilities.DenizenCommandHelpTopic;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.google.common.base.Predicate;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
@@ -88,8 +88,8 @@ public class CommandScriptHelper implements Listener {
             }
         }
         catch (Exception e) {
-            dB.echoError("Error getting the server's command information! Are you running a non-CraftBukkit server?");
-            dB.echoError("Command scripts will not function!");
+            Debug.echoError("Error getting the server's command information! Are you running a non-CraftBukkit server?");
+            Debug.echoError("Command scripts will not function!");
             //dB.echoError(e);
             hasCommandInformation = false;
         }
@@ -110,7 +110,7 @@ public class CommandScriptHelper implements Listener {
                 syncMethod.setAccessible(true);
             }
             catch (Exception e) {
-                dB.echoError("Failed to load helper to synchronize server commands.");
+                Debug.echoError("Failed to load helper to synchronize server commands.");
             }
         }
         syncCommandsMethod = syncMethod;
@@ -126,7 +126,7 @@ public class CommandScriptHelper implements Listener {
                 syncCommandsMethod.invoke(Bukkit.getServer());
             }
             catch (Exception e) {
-                dB.echoError("Failed to synchronize server commands.");
+                Debug.echoError("Failed to synchronize server commands.");
             }
         }
     }

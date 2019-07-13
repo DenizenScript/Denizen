@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dMaterial;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -74,13 +74,13 @@ public class ItemCooldownCommand extends AbstractCommand {
         dPlayer player = Utilities.getEntryPlayer(scriptEntry);
 
         if (player == null) {
-            dB.echoError("Invalid linked player.");
+            Debug.echoError("Invalid linked player.");
             return;
         }
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), ArgumentHelper.debugList("materials", materials) + duration.debug());
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugList("materials", materials) + duration.debug());
 
         }
 

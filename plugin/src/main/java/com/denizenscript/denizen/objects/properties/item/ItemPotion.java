@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.ItemHelper;
@@ -207,7 +207,7 @@ public class ItemPotion implements Property {
                 // -->
                 if (attribute.startsWith("color")) {
                     if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-                        dB.echoError("Custom effects with the color option are not supported as of Minecraft version 1.13.");
+                        Debug.echoError("Custom effects with the color option are not supported as of Minecraft version 1.13.");
                         return null;
                     }
                     return new dColor(meta.getCustomEffects().get(potN).getColor())
@@ -356,7 +356,7 @@ public class ItemPotion implements Property {
                             icon = check.asBoolean();
                         }
                         else {
-                            dB.echoError("Custom effects with the color option are not supported as of Minecraft version 1.13.");
+                            Debug.echoError("Custom effects with the color option are not supported as of Minecraft version 1.13.");
                         }
                     }
                     else {
@@ -378,7 +378,7 @@ public class ItemPotion implements Property {
                     item.getItemStack().setDurability((short) mechanism.getValue().asInt());
                 }
                 else {
-                    dB.echoError("Invalid effect format, use name,amplifier,extended,splash.");
+                    Debug.echoError("Invalid effect format, use name,amplifier,extended,splash.");
                 }
             }
             else {
@@ -390,19 +390,19 @@ public class ItemPotion implements Property {
                     type = PotionType.valueOf(data[0].toUpperCase());
                 }
                 catch (Exception ex) {
-                    dB.echoError("Invalid potion effect type '" + data[0] + "'");
+                    Debug.echoError("Invalid potion effect type '" + data[0] + "'");
                     return;
                 }
                 if (!data1.isInt()) {
-                    dB.echoError("Cannot apply effect '" + data[0] + "': '" + data[1] + "' is not a valid integer!");
+                    Debug.echoError("Cannot apply effect '" + data[0] + "': '" + data[1] + "' is not a valid integer!");
                     return;
                 }
                 if (!data2.isBoolean()) {
-                    dB.echoError("Cannot apply effect '" + data[0] + "': '" + data[2] + "' is not a valid boolean!");
+                    Debug.echoError("Cannot apply effect '" + data[0] + "': '" + data[2] + "' is not a valid boolean!");
                     return;
                 }
                 if (!data3.isBoolean()) {
-                    dB.echoError("Cannot apply effect '" + data[0] + "': '" + data[3] + "' is not a valid boolean!");
+                    Debug.echoError("Cannot apply effect '" + data[0] + "': '" + data[3] + "' is not a valid boolean!");
                     return;
                 }
                 Potion pot = new Potion(type);

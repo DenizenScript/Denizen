@@ -3,7 +3,7 @@ package com.denizenscript.denizen.events.block;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dMaterial;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.dObject;
@@ -85,7 +85,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
         else if (dLocation.matches(determination)) {
             dLocation vel = dLocation.valueOf(determination);
             if (vel == null) {
-                dB.echoError("[" + getName() + "] Invalid velocity!");
+                Debug.echoError("[" + getName() + "] Invalid velocity!");
             }
             else {
                 velocity = vel;
@@ -94,7 +94,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
         else if (dItem.matches(determination)) {
             dItem it = dItem.valueOf(determination, container);
             if (it == null) {
-                dB.echoError("[" + getName() + "] Invalid item!");
+                Debug.echoError("[" + getName() + "] Invalid item!");
             }
             else {
                 item = it;

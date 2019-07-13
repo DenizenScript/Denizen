@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.objects.dObject;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
@@ -31,7 +31,7 @@ public class ParseTags {
         // -->
         if (event.matches("parse")) {
             if (!event.hasValue()) {
-                dB.echoError("Escape tag '" + event.raw_tag + "' does not have a value!");
+                Debug.echoError("Escape tag '" + event.raw_tag + "' does not have a value!");
                 return;
             }
             dObject read = TagManager.tagObject(TagManager.cleanOutputFully(event.getValue()), event.getContext());

@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.commands.entity;
 import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.Position;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dEntity;
@@ -144,7 +144,7 @@ public class FlyCommand extends AbstractCommand {
                         if (entities.get(entities.size() - 1) != entity) {
                             controller = entity;
                             if (scriptEntry.dbCallShouldDebug()) {
-                                dB.report(scriptEntry, getName(), "Flight control defaulting to " + controller);
+                                Debug.report(scriptEntry, getName(), "Flight control defaulting to " + controller);
                             }
                             break;
                         }
@@ -154,7 +154,7 @@ public class FlyCommand extends AbstractCommand {
                 // If the controller is still null, we cannot continue
                 if (controller == null) {
                     if (scriptEntry.dbCallShouldDebug()) {
-                        dB.report(scriptEntry, getName(), "There is no one to control the flight's path!");
+                        Debug.report(scriptEntry, getName(), "There is no one to control the flight's path!");
                     }
                     return;
                 }
@@ -175,7 +175,7 @@ public class FlyCommand extends AbstractCommand {
                 // Add the controller to the entity list
                 if (!found) {
                     if (scriptEntry.dbCallShouldDebug()) {
-                        dB.report(scriptEntry, getName(), "Adding controller " + controller + " to flying entities.");
+                        Debug.report(scriptEntry, getName(), "Adding controller " + controller + " to flying entities.");
                     }
                     entities.add(0, controller);
                 }
@@ -188,7 +188,7 @@ public class FlyCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
+            Debug.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
                     ArgumentHelper.debugObj("origin", origin) +
                     ArgumentHelper.debugObj("entities", entities.toString()) +
                     ArgumentHelper.debugObj("speed", speed) +

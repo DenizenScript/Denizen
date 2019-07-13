@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizencore.objects.Element;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -241,12 +241,12 @@ public class ItemEnchantments implements Property {
         if (mechanism.matches("enchantments")) {
             for (String enchant : mechanism.valueAsType(dList.class)) {
                 if (!enchant.contains(",")) {
-                    dB.echoError("Invalid enchantment format, use name,level|...");
+                    Debug.echoError("Invalid enchantment format, use name,level|...");
                 }
                 else {
                     String[] data = enchant.split(",", 2);
                     if (Integer.valueOf(data[1]) == null) {
-                        dB.echoError("Cannot apply enchantment '" + data[0] + "': '" + data[1] + "' is not a valid integer!");
+                        Debug.echoError("Cannot apply enchantment '" + data[0] + "': '" + data[1] + "' is not a valid integer!");
                     }
                     else {
                         try {
@@ -262,11 +262,11 @@ public class ItemEnchantments implements Property {
                                 }
                             }
                             else {
-                                dB.echoError("Unknown enchantment '" + data[0] + "'");
+                                Debug.echoError("Unknown enchantment '" + data[0] + "'");
                             }
                         }
                         catch (NullPointerException e) {
-                            dB.echoError("Unknown enchantment '" + data[0] + "'");
+                            Debug.echoError("Unknown enchantment '" + data[0] + "'");
                         }
                     }
                 }

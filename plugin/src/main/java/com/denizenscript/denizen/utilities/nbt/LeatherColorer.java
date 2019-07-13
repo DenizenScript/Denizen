@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.utilities.nbt;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dColor;
 import com.denizenscript.denizen.objects.dItem;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -21,7 +21,7 @@ public class LeatherColorer {
                 item.getItemStack().setItemMeta(meta);
             }
             catch (Exception e) {
-                dB.echoError("Unable to color '" + item.identify() + "'.");
+                Debug.echoError("Unable to color '" + item.identify() + "'.");
             }
         }
 

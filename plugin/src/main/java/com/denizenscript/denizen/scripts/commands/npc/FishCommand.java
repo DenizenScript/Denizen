@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.npc;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.interfaces.FishingHelper;
 import com.denizenscript.denizen.npc.traits.FishingTrait;
 import com.denizenscript.denizen.objects.dLocation;
@@ -97,7 +97,7 @@ public class FishCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), location.debug() + catchtype.debug() + percent.debug() + stop.debug());
+            Debug.report(scriptEntry, getName(), location.debug() + catchtype.debug() + percent.debug() + stop.debug());
 
         }
 

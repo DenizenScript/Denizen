@@ -11,12 +11,11 @@ import com.denizenscript.denizen.utilities.command.Paginator;
 import com.denizenscript.denizen.utilities.command.exceptions.CommandException;
 import com.denizenscript.denizen.utilities.command.messaging.Messaging;
 import com.denizenscript.denizen.utilities.debugging.DebugSubmit;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -84,15 +83,15 @@ public class DenizenCommandHandler {
             desc = "Submits recorded logs triggered by /denizen debug -r", modifiers = {"submit"},
             min = 1, max = 3, permission = "denizen.submit")
     public void submit(CommandContext args, final CommandSender sender) throws CommandException {
-        if (!dB.record) {
+        if (!Debug.record) {
             Messaging.sendError(sender, "Use /denizen debug -r  to record debug information to be submitted");
             return;
         }
-        dB.record = false;
+        Debug.record = false;
         Messaging.send(sender, "Submitting...");
         final DebugSubmit submit = new DebugSubmit();
-        submit.recording = dB.Recording.toString();
-        dB.Recording = new StringBuilder();
+        submit.recording = Debug.Recording.toString();
+        Debug.Recording = new StringBuilder();
         submit.start();
         BukkitRunnable task = new BukkitRunnable() {
             public void run() {
@@ -158,97 +157,97 @@ public class DenizenCommandHandler {
             min = 1, max = 5, permission = "denizen.debug", flags = "scebrxovni")
     public void debug(CommandContext args, CommandSender sender) throws CommandException {
         if (args.hasFlag('s')) {
-            if (!dB.showDebug) {
-                dB.toggle();
+            if (!Debug.showDebug) {
+                Debug.toggle();
             }
-            dB.showStackTraces = !dB.showStackTraces;
-            Messaging.sendInfo(sender, (dB.showStackTraces ? "Denizen dBugger is now showing caught " +
+            Debug.showStackTraces = !Debug.showStackTraces;
+            Messaging.sendInfo(sender, (Debug.showStackTraces ? "Denizen dBugger is now showing caught " +
                     "exception stack traces." : "Denizen dBugger is now hiding caught stacktraces."));
         }
         if (args.hasFlag('c')) {
-            if (!dB.showDebug) {
-                dB.toggle();
+            if (!Debug.showDebug) {
+                Debug.toggle();
             }
-            dB.showColor = !dB.showColor;
-            Messaging.sendInfo(sender, (dB.showColor ? "Denizen dBugger is now showing color."
+            Debug.showColor = !Debug.showColor;
+            Messaging.sendInfo(sender, (Debug.showColor ? "Denizen dBugger is now showing color."
                     : "Denizen dBugger color has been disabled."));
         }
         if (args.hasFlag('o')) {
-            if (!dB.showDebug) {
-                dB.toggle();
+            if (!Debug.showDebug) {
+                Debug.toggle();
             }
-            dB.debugOverride = !dB.debugOverride;
-            Messaging.sendInfo(sender, (dB.debugOverride ? "Denizen dBugger is now overriding 'debug: false'."
+            Debug.debugOverride = !Debug.debugOverride;
+            Messaging.sendInfo(sender, (Debug.debugOverride ? "Denizen dBugger is now overriding 'debug: false'."
                     : "Denizen dBugger override has been disabled."));
         }
         if (args.hasFlag('e')) {
-            if (!dB.showDebug) {
-                dB.toggle();
+            if (!Debug.showDebug) {
+                Debug.toggle();
             }
-            Debug.showEventsTrimming = !Debug.showEventsTrimming;
-            Messaging.sendInfo(sender, (Debug.showEventsTrimming ? "Denizen dBugger is now logging all " +
+            com.denizenscript.denizencore.utilities.debugging.Debug.showEventsTrimming = !com.denizenscript.denizencore.utilities.debugging.Debug.showEventsTrimming;
+            Messaging.sendInfo(sender, (com.denizenscript.denizencore.utilities.debugging.Debug.showEventsTrimming ? "Denizen dBugger is now logging all " +
                     "world events." : "Denizen dBugger is now hiding world events."));
         }
         if (args.hasFlag('b')) {
-            if (!dB.showDebug) {
-                dB.toggle();
+            if (!Debug.showDebug) {
+                Debug.toggle();
             }
-            Debug.showScriptBuilder = !Debug.showScriptBuilder;
-            Messaging.sendInfo(sender, (Debug.showScriptBuilder ? "Denizen dBugger is now logging the " +
+            com.denizenscript.denizencore.utilities.debugging.Debug.showScriptBuilder = !com.denizenscript.denizencore.utilities.debugging.Debug.showScriptBuilder;
+            Messaging.sendInfo(sender, (com.denizenscript.denizencore.utilities.debugging.Debug.showScriptBuilder ? "Denizen dBugger is now logging the " +
                     "ScriptBuilder." : "Denizen dBugger is now hiding ScriptBuilder logging."));
         }
         if (args.hasFlag('r')) {
-            if (!dB.showDebug) {
-                dB.toggle();
+            if (!Debug.showDebug) {
+                Debug.toggle();
             }
-            dB.record = !dB.record;
-            dB.Recording = new StringBuilder();
-            Messaging.sendInfo(sender, (dB.record ? "Denizen dBugger is now recording. Use /denizen " +
+            Debug.record = !Debug.record;
+            Debug.Recording = new StringBuilder();
+            Messaging.sendInfo(sender, (Debug.record ? "Denizen dBugger is now recording. Use /denizen " +
                     "submit to finish." : "Denizen dBugger recording disabled."));
         }
         if (args.hasFlag('v')) {
-            if (!dB.showDebug) {
-                dB.toggle();
+            if (!Debug.showDebug) {
+                Debug.toggle();
             }
-            Debug.verbose =
-                    !Debug.verbose;
-            Messaging.sendInfo(sender, (Debug.verbose ? "Denizen dBugger is now verbose." :
+            com.denizenscript.denizencore.utilities.debugging.Debug.verbose =
+                    !com.denizenscript.denizencore.utilities.debugging.Debug.verbose;
+            Messaging.sendInfo(sender, (com.denizenscript.denizencore.utilities.debugging.Debug.verbose ? "Denizen dBugger is now verbose." :
                     "Denizen dBugger verbosity disabled."));
         }
         if (args.hasFlag('x')) {
-            dB.filter = new ArrayList<>();
+            Debug.filter = new ArrayList<>();
             Messaging.sendInfo(sender, "Denizen dBugger filter removed.");
         }
         if (args.hasFlag('n')) {
-            if (!dB.showDebug) {
-                dB.toggle();
+            if (!Debug.showDebug) {
+                Debug.toggle();
             }
-            dB.shouldTrim = !dB.shouldTrim;
-            Messaging.sendInfo(sender, (dB.shouldTrim ? "Denizen dBugger is now trimming long messages."
+            Debug.shouldTrim = !Debug.shouldTrim;
+            Messaging.sendInfo(sender, (Debug.shouldTrim ? "Denizen dBugger is now trimming long messages."
                     : "Denizen dBugger is no longer trimming long messages."));
         }
         if (args.hasFlag('i')) {
-            if (!dB.showDebug) {
-                dB.toggle();
+            if (!Debug.showDebug) {
+                Debug.toggle();
             }
-            dB.showSources = !dB.showSources;
-            Messaging.sendInfo(sender, (dB.shouldTrim ? "Denizen dBugger is now showing source information."
+            Debug.showSources = !Debug.showSources;
+            Messaging.sendInfo(sender, (Debug.shouldTrim ? "Denizen dBugger is now showing source information."
                     : "Denizen dBugger is no longer showing source information."));
         }
         if (args.hasValueFlag("filter")) {
-            if (!dB.showDebug) {
-                dB.toggle();
+            if (!Debug.showDebug) {
+                Debug.toggle();
             }
             for (String filter : args.getFlag("filter").split("\\|")) { // TODO: addAll?
-                dB.filter.add(filter);
+                Debug.filter.add(filter);
             }
-            Messaging.sendInfo(sender, "Denizen dBugger filter now: " + dB.filter.toString());
+            Messaging.sendInfo(sender, "Denizen dBugger filter now: " + Debug.filter.toString());
 
         }
         else if (args.getFlags().isEmpty()) {
-            dB.toggle();
+            Debug.toggle();
             Messaging.sendInfo(sender, "Denizen dBugger is now: "
-                    + (dB.showDebug ? "<a>ENABLED" : "<c>DISABLED"));
+                    + (Debug.showDebug ? "<a>ENABLED" : "<c>DISABLED"));
         }
 
     }

@@ -2,7 +2,7 @@ package com.denizenscript.denizen.events.entity;
 
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.Element;
@@ -92,7 +92,7 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
             for (String loc : dList.valueOf(determination)) {
                 dLocation location = dLocation.valueOf(loc);
                 if (location == null) {
-                    dB.echoError("Invalid location '" + loc + "' check [" + getName() + "]: '  for " + container.getName());
+                    Debug.echoError("Invalid location '" + loc + "' check [" + getName() + "]: '  for " + container.getName());
                 }
                 else {
                     blocks.add(location.identifySimple());

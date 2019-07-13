@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.PacketHelper;
 import com.denizenscript.denizen.objects.dLocation;
@@ -108,7 +108,7 @@ public class BlockCrackCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), ArgumentHelper.debugList("players", players)
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugList("players", players)
                     + progress.debug() + location.debug() + stack.debug());
 
         }
@@ -126,7 +126,7 @@ public class BlockCrackCommand extends AbstractCommand {
 
         for (dPlayer player : players) {
             if (!player.isOnline()) {
-                dB.echoError("Players must be online!");
+                Debug.echoError("Players must be online!");
                 continue;
             }
             Player playerEnt = player.getPlayerEntity();

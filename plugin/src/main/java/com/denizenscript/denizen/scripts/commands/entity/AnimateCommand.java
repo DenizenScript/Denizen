@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.AnimationHelper;
 import com.denizenscript.denizen.nms.interfaces.EntityAnimation;
@@ -110,7 +110,7 @@ public class AnimateCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), (animation != null ?
+            Debug.report(scriptEntry, getName(), (animation != null ?
                     ArgumentHelper.debugObj("animation", animation.name()) : effect != null ?
                     ArgumentHelper.debugObj("effect", effect.name()) :
                     ArgumentHelper.debugObj("animation", nmsAnimation)) +
@@ -137,7 +137,7 @@ public class AnimateCommand extends AbstractCommand {
                     }
                 }
                 catch (Exception e) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "Error playing that animation!");
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Error playing that animation!");
                 } // We tried!
             }
         }

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizencore.objects.Element;
@@ -111,7 +111,7 @@ public class ItemAttributeNBT implements Property {
         // -->
         if (mechanism.matches("nbt_attributes")) {
             if (item.getMaterial().getMaterial() == Material.AIR) {
-                dB.echoError("Cannot apply NBT to AIR!");
+                Debug.echoError("Cannot apply NBT to AIR!");
                 return;
             }
             dList list = mechanism.valueAsType(dList.class);

@@ -4,7 +4,7 @@ import com.denizenscript.denizen.objects.dCuboid;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dMaterial;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.dList;
@@ -76,7 +76,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
         if (path.eventArgLowerAt(3).equals("into")) {
             String mat2 = path.eventArgLowerAt(4);
             if (mat2.isEmpty()) {
-                dB.echoError("Invalid event material [" + getName() + "]: '" + path.event + "' for " + path.container.getName());
+                Debug.echoError("Invalid event material [" + getName() + "]: '" + path.event + "' for " + path.container.getName());
                 return false;
             }
             else if (!tryMaterial(new_material, mat2)) {

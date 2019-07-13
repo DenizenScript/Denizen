@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.utilities;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.Argument;
 import com.google.common.base.Splitter;
 import com.denizenscript.denizen.objects.dPlayer;
@@ -199,7 +199,7 @@ public class ScoreboardHelper {
             }
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
     }
 

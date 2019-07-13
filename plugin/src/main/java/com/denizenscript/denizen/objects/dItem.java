@@ -6,7 +6,7 @@ import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.MaterialCompat;
 import com.denizenscript.denizen.utilities.blocks.OldMaterialsHelper;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -22,7 +22,6 @@ import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.debugging.Debuggable;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -201,7 +200,7 @@ public class dItem implements dObject, Notable, Adjustable {
 
                 if (ArgumentHelper.matchesInteger(material)) {
                     if (!nope) {
-                        dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release. For item input of '" + string + "'.");
+                        Debug.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release. For item input of '" + string + "'.");
                     }
                     stack = new dItem(Integer.valueOf(material));
                 }
@@ -224,13 +223,13 @@ public class dItem implements dObject, Notable, Adjustable {
             }
             catch (Exception e) {
                 if (!string.equalsIgnoreCase("none") && !nope) {
-                    dB.log("Does not match a valid item ID or material: " + string);
+                    Debug.log("Does not match a valid item ID or material: " + string);
                 }
             }
         }
 
         if (!nope) {
-            dB.log("valueOf dItem returning null: " + string);
+            Debug.log("valueOf dItem returning null: " + string);
         }
 
         // No match! Return null.
@@ -693,7 +692,7 @@ public class dItem implements dObject, Notable, Adjustable {
         registerTag("id", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
+                Debug.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
                 return new Element(((dItem) object).getItemStack().getType().getId())
                         .getAttribute(attribute.fulfill(1));
             }
@@ -702,7 +701,7 @@ public class dItem implements dObject, Notable, Adjustable {
         registerTag("data", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
+                Debug.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
                 return new Element(((dItem) object).getItemStack().getData().getData())
                         .getAttribute(attribute.fulfill(1));
             }
@@ -719,14 +718,14 @@ public class dItem implements dObject, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 if (!attribute.hasContext(1)) {
-                    dB.echoError("i@item.with[...] tag must have an input mechanism list.");
+                    Debug.echoError("i@item.with[...] tag must have an input mechanism list.");
                 }
                 dItem item = new dItem(((dItem) object).getItemStack().clone());
                 List<String> properties = ObjectFetcher.separateProperties("[" + attribute.getContext(1) + "]");
                 for (int i = 1; i < properties.size(); i++) {
                     List<String> data = CoreUtilities.split(properties.get(i), '=', 2);
                     if (data.size() != 2) {
-                        dB.echoError("Invalid property string '" + properties.get(i) + "'!");
+                        Debug.echoError("Invalid property string '" + properties.get(i) + "'!");
                     }
                     else {
                         item.safeApplyProperty(new Mechanism(new Element(data.get(0)), new Element((data.get(1)).replace('‑', ';')), attribute.context));
@@ -1007,7 +1006,7 @@ public class dItem implements dObject, Notable, Adjustable {
         TagRunnable tr = registeredTags.get(attrLow);
         if (tr != null) {
             if (!tr.name.equals(attrLow)) {
-                Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
+                com.denizenscript.denizencore.utilities.debugging.Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
                         "Using deprecated form of tag '" + tr.name + "': '" + attrLow + "'.");
             }
             return tr.run(attribute, this);
@@ -1112,7 +1111,7 @@ public class dItem implements dObject, Notable, Adjustable {
 
     public void applyProperty(Mechanism mechanism) {
         if (NotableManager.isExactSavedObject(this)) {
-            dB.echoError("Cannot apply properties to noted objects.");
+            Debug.echoError("Cannot apply properties to noted objects.");
             return;
         }
         adjust(mechanism);

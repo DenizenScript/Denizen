@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.nbt.LeatherColorer;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dNPC;
@@ -243,7 +243,7 @@ public class ItemScriptContainer extends ScriptContainer {
                         stack.getItemStack().addUnsafeEnchantment(ench, level);
                     }
                     catch (Exception e) {
-                        dB.echoError("While constructing '" + getName() + "', encountered error: '"
+                        Debug.echoError("While constructing '" + getName() + "', encountered error: '"
                                 + enchantment + "' is an invalid enchantment!");
                     }
                 }
@@ -267,8 +267,8 @@ public class ItemScriptContainer extends ScriptContainer {
             stack.setItemScript(this);
         }
         catch (Exception e) {
-            dB.echoError("Woah! An exception has been called with this item script!");
-            dB.echoError(e);
+            Debug.echoError("Woah! An exception has been called with this item script!");
+            Debug.echoError(e);
             stack = null;
         }
 

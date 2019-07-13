@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
@@ -73,7 +73,7 @@ public class StrikeCommand extends AbstractCommand {
 
         // Debugger
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(),
+            Debug.report(scriptEntry, getName(),
                     location.debug()
                             + ArgumentHelper.debugObj("Damageable", String.valueOf(damage)));
         }

@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.item;
 
 import com.denizenscript.denizen.scripts.containers.core.BookScriptContainer;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -216,7 +216,7 @@ public class ScribeCommand extends AbstractCommand {
         }
         else {
             player.getWorld().dropItem(player.getLocation(), book);
-            dB.log("Player's inventory is full, dropped book.");
+            Debug.log("Player's inventory is full, dropped book.");
         }
     }
 
@@ -231,17 +231,17 @@ public class ScribeCommand extends AbstractCommand {
             return;
         }
         // drop it if inventory has no empty slots
-        dB.log("emptySpot: " + emptySpot);
+        Debug.log("emptySpot: " + emptySpot);
 
         if (emptySpot == -1) {
             player.getWorld().dropItem(player.getLocation(), book);
-            dB.log("Player's inventory is full, dropped book.");
+            Debug.log("Player's inventory is full, dropped book.");
         }
         // move current held item to empty spot, set item in hand to the book
         else {
             inv.setItem(emptySpot, currItem);
             player.setItemInHand(book);
-            dB.log("...added book to player hand, moved original item");
+            Debug.log("...added book to player hand, moved original item");
         }
     }
 

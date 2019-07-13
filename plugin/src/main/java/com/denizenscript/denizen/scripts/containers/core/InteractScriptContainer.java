@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.objects.dPlayer;
@@ -88,7 +88,7 @@ public class InteractScriptContainer extends ScriptContainer {
 
             // TODO: Throw a warning if 'requirements' section exists
             if (contains("REQUIREMENTS")) {
-                dB.echoError("Interact script '" + getName() + "' is outdated: 'requirements' do not exist in modern Denizen!");
+                Debug.echoError("Interact script '" + getName() + "' is outdated: 'requirements' do not exist in modern Denizen!");
             }
 
             if (keys.isEmpty()) {
@@ -116,7 +116,7 @@ public class InteractScriptContainer extends ScriptContainer {
 
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
 
         // Make default step the only step if there is only one step
@@ -232,7 +232,7 @@ public class InteractScriptContainer extends ScriptContainer {
         }
         else {
             if (!quiet) {
-                dB.echoDebug(this, "No entries in script for " +
+                Debug.echoDebug(this, "No entries in script for " +
                         ("STEPS." + InteractScriptHelper.getCurrentStep(player, getName()) + "."
                                 + triggerName + " TRIGGER."
                                 + (id == null ? "SCRIPT" : id.toUpperCase() + ".SCRIPT")));
@@ -295,7 +295,7 @@ public class InteractScriptContainer extends ScriptContainer {
                 }
             }
             catch (Exception ex) {
-                dB.echoError("Warning: improperly defined " + trigger.getName() + " trigger for script '" + getName() + "'!");
+                Debug.echoError("Warning: improperly defined " + trigger.getName() + " trigger for script '" + getName() + "'!");
             }
             return idMap;
         }

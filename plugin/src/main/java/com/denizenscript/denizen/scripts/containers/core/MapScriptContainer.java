@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.maps.*;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -95,7 +95,7 @@ public class MapScriptContainer extends ScriptContainer {
             for (String objectKey : objectKeys) {
                 YamlConfiguration objectSection = objectsSection.getConfigurationSection(objectKey);
                 if (!objectSection.contains("TYPE")) {
-                    dB.echoError("Map script '" + getName() + "' has an object without a specified type!");
+                    Debug.echoError("Map script '" + getName() + "' has an object without a specified type!");
                     return;
                 }
                 String type = objectSection.getString("TYPE").toUpperCase();
@@ -105,7 +105,7 @@ public class MapScriptContainer extends ScriptContainer {
                 boolean worldC = objectSection.contains("WORLD_COORDINATES") && ArgumentHelper.getBooleanFrom(objectSection.getString("WORLD_COORDINATES", "false"));
                 if (type.equals("IMAGE")) {
                     if (!objectSection.contains("IMAGE")) {
-                        dB.echoError("Map script '" + getName() + "'s image '" + objectKey
+                        Debug.echoError("Map script '" + getName() + "'s image '" + objectKey
                                 + "' has no specified image location!");
                         return;
                     }
@@ -121,7 +121,7 @@ public class MapScriptContainer extends ScriptContainer {
                 }
                 else if (type.equals("TEXT")) {
                     if (!objectSection.contains("TEXT")) {
-                        dB.echoError("Map script '" + getName() + "'s text object '" + objectKey
+                        Debug.echoError("Map script '" + getName() + "'s text object '" + objectKey
                                 + "' has no specified text!");
                         return;
                     }
@@ -130,13 +130,13 @@ public class MapScriptContainer extends ScriptContainer {
                 }
                 else if (type.equals("CURSOR")) {
                     if (!objectSection.contains("CURSOR")) {
-                        dB.echoError("Map script '" + getName() + "'s cursor '" + objectKey
+                        Debug.echoError("Map script '" + getName() + "'s cursor '" + objectKey
                                 + "' has no specified cursor type!");
                         return;
                     }
                     String cursor = objectSection.getString("CURSOR");
                     if (cursor == null) {
-                        dB.echoError("Map script '" + getName() + "'s cursor '" + objectKey
+                        Debug.echoError("Map script '" + getName() + "'s cursor '" + objectKey
                                 + "' is missing a cursor type!");
                         return;
                     }
@@ -147,7 +147,7 @@ public class MapScriptContainer extends ScriptContainer {
                             objectSection.getString("COLOR", "black")));
                 }
                 else {
-                    dB.echoError("Weird map data!");
+                    Debug.echoError("Weird map data!");
                 }
                 if (worldC && renderer.mapObjects.size() > 0) {
                     renderer.mapObjects.get(renderer.mapObjects.size() - 1).worldCoordinates = true;

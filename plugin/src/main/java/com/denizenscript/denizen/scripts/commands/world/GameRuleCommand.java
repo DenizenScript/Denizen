@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dWorld;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
@@ -79,12 +79,12 @@ public class GameRuleCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), world.debug() + gamerule.debug() + value.debug());
+            Debug.report(scriptEntry, getName(), world.debug() + gamerule.debug() + value.debug());
         }
 
         // Execute
         if (!world.getWorld().setGameRuleValue(gamerule.asString(), value.asString())) {
-            dB.echoError(scriptEntry.getResidingQueue(), "Invalid gamerule!");
+            Debug.echoError(scriptEntry.getResidingQueue(), "Invalid gamerule!");
         }
     }
 }

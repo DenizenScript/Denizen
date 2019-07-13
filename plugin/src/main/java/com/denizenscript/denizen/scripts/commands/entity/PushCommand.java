@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.commands.entity;
 import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.Position;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
@@ -65,7 +65,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
                     scriptEntry.addObject("originLocation", arg.asType(dLocation.class));
                 }
                 else {
-                    dB.echoError("Ignoring unrecognized argument: " + arg.raw_value);
+                    Debug.echoError("Ignoring unrecognized argument: " + arg.raw_value);
                 }
             }
             else if (!scriptEntry.hasObject("destination")
@@ -170,7 +170,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
         // TODO: Should this be checked in argument parsing?
         if (destination == null) {
             if (scriptEntry.dbCallShouldDebug()) {
-                dB.report(scriptEntry, getName(), "No destination specified!");
+                Debug.report(scriptEntry, getName(), "No destination specified!");
             }
             scriptEntry.setFinished(true);
             return;
@@ -188,7 +188,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), ArgumentHelper.debugObj("origin", originEntity != null ? originEntity : originLocation) +
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("origin", originEntity != null ? originEntity : originLocation) +
                     ArgumentHelper.debugObj("entities", entities.toString()) +
                     ArgumentHelper.debugObj("destination", destination) +
                     ArgumentHelper.debugObj("speed", speed) +
@@ -317,7 +317,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
                                 String name = definition_names != null && definition_names.length >= x ?
                                         definition_names[x - 1].trim() : String.valueOf(x);
                                 queue.addDefinition(name, definition);
-                                dB.echoDebug(scriptEntry, "Adding definition %" + name + "% as " + definition);
+                                Debug.echoDebug(scriptEntry, "Adding definition %" + name + "% as " + definition);
                                 x++;
                             }
                         }

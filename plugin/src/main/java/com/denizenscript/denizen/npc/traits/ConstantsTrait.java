@@ -3,7 +3,7 @@ package com.denizenscript.denizen.npc.traits;
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -166,7 +166,7 @@ public class ConstantsTrait extends Trait {
             }
         }
         catch (NullPointerException e) {
-            dB.echoError("Constants in assignment script '" + npc.getTrait(AssignmentTrait.class)
+            Debug.echoError("Constants in assignment script '" + npc.getTrait(AssignmentTrait.class)
                     .getAssignment().getName() + "' improperly defined, no constants will be set.");
         }
 

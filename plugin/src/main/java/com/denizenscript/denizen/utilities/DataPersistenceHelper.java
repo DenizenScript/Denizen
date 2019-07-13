@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.utilities;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.dObject;
 import org.bukkit.NamespacedKey;
@@ -53,8 +53,8 @@ public class DataPersistenceHelper {
             return null;
         }
         catch (IllegalArgumentException ex) {
-            dB.echoError("Failed to read dObject from entity key '" + keyName + "' for entity " + entity.getUniqueId() + "...");
-            dB.echoError(ex);
+            Debug.echoError("Failed to read dObject from entity key '" + keyName + "' for entity " + entity.getUniqueId() + "...");
+            Debug.echoError(ex);
             return null;
         }
     }

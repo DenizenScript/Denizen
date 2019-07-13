@@ -4,7 +4,7 @@ import com.denizenscript.denizen.objects.properties.material.MaterialAge;
 import com.denizenscript.denizen.objects.properties.material.MaterialHalf;
 import com.denizenscript.denizen.objects.properties.material.MaterialLevel;
 import com.denizenscript.denizen.utilities.blocks.OldMaterialsHelper;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
@@ -15,7 +15,6 @@ import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -111,14 +110,14 @@ public class dMaterial implements dObject, Adjustable {
             if (m != null) {
                 m = Bukkit.getUnsafe().fromLegacy(m);
                 if (context == null || context.debug) {
-                    dB.log("'" + string + "' is a legacy (pre-1.13) material name. It is now '" + m.name() + "'.");
+                    Debug.log("'" + string + "' is a legacy (pre-1.13) material name. It is now '" + m.name() + "'.");
                 }
             }
         }
         if (m != null) {
             if (index >= 0) {
                 if (context == null || context.debug) {
-                    dB.log("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use relevant properties instead.");
+                    Debug.log("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use relevant properties instead.");
                 }
             }
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
@@ -130,7 +129,7 @@ public class dMaterial implements dObject, Adjustable {
             dMaterial mat = OldMaterialsHelper.all_dMaterials.get(string);
             if (mat != null) {
                 if ((context == null || context.debug) && index >= 0) {
-                    dB.log("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use relevant properties instead.");
+                    Debug.log("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use relevant properties instead.");
                 }
                 if (data == 0) {
                     if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
@@ -145,7 +144,7 @@ public class dMaterial implements dObject, Adjustable {
         if (matid != 0) {
             // It's always an error (except in the 'matches' call) to use a material ID number instead of a name.
             if (context != noDebugContext) {
-                dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use material names instead.");
+                Debug.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use material names instead.");
             }
             m = OldMaterialsHelper.getLegacyMaterial(matid);
             if (m != null) {
@@ -464,7 +463,7 @@ public class dMaterial implements dObject, Adjustable {
         registerTag("id", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use material names instead.");
+                Debug.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use material names instead.");
                 return new Element(((dMaterial) object).material.getId())
                         .getAttribute(attribute.fulfill(1));
             }
@@ -474,7 +473,7 @@ public class dMaterial implements dObject, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 if (attribute.context == null || attribute.context.debug) {
-                    dB.log("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use relevant properties instead.");
+                    Debug.log("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use relevant properties instead.");
                 }
                 return new Element(((dMaterial) object).getData())
                         .getAttribute(attribute.fulfill(1));
@@ -709,7 +708,7 @@ public class dMaterial implements dObject, Adjustable {
             public String run(Attribute attribute, dObject object) {
                 dMaterial material = (dMaterial) object;
                 if (!NMSHandler.getInstance().getBlockHelper().hasBlock(material.getMaterial())) {
-                    dB.echoError("Provided material does not have a placeable block.");
+                    Debug.echoError("Provided material does not have a placeable block.");
                     return null;
                 }
                 return new Element(NMSHandler.getInstance().getBlockHelper().getBlockResistance(material.getMaterial()))
@@ -728,7 +727,7 @@ public class dMaterial implements dObject, Adjustable {
             public String run(Attribute attribute, dObject object) {
                 dMaterial material = (dMaterial) object;
                 if (!material.getMaterial().isBlock()) {
-                    dB.echoError("Provided material does not have a placeable block.");
+                    Debug.echoError("Provided material does not have a placeable block.");
                     return null;
                 }
                 return new Element(material.getMaterial().getHardness())
@@ -837,7 +836,7 @@ public class dMaterial implements dObject, Adjustable {
                         String tag = attribute.getAttribute(1);
                         String returned = CoreUtilities.autoPropertyTag(object, attribute);
                         if (returned != null) {
-                            dB.echoError("Usage of outdated 'material.item." + tag + "' tag should be replaced by 'material." + tag + "' (with '.item' removed).");
+                            Debug.echoError("Usage of outdated 'material.item." + tag + "' tag should be replaced by 'material." + tag + "' (with '.item' removed).");
                             return returned;
                         }
                     }
@@ -885,7 +884,7 @@ public class dMaterial implements dObject, Adjustable {
         TagRunnable tr = registeredTags.get(attrLow);
         if (tr != null) {
             if (!tr.name.equals(attrLow)) {
-                Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
+                com.denizenscript.denizencore.utilities.debugging.Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
                         "Using deprecated form of tag '" + tr.name + "': '" + attrLow + "'.");
             }
             return tr.run(attribute, this);
@@ -918,7 +917,7 @@ public class dMaterial implements dObject, Adjustable {
         // -->
         if (!mechanism.isProperty && mechanism.matches("block_resistance") && mechanism.requireFloat()) {
             if (!NMSHandler.getInstance().getBlockHelper().setBlockResistance(material, mechanism.getValue().asFloat())) {
-                dB.echoError("Provided material does not have a placeable block.");
+                Debug.echoError("Provided material does not have a placeable block.");
             }
         }
 

@@ -4,7 +4,7 @@ import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.Velocity;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.Position;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dEntity;
@@ -90,7 +90,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                     scriptEntry.addObject("originLocation", arg.asType(dLocation.class));
                 }
                 else {
-                    dB.echoError("Ignoring unrecognized argument: " + arg.raw_value);
+                    Debug.echoError("Ignoring unrecognized argument: " + arg.raw_value);
                 }
             }
             else if (!scriptEntry.hasObject("destination")
@@ -202,7 +202,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         // TODO: Same as PUSH -- is this the place to do this?
         if (destination == null) {
             if (scriptEntry.dbCallShouldDebug()) {
-                dB.report(scriptEntry, getName(), "No destination specified!");
+                Debug.report(scriptEntry, getName(), "No destination specified!");
             }
             return;
         }
@@ -221,7 +221,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), ArgumentHelper.debugObj("origin", originEntity != null ? originEntity : originLocation) +
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("origin", originEntity != null ? originEntity : originLocation) +
                     ArgumentHelper.debugObj("entities", entities.toString()) +
                     destination.debug() +
                     height.debug() +
@@ -397,7 +397,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                                 String name = definition_names != null && definition_names.length >= x ?
                                         definition_names[x - 1].trim() : String.valueOf(x);
                                 queue.addDefinition(name, definition);
-                                dB.echoDebug(scriptEntry, "Adding definition '" + name + "' as " + definition);
+                                Debug.echoDebug(scriptEntry, "Adding definition '" + name + "' as " + definition);
                                 x++;
                             }
                         }

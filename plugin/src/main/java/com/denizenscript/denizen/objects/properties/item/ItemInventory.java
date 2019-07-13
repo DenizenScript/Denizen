@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dInventory;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -105,7 +105,7 @@ public class ItemInventory implements Property {
             InventoryHolder invHolder = (InventoryHolder) bsm.getBlockState();
 
             if (inventory.getSize() > invHolder.getInventory().getSize()) {
-                dB.echoError("Invalid dInventory size; expected " + invHolder.getInventory().getSize() + " or less.");
+                Debug.echoError("Invalid dInventory size; expected " + invHolder.getInventory().getSize() + " or less.");
                 return;
             }
 

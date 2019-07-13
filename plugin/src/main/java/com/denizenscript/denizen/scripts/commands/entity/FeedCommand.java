@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.npc.traits.HungerTrait;
 import com.denizenscript.denizen.objects.dNPC;
@@ -106,7 +106,7 @@ public class FeedCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(),
+            Debug.report(scriptEntry, getName(),
                     (player == null ? "" : player.debug())
                             + (npc == null ? "" : npc.debug())
                             + amount.debug());
@@ -115,7 +115,7 @@ public class FeedCommand extends AbstractCommand {
 
         if (npc != null) {
             if (!npc.getCitizen().hasTrait(HungerTrait.class)) {
-                dB.echoError(scriptEntry.getResidingQueue(), "This NPC does not have the HungerTrait enabled! Use /trait hunger");
+                Debug.echoError(scriptEntry.getResidingQueue(), "This NPC does not have the HungerTrait enabled! Use /trait hunger");
                 return;
             }
             npc.getCitizen().getTrait(HungerTrait.class).feed(amount.asInt());
@@ -128,7 +128,7 @@ public class FeedCommand extends AbstractCommand {
             player.getPlayerEntity().setFoodLevel(player.getPlayerEntity().getFoodLevel() + amount.asInt());
         }
         else {
-            dB.echoError(scriptEntry.getResidingQueue(), "No target?"); // Mostly just here to quiet code analyzers.
+            Debug.echoError(scriptEntry.getResidingQueue(), "No target?"); // Mostly just here to quiet code analyzers.
         }
     }
 }

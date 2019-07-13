@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.item;
 
 import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dInventory;
@@ -201,7 +201,7 @@ public class InventoryCommand extends AbstractCommand {
         Element mechanismValue = scriptEntry.getElement("mechanism_value");
 
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(),
+            Debug.report(scriptEntry, getName(),
                     ArgumentHelper.debugObj("actions", actions.toString())
                             + (destination.debug())
                             + (origin != null ? origin.debug() : "")
@@ -212,7 +212,7 @@ public class InventoryCommand extends AbstractCommand {
 
         int slotId = SlotHelper.nameToIndex(slot.asString());
         if (slotId == -1) {
-            dB.echoError(scriptEntry.getResidingQueue(), "The input '" + slot.asString() + "' is not a valid slot!");
+            Debug.echoError(scriptEntry.getResidingQueue(), "The input '" + slot.asString() + "' is not a valid slot!");
             return;
         }
 
@@ -241,7 +241,7 @@ public class InventoryCommand extends AbstractCommand {
                 // Turn destination's contents into a copy of origin's
                 case COPY:
                     if (origin == null) {
-                        dB.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
                         return;
                     }
                     origin.replace(destination);
@@ -250,7 +250,7 @@ public class InventoryCommand extends AbstractCommand {
                 // Copy origin's contents to destination, then empty origin
                 case MOVE:
                     if (origin == null) {
-                        dB.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
                         return;
                     }
                     origin.replace(destination);
@@ -260,7 +260,7 @@ public class InventoryCommand extends AbstractCommand {
                 // Swap the contents of the two inventories
                 case SWAP:
                     if (origin == null) {
-                        dB.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
                         return;
                     }
                     dInventory temp = new dInventory(destination.getInventory());
@@ -271,7 +271,7 @@ public class InventoryCommand extends AbstractCommand {
                 // Add origin's contents to destination
                 case ADD:
                     if (origin == null) {
-                        dB.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
                         return;
                     }
                     destination.add(slotId, origin.getContents());
@@ -280,7 +280,7 @@ public class InventoryCommand extends AbstractCommand {
                 // Remove origin's contents from destination
                 case REMOVE:
                     if (origin == null) {
-                        dB.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
                         return;
                     }
                     destination.remove(origin.getContents());
@@ -289,7 +289,7 @@ public class InventoryCommand extends AbstractCommand {
                 // Set items by slot
                 case SET:
                     if (origin == null) {
-                        dB.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
                         return;
                     }
                     destination.setSlots(slotId, origin.getContents(), originentry.getKey());
@@ -299,7 +299,7 @@ public class InventoryCommand extends AbstractCommand {
                 // destination
                 case KEEP:
                     if (origin == null) {
-                        dB.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
                         return;
                     }
                     destination.keep(origin.getContents());
@@ -309,7 +309,7 @@ public class InventoryCommand extends AbstractCommand {
                 // destination
                 case EXCLUDE:
                     if (origin == null) {
-                        dB.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
                         return;
                     }
                     destination.exclude(origin.getContents());
@@ -319,7 +319,7 @@ public class InventoryCommand extends AbstractCommand {
                 // until it is full
                 case FILL:
                     if (origin == null) {
-                        dB.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
                         return;
                     }
                     destination.fill(origin.getContents());
@@ -333,7 +333,7 @@ public class InventoryCommand extends AbstractCommand {
                 // If this is a player inventory, update it
                 case UPDATE:
                     if (!destination.update()) {
-                        dB.echoError("Only player inventories can be force-updated!");
+                        Debug.echoError("Only player inventories can be force-updated!");
                     }
                     break;
 

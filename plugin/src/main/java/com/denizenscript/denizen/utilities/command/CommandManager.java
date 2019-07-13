@@ -2,7 +2,7 @@ package com.denizenscript.denizen.utilities.command;
 
 import com.denizenscript.denizen.utilities.command.exceptions.*;
 import com.denizenscript.denizen.utilities.command.messaging.Messaging;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -140,10 +140,10 @@ public class CommandManager {
             method.invoke(instance, methodArgs);
         }
         catch (IllegalArgumentException e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
         catch (IllegalAccessException e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
         catch (InvocationTargetException e) {
             if (e.getCause() instanceof CommandException) {
@@ -188,7 +188,7 @@ public class CommandManager {
             }
         }
         catch (Throwable ex) {
-            dB.echoError(ex);
+            Debug.echoError(ex);
             if (sender instanceof Player) {
                 Messaging.sendError(sender, "Please report this error: [See console]");
                 Messaging.sendError(sender, ex.getClass().getName() + ": " + ex.getMessage());

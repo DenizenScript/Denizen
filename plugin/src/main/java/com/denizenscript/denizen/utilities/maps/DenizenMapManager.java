@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.utilities.maps;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -51,7 +51,7 @@ public class DenizenMapManager {
             int mapId = Integer.valueOf(key);
             MapView mapView = Bukkit.getServer().getMap((short) mapId); // TODO: ??? (deprecated short method)
             if (mapView == null) {
-                dB.echoError("Map #" + key + " does not exist. Has it been removed? Deleting from maps.yml...");
+                Debug.echoError("Map #" + key + " does not exist. Has it been removed? Deleting from maps.yml...");
                 mapsSection.set(key, null);
                 continue;
             }
@@ -141,7 +141,7 @@ public class DenizenMapManager {
             mapsConfig.save(mapsFile);
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
     }
 
@@ -185,7 +185,7 @@ public class DenizenMapManager {
         if (!fileLower.startsWith("http://") && !fileLower.startsWith("https://")) {
             File f = new File(imagesFolder, file);
             if (!Utilities.canReadFile(f)) {
-                dB.echoError("Server config denies reading files in that location.");
+                Debug.echoError("Server config denies reading files in that location.");
                 return null;
             }
             return f.getPath();
@@ -195,7 +195,7 @@ public class DenizenMapManager {
                 return downloadImage(new URL(file));
             }
             catch (MalformedURLException e) {
-                dB.echoError("URL is malformed: " + file);
+                Debug.echoError("URL is malformed: " + file);
                 return null;
             }
         }
@@ -232,7 +232,7 @@ public class DenizenMapManager {
             return output.getPath();
         }
         catch (IOException e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
         return null;
     }

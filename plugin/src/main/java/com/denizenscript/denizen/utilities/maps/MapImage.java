@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.utilities.maps;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dPlayer;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;
@@ -75,7 +75,7 @@ public class MapImage extends MapObject {
                 height = image.getHeight(null);
             }
             if (width == -1 || height == -1) {
-                dB.echoError("Image loading failed (bad width/height) for image " + file);
+                Debug.echoError("Image loading failed (bad width/height) for image " + file);
                 disabled = true;
                 return;
             }
@@ -117,7 +117,7 @@ public class MapImage extends MapObject {
             colors = (Color[]) field.get(null);
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
         bukkitColors = colors;
     }

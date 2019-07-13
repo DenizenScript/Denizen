@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.PacketHelper;
 import com.denizenscript.denizen.objects.dLocation;
@@ -123,7 +123,7 @@ public class AnimateChestCommand extends AbstractCommand {
         List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("players");
 
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), location.debug()
+            Debug.report(scriptEntry, getName(), location.debug()
                     + ArgumentHelper.debugObj("block type", location.getBlock().getType().name())
                     + action.debug()
                     + sound.debug()

@@ -10,7 +10,7 @@ import com.denizenscript.denizen.scripts.containers.core.CommandScriptHelper;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.ScoreboardHelper;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizencore.objects.*;
@@ -87,13 +87,13 @@ public class ServerTags {
         if (!event.matches("math", "m")) {
             return;
         }
-        dB.echoError("'math:' tags have been non-recommended for years. Please use modern element math tags like 'element.add[...]', etc.");
+        Debug.echoError("'math:' tags have been non-recommended for years. Please use modern element math tags like 'element.add[...]', etc.");
         try {
             Double evaluation = new DoubleEvaluator().evaluate(event.getValue());
             event.setReplaced(new Element(String.valueOf(evaluation)).getAttribute(event.getAttributes().fulfill(1)));
         }
         catch (Exception e) {
-            dB.echoError("Invalid math tag!");
+            Debug.echoError("Invalid math tag!");
             event.setReplaced("0.0");
         }
     }
@@ -141,7 +141,7 @@ public class ServerTags {
             serverShorthand.warn(event.getScriptEntry());
         }
         if (event.matches("global")) {
-            dB.echoError(event.getScriptEntry() == null ? null : event.getScriptEntry().getResidingQueue(),
+            Debug.echoError(event.getScriptEntry() == null ? null : event.getScriptEntry().getResidingQueue(),
                     "Using 'global' as a base tag is a deprecated alternate name. Please use 'server' instead.");
         }
         Attribute attribute = event.getAttributes().fulfill(1);
@@ -178,7 +178,7 @@ public class ServerTags {
                 }
             }
             catch (Exception ex) {
-                dB.echoError(ex);
+                Debug.echoError(ex);
             }
             return;
         }
@@ -220,7 +220,7 @@ public class ServerTags {
             }
             if (board == null) {
                 if (!attribute.hasAlternative()) {
-                    dB.echoError("Scoreboard '" + name + "' does not exist.");
+                    Debug.echoError("Scoreboard '" + name + "' does not exist.");
                 }
                 return;
             }
@@ -497,7 +497,7 @@ public class ServerTags {
                         }
                     }
                     catch (Exception e) {
-                        dB.echoError(e);
+                        Debug.echoError(e);
                     }
                 }
                 else {
@@ -656,7 +656,7 @@ public class ServerTags {
             List<WorldScriptContainer> EventsOne = OldEventManager.events.get("ON " + eventName);
             List<WorldScriptContainer> EventsTwo = OldEventManager.events.get("ON " + OldEventManager.StripIdentifiers(eventName));
             if (EventsOne == null && EventsTwo == null) {
-                dB.echoError("No world scripts will handle the event '" + eventName + "'");
+                Debug.echoError("No world scripts will handle the event '" + eventName + "'");
             }
             else {
                 dList list = new dList();
@@ -722,13 +722,13 @@ public class ServerTags {
             try {
                 if (!Utilities.canReadFile(f)) {
                     if (!attribute.hasAlternative()) {
-                        dB.echoError("Invalid path specified. Invalid paths have been denied by the server administrator.");
+                        Debug.echoError("Invalid path specified. Invalid paths have been denied by the server administrator.");
                     }
                     return;
                 }
             }
             catch (Exception e) {
-                dB.echoError(e);
+                Debug.echoError(e);
                 return;
             }
             event.setReplaced(new Element(f.exists()).getAttribute(attribute.fulfill(1)));
@@ -746,19 +746,19 @@ public class ServerTags {
             try {
                 if (!Utilities.canReadFile(folder)) {
                     if (!attribute.hasAlternative()) {
-                        dB.echoError("Invalid path specified. Invalid paths have been denied by the server administrator.");
+                        Debug.echoError("Invalid path specified. Invalid paths have been denied by the server administrator.");
                     }
                     return;
                 }
                 if (!folder.exists() || !folder.isDirectory()) {
                     if (!attribute.hasAlternative()) {
-                        dB.echoError("Invalid path specified. No directory exists at that path.");
+                        Debug.echoError("Invalid path specified. No directory exists at that path.");
                     }
                     return;
                 }
             }
             catch (Exception e) {
-                dB.echoError(e);
+                Debug.echoError(e);
                 return;
             }
             File[] files = folder.listFiles();
@@ -877,7 +877,7 @@ public class ServerTags {
                     }
                 }
                 catch (SQLException e) {
-                    dB.echoError(attribute.getScriptEntry().getResidingQueue(), e);
+                    Debug.echoError(attribute.getScriptEntry().getResidingQueue(), e);
                 }
             }
             event.setReplaced(list.getAttribute(attribute.fulfill(1)));
@@ -893,14 +893,14 @@ public class ServerTags {
         if (attribute.startsWith("group_prefix")) {
 
             if (Depends.permissions == null) {
-                dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                Debug.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
                 return;
             }
 
             String group = attribute.getContext(1);
 
             if (!Arrays.asList(Depends.permissions.getGroups()).contains(group)) {
-                dB.echoError("Invalid group! '" + (group != null ? group : "") + "' could not be found.");
+                Debug.echoError("Invalid group! '" + (group != null ? group : "") + "' could not be found.");
                 return;
             }
 
@@ -934,14 +934,14 @@ public class ServerTags {
         if (attribute.startsWith("group_suffix")) {
 
             if (Depends.permissions == null) {
-                dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                Debug.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
                 return;
             }
 
             String group = attribute.getContext(1);
 
             if (!Arrays.asList(Depends.permissions.getGroups()).contains(group)) {
-                dB.echoError("Invalid group! '" + (group != null ? group : "") + "' could not be found.");
+                Debug.echoError("Invalid group! '" + (group != null ? group : "") + "' could not be found.");
                 return;
             }
 
@@ -974,7 +974,7 @@ public class ServerTags {
         // -->
         if (attribute.startsWith("list_permission_groups")) {
             if (Depends.permissions == null) {
-                dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                Debug.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
                 return;
             }
             event.setReplaced(new dList(Arrays.asList(Depends.permissions.getGroups())).getAttribute(attribute.fulfill(1)));
@@ -1077,7 +1077,7 @@ public class ServerTags {
                 && attribute.hasContext(1)) {
             dScript script = dScript.valueOf(attribute.getContext(1));
             if (script == null || !(script.getContainer() instanceof AssignmentScriptContainer)) {
-                dB.echoError("Invalid script specified.");
+                Debug.echoError("Invalid script specified.");
             }
             else {
                 dList npcs = new dList();
@@ -1511,7 +1511,7 @@ public class ServerTags {
         // Returns whether script debug is currently globally enabled on the server.
         // -->
         else if (attribute.startsWith("debug_enabled")) {
-            event.setReplaced(new Element(dB.showDebug).getAttribute(attribute.fulfill(1)));
+            event.setReplaced(new Element(Debug.showDebug).getAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]
@@ -1535,7 +1535,7 @@ public class ServerTags {
                 }
                 catch (ClassNotFoundException ex) {
                     if (!attribute.hasAlternative()) {
-                        dB.echoError(ex);
+                        Debug.echoError(ex);
                     }
                 }
             }
@@ -1588,28 +1588,28 @@ public class ServerTags {
         // -->
         if (mechanism.matches("delete_file") && mechanism.hasValue()) {
             if (!Settings.allowDelete()) {
-                dB.echoError("File deletion disabled by administrator.");
+                Debug.echoError("File deletion disabled by administrator.");
                 return;
             }
             File file = new File(DenizenAPI.getCurrentInstance().getDataFolder(), mechanism.getValue().asString());
             if (!Utilities.canWriteToFile(file)) {
-                dB.echoError("Cannot delete that file (unsafe path).");
+                Debug.echoError("Cannot delete that file (unsafe path).");
                 return;
             }
             try {
                 if (!file.delete()) {
-                    dB.echoError("Failed to delete file: returned false");
+                    Debug.echoError("Failed to delete file: returned false");
                 }
             }
             catch (Exception e) {
-                dB.echoError("Failed to delete file: " + e.getMessage());
+                Debug.echoError("Failed to delete file: " + e.getMessage());
             }
         }
 
         // Deprecated in favor of SYSTEM.redirect_logging (Core)
         if (mechanism.matches("redirect_logging") && mechanism.hasValue()) {
             if (!Settings.allowConsoleRedirection()) {
-                dB.echoError("Console redirection disabled by administrator.");
+                Debug.echoError("Console redirection disabled by administrator.");
                 return;
             }
             if (mechanism.getValue().asBoolean()) {
@@ -1664,7 +1664,7 @@ public class ServerTags {
         // -->
         if (mechanism.matches("restart")) {
             if (!Settings.allowServerRestart()) {
-                dB.echoError("Server restart disabled by administrator. Consider using 'shutdown'.");
+                Debug.echoError("Server restart disabled by administrator. Consider using 'shutdown'.");
                 return;
             }
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "+> Server restarted by a Denizen script, see config to prevent this!");
@@ -1710,7 +1710,7 @@ public class ServerTags {
         // -->
         if (mechanism.matches("shutdown")) {
             if (!Settings.allowServerStop()) {
-                dB.echoError("Server stop disabled by administrator. Consider using 'restart'.");
+                Debug.echoError("Server stop disabled by administrator. Consider using 'restart'.");
                 return;
             }
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "+> Server shutdown by a Denizen script, see config to prevent this!");

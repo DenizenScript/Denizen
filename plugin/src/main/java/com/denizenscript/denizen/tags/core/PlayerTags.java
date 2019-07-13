@@ -2,7 +2,7 @@ package com.denizenscript.denizen.tags.core;
 
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.TagRunnable;
@@ -96,7 +96,7 @@ public class PlayerTags implements Listener {
         }
         if (p == null || !p.isValid()) {
             if (!event.hasAlternative()) {
-                dB.echoError("Invalid or missing player for tag <" + event.raw_tag + ">!");
+                Debug.echoError("Invalid or missing player for tag <" + event.raw_tag + ">!");
             }
             return;
         }

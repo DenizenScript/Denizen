@@ -4,7 +4,7 @@ import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptHelper;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.npc.traits.TriggerTrait;
@@ -115,7 +115,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         dPlayer denizenPlayer = dPlayer.mirrorBukkitPlayer(player);
 
         if (HyperDebug) {
-            dB.log("Processing chat trigger: valid npc? " + (npc != null));
+            Debug.log("Processing chat trigger: valid npc? " + (npc != null));
         }
         // No NPC? Nothing else to do here.
         if (npc == null) {
@@ -123,7 +123,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         }
 
         if (HyperDebug) {
-            dB.log("Has trait?  " + npc.getCitizen().hasTrait(TriggerTrait.class));
+            Debug.log("Has trait?  " + npc.getCitizen().hasTrait(TriggerTrait.class));
         }
         // If the NPC doesn't have triggers, or the triggers are not enabled, then
         // just return false.
@@ -131,7 +131,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             return new ChatContext(false);
         }
         if (HyperDebug) {
-            dB.log("enabled? " + npc.getCitizen().getTrait(TriggerTrait.class).isEnabled(name));
+            Debug.log("enabled? " + npc.getCitizen().getTrait(TriggerTrait.class).isEnabled(name));
         }
         if (!npc.getCitizen().getTrait(TriggerTrait.class).isEnabled(name)) {
             return new ChatContext(false);
@@ -140,7 +140,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // Check range
         if (npc.getTriggerTrait().getRadius(name) < npc.getLocation().distance(player.getLocation())) {
             if (HyperDebug) {
-                dB.log("Not in range");
+                Debug.log("Not in range");
             }
             return new ChatContext(false);
         }
@@ -154,7 +154,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         if (Settings.chatMustSeeNPC()) {
             if (!player.hasLineOfSight(npc.getEntity())) {
                 if (HyperDebug) {
-                    dB.log("no LOS");
+                    Debug.log("no LOS");
                 }
                 return new ChatContext(false);
             }
@@ -163,7 +163,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         if (Settings.chatMustLookAtNPC()) {
             if (!NMSHandler.getInstance().getEntityHelper().isFacingEntity(player, npc.getEntity(), 45)) {
                 if (HyperDebug) {
-                    dB.log("Not facing");
+                    Debug.log("Not facing");
                 }
                 return new ChatContext(false);
             }
@@ -190,7 +190,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         if (trigger.hasDetermination()) {
             if (trigger.getDetermination().equalsIgnoreCase("cancelled")) {
                 if (HyperDebug) {
-                    dB.log("Cancelled");
+                    Debug.log("Cancelled");
                 }
                 // Mark as handled, the event will cancel.
                 return new ChatContext(true);
@@ -202,7 +202,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             // If the NPC is not interact-able, Settings may allow the chat to filter
             // through. Check the Settings if this is enabled.
             if (Settings.chatGloballyIfUninteractable()) {
-                dB.echoDebug(script, ChatColor.YELLOW + "Resuming. " + ChatColor.WHITE
+                Debug.echoDebug(script, ChatColor.YELLOW + "Resuming. " + ChatColor.WHITE
                         + "The NPC is currently cooling down or engaged.");
                 return new ChatContext(false);
 
@@ -219,12 +219,12 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
         if (script == null) {
             if (HyperDebug) {
-                dB.log("null script");
+                Debug.log("null script");
             }
             return new ChatContext(message, false);
         }
 
-        dB.report(script, name, ArgumentHelper.debugObj("Player", player.getName())
+        Debug.report(script, name, ArgumentHelper.debugObj("Player", player.getName())
                 + ArgumentHelper.debugObj("NPC", npc.toString())
                 + ArgumentHelper.debugObj("Radius(Max)", npc.getLocation().distance(player.getLocation())
                 + "(" + npc.getTriggerTrait().getRadius(name) + ")")
@@ -238,13 +238,13 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
             // No chat trigger for this step.. do we chat globally, or to the NPC?
             if (!Settings.chatGloballyIfNoChatTriggers()) {
-                dB.echoDebug(script, player.getName() + " says to "
+                Debug.echoDebug(script, player.getName() + " says to "
                         + npc.getNicknameTrait().getNickname() + ", " + message);
                 return new ChatContext(false);
             }
             else {
                 if (HyperDebug) {
-                    dB.log("No trigger in step, chatting globally");
+                    Debug.log("No trigger in step, chatting globally");
                 }
                 return new ChatContext(message, ret);
             }
@@ -306,7 +306,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                             // matches don't exist
                             regexId = entry.getKey();
                             regexMessage = triggerText.replace(matcher.group(), m.group());
-                            dB.log("entry value: " + triggerText + "  keyword: " + keyword + "  m.group: " + m.group() + "  matcher.group: " + matcher.group());
+                            Debug.log("entry value: " + triggerText + "  keyword: " + keyword + "  m.group: " + m.group() + "  matcher.group: " + matcher.group());
                             context.put("keyword", new Element(m.group()));
                             if (replace != null) {
                                 regexMessage = replace;
@@ -357,7 +357,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             }
             parse(npc, denizenPlayer, script, id, context);
             if (HyperDebug) {
-                dB.log("chat to NPC");
+                Debug.log("chat to NPC");
             }
             return new ChatContext(true);
         }
@@ -365,7 +365,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             if (!Settings.chatGloballyIfFailedChatTriggers()) {
                 Utilities.talkToNPC(message, denizenPlayer, npc, Settings.chatToNpcOverhearingRange());
                 if (HyperDebug) {
-                    dB.log("Chat globally");
+                    Debug.log("Chat globally");
                 }
                 return new ChatContext(true);
             }
@@ -373,7 +373,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             // should just ignore the interaction...
         }
         if (HyperDebug) {
-            dB.log("Finished calculating");
+            Debug.log("Finished calculating");
         }
         return new ChatContext(message, ret);
     }
@@ -382,7 +382,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
     @EventHandler
     public void asyncChatTrigger(final AsyncPlayerChatEvent event) {
         if (HyperDebug) {
-            dB.log("Chat trigger seen, cancelled: " + event.isCancelled()
+            Debug.log("Chat trigger seen, cancelled: " + event.isCancelled()
                     + ", chatasync: " + Settings.chatAsynchronous());
         }
         if (event.isCancelled()) {
@@ -417,7 +417,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             }
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
     }
 

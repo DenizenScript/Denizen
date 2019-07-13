@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dPlayer;
@@ -130,7 +130,7 @@ public class PlaySoundCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(),
+            Debug.report(scriptEntry, getName(),
                     (locations != null ? ArgumentHelper.debugObj("locations", locations.toString()) : "") +
                             (players != null ? ArgumentHelper.debugObj("entities", players.toString()) : "") +
                             sound.debug() +
@@ -169,7 +169,7 @@ public class PlaySoundCommand extends AbstractCommand {
             }
         }
         catch (Exception e) {
-            dB.echoDebug(scriptEntry, "Unable to play sound.");
+            Debug.echoDebug(scriptEntry, "Unable to play sound.");
         }
     }
 }

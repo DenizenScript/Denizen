@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.objects.Element;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -70,7 +70,7 @@ public class EntitySkeleton implements Property {
         }
 
         if (attribute.startsWith("skeleton_type")) {
-            dB.echoError("Different skeleton types are represented by different entity types. Please remove usage of the 'skeleton_type' tag.");
+            Debug.echoError("Different skeleton types are represented by different entity types. Please remove usage of the 'skeleton_type' tag.");
             return new Element(((Skeleton) skeleton.getBukkitEntity())
                     .getSkeletonType().name()).getAttribute(attribute.fulfill(1));
         }
@@ -82,7 +82,7 @@ public class EntitySkeleton implements Property {
     public void adjust(Mechanism mechanism) {
 
         if (mechanism.matches("skeleton") && mechanism.requireEnum(false, Skeleton.SkeletonType.values())) {
-            dB.echoError("Different skeleton types are represented by different entity types. Please remove usage of the 'skeleton:<type>' mechanism.");
+            Debug.echoError("Different skeleton types are represented by different entity types. Please remove usage of the 'skeleton:<type>' mechanism.");
             String skelGoal = mechanism.getValue().asString().toUpperCase();
             if (((Skeleton) skeleton.getBukkitEntity()).getSkeletonType().name().equals(skelGoal)) {
                 return;

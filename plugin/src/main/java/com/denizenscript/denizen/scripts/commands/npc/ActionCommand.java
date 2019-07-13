@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.npc;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
@@ -93,7 +93,7 @@ public class ActionCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), actions.debug() + context.debug() + ArgumentHelper.debugList("npcs", npcs));
+            Debug.report(scriptEntry, getName(), actions.debug() + context.debug() + ArgumentHelper.debugList("npcs", npcs));
 
         }
 

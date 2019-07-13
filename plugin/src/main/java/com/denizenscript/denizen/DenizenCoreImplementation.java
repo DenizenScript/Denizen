@@ -7,7 +7,7 @@ import com.denizenscript.denizen.scripts.containers.core.*;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
@@ -23,7 +23,6 @@ import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.debugging.Debuggable;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -58,52 +57,52 @@ public class DenizenCoreImplementation implements DenizenImplementation {
 
     @Override
     public void debugMessage(String message) {
-        dB.log(message);
+        Debug.log(message);
     }
 
     @Override
     public void debugException(Throwable ex) {
-        dB.echoError(ex);
+        Debug.echoError(ex);
     }
 
     @Override
     public void debugError(String error) {
-        dB.echoError(error);
+        Debug.echoError(error);
     }
 
     @Override
     public void debugError(ScriptQueue scriptQueue, String s) {
-        dB.echoError(scriptQueue, s);
+        Debug.echoError(scriptQueue, s);
     }
 
     @Override
     public void debugError(ScriptQueue scriptQueue, Throwable throwable) {
-        dB.echoError(scriptQueue, throwable);
+        Debug.echoError(scriptQueue, throwable);
     }
 
     @Override
     public void debugReport(Debuggable debuggable, String s, String s1) {
-        dB.report(debuggable, s, s1);
+        Debug.report(debuggable, s, s1);
     }
 
     @Override
     public void debugApproval(String message) {
-        dB.echoApproval(message);
+        Debug.echoApproval(message);
     }
 
     @Override
     public void debugEntry(Debuggable debuggable, String s) {
-        dB.echoDebug(debuggable, s);
+        Debug.echoDebug(debuggable, s);
     }
 
     @Override
-    public void debugEntry(Debuggable debuggable, Debug.DebugElement debugElement, String s) {
-        dB.echoDebug(debuggable, debugElement, s);
+    public void debugEntry(Debuggable debuggable, com.denizenscript.denizencore.utilities.debugging.Debug.DebugElement debugElement, String s) {
+        Debug.echoDebug(debuggable, debugElement, s);
     }
 
     @Override
-    public void debugEntry(Debuggable debuggable, Debug.DebugElement debugElement) {
-        dB.echoDebug(debuggable, debugElement);
+    public void debugEntry(Debuggable debuggable, com.denizenscript.denizencore.utilities.debugging.Debug.DebugElement debugElement) {
+        Debug.echoDebug(debuggable, debugElement);
     }
 
     @Override
@@ -141,28 +140,28 @@ public class DenizenCoreImplementation implements DenizenImplementation {
             files.add(ScriptHelper.loadConfig("Denizen.jar/util.dsc", DenizenAPI.getCurrentInstance().getResource("util.dsc")));
         }
         catch (IOException e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
         return files;
     }
 
     @Override
     public boolean shouldDebug(Debuggable debug) {
-        return dB.shouldDebug(debug);
+        return Debug.shouldDebug(debug);
     }
 
     @Override
     public void debugQueueExecute(ScriptEntry entry, String queue, String execute) {
         Consumer<String> altDebug = entry.getResidingQueue().debugOutput;
         entry.getResidingQueue().debugOutput = null;
-        dB.echoDebug(entry, Debug.DebugElement.Header,
+        Debug.echoDebug(entry, com.denizenscript.denizencore.utilities.debugging.Debug.DebugElement.Header,
                 ChatColor.LIGHT_PURPLE + "Queue '" + queue + ChatColor.LIGHT_PURPLE + "' Executing: " + execute);
         entry.getResidingQueue().debugOutput = altDebug;
     }
 
     @Override
     public void debugTagFill(Debuggable entry, String tag, String result) {
-        dB.echoDebug(entry, ChatColor.DARK_GRAY + "Filled tag <" + ChatColor.WHITE + tag
+        Debug.echoDebug(entry, ChatColor.DARK_GRAY + "Filled tag <" + ChatColor.WHITE + tag
                 + ChatColor.DARK_GRAY + "> with '" + ChatColor.WHITE + result + ChatColor.DARK_GRAY + "'.");
     }
 
@@ -199,11 +198,11 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     public boolean handleCustomArgs(ScriptEntry scriptEntry, Argument arg, boolean if_ignore) {
         // Fill player/off-line player
         if (arg.matchesPrefix("player") && !if_ignore) {
-            dB.echoDebug(scriptEntry, "...replacing the linked player with " + arg.getValue());
+            Debug.echoDebug(scriptEntry, "...replacing the linked player with " + arg.getValue());
             String value = TagManager.tag(arg.getValue(), new BukkitTagContext(scriptEntry, false));
             dPlayer player = dPlayer.valueOf(value);
             if (player == null || !player.isValid()) {
-                dB.echoError(scriptEntry.getResidingQueue(), value + " is an invalid player!");
+                Debug.echoError(scriptEntry.getResidingQueue(), value + " is an invalid player!");
             }
             ((BukkitScriptEntryData) scriptEntry.entryData).setPlayer(player);
             return true;
@@ -211,11 +210,11 @@ public class DenizenCoreImplementation implements DenizenImplementation {
 
         // Fill NPCID/NPC argument
         else if (arg.matchesPrefix("npc, npcid") && !if_ignore) {
-            dB.echoDebug(scriptEntry, "...replacing the linked NPC with " + arg.getValue());
+            Debug.echoDebug(scriptEntry, "...replacing the linked NPC with " + arg.getValue());
             String value = TagManager.tag(arg.getValue(), new BukkitTagContext(scriptEntry, false));
             dNPC npc = dNPC.valueOf(value);
             if (npc == null || !npc.isValid()) {
-                dB.echoError(scriptEntry.getResidingQueue(), value + " is an invalid NPC!");
+                Debug.echoError(scriptEntry.getResidingQueue(), value + " is an invalid NPC!");
                 return false;
             }
             ((BukkitScriptEntryData) scriptEntry.entryData).setNPC(npc);
@@ -374,7 +373,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
             outcome = dTrade.matches(comparable);
         }
         else {
-            dB.echoError("Invalid 'matches' type '" + comparedto + "'!");
+            Debug.echoError("Invalid 'matches' type '" + comparedto + "'!");
         }
 
         return outcome;
@@ -396,7 +395,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
             NMSHandler.getInstance().disableAsyncCatcher();
         }
         catch (Throwable e) {
-            dB.echoError("Running not-Spigot?!");
+            Debug.echoError("Running not-Spigot?!");
         }
     }
 
@@ -406,7 +405,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
             NMSHandler.getInstance().undisableAsyncCatcher();
         }
         catch (Throwable e) {
-            dB.echoError("Running not-Spigot?!");
+            Debug.echoError("Running not-Spigot?!");
         }
     }
 

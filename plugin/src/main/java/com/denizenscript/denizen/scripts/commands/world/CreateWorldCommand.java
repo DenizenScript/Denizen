@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Element;
@@ -112,7 +112,7 @@ public class CreateWorldCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), worldName.debug() +
+            Debug.report(scriptEntry, getName(), worldName.debug() +
                     (generator != null ? generator.debug() : "") +
                     environment.debug() +
                     (copy_from != null ? copy_from.debug() : "") +
@@ -124,13 +124,13 @@ public class CreateWorldCommand extends AbstractCommand {
         if (copy_from != null) {
             try {
                 if (copy_from.asString().contains("..")) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "Invalid copy from world name!");
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Invalid copy from world name!");
                     return;
                 }
                 File newFolder = new File(worldName.asString());
                 File folder = new File(copy_from.asString().replace("w@", ""));
                 if (!folder.exists() || !folder.isDirectory()) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "Invalid copy from world folder - does not exist!");
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Invalid copy from world folder - does not exist!");
                     return;
                 }
                 CoreUtilities.copyDirectory(folder, newFolder);
@@ -144,7 +144,7 @@ public class CreateWorldCommand extends AbstractCommand {
                 }
             }
             catch (Exception ex) {
-                dB.echoError(ex);
+                Debug.echoError(ex);
                 return;
             }
         }
@@ -166,7 +166,7 @@ public class CreateWorldCommand extends AbstractCommand {
         world = Bukkit.getServer().createWorld(worldCreator);
 
         if (world == null) {
-            dB.echoDebug(scriptEntry, "World is null, something went wrong in creation!");
+            Debug.echoDebug(scriptEntry, "World is null, something went wrong in creation!");
         }
 
     }

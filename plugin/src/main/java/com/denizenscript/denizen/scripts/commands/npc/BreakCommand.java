@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.npc;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dMaterial;
 import com.denizenscript.denizen.objects.dNPC;
@@ -119,7 +119,7 @@ public class BreakCommand extends AbstractCommand implements Holdable {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), location.debug() + npc.debug() + radius.debug());
+            Debug.report(scriptEntry, getName(), location.debug() + npc.debug() + radius.debug());
 
         }
 

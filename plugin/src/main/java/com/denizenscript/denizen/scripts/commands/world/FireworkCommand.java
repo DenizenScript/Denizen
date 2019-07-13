@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dColor;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
@@ -135,7 +135,7 @@ public class FireworkCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), location.debug() +
+            Debug.report(scriptEntry, getName(), location.debug() +
                     type.debug() +
                     power.debug() +
                     (flicker ? ArgumentHelper.debugObj("flicker", flicker) : "") +

@@ -6,10 +6,10 @@ import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptHelper;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.flags.FlagManager;
-import com.denizenscript.denizen.npc.dNPCRegistry;
+import com.denizenscript.denizen.npc.DenizenNPCHelper;
 import com.denizenscript.denizen.tags.core.NPCTags;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.TagContext;
@@ -66,12 +66,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
     // -->
 
     public static dNPC mirrorCitizensNPC(NPC npc) {
-        if (dNPCRegistry._isRegistered(npc)) {
-            return dNPCRegistry.getDenizen(npc);
-        }
-        else {
-            return new dNPC(npc);
-        }
+        return new dNPC(npc);
     }
 
     public static dNPC fromEntity(Entity entity) {
@@ -97,10 +92,6 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         if (ArgumentHelper.matchesInteger(string)) {
             int id = ArgumentHelper.getIntegerFrom(string);
 
-            if (dNPCRegistry._isRegistered(id)) {
-                return dNPCRegistry.getDenizen(id);
-            }
-
             npc = CitizensAPI.getNPCRegistry().getById(id);
             if (npc != null) {
                 return new dNPC(npc);
@@ -113,7 +104,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
             for (NPC test : CitizensAPI.getNPCRegistry()) {
                 if (test.getName().equalsIgnoreCase(string)) {
                     if (context == null || context.debug) {
-                        dB.echoError("Warning: loading NPC by name - use the ID instead! NPC named '" + test.getName() + "' has ID: " + test.getId());
+                        Debug.echoError("Warning: loading NPC by name - use the ID instead! NPC named '" + test.getName() + "' has ID: " + test.getId());
                     }
                     return new dNPC(test);
                 }
@@ -161,9 +152,6 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         if (citizensNPC != null) {
             this.npcid = citizensNPC.getId();
         }
-        if (npcid >= 0 && !dNPCRegistry._isRegistered(citizensNPC)) {
-            dNPCRegistry._registerNPC(this);
-        }
     }
 
     public NPC getCitizen() {
@@ -184,7 +172,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
             return getCitizen().getEntity();
         }
         catch (NullPointerException e) {
-            dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC entity. " +
+            Debug.log("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC entity. " +
                     "Has this NPC been removed?");
             return null;
         }
@@ -196,12 +184,12 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
                 return (LivingEntity) getCitizen().getEntity();
             }
             else {
-                dB.log("Uh oh! Tried to get the living entity of a non-living NPC!");
+                Debug.log("Uh oh! Tried to get the living entity of a non-living NPC!");
                 return null;
             }
         }
         catch (NullPointerException e) {
-            dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC livingEntity. " +
+            Debug.log("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC livingEntity. " +
                     "Has this NPC been removed?");
             return null;
         }
@@ -214,7 +202,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
             return new dEntity(getCitizen().getEntity());
         }
         catch (NullPointerException e) {
-            dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC dEntity. " +
+            Debug.log("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC dEntity. " +
                     "Has this NPC been removed?");
             return null;
         }
@@ -222,7 +210,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
 
     @Override
     public Inventory getInventory() {
-        return dNPCRegistry.getInventory(getCitizen());
+        return DenizenNPCHelper.getInventory(getCitizen());
     }
 
     public dInventory getDenizenInventory() {
@@ -250,10 +238,10 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
     }
 
     public InteractScriptContainer getInteractScriptQuietly(dPlayer player, Class<? extends AbstractTrigger> triggerType) {
-        boolean db = dB.showDebug;
-        dB.showDebug = false;
+        boolean db = Debug.showDebug;
+        Debug.showDebug = false;
         InteractScriptContainer script = InteractScriptHelper.getInteractScript(this, player, triggerType);
-        dB.showDebug = db;
+        Debug.showDebug = db;
         return script;
     }
 
@@ -684,7 +672,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
                         }
                     }
                     catch (Exception e) {
-                        dB.echoError(e);
+                        Debug.echoError(e);
                     }
                 }
                 else {
@@ -1116,7 +1104,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
     }
 
     public void applyProperty(Mechanism mechanism) {
-        dB.echoError("Cannot apply properties to an NPC!");
+        Debug.echoError("Cannot apply properties to an NPC!");
     }
 
     @Override
@@ -1299,7 +1287,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
                     //((FallingBlockController.FallingBlockNPC) getEntity()).setType(mat, data);
                     break;
                 default:
-                    dB.echoError("NPC is the not an item type!");
+                    Debug.echoError("NPC is the not an item type!");
                     break;
             }
             if (getCitizen().isSpawned()) {

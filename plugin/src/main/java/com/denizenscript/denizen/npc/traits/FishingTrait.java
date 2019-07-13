@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.npc.traits;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.FishingHelper;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -141,7 +141,7 @@ public class FishingTrait extends Trait {
         DenizenAPI.getDenizenNPC(npc).action("cast fishing rod", null);
 
         if (fishingLocation == null) {
-            dB.echoError("Fishing location not found!");
+            Debug.echoError("Fishing location not found!");
             return;
         }
 

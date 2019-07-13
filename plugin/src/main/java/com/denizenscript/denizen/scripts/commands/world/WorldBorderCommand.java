@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dPlayer;
@@ -156,7 +156,7 @@ public class WorldBorderCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), (world != null ? world.debug() : "")
+            Debug.report(scriptEntry, getName(), (world != null ? world.debug() : "")
                     + (players != null ? ArgumentHelper.debugList("Player(s)", players) : "")
                     + (center != null ? center.debug() : "")
                     + (size != null ? size.debug() : "")

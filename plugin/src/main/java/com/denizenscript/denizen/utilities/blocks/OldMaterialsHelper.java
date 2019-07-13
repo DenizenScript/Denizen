@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.utilities.blocks;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
@@ -552,7 +552,7 @@ public class OldMaterialsHelper {
                 }
             }
             catch (Exception e) {
-                dB.echoError(e);
+                Debug.echoError(e);
             }
         }
     }

@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.core;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
@@ -108,7 +108,7 @@ public class CooldownCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), ArgumentHelper.debugObj("Type", type.name())
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("Type", type.name())
                     + script.debug()
                     + (type.name().equalsIgnoreCase("player") ? Utilities.getEntryPlayer(scriptEntry).debug() : "")
                     + duration.debug());
@@ -148,10 +148,10 @@ public class CooldownCommand extends AbstractCommand {
         Duration duration = Duration.ZERO;
 
         // Check current entry GLOBALLY, reset it if necessary
-        if (DenizenAPI._saves().contains("Global.Scripts." + scriptName + ".Cooldown Time")) {
+        if (DenizenAPI.getSaves().contains("Global.Scripts." + scriptName + ".Cooldown Time")) {
             if (System.currentTimeMillis()
-                    < DenizenAPI._saves().getLong("Global.Scripts." + scriptName + ".Cooldown Time")) {
-                duration = new Duration((double) (DenizenAPI._saves().getLong("Global.Scripts." + scriptName
+                    < DenizenAPI.getSaves().getLong("Global.Scripts." + scriptName + ".Cooldown Time")) {
+                duration = new Duration((double) (DenizenAPI.getSaves().getLong("Global.Scripts." + scriptName
                         + ".Cooldown Time") - System.currentTimeMillis()) / 1000);
             }
         }
@@ -162,14 +162,14 @@ public class CooldownCommand extends AbstractCommand {
         }
 
         // If no entry for the script, return true
-        if (!DenizenAPI._saves().contains("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time")) {
+        if (!DenizenAPI.getSaves().contains("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time")) {
             return duration;
         }
 
         // If there is an entry, check against the time
         if (System.currentTimeMillis()
-                <= DenizenAPI._saves().getLong("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time")) {
-            Duration player_dur = new Duration((double) (DenizenAPI._saves().getLong("Players." + player.getSaveName() + ".Scripts."
+                <= DenizenAPI.getSaves().getLong("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time")) {
+            Duration player_dur = new Duration((double) (DenizenAPI.getSaves().getLong("Players." + player.getSaveName() + ".Scripts."
                     + scriptName + ".Cooldown Time") - System.currentTimeMillis()) / 1000);
             if (player_dur.getSeconds() > duration.getSeconds()) {
                 return player_dur;
@@ -195,13 +195,13 @@ public class CooldownCommand extends AbstractCommand {
         scriptName = scriptName.toUpperCase();
 
         // Check current entry GLOBALLY, reset it if necessary
-        if (DenizenAPI._saves().contains("Global.Scripts." + scriptName + ".Cooldown Time")) {
+        if (DenizenAPI.getSaves().contains("Global.Scripts." + scriptName + ".Cooldown Time")) {
             if (System.currentTimeMillis()
-                    < DenizenAPI._saves().getLong("Global.Scripts." + scriptName + ".Cooldown Time")) {
+                    < DenizenAPI.getSaves().getLong("Global.Scripts." + scriptName + ".Cooldown Time")) {
                 return false;
             }
             else {
-                DenizenAPI._saves().set("Global.Scripts." + scriptName + ".Cooldown Time", null);
+                DenizenAPI.getSaves().set("Global.Scripts." + scriptName + ".Cooldown Time", null);
             }
         }
 
@@ -211,14 +211,14 @@ public class CooldownCommand extends AbstractCommand {
         }
 
         // If no entry for the script, return true
-        if (!DenizenAPI._saves().contains("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time")) {
+        if (!DenizenAPI.getSaves().contains("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time")) {
             return true;
         }
 
         // If there is an entry, check against the time
         if (System.currentTimeMillis()
-                >= DenizenAPI._saves().getLong("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time")) {
-            DenizenAPI._saves().set("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time", null);
+                >= DenizenAPI.getSaves().getLong("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time")) {
+            DenizenAPI.getSaves().set("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time", null);
             return true;
         }
 
@@ -238,14 +238,14 @@ public class CooldownCommand extends AbstractCommand {
         scriptName = scriptName.toUpperCase();
         // Set global cooldown
         if (global) {
-            DenizenAPI._saves().set("Global.Scripts." + scriptName + ".Cooldown Time",
+            DenizenAPI.getSaves().set("Global.Scripts." + scriptName + ".Cooldown Time",
                     System.currentTimeMillis()
                             + (duration.getSecondsAsInt() * 1000));
 
             // or set Player cooldown
         }
         else {
-            DenizenAPI._saves().set("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time",
+            DenizenAPI.getSaves().set("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time",
                     System.currentTimeMillis()
                             + (duration.getSecondsAsInt() * 1000));
         }

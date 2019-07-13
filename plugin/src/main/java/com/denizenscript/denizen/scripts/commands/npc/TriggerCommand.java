@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.npc;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.npc.traits.TriggerTrait;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -97,7 +97,7 @@ public class TriggerCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(),
+            Debug.report(scriptEntry, getName(),
                     trigger.debug() + toggle.debug() +
                             (radius != null ? radius.debug() : "") +
                             (cooldown != null ? cooldown.debug() : "") +

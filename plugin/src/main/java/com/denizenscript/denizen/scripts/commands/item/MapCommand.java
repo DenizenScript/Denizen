@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.item;
 
 import com.denizenscript.denizen.scripts.containers.core.MapScriptContainer;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.maps.DenizenMapManager;
 import com.denizenscript.denizen.utilities.maps.DenizenMapRenderer;
 import com.denizenscript.denizen.utilities.maps.MapAnimatedImage;
@@ -150,7 +150,7 @@ public class MapCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), (id != null ? id.debug() : "") + (create != null ? create.debug() : "")
+            Debug.report(scriptEntry, getName(), (id != null ? id.debug() : "") + (create != null ? create.debug() : "")
                     + reset.debug() + (resetLoc != null ? resetLoc.debug() : "") + (image != null ? image.debug() : "")
                     + (script != null ? script.debug() : "") + resize.debug() + (width != null ? width.debug() : "")
                     + (height != null ? height.debug() : "") + x.debug() + y.debug());
@@ -165,12 +165,12 @@ public class MapCommand extends AbstractCommand {
         else if (id != null) {
             map = Bukkit.getServer().getMap((short) id.asInt());
             if (map == null) {
-                dB.echoError("No map found for ID '" + id.asInt() + "'!");
+                Debug.echoError("No map found for ID '" + id.asInt() + "'!");
                 return;
             }
         }
         else {
-            dB.echoError("The map command failed somehow! Report this to a developer!");
+            Debug.echoError("The map command failed somehow! Report this to a developer!");
             return;
         }
 

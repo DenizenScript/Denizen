@@ -15,6 +15,8 @@ import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -30,7 +32,6 @@ import org.bukkit.util.Vector;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -231,21 +232,21 @@ public class Utilities {
      * within the range specified.
      */
     public static dNPC getClosestNPC_ChatTrigger(Location location, int range) {
-        dNPC closestNPC = null;
+        NPC closestNPC = null;
         double closestDistance = Math.pow(range, 2);
-        // TODO: Why is this manually iterating?
-        Iterator<dNPC> it = DenizenAPI.getSpawnedNPCs().iterator();
-        while (it.hasNext()) {
-            dNPC npc = it.next();
-            Location loc = npc.getLocation();
-            if (npc.getCitizen().hasTrait(TriggerTrait.class) && npc.getTriggerTrait().hasTrigger("CHAT") &&
+        for (NPC npc : CitizensAPI.getNPCRegistry()) {
+            if (!npc.isSpawned()) {
+                continue;
+            }
+            Location loc = npc.getStoredLocation();
+            if (npc.hasTrait(TriggerTrait.class) && npc.getTrait(TriggerTrait.class).hasTrigger("CHAT") &&
                     loc.getWorld().equals(location.getWorld())
                     && loc.distanceSquared(location) < closestDistance) {
                 closestNPC = npc;
-                closestDistance = npc.getLocation().distanceSquared(location);
+                closestDistance = npc.getStoredLocation().distanceSquared(location);
             }
         }
-        return closestNPC;
+        return new dNPC(closestNPC);
     }
 
 

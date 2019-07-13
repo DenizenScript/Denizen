@@ -6,7 +6,7 @@ import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dWorld;
 import com.denizenscript.denizen.scripts.containers.core.BukkitWorldScriptHelper;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.events.OldSmartEvent;
 import com.denizenscript.denizencore.objects.Element;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -80,7 +80,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
                 .registerEvents(this, DenizenAPI.getCurrentInstance());
         // Record that you loaded in the debug.
-        dB.log("Loaded Command SmartEvent.");
+        Debug.log("Loaded Command SmartEvent.");
     }
 
 

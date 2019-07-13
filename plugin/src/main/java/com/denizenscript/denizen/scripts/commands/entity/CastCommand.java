@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
@@ -125,7 +125,7 @@ public class CastCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(),
+            Debug.report(scriptEntry, getName(),
                     ArgumentHelper.debugObj("Target(s)", entities.toString())
                             + ArgumentHelper.debugObj("Effect", effect.getName())
                             + ArgumentHelper.debugObj("Amplifier", amplifier)
@@ -147,7 +147,7 @@ public class CastCommand extends AbstractCommand {
             }
             PotionEffect potion = new PotionEffect(effect, duration.getTicksAsInt(), amplifier, amb, showP);
             if (!potion.apply(entity.getLivingEntity())) {
-                dB.echoError(scriptEntry.getResidingQueue(), "Bukkit was unable to apply '" + potion.getType().getName() + "' to '" + entity.toString() + "'.");
+                Debug.echoError(scriptEntry.getResidingQueue(), "Bukkit was unable to apply '" + potion.getType().getName() + "' to '" + entity.toString() + "'.");
             }
         }
     }

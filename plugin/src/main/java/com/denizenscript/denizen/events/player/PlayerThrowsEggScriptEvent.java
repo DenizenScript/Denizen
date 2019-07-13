@@ -2,7 +2,7 @@ package com.denizenscript.denizen.events.player;
 
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dPlayer;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.Element;
@@ -103,7 +103,7 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-        dB.log("Is this even firing?");
+        Debug.log("Is this even firing?");
         is_hatching = event.isHatching();
         Entity eggEntity = event.getEgg();
         dEntity.rememberEntity(eggEntity);

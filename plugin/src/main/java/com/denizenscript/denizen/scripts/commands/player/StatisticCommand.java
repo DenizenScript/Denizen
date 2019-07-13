@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dMaterial;
 import com.denizenscript.denizen.objects.dPlayer;
@@ -123,7 +123,7 @@ public class StatisticCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), action.debug() + statistic.debug() + amount.debug() + players.debug()
+            Debug.report(scriptEntry, getName(), action.debug() + statistic.debug() + amount.debug() + players.debug()
                     + (material != null ? material.debug() : entity != null ? entity.debug() : ""));
 
         }

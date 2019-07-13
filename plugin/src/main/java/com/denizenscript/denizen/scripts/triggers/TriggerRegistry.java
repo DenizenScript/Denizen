@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.triggers;
 import com.denizenscript.denizen.scripts.triggers.core.ChatTrigger;
 import com.denizenscript.denizen.scripts.triggers.core.DamageTrigger;
 import com.denizenscript.denizen.scripts.triggers.core.ProximityTrigger;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.scripts.triggers.core.ClickTrigger;
 import net.citizensnpcs.api.npc.NPC;
@@ -27,8 +27,8 @@ public class TriggerRegistry {
                 member.onDisable();
             }
             catch (Exception e) {
-                dB.echoError("Unable to disable '" + member.getClass().getName() + "'!");
-                dB.echoError(e);
+                Debug.echoError("Unable to disable '" + member.getClass().getName() + "'!");
+                Debug.echoError(e);
             }
         }
     }
@@ -66,7 +66,7 @@ public class TriggerRegistry {
         new ChatTrigger().activate().as("Chat");
         new DamageTrigger().activate().as("Damage");
         new ProximityTrigger().activate().as("Proximity");
-        dB.echoApproval("Loaded core triggers: " + instances.keySet().toString());
+        Debug.echoApproval("Loaded core triggers: " + instances.keySet().toString());
     }
 
 

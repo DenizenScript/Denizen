@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.server;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
@@ -141,7 +141,7 @@ public class BanCommand extends AbstractCommand {
         }
 
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(),
+            Debug.report(scriptEntry, getName(),
                     action.debug() +
                             (targets != null ? ArgumentHelper.debugObj("targets", targets) : "") +
                             (addresses != null ? addresses.debug() : "") +

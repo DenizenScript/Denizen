@@ -101,7 +101,7 @@ public class DebugSubmit extends Thread {
             in.close();
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
         finally {
             try {
@@ -110,7 +110,7 @@ public class DebugSubmit extends Thread {
                 }
             }
             catch (Exception e) {
-                dB.echoError(e);
+                Debug.echoError(e);
             }
         }
     }

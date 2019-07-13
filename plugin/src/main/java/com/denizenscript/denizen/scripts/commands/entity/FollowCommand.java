@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dNPC;
@@ -110,7 +110,7 @@ public class FollowCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(),
+            Debug.report(scriptEntry, getName(),
                     (Utilities.getEntryPlayer(scriptEntry) != null ? Utilities.getEntryPlayer(scriptEntry).debug() : "")
                             + (!stop.asBoolean() ? ArgumentHelper.debugObj("Action", "FOLLOW") : ArgumentHelper.debugObj("Action", "STOP"))
                             + (lead != null ? lead.debug() : "")

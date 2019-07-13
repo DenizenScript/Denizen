@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.utilities.blocks;
 
 import com.denizenscript.denizen.nms.util.jnbt.*;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.objects.dCuboid;
@@ -307,7 +307,7 @@ public class CuboidBlockSet implements BlockSet {
             }
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
         return cbs;
     }
@@ -394,7 +394,7 @@ public class CuboidBlockSet implements BlockSet {
             stream.close();
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
         }
     }
 }

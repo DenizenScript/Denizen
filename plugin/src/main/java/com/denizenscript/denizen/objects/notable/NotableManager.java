@@ -3,7 +3,7 @@ package com.denizenscript.denizen.objects.notable;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.dObject;
 import com.denizenscript.denizencore.objects.notable.Notable;
@@ -153,7 +153,7 @@ public class NotableManager {
                     obj.makeUnique(notable);
                 }
                 else {
-                    dB.echoError("Notable '" + notable + "' failed to load!");
+                    Debug.echoError("Notable '" + notable + "' failed to load!");
                 }
             }
 
@@ -178,8 +178,8 @@ public class NotableManager {
                         notable.getValue().getSaveObject());
             }
             catch (Exception e) {
-                dB.echoError("Notable '" + notable.getKey() + "' failed to save!");
-                dB.echoError(e);
+                Debug.echoError("Notable '" + notable.getKey() + "' failed to save!");
+                Debug.echoError(e);
             }
         }
     }

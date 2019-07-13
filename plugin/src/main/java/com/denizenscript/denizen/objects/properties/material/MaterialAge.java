@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.material;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dMaterial;
 import com.denizenscript.denizencore.objects.Element;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -112,7 +112,7 @@ public class MaterialAge implements Property {
         if ((mechanism.matches("age") || mechanism.matches("plant_growth")) && mechanism.requireInteger()) {
             int age = mechanism.getValue().asInt();
             if (age < 0 || age > getMax()) {
-                dB.echoError("Age value '" + age + "' is not valid. Must be between 0 and " + getMax() + " for material '" + material.realName() + "'.");
+                Debug.echoError("Age value '" + age + "' is not valid. Must be between 0 and " + getMax() + " for material '" + material.realName() + "'.");
                 return;
             }
             getAgeable().setAge(age);

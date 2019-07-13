@@ -1,12 +1,11 @@
 package com.denizenscript.denizen.objects;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
@@ -104,7 +103,7 @@ public class dWorld implements dObject, Adjustable {
             }
         }
         else if (announce) {
-            dB.echoError("Invalid World! '" + string
+            Debug.echoError("Invalid World! '" + string
                     + "' could not be found.");
         }
 
@@ -914,7 +913,7 @@ public class dWorld implements dObject, Adjustable {
         TagRunnable tr = registeredTags.get(attrLow);
         if (tr != null) {
             if (!tr.name.equals(attrLow)) {
-                Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
+                com.denizenscript.denizencore.utilities.debugging.Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
                         "Using deprecated form of tag '" + tr.name + "': '" + attrLow + "'.");
             }
             return tr.run(attribute, this);
@@ -930,7 +929,7 @@ public class dWorld implements dObject, Adjustable {
 
 
     public void applyProperty(Mechanism mechanism) {
-        dB.echoError("Cannot apply properties to a world!");
+        Debug.echoError("Cannot apply properties to a world!");
     }
 
     @Override
@@ -1027,7 +1026,7 @@ public class dWorld implements dObject, Adjustable {
         // -->
         if (mechanism.matches("destroy")) {
             if (!Settings.allowDelete()) {
-                dB.echoError("Unable to delete due to config.");
+                Debug.echoError("Unable to delete due to config.");
                 return;
             }
             File folder = new File(getWorld().getName());
@@ -1036,7 +1035,7 @@ public class dWorld implements dObject, Adjustable {
                 CoreUtilities.deleteDirectory(folder);
             }
             catch (Exception ex) {
-                dB.echoError(ex);
+                Debug.echoError(ex);
             }
             return;
         }

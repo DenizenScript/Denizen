@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.utilities.MaterialCompat;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dMaterial;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -98,7 +98,7 @@ public class HeadCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(),
+            Debug.report(scriptEntry, getName(),
                     ArgumentHelper.debugObj("entities", entities.toString()) +
                             (skin != null ? skin.debug() : "") + (material != null ? material.debug() : ""));
         }
@@ -137,7 +137,7 @@ public class HeadCommand extends AbstractCommand {
                     entity.getLivingEntity().getEquipment().setHelmet(item);
                 }
                 else {
-                    dB.echoError(scriptEntry.getResidingQueue(), entity.identify() + " is not a living entity!");
+                    Debug.echoError(scriptEntry.getResidingQueue(), entity.identify() + " is not a living entity!");
                 }
 
             }

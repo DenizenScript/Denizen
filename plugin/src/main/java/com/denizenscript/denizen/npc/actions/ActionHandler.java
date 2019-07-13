@@ -3,7 +3,7 @@ package com.denizenscript.denizen.npc.actions;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizencore.events.OldEventManager;
@@ -49,7 +49,7 @@ public class ActionHandler {
             return determination;
         }
 
-        dB.report(assignment, "Action",
+        Debug.report(assignment, "Action",
                 ArgumentHelper.debugObj("Type", "On " + actionName)
                         + ArgumentHelper.debugObj("NPC", npc.toString())
                         + assignment.getAsScriptArg().debug()
@@ -61,7 +61,7 @@ public class ActionHandler {
             return determination;
         }
 
-        dB.echoDebug(assignment, DebugElement.Header,
+        Debug.echoDebug(assignment, DebugElement.Header,
                 "Building action 'On " + actionName.toUpperCase() + "' for " + npc.toString());
 
         // Add entries and context to the queue

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.LlamaHelper;
 import com.denizenscript.denizen.utilities.entity.ParrotHelper;
 import com.denizenscript.denizen.utilities.entity.RabbitType;
@@ -247,7 +247,7 @@ public class EntityColor implements Property {
                 ShulkerHelper.setColor(colored, DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else {
-                dB.echoError("Could not apply color '" + mechanism.getValue().toString() + "' to entity of type " + type.name() + ".");
+                Debug.echoError("Could not apply color '" + mechanism.getValue().toString() + "' to entity of type " + type.name() + ".");
             }
 
         }

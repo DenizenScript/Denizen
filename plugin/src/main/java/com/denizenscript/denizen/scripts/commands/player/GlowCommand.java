@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -96,7 +96,7 @@ public class GlowCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), ArgumentHelper.debugList("entities", entities) + glowing.debug());
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugList("entities", entities) + glowing.debug());
 
         }
 
@@ -105,7 +105,7 @@ public class GlowCommand extends AbstractCommand {
         final UUID puuid = Utilities.getEntryPlayer(scriptEntry).getOfflinePlayer().getUniqueId();
 
         if (puuid == null) {
-            dB.echoError(scriptEntry.getResidingQueue(), "Invalid/non-spawned player link!");
+            Debug.echoError(scriptEntry.getResidingQueue(), "Invalid/non-spawned player link!");
             return;
         }
 

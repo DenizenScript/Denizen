@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.item;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dLocation;
@@ -132,7 +132,7 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(),
+            Debug.report(scriptEntry, getName(),
                     item.debug()
                             + duration.debug()
                             + location.debug());

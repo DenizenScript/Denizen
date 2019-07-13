@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.npc;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -105,7 +105,7 @@ public class AnchorCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(),
+            Debug.report(scriptEntry, getName(),
                     npc.debug() + action.name() + id.debug()
                             + (location != null ? location.debug() : "")
                             + (range != null ? range.debug() : ""));
@@ -125,7 +125,7 @@ public class AnchorCommand extends AbstractCommand {
                 Anchor n = npc.getCitizen().getTrait(Anchors.class)
                         .getAnchor(id.asString());
                 if (n == null) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
                 }
                 else {
                     npc.getEntity().teleport(n.getLocation());
@@ -137,10 +137,10 @@ public class AnchorCommand extends AbstractCommand {
                 Anchor n = npc.getCitizen().getTrait(Anchors.class)
                         .getAnchor(id.asString());
                 if (n == null) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
                 }
                 else if (range == null) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "Must specify a range!");
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Must specify a range!");
                 }
                 else {
                     npc.getNavigator().setTarget(
@@ -153,7 +153,7 @@ public class AnchorCommand extends AbstractCommand {
                 Anchor n = npc.getCitizen().getTrait(Anchors.class)
                         .getAnchor(id.asString());
                 if (n == null) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
                 }
                 else {
                     npc.getNavigator().setTarget(n.getLocation());
@@ -165,7 +165,7 @@ public class AnchorCommand extends AbstractCommand {
                 Anchor n = npc.getCitizen().getTrait(Anchors.class)
                         .getAnchor(id.asString());
                 if (n == null) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
                 }
                 else {
                     npc.getCitizen().getTrait(Anchors.class).removeAnchor(n);

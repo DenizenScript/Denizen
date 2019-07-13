@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.utilities.MaterialCompat;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.dList;
@@ -92,8 +92,8 @@ public class ItemPatterns implements Property {
                 ((BlockStateMeta) itemMeta).setBlockState(banner);
             }
             catch (Exception ex) {
-                dB.echoError("Banner setPatterns failed!");
-                dB.echoError(ex);
+                Debug.echoError("Banner setPatterns failed!");
+                Debug.echoError(ex);
             }
         }
         else {
@@ -170,7 +170,7 @@ public class ItemPatterns implements Property {
                             PatternType.valueOf(split.get(1).toUpperCase())));
                 }
                 catch (Exception e) {
-                    dB.echoError("Could not apply pattern to banner: " + string);
+                    Debug.echoError("Could not apply pattern to banner: " + string);
                 }
             }
             setPatterns(patterns);

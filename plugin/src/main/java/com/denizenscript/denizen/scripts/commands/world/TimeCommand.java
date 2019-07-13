@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dWorld;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
@@ -103,7 +103,7 @@ public class TimeCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), type_element.debug()
+            Debug.report(scriptEntry, getName(), type_element.debug()
                     + value.debug()
                     + world.debug());
         }
@@ -113,7 +113,7 @@ public class TimeCommand extends AbstractCommand {
         }
         else {
             if (!Utilities.entryHasPlayer(scriptEntry)) {
-                dB.echoError("Must have a valid player link!");
+                Debug.echoError("Must have a valid player link!");
             }
             else {
                 Utilities.getEntryPlayer(scriptEntry)

@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dWorld;
@@ -98,7 +98,7 @@ public class RemoveCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), ArgumentHelper.debugList("entities", entities) +
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugList("entities", entities) +
                     (region != null ? ArgumentHelper.debugObj("region", region) : ""));
         }
 
@@ -116,7 +116,7 @@ public class RemoveCommand extends AbstractCommand {
             if (!entity.isGeneric()) {
 
                 if (region != null) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "Region support is deprecated!");
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Region support is deprecated!");
                     /*conditionsMet = WorldGuardUtilities.inRegion
                                     (entity.getBukkitEntity().getLocation(),
                                     region.asString());*/
@@ -152,7 +152,7 @@ public class RemoveCommand extends AbstractCommand {
                     if (entity.getEntityType().equals(DenizenEntityType.getByEntity(worldEntity))) {
 
                         if (region != null) {
-                            dB.echoError(scriptEntry.getResidingQueue(), "Region support is deprecated!");
+                            Debug.echoError(scriptEntry.getResidingQueue(), "Region support is deprecated!");
                             /*conditionsMet = WorldGuardUtilities.inRegion
                                             (worldEntity.getLocation(),
                                             region.asString());*/

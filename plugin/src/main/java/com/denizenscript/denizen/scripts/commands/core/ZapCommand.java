@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.commands.core;
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptHelper;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
@@ -97,7 +97,7 @@ public class ZapCommand extends AbstractCommand implements Listener {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), Utilities.getEntryPlayer(scriptEntry).debug() + script.debug()
+            Debug.report(scriptEntry, getName(), Utilities.getEntryPlayer(scriptEntry).debug() + script.debug()
                     + (scriptEntry.hasObject("step")
                     ? scriptEntry.getElement("step").debug() : ArgumentHelper.debugObj("step", "++ (inc)"))
                     + (duration != null ? duration.debug() : ""));
@@ -124,7 +124,7 @@ public class ZapCommand extends AbstractCommand implements Listener {
         }
 
         if (step.equalsIgnoreCase(currentStep)) {
-            dB.echoError(scriptEntry.getResidingQueue(), "Zapping to own current step!");
+            Debug.echoError(scriptEntry.getResidingQueue(), "Zapping to own current step!");
             return;
         }
 
@@ -155,13 +155,13 @@ public class ZapCommand extends AbstractCommand implements Listener {
             long delay = (long) (duration.getSeconds() * 20);
 
             // Set delayed task and put id in a map
-            dB.log("Setting delayed task 'RESET ZAP' for '" + script.identify() + "'");
+            Debug.log("Setting delayed task 'RESET ZAP' for '" + script.identify() + "'");
             durations.put(Utilities.getEntryPlayer(scriptEntry).getSaveName() + "," + script.getName(),
                     DenizenAPI.getCurrentInstance().getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
                             new Runnable() {
                                 @Override
                                 public void run() {
-                                    dB.log("Running delayed task 'RESET ZAP' for '" + script.identify() + "'");
+                                    Debug.log("Running delayed task 'RESET ZAP' for '" + script.identify() + "'");
                                     durations.remove(Utilities.getEntryPlayer(scriptEntry).getSaveName() + "," + script.getName().toUpperCase());
                                     execute(scriptEntry);
                                 }

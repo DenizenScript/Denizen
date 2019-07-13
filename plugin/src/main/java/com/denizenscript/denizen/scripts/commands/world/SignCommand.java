@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.commands.world;
 import com.denizenscript.denizen.utilities.MaterialCompat;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.DirectionalBlocksHelper;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.BlockData;
@@ -119,7 +119,7 @@ public class SignCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), typeElement.debug()
+            Debug.report(scriptEntry, getName(), typeElement.debug()
                     + location.debug()
                     + text.debug());
         }

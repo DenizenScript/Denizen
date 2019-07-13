@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.objects.Element;
@@ -182,7 +182,7 @@ public class EntityDisabledSlots implements Property {
                     slot = EquipmentSlot.valueOf(split[0]);
                 }
                 catch (IllegalArgumentException e) {
-                    dB.echoError("Invalid equipment slot specified: " + split[0]);
+                    Debug.echoError("Invalid equipment slot specified: " + split[0]);
                     continue;
                 }
 
@@ -191,7 +191,7 @@ public class EntityDisabledSlots implements Property {
                         action = Action.valueOf(split[1]);
                     }
                     catch (IllegalArgumentException e) {
-                        dB.echoError("Invalid action specified: " + split[1]);
+                        Debug.echoError("Invalid action specified: " + split[1]);
                         continue;
                     }
                 }

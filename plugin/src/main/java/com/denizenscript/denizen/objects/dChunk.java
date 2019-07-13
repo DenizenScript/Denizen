@@ -2,13 +2,12 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
@@ -92,7 +91,7 @@ public class dChunk implements dObject, Adjustable {
             }
             catch (Exception e) {
                 if (context == null || context.debug) {
-                    dB.log("Minor: valueOf dChunk returning null: " + "ch@" + string);
+                    Debug.log("Minor: valueOf dChunk returning null: " + "ch@" + string);
                 }
                 return null;
             }
@@ -100,7 +99,7 @@ public class dChunk implements dObject, Adjustable {
         }
         else {
             if (context == null || context.debug) {
-                dB.log("Minor: valueOf dChunk unable to handle malformed format: " + "ch@" + string);
+                Debug.log("Minor: valueOf dChunk unable to handle malformed format: " + "ch@" + string);
             }
         }
 
@@ -237,12 +236,12 @@ public class dChunk implements dObject, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 if (!attribute.hasContext(1)) {
-                    dB.echoError("The tag ch@chunk.add[<#>,<#>] must have a value.");
+                    Debug.echoError("The tag ch@chunk.add[<#>,<#>] must have a value.");
                     return null;
                 }
                 List<String> coords = CoreUtilities.split(attribute.getContext(1), ',');
                 if (coords.size() < 2) {
-                    dB.echoError("The tag ch@chunk.add[<#>,<#>] requires two values!");
+                    Debug.echoError("The tag ch@chunk.add[<#>,<#>] requires two values!");
                     return null;
                 }
                 int x = ArgumentHelper.getIntegerFrom(coords.get(0));
@@ -265,12 +264,12 @@ public class dChunk implements dObject, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 if (!attribute.hasContext(1)) {
-                    dB.echoError("The tag ch@chunk.add[<#>,<#>] must have a value.");
+                    Debug.echoError("The tag ch@chunk.add[<#>,<#>] must have a value.");
                     return null;
                 }
                 List<String> coords = CoreUtilities.split(attribute.getContext(1), ',');
                 if (coords.size() < 2) {
-                    dB.echoError("The tag ch@chunk.sub[<#>,<#>] requires two values!");
+                    Debug.echoError("The tag ch@chunk.sub[<#>,<#>] requires two values!");
                     return null;
                 }
                 int x = ArgumentHelper.getIntegerFrom(coords.get(0));
@@ -554,7 +553,7 @@ public class dChunk implements dObject, Adjustable {
         TagRunnable tr = registeredTags.get(attrLow);
         if (tr != null) {
             if (!tr.name.equals(attrLow)) {
-                Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
+                com.denizenscript.denizencore.utilities.debugging.Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
                         "Using deprecated form of tag '" + tr.name + "': '" + attrLow + "'.");
             }
             return tr.run(attribute, this);
@@ -569,7 +568,7 @@ public class dChunk implements dObject, Adjustable {
     }
 
     public void applyProperty(Mechanism mechanism) {
-        dB.echoError("Cannot apply properties to a chunk!");
+        Debug.echoError("Cannot apply properties to a chunk!");
     }
 
     @Override
@@ -589,7 +588,7 @@ public class dChunk implements dObject, Adjustable {
         }
 
         if (mechanism.matches("unload_safely")) {
-            dB.echoError("Mechanism 'dChunk.unload_safely' is not valid: It is never safe to remove a chunk in use.");
+            Debug.echoError("Mechanism 'dChunk.unload_safely' is not valid: It is never safe to remove a chunk in use.");
             getChunk().unload(true);
         }
 

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.utilities.midi;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dLocation;
 
@@ -54,7 +54,7 @@ public class MidiUtil {
             return receiver;
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
             return null;
         }
     }
@@ -71,7 +71,7 @@ public class MidiUtil {
             return receiver;
         }
         catch (Exception e) {
-            dB.echoError(e);
+            Debug.echoError(e);
             return null;
         }
     }

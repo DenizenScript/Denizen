@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.npc.traits.HealthTrait;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.objects.Element;
@@ -170,14 +170,14 @@ public class EntityHealth implements Property {
                     entity.getDenizenNPC().getCitizen().getTrait(HealthTrait.class).setMaxhealth(mechanism.getValue().asInt());
                 }
                 else {
-                    dB.echoError("NPC doesn't have health trait!");
+                    Debug.echoError("NPC doesn't have health trait!");
                 }
             }
             else if (entity.isLivingEntity()) {
                 entity.getLivingEntity().setMaxHealth(mechanism.getValue().asDouble());
             }
             else {
-                dB.echoError("Entity is not alive!");
+                Debug.echoError("Entity is not alive!");
             }
         }
 
@@ -200,7 +200,7 @@ public class EntityHealth implements Property {
                 entity.getLivingEntity().setHealth(Double.valueOf(values.get(0)));
             }
             else {
-                dB.echoError("Entity is not alive!");
+                Debug.echoError("Entity is not alive!");
             }
         }
 
@@ -220,7 +220,7 @@ public class EntityHealth implements Property {
                 entity.getLivingEntity().setHealth(mechanism.getValue().asDouble());
             }
             else {
-                dB.echoError("Entity is not alive!");
+                Debug.echoError("Entity is not alive!");
             }
         }
     }

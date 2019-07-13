@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.item;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -82,7 +82,7 @@ public class NBTCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), item.debug() + key.debug() + value.debug());
+            Debug.report(scriptEntry, getName(), item.debug() + key.debug() + value.debug());
 
         }
 

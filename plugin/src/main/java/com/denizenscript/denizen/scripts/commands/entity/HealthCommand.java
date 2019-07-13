@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.npc.traits.HealthTrait;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -111,14 +111,14 @@ public class HealthCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), (qty != null ? qty.debug() : "") +
+            Debug.report(scriptEntry, getName(), (qty != null ? qty.debug() : "") +
                     (action != null ? action.debug() : "") +
                     ArgumentHelper.debugObj("target", targets.toString()));
 
         }
 
         if (qty == null && action == null) {
-            dB.echoError(scriptEntry.getResidingQueue(), "Null quantity!");
+            Debug.echoError(scriptEntry.getResidingQueue(), "Null quantity!");
         }
 
         if (action == null) {
@@ -147,14 +147,14 @@ public class HealthCommand extends AbstractCommand {
                         target.getDenizenNPC().getCitizen().getTrait(HealthTrait.class).setMaxhealth((int) qty.asFloat());
                     }
                     else {
-                        dB.echoError(scriptEntry.getResidingQueue(), "NPC doesn't have health trait!");
+                        Debug.echoError(scriptEntry.getResidingQueue(), "NPC doesn't have health trait!");
                     }
                 }
                 else if (target.isLivingEntity()) {
                     target.getLivingEntity().setMaxHealth(qty.asDouble());
                 }
                 else {
-                    dB.echoError(scriptEntry.getResidingQueue(), "Entity '" + target.identify() + "'is not alive!");
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Entity '" + target.identify() + "'is not alive!");
                 }
             }
         }

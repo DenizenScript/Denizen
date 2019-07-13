@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.utilities.command;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -29,24 +29,24 @@ public class Injector {
                 return clazz.newInstance();
             }
             catch (Exception ex) {
-                dB.echoError("Error initializing commands class " + clazz + ": ");
-                dB.echoError(ex);
+                Debug.echoError("Error initializing commands class " + clazz + ": ");
+                Debug.echoError(ex);
                 return null;
             }
         }
         catch (InvocationTargetException e) {
-            dB.echoError("Error initializing commands class " + clazz + ": ");
-            dB.echoError(e);
+            Debug.echoError("Error initializing commands class " + clazz + ": ");
+            Debug.echoError(e);
             return null;
         }
         catch (InstantiationException e) {
-            dB.echoError("Error initializing commands class " + clazz + ": ");
-            dB.echoError(e);
+            Debug.echoError("Error initializing commands class " + clazz + ": ");
+            Debug.echoError(e);
             return null;
         }
         catch (IllegalAccessException e) {
-            dB.echoError("Error initializing commands class " + clazz + ": ");
-            dB.echoError(e);
+            Debug.echoError("Error initializing commands class " + clazz + ": ");
+            Debug.echoError(e);
             return null;
         }
     }

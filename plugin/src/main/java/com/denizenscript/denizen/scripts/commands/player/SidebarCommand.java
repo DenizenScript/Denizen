@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
@@ -237,7 +237,7 @@ public class SidebarCommand extends AbstractCommand {
         }
 
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), action.debug() + debug + ArgumentHelper.debugObj("players", players.debug()));
+            Debug.report(scriptEntry, getName(), action.debug() + debug + ArgumentHelper.debugObj("players", players.debug()));
         }
 
         switch (Action.valueOf(action.asString())) {
@@ -245,7 +245,7 @@ public class SidebarCommand extends AbstractCommand {
             case ADD:
                 for (dPlayer player : players.filter(dPlayer.class, scriptEntry)) {
                     if (player == null || !player.isValid()) {
-                        dB.echoError("Invalid player!");
+                        Debug.echoError("Invalid player!");
                         continue;
                     }
                     Sidebar sidebar = createSidebar(player);
@@ -270,7 +270,7 @@ public class SidebarCommand extends AbstractCommand {
                         }
                     }
                     catch (Exception e) {
-                        dB.echoError(e);
+                        Debug.echoError(e);
                         continue;
                     }
                     sidebar.setLines(current);
@@ -281,7 +281,7 @@ public class SidebarCommand extends AbstractCommand {
             case REMOVE:
                 for (dPlayer player : players.filter(dPlayer.class, scriptEntry)) {
                     if (player == null || !player.isValid()) {
-                        dB.echoError("Invalid player!");
+                        Debug.echoError("Invalid player!");
                         continue;
                     }
                     Sidebar sidebar = createSidebar(player);
@@ -311,7 +311,7 @@ public class SidebarCommand extends AbstractCommand {
                             }
                         }
                         catch (Exception e) {
-                            dB.echoError(e);
+                            Debug.echoError(e);
                             continue;
                         }
                         sidebar.setLines(current);
@@ -338,7 +338,7 @@ public class SidebarCommand extends AbstractCommand {
             case SET:
                 for (dPlayer player : players.filter(dPlayer.class, scriptEntry)) {
                     if (player == null || !player.isValid()) {
-                        dB.echoError("Invalid player!");
+                        Debug.echoError("Invalid player!");
                         continue;
                     }
                     Sidebar sidebar = createSidebar(player);
@@ -376,7 +376,7 @@ public class SidebarCommand extends AbstractCommand {
                             }
                         }
                         catch (Exception e) {
-                            dB.echoError(e);
+                            Debug.echoError(e);
                             continue;
                         }
                         currEdited = true;

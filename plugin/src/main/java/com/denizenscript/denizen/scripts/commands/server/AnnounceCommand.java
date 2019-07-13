@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.server;
 
 import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -88,7 +88,7 @@ public class AnnounceCommand extends AbstractCommand {
                 String formatStr = arg.getValue();
                 format = ScriptRegistry.getScriptContainer(formatStr);
                 if (format == null) {
-                    dB.echoError("Could not find format script matching '" + formatStr + '\'');
+                    Debug.echoError("Could not find format script matching '" + formatStr + '\'');
                 }
                 scriptEntry.addObject("format", format);
             }
@@ -117,7 +117,7 @@ public class AnnounceCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(),
+            Debug.report(scriptEntry, getName(),
                     ArgumentHelper.debugObj("Message", text)
                             + (format != null ? ArgumentHelper.debugObj("Format", format.getName()) : "")
                             + ArgumentHelper.debugObj("Type", type.name())

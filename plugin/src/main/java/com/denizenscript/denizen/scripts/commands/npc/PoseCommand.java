@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.npc;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -110,7 +110,7 @@ public class PoseCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(),
+            Debug.report(scriptEntry, getName(),
                     ArgumentHelper.debugObj("Target", target.toString())
                             + (target == TargetType.PLAYER ? Utilities.getEntryPlayer(scriptEntry).debug() : "")
                             + npc.debug()
@@ -129,7 +129,7 @@ public class PoseCommand extends AbstractCommand {
 
             case ASSUME:
                 if (!poses.hasPose(id)) {
-                    dB.echoError("Pose \"" + id + "\" doesn't exist for " + npc.toString());
+                    Debug.echoError("Pose \"" + id + "\" doesn't exist for " + npc.toString());
                 }
 
                 if (target.name().equals("NPC")) {
@@ -149,13 +149,13 @@ public class PoseCommand extends AbstractCommand {
 
             case ADD:
                 if (!poses.addPose(id, pose_loc)) {
-                    dB.echoError(npc.toString() + " already has that pose!");
+                    Debug.echoError(npc.toString() + " already has that pose!");
                 }
                 break;
 
             case REMOVE:
                 if (!poses.removePose(id)) {
-                    dB.echoError(npc.toString() + " does not have that pose!");
+                    Debug.echoError(npc.toString() + " does not have that pose!");
                 }
                 break;
 

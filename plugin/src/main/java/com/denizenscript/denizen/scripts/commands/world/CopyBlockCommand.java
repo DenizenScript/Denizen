@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.objects.dCuboid;
@@ -99,7 +99,7 @@ public class CopyBlockCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), (copy_location != null ? copy_location.debug() : "")
+            Debug.report(scriptEntry, getName(), (copy_location != null ? copy_location.debug() : "")
                     + (copy_cuboid != null ? copy_cuboid.debug() : "") + destination.debug() + remove_original.debug());
 
         }

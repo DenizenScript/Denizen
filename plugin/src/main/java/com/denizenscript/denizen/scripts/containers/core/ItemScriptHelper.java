@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
 import com.denizenscript.denizen.events.player.ItemRecipeFormedScriptEvent;
 import com.denizenscript.denizen.events.player.PlayerCraftsItemScriptEvent;
@@ -63,7 +63,7 @@ public class ItemScriptHelper implements Listener {
             // Process all tags in list
             for (int n = 0; n < recipeList.size(); n++) {
                 recipeList.set(n, TagManager.tag(recipeList.get(n), new BukkitTagContext(container.player, container.npc,
-                        false, null, dB.shouldDebug(container), new dScript(container))));
+                        false, null, Debug.shouldDebug(container), new dScript(container))));
             }
 
             // Store every ingredient in a List
@@ -77,7 +77,7 @@ public class ItemScriptHelper implements Listener {
                 for (String element : elements) {
                     dItem ingredient = dItem.valueOf(element.replaceAll("[iImM]@", ""), container);
                     if (ingredient == null) {
-                        dB.echoError("Invalid dItem ingredient, recipe will not be registered for item script '"
+                        Debug.echoError("Invalid dItem ingredient, recipe will not be registered for item script '"
                                 + container.getName() + "': " + element);
                         shouldRegister = false;
                         break recipeLoop;
@@ -99,7 +99,7 @@ public class ItemScriptHelper implements Listener {
             String string = entry.getValue();
 
             String list = TagManager.tag(string, new BukkitTagContext(container.player, container.npc,
-                    false, null, dB.shouldDebug(container), new dScript(container)));
+                    false, null, Debug.shouldDebug(container), new dScript(container)));
 
             List<dItem> ingredients = new ArrayList<>();
 
@@ -107,7 +107,7 @@ public class ItemScriptHelper implements Listener {
             for (String element : dList.valueOf(list)) {
                 dItem ingredient = dItem.valueOf(element.replaceAll("[iImM]@", ""), container);
                 if (ingredient == null) {
-                    dB.echoError("Invalid dItem ingredient, shapeless recipe will not be registered for item script '"
+                    Debug.echoError("Invalid dItem ingredient, shapeless recipe will not be registered for item script '"
                             + container.getName() + "': " + element);
                     shouldRegister = false;
                     break;
@@ -123,7 +123,7 @@ public class ItemScriptHelper implements Listener {
 
             dItem furnace_item = dItem.valueOf(entry.getValue(), entry.getKey());
             if (furnace_item == null) {
-                dB.echoError("Invalid item '" + entry.getValue() + "'");
+                Debug.echoError("Invalid item '" + entry.getValue() + "'");
                 continue;
             }
             FurnaceRecipe recipe = new FurnaceRecipe(entry.getKey().getCleanReference().getItemStack(), furnace_item.getMaterial().getMaterial(), furnace_item.getItemStack().getDurability());
@@ -218,7 +218,7 @@ public class ItemScriptHelper implements Listener {
             }
         }
         catch (Exception ex) {
-            dB.echoError(ex);
+            Debug.echoError(ex);
             colors.append(ChatColor.BLUE);
         }
         return colors.toString();

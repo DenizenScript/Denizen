@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dLocation;
 import com.denizenscript.denizen.objects.dMaterial;
 import com.denizenscript.denizen.objects.dPlayer;
@@ -136,7 +136,7 @@ public class ShowFakeCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), (material_list != null ? material_list.debug() : "")
+            Debug.report(scriptEntry, getName(), (material_list != null ? material_list.debug() : "")
                     + list.debug() + players.debug() + duration.debug() + cancel.debug());
 
         }

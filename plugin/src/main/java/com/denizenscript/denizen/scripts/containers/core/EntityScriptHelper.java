@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.utilities.DataPersistenceHelper;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.world.DenizenWorldAccess;
 import com.denizenscript.denizen.events.entity.EntityDespawnScriptEvent;
 import com.denizenscript.denizen.flags.FlagManager;
@@ -178,7 +178,7 @@ public class EntityScriptHelper implements Listener {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
             dScript scriptObj = dScript.valueOf(script);
             if (scriptObj == null) {
-                dB.echoError("Can't set entity script to '" + script + "': not a valid script!");
+                Debug.echoError("Can't set entity script to '" + script + "': not a valid script!");
             }
             DataPersistenceHelper.setDenizenKey(ent, "entity_script", scriptObj);
             return;

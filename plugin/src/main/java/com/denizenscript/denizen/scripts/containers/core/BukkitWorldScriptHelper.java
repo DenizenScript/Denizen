@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.containers.core;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.ScoreboardHelper;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.objects.notable.NotableManager;
@@ -385,7 +385,7 @@ public class BukkitWorldScriptHelper implements Listener {
         else if (dItem.matches(determination)) {
             dItem dit = dItem.valueOf(determination, player, null);
             if (dit == null) {
-                dB.echoError("Invalid dItem: " + dit);
+                Debug.echoError("Invalid dItem: " + dit);
             }
             else {
                 event.setCurrentItem(dit.getItemStack());
@@ -418,8 +418,8 @@ public class BukkitWorldScriptHelper implements Listener {
             @Override
             public void run() {
                 // If currently recording debug information, add the chat message to debug output
-                if (dB.record) {
-                    dB.log(message);
+                if (Debug.record) {
+                    Debug.log(message);
                 }
             }
         }, 1);

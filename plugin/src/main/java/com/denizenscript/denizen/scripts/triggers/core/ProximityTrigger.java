@@ -2,9 +2,8 @@ package com.denizenscript.denizen.scripts.triggers.core;
 
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
-import com.denizenscript.denizen.npc.dNPCRegistry;
 import com.denizenscript.denizen.npc.traits.TriggerTrait;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.objects.dPlayer;
@@ -106,7 +105,6 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                 //
                 // Iterate over all of the NPCs
                 //
-                Iterator<dNPC> it = dNPCRegistry.getSpawnedNPCs().iterator();
                 for (NPC citizensNPC : CitizensAPI.getNPCRegistry()) {
                     if (citizensNPC == null || !citizensNPC.isSpawned()) {
                         continue;
@@ -170,7 +168,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                                 }
                             }
                             catch (NumberFormatException nfe) {
-                                dB.echoDebug(script, "Entry Radius was not an integer.  Assuming " + entryRadius + " as the radius.");
+                                Debug.echoDebug(script, "Entry Radius was not an integer.  Assuming " + entryRadius + " as the radius.");
                             }
                             try {
                                 if (script.hasTriggerOptionFor(ProximityTrigger.class, player, null, "EXIT RADIUS")) {
@@ -178,7 +176,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                                 }
                             }
                             catch (NumberFormatException nfe) {
-                                dB.echoDebug(script, "Exit Radius was not an integer.  Assuming " + exitRadius + " as the radius.");
+                                Debug.echoDebug(script, "Exit Radius was not an integer.  Assuming " + exitRadius + " as the radius.");
                             }
                             try {
                                 if (script.hasTriggerOptionFor(ProximityTrigger.class, player, null, "MOVE RADIUS")) {
@@ -186,7 +184,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                                 }
                             }
                             catch (NumberFormatException nfe) {
-                                dB.echoDebug(script, "Move Radius was not an integer.  Assuming " + moveRadius + " as the radius.");
+                                Debug.echoDebug(script, "Move Radius was not an integer.  Assuming " + moveRadius + " as the radius.");
                             }
                         }
 

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizencore.objects.Element;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -111,7 +111,7 @@ public class EntityInfected implements Property {
         }
 
         if (attribute.startsWith("is_infected")) {
-            dB.echoError("Different infection types are represented by different entity types. Please remove usage of the 'is_infected' tag.");
+            Debug.echoError("Different infection types are represented by different entity types. Please remove usage of the 'is_infected' tag.");
             return new Element(isInfected())
                     .getAttribute(attribute.fulfill(1));
         }
@@ -123,7 +123,7 @@ public class EntityInfected implements Property {
     public void adjust(Mechanism mechanism) {
 
         if (mechanism.matches("is_infected") && mechanism.requireBoolean()) {
-            dB.echoError("Different infection types are represented by different entity types. Please remove usage of the 'is_infected' mechanism.");
+            Debug.echoError("Different infection types are represented by different entity types. Please remove usage of the 'is_infected' mechanism.");
             setInfected(mechanism.getValue().asBoolean());
         }
     }

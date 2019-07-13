@@ -45,8 +45,8 @@ public class StatsRecord extends Thread {
             in.close();
         }
         catch (Exception e) {
-            if (dB.debugOverride) {
-                dB.echoError(e);
+            if (Debug.debugOverride) {
+                Debug.echoError(e);
             }
         }
         finally {
@@ -56,8 +56,8 @@ public class StatsRecord extends Thread {
                 }
             }
             catch (Exception e) {
-                if (dB.debugOverride) {
-                    dB.echoError(e);
+                if (Debug.debugOverride) {
+                    Debug.echoError(e);
                 }
             }
         }

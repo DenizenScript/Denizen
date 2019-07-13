@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.WorldHelper;
 import com.denizenscript.denizen.objects.dCuboid;
@@ -174,7 +174,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         dList percents = scriptEntry.getdObject("percents");
 
         if (percents != null && percents.size() != materials.size()) {
-            dB.echoError(scriptEntry.getResidingQueue(), "Percents length != materials length");
+            Debug.echoError(scriptEntry.getResidingQueue(), "Percents length != materials length");
             percents = null;
         }
 
@@ -182,7 +182,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), (locations == null ? location_list.debug() : ArgumentHelper.debugList("locations", locations))
+            Debug.report(scriptEntry, getName(), (locations == null ? location_list.debug() : ArgumentHelper.debugList("locations", locations))
                     + materials.debug()
                     + physics.debug()
                     + radiusElement.debug()
@@ -210,14 +210,14 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         final List<Float> percs = percentages;
 
         if (locations == null && location_list == null) {
-            dB.echoError("Must specify a valid location!");
+            Debug.echoError("Must specify a valid location!");
             return;
         }
         if ((location_list != null && location_list.size() == 0) || (locations != null && locations.size() == 0)) {
             return;
         }
         if (materialList.size() == 0) {
-            dB.echoError("Must specify a valid material!");
+            Debug.echoError("Must specify a valid material!");
             return;
         }
 
@@ -381,7 +381,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             physitick = tick;
         }
         if (location.getY() < 0 || location.getY() > 255) {
-            dB.echoError("Invalid modifyblock location: " + new dLocation(location).toString());
+            Debug.echoError("Invalid modifyblock location: " + new dLocation(location).toString());
             return;
         }
         if (natural && material.getMaterial() == Material.AIR) {

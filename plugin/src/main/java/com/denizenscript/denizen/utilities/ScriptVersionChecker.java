@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.utilities;
 
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.scripts.containers.core.VersionScriptContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -55,7 +55,7 @@ public class ScriptVersionChecker {
                     Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), new Runnable() {
                         @Override
                         public void run() {
-                            dB.echoError(ex);
+                            Debug.echoError(ex);
                         }
                     });
                 }

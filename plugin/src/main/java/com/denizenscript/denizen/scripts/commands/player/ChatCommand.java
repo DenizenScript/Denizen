@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.npc.speech.DenizenSpeechContext;
 import com.denizenscript.denizen.npc.speech.DenizenSpeechController;
@@ -142,7 +142,7 @@ public class ChatCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), talkers.debug() + targets.debug() + message.debug() + chatRange.debug());
+            Debug.report(scriptEntry, getName(), talkers.debug() + targets.debug() + message.debug() + chatRange.debug());
 
         }
 
@@ -164,7 +164,7 @@ public class ChatCommand extends AbstractCommand {
                 new DenizenSpeechController(entity).speak(context);
             }
             else {
-                dB.echoDebug(scriptEntry, "Chat Talker is not spawned! Cannot talk.");
+                Debug.echoDebug(scriptEntry, "Chat Talker is not spawned! Cannot talk.");
             }
 
         }

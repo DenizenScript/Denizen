@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
@@ -118,7 +118,7 @@ public class ToastCommand extends AbstractCommand {
         final List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
 
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, name, text.debug() + frame.debug() + icon.debug()
+            Debug.report(scriptEntry, name, text.debug() + frame.debug() + icon.debug()
                     + background.debug() + ArgumentHelper.debugList("targets", targets));
         }
 

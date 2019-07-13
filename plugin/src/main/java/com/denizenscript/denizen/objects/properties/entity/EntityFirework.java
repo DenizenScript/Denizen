@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.utilities.MaterialCompat;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -109,7 +109,7 @@ public class EntityFirework implements Property {
                 ((Firework) firework.getBukkitEntity()).setFireworkMeta((FireworkMeta) item.getItemStack().getItemMeta());
             }
             else {
-                dB.echoError("'" + mechanism.getValue().asString() + "' is not a valid firework item.");
+                Debug.echoError("'" + mechanism.getValue().asString() + "' is not a valid firework item.");
             }
         }
 

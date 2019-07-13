@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.triggers.core;
 
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.npc.traits.TriggerTrait;
 import com.denizenscript.denizen.objects.dItem;
 import com.denizenscript.denizen.objects.dNPC;
@@ -132,7 +132,7 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
                     // matches the item that the player is holding.
                     dItem item = dItem.valueOf(entry_value, script);
                     if (item == null) {
-                        dB.echoError("Invalid click trigger in script '" + script.getName() + "' (null trigger item)!");
+                        Debug.echoError("Invalid click trigger in script '" + script.getName() + "' (null trigger item)!");
                     }
                     if (item != null && item.comparesTo(player.getPlayerEntity().getItemInHand()) >= 0) {
                         id = entry.getKey();

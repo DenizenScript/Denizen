@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizen.objects.dLocation;
@@ -84,13 +84,13 @@ public class LightCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), location.debug() + reset.debug()
+            Debug.report(scriptEntry, getName(), location.debug() + reset.debug()
                     + (light != null ? light.debug() : "") + (duration != null ? duration.debug() : ""));
 
         }
 
         if (location.getY() < 0 || location.getY() > 255) {
-            dB.echoError(scriptEntry.getResidingQueue(), "Invalid light location!");
+            Debug.echoError(scriptEntry.getResidingQueue(), "Invalid light location!");
             return;
         }
         for (int x = -1; x <= 1; x++) {
@@ -101,7 +101,7 @@ public class LightCommand extends AbstractCommand {
         if (!reset.asBoolean()) {
             int brightness = light.asInt();
             if (brightness < 0 || brightness > 15) {
-                dB.echoError("Light brightness must be between 0 and 15, inclusive!");
+                Debug.echoError("Light brightness must be between 0 and 15, inclusive!");
                 return;
             }
             NMSHandler.getInstance().createBlockLight(location, brightness, duration == null ? 0 : duration.getTicks());

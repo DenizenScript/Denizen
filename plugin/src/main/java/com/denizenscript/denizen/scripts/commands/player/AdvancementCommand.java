@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
 import com.denizenscript.denizen.nms.util.Advancement;
@@ -191,7 +191,7 @@ public class AdvancementCommand extends AbstractCommand {
         Element y = scriptEntry.getElement("y");
 
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, name, id.debug() + (parent != null ? parent.debug() : "")
+            Debug.report(scriptEntry, name, id.debug() + (parent != null ? parent.debug() : "")
                     + (delete != null ? delete.debug() : "") + (grant != null ? grant.debug() : "")
                     + (revoke != null ? revoke.debug() : "")
                     + icon.debug() + title.debug() + description.debug()

@@ -5,7 +5,7 @@ import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.npc.actions.ActionHandler;
 import com.denizenscript.denizen.objects.dNPC;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
@@ -26,24 +26,17 @@ import org.bukkit.inventory.InventoryHolder;
 
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Used for keeping track and retrieving dNPC objects which offer some Denizen-specific methods when dealing with NPCs.
- */
-public class dNPCRegistry implements Listener {
+public class DenizenNPCHelper implements Listener {
 
-    private static Map<Integer, dNPC> denizenNPCs = new ConcurrentHashMap<>(8, 0.9f, 1);
-    //private static Map<Integer, Inventory> npcInventories = new ConcurrentHashMap<Integer, Inventory>(8, 0.9f, 1);
-
-    public static dNPCRegistry getCurrentInstance() {
+    public static DenizenNPCHelper getCurrentInstance() {
         return DenizenAPI.getCurrentInstance().getNPCRegistry();
     }
 
     private Denizen plugin;
     private ActionHandler actionHandler;
 
-    public dNPCRegistry(Denizen denizen) {
+    public DenizenNPCHelper(Denizen denizen) {
         plugin = denizen;
         if (Depends.citizens != null) {
             plugin.getServer().getPluginManager().registerEvents(this, plugin);
@@ -61,35 +54,6 @@ public class dNPCRegistry implements Listener {
         return actionHandler;
     }
 
-    public static boolean _isRegistered(NPC npc) {
-        return denizenNPCs.containsKey(npc.getId());
-    }
-
-    public static boolean _isRegistered(int id) {
-        return denizenNPCs.containsKey(id);
-    }
-
-    public static void _registerNPC(dNPC denizenNPC) {
-        if (denizenNPC == null || !denizenNPC.isValid()) {
-            return;
-        }
-        int id = denizenNPC.getId();
-        if (!denizenNPCs.containsKey(id)) {
-            denizenNPCs.put(id, denizenNPC);
-            //Inventory npcInventory = Bukkit.getServer().createInventory(denizenNPC, InventoryType.PLAYER);
-            //npcInventory.setContents(Arrays.copyOf(denizenNPC.getInventoryTrait().getContents(), npcInventory.getSize()));
-            //npcInventories.put(id, npcInventory);
-        }
-    }
-
-    private static void _registerNPC(NPC npc) {
-        if (npc == null) {
-            return;
-        }
-        if (!denizenNPCs.containsKey(npc.getId())) {
-            _registerNPC(new dNPC(npc));
-        }
-    }
 
     /**
      * Returns a dNPC object when given a valid NPC. DenizenNPCs have some methods
@@ -137,37 +101,13 @@ public class dNPCRegistry implements Listener {
                 }
             }
             catch (Exception e) {
-                dB.echoError(e);
+                Debug.echoError(e);
                 return null;
             }
         }
     }
 
     public static Field INVENTORY_TRAIT_VIEW;
-
-    /**
-     * Similar to getting NPCs from Citizens' NPCRegistry, but this will filter out
-     * unspawned NPCs
-     */
-    public static Set<dNPC> getSpawnedNPCs() {
-        Iterator<Map.Entry<Integer, dNPC>> it = denizenNPCs.entrySet().iterator();
-        Set<dNPC> npcs = new HashSet<>();
-        while (it.hasNext()) {
-            Map.Entry<Integer, dNPC> npc = it.next();
-            if (npc.getValue().getCitizen() == null) {
-                try {
-                    denizenNPCs.remove(npc.getKey());
-                }
-                catch (Exception e) {
-                    dB.echoError("Report this error to the Denizen team! Err: posconcurrency1");
-                }
-            }
-            else if (npc.getValue().isSpawned()) {
-                npcs.add(npc.getValue());
-            }
-        }
-        return npcs;
-    }
 
     // <--[action]
     // @Actions
@@ -187,14 +127,9 @@ public class dNPCRegistry implements Listener {
     @EventHandler
     public void onSpawn(NPCSpawnEvent event) {
         if (event.getNPC() == null) {
-            dB.echoError("Null NPC spawned!");
+            Debug.echoError("Null NPC spawned!");
             return;
         }
-        _registerNPC(event.getNPC());
-        // Do world script event 'On NPC spawns'
-        OldEventManager.doEvents(Arrays.asList
-                        ("npc spawns"),
-                new BukkitScriptEntryData(null, dNPC.mirrorCitizensNPC(event.getNPC())), null);
         // On Spawn action
         new dNPC(event.getNPC()).action("spawn", null);
     }
@@ -248,10 +183,6 @@ public class dNPCRegistry implements Listener {
     public void onRemove(NPCRemoveEvent event) {
         NPC npc = event.getNPC();
         getDenizen(npc).action("remove", null);
-        if (_isRegistered(npc)) {
-            denizenNPCs.remove(npc.getId());
-            //npcInventories.remove(npc.getId());
-        }
         FlagManager.clearNPCFlags(npc.getId());
     }
 

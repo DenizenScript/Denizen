@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.commands.server;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.DenizenCommandSender;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -118,7 +118,7 @@ public class ExecuteCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(),
+            Debug.report(scriptEntry, getName(),
                     type.debug()
                             + cmd.debug()
                             + silent.debug());
@@ -146,14 +146,14 @@ public class ExecuteCommand extends AbstractCommand {
                     }
                 }
                 catch (Throwable e) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "Exception while executing command as player.");
-                    dB.echoError(scriptEntry.getResidingQueue(), e);
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Exception while executing command as player.");
+                    Debug.echoError(scriptEntry.getResidingQueue(), e);
                 }
                 break;
 
             case AS_OP:
                 if (CoreUtilities.toLowerCase(command).equals("stop")) {
-                    dB.echoError("Please use as_server to execute 'stop'.");
+                    Debug.echoError("Please use as_server to execute 'stop'.");
                     return;
                 }
                 Player player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
@@ -178,8 +178,8 @@ public class ExecuteCommand extends AbstractCommand {
                     }
                 }
                 catch (Throwable e) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "Exception while executing command as OP.");
-                    dB.echoError(scriptEntry.getResidingQueue(), e);
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Exception while executing command as OP.");
+                    Debug.echoError(scriptEntry.getResidingQueue(), e);
                 }
                 if (!isOp) {
                     playerHelper.setTemporaryOp(player, false);
@@ -188,11 +188,11 @@ public class ExecuteCommand extends AbstractCommand {
 
             case AS_NPC:
                 if (!Utilities.getEntryNPC(scriptEntry).isSpawned()) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "Cannot EXECUTE AS_NPC unless the NPC is Spawned.");
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Cannot EXECUTE AS_NPC unless the NPC is Spawned.");
                     return;
                 }
                 if (Utilities.getEntryNPC(scriptEntry).getEntity().getType() != EntityType.PLAYER) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "Cannot EXECUTE AS_NPC unless the NPC is Player-Type.");
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Cannot EXECUTE AS_NPC unless the NPC is Player-Type.");
                     return;
                 }
                 ((Player) Utilities.getEntryNPC(scriptEntry).getEntity()).setOp(true);
@@ -200,8 +200,8 @@ public class ExecuteCommand extends AbstractCommand {
                     ((Player) Utilities.getEntryNPC(scriptEntry).getEntity()).performCommand(command);
                 }
                 catch (Throwable e) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "Exception while executing command as NPC-OP.");
-                    dB.echoError(scriptEntry.getResidingQueue(), e);
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Exception while executing command as NPC-OP.");
+                    Debug.echoError(scriptEntry.getResidingQueue(), e);
                 }
                 ((Player) Utilities.getEntryNPC(scriptEntry).getEntity()).setOp(false);
                 break;

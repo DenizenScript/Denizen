@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.dEntity;
 import com.denizenscript.denizen.objects.dItem;
@@ -143,14 +143,14 @@ public class EquipCommand extends AbstractCommand {
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(), ArgumentHelper.debugObj("entities", entities.toString()) +
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("entities", entities.toString()) +
                     ArgumentHelper.debugObj("equipment", equipment.toString()));
         }
 
         for (dEntity entity : entities) {
 
             if (entity.isGeneric()) {
-                dB.echoError(scriptEntry.getResidingQueue(), "Cannot equip generic entity " + entity.identify() + "!");
+                Debug.echoError(scriptEntry.getResidingQueue(), "Cannot equip generic entity " + entity.identify() + "!");
             }
             else if (entity.isCitizensNPC()) {
 

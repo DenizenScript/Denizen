@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.core;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.flags.FlagManager.Flag;
 import com.denizenscript.denizen.objects.dEntity;
@@ -290,7 +290,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
         // Send information to debugger
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, getName(),
+            Debug.report(scriptEntry, getName(),
                     name.debug() + (index > 0 ? ArgumentHelper.debugObj("Index", String.valueOf(index)) : "")
                             + ArgumentHelper.debugUniqueObj("Action/Value", action.toString(), (value != null ? value.asString() : "null"))
                             + (duration != null ? duration.debug() : "")
@@ -313,7 +313,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
             flag = DenizenAPI.getCurrentInstance().flagManager().getEntityFlag((dEntity) flag_target, name.asString());
         }
         else {
-            dB.echoError("Could not fetch a flag for this entity: " + flag_target.debug());
+            Debug.echoError("Could not fetch a flag for this entity: " + flag_target.debug());
             return;
         }
 

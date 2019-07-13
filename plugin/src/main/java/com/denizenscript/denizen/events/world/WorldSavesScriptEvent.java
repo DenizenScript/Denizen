@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.world;
 
 import com.denizenscript.denizen.objects.dWorld;
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.dObject;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -42,7 +42,7 @@ public class WorldSavesScriptEvent extends BukkitScriptEvent implements Listener
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String wCheck = CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s));
-        dB.log("world: " + CoreUtilities.toLowerCase(world.getName()));
+        Debug.log("world: " + CoreUtilities.toLowerCase(world.getName()));
         if (!wCheck.equals("world") && !wCheck.equals(CoreUtilities.toLowerCase(world.getName()))) {
             return false;
         }

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.server;
 
-import com.denizenscript.denizen.utilities.debugging.dB;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.dPlayer;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -149,7 +149,7 @@ public class BossBarCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), id.debug() + action.debug()
+            Debug.report(scriptEntry, getName(), id.debug() + action.debug()
                     + (players != null ? players.debug() : "")
                     + (title != null ? title.debug() : "")
                     + (progress != null ? progress.debug() : "")
@@ -164,7 +164,7 @@ public class BossBarCommand extends AbstractCommand {
         switch (Action.valueOf(action.asString().toUpperCase())) {
             case CREATE:
                 if (bossBarMap.containsKey(idString)) {
-                    dB.echoError("BossBar '" + idString + "' already exists!");
+                    Debug.echoError("BossBar '" + idString + "' already exists!");
                     return;
                 }
                 String barTitle = title != null ? title.asString() : "";
@@ -182,7 +182,7 @@ public class BossBarCommand extends AbstractCommand {
                 bossBar.setProgress(barProgress);
                 for (dPlayer player : barPlayers) {
                     if (!player.isOnline()) {
-                        dB.echoError("Player must be online to show a BossBar to them!");
+                        Debug.echoError("Player must be online to show a BossBar to them!");
                         continue;
                     }
                     bossBar.addPlayer(player.getPlayerEntity());
@@ -193,7 +193,7 @@ public class BossBarCommand extends AbstractCommand {
 
             case UPDATE:
                 if (!bossBarMap.containsKey(idString)) {
-                    dB.echoError("BossBar '" + idString + "' does not exist!");
+                    Debug.echoError("BossBar '" + idString + "' does not exist!");
                     return;
                 }
                 BossBar bossBar1 = bossBarMap.get(idString);
@@ -218,7 +218,7 @@ public class BossBarCommand extends AbstractCommand {
 
             case REMOVE:
                 if (!bossBarMap.containsKey(idString)) {
-                    dB.echoError("BossBar '" + idString + "' does not exist!");
+                    Debug.echoError("BossBar '" + idString + "' does not exist!");
                     return;
                 }
                 if (players != null) {
