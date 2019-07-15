@@ -20,10 +20,10 @@ public abstract class BlockLight {
             BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN
     };
 
-    protected final Block block;
+    public final Block block;
     public final Chunk chunk;
-    protected final int originalLight;
-    protected int currentLight;
+    public final int originalLight;
+    public int currentLight;
     public int cachedLight;
     public BukkitTask removeTask;
 
