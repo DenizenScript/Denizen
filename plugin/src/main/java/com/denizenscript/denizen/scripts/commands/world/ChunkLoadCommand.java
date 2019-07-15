@@ -150,7 +150,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                 if (!chunk.isLoaded()) {
                     chunk.load();
                 }
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
                     chunk.setForceLoaded(true);
                     if (length.getSeconds() > 0) {
                         Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
@@ -168,7 +168,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
             case REMOVE:
                 if (chunkDelays.containsKey(chunkString)) {
                     chunkDelays.remove(chunkString);
-                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
+                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
                         chunk.setForceLoaded(false);
                     }
                     Debug.echoDebug(scriptEntry, "...allowing unloading of chunk " + chunk.getX() + ", " + chunk.getZ());
@@ -179,7 +179,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                 break;
             case REMOVEALL:
                 Debug.echoDebug(scriptEntry, "...allowing unloading of all stored chunks");
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
                     for (String chunkStr : chunkDelays.keySet()) {
                         ChunkTag loopChunk = ChunkTag.valueOf(chunkStr);
                         loopChunk.getChunk().setForceLoaded(false);
@@ -198,7 +198,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
         if (!(e instanceof Cancellable)) { // Not cancellable in 1.14
             return;
         }
-        String chunkString = e.getChunk().getX() + ", " + e.getChunk().getZ();
+        String chunkString = e.getChunk().getX() + ", " + e.getChunk().getZ() + "," + e.getChunk().getWorld().getName();
         if (chunkDelays.containsKey(chunkString)) {
             if (chunkDelays.get(chunkString) == 0) {
                 ((Cancellable) e).setCancelled(true);
