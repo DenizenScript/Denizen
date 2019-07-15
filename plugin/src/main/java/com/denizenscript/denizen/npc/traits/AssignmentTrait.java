@@ -233,10 +233,9 @@ public class AssignmentTrait extends Trait {
         }
     }
 
-    public void onSpawn(NPCSpawnEvent event) {
-        if (event.getNPC().getId() == npc.getId()) {
-            entityId = npc.getEntity().getUniqueId();
-        }
+    @Override
+    public void onSpawn() {
+        entityId = npc.getEntity().getUniqueId();
     }
 
     // <--[action]
