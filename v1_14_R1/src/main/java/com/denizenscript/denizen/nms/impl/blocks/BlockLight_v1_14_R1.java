@@ -6,8 +6,8 @@ import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_14_R1.CraftChunk;
-import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_14_R1.block.CraftBlock;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 
@@ -46,15 +46,28 @@ public class BlockLight_v1_14_R1 extends BlockLight {
         LightEngine lightEngine = ((CraftChunk) chunk).getHandle().e();
         ((LightEngineBlock) lightEngine.a(EnumSkyBlock.BLOCK)).a(((CraftBlock) block).getPosition(), lightLevel);
         if (updateChunk) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(NMSHandler.getJavaPlugin(), this::sendChunkUpdate, 1);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(NMSHandler.getJavaPlugin(), this::sendChunkUpdates, 1);
         }
     }
 
-    public void sendChunkUpdate() {
-        LightEngine lightEngine = ((CraftChunk) chunk).getHandle().e();
-        PacketPlayOutLightUpdate packet = new PacketPlayOutLightUpdate(((CraftChunk) chunk).getHandle().getPos(), lightEngine);
-        ((CraftWorld) chunk.getWorld()).getHandle().getChunkProvider().playerChunkMap
-                .a(new ChunkCoordIntPair(chunk.getX(), chunk.getZ()), false).forEach((player) -> {
+    public static final Vector[] RELATIVE_CHUNKS = new Vector[] {
+            new Vector(-1, 0, 0), new Vector(1, 0, 0), new Vector(0, 0, -1), new Vector(0, 0, 1),
+            new Vector(-1, 0, -1), new Vector(-1, 0, 1), new Vector(1, 0, -1), new Vector(1, 0, 1)
+    };
+
+    public void sendChunkUpdates() {
+        sendChunkUpdate(((CraftChunk) chunk).getHandle());
+        for (Vector vec : RELATIVE_CHUNKS) {
+            CraftChunk other = (CraftChunk) chunk.getWorld().getChunkAt(chunk.getX() + vec.getBlockX(), chunk.getZ() + vec.getBlockZ());
+            sendChunkUpdate(other.getHandle());
+        }
+    }
+
+    public static void sendChunkUpdate(Chunk chunk) {
+        LightEngine lightEngine = chunk.e();
+        ChunkCoordIntPair pos = chunk.getPos();
+        PacketPlayOutLightUpdate packet = new PacketPlayOutLightUpdate(pos, lightEngine);
+        ((WorldServer) chunk.world).getChunkProvider().playerChunkMap.a(pos, false).forEach((player) -> {
             player.playerConnection.sendPacket(packet);
         });
     }
