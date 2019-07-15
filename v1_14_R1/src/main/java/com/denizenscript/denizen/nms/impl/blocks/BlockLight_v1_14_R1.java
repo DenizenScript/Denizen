@@ -36,6 +36,10 @@ public class BlockLight_v1_14_R1 extends BlockLight {
                 blockLight.removeTask.cancel();
                 blockLight.removeTask = null;
             }
+            if (blockLight.updateTask != null) {
+                blockLight.updateTask.cancel();
+                blockLight.updateTask = null;
+            }
             blockLight.removeLater(ticks);
         }
         else {
@@ -143,12 +147,27 @@ public class BlockLight_v1_14_R1 extends BlockLight {
     }
 
     @Override
+    public void reset(boolean updateChunk) {
+        LightEngine lightEngine = ((CraftChunk) chunk).getHandle().e();
+        LightEngineBlock engineBlock = (LightEngineBlock) lightEngine.a(EnumSkyBlock.BLOCK);
+        engineBlock.a(((CraftBlock) block).getPosition());
+        if (updateChunk) {
+            updateTask = Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), (Runnable) this::sendNearbyChunkUpdates, 1);
+        }
+    }
+
+    @Override
     public void update(int lightLevel, boolean updateChunk) {
         LightEngine lightEngine = ((CraftChunk) chunk).getHandle().e();
-        ((LightEngineBlock) lightEngine.a(EnumSkyBlock.BLOCK)).a(((CraftBlock) block).getPosition(), lightLevel);
-        if (updateChunk) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(NMSHandler.getJavaPlugin(), this::sendNearbyChunkUpdates, 1);
-        }
+        LightEngineBlock engineBlock = (LightEngineBlock) lightEngine.a(EnumSkyBlock.BLOCK);
+        engineBlock.a(((CraftBlock) block).getPosition());
+        updateTask = Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), () -> {
+            updateTask = null;
+            engineBlock.a(((CraftBlock) block).getPosition(), lightLevel);
+            if (updateChunk) {
+                updateTask = Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), (Runnable) this::sendNearbyChunkUpdates, 1);
+            }
+        }, 1);
     }
 
     public static final Vector[] RELATIVE_CHUNKS = new Vector[] {

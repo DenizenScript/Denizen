@@ -27,6 +27,7 @@ public abstract class BlockLight {
     public int cachedLight;
     public int intendedLevel;
     public BukkitTask removeTask;
+    public BukkitTask updateTask;
 
     protected BlockLight(Location location, long ticks) {
         this.block = location.getBlock();
@@ -52,15 +53,21 @@ public abstract class BlockLight {
 
     public static void removeLight(Location location) {
         location = location.getBlock().getLocation();
-        if (lightsByLocation.containsKey(location)) {
-            BlockLight blockLight = lightsByLocation.get(location);
+        BlockLight blockLight = lightsByLocation.get(location);
+        if (blockLight != null) {
+            if (blockLight.updateTask != null) {
+                blockLight.updateTask.cancel();
+                blockLight.updateTask = null;
+            }
             blockLight.reset(true);
             if (blockLight.removeTask != null) {
                 blockLight.removeTask.cancel();
+                blockLight.removeTask = null;
             }
             lightsByLocation.remove(location);
-            lightsByChunk.get(blockLight.chunk).remove(blockLight);
-            if (lightsByChunk.get(blockLight.chunk).isEmpty()) {
+            List<BlockLight> lights = lightsByChunk.get(blockLight.chunk);
+            lights.remove(blockLight);
+            if (lights.isEmpty()) {
                 lightsByChunk.remove(blockLight.chunk);
             }
         }
