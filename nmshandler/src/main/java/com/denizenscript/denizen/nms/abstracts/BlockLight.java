@@ -25,14 +25,16 @@ public abstract class BlockLight {
     public final int originalLight;
     public int currentLight;
     public int cachedLight;
+    public int intendedLevel;
     public BukkitTask removeTask;
 
     protected BlockLight(Location location, long ticks) {
         this.block = location.getBlock();
         this.chunk = location.getChunk();
-        this.originalLight = block.getLightLevel();
+        this.originalLight = block.getLightFromBlocks();
         this.currentLight = originalLight;
         this.cachedLight = originalLight;
+        this.intendedLevel = originalLight;
         this.removeLater(ticks);
     }
 

@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.nms.impl.packets.handlers;
 
+import com.denizenscript.denizen.nms.impl.blocks.BlockLight_v1_14_R1;
 import com.denizenscript.denizen.nms.impl.entities.EntityFakePlayer_v1_14_R1;
 import com.denizenscript.denizen.nms.impl.packets.*;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketHandler;
@@ -312,6 +313,14 @@ public class DenizenNetworkManager_v1_14_R1 extends NetworkManager {
             if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutTradeList_v1_14_R1((PacketPlayOutOpenWindowMerchant) packet))) {
                 oldManager.sendPacket(packet, genericfuturelistener);
             }
+        }
+        else if (packet instanceof PacketPlayOutLightUpdate) {
+            BlockLight_v1_14_R1.checkIfLightsBrokenByPacket((PacketPlayOutLightUpdate) packet, player.world);
+            oldManager.sendPacket(packet, genericfuturelistener);
+        }
+        else if (packet instanceof PacketPlayOutBlockChange) {
+            BlockLight_v1_14_R1.checkIfLightsBrokenByPacket((PacketPlayOutBlockChange) packet, player.world);
+            oldManager.sendPacket(packet, genericfuturelistener);
         }
         else {
             oldManager.sendPacket(packet, genericfuturelistener);

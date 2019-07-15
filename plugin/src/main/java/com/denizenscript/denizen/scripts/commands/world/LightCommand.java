@@ -28,6 +28,9 @@ public class LightCommand extends AbstractCommand {
     // Optionally, specify the amount of time the light should exist before being removed.
     // WARNING: May cause lag spikes, use carefully.
     //
+    // Note that lights do not persist across server restarts, but will still be visible in the world
+    // after a restart until there is a block change near the location (to reset the light).
+    //
     // @Tags
     // <LocationTag.light>
     // <LocationTag.light.blocks>
