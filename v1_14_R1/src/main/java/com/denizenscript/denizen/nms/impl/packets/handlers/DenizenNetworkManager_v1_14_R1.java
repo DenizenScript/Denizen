@@ -125,6 +125,9 @@ public class DenizenNetworkManager_v1_14_R1 extends NetworkManager {
 
     @Override
     public void sendPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
+        if (NMSHandler.debugPackets) {
+            Debug.log("Packet: " + packet.getClass().getCanonicalName() + " sent to " + player.getName());
+        }
         // If the packet sending isn't cancelled, allow normal sending
         if (packet instanceof PacketPlayOutChat) {
             if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutChat_v1_14_R1((PacketPlayOutChat) packet))) {

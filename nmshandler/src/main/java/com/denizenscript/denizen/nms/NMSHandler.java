@@ -30,6 +30,8 @@ public abstract class NMSHandler {
     private static NMSVersion version;
     private static JavaPlugin javaPlugin;
 
+    public static boolean debugPackets = false;
+
     public static boolean initialize(JavaPlugin plugin) {
         javaPlugin = plugin;
         String packageName = javaPlugin.getServer().getClass().getPackage().getName();
