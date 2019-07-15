@@ -34,9 +34,8 @@ public class CooldownCommand extends AbstractCommand {
     // Cooldown periods are persistent through a server restart as they are saved in the saves.yml.
     //
     // @Tags
-    // <ScriptTag_name.cooled_down[player]>
-    // <ScriptTag_name.cooldown>
-    // <s@requirements.check>
+    // <ScriptTag.cooled_down[player]>
+    // <ScriptTag.cooldown>
     //
     // @Usage
     // Use to keep the current interact script from meeting requirements.

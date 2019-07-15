@@ -30,16 +30,19 @@ public class LookcloseCommand extends AbstractCommand {
     // use more CPU cycles. You may also specify a range integer to specify the number
     // of blocks that will trigger the NPC's attention.
     //
+    // @Tags
+    // None
+    //
     // @Usage
     // Use to cause the NPC to begin looking at nearby players.
-    // - lookclose true <npc>
+    // - lookclose true
     //
     // @Usage
     // Use to cause the NPC to stop looking at nearby players.
-    // - lookclose false <npc>
+    // - lookclose false
     //
     // @Usage
-    // Change up the range and make the NPC more realistic
+    // Use to change the range and make the NPC more realistic
     // - lookclose true range:10 realistic
     // -->
 

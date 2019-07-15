@@ -48,9 +48,8 @@ public class CastCommand extends AbstractCommand {
     //
     // @Usage
     // Use to remove an effect from the player.
-    // - if <player.has_effect[jump]> {
+    // - if <player.has_effect[jump]>:
     //   - cast jump remove <player>
-    //   }
     // -->
 
     @Override
