@@ -45,11 +45,11 @@ public class HealthTrait extends Trait implements Listener {
     // Set respawn location: - flag <npc> respawn_location:<location>
     //
     // Related Tags
-    // <@link tag npc.health>
-    // <@link tag npc.health.formatted>
-    // <@link tag npc.health.max>
-    // <@link tag npc.health.percentage>
-    // <@link tag npc.has_trait[health]>
+    // <@link tag NPCTag.health>
+    // <@link tag NPCTag.health.formatted>
+    // <@link tag NPCTag.health.max>
+    // <@link tag NPCTag.health.percentage>
+    // <@link tag NPCTag.has_trait[health]>
     //
     // Related Mechanisms
     // <@link mechanism health>

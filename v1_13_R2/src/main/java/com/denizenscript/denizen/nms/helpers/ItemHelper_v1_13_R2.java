@@ -1,8 +1,6 @@
 package com.denizenscript.denizen.nms.helpers;
 
-import com.denizenscript.denizen.nms.enums.EntityAttribute;
 import com.denizenscript.denizen.nms.interfaces.ItemHelper;
-import com.denizenscript.denizen.nms.util.EntityAttributeModifier;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.jnbt.*;
 import com.google.common.collect.Iterables;
@@ -19,11 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 public class ItemHelper_v1_13_R2 implements ItemHelper {
 
@@ -104,26 +98,6 @@ public class ItemHelper_v1_13_R2 implements ItemHelper {
         net.minecraft.server.v1_13_R2.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         nmsItemStack.setTag(((CompoundTag_v1_13_R2) compoundTag).toNMSTag());
         return CraftItemStack.asBukkitCopy(nmsItemStack);
-    }
-
-    @Override
-    public ItemStack setAttributeModifiers(ItemStack itemStack, Map<EntityAttribute, List<EntityAttributeModifier>> modifiers) {
-        List<Tag> modifierList = new ArrayList<>(getNbtData(itemStack).getList("AttributeModifiers"));
-        for (Map.Entry<EntityAttribute, List<EntityAttributeModifier>> entry : modifiers.entrySet()) {
-            EntityAttribute attribute = entry.getKey();
-            for (EntityAttributeModifier modifier : entry.getValue()) {
-                Map<String, Tag> compound = new HashMap<>();
-                compound.put("AttributeName", new StringTag(attribute.getName()));
-                UUID uuid = modifier.getUniqueId();
-                compound.put("UUIDMost", new LongTag(uuid.getMostSignificantBits()));
-                compound.put("UUIDLeast", new LongTag(uuid.getLeastSignificantBits()));
-                compound.put("Name", new StringTag(modifier.getName()));
-                compound.put("Operation", new IntTag(modifier.getOperation().ordinal()));
-                compound.put("Amount", new DoubleTag(modifier.getAmount()));
-                modifierList.add(new CompoundTag_v1_13_R2(compound));
-            }
-        }
-        return addNbtData(itemStack, "AttributeModifiers", new ListTag(CompoundTag.class, modifierList));
     }
 
     @Override

@@ -4,10 +4,8 @@ import com.denizenscript.denizen.nms.util.jnbt.*;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import com.denizenscript.denizen.nms.enums.EntityAttribute;
 import com.denizenscript.denizen.nms.impl.jnbt.CompoundTag_v1_14_R1;
 import com.denizenscript.denizen.nms.interfaces.ItemHelper;
-import com.denizenscript.denizen.nms.util.EntityAttributeModifier;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.minecraft.server.v1_14_R1.GameProfileSerializer;
@@ -100,26 +98,6 @@ public class ItemHelper_v1_14_R1 implements ItemHelper {
         net.minecraft.server.v1_14_R1.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         nmsItemStack.setTag(((CompoundTag_v1_14_R1) compoundTag).toNMSTag());
         return CraftItemStack.asBukkitCopy(nmsItemStack);
-    }
-
-    @Override
-    public ItemStack setAttributeModifiers(ItemStack itemStack, Map<EntityAttribute, List<EntityAttributeModifier>> modifiers) {
-        List<Tag> modifierList = new ArrayList<>(getNbtData(itemStack).getList("AttributeModifiers"));
-        for (Map.Entry<EntityAttribute, List<EntityAttributeModifier>> entry : modifiers.entrySet()) {
-            EntityAttribute attribute = entry.getKey();
-            for (EntityAttributeModifier modifier : entry.getValue()) {
-                Map<String, Tag> compound = new HashMap<>();
-                compound.put("AttributeName", new StringTag(attribute.getName()));
-                UUID uuid = modifier.getUniqueId();
-                compound.put("UUIDMost", new LongTag(uuid.getMostSignificantBits()));
-                compound.put("UUIDLeast", new LongTag(uuid.getLeastSignificantBits()));
-                compound.put("Name", new StringTag(modifier.getName()));
-                compound.put("Operation", new IntTag(modifier.getOperation().ordinal()));
-                compound.put("Amount", new DoubleTag(modifier.getAmount()));
-                modifierList.add(new CompoundTag_v1_14_R1(compound));
-            }
-        }
-        return addNbtData(itemStack, "AttributeModifiers", new ListTag(CompoundTag.class, modifierList));
     }
 
     @Override
