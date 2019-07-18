@@ -372,10 +372,14 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         super(world, x, y, z, yaw, pitch);
     }
 
-
-    /////////////////////
-    //   INSTANCE FIELDS/METHODS
-    /////////////////
+    @Override
+    public Block getBlock() {
+        if (getWorld() == null) {
+            Debug.echoError("LocationTag trying to read block, but cannot because no world is specified.");
+            return null;
+        }
+        return super.getBlock();
+    }
 
     public static BlockState getBlockStateFor(Block block) {
         NMSHandler.getInstance().getChunkHelper().changeChunkServerThread(block.getWorld());
@@ -1640,6 +1644,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 int index = 0;
 
                 attribute.fulfill(2);
+                Location blockLoc = getBlock().getLocation();
                 Location loc = getBlock().getLocation().add(0.5f, 0.5f, 0.5f);
 
                 fullloop:
@@ -1650,15 +1655,15 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                             if (index > max) {
                                 break fullloop;
                             }
-                            if (Utilities.checkLocation(loc, getBlock().getLocation().add(x + 0.5, y + 0.5, z + 0.5), radius)) {
-                                Location l = getBlock().getLocation().clone().add(x, y, z);
+                            if (Utilities.checkLocation(loc, blockLoc.clone().add(x + 0.5, y + 0.5, z + 0.5), radius)) {
+                                Location l = blockLoc.clone().add(x, y, z);
                                 if (!materials.isEmpty()) {
                                     for (MaterialTag material : materials) {
-                                        if (material.matchesBlock(getBlock().getLocation().clone().add(x, y, z).getBlock())) {
+                                        if (material.matchesBlock(l.getBlock())) {
                                             if (l.clone().add(0, 1, 0).getBlock().getType() == Material.AIR
                                                     && l.clone().add(0, 2, 0).getBlock().getType() == Material.AIR
                                                     && l.getBlock().getType() != Material.AIR) {
-                                                found.add(new LocationTag(getBlock().getLocation().clone().add(x + 0.5, y, z + 0.5)));
+                                                found.add(new LocationTag(blockLoc.clone().add(x + 0.5, y, z + 0.5)));
                                             }
                                         }
                                     }
@@ -1667,7 +1672,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                                     if (l.clone().add(0, 1, 0).getBlock().getType() == Material.AIR
                                             && l.clone().add(0, 2, 0).getBlock().getType() == Material.AIR
                                             && l.getBlock().getType() != Material.AIR) {
-                                        found.add(new LocationTag(getBlock().getLocation().clone().add(x + 0.5, y, z + 0.5)));
+                                        found.add(new LocationTag(blockLoc.clone().add(x + 0.5, y, z + 0.5)));
                                     }
                                 }
                             }
