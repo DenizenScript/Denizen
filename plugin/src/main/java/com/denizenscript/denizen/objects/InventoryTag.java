@@ -2161,41 +2161,69 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             return equipment.getAttribute(attribute.fulfill(1));
         }
 
-        if (inventory instanceof CraftingInventory) {
-            CraftingInventory craftingInventory = (CraftingInventory) inventory;
-
-            // <--[tag]
-            // @attribute <InventoryTag.matrix>
-            // @returns ListTag(ItemTag)
-            // @description
-            // Returns the ItemTags currently in a crafting inventory's matrix.
-            // -->
-            if (attribute.startsWith("matrix")) {
-                ListTag recipeList = new ListTag();
-                for (ItemStack item : craftingInventory.getMatrix()) {
-                    if (item != null) {
-                        recipeList.add(new ItemTag(item).identify());
-                    }
-                    else {
-                        recipeList.add(new ItemTag(Material.AIR).identify());
-                    }
+        // <--[tag]
+        // @attribute <InventoryTag.matrix>
+        // @returns ListTag(ItemTag)
+        // @description
+        // Returns the ItemTags currently in a crafting inventory's matrix.
+        // -->
+        if (attribute.startsWith("matrix") && inventory instanceof CraftingInventory) {
+            ListTag recipeList = new ListTag();
+            for (ItemStack item : ((CraftingInventory) inventory).getMatrix()) {
+                if (item != null) {
+                    recipeList.add(new ItemTag(item).identify());
                 }
-                return recipeList.getAttribute(attribute.fulfill(1));
-            }
-
-            // <--[tag]
-            // @attribute <InventoryTag.result>
-            // @returns ItemTag
-            // @description
-            // Returns the ItemTag currently in the result section of a crafting inventory.
-            // -->
-            if (attribute.startsWith("result")) {
-                ItemStack result = craftingInventory.getResult();
-                if (result == null) {
-                    return null;
+                else {
+                    recipeList.add(new ItemTag(Material.AIR).identify());
                 }
-                return new ItemTag(result).getAttribute(attribute.fulfill(1));
             }
+            return recipeList.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <InventoryTag.result>
+        // @returns ItemTag
+        // @description
+        // Returns the ItemTag currently in the result section of a crafting inventory.
+        // -->
+        if (attribute.startsWith("result") && inventory instanceof CraftingInventory) {
+            ItemStack result = ((CraftingInventory) inventory).getResult();
+            if (result == null) {
+                return null;
+            }
+            return new ItemTag(result).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <InventoryTag.anvil_repair_cost>
+        // @returns Element(Number)
+        // @mechanism anvil_repair_cost
+        // @description
+        // Returns the current repair cost on an anvil.
+        // -->
+        if (attribute.startsWith("anvil_repair_cost") && inventory instanceof AnvilInventory) {
+            return new ElementTag(((AnvilInventory) inventory).getRepairCost()).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <InventoryTag.anvil_max_repair_cost>
+        // @returns Element(Number)
+        // @mechanism anvil_max_repair_cost
+        // @description
+        // Returns the maximum repair cost on an anvil.
+        // -->
+        if (attribute.startsWith("anvil_max_repair_cost") && inventory instanceof AnvilInventory) {
+            return new ElementTag(((AnvilInventory) inventory).getMaximumRepairCost()).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <InventoryTag.anvil_rename_text>
+        // @returns Element
+        // @description
+        // Returns the current entered renaming text on an anvil.
+        // -->
+        if (attribute.startsWith("anvil_rename_text") && inventory instanceof AnvilInventory) {
+            return new ElementTag(((AnvilInventory) inventory).getRenameText()).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -2250,19 +2278,18 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // <InventoryTag.matrix>
         // -->
         if (mechanism.matches("matrix") && mechanism.requireObject(ListTag.class)) {
-            if (inventory instanceof CraftingInventory) {
-                CraftingInventory craftingInventory = (CraftingInventory) inventory;
-                List<ItemTag> items = mechanism.valueAsType(ListTag.class).filter(ItemTag.class, mechanism.context);
-                ItemStack[] itemStacks = new ItemStack[9];
-                for (int i = 0; i < 9 && i < items.size(); i++) {
-                    itemStacks[i] = items.get(i).getItemStack();
-                }
-                craftingInventory.setMatrix(itemStacks);
-                ((Player) inventory.getHolder()).updateInventory();
-            }
-            else {
+            if (!(inventory instanceof CraftingInventory)) {
                 Debug.echoError("Inventory is not a crafting inventory, cannot set matrix.");
+                return;
             }
+            CraftingInventory craftingInventory = (CraftingInventory) inventory;
+            List<ItemTag> items = mechanism.valueAsType(ListTag.class).filter(ItemTag.class, mechanism.context);
+            ItemStack[] itemStacks = new ItemStack[9];
+            for (int i = 0; i < 9 && i < items.size(); i++) {
+                itemStacks[i] = items.get(i).getItemStack();
+            }
+            craftingInventory.setMatrix(itemStacks);
+            ((Player) inventory.getHolder()).updateInventory();
         }
 
         // <--[mechanism]
@@ -2275,14 +2302,47 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // <InventoryTag.result>
         // -->
         if (mechanism.matches("result") && mechanism.requireObject(ItemTag.class)) {
-            if (inventory instanceof CraftingInventory) {
-                CraftingInventory craftingInventory = (CraftingInventory) inventory;
-                craftingInventory.setResult(mechanism.valueAsType(ItemTag.class).getItemStack());
-                ((Player) inventory.getHolder()).updateInventory();
-            }
-            else {
+            if (!(inventory instanceof CraftingInventory)) {
                 Debug.echoError("Inventory is not a crafting inventory, cannot set result.");
+                return;
             }
+            CraftingInventory craftingInventory = (CraftingInventory) inventory;
+            craftingInventory.setResult(mechanism.valueAsType(ItemTag.class).getItemStack());
+            ((Player) inventory.getHolder()).updateInventory();
+        }
+
+        // <--[mechanism]
+        // @object InventoryTag
+        // @name anvil_max_repair_cost
+        // @input Element(Number)
+        // @description
+        // Sets the maximum repair cost of an anvil.
+        // @tags
+        // <InventoryTag.anvil_max_repair_cost>
+        // -->
+        if (mechanism.matches("anvil_max_repair_cost") && mechanism.requireInteger()) {
+            if (!(inventory instanceof AnvilInventory)) {
+                Debug.echoError("Inventory is not an anvil, cannot set max repair cost.");
+                return;
+            }
+            ((AnvilInventory) inventory).setMaximumRepairCost(mechanism.getValue().asInt());
+        }
+
+        // <--[mechanism]
+        // @object InventoryTag
+        // @name anvil_repair_cost
+        // @input Element(Number)
+        // @description
+        // Sets the current repair cost of an anvil.
+        // @tags
+        // <InventoryTag.anvil_repair_cost>
+        // -->
+        if (mechanism.matches("anvil_repair_cost") && mechanism.requireInteger()) {
+            if (!(inventory instanceof AnvilInventory)) {
+                Debug.echoError("Inventory is not an anvil, cannot set repair cost.");
+                return;
+            }
+            ((AnvilInventory) inventory).setRepairCost(mechanism.getValue().asInt());
         }
     }
 }
