@@ -101,7 +101,7 @@ public class FakeItemCommand extends AbstractCommand {
 
         List<ItemTag> items = (List<ItemTag>) scriptEntry.getObject("item");
         final ElementTag elSlot = scriptEntry.getElement("slot");
-        DurationTag duration = scriptEntry.getdObject("duration");
+        DurationTag duration = scriptEntry.getObjectTag("duration");
         final List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
         final ElementTag player_only = scriptEntry.getElement("player_only");
 

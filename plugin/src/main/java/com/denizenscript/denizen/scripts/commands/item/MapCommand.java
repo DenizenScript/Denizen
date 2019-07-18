@@ -137,11 +137,11 @@ public class MapCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         ElementTag id = scriptEntry.getElement("map-id");
-        WorldTag create = scriptEntry.getdObject("new");
+        WorldTag create = scriptEntry.getObjectTag("new");
         ElementTag reset = scriptEntry.getElement("reset");
-        LocationTag resetLoc = scriptEntry.getdObject("reset-loc");
+        LocationTag resetLoc = scriptEntry.getObjectTag("reset-loc");
         ElementTag image = scriptEntry.getElement("image");
-        ScriptTag script = scriptEntry.getdObject("script");
+        ScriptTag script = scriptEntry.getObjectTag("script");
         ElementTag resize = scriptEntry.getElement("resize");
         ElementTag width = scriptEntry.getElement("width");
         ElementTag height = scriptEntry.getElement("height");

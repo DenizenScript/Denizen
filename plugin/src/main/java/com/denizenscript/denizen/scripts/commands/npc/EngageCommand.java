@@ -90,7 +90,7 @@ public class EngageCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        DurationTag duration = scriptEntry.getdObject("duration");
+        DurationTag duration = scriptEntry.getObjectTag("duration");
         NPCTag npc = Utilities.getEntryNPC(scriptEntry);
 
         // Report to dB

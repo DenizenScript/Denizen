@@ -70,7 +70,7 @@ public class ItemCooldownCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         ArrayList<MaterialTag> materials = (ArrayList<MaterialTag>) scriptEntry.getObject("materials");
-        DurationTag duration = scriptEntry.getdObject("duration");
+        DurationTag duration = scriptEntry.getObjectTag("duration");
         PlayerTag player = Utilities.getEntryPlayer(scriptEntry);
 
         if (player == null) {

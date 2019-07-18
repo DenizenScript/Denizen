@@ -140,12 +140,12 @@ public class BossBarCommand extends AbstractCommand {
 
         ElementTag id = scriptEntry.getElement("id");
         ElementTag action = scriptEntry.getElement("action");
-        ListTag players = scriptEntry.getdObject("players");
+        ListTag players = scriptEntry.getObjectTag("players");
         ElementTag title = scriptEntry.getElement("title");
         ElementTag progress = scriptEntry.getElement("progress");
         ElementTag color = scriptEntry.getElement("color");
         ElementTag style = scriptEntry.getElement("style");
-        ListTag flags = scriptEntry.getdObject("flags");
+        ListTag flags = scriptEntry.getObjectTag("flags");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

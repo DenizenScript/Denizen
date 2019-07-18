@@ -114,7 +114,7 @@ public class ToastCommand extends AbstractCommand {
         ElementTag text = scriptEntry.getElement("text");
         ElementTag frame = scriptEntry.getElement("frame");
         ElementTag background = scriptEntry.getElement("background");
-        ItemTag icon = scriptEntry.getdObject("icon");
+        ItemTag icon = scriptEntry.getObjectTag("icon");
         final List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
 
         if (scriptEntry.dbCallShouldDebug()) {

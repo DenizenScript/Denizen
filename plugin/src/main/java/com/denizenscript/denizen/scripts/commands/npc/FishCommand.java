@@ -87,7 +87,7 @@ public class FishCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        LocationTag location = scriptEntry.getdObject("location");
+        LocationTag location = scriptEntry.getObjectTag("location");
         ElementTag catchtype = scriptEntry.getElement("catch");
         ElementTag stop = scriptEntry.getElement("stop");
         ElementTag percent = scriptEntry.getElement("percent");

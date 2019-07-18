@@ -81,7 +81,7 @@ public class CompassCommand extends AbstractCommand {
 
         // Fetch required objects
 
-        LocationTag location = scriptEntry.getdObject("location");
+        LocationTag location = scriptEntry.getObjectTag("location");
         ElementTag reset = scriptEntry.getElement("reset");
         Player player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
 

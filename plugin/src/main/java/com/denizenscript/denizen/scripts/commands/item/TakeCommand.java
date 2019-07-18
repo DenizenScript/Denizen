@@ -150,9 +150,9 @@ public class TakeCommand extends AbstractCommand {
         InventoryTag inventory = (InventoryTag) scriptEntry.getObject("inventory");
         ElementTag qty = scriptEntry.getElement("qty");
         ElementTag displayname = scriptEntry.getElement("displayname");
-        ItemTag scriptitem = scriptEntry.getdObject("scriptitem");
+        ItemTag scriptitem = scriptEntry.getObjectTag("scriptitem");
         ElementTag slot = scriptEntry.getElement("slot");
-        ListTag titleAuthor = scriptEntry.getdObject("cover");
+        ListTag titleAuthor = scriptEntry.getObjectTag("cover");
         ElementTag nbtKey = scriptEntry.getElement("nbt_key");
         Type type = (Type) scriptEntry.getObject("type");
 

@@ -94,7 +94,7 @@ public class OpenTradesCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         String title = scriptEntry.getElement("title").asString();
-        EntityTag entity = scriptEntry.getdObject("entity");
+        EntityTag entity = scriptEntry.getObjectTag("entity");
         List<TradeTag> trades = (List<TradeTag>) scriptEntry.getObject("trades");
         List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
 

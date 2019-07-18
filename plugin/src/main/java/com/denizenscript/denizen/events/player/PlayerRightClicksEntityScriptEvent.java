@@ -114,11 +114,18 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
 
     @EventHandler
     public void playerRightClicksAtEntity(PlayerInteractAtEntityEvent event) {
-        playerRightClicksEntity(event);
+        playerRightClicksEntityHandler(event);
     }
 
     @EventHandler
     public void playerRightClicksEntity(PlayerInteractEntityEvent event) {
+        if (event instanceof PlayerInteractAtEntityEvent) {
+            return;
+        }
+        playerRightClicksEntityHandler(event);
+    }
+
+    public void playerRightClicksEntityHandler(PlayerInteractEntityEvent event) {
         if (event.getHand() == EquipmentSlot.OFF_HAND) {
             return;
         }

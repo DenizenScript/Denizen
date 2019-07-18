@@ -115,11 +115,11 @@ public class StatisticCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         ElementTag action = scriptEntry.getElement("action");
-        ListTag players = scriptEntry.getdObject("players");
+        ListTag players = scriptEntry.getObjectTag("players");
         ElementTag statistic = scriptEntry.getElement("statistic");
         ElementTag amount = scriptEntry.getElement("amount");
-        MaterialTag material = scriptEntry.getdObject("material");
-        EntityTag entity = scriptEntry.getdObject("entity");
+        MaterialTag material = scriptEntry.getObjectTag("material");
+        EntityTag entity = scriptEntry.getObjectTag("entity");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

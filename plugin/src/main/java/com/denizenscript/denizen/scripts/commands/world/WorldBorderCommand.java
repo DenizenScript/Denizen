@@ -152,10 +152,10 @@ public class WorldBorderCommand extends AbstractCommand {
         ElementTag currSize = scriptEntry.getElement("current_size");
         ElementTag damage = scriptEntry.getElement("damage");
         ElementTag damagebuffer = scriptEntry.getElement("damagebuffer");
-        DurationTag duration = scriptEntry.getdObject("duration");
+        DurationTag duration = scriptEntry.getObjectTag("duration");
         ElementTag warningdistance = scriptEntry.getElement("warningdistance");
-        DurationTag warningtime = scriptEntry.getdObject("warningtime");
-        ElementTag reset = scriptEntry.getdObject("reset");
+        DurationTag warningtime = scriptEntry.getObjectTag("warningtime");
+        ElementTag reset = scriptEntry.getObjectTag("reset");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

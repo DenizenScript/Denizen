@@ -73,7 +73,7 @@ public class PushableCommand extends AbstractCommand {
         PushableTrait trait = denizenNPC.getPushableTrait();
 
         ElementTag state = scriptEntry.getElement("state");
-        DurationTag delay = scriptEntry.getdObject("delay");
+        DurationTag delay = scriptEntry.getObjectTag("delay");
         ElementTag returnable = scriptEntry.getElement("return");
 
         if (state == null && delay == null && returnable == null) {

@@ -106,8 +106,8 @@ public class TeamCommand extends AbstractCommand {
 
         ElementTag id = scriptEntry.getElement("id");
         ElementTag name = scriptEntry.getElement("name");
-        ListTag add = scriptEntry.getdObject("add");
-        ListTag remove = scriptEntry.getdObject("remove");
+        ListTag add = scriptEntry.getObjectTag("add");
+        ListTag remove = scriptEntry.getObjectTag("remove");
         ElementTag prefix = scriptEntry.getElement("prefix");
         ElementTag suffix = scriptEntry.getElement("suffix");
 

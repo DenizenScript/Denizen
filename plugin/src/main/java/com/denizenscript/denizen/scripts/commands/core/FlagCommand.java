@@ -270,7 +270,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        ObjectTag flag_target = scriptEntry.getdObject("flag_target");
+        ObjectTag flag_target = scriptEntry.getObjectTag("flag_target");
         DurationTag duration = (DurationTag) scriptEntry.getObject("duration");
         FlagManager.Action action = (FlagManager.Action) scriptEntry.getObject("action");
         ElementTag value = scriptEntry.getElement("value");

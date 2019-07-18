@@ -177,9 +177,9 @@ public class AdvancementCommand extends AbstractCommand {
         ElementTag id = scriptEntry.getElement("id");
         ElementTag parent = scriptEntry.getElement("parent");
         ElementTag delete = scriptEntry.getElement("delete");
-        ListTag grant = scriptEntry.getdObject("grant");
-        ListTag revoke = scriptEntry.getdObject("revoke");
-        ItemTag icon = scriptEntry.getdObject("icon");
+        ListTag grant = scriptEntry.getObjectTag("grant");
+        ListTag revoke = scriptEntry.getObjectTag("revoke");
+        ItemTag icon = scriptEntry.getObjectTag("icon");
         ElementTag title = scriptEntry.getElement("title");
         ElementTag description = scriptEntry.getElement("description");
         ElementTag background = scriptEntry.getElement("background");

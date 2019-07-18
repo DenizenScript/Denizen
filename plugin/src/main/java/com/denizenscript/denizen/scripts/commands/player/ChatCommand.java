@@ -129,8 +129,8 @@ public class ChatCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        ListTag talkers = scriptEntry.getdObject("talkers");
-        ListTag targets = scriptEntry.getdObject("targets");
+        ListTag talkers = scriptEntry.getObjectTag("talkers");
+        ListTag targets = scriptEntry.getObjectTag("targets");
         ElementTag message = scriptEntry.getElement("message");
         ElementTag chatRange = scriptEntry.getElement("range");
 

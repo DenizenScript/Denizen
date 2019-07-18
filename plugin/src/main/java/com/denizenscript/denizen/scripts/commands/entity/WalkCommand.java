@@ -123,7 +123,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
         ElementTag radius = scriptEntry.getElement("radius");
         ElementTag stop = scriptEntry.getElement("stop");
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
-        final LocationTag lookat = scriptEntry.getdObject("lookat");
+        final LocationTag lookat = scriptEntry.getObjectTag("lookat");
 
 
         // Debug the execution

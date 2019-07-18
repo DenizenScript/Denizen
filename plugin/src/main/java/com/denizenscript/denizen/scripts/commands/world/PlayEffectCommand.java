@@ -231,15 +231,15 @@ public class PlayEffectCommand extends AbstractCommand {
         List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
         Effect effect = (Effect) scriptEntry.getObject("effect");
         Particle particleEffect = (Particle) scriptEntry.getObject("particleeffect");
-        ItemTag iconcrack = scriptEntry.getdObject("iconcrack");
-        MaterialTag blockcrack = scriptEntry.getdObject("blockcrack");
-        MaterialTag blockdust = scriptEntry.getdObject("blockdust");
+        ItemTag iconcrack = scriptEntry.getObjectTag("iconcrack");
+        MaterialTag blockcrack = scriptEntry.getObjectTag("blockcrack");
+        MaterialTag blockdust = scriptEntry.getObjectTag("blockdust");
         ElementTag radius = scriptEntry.getElement("radius");
         ElementTag data = scriptEntry.getElement("data");
         ElementTag qty = scriptEntry.getElement("qty");
         ElementTag no_offset = scriptEntry.getElement("no_offset");
         boolean should_offset = no_offset == null || !no_offset.asBoolean();
-        LocationTag offset = scriptEntry.getdObject("offset");
+        LocationTag offset = scriptEntry.getObjectTag("offset");
         ElementTag special_data = scriptEntry.getElement("special_data");
 
         // Report to dB

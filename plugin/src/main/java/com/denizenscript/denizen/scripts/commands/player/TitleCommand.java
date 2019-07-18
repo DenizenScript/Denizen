@@ -87,9 +87,9 @@ public class TitleCommand extends AbstractCommand {
 
         ElementTag title = scriptEntry.getElement("title");
         ElementTag subtitle = scriptEntry.getElement("subtitle");
-        DurationTag fade_in = scriptEntry.getdObject("fade_in");
-        DurationTag stay = scriptEntry.getdObject("stay");
-        DurationTag fade_out = scriptEntry.getdObject("fade_out");
+        DurationTag fade_in = scriptEntry.getObjectTag("fade_in");
+        DurationTag stay = scriptEntry.getObjectTag("stay");
+        DurationTag fade_out = scriptEntry.getObjectTag("fade_out");
         List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
 
         if (scriptEntry.dbCallShouldDebug()) {

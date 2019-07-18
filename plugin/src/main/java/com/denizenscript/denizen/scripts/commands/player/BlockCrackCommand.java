@@ -103,7 +103,7 @@ public class BlockCrackCommand extends AbstractCommand {
 
         List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
         ElementTag progress = scriptEntry.getElement("progress");
-        LocationTag location = scriptEntry.getdObject("location");
+        LocationTag location = scriptEntry.getObjectTag("location");
         ElementTag stack = scriptEntry.getElement("stack");
 
         if (scriptEntry.dbCallShouldDebug()) {

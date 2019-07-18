@@ -135,7 +135,7 @@ public class BanCommand extends AbstractCommand {
         List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
         ListTag addresses = (ListTag) scriptEntry.getObject("addresses");
         ElementTag reason = scriptEntry.getElement("reason");
-        DurationTag duration = scriptEntry.getdObject("duration");
+        DurationTag duration = scriptEntry.getObjectTag("duration");
         ElementTag source = scriptEntry.getElement("source");
 
         Date expiration = null;

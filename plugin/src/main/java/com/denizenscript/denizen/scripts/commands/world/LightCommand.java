@@ -80,10 +80,10 @@ public class LightCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        LocationTag location = scriptEntry.getdObject("location");
+        LocationTag location = scriptEntry.getObjectTag("location");
         ElementTag light = scriptEntry.getElement("light");
         ElementTag reset = scriptEntry.getElement("reset");
-        DurationTag duration = scriptEntry.getdObject("duration");
+        DurationTag duration = scriptEntry.getObjectTag("duration");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

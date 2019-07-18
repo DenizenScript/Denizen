@@ -78,7 +78,7 @@ public class InvisibleCommand extends AbstractCommand {
             scriptEntry.addObject("state", new ElementTag("TRUE"));
         }
 
-        if (!scriptEntry.hasObject("target") || !((EntityTag) scriptEntry.getdObject("target")).isValid()) {
+        if (!scriptEntry.hasObject("target") || !((EntityTag) scriptEntry.getObjectTag("target")).isValid()) {
             throw new InvalidArgumentsException("Must specify a valid target!");
         }
     }

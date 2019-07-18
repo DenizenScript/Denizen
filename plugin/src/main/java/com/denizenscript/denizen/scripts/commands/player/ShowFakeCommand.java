@@ -131,10 +131,10 @@ public class ShowFakeCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        DurationTag duration = scriptEntry.getdObject("duration");
-        ListTag material_list = scriptEntry.getdObject("materials");
-        ListTag list = scriptEntry.getdObject("locations");
-        ListTag players = scriptEntry.getdObject("entities");
+        DurationTag duration = scriptEntry.getObjectTag("duration");
+        ListTag material_list = scriptEntry.getObjectTag("materials");
+        ListTag list = scriptEntry.getObjectTag("locations");
+        ListTag players = scriptEntry.getObjectTag("entities");
         ElementTag cancel = scriptEntry.getElement("cancel");
 
         if (scriptEntry.dbCallShouldDebug()) {

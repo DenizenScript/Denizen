@@ -170,8 +170,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         ElementTag filename = scriptEntry.getElement("filename");
         ElementTag noair = scriptEntry.getElement("noair");
         ElementTag delayed = scriptEntry.getElement("delayed");
-        LocationTag location = scriptEntry.getdObject("location");
-        CuboidTag cuboid = scriptEntry.getdObject("cuboid");
+        LocationTag location = scriptEntry.getObjectTag("location");
+        CuboidTag cuboid = scriptEntry.getObjectTag("cuboid");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

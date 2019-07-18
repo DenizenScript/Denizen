@@ -76,7 +76,7 @@ public class NBTCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        ItemTag item = scriptEntry.getdObject("item");
+        ItemTag item = scriptEntry.getObjectTag("item");
         ElementTag key = scriptEntry.getElement("key");
         ElementTag value = scriptEntry.getElement("value");
 

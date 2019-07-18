@@ -164,17 +164,17 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
     @Override
     public void execute(final ScriptEntry scriptEntry) {
 
-        final ListTag materials = scriptEntry.getdObject("materials");
+        final ListTag materials = scriptEntry.getObjectTag("materials");
         final List<LocationTag> locations = (List<LocationTag>) scriptEntry.getObject("locations");
-        final ListTag location_list = scriptEntry.getdObject("location_list");
+        final ListTag location_list = scriptEntry.getObjectTag("location_list");
         final ElementTag physics = scriptEntry.getElement("physics");
         final ElementTag natural = scriptEntry.getElement("natural");
         final ElementTag delayed = scriptEntry.getElement("delayed");
         final ElementTag radiusElement = scriptEntry.getElement("radius");
         final ElementTag heightElement = scriptEntry.getElement("height");
         final ElementTag depthElement = scriptEntry.getElement("depth");
-        final ScriptTag script = scriptEntry.getdObject("script");
-        ListTag percents = scriptEntry.getdObject("percents");
+        final ScriptTag script = scriptEntry.getObjectTag("script");
+        ListTag percents = scriptEntry.getObjectTag("percents");
 
         if (percents != null && percents.size() != materials.size()) {
             Debug.echoError(scriptEntry.getResidingQueue(), "Percents length != materials length");

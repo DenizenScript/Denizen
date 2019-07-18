@@ -77,17 +77,17 @@ public class ResetCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         // We allow players to be a single player or multiple players
-        ObjectTag player = scriptEntry.getdObject("players");
+        ObjectTag player = scriptEntry.getObjectTag("players");
         ListTag players;
         if (player instanceof PlayerTag) {
             players = new ListTag(player.identify());
         }
         else {
-            players = scriptEntry.getdObject("players");
+            players = scriptEntry.getObjectTag("players");
         }
 
         Type type = (Type) scriptEntry.getObject("type");
-        ScriptTag script = scriptEntry.getdObject("script");
+        ScriptTag script = scriptEntry.getObjectTag("script");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

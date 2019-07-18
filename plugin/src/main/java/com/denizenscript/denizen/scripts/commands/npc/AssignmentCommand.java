@@ -89,7 +89,7 @@ public class AssignmentCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        ScriptTag script = scriptEntry.getdObject("script");
+        ScriptTag script = scriptEntry.getObjectTag("script");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {

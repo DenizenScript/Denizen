@@ -105,8 +105,8 @@ public class FollowCommand extends AbstractCommand {
         ElementTag maxRange = scriptEntry.getElement("max");
         ElementTag allowWander = scriptEntry.getElement("allow_wander");
         ElementTag speed = scriptEntry.getElement("speed");
-        ListTag entities = scriptEntry.getdObject("entities");
-        EntityTag target = scriptEntry.getdObject("target");
+        ListTag entities = scriptEntry.getObjectTag("entities");
+        EntityTag target = scriptEntry.getObjectTag("target");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {

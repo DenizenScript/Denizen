@@ -95,7 +95,7 @@ public class SwitchCommand extends AbstractCommand {
 
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-        final ListTag interactLocations = scriptEntry.getdObject("locations");
+        final ListTag interactLocations = scriptEntry.getObjectTag("locations");
         long duration = ((DurationTag) scriptEntry.getObject("duration")).getTicks();
         final SwitchState switchState = SwitchState.valueOf(scriptEntry.getElement("switchstate").asString());
 

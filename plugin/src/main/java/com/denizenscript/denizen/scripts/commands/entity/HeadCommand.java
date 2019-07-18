@@ -94,7 +94,7 @@ public class HeadCommand extends AbstractCommand {
 
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         ElementTag skin = scriptEntry.getElement("skin");
-        MaterialTag material = scriptEntry.getdObject("material");
+        MaterialTag material = scriptEntry.getObjectTag("material");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
