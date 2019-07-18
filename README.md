@@ -45,6 +45,7 @@ You can do basically whatever you want, except you may not hold any developer li
 ### Previous License
 
 Copyright (C) 2012-2013 Aufdemrand, All Rights Reserved.
+
 Copyright (C) 2013-2019 The Denizen Script Team, All Rights Reserved.
 
 ### The long version of the license follows:

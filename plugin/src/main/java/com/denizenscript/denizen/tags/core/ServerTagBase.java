@@ -57,6 +57,7 @@ import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 import java.io.File;
 import java.sql.Connection;
@@ -174,6 +175,8 @@ public class ServerTagBase {
             else {
                 board = ScoreboardHelper.getMain();
             }
+            attribute = attribute.fulfill(1);
+
             // <--[tag]
             // @attribute <server.scoreboard[<board>].exists>
             // @returns ListTag
@@ -181,7 +184,7 @@ public class ServerTagBase {
             // Returns whether a given scoreboard exists on the server.
             // -->
             if (attribute.startsWith("exists")) {
-                event.setReplaced(new ElementTag(board != null).getAttribute(attribute.fulfill(2)));
+                event.setReplaced(new ElementTag(board != null).getAttribute(attribute.fulfill(1)));
                 return;
             }
             if (board == null) {
@@ -190,16 +193,28 @@ public class ServerTagBase {
                 }
                 return;
             }
-            // <--[tag]
-            // @attribute <server.scoreboard[(<board>)].team_members[<team>]>
-            // @returns ListTag
-            // @description
-            // Returns a list of all members of a scoreboard team. Generally returns as a list of names or text entries.
-            // Members are not necessarily written in any given format and are not guaranteed to validly fit any requirements.
-            // Optionally, specify which scoreboard to use.
-            // -->
-            if (attribute.startsWith("team_members") && attribute.hasContext(2)) {
-                event.setReplacedObject(new ListTag(board.getEntries()).getObjectAttribute(attribute.fulfill(2)));
+
+            if (attribute.startsWith("team") && attribute.hasContext(1)) {
+                Team team = board.getTeam(attribute.getContext(1));
+                if (team == null) {
+                    if (!attribute.hasAlternative()) {
+                        Debug.echoError("Scoreboard team '" + attribute.getContext(1) + "' does not exist.");
+                    }
+                    return;
+                }
+                attribute = attribute.fulfill(1);
+
+                // <--[tag]
+                // @attribute <server.scoreboard[(<board>)].team[<team>].members>
+                // @returns ListTag
+                // @description
+                // Returns a list of all members of a scoreboard team. Generally returns as a list of names or text entries.
+                // Members are not necessarily written in any given format and are not guaranteed to validly fit any requirements.
+                // Optionally, specify which scoreboard to use.
+                // -->
+                if (attribute.startsWith("members")) {
+                    event.setReplacedObject(new ListTag(team.getEntries()).getObjectAttribute(attribute.fulfill(1)));
+                }
                 return;
             }
         }
