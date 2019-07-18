@@ -8,13 +8,15 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.block.data.Levelled;
+import org.bukkit.block.data.type.Cake;
 
 public class MaterialLevel implements Property {
 
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData().data instanceof Levelled;
+                && (((MaterialTag) material).getModernData().data instanceof Levelled
+                || ((MaterialTag) material).getModernData().data instanceof Cake);
     }
 
     public static MaterialLevel getFrom(ObjectTag _material) {
@@ -53,7 +55,7 @@ public class MaterialLevel implements Property {
         // @returns ElementTag(Number)
         // @group properties
         // @description
-        // Returns the maximum level for a levelable material (like water, lava, and Cauldrons).
+        // Returns the maximum level for a levelable material (like water, lava, and Cauldrons), or a cake.
         // -->
         if (attribute.startsWith("maximum_level")) {
             return new ElementTag(getMax()).getAttribute(attribute.fulfill(1));
@@ -65,7 +67,7 @@ public class MaterialLevel implements Property {
         // @mechanism MaterialTag.level
         // @group properties
         // @description
-        // Returns the current level for a levelable material (like water, lava, and Cauldrons).
+        // Returns the current level for a levelable material (like water, lava, and Cauldrons), or a cake.
         // -->
         if (attribute.startsWith("level")) {
             return new ElementTag(getCurrent()).getAttribute(attribute.fulfill(1));
@@ -74,16 +76,38 @@ public class MaterialLevel implements Property {
         return null;
     }
 
+    public boolean isCake() {
+        return material.getModernData().data instanceof Cake;
+    }
+
     public Levelled getLevelled() {
         return (Levelled) material.getModernData().data;
     }
 
+    public Cake getCake() {
+        return (Cake) material.getModernData().data;
+    }
+
     public int getCurrent() {
+        if (isCake()) {
+            return getCake().getBites();
+        }
         return getLevelled().getLevel();
     }
 
     public int getMax() {
+        if (isCake()) {
+            return getCake().getMaximumBites();
+        }
         return getLevelled().getMaximumLevel();
+    }
+
+    public void setCurrent(int level) {
+        if (isCake()) {
+            getCake().setBites(level);
+            return;
+        }
+        getLevelled().setLevel(level);
     }
 
     @Override
@@ -104,7 +128,7 @@ public class MaterialLevel implements Property {
         // @name level
         // @input Element(Number)
         // @description
-        // Sets the current level for a levelable material (like water, lava, and Cauldrons).
+        // Sets the current level for a levelable material (like water, lava, and Cauldrons), or a cake.
         // @tags
         // <MaterialTag.level>
         // <MaterialTag.maximum_level>
@@ -115,7 +139,7 @@ public class MaterialLevel implements Property {
                 Debug.echoError("Level value '" + level + "' is not valid. Must be between 0 and " + getMax() + " for material '" + material.realName() + "'.");
                 return;
             }
-            getLevelled().setLevel(level);
+            setCurrent(level);
         }
     }
 }
