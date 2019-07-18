@@ -16,7 +16,7 @@ import com.denizenscript.denizen.scripts.commands.BukkitCommandRegistry;
 import com.denizenscript.denizen.scripts.containers.ContainerRegistry;
 import com.denizenscript.denizen.scripts.containers.core.*;
 import com.denizenscript.denizen.scripts.triggers.TriggerRegistry;
-import com.denizenscript.denizen.tags.core.ServerTags;
+import com.denizenscript.denizen.tags.core.ServerTagBase;
 import com.denizenscript.denizen.utilities.*;
 import com.denizenscript.denizen.utilities.blocks.OldMaterialsHelper;
 import com.denizenscript.denizen.utilities.command.CommandManager;
@@ -331,7 +331,7 @@ public class Denizen extends JavaPlugin {
         }
 
         try {
-            AdjustCommand.specialAdjustables.put("server", ServerTags::adjustServer);
+            AdjustCommand.specialAdjustables.put("server", ServerTagBase::adjustServer);
 
             tagManager().registerCoreTags();
 

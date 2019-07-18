@@ -1,41 +1,45 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.PluginTag;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 
-public class PluginTags {
+public class EntityTagBase {
 
-    public PluginTags() {
+    public EntityTagBase() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
-                pluginTags(event);
+                entityTags(event);
             }
-        }, "plugin");
+        }, "entity");
     }
 
-    public void pluginTags(ReplaceableTagEvent event) {
+    //////////
+    //  ReplaceableTagEvent handler
+    ////////
 
-        if (!event.matches("plugin") || event.replaced()) {
+    public void entityTags(ReplaceableTagEvent event) {
+
+        if (!event.matches("entity") || event.replaced()) {
             return;
         }
 
-        PluginTag plugin = null;
+        EntityTag entity = null;
 
         if (event.hasNameContext()) {
-            plugin = PluginTag.valueOf(event.getNameContext(), event.getAttributes().context);
+            entity = EntityTag.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
-        if (plugin == null) {
+        if (entity == null) {
             return;
         }
 
         Attribute attribute = event.getAttributes();
-        event.setReplacedObject(CoreUtilities.autoAttrib(plugin, attribute.fulfill(1)));
+        event.setReplacedObject(CoreUtilities.autoAttrib(entity, attribute.fulfill(1)));
 
     }
 }

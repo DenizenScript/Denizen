@@ -23,9 +23,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PlayerTags implements Listener {
+public class PlayerTagBase implements Listener {
 
-    public PlayerTags() {
+    public PlayerTagBase() {
         Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override

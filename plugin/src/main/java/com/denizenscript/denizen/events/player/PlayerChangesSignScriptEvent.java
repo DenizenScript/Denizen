@@ -8,7 +8,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.tags.core.EscapeTags;
+import com.denizenscript.denizencore.tags.core.EscapeTagBase;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
@@ -143,7 +143,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
         fire(event);
         if (new_text != null) {
             for (int i = 0; i < 4 && i < new_text.size(); i++) {
-                event.setLine(i, EscapeTags.unEscape(new_text.get(i)));
+                event.setLine(i, EscapeTagBase.unEscape(new_text.get(i)));
             }
         }
     }

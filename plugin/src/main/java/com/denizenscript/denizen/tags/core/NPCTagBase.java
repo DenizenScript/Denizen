@@ -35,9 +35,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NPCTags implements Listener {
+public class NPCTagBase implements Listener {
 
-    public NPCTags() {
+    public NPCTagBase() {
         if (Depends.citizens != null) {
             Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
             TagManager.registerTagHandler(new TagRunnable.RootForm() {

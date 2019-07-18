@@ -1,41 +1,41 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.TradeTag;
+import com.denizenscript.denizen.objects.PluginTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 
-public class TradeTags {
+public class PluginTagBase {
 
-    public TradeTags() {
+    public PluginTagBase() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
-                tradeTags(event);
+                pluginTags(event);
             }
-        }, "trade");
+        }, "plugin");
     }
 
-    public void tradeTags(ReplaceableTagEvent event) {
+    public void pluginTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("trade") || event.replaced()) {
+        if (!event.matches("plugin") || event.replaced()) {
             return;
         }
 
-        TradeTag trade = null;
+        PluginTag plugin = null;
 
         if (event.hasNameContext()) {
-            trade = TradeTag.valueOf(event.getNameContext(), event.getAttributes().context);
+            plugin = PluginTag.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
-        if (trade == null) {
+        if (plugin == null) {
             return;
         }
 
         Attribute attribute = event.getAttributes();
-        event.setReplacedObject(CoreUtilities.autoAttrib(trade, attribute.fulfill(1)));
+        event.setReplacedObject(CoreUtilities.autoAttrib(plugin, attribute.fulfill(1)));
 
     }
 }

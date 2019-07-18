@@ -7,7 +7,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
-import com.denizenscript.denizencore.tags.core.EscapeTags;
+import com.denizenscript.denizencore.tags.core.EscapeTagBase;
 import org.bukkit.block.Sign;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
@@ -114,7 +114,7 @@ public class ItemSignContents implements Property {
             }
             else {
                 for (int i = 0; i < list.size(); i++) {
-                    sign.setLine(i, EscapeTags.unEscape(list.get(i)));
+                    sign.setLine(i, EscapeTagBase.unEscape(list.get(i)));
                 }
             }
 

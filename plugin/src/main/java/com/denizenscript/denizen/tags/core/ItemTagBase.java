@@ -1,41 +1,41 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.ChunkTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 
-public class ChunkTags {
+public class ItemTagBase {
 
-    public ChunkTags() {
+    public ItemTagBase() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
-                chunkTags(event);
+                itemTags(event);
             }
-        }, "chunk");
+        }, "item");
     }
 
-    public void chunkTags(ReplaceableTagEvent event) {
+    public void itemTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("chunk") || event.replaced()) {
+        if (!event.matches("item") || event.replaced()) {
             return;
         }
 
-        ChunkTag chunk = null;
+        ItemTag item = null;
 
         if (event.hasNameContext()) {
-            chunk = ChunkTag.valueOf(event.getNameContext(), event.getAttributes().context);
+            item = ItemTag.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
-        if (chunk == null) {
+        if (item == null) {
             return;
         }
 
         Attribute attribute = event.getAttributes();
-        event.setReplacedObject(CoreUtilities.autoAttrib(chunk, attribute.fulfill(1)));
+        event.setReplacedObject(CoreUtilities.autoAttrib(item, attribute.fulfill(1)));
 
     }
 }

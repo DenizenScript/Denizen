@@ -13,7 +13,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
 import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
-import com.denizenscript.denizen.tags.core.PlayerTags;
+import com.denizenscript.denizen.tags.core.PlayerTagBase;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -666,7 +666,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // Works with offline players.
         // -->
         if (attribute.startsWith("chat_history_list")) {
-            return new ListTag(PlayerTags.playerChatHistory.get(getPlayerEntity().getUniqueId()))
+            return new ListTag(PlayerTagBase.playerChatHistory.get(getPlayerEntity().getUniqueId()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -684,10 +684,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 x = attribute.getIntContext(1);
             }
             // No playerchathistory? Return null.
-            if (!PlayerTags.playerChatHistory.containsKey(getPlayerEntity().getUniqueId())) {
+            if (!PlayerTagBase.playerChatHistory.containsKey(getPlayerEntity().getUniqueId())) {
                 return null;
             }
-            List<String> messages = PlayerTags.playerChatHistory.get(getPlayerEntity().getUniqueId());
+            List<String> messages = PlayerTagBase.playerChatHistory.get(getPlayerEntity().getUniqueId());
             if (messages.size() < x || x < 1) {
                 return null;
             }

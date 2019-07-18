@@ -1,41 +1,41 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.BiomeTag;
+import com.denizenscript.denizen.objects.ChunkTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 
-public class BiomeTags {
+public class ChunkTagBase {
 
-    public BiomeTags() {
+    public ChunkTagBase() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
-                biomeTags(event);
+                chunkTags(event);
             }
-        }, "biome");
+        }, "chunk");
     }
 
-    public void biomeTags(ReplaceableTagEvent event) {
+    public void chunkTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("biome") || event.replaced()) {
+        if (!event.matches("chunk") || event.replaced()) {
             return;
         }
 
-        BiomeTag biome = null;
+        ChunkTag chunk = null;
 
         if (event.hasNameContext()) {
-            biome = BiomeTag.valueOf(event.getNameContext(), event.getAttributes().context);
+            chunk = ChunkTag.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
-        if (biome == null) {
+        if (chunk == null) {
             return;
         }
 
         Attribute attribute = event.getAttributes();
-        event.setReplacedObject(CoreUtilities.autoAttrib(biome, attribute.fulfill(1)));
+        event.setReplacedObject(CoreUtilities.autoAttrib(chunk, attribute.fulfill(1)));
 
     }
 }

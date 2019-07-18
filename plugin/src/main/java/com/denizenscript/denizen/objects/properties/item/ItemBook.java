@@ -10,7 +10,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
-import com.denizenscript.denizencore.tags.core.EscapeTags;
+import com.denizenscript.denizencore.tags.core.EscapeTagBase;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Material;
@@ -132,7 +132,7 @@ public class ItemBook implements Property {
             if (attribute.startsWith("pages.escaped")) {
                 StringBuilder output = new StringBuilder();
                 for (String page : bookInfo.getPages()) {
-                    output.append(EscapeTags.escape(page)).append("|");
+                    output.append(EscapeTagBase.escape(page)).append("|");
                 }
                 return new ListTag(output.length() > 0 ?
                         output.substring(0, output.length() - 1) : output.toString())
@@ -205,13 +205,13 @@ public class ItemBook implements Property {
         BookMeta bookInfo = (BookMeta) item.getItemStack().getItemMeta();
         if (item.getItemStack().getType().equals(Material.WRITTEN_BOOK)
                 && bookInfo.hasAuthor() && bookInfo.hasTitle()) {
-            output.append("author|").append(EscapeTags.escape(bookInfo.getAuthor()))
-                    .append("|title|").append(EscapeTags.escape(bookInfo.getTitle())).append("|");
+            output.append("author|").append(EscapeTagBase.escape(bookInfo.getAuthor()))
+                    .append("|title|").append(EscapeTagBase.escape(bookInfo.getTitle())).append("|");
         }
         output.append("raw_pages|");
         if (bookInfo.hasPages()) {
             for (BaseComponent[] page : bookInfo.spigot().getPages()) {
-                output.append(EscapeTags.escape(ComponentSerializer.toString(page))).append("|");
+                output.append(EscapeTagBase.escape(ComponentSerializer.toString(page))).append("|");
             }
         }
         return output.substring(0, output.length() - 1);
@@ -243,7 +243,7 @@ public class ItemBook implements Property {
             ListTag data = mechanism.valueAsType(ListTag.class);
             ArrayList<BaseComponent[]> newPages = new ArrayList<>();
             for (String str : data) {
-                newPages.add(ComponentSerializer.parse(EscapeTags.unEscape(str)));
+                newPages.add(ComponentSerializer.parse(EscapeTagBase.unEscape(str)));
             }
             meta.spigot().setPages(newPages);
             item.getItemStack().setItemMeta(meta);
@@ -267,7 +267,7 @@ public class ItemBook implements Property {
             ListTag data = mechanism.valueAsType(ListTag.class);
             ArrayList<String> newPages = new ArrayList<>();
             for (String str : data) {
-                newPages.add(EscapeTags.unEscape(str));
+                newPages.add(EscapeTagBase.unEscape(str));
             }
             meta.setPages(newPages);
             item.getItemStack().setItemMeta(meta);
@@ -347,8 +347,8 @@ public class ItemBook implements Property {
                         Debug.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
                     }
                     else {
-                        meta.setAuthor(EscapeTags.unEscape(data.get(1)));
-                        meta.setTitle(EscapeTags.unEscape(data.get(3)));
+                        meta.setAuthor(EscapeTagBase.unEscape(data.get(1)));
+                        meta.setTitle(EscapeTagBase.unEscape(data.get(3)));
                         for (int i = 0; i < 4; i++) {
                             data.remove(0); // No .removeRange?
                         }
@@ -357,14 +357,14 @@ public class ItemBook implements Property {
                 if (data.get(0).equalsIgnoreCase("raw_pages")) {
                     ArrayList<BaseComponent[]> newPages = new ArrayList<>();
                     for (int i = 1; i < data.size(); i++) {
-                        newPages.add(ComponentSerializer.parse(EscapeTags.unEscape(data.get(i))));
+                        newPages.add(ComponentSerializer.parse(EscapeTagBase.unEscape(data.get(i))));
                     }
                     meta.spigot().setPages(newPages);
                 }
                 else if (data.get(0).equalsIgnoreCase("pages")) {
                     ArrayList<String> newPages = new ArrayList<>();
                     for (int i = 1; i < data.size(); i++) {
-                        newPages.add(EscapeTags.unEscape(data.get(i)));
+                        newPages.add(EscapeTagBase.unEscape(data.get(i)));
                     }
                     meta.setPages(newPages);
                 }

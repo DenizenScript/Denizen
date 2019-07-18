@@ -2,7 +2,7 @@ package com.denizenscript.denizen.utilities.debugging;
 
 import com.denizenscript.denizen.scripts.containers.core.VersionScriptContainer;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizencore.tags.core.EscapeTags;
+import com.denizenscript.denizencore.tags.core.EscapeTagBase;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
@@ -29,7 +29,7 @@ public class StatsRecord extends Thread {
             // Get some general info
             StringBuilder sb = new StringBuilder();
             for (VersionScriptContainer cont : VersionScriptContainer.scripts) {
-                sb.append(EscapeTags.escape(cont.getString("ID"))).append("|");
+                sb.append(EscapeTagBase.escape(cont.getString("ID"))).append("|");
             }
             // Create the final message pack and upload it
             uc.getOutputStream().write(("postid=pluginstats&plugin_st_players=" + Bukkit.getOnlinePlayers().size()

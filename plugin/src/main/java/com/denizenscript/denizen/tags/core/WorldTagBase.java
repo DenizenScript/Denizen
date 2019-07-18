@@ -1,45 +1,41 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 
-public class EntityTags {
+public class WorldTagBase {
 
-    public EntityTags() {
+    public WorldTagBase() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
-                entityTags(event);
+                worldTags(event);
             }
-        }, "entity");
+        }, "world");
     }
 
-    //////////
-    //  ReplaceableTagEvent handler
-    ////////
+    public void worldTags(ReplaceableTagEvent event) {
 
-    public void entityTags(ReplaceableTagEvent event) {
-
-        if (!event.matches("entity") || event.replaced()) {
+        if (!event.matches("world") || event.replaced()) {
             return;
         }
 
-        EntityTag entity = null;
+        WorldTag world = null;
 
         if (event.hasNameContext()) {
-            entity = EntityTag.valueOf(event.getNameContext(), event.getAttributes().context);
+            world = WorldTag.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
-        if (entity == null) {
+        if (world == null) {
             return;
         }
 
         Attribute attribute = event.getAttributes();
-        event.setReplacedObject(CoreUtilities.autoAttrib(entity, attribute.fulfill(1)));
+        event.setReplacedObject(CoreUtilities.autoAttrib(world, attribute.fulfill(1)));
 
     }
 }

@@ -9,7 +9,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
-import com.denizenscript.denizencore.tags.core.EscapeTags;
+import com.denizenscript.denizencore.tags.core.EscapeTagBase;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -111,7 +111,7 @@ public class ItemNBT implements Property {
         if (nbtKeys != null && !nbtKeys.isEmpty()) {
             ListTag list = new ListTag();
             for (String key : nbtKeys) {
-                list.add(EscapeTags.escape(key) + "/" + EscapeTags.escape(CustomNBT.getCustomNBT(itemStack, key, CustomNBT.KEY_DENIZEN)));
+                list.add(EscapeTagBase.escape(key) + "/" + EscapeTagBase.escape(CustomNBT.getCustomNBT(itemStack, key, CustomNBT.KEY_DENIZEN)));
             }
             return list;
         }
@@ -186,7 +186,7 @@ public class ItemNBT implements Property {
             ItemStack itemStack = item.getItemStack();
             for (String string : list) {
                 String[] split = string.split("/", 2);
-                itemStack = CustomNBT.addCustomNBT(itemStack, EscapeTags.unEscape(split[0]), EscapeTags.unEscape(split[1]), CustomNBT.KEY_DENIZEN);
+                itemStack = CustomNBT.addCustomNBT(itemStack, EscapeTagBase.unEscape(split[0]), EscapeTagBase.unEscape(split[1]), CustomNBT.KEY_DENIZEN);
             }
             item.setItemStack(itemStack);
         }

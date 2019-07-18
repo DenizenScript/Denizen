@@ -10,7 +10,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.npc.DenizenNPCHelper;
-import com.denizenscript.denizen.tags.core.NPCTags;
+import com.denizenscript.denizen.tags.core.NPCTagBase;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
@@ -902,8 +902,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns the NPC's previous navigated location.
         // -->
         if (attribute.startsWith("location.previous_location")) {
-            return (NPCTags.previousLocations.containsKey(getId())
-                    ? NPCTags.previousLocations.get(getId()).getAttribute(attribute.fulfill(2))
+            return (NPCTagBase.previousLocations.containsKey(getId())
+                    ? NPCTagBase.previousLocations.get(getId()).getAttribute(attribute.fulfill(2))
                     : null);
         }
 

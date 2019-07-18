@@ -1,41 +1,44 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.objects.CuboidTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 
-public class MaterialTags {
 
-    public MaterialTags() {
+public class CuboidTagBase {
+
+    public CuboidTagBase() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
-                materialTags(event);
+                cuboidTags(event);
             }
-        }, "material");
+        }, "cuboid");
     }
 
-    public void materialTags(ReplaceableTagEvent event) {
+    public void cuboidTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("material") || event.replaced()) {
+        if (!event.matches("cuboid") || event.replaced()) {
             return;
         }
 
-        MaterialTag material = null;
+        CuboidTag cuboid = null;
 
         if (event.hasNameContext()) {
-            material = MaterialTag.valueOf(event.getNameContext(), event.getAttributes().context);
+            cuboid = CuboidTag.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
-        if (material == null) {
+        // Check if cuboid is null, return if it is
+        if (cuboid == null) {
             return;
         }
 
+        // Build and fill attributes
         Attribute attribute = event.getAttributes();
-        event.setReplacedObject(CoreUtilities.autoAttrib(material, attribute.fulfill(1)));
+        event.setReplacedObject(CoreUtilities.autoAttrib(cuboid, attribute.fulfill(1)));
 
     }
 }

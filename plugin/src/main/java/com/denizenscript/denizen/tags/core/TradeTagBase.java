@@ -1,44 +1,41 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.CuboidTag;
+import com.denizenscript.denizen.objects.TradeTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 
+public class TradeTagBase {
 
-public class CuboidTags {
-
-    public CuboidTags() {
+    public TradeTagBase() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
-                cuboidTags(event);
+                tradeTags(event);
             }
-        }, "cuboid");
+        }, "trade");
     }
 
-    public void cuboidTags(ReplaceableTagEvent event) {
+    public void tradeTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("cuboid") || event.replaced()) {
+        if (!event.matches("trade") || event.replaced()) {
             return;
         }
 
-        CuboidTag cuboid = null;
+        TradeTag trade = null;
 
         if (event.hasNameContext()) {
-            cuboid = CuboidTag.valueOf(event.getNameContext(), event.getAttributes().context);
+            trade = TradeTag.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
-        // Check if cuboid is null, return if it is
-        if (cuboid == null) {
+        if (trade == null) {
             return;
         }
 
-        // Build and fill attributes
         Attribute attribute = event.getAttributes();
-        event.setReplacedObject(CoreUtilities.autoAttrib(cuboid, attribute.fulfill(1)));
+        event.setReplacedObject(CoreUtilities.autoAttrib(trade, attribute.fulfill(1)));
 
     }
 }

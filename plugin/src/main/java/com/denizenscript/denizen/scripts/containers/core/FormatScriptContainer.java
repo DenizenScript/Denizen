@@ -8,7 +8,7 @@ import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.tags.TagManager;
-import com.denizenscript.denizencore.tags.core.EscapeTags;
+import com.denizenscript.denizencore.tags.core.EscapeTagBase;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 
 public class FormatScriptContainer extends ScriptContainer {
@@ -28,8 +28,8 @@ public class FormatScriptContainer extends ScriptContainer {
     }
 
     public String getFormattedText(String textToReplace, NPCTag npc, PlayerTag player) {
-        String text = getFormat().replace("<text", "<el@val[" + EscapeTags.escape(textToReplace) + "].unescaped")
-                .replace("<name", "<el@val[" + EscapeTags.escape(npc != null ? npc.getName() : (player != null ? player.getName() : "")) + "].unescaped");
+        String text = getFormat().replace("<text", "<el@val[" + EscapeTagBase.escape(textToReplace) + "].unescaped")
+                .replace("<name", "<el@val[" + EscapeTagBase.escape(npc != null ? npc.getName() : (player != null ? player.getName() : "")) + "].unescaped");
         return TagManager.tag(text, new BukkitTagContext(player, npc, false, null, shouldDebug(), new ScriptTag(this)));
     }
 

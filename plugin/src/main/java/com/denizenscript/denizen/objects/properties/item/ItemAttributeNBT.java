@@ -9,7 +9,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
-import com.denizenscript.denizencore.tags.core.EscapeTags;
+import com.denizenscript.denizencore.tags.core.EscapeTagBase;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -75,7 +75,7 @@ public class ItemAttributeNBT implements Property {
         ListTag list = new ListTag();
         if (nbtKeys != null) {
             for (CustomNBT.AttributeReturn atr : nbtKeys) {
-                list.add(EscapeTags.escape(atr.attr) + "/" + EscapeTags.escape(atr.slot) + "/" + atr.op + "/" + atr.amt);
+                list.add(EscapeTagBase.escape(atr.attr) + "/" + EscapeTagBase.escape(atr.slot) + "/" + atr.op + "/" + atr.amt);
             }
         }
         return list;
@@ -119,8 +119,8 @@ public class ItemAttributeNBT implements Property {
             itemStack = CustomNBT.clearNBT(itemStack, CustomNBT.KEY_ATTRIBUTES);
             for (String string : list) {
                 String[] split = string.split("/");
-                String attribute = EscapeTags.unEscape(split[0]);
-                String slot = EscapeTags.unEscape(split[1]);
+                String attribute = EscapeTagBase.unEscape(split[0]);
+                String slot = EscapeTagBase.unEscape(split[1]);
                 int op = new ElementTag(split[2]).asInt();
                 double amt = new ElementTag(split[3]).asDouble();
                 itemStack = CustomNBT.addAttribute(itemStack, attribute, slot, op, amt);

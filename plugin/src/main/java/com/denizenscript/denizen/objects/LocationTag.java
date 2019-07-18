@@ -24,7 +24,7 @@ import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.Note;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.TagContext;
-import com.denizenscript.denizencore.tags.core.EscapeTags;
+import com.denizenscript.denizencore.tags.core.EscapeTagBase;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -2687,7 +2687,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             else {
                 for (int i = 0; i < list.size(); i++) {
-                    state.setLine(i, EscapeTags.unEscape(list.get(i)));
+                    state.setLine(i, EscapeTagBase.unEscape(list.get(i)));
                 }
             }
             state.update();

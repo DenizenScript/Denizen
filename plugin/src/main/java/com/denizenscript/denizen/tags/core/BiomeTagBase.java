@@ -1,41 +1,41 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.InventoryTag;
+import com.denizenscript.denizen.objects.BiomeTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 
-public class InventoryTags {
+public class BiomeTagBase {
 
-    public InventoryTags() {
+    public BiomeTagBase() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
-                inventoryTags(event);
+                biomeTags(event);
             }
-        }, "inventory");
+        }, "biome");
     }
 
-    public void inventoryTags(ReplaceableTagEvent event) {
+    public void biomeTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("inventory") || event.replaced()) {
+        if (!event.matches("biome") || event.replaced()) {
             return;
         }
 
-        InventoryTag inventory = null;
+        BiomeTag biome = null;
 
         if (event.hasNameContext()) {
-            inventory = InventoryTag.valueOf(event.getNameContext(), event.getAttributes().context);
+            biome = BiomeTag.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
-        if (inventory == null) {
+        if (biome == null) {
             return;
         }
 
         Attribute attribute = event.getAttributes();
-        event.setReplacedObject(CoreUtilities.autoAttrib(inventory, attribute.fulfill(1)));
+        event.setReplacedObject(CoreUtilities.autoAttrib(biome, attribute.fulfill(1)));
 
     }
 }

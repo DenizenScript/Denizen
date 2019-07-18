@@ -184,28 +184,28 @@ public class CommonRegistries {
 
     public static void registerMainTagHandlers() {
         // Objects
-        new BiomeTags();
-        new ChunkTags();
-        new ColorTags();
-        new CuboidTags();
-        new EllipsoidTags();
-        new EntityTags();
-        new InventoryTags();
-        new ItemTags();
-        new LocationTags();
-        new MaterialTags();
+        new BiomeTagBase();
+        new ChunkTagBase();
+        new ColorTagBase();
+        new CuboidTagBase();
+        new EllipsoidTagBase();
+        new EntityTagBase();
+        new InventoryTagBase();
+        new ItemTagBase();
+        new LocationTagBase();
+        new MaterialTagBase();
         if (Depends.citizens != null) {
-            new NPCTags();
+            new NPCTagBase();
         }
-        new PlayerTags();
-        new PluginTags();
-        new TradeTags();
-        new WorldTags();
+        new PlayerTagBase();
+        new PluginTagBase();
+        new TradeTagBase();
+        new WorldTagBase();
 
         // Other bases
-        new ServerTags();
-        new TextTags();
-        new ParseTags();
+        new ServerTagBase();
+        new TextTagBase();
+        new ParseTagBase();
     }
 
     public static void registerMainObjects() {

@@ -1,41 +1,41 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.WorldTag;
+import com.denizenscript.denizen.objects.EllipsoidTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 
-public class WorldTags {
+public class EllipsoidTagBase {
 
-    public WorldTags() {
+    public EllipsoidTagBase() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
-                worldTags(event);
+                ellipsoidTags(event);
             }
-        }, "world");
+        }, "ellipsoid");
     }
 
-    public void worldTags(ReplaceableTagEvent event) {
+    public void ellipsoidTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("world") || event.replaced()) {
+        if (!event.matches("ellipsoid") || event.replaced()) {
             return;
         }
 
-        WorldTag world = null;
+        EllipsoidTag ellipsoid = null;
 
         if (event.hasNameContext()) {
-            world = WorldTag.valueOf(event.getNameContext(), event.getAttributes().context);
+            ellipsoid = EllipsoidTag.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
-        if (world == null) {
+        if (ellipsoid == null) {
             return;
         }
 
         Attribute attribute = event.getAttributes();
-        event.setReplacedObject(CoreUtilities.autoAttrib(world, attribute.fulfill(1)));
+        event.setReplacedObject(CoreUtilities.autoAttrib(ellipsoid, attribute.fulfill(1)));
 
     }
 }

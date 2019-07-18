@@ -8,7 +8,7 @@ import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.Note;
-import com.denizenscript.denizencore.tags.core.EscapeTags;
+import com.denizenscript.denizencore.tags.core.EscapeTagBase;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -147,7 +147,7 @@ public class NotableManager {
             }
 
             for (String notableRaw : section.getKeys(false)) {
-                String notable = EscapeTags.unEscape(notableRaw.replace("DOT", "."));
+                String notable = EscapeTagBase.unEscape(notableRaw.replace("DOT", "."));
                 Notable obj = (Notable) ObjectFetcher.getObjectFrom(clazz, section.getString(notableRaw), Utilities.noDebugContext);
                 if (obj != null) {
                     obj.makeUnique(notable);
@@ -174,7 +174,7 @@ public class NotableManager {
         for (Map.Entry<String, Notable> notable : notableObjects.entrySet()) {
 
             try {
-                notables.set(getClassId(getClass(notable.getValue())) + "." + EscapeTags.escape(CoreUtilities.toLowerCase(notable.getKey())),
+                notables.set(getClassId(getClass(notable.getValue())) + "." + EscapeTagBase.escape(CoreUtilities.toLowerCase(notable.getKey())),
                         notable.getValue().getSaveObject());
             }
             catch (Exception e) {

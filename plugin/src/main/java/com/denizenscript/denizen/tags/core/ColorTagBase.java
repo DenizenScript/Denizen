@@ -1,41 +1,41 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 
-public class ItemTags {
+public class ColorTagBase {
 
-    public ItemTags() {
+    public ColorTagBase() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
-                itemTags(event);
+                colorTags(event);
             }
-        }, "item");
+        }, "color");
     }
 
-    public void itemTags(ReplaceableTagEvent event) {
+    public void colorTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("item") || event.replaced()) {
+        if (!event.matches("color") || event.replaced()) {
             return;
         }
 
-        ItemTag item = null;
+        ColorTag color = null;
 
         if (event.hasNameContext()) {
-            item = ItemTag.valueOf(event.getNameContext(), event.getAttributes().context);
+            color = ColorTag.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
-        if (item == null) {
+        if (color == null) {
             return;
         }
 
         Attribute attribute = event.getAttributes();
-        event.setReplacedObject(CoreUtilities.autoAttrib(item, attribute.fulfill(1)));
+        event.setReplacedObject(CoreUtilities.autoAttrib(color, attribute.fulfill(1)));
 
     }
 }

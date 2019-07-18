@@ -1,41 +1,41 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.EllipsoidTag;
+import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 
-public class EllipsoidTags {
+public class InventoryTagBase {
 
-    public EllipsoidTags() {
+    public InventoryTagBase() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
-                ellipsoidTags(event);
+                inventoryTags(event);
             }
-        }, "ellipsoid");
+        }, "inventory");
     }
 
-    public void ellipsoidTags(ReplaceableTagEvent event) {
+    public void inventoryTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("ellipsoid") || event.replaced()) {
+        if (!event.matches("inventory") || event.replaced()) {
             return;
         }
 
-        EllipsoidTag ellipsoid = null;
+        InventoryTag inventory = null;
 
         if (event.hasNameContext()) {
-            ellipsoid = EllipsoidTag.valueOf(event.getNameContext(), event.getAttributes().context);
+            inventory = InventoryTag.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
-        if (ellipsoid == null) {
+        if (inventory == null) {
             return;
         }
 
         Attribute attribute = event.getAttributes();
-        event.setReplacedObject(CoreUtilities.autoAttrib(ellipsoid, attribute.fulfill(1)));
+        event.setReplacedObject(CoreUtilities.autoAttrib(inventory, attribute.fulfill(1)));
 
     }
 }

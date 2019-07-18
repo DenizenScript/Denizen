@@ -64,9 +64,9 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class ServerTags {
+public class ServerTagBase {
 
-    public ServerTags() {
+    public ServerTagBase() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
@@ -1493,7 +1493,7 @@ public class ServerTags {
             String eventName = attribute.getContext(1);
             if (eventName.contains(".")) {
                 try {
-                    Class clazz = Class.forName(eventName, false, ServerTags.class.getClassLoader());
+                    Class clazz = Class.forName(eventName, false, ServerTagBase.class.getClassLoader());
                     ListTag result = getHandlerPluginList(clazz);
                     if (result != null) {
                         event.setReplaced(result.getAttribute(attribute.fulfill(1)));
