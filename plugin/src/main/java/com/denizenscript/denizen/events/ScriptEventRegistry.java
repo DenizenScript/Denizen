@@ -23,6 +23,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new BlockIgnitesScriptEvent());
         ScriptEvent.registerScriptEvent(new BlockPhysicsScriptEvent());
         ScriptEvent.registerScriptEvent(new BlockSpreadsScriptEvent());
+        ScriptEvent.registerScriptEvent(new CauldronLevelChangeScriptEvent());
 
         // Entity events
         ScriptEvent.registerScriptEvent(new CreeperPoweredScriptEvent());
