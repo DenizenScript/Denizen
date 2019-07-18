@@ -79,8 +79,13 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
         if (cmd.equals("hits")) {
             pTest = path.eventArgLowerAt(0);
         }
-        else if (cmd.equals("shoots") && path.eventArgLowerAt(3).equals("with")) {
-            pTest = path.eventArgLowerAt(4);
+        else if (cmd.equals("shoots")) {
+            if (shooter == null || !tryEntity(shooter, path.eventArgLowerAt(0))) {
+                return false;
+            }
+            if (path.eventArgLowerAt(3).equals("with")) {
+                pTest = path.eventArgLowerAt(4);
+            }
         }
         if (!pTest.isEmpty() && !pTest.equals("projectile") && !tryEntity(projectile, pTest)) {
             return false;
