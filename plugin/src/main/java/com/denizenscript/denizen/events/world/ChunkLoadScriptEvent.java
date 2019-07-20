@@ -12,10 +12,11 @@ import org.bukkit.event.world.ChunkLoadEvent;
 
 public class ChunkLoadScriptEvent extends BukkitScriptEvent implements Listener {
 
-    // TODO: Replace in <world> with in <area>
     // <--[event]
     // @Events
-    // chunk loads for the first time (in <world>)
+    // chunk loads for the first time
+    //
+    // @Switch in <area>
     //
     // @Regex ^on chunk loads for the first time( in [^\s]+)?$
     //
@@ -35,7 +36,6 @@ public class ChunkLoadScriptEvent extends BukkitScriptEvent implements Listener 
     public static ChunkLoadScriptEvent instance;
 
     public ChunkTag chunk;
-    public WorldTag world;
     public ChunkLoadEvent event;
 
     @Override
@@ -46,9 +46,13 @@ public class ChunkLoadScriptEvent extends BukkitScriptEvent implements Listener 
 
     @Override
     public boolean matches(ScriptPath path) {
-        return path.eventLower.equals("chunk loads for the first time")
-                || path.eventLower.equals("chunk loads for the first time in " +
-                CoreUtilities.toLowerCase(world.getName()));
+        if (!path.eventLower.startsWith("chunk loads for the first time")) {
+            return false;
+        }
+        if (!runInCheck(path, chunk.getCenter())) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -67,7 +71,7 @@ public class ChunkLoadScriptEvent extends BukkitScriptEvent implements Listener 
             return chunk;
         }
         else if (name.equals("world")) { // NOTE: Deprecated in favor of context.chunk.world
-            return world;
+            return new WorldTag(event.getWorld());
         }
         return super.getContext(name);
     }
@@ -78,7 +82,6 @@ public class ChunkLoadScriptEvent extends BukkitScriptEvent implements Listener 
             return;
         }
         chunk = new ChunkTag(event.getChunk());
-        world = new WorldTag(event.getWorld());
         this.event = event;
         fire(event);
     }
