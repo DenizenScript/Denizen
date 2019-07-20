@@ -642,16 +642,16 @@ public class Denizen extends JavaPlugin {
             }
 
             if (entry.length() < 2) {
-                sender.sendMessage("/ex (-q) <dCommand> (arguments)");
+                sender.sendMessage("/ex (-q) <denizen script command> (arguments)");
                 return true;
             }
 
             if (Settings.showExHelp()) {
                 if (Debug.showDebug) {
-                    sender.sendMessage(ChatColor.YELLOW + "Executing dCommand... check the console for full debug output!");
+                    sender.sendMessage(ChatColor.YELLOW + "Executing Denizen script command... check the console for full debug output!");
                 }
                 else {
-                    sender.sendMessage(ChatColor.YELLOW + "Executing dCommand... to see debug, use /denizen debug");
+                    sender.sendMessage(ChatColor.YELLOW + "Executing Denizen script command... to see debug, use /denizen debug");
                 }
             }
 
