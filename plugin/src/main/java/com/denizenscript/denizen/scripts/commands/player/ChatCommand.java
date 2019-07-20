@@ -66,7 +66,7 @@ public class ChatCommand extends AbstractCommand {
         boolean specified_targets = false;
         boolean specified_talker = false;
 
-        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : scriptEntry.getProcessedArgs()) {
             // Default target is the attached Player, if none specified otherwise.
             if (arg.matchesPrefix("target", "targets", "t")) {
                 if (arg.matchesArgumentList(EntityTag.class)) {

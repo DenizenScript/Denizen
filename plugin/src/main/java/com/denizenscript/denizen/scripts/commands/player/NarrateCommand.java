@@ -53,7 +53,7 @@ public class NarrateCommand extends AbstractCommand {
         }
 
         // Iterate through arguments
-        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : scriptEntry.getProcessedArgs()) {
             if (!scriptEntry.hasObject("format")
                     && arg.matchesPrefix("format", "f")) {
                 String formatStr = arg.getValue();

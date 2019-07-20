@@ -82,7 +82,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Parse arguments
-        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : scriptEntry.getProcessedArgs()) {
 
 
             if (arg.matchesArgumentType(CuboidTag.class)

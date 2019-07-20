@@ -51,7 +51,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
 
         // Interpret arguments
 
-        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (!scriptEntry.hasObject("lookat")
                     && arg.matchesPrefix("lookat")

@@ -50,7 +50,7 @@ public class LookcloseCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Parse Arguments
-        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (arg.matches("realistic", "realistically")) {
                 scriptEntry.addObject("realistic", new ElementTag(true));

@@ -54,7 +54,7 @@ public class PoseCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Parse Arguments
-        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (arg.matches("add", "assume", "remove")) {
                 scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));

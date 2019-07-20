@@ -115,7 +115,7 @@ public class InventoryCommand extends AbstractCommand {
 
         boolean isAdjust = false;
 
-        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             // Check for a ListTag of actions
             if (!scriptEntry.hasObject("actions")

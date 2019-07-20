@@ -60,7 +60,7 @@ public class HealthCommand extends AbstractCommand {
 
         // Interpret arguments
 
-        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (!scriptEntry.hasObject("target")
                     && arg.matches("player")) {

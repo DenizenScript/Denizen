@@ -85,7 +85,7 @@ public class ExperienceCommand extends AbstractCommand {
         boolean level = false;
         boolean silent = false;
 
-        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
                 amount = arg.asElement().asInt();

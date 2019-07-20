@@ -57,7 +57,7 @@ public class OpenTradesCommand extends AbstractCommand {
 
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (!scriptEntry.hasObject("trades")
                     && !scriptEntry.hasObject("entity")

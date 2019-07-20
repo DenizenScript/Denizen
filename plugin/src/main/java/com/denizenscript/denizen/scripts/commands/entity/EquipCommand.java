@@ -72,7 +72,7 @@ public class EquipCommand extends AbstractCommand {
         Map<String, ItemTag> equipment = new HashMap<>();
 
         // Initialize necessary fields
-        for (Argument arg : ArgumentHelper.interpretArguments(scriptEntry.aHArgs)) {
+        for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(EntityTag.class)) {
