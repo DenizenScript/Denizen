@@ -5,11 +5,12 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.ArgumentHelper;
+import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizencore.objects.core.DurationTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.trait.waypoint.Waypoints;
-import org.bukkit.entity.Player;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -75,50 +76,49 @@ public class PauseCommand extends AbstractCommand {
 
     enum PauseType {ACTIVITY, WAYPOINTS, NAVIGATION}
 
-    int duration;
-    PauseType pauseType;
-
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Set defaults with information from the ScriptEntry
-        duration = -1;
-        pauseType = null;
+        for (Argument arg : scriptEntry.getProcessedArgs()) {
 
-        // Parse arguments
-        // TODO: UPDATE COMMAND PARSING
-        for (String arg : scriptEntry.getArguments()) {
-
-            if (ArgumentHelper.matchesDuration(arg)) {
-                duration = ArgumentHelper.getIntegerFrom(arg);
-
+            if (arg.matchesArgumentType(DurationTag.class)
+                    && !scriptEntry.hasObject("duration")) {
+                scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
-            else if (ArgumentHelper.matchesArg("WAYPOINTS", arg) || ArgumentHelper.matchesArg("NAVIGATION", arg)
-                    || ArgumentHelper.matchesArg("ACTIVITY", arg) || ArgumentHelper.matchesArg("WAYPOINTS", arg)) {
-                // Could also maybe do for( ... : PauseType.values()) ... not sure which is faster.
-                pauseType = PauseType.valueOf(arg.toUpperCase());
-
+            if (!scriptEntry.hasObject("pause_type")
+                    && arg.matchesEnum(PauseType.values())) {
+                scriptEntry.addObject("pause_type", arg.asElement());
             }
             else {
-                Debug.echoError(scriptEntry.getResidingQueue(), "Unknown argument '" + arg + "'");
+                arg.reportUnhandled();
             }
+        }
+
+        if (!scriptEntry.hasObject("pause_type")) {
+            throw new InvalidArgumentsException("Must specify a pause type!");
         }
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-        Player player = null;
+
+        DurationTag duration = scriptEntry.getObjectTag("duration");
+        ElementTag pauseTypeElement = scriptEntry.getElement("pause_type");
+
+        PauseType pauseType = PauseType.valueOf(pauseTypeElement.asString().toUpperCase());
+
+        if (scriptEntry.dbCallShouldDebug()) {
+            Debug.report(scriptEntry, getName(), (duration == null ? "" : duration.debug()) + pauseTypeElement.debug());
+        }
+
         NPCTag npc = null;
         if (Utilities.getEntryNPC(scriptEntry) != null) {
             npc = Utilities.getEntryNPC(scriptEntry);
         }
-        if (Utilities.getEntryPlayer(scriptEntry) != null) {
-            player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
-        }
         pause(npc, pauseType, !scriptEntry.getCommandName().equalsIgnoreCase("RESUME"));
 
         // If duration...
-        if (duration > 0) {
+        if (duration != null) {
             if (durations.containsKey(npc.getCitizen().getId() + pauseType.name())) {
                 try {
                     DenizenAPI.getCurrentInstance().getServer().getScheduler().cancelTask(durations.get(npc.getCitizen().getId() + pauseType.name()));
@@ -142,7 +142,7 @@ public class PauseCommand extends AbstractCommand {
                                     pause(theNpc, pauseType, false);
 
                                 }
-                            }, duration * 20));
+                            }, duration.getTicks()));
         }
     }
 
