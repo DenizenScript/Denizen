@@ -364,6 +364,7 @@ public class DenizenCommandHandler {
                 if (ScriptHelper.hadError()) {
                     Messaging.sendError(sender, "There was an error loading your scripts, check the console for details!");
                 }
+                Messaging.sendError(sender, "'/denizen reload scripts' is the old way of doing things ... use '/ex reload' instead!");
                 return;
             }
         }
