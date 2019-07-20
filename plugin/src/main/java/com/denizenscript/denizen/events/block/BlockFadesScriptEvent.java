@@ -5,7 +5,6 @@ import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFadeEvent;
@@ -18,6 +17,7 @@ public class BlockFadesScriptEvent extends BukkitScriptEvent implements Listener
     // <block> fades
     //
     // @Regex ^on [^\s]+ fades$
+    //
     // @Switch in <area>
     //
     // @Cancellable true
@@ -40,10 +40,8 @@ public class BlockFadesScriptEvent extends BukkitScriptEvent implements Listener
     public BlockFadeEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String cmd = CoreUtilities.getXthArg(1, lower);
-        return cmd.equals("fades");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventArgLowerAt(1).equals("fades");
     }
 
     @Override

@@ -5,7 +5,6 @@ import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockSpreadEvent;
@@ -18,6 +17,7 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
     // <material> spreads
     //
     // @Regex ^on [^\s]+ spreads$
+    //
     // @Switch in <area>
     //
     // @Cancellable true
@@ -37,15 +37,12 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
 
     public static BlockSpreadsScriptEvent instance;
     public LocationTag location;
-    public LocationTag source;
     public MaterialTag material;
     public BlockSpreadEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String cmd = CoreUtilities.getXthArg(1, lower);
-        return cmd.equals("spreads") && !lower.startsWith("liquid");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventArgLowerAt(1).equals("spreads") && !path.eventArgLowerAt(0).equals("liquid");
     }
 
     @Override
@@ -79,14 +76,13 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
             return material;
         }
         else if (name.equals("source_location")) {
-            return source;
+            return new LocationTag(event.getBlock().getLocation());
         }
         return super.getContext(name);
     }
 
     @EventHandler
     public void onBlockSpreads(BlockSpreadEvent event) {
-        source = new LocationTag(event.getBlock().getLocation());
         location = new LocationTag(event.getBlock().getLocation());
         material = new MaterialTag(event.getSource());
         this.event = event;

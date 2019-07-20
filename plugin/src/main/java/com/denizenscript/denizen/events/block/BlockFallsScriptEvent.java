@@ -6,7 +6,6 @@ import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
@@ -19,6 +18,7 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
     // <material> falls
     //
     // @Regex ^on [^\s]+ falls$
+    //
     // @Switch in <area>
     //
     // @Cancellable true
@@ -40,13 +40,10 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
     public LocationTag location;
     public MaterialTag material;
     public EntityChangeBlockEvent event;
-    public EntityTag entity;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String cmd = CoreUtilities.getXthArg(1, lower);
-        return cmd.equals("falls");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventArgLowerAt(1).equals("falls");
     }
 
     @Override
@@ -75,14 +72,13 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
             return location;
         }
         else if (name.equals("entity")) {
-            return entity;
+            return new EntityTag(event.getEntity());
         }
         return super.getContext(name);
     }
 
     @EventHandler
     public void onBlockFalls(EntityChangeBlockEvent event) {
-        entity = new EntityTag(event.getEntity());
         location = new LocationTag(event.getBlock().getLocation());
         material = new MaterialTag(event.getBlock());
         this.event = event;

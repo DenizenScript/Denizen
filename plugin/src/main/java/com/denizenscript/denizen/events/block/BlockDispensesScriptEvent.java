@@ -8,11 +8,9 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseEvent;
-
 
 public class BlockDispensesScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -23,7 +21,8 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     // <block> dispenses item
     // <block> dispenses <item>
     //
-    // @Regex ^on [^\s]+ dispense [^\s]+ $
+    // @Regex ^on [^\s]+ dispense [^\s]+$
+    //
     // @Switch in <area>
     //
     // @Cancellable true
@@ -49,15 +48,12 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     public static BlockDispensesScriptEvent instance;
     public LocationTag location;
     public ItemTag item;
-    private LocationTag velocity;
     private MaterialTag material;
     public BlockDispenseEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String cmd = CoreUtilities.getXthArg(1, lower);
-        return cmd.equals("dispenses") && lower.length() >= 3;
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventArgLowerAt(1).equals("dispenses");
     }
 
     @Override
@@ -79,25 +75,26 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (ArgumentHelper.matchesDouble(determination)) {
-            velocity = new LocationTag(velocity.multiply(ArgumentHelper.getDoubleFrom(determination)));
+            event.setVelocity(event.getVelocity().multiply(ArgumentHelper.getDoubleFrom(determination)));
             return true;
         }
         else if (LocationTag.matches(determination)) {
             LocationTag vel = LocationTag.valueOf(determination);
             if (vel == null) {
-                Debug.echoError("[" + getName() + "] Invalid velocity!");
+                Debug.echoError("[" + getName() + "] Invalid velocity '" + determination + "'!");
             }
             else {
-                velocity = vel;
+                event.setVelocity(vel.toVector());
             }
         }
         else if (ItemTag.matches(determination)) {
             ItemTag it = ItemTag.valueOf(determination, container);
             if (it == null) {
-                Debug.echoError("[" + getName() + "] Invalid item!");
+                Debug.echoError("[" + getName() + "] Invalid item '" + determination + "'!");
             }
             else {
                 item = it;
+                event.setItem(item.getItemStack());
             }
         }
         return super.applyDetermination(container, determination);
@@ -112,7 +109,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
             return item;
         }
         else if (name.equals("velocity")) {
-            return velocity;
+            return new LocationTag(event.getVelocity());
         }
         return super.getContext(name);
     }
@@ -122,10 +119,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
         location = new LocationTag(event.getBlock().getLocation());
         material = new MaterialTag(event.getBlock());
         item = new ItemTag(event.getItem());
-        velocity = new LocationTag(null, event.getVelocity().getX(), event.getVelocity().getY(), event.getVelocity().getZ());
         this.event = event;
         fire(event);
-        event.setVelocity(velocity.toVector());
-        event.setItem(item.getItemStack());
     }
 }

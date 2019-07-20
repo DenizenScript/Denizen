@@ -18,6 +18,7 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
     // <material> being built (on <material>)
     //
     // @Regex ^on [^\s]+ being built$
+    //
     // @Switch in <area>
     //
     // @Cancellable true
@@ -45,9 +46,8 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
     public BlockCanBuildEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.contains(" being built");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventArgLowerAt(1).equals("being") && path.eventArgLowerAt(2).equals("built");
     }
 
     @Override

@@ -5,7 +5,6 @@ import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockGrowEvent;
@@ -18,6 +17,7 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
     // <block> grows
     //
     // @Regex ^on [^\s]+ grows$
+    //
     // @Switch in <area>
     //
     // @Cancellable true
@@ -39,13 +39,11 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
     public BlockGrowEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String cmd = CoreUtilities.getXthArg(1, lower);
-        if (!cmd.equals("grows")) {
+    public boolean couldMatch(ScriptPath path) {
+        if (!path.eventArgLowerAt(1).equals("grows")) {
             return false;
         }
-        String block = CoreUtilities.getXthArg(0, lower);
+        String block = path.eventArgLowerAt(0);
         if (block.equals("block")) {
             return true;
         }

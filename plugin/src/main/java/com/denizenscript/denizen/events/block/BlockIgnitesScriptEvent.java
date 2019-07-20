@@ -7,7 +7,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockIgniteEvent;
@@ -20,7 +19,9 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
     // <material> ignites
     //
     // @Regex ^on [^\s]+ ignites$
+    //
     // @Switch in <area>
+    // @Switch cause <cause>
     //
     // @Cancellable true
     //
@@ -42,16 +43,12 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
     public static BlockIgnitesScriptEvent instance;
     public LocationTag location;
     public MaterialTag material;
-    public EntityTag entity;
-    public LocationTag origin_location;
     public ElementTag cause;
     public BlockIgniteEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String cmd = CoreUtilities.getXthArg(1, lower);
-        return cmd.equals("ignites");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventArgLowerAt(1).equals("ignites");
     }
 
     @Override
@@ -59,7 +56,9 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
         if (!runInCheck(path, location)) {
             return false;
         }
-
+        if (!runGenericSwitchCheck(path, "cause", cause.asString())) {
+            return false;
+        }
         String mat = path.eventArgLowerAt(0);
         return tryMaterial(material, mat);
     }
@@ -82,11 +81,11 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
         else if (name.equals("material")) {
             return material;
         }
-        else if (name.equals("entity") && entity != null) {
-            return entity;
+        else if (name.equals("entity") && event.getIgnitingEntity() != null) {
+            return new EntityTag(event.getIgnitingEntity());
         }
-        else if (name.equals("origin_location") && origin_location != null) {
-            return origin_location;
+        else if (name.equals("origin_location") && event.getIgnitingBlock() != null) {
+            return new LocationTag(event.getIgnitingBlock().getLocation());
         }
         else if (name.equals("cause")) {
             return cause;
@@ -98,15 +97,7 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
     public void onBlockIgnites(BlockIgniteEvent event) {
         location = new LocationTag(event.getBlock().getLocation());
         material = new MaterialTag(event.getBlock());
-        entity = null;
-        if (event.getIgnitingEntity() != null) {
-            entity = new EntityTag(event.getIgnitingEntity());
-        }
-        origin_location = null;
-        if (event.getIgnitingBlock() != null) { // TODO: Why would this be null?
-            origin_location = new LocationTag(event.getIgnitingBlock().getLocation());
-        }
-        cause = new ElementTag(event.getCause().toString());
+        cause = new ElementTag(event.getCause().name());
         this.event = event;
         fire(event);
     }

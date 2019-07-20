@@ -6,7 +6,6 @@ import com.denizenscript.denizen.utilities.MaterialCompat;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,6 +19,7 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
     // <material> physics
     //
     // @Regex ^on [^\s]+ physics$
+    //
     // @Switch in <area>
     //
     // @Warning This event may fire very rapidly.
@@ -41,15 +41,12 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
     public static BlockPhysicsScriptEvent instance;
 
     public LocationTag location;
-    public MaterialTag new_material;
     public MaterialTag material;
     public BlockPhysicsEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String cmd = CoreUtilities.getXthArg(1, lower);
-        return cmd.equals("physics");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventArgLowerAt(1).equals("physics");
     }
 
     @Override
@@ -80,7 +77,7 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
             return location;
         }
         else if (name.equals("new_material")) {
-            return new_material;
+            return new MaterialTag(event.getChangedType());
         }
         return super.getContext(name);
     }
@@ -93,7 +90,6 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
             return;
         }
         location = new LocationTag(event.getBlock().getLocation());
-        new_material = new MaterialTag(changedType);
         material = new MaterialTag(location.getBlock());
         this.event = event;
         fire(event);
