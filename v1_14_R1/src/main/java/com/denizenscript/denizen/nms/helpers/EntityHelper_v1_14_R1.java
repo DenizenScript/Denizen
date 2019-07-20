@@ -213,7 +213,7 @@ public class EntityHelper_v1_14_R1 extends EntityHelper {
             return 0.0;
         }
         EntityInsentient nmsEntity = (EntityInsentient) nmsEntityEntity;
-        return nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).b();
+        return nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).getBaseValue();
     }
 
     @Override
@@ -225,6 +225,8 @@ public class EntityHelper_v1_14_R1 extends EntityHelper {
         EntityInsentient nmsEntity = (EntityInsentient) nmsEntityEntity;
         nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(speed);
     }
+
+    static final int MAX_ITERATIONS = 100000; // TODO: 1.14.4: Is this name choice correct? Is the value reasonable?
 
     @Override
     public void follow(final Entity target, final Entity follower, final double speed, final double lead,
@@ -268,7 +270,7 @@ public class EntityHelper_v1_14_R1 extends EntityHelper {
                     }
                     else {
                         inRadius = false;
-                        path = followerNavigation.a(targetLocation.getX(), targetLocation.getY(), targetLocation.getZ());
+                        path = followerNavigation.a(targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), MAX_ITERATIONS);
                         if (path != null) {
                             followerNavigation.a(path, 1D);
                             followerNavigation.a(2D);
@@ -276,7 +278,7 @@ public class EntityHelper_v1_14_R1 extends EntityHelper {
                     }
                 }
                 else if (!inRadius && !Utilities.checkLocation(targetLocation, follower.getLocation(), lead)) {
-                    path = followerNavigation.a(targetLocation.getX(), targetLocation.getY(), targetLocation.getZ());
+                    path = followerNavigation.a(targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), MAX_ITERATIONS);
                     if (path != null) {
                         followerNavigation.a(path, 1D);
                         followerNavigation.a(2D);
@@ -312,11 +314,11 @@ public class EntityHelper_v1_14_R1 extends EntityHelper {
             toggleAI(entity, true);
             nmsEntity.onGround = true;
         }
-        path = entityNavigation.a(location.getX(), location.getY(), location.getZ());
+        path = entityNavigation.a(location.getX(), location.getY(), location.getZ(), MAX_ITERATIONS);
         if (path != null) {
             entityNavigation.a(path, 1D);
             entityNavigation.a(2D);
-            final double oldSpeed = nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).b();
+            final double oldSpeed = nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).getBaseValue();
             nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(speed);
             new BukkitRunnable() {
                 @Override

@@ -86,7 +86,7 @@ public class PlayerHelper_v1_14_R1 extends PlayerHelper {
 
     @Override
     public float getMaxAttackCooldownTicks(Player player) {
-        return ((CraftPlayer) player).getHandle().dZ() + 3;
+        return ((CraftPlayer) player).getHandle().dY() + 3;
     }
 
     @Override
