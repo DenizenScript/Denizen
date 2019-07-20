@@ -19,6 +19,8 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Regex ^on [^\s]+ being built$
     //
+    // @Group Block
+    //
     // @Switch in <area>
     //
     // @Cancellable true

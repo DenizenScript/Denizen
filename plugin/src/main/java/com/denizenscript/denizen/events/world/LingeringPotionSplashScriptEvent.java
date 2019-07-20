@@ -21,6 +21,9 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
     // lingering <item> splashes
     //
     // @Regex ^on lingering [^\s]+ splashes$
+    //
+    // @Group World
+    //
     // @Switch in <area>
     //
     // @Cancellable true

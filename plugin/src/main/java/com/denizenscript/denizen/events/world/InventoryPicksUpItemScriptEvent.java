@@ -6,14 +6,12 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 
 public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implements Listener {
 
-    // TODO: Add in <area>
     // <--[event]
     // @Events
     // inventory picks up item
@@ -22,6 +20,10 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
     // <inventory type> picks up <item>
     //
     // @Regex ^on [^\s]+ picks up [^\s]+$
+    //
+    // @Group World
+    //
+    // @Switch in <area>
     //
     // @Cancellable true
     //
@@ -41,28 +43,26 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
     public static InventoryPicksUpItemScriptEvent instance;
     public InventoryTag inventory;
     public ItemTag item;
-    public EntityTag entity;
     public InventoryPickupItemEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.contains("picks up") && !lower.startsWith("player");
+    public boolean couldMatch(ScriptPath path) {
+        if (path.eventArgLowerAt(0).equals("player")) {
+            return false;
+        }
+        return path.eventArgLowerAt(1).equals("picks") && path.eventArgLowerAt(2).equals("up");
     }
 
     @Override
     public boolean matches(ScriptPath path) {
-        String inv = path.eventArgLowerAt(0);
-        String itemName = path.eventArgLowerAt(3);
-        if (!inv.equals("inventory")) {
-            if (!inv.equals(CoreUtilities.toLowerCase(inventory.getInventoryType().toString()))) {
-                return false;
-            }
+        if (!tryInventory(inventory, path.eventArgLowerAt(0))) {
+            return false;
         }
-        if (!itemName.equals("item")) {
-            if (!tryItem(item, itemName)) {
-                return false;
-            }
+        if (!tryItem(item, path.eventArgLowerAt(3))) {
+            return false;
+        }
+        if (!runInCheck(path, event.getItem().getLocation())) {
+            return false;
         }
         return true;
     }
@@ -86,7 +86,7 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
             return inventory;
         }
         else if (name.equals("entity")) {
-            return entity;
+            return new EntityTag(event.getItem());
         }
         return super.getContext(name);
     }
@@ -95,7 +95,6 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
     public void onInvPicksUpItem(InventoryPickupItemEvent event) {
         inventory = InventoryTag.mirrorBukkitInventory(event.getInventory());
         item = new ItemTag(event.getItem());
-        entity = new EntityTag(event.getItem());
         fire(event);
     }
 }

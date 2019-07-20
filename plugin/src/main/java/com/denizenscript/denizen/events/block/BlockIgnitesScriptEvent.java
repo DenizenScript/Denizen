@@ -20,6 +20,8 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Regex ^on [^\s]+ ignites$
     //
+    // @Group Block
+    //
     // @Switch in <area>
     // @Switch cause <cause>
     //

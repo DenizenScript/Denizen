@@ -1,22 +1,21 @@
 package com.denizenscript.denizen.events.block;
 
+import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockFadeEvent;
+import org.bukkit.event.inventory.BrewEvent;
 
-public class BlockFadesScriptEvent extends BukkitScriptEvent implements Listener {
+public class BrewsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // block fades
-    // <block> fades
+    // brewing stand brews
     //
-    // @Regex ^on [^\s]+ fades$
+    // @Regex ^on brewing stand brews$
     //
     // @Group Block
     //
@@ -24,41 +23,35 @@ public class BlockFadesScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Cancellable true
     //
-    // @Triggers when a block fades, melts or disappears based on world conditions.
+    // @Triggers when a brewing stand brews a potion.
     //
     // @Context
-    // <context.location> returns the LocationTag the block faded at.
-    // <context.material> returns the MaterialTag of the block that faded.
+    // <context.location> returns the LocationTag of the brewing stand.
+    // <context.inventory> returns the InventoryTag of the brewing stand's contents.
     //
     // -->
 
-    public BlockFadesScriptEvent() {
+    public BrewsScriptEvent() {
         instance = this;
     }
 
-    public static BlockFadesScriptEvent instance;
+    public static BrewsScriptEvent instance;
     public LocationTag location;
-    public MaterialTag material;
-    public BlockFadeEvent event;
+    public BrewEvent event;
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(1).equals("fades");
+        return path.eventLower.startsWith("brewing stand brews");
     }
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!runInCheck(path, location)) {
-            return false;
-        }
-
-        String mat = path.eventArgLowerAt(0);
-        return tryMaterial(material, mat);
+        return runInCheck(path, location);
     }
 
     @Override
     public String getName() {
-        return "BlockFades";
+        return "Brews";
     }
 
     @Override
@@ -71,16 +64,15 @@ public class BlockFadesScriptEvent extends BukkitScriptEvent implements Listener
         if (name.equals("location")) {
             return location;
         }
-        else if (name.equals("material")) {
-            return material;
+        else if (name.equals("inventory")) {
+            return InventoryTag.mirrorBukkitInventory(event.getContents());
         }
         return super.getContext(name);
     }
 
     @EventHandler
-    public void onBlockFades(BlockFadeEvent event) {
+    public void onBrews(BrewEvent event) {
         location = new LocationTag(event.getBlock().getLocation());
-        material = new MaterialTag(event.getBlock());
         this.event = event;
         fire(event);
     }

@@ -19,6 +19,9 @@ public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Li
     // lightning strikes
     //
     // @Regex ^on lightning strikes$
+    //
+    // @Group World
+    //
     // @Switch in <area>
     //
     // @Cancellable true

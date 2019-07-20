@@ -18,6 +18,8 @@ public class BlockBurnsScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Regex ^on [^\s]+ burns$
     //
+    // @Group Block
+    //
     // @Switch in <area>
     //
     // @Cancellable true

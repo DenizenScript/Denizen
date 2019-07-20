@@ -18,6 +18,8 @@ public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Regex ^on spawn changes$
     //
+    // @Group World
+    //
     // @Triggers when the world's spawn point changes.
     //
     // @Context

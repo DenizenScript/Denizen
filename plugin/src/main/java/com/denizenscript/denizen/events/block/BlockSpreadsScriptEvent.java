@@ -18,6 +18,8 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Regex ^on [^\s]+ spreads$
     //
+    // @Group Block
+    //
     // @Switch in <area>
     //
     // @Cancellable true

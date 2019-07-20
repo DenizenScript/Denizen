@@ -18,6 +18,8 @@ public class WorldInitsScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Regex ^on [^\s]+ initializes$
     //
+    // @Group World
+    //
     // @Triggers when a world is initialized.
     //
     // @Context

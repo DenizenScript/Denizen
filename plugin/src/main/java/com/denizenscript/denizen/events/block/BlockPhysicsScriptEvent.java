@@ -20,6 +20,8 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Regex ^on [^\s]+ physics$
     //
+    // @Group Block
+    //
     // @Switch in <area>
     //
     // @Warning This event may fire very rapidly.

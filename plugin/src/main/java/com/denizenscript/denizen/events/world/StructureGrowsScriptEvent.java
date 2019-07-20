@@ -25,6 +25,9 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
     // <plant> grows (naturally/from bonemeal)
     //
     // @Regex ^on [^\s]+ grows( naturally|from bonemeal)?$
+    //
+    // @Group World
+    //
     // @Switch in <area>
     //
     // @Cancellable true

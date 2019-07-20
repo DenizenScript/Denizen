@@ -18,6 +18,9 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
     // <liquid block> spreads
     //
     // @Regex ^on [^\s]+ spreads$
+    //
+    // @Group World
+    //
     // @Switch in <area>
     //
     // @Cancellable true

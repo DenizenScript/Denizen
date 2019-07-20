@@ -5,7 +5,6 @@ import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -16,9 +15,11 @@ public class ChunkLoadScriptEvent extends BukkitScriptEvent implements Listener 
     // @Events
     // chunk loads for the first time
     //
-    // @Switch in <area>
+    // @Regex ^on chunk loads for the first time$
     //
-    // @Regex ^on chunk loads for the first time( in [^\s]+)?$
+    // @Group World
+    //
+    // @Switch in <area>
     //
     // @Warning This event will fire *extremely* rapidly and often!
     //
@@ -39,16 +40,12 @@ public class ChunkLoadScriptEvent extends BukkitScriptEvent implements Listener 
     public ChunkLoadEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("chunk loads");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.startsWith("chunk loads for the first time");
     }
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!path.eventLower.startsWith("chunk loads for the first time")) {
-            return false;
-        }
         if (!runInCheck(path, chunk.getCenter())) {
             return false;
         }

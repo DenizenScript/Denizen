@@ -1,11 +1,10 @@
-package com.denizenscript.denizen.events.world;
+package com.denizenscript.denizen.events.block;
 
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
@@ -20,6 +19,9 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
     // @Cancellable true
     //
     // @Regex ^on furnace smelts [^\s]+( into [^\s]+)?$
+    //
+    // @Group Block
+    //
     // @Switch in <area>
     //
     // @Triggers when a furnace smelts an item.
@@ -45,20 +47,18 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
     public FurnaceSmeltEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.toLowerCase(s).startsWith("furnace smelts");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.startsWith("furnace smelts");
     }
 
     @Override
     public boolean matches(ScriptPath path) {
-        String srcItem = path.eventArgLowerAt(2);
-        if (!tryItem(source_item, srcItem)) {
+        if (!tryItem(source_item, path.eventArgLowerAt(2))) {
             return false;
         }
 
         if (path.eventArgLowerAt(3).equals("into")) {
-            String resItem = path.eventArgLowerAt(4);
-            if (!tryItem(result_item, resItem)) {
+            if (!tryItem(result_item, path.eventArgLowerAt(4))) {
                 return false;
             }
         }
@@ -74,6 +74,7 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (ItemTag.matches(determination)) {
             result_item = ItemTag.valueOf(determination, container);
+            event.setResult(result_item.getItemStack());
             return true;
         }
         return super.applyDetermination(container, determination);
@@ -100,6 +101,5 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
         result_item = new ItemTag(event.getResult());
         this.event = event;
         fire(event);
-        event.setResult(result_item.getItemStack());
     }
 }

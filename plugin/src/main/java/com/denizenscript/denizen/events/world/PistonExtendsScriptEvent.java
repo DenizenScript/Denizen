@@ -21,6 +21,9 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
     // <block> extends
     //
     // @Regex ^on [^\s]+ extends$
+    //
+    // @Group World
+    //
     // @Switch in <area>
     //
     // @Cancellable true

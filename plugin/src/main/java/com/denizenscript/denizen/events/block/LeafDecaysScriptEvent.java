@@ -1,56 +1,64 @@
-package com.denizenscript.denizen.events.world;
+package com.denizenscript.denizen.events.block;
 
-import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.BrewEvent;
+import org.bukkit.event.block.LeavesDecayEvent;
 
-public class BrewsScriptEvent extends BukkitScriptEvent implements Listener {
+public class LeafDecaysScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // brewing stand brews
+    // leaves decay
+    // <block> decay
     //
-    // @Regex ^on brewing stand brews$
+    // @Regex ^on [^\s]+ decay$
+    //
     // @Switch in <area>
     //
     // @Cancellable true
     //
-    // @Triggers when a brewing stand brews a potion.
+    // @Triggers when leaves decay.
     //
     // @Context
-    // <context.location> returns the LocationTag of the brewing stand.
-    // <context.inventory> returns the InventoryTag of the brewing stand's contents.
+    // <context.location> returns the LocationTag of the leaves.
+    // <context.material> returns the MaterialTag of the leaves.
     //
     // -->
 
-    public BrewsScriptEvent() {
+    public LeafDecaysScriptEvent() {
         instance = this;
     }
 
-    public static BrewsScriptEvent instance;
-    public InventoryTag inventory;
+    public static LeafDecaysScriptEvent instance;
     public LocationTag location;
-    public BrewEvent event;
+    public MaterialTag material;
+    public LeavesDecayEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.toLowerCase(s).startsWith("brewing stand brews");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventArgLowerAt(1).equals("decay");
     }
 
     @Override
     public boolean matches(ScriptPath path) {
-        return runInCheck(path, location);
+        String mat = path.eventArgLowerAt(0);
+        if (!runInCheck(path, location)) {
+            return false;
+        }
+        if (!mat.equals("leaves") && !tryMaterial(material, mat)) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public String getName() {
-        return "Brews";
+        return "LeafDecays";
     }
 
     @Override
@@ -63,16 +71,16 @@ public class BrewsScriptEvent extends BukkitScriptEvent implements Listener {
         if (name.equals("location")) {
             return location;
         }
-        else if (name.equals("inventory")) {
-            return inventory;
+        else if (name.equals("material")) {
+            return material;
         }
         return super.getContext(name);
     }
 
     @EventHandler
-    public void onBrews(BrewEvent event) {
+    public void onLeafDecays(LeavesDecayEvent event) {
         location = new LocationTag(event.getBlock().getLocation());
-        inventory = InventoryTag.mirrorBukkitInventory(event.getContents());
+        material = new MaterialTag(event.getBlock());
         this.event = event;
         fire(event);
     }

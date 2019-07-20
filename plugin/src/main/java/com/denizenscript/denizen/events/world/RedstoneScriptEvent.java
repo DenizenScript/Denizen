@@ -17,6 +17,9 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
     // redstone recalculated
     //
     // @Regex ^on redstone recalculated$
+    //
+    // @Group World
+    //
     // @Switch in <area>
     //
     // @Warning This event fires very very rapidly!

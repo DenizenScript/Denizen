@@ -18,6 +18,8 @@ public class WorldUnloadsScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Regex ^on [^\s]+ unloads$
     //
+    // @Group World
+    //
     // @Cancellable true
     //
     // @Triggers when a world is unloaded.

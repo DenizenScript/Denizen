@@ -21,6 +21,9 @@ public class PistonRetractsScriptEvent extends BukkitScriptEvent implements List
     // <block> retracts
     //
     // @Regex ^on [^\s]+ retracts$
+    //
+    // @Group World
+    //
     // @Switch in <area>
     //
     // @Cancellable true

@@ -19,7 +19,10 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
     // <item> moves from inventory (to <inventory type>)
     // <item> moves from <inventory type> (to <inventory type>)
     //
+    // @Group World
+    //
     // @Regex ^on [^\s]+ moves from [^\s]+( to [^\s]+)?$
+    //
     // @Switch in <area>
     //
     // @Cancellable true
@@ -29,7 +32,7 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
     // @Context
     // <context.origin> returns the origin InventoryTag.
     // <context.destination> returns the destination InventoryTag.
-    // <context.initiator> returns the InventoryTag that initiatied the item's transfer.
+    // <context.initiator> returns the InventoryTag that initiated the item's transfer.
     // <context.item> returns the ItemTag that was moved.
     //
     // @Determine
@@ -45,15 +48,12 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
 
     public InventoryTag origin;
     public InventoryTag destination;
-    public InventoryTag initiator;
     public ItemTag item;
-    public boolean itemSet;
     public InventoryMoveItemEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.contains("moves from");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventArgLowerAt(1).equals("moves") && path.eventArgLowerAt(2).equals("from");
     }
 
     @Override
@@ -84,7 +84,7 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (ItemTag.matches(determination)) {
             item = ItemTag.valueOf(determination, container);
-            itemSet = true;
+            event.setItem(item.getItemStack());
             return true;
         }
         return super.applyDetermination(container, determination);
@@ -99,7 +99,7 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
             return destination;
         }
         else if (name.equals("initiator")) {
-            return initiator;
+            return InventoryTag.mirrorBukkitInventory(event.getInitiator());
         }
         else if (name.equals("item")) {
             return item;
@@ -111,12 +111,7 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
     public void onInventoryMoveItemEvent(InventoryMoveItemEvent event) {
         origin = InventoryTag.mirrorBukkitInventory(event.getSource());
         destination = InventoryTag.mirrorBukkitInventory(event.getDestination());
-        initiator = InventoryTag.mirrorBukkitInventory(event.getInitiator());
         item = new ItemTag(event.getItem());
-        itemSet = false;
         fire(event);
-        if (itemSet) {
-            event.setItem(item.getItemStack());
-        }
     }
 }

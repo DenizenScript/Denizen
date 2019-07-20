@@ -18,6 +18,8 @@ public class BlockFormsScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Regex ^on [^\s]+ forms$
     //
+    // @Group Block
+    //
     // @Switch in <area>
     //
     // @Cancellable true

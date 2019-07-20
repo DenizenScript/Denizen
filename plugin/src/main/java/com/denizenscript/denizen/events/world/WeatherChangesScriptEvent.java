@@ -18,6 +18,8 @@ public class WeatherChangesScriptEvent extends BukkitScriptEvent implements List
     //
     // @Regex ^on weather (changes|rains|clears)( in [^\s]+)?$
     //
+    // @Group World
+    //
     // @Cancellable true
     //
     // @Triggers when weather changes in a world.

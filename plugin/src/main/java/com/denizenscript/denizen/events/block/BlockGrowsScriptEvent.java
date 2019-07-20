@@ -18,6 +18,8 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Regex ^on [^\s]+ grows$
     //
+    // @Group Block
+    //
     // @Switch in <area>
     //
     // @Cancellable true

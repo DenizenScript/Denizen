@@ -21,6 +21,8 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
     //
     // @Regex ^on cauldron level (changes|raises|lowers)$
     //
+    // @Group Block
+    //
     // @Switch in <area>
     // @Switch cause <cause>
     //

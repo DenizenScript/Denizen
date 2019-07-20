@@ -23,6 +23,8 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     //
     // @Regex ^on [^\s]+ dispense [^\s]+$
     //
+    // @Group Block
+    //
     // @Switch in <area>
     //
     // @Cancellable true

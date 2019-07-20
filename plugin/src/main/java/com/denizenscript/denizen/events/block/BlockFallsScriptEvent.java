@@ -19,6 +19,8 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Regex ^on [^\s]+ falls$
     //
+    // @Group Block
+    //
     // @Switch in <area>
     //
     // @Cancellable true

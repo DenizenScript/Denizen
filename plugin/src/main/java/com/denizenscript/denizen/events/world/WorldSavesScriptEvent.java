@@ -19,6 +19,8 @@ public class WorldSavesScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Regex ^on [^\s]+ saves$
     //
+    // @Group World
+    //
     // @Triggers when a world is saved.
     //
     // @Context

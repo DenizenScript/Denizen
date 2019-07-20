@@ -23,7 +23,11 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new BlockIgnitesScriptEvent());
         ScriptEvent.registerScriptEvent(new BlockPhysicsScriptEvent());
         ScriptEvent.registerScriptEvent(new BlockSpreadsScriptEvent());
+        ScriptEvent.registerScriptEvent(new BrewsScriptEvent());
         ScriptEvent.registerScriptEvent(new CauldronLevelChangeScriptEvent());
+        ScriptEvent.registerScriptEvent(new FurnaceBurnsItemScriptEvent());
+        ScriptEvent.registerScriptEvent(new FurnaceSmeltsItemScriptEvent());
+        ScriptEvent.registerScriptEvent(new LeafDecaysScriptEvent());
 
         // Entity events
         ScriptEvent.registerScriptEvent(new CreeperPoweredScriptEvent());
@@ -157,14 +161,10 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new ResourcePackStatusScriptEvent());
 
         // World events
-        ScriptEvent.registerScriptEvent(new BrewsScriptEvent());
         ScriptEvent.registerScriptEvent(new ChunkLoadScriptEvent());
         ScriptEvent.registerScriptEvent(new ChunkUnloadScriptEvent());
-        ScriptEvent.registerScriptEvent(new FurnaceBurnsItemScriptEvent());
-        ScriptEvent.registerScriptEvent(new FurnaceSmeltsItemScriptEvent());
         ScriptEvent.registerScriptEvent(new InventoryPicksUpItemScriptEvent());
         ScriptEvent.registerScriptEvent(new ItemMoveScriptEvent());
-        ScriptEvent.registerScriptEvent(new LeafDecaysScriptEvent());
         ScriptEvent.registerScriptEvent(new LightningStrikesScriptEvent());
         ScriptEvent.registerScriptEvent(new LingeringPotionSplashScriptEvent());
         ScriptEvent.registerScriptEvent(new LiquidSpreadScriptEvent());

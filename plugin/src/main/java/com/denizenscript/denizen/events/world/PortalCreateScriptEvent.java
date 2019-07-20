@@ -22,6 +22,9 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
     // portal created (because <reason>)
     //
     // @Regex ^on portal created( because [^\s]+)?$
+    //
+    // @Group World
+    //
     // @Switch in <area>
     //
     // @Cancellable true

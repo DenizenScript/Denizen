@@ -19,6 +19,8 @@ public class WorldLoadsScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Regex ^on [^\s]+ loads$
     //
+    // @Group World
+    //
     // @Triggers when a world is loaded.
     //
     // @Context

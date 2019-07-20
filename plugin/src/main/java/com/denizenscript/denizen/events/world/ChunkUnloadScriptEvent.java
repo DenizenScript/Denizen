@@ -5,19 +5,21 @@ import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
 public class ChunkUnloadScriptEvent extends BukkitScriptEvent implements Listener {
 
-    // TODO: replace in <world> with in <area>
     // <--[event]
     // @Events
-    // chunk unloads (in <world>)
+    // chunk unloads
     //
-    // @Regex ^on chunk unloads( in [^\s]+)?$
+    // @Regex ^on chunk unloads$
+    //
+    // @Group World
+    //
+    // @Switch in <area>
     //
     // @Warning This event will fire *extremely* rapidly and often!
     //
@@ -37,19 +39,19 @@ public class ChunkUnloadScriptEvent extends BukkitScriptEvent implements Listene
     public static ChunkUnloadScriptEvent instance;
 
     public ChunkTag chunk;
-    public WorldTag world;
     public ChunkUnloadEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("chunk unloads");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.startsWith("chunk unloads");
     }
 
     @Override
     public boolean matches(ScriptPath path) {
-        return (path.eventLower.startsWith("chunk unloads") && !path.eventLower.contains(" in "))
-                || path.eventLower.startsWith("chunk unloads in " + CoreUtilities.toLowerCase(world.getName()));
+        if (!runInCheck(path, chunk.getCenter())) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -68,7 +70,7 @@ public class ChunkUnloadScriptEvent extends BukkitScriptEvent implements Listene
             return chunk;
         }
         else if (name.equals("world")) { // NOTE: Deprecated in favor of context.chunk.world
-            return world;
+            return new WorldTag(event.getWorld());
         }
         return super.getContext(name);
     }
@@ -76,7 +78,6 @@ public class ChunkUnloadScriptEvent extends BukkitScriptEvent implements Listene
     @EventHandler
     public void onChunkUnload(ChunkUnloadEvent event) {
         chunk = new ChunkTag(event.getChunk());
-        world = new WorldTag(event.getWorld());
         this.event = event;
         fire(event);
     }
