@@ -1,11 +1,9 @@
 package com.denizenscript.denizen.events.world;
 
 import com.denizenscript.denizen.objects.WorldTag;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldSaveEvent;
@@ -37,15 +35,13 @@ public class WorldSavesScriptEvent extends BukkitScriptEvent implements Listener
     public WorldSaveEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.getXthArg(1, CoreUtilities.toLowerCase(s)).equals("saves");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventArgLowerAt(1).equals("saves");
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String wCheck = CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s));
-        Debug.log("world: " + CoreUtilities.toLowerCase(world.getName()));
-        if (!wCheck.equals("world") && !wCheck.equals(CoreUtilities.toLowerCase(world.getName()))) {
+    public boolean matches(ScriptPath path) {
+        if (!runGenericCheck(path.eventArgAt(0), world.getName())) {
             return false;
         }
         return true;

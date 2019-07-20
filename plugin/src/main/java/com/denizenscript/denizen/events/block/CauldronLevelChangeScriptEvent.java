@@ -32,7 +32,7 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
     //
     // @Context
     // <context.location> returns the LocationTag of the cauldron that changed.
-    // <context.entity> returns the LocationTag of the enteity that caused the cauldron level to change (if any).
+    // <context.entity> returns the LocationTag of the entity that caused the cauldron level to change (if any).
     // <context.cause> returns the reason that the cauldron level changed, from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/block/CauldronLevelChangeEvent.ChangeReason.html>
     // <context.old_level> returns the previous cauldron level.
     // <context.new_level> returns the new cauldron level.

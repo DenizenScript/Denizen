@@ -4,7 +4,6 @@ import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldInitEvent;
@@ -36,14 +35,13 @@ public class WorldInitsScriptEvent extends BukkitScriptEvent implements Listener
     public WorldInitEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.getXthArg(1, CoreUtilities.toLowerCase(s)).equals("initializes");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventArgLowerAt(1).equals("initializes");
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String wCheck = CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s));
-        if (!wCheck.equals("world") && !wCheck.equals(CoreUtilities.toLowerCase(world.getName()))) {
+    public boolean matches(ScriptPath path) {
+        if (!runGenericCheck(path.eventArgAt(0), world.getName())) {
             return false;
         }
         return true;

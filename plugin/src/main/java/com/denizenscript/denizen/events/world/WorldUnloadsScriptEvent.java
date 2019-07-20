@@ -4,7 +4,6 @@ import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldUnloadEvent;
@@ -38,16 +37,16 @@ public class WorldUnloadsScriptEvent extends BukkitScriptEvent implements Listen
     public WorldUnloadEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return CoreUtilities.getXthArg(1, lower).equals("unloads")
-                && !CoreUtilities.getXthArg(0, lower).equals("chunk");
+    public boolean couldMatch(ScriptPath path) {
+        if (path.eventArgLowerAt(0).equals("chunk")) {
+            return false;
+        }
+        return path.eventArgLowerAt(1).equals("saves");
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String wCheck = CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s));
-        if (!wCheck.equals("world") && !wCheck.equals(CoreUtilities.toLowerCase(world.getName()))) {
+    public boolean matches(ScriptPath path) {
+        if (!runGenericCheck(path.eventArgAt(0), world.getName())) {
             return false;
         }
         return true;

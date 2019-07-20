@@ -1,11 +1,10 @@
-package com.denizenscript.denizen.events.world;
+package com.denizenscript.denizen.events.block;
 
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFromToEvent;
@@ -19,7 +18,7 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Regex ^on [^\s]+ spreads$
     //
-    // @Group World
+    // @Group Block
     //
     // @Switch in <area>
     //
@@ -34,7 +33,6 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
     //
     // -->
 
-
     public LiquidSpreadScriptEvent() {
         instance = this;
     }
@@ -46,17 +44,23 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
     public BlockFromToEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return CoreUtilities.xthArgEquals(1, lower, "spreads") && !lower.startsWith("block");
+    public boolean couldMatch(ScriptPath path) {
+        if (path.eventLower.startsWith("block")) {
+            return false;
+        }
+        return path.eventArgLowerAt(1).equals("spreads");
     }
 
     @Override
     public boolean matches(ScriptPath path) {
         String mat = path.eventArgLowerAt(0);
-        return (mat.equals("liquid") || tryMaterial(material, mat))
-                && (runInCheck(path, location)
-                || runInCheck(path, destination));
+        if (!runInCheck(path, location) && !runInCheck(path, destination)) {
+            return false;
+        }
+        if (!mat.equals("liquid") && !tryMaterial(material, mat)) {
+            return false;
+        }
+        return true;
     }
 
     @Override

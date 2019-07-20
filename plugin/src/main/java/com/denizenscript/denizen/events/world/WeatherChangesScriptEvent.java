@@ -5,7 +5,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.weather.WeatherChangeEvent;
@@ -40,18 +39,17 @@ public class WeatherChangesScriptEvent extends BukkitScriptEvent implements List
     public WeatherChangeEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s)).equals("weather");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventArgLowerAt(0).equals("weather");
     }
 
     @Override
     public boolean matches(ScriptPath path) {
         String cmd = path.eventArgLowerAt(1);
-        if (!cmd.equals("changes") && !cmd.equals(weather.identifySimple())) {
+        if (!cmd.equals("changes") && !cmd.equals(weather.asString())) {
             return false;
         }
-        String wCheck = path.eventArgLowerAt(3);
-        if (wCheck.length() > 0 && !wCheck.equals(CoreUtilities.toLowerCase(world.getName()))) {
+        if (!runGenericCheck(path.eventArgLowerAt(3), world.getName())) {
             return false;
         }
         return true;

@@ -1,11 +1,10 @@
-package com.denizenscript.denizen.events.world;
+package com.denizenscript.denizen.events.block;
 
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockRedstoneEvent;
@@ -18,7 +17,7 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
     //
     // @Regex ^on redstone recalculated$
     //
-    // @Group World
+    // @Group Block
     //
     // @Switch in <area>
     //
@@ -43,14 +42,11 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
     public static RedstoneScriptEvent instance;
 
     public LocationTag location;
-    public ElementTag old_current;
-    public ElementTag new_current;
     public BlockRedstoneEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("redstone recalculated");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.startsWith("redstone recalculated");
     }
 
     @Override
@@ -65,10 +61,12 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        ElementTag power = new ElementTag(determination);
-        if (power.isInt()) {
-            new_current = power;
-            return true;
+        if (!isDefaultDetermination(determination)) {
+            ElementTag power = new ElementTag(determination);
+            if (power.isInt()) {
+                event.setNewCurrent(power.asInt());
+                return true;
+            }
         }
         return super.applyDetermination(container, determination);
     }
@@ -79,10 +77,10 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
             return location;
         }
         else if (name.equals("old_current")) {
-            return old_current;
+            return new ElementTag(event.getOldCurrent());
         }
         else if (name.equals("new_current")) {
-            return new_current;
+            return new ElementTag(event.getNewCurrent());
         }
         return super.getContext(name);
     }
@@ -90,10 +88,7 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
     @EventHandler
     public void onBlockRedstone(BlockRedstoneEvent event) {
         location = new LocationTag(event.getBlock().getLocation());
-        old_current = new ElementTag(event.getOldCurrent());
-        new_current = new ElementTag(event.getNewCurrent());
         this.event = event;
         fire(event);
-        event.setNewCurrent(new_current.asInt());
     }
 }

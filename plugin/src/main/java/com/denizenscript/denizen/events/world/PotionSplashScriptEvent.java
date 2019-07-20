@@ -7,7 +7,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,7 +31,7 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Context
     // <context.potion> returns a ItemTag of the potion that broke open.
-    // <context.entities> returns a ListTag of effected entities.
+    // <context.entities> returns a ListTag of affected entities.
     // <context.location> returns the LocationTag the splash potion broke open at.
     // <context.entity> returns a EntityTag of the splash potion.
     //
@@ -44,15 +43,12 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
 
     public static PotionSplashScriptEvent instance;
     public ItemTag potion;
-    public ListTag entities;
     public LocationTag location;
-    public EntityTag entity;
     public PotionSplashEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String cmd = CoreUtilities.getXthArg(1, lower);
+    public boolean couldMatch(ScriptPath path) {
+        String cmd = path.eventArgAt(1);
         return cmd.equals("splash") || cmd.equals("splashes");
     }
 
@@ -75,9 +71,13 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
-            return entity;
+            return new EntityTag(event.getEntity());
         }
         else if (name.equals("entities")) {
+            ListTag entities = new ListTag();
+            for (Entity e : event.getAffectedEntities()) {
+                entities.addObject(new EntityTag(e));
+            }
             return entities;
         }
         else if (name.equals("location")) {
@@ -91,13 +91,8 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
 
     @EventHandler
     public void onPotionSplash(PotionSplashEvent event) {
-        entity = new EntityTag(event.getEntity());
         potion = new ItemTag(event.getPotion().getItem());
-        location = new LocationTag(entity.getLocation());
-        entities = new ListTag();
-        for (Entity e : event.getAffectedEntities()) {
-            entities.add(new EntityTag(e).identify());
-        }
+        location = new LocationTag(event.getEntity().getLocation());
         this.event = event;
         fire(event);
     }

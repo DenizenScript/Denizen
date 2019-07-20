@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.events.world;
 
-
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -9,7 +8,6 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -43,23 +41,23 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     public static PortalCreateScriptEvent instance;
-    public WorldTag world;
     public ElementTag reason;
-    public ListTag blocks;
     public PortalCreateEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.toLowerCase(s).startsWith("portal created");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.startsWith("portal created");
     }
 
     @Override
     public boolean matches(ScriptPath path) {
-        String rCheck = path.eventArgLowerAt(2).equals("because") ? path.eventArgLowerAt(3) : path.eventArgLowerAt(5);
-        if (rCheck.length() > 0 && !rCheck.equals(CoreUtilities.toLowerCase(reason.asString()))) {
+        if (!runGenericCheck(path.eventArgLowerAt(2).equals("because") ? path.eventArgLowerAt(3) : path.eventArgLowerAt(5), reason.asString())) {
             return false;
         }
-        return runInCheck(path, LocationTag.valueOf(blocks.get(0)));
+        if (!runInCheck(path, event.getBlocks().get(0).getLocation())) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -75,12 +73,16 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("world")) {
-            return world;
+            return new WorldTag(event.getWorld());
         }
         else if (name.equals("reason")) {
             return reason;
         }
         else if (name.equals("blocks")) {
+            ListTag blocks = new ListTag();
+            for (Location location : NMSHandler.getInstance().getBlockHelper().getBlocksList(event)) {
+                blocks.addObject(new LocationTag(location));
+            }
             return blocks;
         }
         return super.getContext(name);
@@ -88,12 +90,7 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
 
     @EventHandler
     public void onPortalCreate(PortalCreateEvent event) {
-        world = new WorldTag(event.getWorld());
-        reason = new ElementTag(event.getReason().toString());
-        blocks = new ListTag();
-        for (Location location : NMSHandler.getInstance().getBlockHelper().getBlocksList(event)) {
-            blocks.add(new LocationTag(location).identify());
-        }
+        reason = new ElementTag(event.getReason().name());
         this.event = event;
         fire(event);
     }

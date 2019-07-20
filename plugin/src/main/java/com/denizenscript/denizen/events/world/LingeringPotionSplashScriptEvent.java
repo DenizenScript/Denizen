@@ -4,11 +4,11 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import org.bukkit.entity.AreaEffectCloud;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.LingeringPotionSplashEvent;
@@ -46,18 +46,14 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
     public static LingeringPotionSplashScriptEvent instance;
     public LingeringPotionSplashEvent event;
     public LocationTag location;
-    public ElementTag duration;
-    public EntityTag entity;
-    public ElementTag radius;
     public ItemTag item;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String cmd = CoreUtilities.getXthArg(2, lower);
-        if (!CoreUtilities.getXthArg(0, lower).equals("lingering")) {
+    public boolean couldMatch(ScriptPath path) {
+        if (!path.eventArgLowerAt(0).equals("lingering")) {
             return false;
         }
+        String cmd = path.eventArgLowerAt(2);
         if (!cmd.equals("splash") && !cmd.equals("splashes")) {
             return false;
         }
@@ -93,28 +89,24 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
             return location;
         }
         else if (name.equals("radius")) {
-            return radius;
+            return new ElementTag(event.getAreaEffectCloud().getRadius());
         }
         else if (name.equals("duration")) {
-            return duration;
+            return new DurationTag((long) event.getAreaEffectCloud().getDuration());
         }
         else if (name.equals("potion")) {
             return item;
         }
         else if (name.equals("entity")) {
-            return entity;
+            return new EntityTag(event.getEntity());
         }
         return super.getContext(name);
     }
 
     @EventHandler
     public void onLingeringPotionSplash(LingeringPotionSplashEvent event) {
-        AreaEffectCloud cloud = event.getAreaEffectCloud();
         item = new ItemTag(event.getEntity().getItem());
-        duration = new ElementTag(cloud.getDuration());
-        entity = new EntityTag(event.getEntity());
-        location = entity.getLocation();
-        radius = new ElementTag(cloud.getRadius());
+        location = new LocationTag(event.getAreaEffectCloud().getLocation());
         this.event = event;
         fire(event);
     }

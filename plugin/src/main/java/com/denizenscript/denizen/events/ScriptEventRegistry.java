@@ -28,6 +28,10 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new FurnaceBurnsItemScriptEvent());
         ScriptEvent.registerScriptEvent(new FurnaceSmeltsItemScriptEvent());
         ScriptEvent.registerScriptEvent(new LeafDecaysScriptEvent());
+        ScriptEvent.registerScriptEvent(new LiquidSpreadScriptEvent());
+        ScriptEvent.registerScriptEvent(new PistonExtendsScriptEvent());
+        ScriptEvent.registerScriptEvent(new PistonRetractsScriptEvent());
+        ScriptEvent.registerScriptEvent(new RedstoneScriptEvent());
 
         // Entity events
         ScriptEvent.registerScriptEvent(new CreeperPoweredScriptEvent());
@@ -167,12 +171,8 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new ItemMoveScriptEvent());
         ScriptEvent.registerScriptEvent(new LightningStrikesScriptEvent());
         ScriptEvent.registerScriptEvent(new LingeringPotionSplashScriptEvent());
-        ScriptEvent.registerScriptEvent(new LiquidSpreadScriptEvent());
-        ScriptEvent.registerScriptEvent(new PistonExtendsScriptEvent());
-        ScriptEvent.registerScriptEvent(new PistonRetractsScriptEvent());
         ScriptEvent.registerScriptEvent(new PortalCreateScriptEvent());
         ScriptEvent.registerScriptEvent(new PotionSplashScriptEvent());
-        ScriptEvent.registerScriptEvent(new RedstoneScriptEvent());
         ScriptEvent.registerScriptEvent(new SpawnChangeScriptEvent());
         ScriptEvent.registerScriptEvent(new StructureGrowsScriptEvent());
         ScriptEvent.registerScriptEvent(new WeatherChangesScriptEvent());

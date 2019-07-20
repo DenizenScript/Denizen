@@ -51,18 +51,16 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
     public WorldTag world;
     public LocationTag location;
     public ElementTag structure;
-    public ListTag blocks;
-    public ListTag new_materials;
     public StructureGrowEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String cmd = CoreUtilities.getXthArg(1, lower);
-        String block = CoreUtilities.getXthArg(0, lower);
+    public boolean couldMatch(ScriptPath path) {
+        if (!path.eventArgLowerAt(1).equals("grows")) {
+            return false;
+        }
+        String block = path.eventArgLowerAt(0);
         MaterialTag mat = MaterialTag.valueOf(block);
-        return cmd.equals("grows")
-                && (block.equals("structure") || (mat != null && mat.isStructure()));
+        return block.equals("structure") || (mat != null && mat.isStructure());
     }
 
     @Override
@@ -78,7 +76,10 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
         else if (path.eventArgLowerAt(2).equals("naturally") && event.isFromBonemeal()) {
             return false;
         }
-        return runInCheck(path, location);
+        if (!runInCheck(path, location)) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -103,9 +104,17 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
             return structure;
         }
         else if (name.equals("blocks")) {
+            ListTag blocks = new ListTag();
+            for (BlockState block : event.getBlocks()) {
+                blocks.addObject(new LocationTag(block.getLocation()));
+            }
             return blocks;
         }
         else if (name.equals("new_materials")) {
+            ListTag new_materials = new ListTag();
+            for (BlockState block : event.getBlocks()) {
+                new_materials.addObject(new MaterialTag(block));
+            }
             return new_materials;
         }
         return super.getContext(name);
@@ -116,12 +125,6 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
         world = new WorldTag(event.getWorld());
         location = new LocationTag(event.getLocation());
         structure = new ElementTag(event.getSpecies().name());
-        blocks = new ListTag();
-        new_materials = new ListTag();
-        for (BlockState block : event.getBlocks()) {
-            blocks.add(new LocationTag(block.getLocation()).identify());
-            new_materials.add(new MaterialTag(block.getType(), block.getRawData()).identify());
-        }
         this.event = event;
         fire(event);
     }
