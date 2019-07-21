@@ -3,6 +3,7 @@ package com.denizenscript.denizen.objects;
 import com.denizenscript.denizen.objects.properties.material.MaterialAge;
 import com.denizenscript.denizen.objects.properties.material.MaterialHalf;
 import com.denizenscript.denizen.objects.properties.material.MaterialLevel;
+import com.denizenscript.denizen.objects.properties.material.MaterialLightable;
 import com.denizenscript.denizen.utilities.blocks.OldMaterialsHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
@@ -487,7 +488,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // @group properties
         // @description
         // Returns whether the material is an ageable material.
-        // When this returns true, <@link tag MaterialTag.age>,  <@link tag MaterialTag.maximum_age>,
+        // When this returns true, <@link tag MaterialTag.age>, <@link tag MaterialTag.maximum_age>,
         // and <@link mechanism MaterialTag.age> are accessible.
         // -->
         registerTag("is_ageable", new TagRunnable() {
@@ -546,13 +547,30 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // @group properties
         // @description
         // Returns whether the material is a levelable material.
-        // When this returns true, <@link tag MaterialTag.level>,  <@link tag MaterialTag.maximum_level>,
+        // When this returns true, <@link tag MaterialTag.level>, <@link tag MaterialTag.maximum_level>,
         // and <@link mechanism MaterialTag.level> are accessible.
         // -->
         registerTag("is_levelable", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 return new ElementTag(MaterialLevel.describes(object))
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <MaterialTag.is_lightable>
+        // @returns ElementTag(Boolean)
+        // @group properties
+        // @description
+        // Returns whether the material is a lightable material.
+        // When this returns true, <@link tag MaterialTag.lit>,
+        // and <@link mechanism MaterialTag.lit> are accessible.
+        // -->
+        registerTag("is_lightable", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(MaterialLightable.describes(object))
                         .getAttribute(attribute.fulfill(1));
             }
         });
