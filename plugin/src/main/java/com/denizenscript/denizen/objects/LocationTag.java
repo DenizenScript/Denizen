@@ -2737,6 +2737,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 }
                 NMSHandler.getInstance().getBlockHelper().setPlayerProfile((Skull) blockState, profile);
             }
+            else {
+                Debug.echoError("Unable to set skull_skin on block of type " + material.name() + " with state " + blockState.getClass().getCanonicalName());
+            }
         }
 
         // <--[mechanism]

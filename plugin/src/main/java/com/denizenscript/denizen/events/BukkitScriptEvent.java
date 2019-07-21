@@ -192,6 +192,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     }
 
     public boolean runInCheck(ScriptPath path, Location location, String innote) {
+        if (location == null) {
+            return false;
+        }
         String it = path.switches.get(innote);
         if (it == null) {
             int index;
