@@ -84,7 +84,7 @@ public class MaterialLightable implements Property {
         // @name lit
         // @input Element(Boolean)
         // @description
-        // Sets the current half for a bisected material (like stairs).
+        // Sets whether a lightable material (such as a redstone torch) is lit currently.
         // @tags
         // <MaterialTag.lit>
         // -->
