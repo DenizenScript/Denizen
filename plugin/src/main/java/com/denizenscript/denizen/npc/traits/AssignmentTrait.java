@@ -268,7 +268,7 @@ public class AssignmentTrait extends Trait {
         PlayerTag player = null;
         if (event instanceof EntityDamageByEntityEvent) {
             Entity killerEntity = ((EntityDamageByEntityEvent) event).getDamager();
-            context.put("killer", new EntityTag(killerEntity));
+            context.put("killer", new EntityTag(killerEntity).getDenizenObject());
             if (killerEntity instanceof Player) {
                 player = PlayerTag.mirrorBukkitPlayer((Player) killerEntity);
             }
@@ -276,7 +276,7 @@ public class AssignmentTrait extends Trait {
                 ProjectileSource shooter = ((Projectile) killerEntity).getShooter();
                 if (shooter != null && shooter instanceof LivingEntity) {
 
-                    context.put("shooter", new EntityTag((LivingEntity) shooter));
+                    context.put("shooter", new EntityTag((LivingEntity) shooter).getDenizenObject());
                     if (shooter instanceof Player) {
                         player = PlayerTag.mirrorBukkitPlayer((Player) shooter);
                     }
