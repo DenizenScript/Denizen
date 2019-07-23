@@ -192,14 +192,6 @@ public class Denizen extends JavaPlugin {
             Debug.echoError(e);
         }
 
-        // mcstats.org
-        try {
-            MetricsLite metrics = new MetricsLite(this);
-            metrics.start();
-        }
-        catch (Exception e) {
-            Debug.echoError(e);
-        }
         // bstats.org
         try {
             BStatsMetricsLite metrics = new BStatsMetricsLite(this);
