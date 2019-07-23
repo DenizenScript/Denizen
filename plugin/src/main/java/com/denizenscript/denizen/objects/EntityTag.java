@@ -1153,7 +1153,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                 return getDenizenPlayer().debuggable();
             }
             if (isSpawned() || rememberedEntities.containsKey(entity.getUniqueId())) {
-                return "e@ " + entity.getUniqueId().toString() + "(" + entity.getType().name() + "/" + entity.getName() + ")";
+                return "e@ " + entity.getUniqueId().toString() + "<GR>(" + entity.getType().name() + "/" + entity.getName() + ")";
             }
         }
         if (entityScript != null) {

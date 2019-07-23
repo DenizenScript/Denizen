@@ -792,7 +792,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
     @Override
     public String debuggable() {
         if (isUnique()) {
-            return "cu@" + NotableManager.getSavedId(this) + " (" + identifyFull() + ")";
+            return "cu@" + NotableManager.getSavedId(this) + " <GR>(" + identifyFull() + ")";
         }
         else {
             return identifyFull();

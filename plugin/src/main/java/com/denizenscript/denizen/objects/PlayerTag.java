@@ -604,7 +604,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
 
     @Override
     public String debuggable() {
-        return "p@" + offlinePlayer.getUniqueId().toString() + " (" + offlinePlayer.getName() + ")";
+        return "p@" + offlinePlayer.getUniqueId().toString() + "<GR> (" + offlinePlayer.getName() + ")";
     }
 
     @Override

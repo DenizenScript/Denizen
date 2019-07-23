@@ -555,11 +555,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
     @Override
     public String debuggable() {
-        if (!raw && isUnique()) {
-            return "l@" + getSaved(this);
+        if (isUnique()) {
+            return "<Y>" + getSaved(this) + "<GR> (" + identifyRaw().replace(",", "<G>,<GR> ") + "<GR>)";
         }
         else {
-            return identifyRaw().replace(",", ", ");
+            return "<Y>" + identifyRaw().replace(",", "<G>,<Y> ");
         }
     }
 

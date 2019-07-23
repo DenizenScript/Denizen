@@ -548,6 +548,7 @@ public class Debug {
                 .replace("<Y>", ChatColor.YELLOW.toString())
                 .replace("<O>", ChatColor.GOLD.toString()) // 'orange'
                 .replace("<G>", ChatColor.DARK_GRAY.toString())
+                .replace("<GR>", ChatColor.GREEN.toString())
                 .replace("<A>", ChatColor.AQUA.toString())
                 .replace("<R>", ChatColor.DARK_RED.toString())
                 .replace("<W>", ChatColor.WHITE.toString()));

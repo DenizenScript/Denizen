@@ -406,7 +406,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
 
     @Override
     public String debuggable() {
-        return "n@" + npcid + " (" + getName() + ")";
+        return "n@" + npcid + "<GR> (" + getName() + ")";
     }
 
     @Override
