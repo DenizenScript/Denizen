@@ -4,6 +4,7 @@ import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.DenizenCoreImplementation;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.flags.FlagManager;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.events.OldEventManager;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -26,45 +27,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Consumer;
 
-/**
- * Preferred method of outputting debugger information with Denizen and
- * denizen-related plugins.
- * <p/>
- * Attempts to unify the style of reporting information to the Console and
- * player with the use of color, headers, footers, and formatting.
- * <p/>
- * <p/>
- * Example, this code:
- * <p/>
- * dB.echoDebug(DebugElement.Header, "Sample debug information");
- * dB.echoDebug("This is an example of a piece of debug information. Parts and pieces " +
- * "of an entire debug sequence may be in completely different classes, so making " +
- * "a unified way to output to the console can make a world of difference with " +
- * "debugging and usability.");
- * dB.echoDebug(DebugElement.Spacer);
- * dB.echoDebug("Here are some examples of a few different ways to log with the logger.");
- * dB.echoApproval("Notable events can nicely show success or approval.");
- * dB.echoError("Your users will be able to easily distinguish problems.");
- * dB.info("...and important pieces of information can be easily spotted.");
- * dB.echoDebug(DebugElement.Footer);
- * <p/>
- * <p/>
- * will produce this output (with color):
- * <p/>
- * 16:05:05 [INFO] +- Sample debug information ------+
- * 16:05:05 [INFO] This is an example of a piece of debug information. Parts
- * and pieces of an entire debug sequence may be in completely
- * different classes, so making a unified way to output to the
- * console can make a world of difference with debugging and
- * usability.
- * 16:05:05 [INFO]
- * 16:05:05 [INFO] Here are some examples of a few different ways to log with the
- * logger.
- * 16:05:05 [INFO]  OKAY! Notable events can nicely show success or approval.
- * 16:05:05 [INFO]  ERROR! Your users will be able to easily distinguish problems.
- * 16:05:05 [INFO] +> ...and important pieces of information can easily be spotted.
- * 16:05:05 [INFO] +---------------------+
- */
 public class Debug {
 
     public static boolean showDebug = true;
@@ -239,33 +201,41 @@ public class Debug {
         echoError(null, message);
     }
 
-    public static void echoError(ScriptQueue source, String message) {
-        if (source == null) {
-            source = CommandExecuter.currentQueue;
+    public static void echoError(ScriptQueue sourceQueue, String message) {
+        echoError(sourceQueue, message, true);
+    }
+
+    public static void echoError(ScriptQueue sourceQueue, String message, boolean reformat) {
+        if (sourceQueue == null) {
+            sourceQueue = CommandExecuter.currentQueue;
         }
-        ScriptTag script = null;
-        if (source != null && source.getEntries().size() > 0 && source.getEntries().get(0).getScript() != null) {
-            script = source.getEntries().get(0).getScript();
+        ScriptEntry sourceEntry = null;
+        if (sourceQueue != null && sourceQueue.getLastEntryExecuted() != null) {
+            sourceEntry = sourceQueue.getLastEntryExecuted();
         }
-        else if (source != null && source.getLastEntryExecuted() != null && source.getLastEntryExecuted().getScript() != null) {
-            script = source.getLastEntryExecuted().getScript();
+        else if (sourceQueue != null && sourceQueue.getEntries().size() > 0) {
+            sourceEntry = sourceQueue.getEntries().get(0);
+        }
+        ScriptTag sourceScript = null;
+        if (sourceEntry != null) {
+            sourceScript = sourceEntry.getScript();
         }
         if (throwErrorEvent) {
             throwErrorEvent = false;
             Map<String, ObjectTag> context = new HashMap<>();
             context.put("message", new ElementTag(message));
-            if (source != null) {
-                context.put("queue", new QueueTag(source));
+            if (sourceQueue != null) {
+                context.put("queue", new QueueTag(sourceQueue));
             }
-            if (script != null) {
-                context.put("script", script);
+            if (sourceScript != null) {
+                context.put("script", sourceScript);
             }
             List<String> events = new ArrayList<>();
             events.add("script generates error");
-            if (script != null) {
-                events.add(script.identifySimple() + " generates error");
+            if (sourceScript != null) {
+                events.add(sourceScript.identifySimple() + " generates error");
             }
-            ScriptEntry entry = (source != null ? source.getLastEntryExecuted() : null);
+            ScriptEntry entry = (sourceQueue != null ? sourceQueue.getLastEntryExecuted() : null);
             List<String> Determinations = OldEventManager.doEvents(events,
                     entry != null ? entry.entryData : new BukkitScriptEntryData(null, null), context, true);
             throwErrorEvent = true;
@@ -278,21 +248,36 @@ public class Debug {
         if (!showDebug) {
             return;
         }
-        String fullMessage = ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR" +
-                (script != null ? " in script '" + script.getName() + "'" : "")
-                + (source != null ? " in queue '" + source.id + "'" : "") + "! "
-                + ChatColor.WHITE + message;
-        if (script != null && !script.getContainer().shouldDebug()) {
-            fullMessage += ChatColor.GRAY + " ... " + ChatColor.RED + "Enable debug on the script for more information.";
+        StringBuilder fullMessage = new StringBuilder();
+        fullMessage.append(ChatColor.LIGHT_PURPLE).append(" ").append(ChatColor.RED).append("ERROR");
+        if (sourceScript != null) {
+            fullMessage.append(" in script '").append(ChatColor.AQUA).append(sourceScript.getName()).append(ChatColor.RED).append("'");
         }
-        finalOutputDebugText(fullMessage, source);
+        if (sourceQueue != null) {
+            fullMessage.append(" in queue '").append(sourceQueue.debugId).append(ChatColor.RED).append("'");
+        }
+        if (sourceEntry != null) {
+            fullMessage.append(" while executing command '").append(ChatColor.AQUA).append(sourceEntry.getCommandName()).append(ChatColor.RED).append("'");
+            BukkitScriptEntryData data = Utilities.getEntryData(sourceEntry);
+            if (data.hasPlayer()) {
+                fullMessage.append(" with player '").append(ChatColor.AQUA).append(data.getPlayer().debuggable()).append(ChatColor.RED).append("'");
+            }
+            if (data.hasNPC()) {
+                fullMessage.append(" with NPC '").append(ChatColor.AQUA).append(data.getNPC().debuggable()).append(ChatColor.RED).append("'");
+            }
+        }
+        fullMessage.append("!\n").append(ChatColor.GRAY).append("     Error Message: ").append(ChatColor.WHITE).append(message);
+        if (sourceScript != null && !sourceScript.getContainer().shouldDebug()) {
+            fullMessage.append(ChatColor.GRAY).append(" ... ").append(ChatColor.RED).append("Enable debug on the script for more information.");
+        }
+        finalOutputDebugText(fullMessage.toString(), sourceQueue, reformat);
         if (com.denizenscript.denizencore.utilities.debugging.Debug.verbose && depthCorrectError == 0) {
             depthCorrectError++;
             try {
                 throw new RuntimeException("Verbose info for above error");
             }
             catch (Throwable e) {
-                echoError(source, e);
+                echoError(sourceQueue, e);
             }
             depthCorrectError--;
         }
@@ -354,13 +339,14 @@ public class Debug {
             Debug.echoError(source, "Exception! Enable '/denizen debug -s' for the nitty-gritty.");
         }
         else {
-            Debug.echoError(source, "Internal exception was thrown!");
             StringBuilder errorMesage = new StringBuilder();
-            String prefix = "[Error Continued] ";
+            errorMesage.append("Internal exception was thrown!\n");
+            String prefix = ChatColor.GRAY + "[Error Continued] " + ChatColor.WHITE;
             boolean first = true;
             while (ex != null) {
+                errorMesage.append(prefix);
                 if (!first) {
-                    errorMesage.append(prefix).append("Caused by: ");
+                    errorMesage.append("Caused by: ");
                 }
                 errorMesage.append(ex.toString()).append("\n");
                 for (StackTraceElement ste : ex.getStackTrace()) {
@@ -376,10 +362,7 @@ public class Debug {
             if (source != null && source.getEntries().size() > 0 && source.getEntries().get(0).getScript() != null) {
                 script = source.getEntries().get(0).getScript();
             }
-            finalOutputDebugText(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR" +
-                    (script != null ? " in script '" + script.getName() + "'" : "")
-                    + (source != null ? " in queue '" + source.id + "'" : "") + "! "
-                    + ChatColor.WHITE + errorMesage.toString(), source, false);
+            echoError(source, errorMesage.toString(), false);
         }
         throwErrorEvent = wasThrown;
     }
@@ -615,11 +598,12 @@ public class Debug {
                 StringBuilder buffer = new StringBuilder();
                 int length = 0;
                 int width = Settings.consoleWidth();
-                for (String word : words) { // # of total chars * # of lines - timestamp
+                for (String word : words) {
+                    // # of total chars * # of lines - timestamp
                     int strippedLength = ChatColor.stripColor(word).length() + 1;
                     if (length + strippedLength < width) {
                         buffer.append(word).append(" ");
-                        length = length + strippedLength;
+                        length += strippedLength;
                     }
                     else {
                         // Increase # of lines to account for
@@ -627,6 +611,9 @@ public class Debug {
                         // Leave spaces to account for timestamp and indent
                         buffer.append("\n                   ").append(word).append(" ");
                     }                 // [01:02:03 INFO]:
+                    if (word.contains("\n")) {
+                        length = 0;
+                    }
                 }
                 string = buffer.toString();
             }
