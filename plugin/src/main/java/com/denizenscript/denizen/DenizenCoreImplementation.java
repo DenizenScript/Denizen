@@ -107,7 +107,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
 
     @Override
     public String getImplementationName() {
-        return "Bukkit";
+        return "Spigot";
     }
 
     @Override
@@ -155,7 +155,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         Consumer<String> altDebug = entry.getResidingQueue().debugOutput;
         entry.getResidingQueue().debugOutput = null;
         Debug.echoDebug(entry, com.denizenscript.denizencore.utilities.debugging.Debug.DebugElement.Header,
-                ChatColor.LIGHT_PURPLE + "Queue '" + queue + ChatColor.LIGHT_PURPLE + "' Executing: " + execute);
+                ChatColor.LIGHT_PURPLE + "Queue '" + queue + ChatColor.LIGHT_PURPLE + "' Executing: " + ChatColor.WHITE + execute);
         entry.getResidingQueue().debugOutput = altDebug;
     }
 

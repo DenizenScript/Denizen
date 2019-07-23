@@ -142,7 +142,7 @@ public class Debug {
                 break;
 
             case Header:
-                sb.append(ChatColor.LIGHT_PURPLE).append("+- ").append(string).append(" ---------+");
+                sb.append(ChatColor.LIGHT_PURPLE).append("+- ").append(string).append(ChatColor.LIGHT_PURPLE).append(" ---------+");
                 break;
         }
 
@@ -258,6 +258,10 @@ public class Debug {
         }
         if (sourceEntry != null) {
             fullMessage.append(" while executing command '").append(ChatColor.AQUA).append(sourceEntry.getCommandName()).append(ChatColor.RED).append("'");
+            if (sourceScript != null) {
+                fullMessage.append(" in file '").append(ChatColor.AQUA).append(sourceScript.getContainer().getRelativeFileName()).append(ChatColor.RED)
+                        .append("' on line '").append(ChatColor.AQUA).append(sourceEntry.internal.lineNumber).append(ChatColor.RED).append("'");
+            }
             BukkitScriptEntryData data = Utilities.getEntryData(sourceEntry);
             if (data.hasPlayer()) {
                 fullMessage.append(" with player '").append(ChatColor.AQUA).append(data.getPlayer().debuggable()).append(ChatColor.RED).append("'");
