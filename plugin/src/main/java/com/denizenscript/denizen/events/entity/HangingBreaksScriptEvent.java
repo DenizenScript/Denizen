@@ -81,11 +81,6 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
-        return super.applyDetermination(container, determination);
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(entity != null && entity.isPlayer() ? EntityTag.getPlayerFrom(event.getEntity()) : null,
                 entity != null && entity.isCitizensNPC() ? EntityTag.getNPCFrom(event.getEntity()) : null);

@@ -83,14 +83,15 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        String determination = determinationObj.toString();
         String lower = CoreUtilities.toLowerCase(determination);
         if (lower.startsWith("item:")) {
-            item = ItemTag.valueOf(determination.substring("item:".length()), container);
+            item = ItemTag.valueOf(determination.substring("item:".length()), path.container);
             itemChanged = true;
             return true;
         }
-        return super.applyDetermination(container, determination);
+        return super.applyDetermination(path, determinationObj);
     }
 
     @Override

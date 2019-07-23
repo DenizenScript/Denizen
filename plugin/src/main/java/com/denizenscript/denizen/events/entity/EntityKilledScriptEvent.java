@@ -120,12 +120,13 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        String determination = determinationObj.toString();
         if (ArgumentHelper.matchesDouble(determination)) {
             damage = new ElementTag(ArgumentHelper.getDoubleFrom(determination));
             return true;
         }
-        return super.applyDetermination(container, determination);
+        return super.applyDetermination(path, determinationObj);
     }
 
     @Override

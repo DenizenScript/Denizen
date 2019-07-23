@@ -112,7 +112,8 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        String determination = determinationObj.toString();
         // finish this
         String lower = CoreUtilities.toLowerCase(determination);
 
@@ -149,9 +150,9 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             drops.clear();
             dropItems = new ArrayList<>();
             ListTag drops_list = ListTag.valueOf(determination);
-            drops_list.filter(ItemTag.class, container);
+            drops_list.filter(ItemTag.class, path.container);
             for (String drop : drops_list) {
-                ItemTag item = ItemTag.valueOf(drop, container);
+                ItemTag item = ItemTag.valueOf(drop, path.container);
                 if (item != null) {
                     dropItems.add(item);
                     drops.add(item.identify());
@@ -160,11 +161,11 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         }
 
         // String containing new Death Message
-        else if (event instanceof PlayerDeathEvent && !isDefaultDetermination(determination)) {
+        else if (event instanceof PlayerDeathEvent && !isDefaultDetermination(determinationObj)) {
             message = new ElementTag(determination);
         }
         else {
-            return super.applyDetermination(container, determination);
+            return super.applyDetermination(path, determinationObj);
         }
         return true;
     }

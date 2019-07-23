@@ -71,11 +71,6 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
-        return super.applyDetermination(container, determination);
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         if (name.equals("location")) {
             return location;

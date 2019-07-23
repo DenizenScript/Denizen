@@ -96,13 +96,14 @@ public class EntityPotionEffectScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        String determination = determinationObj.toString();
         String lower = CoreUtilities.toLowerCase(determination);
         if (lower.startsWith("override:")) {
             event.setOverride(lower.substring("override".length()).equals("true"));
             return true;
         }
-        return super.applyDetermination(container, determination);
+        return super.applyDetermination(path, determinationObj);
     }
 
     @Override

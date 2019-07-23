@@ -56,11 +56,6 @@ public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
-        return super.applyDetermination(container, determination);
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         if (name.equals("world")) {
             return new WorldTag(event.getWorld());

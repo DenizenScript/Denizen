@@ -56,11 +56,6 @@ public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
-        return super.applyDetermination(container, determination);
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         if (name.equals("lightning")) {
             return new EntityTag(event.getLightning());

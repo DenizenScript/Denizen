@@ -75,7 +75,8 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        String determination = determinationObj.toString();
         if (ArgumentHelper.matchesDouble(determination)) {
             event.setVelocity(event.getVelocity().multiply(ArgumentHelper.getDoubleFrom(determination)));
             return true;
@@ -90,7 +91,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
             }
         }
         else if (ItemTag.matches(determination)) {
-            ItemTag it = ItemTag.valueOf(determination, container);
+            ItemTag it = ItemTag.valueOf(determination, path.container);
             if (it == null) {
                 Debug.echoError("[" + getName() + "] Invalid item '" + determination + "'!");
             }
@@ -99,7 +100,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
                 event.setItem(item.getItemStack());
             }
         }
-        return super.applyDetermination(container, determination);
+        return super.applyDetermination(path, determinationObj);
     }
 
     @Override

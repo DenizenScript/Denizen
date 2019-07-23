@@ -67,11 +67,6 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
-        return super.applyDetermination(container, determination);
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return projectile.getDenizenObject();

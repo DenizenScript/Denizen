@@ -61,7 +61,8 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        String determination = determinationObj.toString();
         if (ItemTag.matches(determination)) {
             ItemTag newitem = ItemTag.valueOf(determination, EntityTag.getPlayerFrom(event.getPlayer()), null);
             if (newitem != null) {
@@ -69,11 +70,11 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
                 return true;
             }
             else {
-                Debug.echoError("Invalid event 'item' check [" + getName() + "] ('determine item ????'): '" + determination + "' for " + container.getName());
+                Debug.echoError("Invalid event 'item' check [" + getName() + "] ('determine item ????'): '" + determination + "' for " + path.container.getName());
             }
 
         }
-        return super.applyDetermination(container, determination);
+        return super.applyDetermination(path, determinationObj);
     }
 
     @Override

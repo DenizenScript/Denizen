@@ -69,11 +69,6 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
-        return super.applyDetermination(container, determination);
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         if (name.equals("from")) {
             return from;

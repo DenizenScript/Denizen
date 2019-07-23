@@ -91,11 +91,6 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
-        return super.applyDetermination(container, determination);
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         // TODO: What if the hanging is an NPC?
         return new BukkitScriptEntryData(breaker.isPlayer() ? breaker.getDenizenPlayer() : null,

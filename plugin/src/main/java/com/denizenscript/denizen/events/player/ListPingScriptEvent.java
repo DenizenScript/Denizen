@@ -61,7 +61,8 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        String determination = determinationObj.toString();
         if (determination.length() > 0 && !determination.equalsIgnoreCase("none")) {
             String[] values = determination.split("[\\|" + ListTag.internal_escape + "]", 2);
             if (new ElementTag(values[0]).isInt()) {
@@ -79,7 +80,7 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
             return true;
         }
         else {
-            return super.applyDetermination(container, determination);
+            return super.applyDetermination(path, determinationObj);
         }
     }
 

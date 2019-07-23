@@ -60,11 +60,6 @@ public class NPCSpawnScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
-        return super.applyDetermination(container, determination);
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(null, npc);
     }

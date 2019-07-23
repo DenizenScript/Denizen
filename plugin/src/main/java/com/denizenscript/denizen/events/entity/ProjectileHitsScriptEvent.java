@@ -109,11 +109,6 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
-        return super.applyDetermination(container, determination);
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(shooter != null && shooter.isPlayer() ? EntityTag.getPlayerFrom(event.getEntity()) : null,
                 shooter != null && shooter.isCitizensNPC() ? EntityTag.getNPCFrom(event.getEntity()) : null);

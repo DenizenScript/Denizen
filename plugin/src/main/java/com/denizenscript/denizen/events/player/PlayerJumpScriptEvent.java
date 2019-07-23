@@ -56,11 +56,6 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
-        return super.applyDetermination(container, determination);
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         // TODO: Store the player / npc?
         return new BukkitScriptEntryData(event != null ? EntityTag.getPlayerFrom(event.getPlayer()) : null, null);

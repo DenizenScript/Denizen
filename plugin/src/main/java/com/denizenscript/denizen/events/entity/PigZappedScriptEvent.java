@@ -60,11 +60,6 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
-        return super.applyDetermination(container, determination);
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         if (name.equals("pig")) {
             return pig;

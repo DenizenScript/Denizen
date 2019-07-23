@@ -60,15 +60,16 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (!isDefaultDetermination(determination)) {
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        String determination = determinationObj.toString();
+        if (!isDefaultDetermination(determinationObj)) {
             ElementTag power = new ElementTag(determination);
             if (power.isInt()) {
                 event.setNewCurrent(power.asInt());
                 return true;
             }
         }
-        return super.applyDetermination(container, determination);
+        return super.applyDetermination(path, determinationObj);
     }
 
     @Override

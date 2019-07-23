@@ -88,7 +88,8 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        String determination = determinationObj.toString();
         String lower = CoreUtilities.toLowerCase(determination);
         Block block = event.getBlock();
         if (lower.equals("nothing")) {
@@ -102,12 +103,12 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
             cancelled = true;
             block.setType(Material.AIR);
 
-            for (ItemTag newItem : ListTag.valueOf(determination).filter(ItemTag.class, container)) {
+            for (ItemTag newItem : ListTag.valueOf(determination).filter(ItemTag.class, path.container)) {
                 block.getWorld().dropItemNaturally(block.getLocation(), newItem.getItemStack()); // Drop each item
             }
         }
         else {
-            return super.applyDetermination(container, determination);
+            return super.applyDetermination(path, determinationObj);
         }
         return true;
     }

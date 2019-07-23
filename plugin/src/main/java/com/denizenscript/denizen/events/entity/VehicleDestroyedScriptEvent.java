@@ -82,11 +82,6 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
-        return super.applyDetermination(container, determination);
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         if (entity != null) {
             return new BukkitScriptEntryData(entity.isPlayer() ? entity.getDenizenPlayer() : null,

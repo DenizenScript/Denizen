@@ -81,7 +81,8 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        String determination = determinationObj.toString();
         if (ArgumentHelper.matchesDouble(determination)) {
             strength = ArgumentHelper.getFloatFrom(determination);
             return true;
@@ -92,7 +93,7 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
             for (String loc : ListTag.valueOf(determination)) {
                 LocationTag location = LocationTag.valueOf(loc);
                 if (location == null) {
-                    Debug.echoError("Invalid location '" + loc + "' check [" + getName() + "]: '  for " + container.getName());
+                    Debug.echoError("Invalid location '" + loc + "' check [" + getName() + "]: '  for " + path.container.getName());
                 }
                 else {
                     blocks.add(location.identifySimple());
@@ -100,7 +101,7 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
             }
             return true;
         }
-        return super.applyDetermination(container, determination);
+        return super.applyDetermination(path, determinationObj);
     }
 
     @Override

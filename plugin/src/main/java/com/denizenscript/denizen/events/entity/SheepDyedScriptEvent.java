@@ -77,8 +77,9 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (!isDefaultDetermination(determination)) {
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        String determination = determinationObj.toString();
+        if (!isDefaultDetermination(determinationObj)) {
             try {
                 color = DyeColor.valueOf(determination.toUpperCase());
                 return true;
@@ -86,7 +87,7 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
             catch (IllegalArgumentException e) {
             }
         }
-        return super.applyDetermination(container, determination);
+        return super.applyDetermination(path, determinationObj);
     }
 
     @Override

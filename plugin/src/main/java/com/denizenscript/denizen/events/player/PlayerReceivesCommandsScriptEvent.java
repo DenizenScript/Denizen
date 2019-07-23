@@ -57,14 +57,15 @@ public class PlayerReceivesCommandsScriptEvent extends BukkitScriptEvent impleme
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        String determination = determinationObj.toString();
         String lower = CoreUtilities.toLowerCase(determination);
-        if (determination.length() > 0 && !isDefaultDetermination(determination)) {
+        if (determination.length() > 0 && !isDefaultDetermination(determinationObj)) {
             commands.clear();
             commands.addAll(ListTag.valueOf(determination));
             return true;
         }
-        return super.applyDetermination(container, determination);
+        return super.applyDetermination(path, determinationObj);
     }
 
     @Override

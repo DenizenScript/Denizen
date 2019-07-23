@@ -98,7 +98,8 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        String determination = determinationObj.toString();
         String lower = CoreUtilities.toLowerCase(determination);
         if (lower.startsWith("format:")) {
             String name = determination.substring("format:".length());
@@ -121,17 +122,17 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
         else if (lower.startsWith("recipients:")) {
             String rec_new = determination.substring("recipients:".length());
             ListTag recs = ListTag.valueOf(rec_new);
-            List<PlayerTag> players = recs.filter(PlayerTag.class, container);
+            List<PlayerTag> players = recs.filter(PlayerTag.class, path.container);
             recipients.clear();
             for (PlayerTag player : players) {
                 recipients.add(player.getPlayerEntity());
             }
         }
-        else if (!isDefaultDetermination(determination)) {
+        else if (!isDefaultDetermination(determinationObj)) {
             message = new ElementTag(determination);
         }
         else {
-            return super.applyDetermination(container, determination);
+            return super.applyDetermination(path, determinationObj);
         }
         return true;
     }

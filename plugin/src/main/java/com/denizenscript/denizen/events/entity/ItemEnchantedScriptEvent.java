@@ -89,24 +89,25 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        String determination = determinationObj.toString();
         if (ArgumentHelper.matchesInteger(determination)) {
             cost = ArgumentHelper.getIntegerFrom(determination);
             return true;
         }
         else if (CoreUtilities.toLowerCase(determination).startsWith("result:")) {
             String ditem = determination.substring("result:".length());
-            item = ItemTag.valueOf(ditem, container);
+            item = ItemTag.valueOf(ditem, path.container);
             itemEdited = true;
             return true;
         }
         else if (CoreUtilities.toLowerCase(determination).startsWith("enchants:")) {
             String ditem = determination.substring("enchants:".length());
-            enchantsRes = ItemTag.valueOf(ditem, container);
+            enchantsRes = ItemTag.valueOf(ditem, path.container);
             return true;
         }
         else {
-            return super.applyDetermination(container, determination);
+            return super.applyDetermination(path, determinationObj);
         }
     }
 

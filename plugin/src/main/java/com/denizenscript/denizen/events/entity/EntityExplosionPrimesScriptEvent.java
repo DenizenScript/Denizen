@@ -68,7 +68,8 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        String determination = determinationObj.toString();
         if (ArgumentHelper.matchesDouble(determination)) {
             radius = ArgumentHelper.getFloatFrom(determination);
             return true;
@@ -78,7 +79,7 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
             fire = ArgumentHelper.getBooleanFrom(determination);
             return true;
         }
-        return super.applyDetermination(container, determination);
+        return super.applyDetermination(path, determinationObj);
     }
 
     @Override

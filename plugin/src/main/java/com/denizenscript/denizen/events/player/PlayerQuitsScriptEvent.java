@@ -57,7 +57,8 @@ public class PlayerQuitsScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        String determination = determinationObj.toString();
         if (!CoreUtilities.toLowerCase(determination).equals("none")) {
             message = determination;
             return true;

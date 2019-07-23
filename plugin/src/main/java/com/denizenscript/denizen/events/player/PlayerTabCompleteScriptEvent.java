@@ -82,12 +82,13 @@ public class PlayerTabCompleteScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (determination.length() > 0 && !isDefaultDetermination(determination)) {
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        String determination = determinationObj.toString();
+        if (determination.length() > 0 && !isDefaultDetermination(determinationObj)) {
             completions = ListTag.valueOf(determination);
             return true;
         }
-        return super.applyDetermination(container, determination);
+        return super.applyDetermination(path, determinationObj);
     }
 
     @Override

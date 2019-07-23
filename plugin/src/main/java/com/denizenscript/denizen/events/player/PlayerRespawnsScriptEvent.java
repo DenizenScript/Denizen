@@ -62,7 +62,8 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        String determination = determinationObj.toString();
         if (!CoreUtilities.toLowerCase(determination).equals("none")) {
             LocationTag loc = LocationTag.valueOf(determination);
             if (loc != null) {
@@ -70,7 +71,7 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
                 return true;
             }
         }
-        return super.applyDetermination(container, determination);
+        return super.applyDetermination(path, determinationObj);
     }
 
     @Override

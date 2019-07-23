@@ -75,12 +75,13 @@ public class EntityAirLevelChangeScriptEvent extends BukkitScriptEvent implement
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        String determination = determinationObj.toString();
         if (ArgumentHelper.matchesInteger(determination)) {
             air = ArgumentHelper.getIntegerFrom(determination);
             return true;
         }
-        return super.applyDetermination(container, determination);
+        return super.applyDetermination(path, determinationObj);
     }
 
     @Override

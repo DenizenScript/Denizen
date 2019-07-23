@@ -73,7 +73,8 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        String determination = determinationObj.toString();
         if (determination.toUpperCase().equals("NOT_SIGNING")) {
             signing = new ElementTag(false);
         }
@@ -90,7 +91,7 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
                 Debug.echoError("Script '" + determination + "' is valid, but not of type 'book'!");
             }
         }
-        return super.applyDetermination(container, determination);
+        return super.applyDetermination(path, determinationObj);
     }
 
     @Override

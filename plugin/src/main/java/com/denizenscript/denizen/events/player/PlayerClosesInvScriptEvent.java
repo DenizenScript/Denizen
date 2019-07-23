@@ -73,11 +73,6 @@ public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
-        return super.applyDetermination(container, determination);
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         // TODO: Store the player?
         return new BukkitScriptEntryData(entity.isPlayer() ? entity.getDenizenPlayer() : null, null);

@@ -59,11 +59,6 @@ public class SheepRegrowsScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public boolean applyDetermination(ScriptContainer container, String determination) {
-        return super.applyDetermination(container, determination);
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return entity;
