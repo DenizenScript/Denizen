@@ -100,7 +100,7 @@ public class DenizenChat implements VocalChord {
                 Iterator<Talkable> iter = context.iterator();
                 int i = 0;
                 while (iter.hasNext()) {
-                    if (i == format.length) {
+                    if (i == format.length - 1) {
                         parsed.append(format[i]);
                         break;
                     }

@@ -31,7 +31,7 @@ public class DenizenSpeechController implements SpeechController {
                 return;
             }
         }
-        (CitizensAPI.getSpeechFactory().getVocalChord("denizen_chat")).talk(context);
+        CitizensAPI.getSpeechFactory().getVocalChord("denizen_chat").talk(context);
     }
 
     @Override
