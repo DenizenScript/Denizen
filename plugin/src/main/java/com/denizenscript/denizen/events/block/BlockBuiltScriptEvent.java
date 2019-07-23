@@ -4,7 +4,7 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -78,10 +78,12 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        String lower = CoreUtilities.toLowerCase(determination);
-        if (lower.equals("buildable")) {
-            cancelled = false;
+        if (determinationObj instanceof ElementTag) {
+            String determination = determinationObj.toString();
+            String lower = CoreUtilities.toLowerCase(determination);
+            if (lower.equals("buildable")) {
+                cancelled = false;
+            }
         }
         return super.applyDetermination(path, determinationObj);
     }

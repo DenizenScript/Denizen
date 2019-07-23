@@ -6,8 +6,8 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -67,9 +67,8 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        if (ArgumentHelper.matchesInteger(determination)) {
-            xp = ArgumentHelper.getIntegerFrom(determination);
+        if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
+            xp = ((ElementTag) determinationObj).asInt();
             return true;
         }
         return super.applyDetermination(path, determinationObj);

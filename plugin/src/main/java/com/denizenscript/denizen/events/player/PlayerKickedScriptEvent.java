@@ -73,22 +73,23 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        String lower = CoreUtilities.toLowerCase(determination);
-        if (lower.startsWith("message:")) {
-            message = new ElementTag(lower.substring("message:".length()));
-            return true;
-        }
-        else if (lower.startsWith("reason:")) {
-            reason = new ElementTag(lower.substring("reason:".length()));
-            return true;
-        }
-        else if (lower.startsWith("fly_cooldown:")) {
-            DurationTag duration = DurationTag.valueOf(lower.substring("fly_cooldown:".length()));
-            if (duration != null) {
-                NMSHandler.getInstance().getPlayerHelper().setFlyKickCooldown(player.getPlayerEntity(), (int) duration.getTicks());
-                cancelled = true;
+        if (determinationObj instanceof ElementTag) {
+            String lower = CoreUtilities.toLowerCase(determinationObj.toString());
+            if (lower.startsWith("message:")) {
+                message = new ElementTag(lower.substring("message:".length()));
                 return true;
+            }
+            else if (lower.startsWith("reason:")) {
+                reason = new ElementTag(lower.substring("reason:".length()));
+                return true;
+            }
+            else if (lower.startsWith("fly_cooldown:")) {
+                DurationTag duration = DurationTag.valueOf(lower.substring("fly_cooldown:".length()));
+                if (duration != null) {
+                    NMSHandler.getInstance().getPlayerHelper().setFlyKickCooldown(player.getPlayerEntity(), (int) duration.getTicks());
+                    cancelled = true;
+                    return true;
+                }
             }
         }
         return super.applyDetermination(path, determinationObj);

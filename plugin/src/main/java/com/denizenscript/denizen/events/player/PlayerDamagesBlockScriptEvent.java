@@ -4,6 +4,7 @@ import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
@@ -76,10 +77,11 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        if (CoreUtilities.toLowerCase(determination).equals("instabreak")) {
-            instabreak = true;
-            return true;
+        if (determinationObj instanceof ElementTag) {
+            if (CoreUtilities.toLowerCase(determinationObj.toString()).equals("instabreak")) {
+                instabreak = true;
+                return true;
+            }
         }
         return super.applyDetermination(path, determinationObj);
     }

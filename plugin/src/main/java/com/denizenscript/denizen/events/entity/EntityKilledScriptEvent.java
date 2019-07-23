@@ -6,7 +6,6 @@ import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -121,9 +120,8 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        if (ArgumentHelper.matchesDouble(determination)) {
-            damage = new ElementTag(ArgumentHelper.getDoubleFrom(determination));
+        if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isDouble()) {
+            damage = (ElementTag) determinationObj;
             return true;
         }
         return super.applyDetermination(path, determinationObj);

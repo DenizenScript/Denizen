@@ -7,7 +7,6 @@ import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -18,30 +17,30 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
 
-// <--[event]
-// @Events
-// player prepares anvil craft item
-// player prepares anvil craft <item>
-//
-// @Regex ^on player prepares anvil craft [^\s]+$
-//
-// @Triggers when a player prepares an anvil to craft an item.
-//
-// @Warning The player doing the crafting is estimated and may be inaccurate.
-//
-// @Context
-// <context.inventory> returns the InventoryTag of the anvil inventory.
-// <context.item> returns the ItemTag to be crafted.
-// <context.repair_cost> returns an Element(Number) of the repair cost.
-// <context.new_name> returns an ElementTag of the new name.
-//
-// @Determine
-// Element(Number) to set the repair cost.
-// ItemTag to change the item that is crafted.
-//
-// -->
-
 public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent implements Listener {
+
+    // <--[event]
+    // @Events
+    // player prepares anvil craft item
+    // player prepares anvil craft <item>
+    //
+    // @Regex ^on player prepares anvil craft [^\s]+$
+    //
+    // @Triggers when a player prepares an anvil to craft an item.
+    //
+    // @Warning The player doing the crafting is estimated and may be inaccurate.
+    //
+    // @Context
+    // <context.inventory> returns the InventoryTag of the anvil inventory.
+    // <context.item> returns the ItemTag to be crafted.
+    // <context.repair_cost> returns an Element(Number) of the repair cost.
+    // <context.new_name> returns an ElementTag of the new name.
+    //
+    // @Determine
+    // Element(Number) to set the repair cost.
+    // ItemTag to change the item that is crafted.
+    //
+    // -->
 
     public PlayerPreparesAnvilCraftScriptEvent() {
         instance = this;
@@ -79,19 +78,17 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        if (ArgumentHelper.matchesInteger(determination)) {
-            repairCost = new ElementTag(determination);
+        if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
+            repairCost = (ElementTag) determinationObj;
             return true;
         }
-        else if (ItemTag.matches(determination)) {
+        String determination = determinationObj.toString();
+        if (ItemTag.matches(determination)) {
             result = ItemTag.valueOf(determination, path.container);
             resultChanged = true;
             return true;
         }
-        else {
-            return super.applyDetermination(path, determinationObj);
-        }
+        return super.applyDetermination(path, determinationObj);
     }
 
     @Override

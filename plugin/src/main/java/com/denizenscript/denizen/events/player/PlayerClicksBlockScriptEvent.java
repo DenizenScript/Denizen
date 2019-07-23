@@ -175,7 +175,6 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
         wasCancellationAltered = true;
         return super.applyDetermination(path, determinationObj);
     }

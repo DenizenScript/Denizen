@@ -74,8 +74,7 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
-        String lower = CoreUtilities.toLowerCase(determination);
-        if (EntityTag.matches(lower)) {
+        if (EntityTag.matches(determination)) {
             is_hatching = true;
             type = EntityTag.valueOf(determination).getBukkitEntityType();
             return true;

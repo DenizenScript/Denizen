@@ -3,9 +3,8 @@ package com.denizenscript.denizen.events.block;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
@@ -69,9 +68,8 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        if (ArgumentHelper.matchesInteger(determination)) {
-            event.setBurnTime(ArgumentHelper.getIntegerFrom(determination));
+        if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
+            event.setBurnTime(((ElementTag) determinationObj).asInt());
             return true;
         }
         return super.applyDetermination(path, determinationObj);

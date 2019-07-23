@@ -99,42 +99,42 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        String lower = CoreUtilities.toLowerCase(determination);
-        if (lower.startsWith("format:")) {
-            String name = determination.substring("format:".length());
-            FormatScriptContainer formatscr = ScriptRegistry.getScriptContainer(name);
-            if (formatscr == null) {
-                Debug.echoError("Could not find format script matching '" + name + '\'');
-            }
-            else {
-                String formatstr = formatscr.getFormatText(null, player);
-                if (com.denizenscript.denizencore.utilities.debugging.Debug.verbose) {
-                    Debug.log("Setting format to " + formatstr);
+        if (determinationObj instanceof ElementTag) {
+            String determination = determinationObj.toString();
+            String lower = CoreUtilities.toLowerCase(determination);
+            if (lower.startsWith("format:")) {
+                String name = determination.substring("format:".length());
+                FormatScriptContainer formatscr = ScriptRegistry.getScriptContainer(name);
+                if (formatscr == null) {
+                    Debug.echoError("Could not find format script matching '" + name + '\'');
                 }
-                format = new ElementTag(formatstr);
+                else {
+                    String formatstr = formatscr.getFormatText(null, player);
+                    if (com.denizenscript.denizencore.utilities.debugging.Debug.verbose) {
+                        Debug.log("Setting format to " + formatstr);
+                    }
+                    format = new ElementTag(formatstr);
+                }
             }
-        }
-        else if (lower.startsWith("raw_format:")) {
-            String form = determination.substring("raw_format:".length());
-            format = new ElementTag(form);
-        }
-        else if (lower.startsWith("recipients:")) {
-            String rec_new = determination.substring("recipients:".length());
-            ListTag recs = ListTag.valueOf(rec_new);
-            List<PlayerTag> players = recs.filter(PlayerTag.class, path.container);
-            recipients.clear();
-            for (PlayerTag player : players) {
-                recipients.add(player.getPlayerEntity());
+            else if (lower.startsWith("raw_format:")) {
+                String form = determination.substring("raw_format:".length());
+                format = new ElementTag(form);
             }
+            else if (lower.startsWith("recipients:")) {
+                String rec_new = determination.substring("recipients:".length());
+                ListTag recs = ListTag.valueOf(rec_new);
+                List<PlayerTag> players = recs.filter(PlayerTag.class, path.container);
+                recipients.clear();
+                for (PlayerTag player : players) {
+                    recipients.add(player.getPlayerEntity());
+                }
+            }
+            else if (!isDefaultDetermination(determinationObj)) {
+                message = new ElementTag(determination);
+            }
+            return true;
         }
-        else if (!isDefaultDetermination(determinationObj)) {
-            message = new ElementTag(determination);
-        }
-        else {
-            return super.applyDetermination(path, determinationObj);
-        }
-        return true;
+        return super.applyDetermination(path, determinationObj);
     }
 
     @Override

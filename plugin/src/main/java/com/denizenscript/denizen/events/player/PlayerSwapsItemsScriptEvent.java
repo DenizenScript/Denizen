@@ -5,6 +5,7 @@ import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -61,15 +62,17 @@ public class PlayerSwapsItemsScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        String lower = CoreUtilities.toLowerCase(determination);
-        if (lower.startsWith("main:")) {
-            event.setMainHandItem(ItemTag.valueOf(determination.substring("main:".length()), path.container).getItemStack());
-            return true;
-        }
-        else if (lower.startsWith("offhand:")) {
-            event.setOffHandItem(ItemTag.valueOf(determination.substring("offhand:".length()), path.container).getItemStack());
-            return true;
+        if (determinationObj instanceof ElementTag) {
+            String determination = determinationObj.toString();
+            String lower = CoreUtilities.toLowerCase(determination);
+            if (lower.startsWith("main:")) {
+                event.setMainHandItem(ItemTag.valueOf(determination.substring("main:".length()), path.container).getItemStack());
+                return true;
+            }
+            else if (lower.startsWith("offhand:")) {
+                event.setOffHandItem(ItemTag.valueOf(determination.substring("offhand:".length()), path.container).getItemStack());
+                return true;
+            }
         }
         return super.applyDetermination(path, determinationObj);
     }

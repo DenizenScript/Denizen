@@ -4,7 +4,6 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockRedstoneEvent;
@@ -61,13 +60,9 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        if (!isDefaultDetermination(determinationObj)) {
-            ElementTag power = new ElementTag(determination);
-            if (power.isInt()) {
-                event.setNewCurrent(power.asInt());
-                return true;
-            }
+        if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
+            event.setNewCurrent(((ElementTag) determinationObj).asInt());
+            return true;
         }
         return super.applyDetermination(path, determinationObj);
     }

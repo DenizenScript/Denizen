@@ -85,11 +85,12 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        Argument arg = Argument.valueOf(determination);
-        if (arg.matchesPrefix("pickup")) {
-            pickup_cancel = !arg.asElement().asBoolean();
-            return true;
+        if (determinationObj instanceof ElementTag) {
+            Argument arg = Argument.valueOf(determinationObj.toString());
+            if (arg.matchesPrefix("pickup")) {
+                pickup_cancel = !arg.asElement().asBoolean();
+                return true;
+            }
         }
         return super.applyDetermination(path, determinationObj);
     }

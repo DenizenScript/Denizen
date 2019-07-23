@@ -76,17 +76,19 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        String lower = CoreUtilities.toLowerCase(determination);
-        if (lower.startsWith("message:")) {
-            message = new ElementTag(determination.substring("message:".length()));
-            messageModified = true;
-            return true;
-        }
-        if (lower.startsWith("raw_json:")) {
-            rawJson = new ElementTag(determination.substring("raw_json:".length()));
-            rawJsonModified = true;
-            return true;
+        if (determinationObj instanceof ElementTag && !isDefaultDetermination(determinationObj)) {
+            String determination = determinationObj.toString();
+            String lower = CoreUtilities.toLowerCase(determination);
+            if (lower.startsWith("message:")) {
+                message = new ElementTag(determination.substring("message:".length()));
+                messageModified = true;
+                return true;
+            }
+            if (lower.startsWith("raw_json:")) {
+                rawJson = new ElementTag(determination.substring("raw_json:".length()));
+                rawJsonModified = true;
+                return true;
+            }
         }
         return super.applyDetermination(path, determinationObj);
     }

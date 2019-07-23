@@ -7,7 +7,6 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -90,25 +89,26 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        if (ArgumentHelper.matchesInteger(determination)) {
-            cost = ArgumentHelper.getIntegerFrom(determination);
-            return true;
+        if (determinationObj instanceof ElementTag) {
+            if (((ElementTag) determinationObj).isInt()) {
+                cost = ((ElementTag) determinationObj).asInt();
+                return true;
+            }
+            String determination = determinationObj.toString();
+            String lower = CoreUtilities.toLowerCase(determination);
+            if (lower.startsWith("result:")) {
+                String itemText = determination.substring("result:".length());
+                item = ItemTag.valueOf(itemText, path.container);
+                itemEdited = true;
+                return true;
+            }
+            else if (lower.startsWith("enchants:")) {
+                String itemText = determination.substring("enchants:".length());
+                enchantsRes = ItemTag.valueOf(itemText, path.container);
+                return true;
+            }
         }
-        else if (CoreUtilities.toLowerCase(determination).startsWith("result:")) {
-            String ditem = determination.substring("result:".length());
-            item = ItemTag.valueOf(ditem, path.container);
-            itemEdited = true;
-            return true;
-        }
-        else if (CoreUtilities.toLowerCase(determination).startsWith("enchants:")) {
-            String ditem = determination.substring("enchants:".length());
-            enchantsRes = ItemTag.valueOf(ditem, path.container);
-            return true;
-        }
-        else {
-            return super.applyDetermination(path, determinationObj);
-        }
+        return super.applyDetermination(path, determinationObj);
     }
 
     @Override

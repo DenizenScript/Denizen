@@ -8,7 +8,6 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -18,28 +17,28 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 
-// <--[event]
-// @Events
-// player item takes damage
-// player <item> takes damage
-//
-// @Regex ^on player [^\s]+ takes damage$
-// @Switch in <area>
-//
-// @Cancellable true
-//
-// @Triggers when the player damages an item.
-//
-// @Context
-// <context.damage> returns the amount of damage the item has taken.
-// <context.item> returns the item that has taken damage.
-//
-// @Determine
-// Element(Number) to set the amount of damage the item will take.
-//
-// -->
-
 public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implements Listener {
+
+    // <--[event]
+    // @Events
+    // player item takes damage
+    // player <item> takes damage
+    //
+    // @Regex ^on player [^\s]+ takes damage$
+    // @Switch in <area>
+    //
+    // @Cancellable true
+    //
+    // @Triggers when the player damages an item.
+    //
+    // @Context
+    // <context.damage> returns the amount of damage the item has taken.
+    // <context.item> returns the item that has taken damage.
+    //
+    // @Determine
+    // Element(Number) to set the amount of damage the item will take.
+    //
+    // -->
 
     PlayerItemTakesDamageScriptEvent instance;
     PlayerItemDamageEvent event;
@@ -80,9 +79,8 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        if (ArgumentHelper.matchesInteger(determination)) {
-            damage = new ElementTag(determination);
+        if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
+            damage = (ElementTag) determinationObj;
             return true;
         }
         return super.applyDetermination(path, determinationObj);

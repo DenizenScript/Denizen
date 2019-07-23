@@ -82,9 +82,8 @@ public class DragonPhaseChangeScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
         if (!isDefaultDetermination(determinationObj)) {
-            EnderDragon.Phase phase = EnderDragon.Phase.valueOf(determination.toUpperCase());
+            EnderDragon.Phase phase = EnderDragon.Phase.valueOf(determinationObj.toString().toUpperCase());
             event.setNewPhase(phase);
             return true;
         }
