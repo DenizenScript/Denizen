@@ -6,7 +6,7 @@ import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptHelper;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.npc.DenizenNPCHelper;
@@ -174,9 +174,12 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         try {
             return getCitizen().getEntity();
         }
-        catch (NullPointerException e) {
-            Debug.log("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC entity. " +
+        catch (NullPointerException ex) {
+            Debug.echoError("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC entity. " +
                     "Has this NPC been removed?");
+            if (Debug.verbose) {
+                Debug.echoError(ex);
+            }
             return null;
         }
     }
@@ -191,9 +194,12 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 return null;
             }
         }
-        catch (NullPointerException e) {
-            Debug.log("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC livingEntity. " +
+        catch (NullPointerException ex) {
+            Debug.echoError("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC livingEntity. " +
                     "Has this NPC been removed?");
+            if (Debug.verbose) {
+                Debug.echoError(ex);
+            }
             return null;
         }
     }
@@ -204,9 +210,12 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         try {
             return new EntityTag(getCitizen().getEntity());
         }
-        catch (NullPointerException e) {
-            Debug.log("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC EntityTag. " +
+        catch (NullPointerException ex) {
+            Debug.echoError("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC EntityTag. " +
                     "Has this NPC been removed?");
+            if (Debug.verbose) {
+                Debug.echoError(ex);
+            }
             return null;
         }
     }
@@ -241,10 +250,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
     }
 
     public InteractScriptContainer getInteractScriptQuietly(PlayerTag player, Class<? extends AbstractTrigger> triggerType) {
-        boolean db = Debug.showDebug;
-        Debug.showDebug = false;
+        InteractScriptHelper.debugGet = false;
         InteractScriptContainer script = InteractScriptHelper.getInteractScript(this, player, triggerType);
-        Debug.showDebug = db;
+        InteractScriptHelper.debugGet = true;
         return script;
     }
 

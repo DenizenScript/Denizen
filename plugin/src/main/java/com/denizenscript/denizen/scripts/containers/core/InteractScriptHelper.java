@@ -16,6 +16,8 @@ import java.util.List;
 
 public class InteractScriptHelper {
 
+    public static boolean debugGet = true;
+
     /**
      * Gets the InteractScript from a NPC Denizen for a Player and returns the appropriate ScriptContainer.
      * Returns null if no script found.
@@ -53,7 +55,7 @@ public class InteractScriptHelper {
         }
 
         // Alert the dBugger -- trying to find a good interact script!
-        if (Debug.shouldDebug(assignmentScript)) {
+        if (Debug.shouldDebug(assignmentScript) && debugGet) {
             Debug.log(DebugElement.Header, "Getting interact script: n@" + npc.getName() + "/p@" + player.getName());
         }
 
@@ -103,7 +105,7 @@ public class InteractScriptHelper {
                         interactableScripts.add(new PriorityPair(priority, entry.split(" ", 2)[1]));
                     }
                     else {
-                        if (Debug.shouldDebug(interactScript)) {
+                        if (Debug.shouldDebug(interactScript) && debugGet) {
                             Debug.log(ChatColor.GOLD + " ...but, isn't cooled down, yet! Skipping.");
                         }
                     }
@@ -119,7 +121,7 @@ public class InteractScriptHelper {
                 Debug.echoError(e);
             }
 
-            if (Debug.shouldDebug(assignmentScript)) {
+            if (Debug.shouldDebug(assignmentScript) && debugGet) {
                 Debug.log(DebugElement.Spacer, null);
             }
             // Next entry!
@@ -133,13 +135,13 @@ public class InteractScriptHelper {
         if (interactableScripts.size() == 1) {
             String script = interactableScripts.get(0).getName();
             InteractScriptContainer interactScript = ScriptRegistry.getScriptContainer(script.replace("^", ""));
-            if (Debug.shouldDebug(interactScript)) {
+            if (Debug.shouldDebug(interactScript) && debugGet) {
                 Debug.echoApproval("Highest scoring script is " + script + ".");
             }
-            if (Debug.shouldDebug(assignmentScript)) {
+            if (Debug.shouldDebug(assignmentScript) && debugGet) {
                 Debug.log("Current step for this script is: " + getCurrentStep(player, script));
             }
-            if (Debug.shouldDebug(interactScript)) {
+            if (Debug.shouldDebug(interactScript) && debugGet) {
                 Debug.log(DebugElement.Footer, "");
             }
             return interactScript;
@@ -147,7 +149,7 @@ public class InteractScriptHelper {
 
         // Or, if list is empty.. no scripts meet requirements!
         else if (interactableScripts.isEmpty()) {
-            if (Debug.shouldDebug(assignmentScript)) {
+            if (Debug.shouldDebug(assignmentScript) && debugGet) {
                 Debug.log(ChatColor.YELLOW + "+> " + ChatColor.WHITE + "No scripts meet requirements!");
                 Debug.log(DebugElement.Footer, "");
             }
@@ -165,7 +167,7 @@ public class InteractScriptHelper {
             InteractScriptContainer interactScript = ScriptRegistry
                     .getScriptContainer(interactableScripts.get(a).name.replace("^", ""));
 
-            if (Debug.shouldDebug(interactScript)) {
+            if (Debug.shouldDebug(interactScript) && debugGet) {
                 Debug.log("Checking script '" + interactableScripts.get(a).getName() + "'.");
             }
 
@@ -177,7 +179,7 @@ public class InteractScriptHelper {
                 // This is an Overlay Assignment, check for the appropriate Trigger Script...
                 // If Trigger exists, cool, this is our script.
                 if (interactScript.containsTriggerInStep(getCurrentStep(player, interactScript.getName()), trigger)) {
-                    if (Debug.shouldDebug(interactScript)) {
+                    if (Debug.shouldDebug(interactScript) && debugGet) {
                         Debug.log("...found trigger!");
                         Debug.echoApproval("Highest scoring script is " + interactScript.getName() + ".");
                         Debug.log("Current step for this script is: " + getCurrentStep(player, interactScript.getName()));
@@ -186,7 +188,7 @@ public class InteractScriptHelper {
                     return interactScript;
                 }
                 else {
-                    if (Debug.shouldDebug(interactScript)) {
+                    if (Debug.shouldDebug(interactScript) && debugGet) {
                         Debug.log("...no trigger on this overlay assignment. Skipping.");
                     }
                 }
@@ -194,7 +196,7 @@ public class InteractScriptHelper {
 
             // Not an Overlay Assignment, so return this script, which is the highest scoring.
             else {
-                if (Debug.shouldDebug(interactScript)) {
+                if (Debug.shouldDebug(interactScript) && debugGet) {
                     Debug.log("...script is good!");
                     Debug.echoApproval("Highest scoring script is " + interactScript.getName() + ".");
                     Debug.log("Current step for this script is: " + getCurrentStep(player, interactScript.getName()));
