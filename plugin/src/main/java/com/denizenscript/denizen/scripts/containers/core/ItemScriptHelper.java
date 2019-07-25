@@ -3,7 +3,6 @@ package com.denizenscript.denizen.scripts.containers.core;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
-import com.denizenscript.denizen.events.player.ItemRecipeFormedScriptEvent;
 import com.denizenscript.denizen.events.player.PlayerCraftsItemScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.ItemTag;
@@ -415,7 +414,7 @@ public class ItemScriptHelper implements Listener {
                                 }
                             }
 
-                            ItemRecipeFormedScriptEvent event = ItemRecipeFormedScriptEvent.instance;
+                            /*ItemRecipeFormedScriptEvent event = ItemRecipeFormedScriptEvent.instance;
                             event.result = result;
                             event.recipe = recipeList;
                             event.inventory = inventory;
@@ -426,9 +425,9 @@ public class ItemScriptHelper implements Listener {
                             if (event.cancelled) {
                                 inventory.setResult(null);
                             }
-                            else {
+                            else*/ {
                                 // If this was a valid match, set the crafting's result
-                                inventory.setResult(event.result.getItemStack());
+                                inventory.setResult(result.getItemStack());
                             }
 
                             // Update the player's inventory
