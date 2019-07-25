@@ -34,10 +34,6 @@
             <id>everything</id>
             <url>http://repo.citizensnpcs.co</url>
         </repository>
-        <repository>
-            <id>papermc</id>
-            <url>https://papermc.io/repo/repository/maven-public/</url>
-        </repository>
     </repositories>
 
     <ciManagement>
