@@ -8,7 +8,6 @@ import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -18,11 +17,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements Listener {
 
-    // TODO: de-collide with breaks item
     // <--[event]
     // @Events
-    // player breaks block
-    // player breaks <material>
     // player breaks block
     // player breaks <material>
     //
@@ -54,12 +50,14 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     public static PlayerBreaksBlockScriptEvent instance;
     public LocationTag location;
     public MaterialTag material;
-    public ElementTag xp;
     public BlockBreakEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.toLowerCase(s).startsWith("player breaks");
+    public boolean couldMatch(ScriptPath path) {
+        if (path.eventArgLowerAt(2).equals("item") || path.eventArgLowerAt(3).equals("held")) {
+            return false;
+        }
+        return path.eventLower.startsWith("player breaks");
     }
 
     @Override
@@ -90,27 +88,28 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
-        String lower = CoreUtilities.toLowerCase(determination);
         Block block = event.getBlock();
-        if (lower.equals("nothing")) {
+        if (determinationObj instanceof ElementTag) {
+            String lower = CoreUtilities.toLowerCase(determination);
+            if (lower.equals("nothing")) {
+                cancelled = true;
+                block.setType(Material.AIR);
+                return true;
+            }
+            else if (((ElementTag) determinationObj).isInt()) {
+                event.setExpToDrop(((ElementTag) determinationObj).asInt());
+                return true;
+            }
+        }
+        if (Argument.valueOf(determination).matchesArgumentList(ItemTag.class)) {
             cancelled = true;
             block.setType(Material.AIR);
-        }
-        else if (ArgumentHelper.matchesInteger(determination)) {
-            xp = Argument.valueOf(lower).asElement();
-        }
-        else if (Argument.valueOf(lower).matchesArgumentList(ItemTag.class)) {
-            cancelled = true;
-            block.setType(Material.AIR);
-
             for (ItemTag newItem : ListTag.valueOf(determination).filter(ItemTag.class, path.container)) {
                 block.getWorld().dropItemNaturally(block.getLocation(), newItem.getItemStack()); // Drop each item
             }
+            return true;
         }
-        else {
-            return super.applyDetermination(path, determinationObj);
-        }
-        return true;
+        return super.applyDetermination(path, determinationObj);
     }
 
     @Override
@@ -135,7 +134,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
             return cuboids;
         }
         else if (name.equals("xp")) {
-            return xp;
+            return new ElementTag(event.getExpToDrop());
         }
         return super.getContext(name);
     }
@@ -147,10 +146,8 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         }
         material = new MaterialTag(event.getBlock());
         location = new LocationTag(event.getBlock().getLocation());
-        xp = new ElementTag(event.getExpToDrop());
         this.event = event;
         fire(event);
-        event.setExpToDrop(xp.asInt());
     }
 
 }

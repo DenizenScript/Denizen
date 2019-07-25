@@ -1,15 +1,12 @@
 package com.denizenscript.denizen.events.player;
 
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerAnimationEvent;
@@ -21,6 +18,7 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
     // player animates (<animation>)
     //
     // @Regex ^on player animates [^\s]+$
+    //
     // @Switch in <area>
     //
     // @Cancellable true
@@ -38,26 +36,24 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
 
     public static PlayerAnimatesScriptEvent instance;
     public String animation;
-    private LocationTag location;
     public PlayerAnimationEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.toLowerCase(s).startsWith("player animates");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.startsWith("player animates");
     }
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (EntityTag.isNPC(event.getPlayer())) {
+        if (!runInCheck(path, event.getPlayer().getLocation())) {
             return false;
         }
-
         String ani = path.eventArgLowerAt(2);
         if (ani.length() > 0 && !ani.equals("in") && !ani.equalsIgnoreCase(animation)) {
             return false;
         }
 
-        return runInCheck(path, location);
+        return true;
     }
 
     @Override
@@ -83,7 +79,6 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
         if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        location = new LocationTag(event.getPlayer().getLocation());
         animation = event.getAnimationType().name();
         this.event = event;
         fire(event);

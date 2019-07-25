@@ -12,7 +12,6 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,18 +19,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
 
-    // TODO: in area
     // <--[event]
     // @Events
     // player chats
     //
     // @Regex ^on player chats$
+    //
     // @Switch in <area>
     //
     // @Cancellable true
@@ -60,18 +58,14 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
 
     public PlayerChatEvent pcEvent;
     public AsyncPlayerChatEvent apcEvent;
-    public ElementTag message;
-    public ElementTag format;
     public PlayerTag player;
-    public Set<Player> recipients;
 
     public SyncChatHandler sch = new SyncChatHandler();
     public AsyncChatHandler asch = new AsyncChatHandler();
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("player chats");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.startsWith("player chats");
     }
 
     @Override
@@ -113,24 +107,46 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
                     if (com.denizenscript.denizencore.utilities.debugging.Debug.verbose) {
                         Debug.log("Setting format to " + formatstr);
                     }
-                    format = new ElementTag(formatstr);
+                    if (pcEvent != null) {
+                        pcEvent.setFormat(formatstr);
+                    }
+                    else {
+                        apcEvent.setFormat(formatstr);
+                    }
                 }
             }
             else if (lower.startsWith("raw_format:")) {
                 String form = determination.substring("raw_format:".length());
-                format = new ElementTag(form);
+                if (pcEvent != null) {
+                    pcEvent.setFormat(form);
+                }
+                else {
+                    apcEvent.setFormat(form);
+                }
             }
             else if (lower.startsWith("recipients:")) {
                 String rec_new = determination.substring("recipients:".length());
                 ListTag recs = ListTag.valueOf(rec_new);
                 List<PlayerTag> players = recs.filter(PlayerTag.class, path.container);
+                Set<Player> recipients;
+                if (pcEvent != null) {
+                    recipients = pcEvent.getRecipients();
+                }
+                else {
+                    recipients = apcEvent.getRecipients();
+                }
                 recipients.clear();
                 for (PlayerTag player : players) {
                     recipients.add(player.getPlayerEntity());
                 }
             }
             else if (!isDefaultDetermination(determinationObj)) {
-                message = new ElementTag(determination);
+                if (pcEvent != null) {
+                    pcEvent.setMessage(determination);
+                }
+                else {
+                    apcEvent.setMessage(determination);
+                }
             }
             return true;
         }
@@ -145,14 +161,14 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("message")) {
-            return message;
+            return new ElementTag(pcEvent != null ? pcEvent.getMessage() : apcEvent.getMessage());
         }
         else if (name.equals("format")) {
-            return format;
+            return new ElementTag(pcEvent != null ? pcEvent.getFormat() : apcEvent.getFormat());
         }
         if (name.equals("recipients")) {
             ListTag list = new ListTag();
-            for (Player tplayer : recipients) {
+            for (Player tplayer : pcEvent != null ? pcEvent.getRecipients() : apcEvent.getRecipients()) {
                 list.add(PlayerTag.mirrorBukkitPlayer(tplayer).identify());
             }
             return list;
@@ -163,34 +179,20 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
     class SyncChatHandler implements Listener {
         @EventHandler
         public void onSyncChat(PlayerChatEvent event) {
-            message = new ElementTag(event.getMessage());
-            format = new ElementTag(event.getFormat());
-            recipients = new HashSet<>(event.getRecipients());
             pcEvent = event;
             apcEvent = null;
-            player = EntityTag.getPlayerFrom(event.getPlayer());
+            player = new PlayerTag(event.getPlayer());
             fire(event);
-            event.setMessage(message.asString());
-            event.setFormat(format.asString());
-            event.getRecipients().clear();
-            event.getRecipients().addAll(recipients);
         }
     }
 
     class AsyncChatHandler implements Listener {
         @EventHandler
         public void onAsyncChat(AsyncPlayerChatEvent event) {
-            message = new ElementTag(event.getMessage());
-            format = new ElementTag(event.getFormat());
-            recipients = new HashSet<>(event.getRecipients());
             pcEvent = null;
             apcEvent = event;
-            player = EntityTag.getPlayerFrom(event.getPlayer());
+            player = new PlayerTag(event.getPlayer());
             fire(event);
-            event.setMessage(message.asString());
-            event.setFormat(format.asString());
-            event.getRecipients().clear();
-            event.getRecipients().addAll(recipients);
         }
     }
 }

@@ -1,13 +1,12 @@
 package com.denizenscript.denizen.events.player;
 
+import com.denizenscript.denizen.objects.BiomeTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,7 +14,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements Listener {
 
-    // TODO: in area?
     // <--[event]
     // @Events
     // player enters <biome>
@@ -24,6 +22,8 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
     // player exits biome
     //
     // @Regex ^on player (enters|exits) [^\s]+$
+    //
+    // @Switch in <area>
     //
     // @Warning Cancelling this event will fire a similar event immediately after.
     //
@@ -34,8 +34,8 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
     // @Context
     // <context.from> returns the block location moved from.
     // <context.to> returns the block location moved to.
-    // <context.old_biome> returns an element of the biome being left.
-    // <context.new_biome> returns an element of the biome being entered.
+    // <context.old_biome> returns the biome being left.
+    // <context.new_biome> returns the biome being entered.
     //
     // -->
 
@@ -47,15 +47,14 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
 
     public LocationTag from;
     public LocationTag to;
-    public ElementTag old_biome;
-    public ElementTag new_biome;
+    public BiomeTag old_biome;
+    public BiomeTag new_biome;
     public PlayerMoveEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("player enters")
-                || lower.startsWith("player exits");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.startsWith("player enters")
+                || path.eventLower.startsWith("player exits");
     }
 
     @Override
@@ -63,9 +62,19 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
         String biome_test = path.eventArgAt(2);
         String direction = path.eventArgAt(1);
 
-        return biome_test.equals("biome")
-                || (direction.equals("enters") && biome_test.equals(CoreUtilities.toLowerCase(new_biome.toString())))
-                || (direction.equals("exits") && biome_test.equals(CoreUtilities.toLowerCase(old_biome.toString())));
+        if (!runInCheck(path, from) && !runInCheck(path, to)) {
+            return false;
+        }
+
+        BiomeTag biome = direction.equals("enters") ? new_biome : (direction.equals("exits") ? old_biome : null);
+        if (biome == null) {
+            return false;
+        }
+
+        if (!biome_test.equals("biome") && !biome_test.equals(CoreUtilities.toLowerCase(biome.getBiome().getName()))) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -75,7 +84,6 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        // TODO: Store the player / npc?
         return new BukkitScriptEntryData(event != null ? EntityTag.getPlayerFrom(event.getPlayer()) : null, null);
     }
 
@@ -100,8 +108,8 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
     public void onPlayerEntersExitsBiome(PlayerMoveEvent event) {
         from = new LocationTag(event.getFrom());
         to = new LocationTag(event.getTo());
-        old_biome = new ElementTag(from.getBlock().getBiome().name());
-        new_biome = new ElementTag(to.getBlock().getBiome().name());
+        old_biome = new BiomeTag(from.getBlock().getBiome());
+        new_biome = new BiomeTag(to.getBlock().getBiome());
         if (old_biome.identify().equals(new_biome.identify())) {
             return;
         }

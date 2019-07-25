@@ -1,27 +1,27 @@
 package com.denizenscript.denizen.events.player;
 
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 
 public class ItemScrollScriptEvent extends BukkitScriptEvent implements Listener {
 
-    // TODO: in area
-    // TODO: item:x switch
     // <--[event]
     // @Events
     // player scrolls their hotbar
     // player holds item
     //
     // @Regex ^on player (scrolls their hotbar|holds item)$
+    //
+    // @Switch in <area>
+    // @Switch item <item>
     //
     // @Cancellable true
     //
@@ -39,19 +39,22 @@ public class ItemScrollScriptEvent extends BukkitScriptEvent implements Listener
 
     public static ItemScrollScriptEvent instance;
 
-    public ElementTag new_slot;
-    public ElementTag previous_slot;
     public PlayerItemHeldEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("player holds item")
-                || lower.startsWith("player scrolls their hotbar");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.startsWith("player holds item")
+                || path.eventLower.startsWith("player scrolls their hotbar");
     }
 
     @Override
     public boolean matches(ScriptPath path) {
+        if (!runInCheck(path, event.getPlayer().getLocation())) {
+            return false;
+        }
+        if (path.switches.containsKey("item") && !tryItem(new ItemTag(event.getPlayer().getInventory().getItem(event.getNewSlot())), path.switches.get("item"))) {
+            return false;
+        }
         return true;
     }
 
@@ -68,18 +71,16 @@ public class ItemScrollScriptEvent extends BukkitScriptEvent implements Listener
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("new_slot")) {
-            return new_slot;
+            return new ElementTag(event.getNewSlot() + 1);
         }
         else if (name.equals("previous_slot")) {
-            return previous_slot;
+            return new ElementTag(event.getPreviousSlot() + 1);
         }
         return super.getContext(name);
     }
 
     @EventHandler
     public void onPlayerScrollsHotbar(PlayerItemHeldEvent event) {
-        new_slot = new ElementTag(event.getNewSlot() + 1);
-        previous_slot = new ElementTag(event.getPreviousSlot() + 1);
         this.event = event;
         fire(event);
     }

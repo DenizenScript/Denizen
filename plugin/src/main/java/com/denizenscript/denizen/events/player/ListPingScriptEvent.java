@@ -4,8 +4,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;
@@ -27,7 +25,6 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
     //
     // @Determine
     // Element(Number) to change the max player amount that will show
-    // Element(Number)|Element to set the max player amount and change the MOTD.
     // ElementTag to change the MOTD that will show.
     //
     // -->
@@ -38,16 +35,11 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
 
     public static ListPingScriptEvent instance;
 
-    public ElementTag motd;
-    public ElementTag max_players;
-    public ElementTag num_players;
-    public ElementTag address;
     public ServerListPingEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("server list ping");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.startsWith("server list ping");
     }
 
     @Override
@@ -66,16 +58,16 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
         if (determination.length() > 0 && !determination.equalsIgnoreCase("none")) {
             String[] values = determination.split("[\\|" + ListTag.internal_escape + "]", 2);
             if (new ElementTag(values[0]).isInt()) {
-                max_players = new ElementTag(values[0]);
+                event.setMaxPlayers(new ElementTag(values[0]).asInt());
                 if (values.length == 1) {
                     return true;
                 }
             }
             if (values.length == 2) {
-                motd = new ElementTag(values[1]);
+                event.setMotd(values[1]);
             }
             else {
-                motd = new ElementTag(values[0]);
+                event.setMotd(values[0]);
             }
             return true;
         }
@@ -87,29 +79,23 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("motd")) {
-            return motd;
+            return new ElementTag(event.getMotd());
         }
         else if (name.equals("max_players")) {
-            return max_players;
+            return new ElementTag(event.getMaxPlayers());
         }
         else if (name.equals("num_players")) {
-            return num_players;
+            return new ElementTag(event.getNumPlayers());
         }
         else if (name.equals("address")) {
-            return address;
+            return new ElementTag(event.getAddress().toString());
         }
         return super.getContext(name);
     }
 
     @EventHandler
     public void onListPing(ServerListPingEvent event) {
-        motd = new ElementTag(event.getMotd());
-        max_players = new ElementTag(event.getMaxPlayers());
-        num_players = new ElementTag(event.getNumPlayers());
-        address = new ElementTag(event.getAddress().toString());
         this.event = event;
         fire(event);
-        event.setMaxPlayers(max_players.asInt());
-        event.setMotd(motd.asString());
     }
 }

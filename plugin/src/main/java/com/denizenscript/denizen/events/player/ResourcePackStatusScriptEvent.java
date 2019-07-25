@@ -36,9 +36,8 @@ public class ResourcePackStatusScriptEvent extends BukkitScriptEvent {
     public PlayerTag player;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("resource pack status");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.startsWith("resource pack status");
     }
 
     @Override

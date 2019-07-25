@@ -8,8 +8,7 @@ import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.SlowWarning;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,10 +20,11 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
 
     // <--[event]
     // @Events
-    // player breaks item
-    // player breaks <item>
+    // player breaks held item
+    // player breaks held <item>
     //
-    // @Regex ^on player breaks [^\s]+$
+    // @Regex ^on player breaks held [^\s]+$
+    //
     // @Switch in <area>
     //
     // @Cancellable true
@@ -45,18 +45,37 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
     public PlayerItemBreakEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.toLowerCase(s).startsWith("player breaks");
+    public boolean couldMatch(ScriptPath path) {
+        if (path.eventArgLowerAt(2).equals("block")) {
+            return false;
+        }
+        // TODO: *require* "held"
+        return path.eventLower.startsWith("player breaks");
     }
 
     @Override
     public boolean matches(ScriptPath path) {
-        String iCheck = path.eventArgLowerAt(2);
+        boolean isModern = path.eventArgLowerAt(2).equals("held");
+        String iCheck = path.eventArgLowerAt(isModern ? 3 : 2);
         if (!tryItem(item, iCheck)) {
             return false;
         }
-        return runInCheck(path, event.getPlayer().getLocation());
+        if (!isModern && item.getMaterial().getMaterial().isBlock()) { // Prevent "breaks block" collision with old style event.
+            return false;
+        }
+        if (!runInCheck(path, event.getPlayer().getLocation())) {
+            return false;
+        }
+        if (!isModern) {
+            oldStyleEvent.message = oldWarningMessage + " (for event: " + path.toString() + ").";
+            oldStyleEvent.warn();
+        }
+        return true;
     }
+
+    public static String oldWarningMessage = "Event 'player breaks <item>' is old. Use 'player breaks held <item>' instead (this is to prevent conflict with breaks block)";
+
+    public static SlowWarning oldStyleEvent = new SlowWarning("<tofill>");
 
     @Override
     public String getName() {
