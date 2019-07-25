@@ -114,6 +114,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
                         apcEvent.setFormat(formatstr);
                     }
                 }
+                return true;
             }
             else if (lower.startsWith("raw_format:")) {
                 String form = determination.substring("raw_format:".length());
@@ -123,6 +124,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
                 else {
                     apcEvent.setFormat(form);
                 }
+                return true;
             }
             else if (lower.startsWith("recipients:")) {
                 String rec_new = determination.substring("recipients:".length());
@@ -139,6 +141,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
                 for (PlayerTag player : players) {
                     recipients.add(player.getPlayerEntity());
                 }
+                return true;
             }
             else if (!isDefaultDetermination(determinationObj)) {
                 if (pcEvent != null) {
@@ -147,8 +150,8 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
                 else {
                     apcEvent.setMessage(determination);
                 }
+                return true;
             }
-            return true;
         }
         return super.applyDetermination(path, determinationObj);
     }
