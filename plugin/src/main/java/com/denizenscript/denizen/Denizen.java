@@ -498,6 +498,9 @@ public class Denizen extends JavaPlugin {
     public void reloadConfig() {
         super.reloadConfig();
         Settings.refillCache();
+        if (!Settings.showDebug()) {
+            getLogger().warning("Debug is disabled in the Denizen config. This is almost always a mistake, and should not be done in the majority of cases.");
+        }
         SlowWarning.WARNING_RATE = Settings.warningRate();
     }
 
