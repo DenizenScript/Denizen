@@ -73,12 +73,12 @@ public class EconomyScriptContainer extends ScriptContainer {
     //   # The script may determine a failure message if the withdraw was refused. Determine nothing for no error.
     //   # Use def 'amount' for the amount to withdraw.
     //   withdraw:
-    //   - flag <player> money:-:<def[amount]>
+    //   - flag <player> money:-:<[amount]>
     //   # A script that adds the amount of money needed to a player.
     //   # The script may determine a failure message if the deposit was refused. Determine nothing for no error.
     //   # Use def 'amount' for the amount to deposit.
     //   deposit:
-    //   - flag <player> money:+:<def[amount]>
+    //   - flag <player> money:+:<[amount]>
     //
     // </code>
     //
@@ -89,7 +89,7 @@ public class EconomyScriptContainer extends ScriptContainer {
         public EconomyScriptContainer backingScript;
 
         public String autoTagAmount(String value, OfflinePlayer player, double amount) {
-            return autoTag(value.replace("<amount", "<el@val[" + amount + "]"), player);
+            return autoTag(value.replace("<amount", "<element[" + amount + "]"), player);
         }
 
         public String autoTag(String value, OfflinePlayer player) {

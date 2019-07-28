@@ -50,7 +50,7 @@ public class BlockCrackCommand extends AbstractCommand {
     // @Usage
     // Use to show all 10 layers of block cracking at the same time.
     // - repeat 10:
-    //   - blockcrack l@12,43,20,world progress:<def[value]> stack
+    //   - blockcrack l@12,43,20,world progress:<[value]> stack
     // -->
 
     @Override

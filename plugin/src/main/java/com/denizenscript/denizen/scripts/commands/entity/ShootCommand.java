@@ -53,9 +53,9 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
     // Normally, a list of entities will spawn mounted on top of each other. To have them instead fire separately and spread out,
     // specify the 'spread' argument with a decimal number indicating how wide to spread the entities.
     // In the script ran when the arrow lands, the following definitions will be available:
-    // <def[shot_entities]> for all shot entities, <def[last_entity]> for the last one (The controlling entity),
-    // <def[location]> for the last known location of the last shot entity, and
-    // <def[hit_entities]> for a list of any entities that were hit by fired projectiles.
+    // <[shot_entities]> for all shot entities, <[last_entity]> for the last one (The controlling entity),
+    // <[location]> for the last known location of the last shot entity, and
+    // <[hit_entities]> for a list of any entities that were hit by fired projectiles.
     // Optionally, specify a speed and 'lead' value to use the experimental arrow-aiming system.
     // Optionally, add 'no_rotate' to prevent the shoot command from rotating launched entities.
     //

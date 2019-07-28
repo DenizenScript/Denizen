@@ -54,7 +54,7 @@ public class WorldBorderCommand extends AbstractCommand {
     //
     // @Usage
     // Use to update a world border's center, and then the size over the course of 10 seconds.
-    // - worldborder <def[world]> center:<def[world].spawn_location> size:100 duration:10s
+    // - worldborder <[world]> center:<[world].spawn_location> size:100 duration:10s
     //
     // @Usage
     // Use to show a client-side world border to the attached player.

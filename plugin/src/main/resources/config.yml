@@ -101,10 +101,10 @@ Commands:
       # set to -1 to disable bystanders overhearing, or 0 for all players on the server to hear
       Range for bystanders: 5.0
     Formats:
-      No target: "[<def[talker].name>]: <def[message]>"
-      To target: "[<def[talker].name>] -> You: <def[message]>"
-      With target to bystanders: "[<def[talker].name>] -> <def[target].name>: <def[message]>"
-      With targets to bystanders: "[<def[talker].name>] -> [<def[targets]>]: <def[message]>"
+      No target: "[<[talker].name>]: <[message]>"
+      To target: "[<[talker].name>] -> You: <[message]>"
+      With target to bystanders: "[<[talker].name>] -> <[target].name>: <[message]>"
+      With targets to bystanders: "[<[talker].name>] -> [<[targets]>]: <[message]>"
   Delete:
         # Whether scripts are allowed to delete files from your server
         # This is mostly to clean up saves, but could potentially be abused.

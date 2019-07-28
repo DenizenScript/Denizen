@@ -52,7 +52,7 @@ public class OpenTradesCommand extends AbstractCommand {
     //
     // @Usage
     // Use to force a player to trade with a villager.
-    // - opentrades <def[villager_entity]>
+    // - opentrades <[villager_entity]>
     // -->
 
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

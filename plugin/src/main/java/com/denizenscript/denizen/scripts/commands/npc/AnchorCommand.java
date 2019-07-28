@@ -42,8 +42,8 @@ public class AnchorCommand extends AbstractCommand {
     // @Usage
     // Use to add and remove anchors to an NPC.
     // - define location_name <context.message>
-    // - chat "I have saved this location as <def[location_name]>.'
-    // - anchor add <npc.location> "id:<def[location_name]>"
+    // - chat "I have saved this location as <[location_name]>.'
+    // - anchor add <npc.location> "id:<[location_name]>"
     //
     // @Usage
     // Use to make an NPC walk to or walk near a saved anchor.

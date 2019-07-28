@@ -54,10 +54,10 @@ public class Settings {
         cache_allowStrangeYAMLSaves = config.getBoolean("Commands.Yaml.Allow saving outside folder", false);
         cache_chatMultipleTargetsFormat = config.getString("Commands.Chat.Options.Multiple targets format", "%target%, %target%, %target%, and others");
         cache_chatBystandersRange = config.getDouble("Commands.Chat.Options.Range for bystanders", 5.0);
-        cache_chatNoTargetFormat = config.getString("Commands.Chat.Formats.No target", "[<def[talker].name>]: <def[message]>");
-        cache_chatToTargetFormat = config.getString("Commands.Chat.Formats.To target", "[<def[talker].name>] -> You: <def[message]>");
-        cache_chatWithTargetToBystandersFormat = config.getString("Commands.Chat.Formats.With target to bystanders", "[<def[talker].name>] -> <def[target].name>: <def[message]>");
-        cache_chatWithTargetsToBystandersFormat = config.getString("Commands.Chat.Formats.With targets to bystanders", "[<def[talker].name>] -> [<def[targets]>]: <def[message]>");
+        cache_chatNoTargetFormat = config.getString("Commands.Chat.Formats.No target", "[<[talker].name>]: <[message]>");
+        cache_chatToTargetFormat = config.getString("Commands.Chat.Formats.To target", "[<[talker].name>] -> You: <[message]>");
+        cache_chatWithTargetToBystandersFormat = config.getString("Commands.Chat.Formats.With target to bystanders", "[<[talker].name>] -> <[target].name>: <[message]>");
+        cache_chatWithTargetsToBystandersFormat = config.getString("Commands.Chat.Formats.With targets to bystanders", "[<[talker].name>] -> [<[targets]>]: <[message]>");
         cache_chatAsynchronous = config.getBoolean("Triggers.Chat.Use asynchronous event", false);
         cache_chatToNpcFormat = config.getString("Triggers.Chat.Formats.Player to NPC", "You -> <npc.name.nickname>: <text>");
         cache_chatToNpcOverheardFormat = config.getString("Triggers.Chat.Formats.Player to NPC overheard", "<player.name> -> <npc.name.nickname>: <text>");

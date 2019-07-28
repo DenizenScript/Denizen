@@ -30,6 +30,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     // @Cancellable true
     //
     // @Regex ^on player (((([^\s]+ )?clicks [^\s]+( with [^\s]+)?( in [^\s]+)?)))$
+    //
     // @Switch in <area>
     //
     // @Triggers when a player clicks on a block or in the air.
