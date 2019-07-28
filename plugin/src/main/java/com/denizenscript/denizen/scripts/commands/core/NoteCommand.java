@@ -43,10 +43,6 @@ public class NoteCommand extends AbstractCommand {
     // @Usage
     // Use to note a location.
     // - note l@10,5,10,world as:mylocation
-    //
-    // @Usage
-    // Use to note a region with WorldEdit selection.
-    // - note <player.selected_region> as:mycuboid
     // -->
 
     @Override
