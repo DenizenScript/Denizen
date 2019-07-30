@@ -50,9 +50,7 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        String entTest = CoreUtilities.getXthArg(0, lower);
-        return cmd.equals("merges")
-                && (entTest.equals("item") || MaterialTag.matches(entTest) || ItemTag.matches(entTest));
+        return cmd.equals("merges") && couldMatchItem(CoreUtilities.getXthArg(0, lower));
     }
 
     @Override

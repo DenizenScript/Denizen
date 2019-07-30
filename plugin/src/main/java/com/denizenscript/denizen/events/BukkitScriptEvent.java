@@ -24,6 +24,31 @@ import java.util.regex.Pattern;
 
 public abstract class BukkitScriptEvent extends ScriptEvent {
 
+    public boolean couldMatchItem(String text) {
+        if (text.equals("item")) {
+            return true;
+        }
+        if (MaterialTag.matches(text) || ItemTag.matches(text)) {
+            return true;
+        }
+        if (text.contains("*")) {
+            return true;
+        }
+        if (text.startsWith("regex:")) {
+            return true;
+        }
+        // This one must be last.
+        if (text.contains("|")) {
+            for (String subMatch : text.split("\\|")) {
+                if (!couldMatchItem(subMatch)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     public static Class<? extends Event> getRegistrationClass(Class<? extends Event> clazz) {
         try {
             clazz.getDeclaredMethod("getHandlerList");
