@@ -52,4 +52,20 @@ public interface BlockHelper {
     }
 
     List<Location> getBlocksList(PortalCreateEvent event);
+
+    default String getPushReaction(Material mat) {
+        throw new UnsupportedOperationException();
+    }
+
+    default void setPushReaction(Material mat, String reaction) {
+        throw new UnsupportedOperationException();
+    }
+
+    default float getBlockStength(Material mat) {
+        throw new UnsupportedOperationException();
+    }
+
+    default void setBlockStrength(Material mat, float strength) {
+        throw new UnsupportedOperationException();
+    }
 }

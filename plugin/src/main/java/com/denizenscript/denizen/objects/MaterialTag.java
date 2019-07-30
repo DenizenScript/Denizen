@@ -868,6 +868,39 @@ public class MaterialTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <MaterialTag.piston_reaction>
+        // @returns ElementTag
+        // @mechanism piston_reaction
+        // @description
+        // Returns the material's piston reaction. (Only for block materials).
+        // -->
+        registerTag("piston_reaction", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, ObjectTag object) {
+                String res = NMSHandler.getInstance().getBlockHelper().getPushReaction(((MaterialTag) object).material);
+                if (res == null) {
+                    return null;
+                }
+                return new ElementTag(res).getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <MaterialTag.block_strength>
+        // @returns ElementTag(Decimal)
+        // @mechanism block_strength
+        // @description
+        // Returns the material's strength level. (Only for block materials).
+        // -->
+        registerTag("block_strength", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, ObjectTag object) {
+                float res = NMSHandler.getInstance().getBlockHelper().getBlockStength(((MaterialTag) object).material);
+                return new ElementTag(res).getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
         // @attribute <MaterialTag.type>
         // @returns ElementTag
         // @description
@@ -938,6 +971,39 @@ public class MaterialTag implements ObjectTag, Adjustable {
             if (!NMSHandler.getInstance().getBlockHelper().setBlockResistance(material, mechanism.getValue().asFloat())) {
                 Debug.echoError("Provided material does not have a placeable block.");
             }
+        }
+
+        // <--[mechanism]
+        // @object MaterialTag
+        // @name block_strength
+        // @input Element(Decimal)
+        // @description
+        // Sets the strength for all blocks of this material type.
+        // @tags
+        // <MaterialTag.block_strength>
+        // -->
+        if (!mechanism.isProperty && mechanism.matches("block_strength") && mechanism.requireFloat()) {
+            if (!material.isBlock()) {
+                Debug.echoError("'block_strength' mechanism is only valid for block types.");
+            }
+            NMSHandler.getInstance().getBlockHelper().setBlockStrength(material, mechanism.getValue().asFloat());
+        }
+
+        // <--[mechanism]
+        // @object MaterialTag
+        // @name piston_reaction
+        // @input Element
+        // @description
+        // Sets the piston reaction for all blocks of this material type.
+        // Input may be: NORMAL (push and pull allowed), DESTROY (break when pushed), BLOCK (prevent a push or pull), IGNORE (don't use this), or PUSH_ONLY (push allowed but not pull)
+        // @tags
+        // <MaterialTag.piston_reaction>
+        // -->
+        if (!mechanism.isProperty && mechanism.matches("piston_reaction")) {
+            if (!material.isBlock()) {
+                Debug.echoError("'piston_reaction' mechanism is only valid for block types.");
+            }
+            NMSHandler.getInstance().getBlockHelper().setPushReaction(material, mechanism.getValue().asString().toUpperCase());
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);

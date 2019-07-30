@@ -21,11 +21,13 @@ import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_14_R1.block.CraftBlockEntityState;
 import org.bukkit.craftbukkit.v1_14_R1.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_14_R1.block.CraftSkull;
+import org.bukkit.craftbukkit.v1_14_R1.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_14_R1.util.CraftLegacy;
 import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.material.MaterialData;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -170,6 +172,7 @@ public class BlockHelper_v1_14_R1 implements BlockHelper {
         if (block == null) {
             return false;
         }
+        // protected final float durability;
         ReflectionHelper.setFieldValue(net.minecraft.server.v1_14_R1.Block.class, "durability", block, resistance);
         return true;
     }
@@ -194,4 +197,56 @@ public class BlockHelper_v1_14_R1 implements BlockHelper {
         return new CraftBlockState(mat);
     }
 
+    // protected final Material material;
+    public static final Field BLOCK_MATERIAL = ReflectionHelper.getFields(net.minecraft.server.v1_14_R1.Block.class).get("material");
+
+    // private final EnumPistonReaction R;
+    public static final MethodHandle MATERIAL_PUSH_REACTION_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.server.v1_14_R1.Material.class, "R");
+
+    // public final float strength;
+    public static final MethodHandle BLOCK_STRENGTH_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.server.v1_14_R1.Block.class, "strength");
+
+    public net.minecraft.server.v1_14_R1.Block getMaterialBlock(Material bukkitMaterial) {
+        return ((CraftBlockData) bukkitMaterial.createBlockData()).getState().getBlock();
+    }
+
+    public net.minecraft.server.v1_14_R1.Material getInternalMaterial(Material bukkitMaterial) {
+        try {
+            return (net.minecraft.server.v1_14_R1.Material) BLOCK_MATERIAL.get(getMaterialBlock(bukkitMaterial));
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+            return null;
+        }
+    }
+
+    @Override
+    public String getPushReaction(Material mat) {
+        return getInternalMaterial(mat).getPushReaction().name();
+    }
+
+    @Override
+    public void setPushReaction(Material mat, String reaction) {
+        try {
+            MATERIAL_PUSH_REACTION_SETTER.invoke(getInternalMaterial(mat), EnumPistonReaction.valueOf(reaction));
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+    }
+
+    @Override
+    public float getBlockStength(Material mat) {
+        return getMaterialBlock(mat).strength;
+    }
+
+    @Override
+    public void setBlockStrength(Material mat, float strength) {
+        try {
+            BLOCK_STRENGTH_SETTER.invoke(getMaterialBlock(mat), strength);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+    }
 }
