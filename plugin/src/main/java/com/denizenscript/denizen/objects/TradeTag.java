@@ -24,7 +24,7 @@ public class TradeTag implements ObjectTag, Adjustable {
     // Merchant trades are the parts of a special merchant inventory that is typically viewed by right clicking
     // a villager entity. Any number of trades can fit in a single merchant inventory.
     //
-    // Trades are represented by 'TradeTag' ObjectTags.
+    // Trades are represented by TradeTags.
     //
     // The properties that can be used to customize a merchant trade are:
     //
@@ -42,7 +42,7 @@ public class TradeTag implements ObjectTag, Adjustable {
     // open two trades:
     //     type: task
     //     script:
-    //     - opentrades li@TradeTag[max_uses=10;inputs=i@emerald[quantity=2];result=i@sponge|TradeTag[result=i@barrier]
+    //     - opentrades trade@trade[max_uses=10;inputs=i@emerald[quantity=2];result=i@sponge|trade@trade[result=i@barrier]
     // </code>
     //
     // For format info, see <@link language trade@>
@@ -53,7 +53,7 @@ public class TradeTag implements ObjectTag, Adjustable {
     // @group Object Fetcher System
     // @description
     // trade@ refers to the 'object identifier' of a TradeTag. The 'trade@' is notation for Denizen's Object
-    // Fetcher. The constructor for a NPCTag is just the text 'trade'. All other data is specified through properties.
+    // Fetcher. The constructor for a TradeTag is just the text 'trade'. All other data is specified through properties.
     //
     // For general info, see <@link language Merchant Trades>
     //
@@ -84,14 +84,14 @@ public class TradeTag implements ObjectTag, Adjustable {
         string = CoreUtilities.toLowerCase(string).replace("trade@", "");
         if (string.toLowerCase().matches("trade")) {
             MerchantRecipe recipe = new MerchantRecipe(new ItemStack(Material.AIR), 0);
-            recipe.setIngredients(new ArrayList<>(Arrays.asList(new ItemStack(Material.AIR))));
+            recipe.setIngredients(Arrays.asList(new ItemStack(Material.AIR)));
             return new TradeTag(recipe);
         }
         return null;
     }
 
-    public static boolean matches(String arg) {
-        return arg.matches("TradeTag");
+    public static boolean matches(String str) {
+        return str.startsWith("trade@trade");
     }
 
     ///////////////
