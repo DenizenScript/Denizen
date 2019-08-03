@@ -106,7 +106,6 @@ public class ScribeCommand extends AbstractCommand {
     // <ItemTag.book.page[<#>]>
     // <ItemTag.book.pages>
     //
-    //
     // @Usage
     // Gives the book "Cosmos Book" to the player
     // - scribe "Cosmos Book" give

@@ -114,7 +114,6 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
     // @Determine
     // "CANCELLED" to stop the player from moving, if cause is WALK or TELEPORT.
     //
-    //
     // -->
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {

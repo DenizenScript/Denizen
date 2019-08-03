@@ -40,7 +40,6 @@ public class MapScriptContainer extends ScriptContainer {
     //   # The 'custom name' can be anything you wish. Use color tags to make colored custom names.
     //   display name: custom name
     //
-    //
     //   # Whether to constantly update things.
     //   auto update: true
     //

@@ -50,7 +50,6 @@ public class ChunkTag implements ObjectTag, Adjustable {
     // The block 'a' at block position '1' is in chunk '0', but the block 'b' at block position '-1' is in chunk '-1'.
     // As otherwise (if 'b' was in chunk '0'), chunk '0' would be double-wide (32 blocks wide instead of the standard 16).
     //
-    //
     // For example, block at X,Z 32,67 is in the chunk at X,Z 2,4
     // And the block at X,Z -32,-67 is in the chunk at X,Z -2,-5
     //

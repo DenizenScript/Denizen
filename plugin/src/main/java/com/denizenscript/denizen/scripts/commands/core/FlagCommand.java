@@ -43,7 +43,6 @@ public class FlagCommand extends AbstractCommand implements Listener {
     // For an alternative way of storing values, use either yaml (See <@link command yaml>)
     // or sql (See <@link command sql>)
     //
-    //
     // @Tags
     // <PlayerTag.flag[<flag>]>
     // <PlayerTag.has_flag[<flag_name>]>

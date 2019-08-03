@@ -30,7 +30,6 @@ public class StatisticCommand extends AbstractCommand {
     // For more info on statistics, see https://minecraft.gamepedia.com/Statistics
     // For statistic names, see https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Statistic.html
     //
-    //
     // @Tags
     // <PlayerTag.statistic[<statistic>]>
     // <PlayerTag.statistic[<statistic>].qualifier[<material>/<entity>]>

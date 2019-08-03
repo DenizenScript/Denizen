@@ -33,7 +33,6 @@ public class RemoveCommand extends AbstractCommand {
     // Optionally, you may specifiy a world to target.
     // (Defaults to the world of the player running the command)
     //
-    //
     // @Tags
     // <EntityTag.is_spawned>
     //

@@ -23,7 +23,6 @@ public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Lis
     //
     // @Regex ^on player closes [^\s]+$
     //
-    //
     // @Triggers when a player closes an inventory. (EG, chests, not the player's main inventory.)
     //
     // @Context
