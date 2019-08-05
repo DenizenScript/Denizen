@@ -133,7 +133,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
         Map<String, ObjectTag> context = new HashMap<>();
 
         String message = event.getMessage();
-        String command = message.split(" ")[0].replace("/", "").toUpperCase();
+        String command = message.split(" ")[0].substring(1).toUpperCase();
 
         List<String> events = new ArrayList<>();
 
