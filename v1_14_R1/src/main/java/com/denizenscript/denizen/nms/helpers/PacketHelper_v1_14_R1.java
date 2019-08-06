@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.nms.helpers;
 
-import io.netty.buffer.Unpooled;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.impl.jnbt.CompoundTag_v1_14_R1;
 import com.denizenscript.denizen.nms.interfaces.PacketHelper;
@@ -203,9 +202,7 @@ public class PacketHelper_v1_14_R1 implements PacketHelper {
 
     @Override
     public void openBook(Player player, EquipmentSlot hand) {
-        PacketDataSerializer serializer = new PacketDataSerializer(Unpooled.buffer());
-        serializer.a(hand == EquipmentSlot.OFF_HAND ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND);
-        sendPacket(player, new PacketPlayOutCustomPayload(PacketPlayOutCustomPayload.c, serializer));
+        sendPacket(player, new PacketPlayOutOpenBook(hand == EquipmentSlot.OFF_HAND ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND));
     }
 
     @Override
