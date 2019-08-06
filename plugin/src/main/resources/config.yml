@@ -33,7 +33,11 @@ Scripts:
         Use asynchronous event: false
       On time changes:
         Frequency of check: 250t
-  Queue speed: 0.5s
+  Interact:
+    # Default speed for interact script queues
+    Queue speed: 0.5s
+  # Default speed for new queues (via run command usually)
+  Queue speed: instant
   Scripts location:
     Use default script folder: true
     Alternative folder path: 'plugins/Denizen'

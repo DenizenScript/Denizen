@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.triggers;
 
+import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -8,6 +9,7 @@ import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.events.OldEventManager;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.queues.core.TimedQueue;
 import com.denizenscript.denizencore.utilities.debugging.Debug.DebugElement;
@@ -92,6 +94,7 @@ public abstract class AbstractTrigger {
         Debug.echoDebug(script, DebugElement.Header, "Parsing " + name + " trigger: n@" + npc.getName() + "/p@" + player.getName());
         // Create Queue
         TimedQueue queue = new TimedQueue(script.getName());
+        queue.setSpeed(DurationTag.valueOf(Settings.interactQueueSpeed()).getTicks());
         // Add all entries to set it up
         queue.addEntries(entries);
         // Add context

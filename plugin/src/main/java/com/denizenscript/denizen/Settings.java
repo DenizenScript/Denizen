@@ -20,7 +20,7 @@ public class Settings {
         cache_showExHelp = config.getBoolean("Debug.Ex command help", true);
         cache_showExDebug = config.getBoolean("Debug.Ex command debug", true);
         cache_getAlternateScriptPath = config.getString("Scripts location.Alternative folder path", "plugins/Denizen");
-        cache_scriptEncoding = config.getString("Scripts.Encoding", "default");
+        String cache_scriptEncoding = config.getString("Scripts.Encoding", "default");
         if (cache_scriptEncoding.equalsIgnoreCase("default")) {
             ScriptHelper.encoding = null;
         }
@@ -37,7 +37,8 @@ public class Settings {
         cache_allowConsoleRedirection = config.getBoolean("Debug.Allow console redirection", false);
         cache_canRecordStats = config.getBoolean("Debug.Stats", true);
         cache_defaultDebugMode = config.getBoolean("Debug.Container default", true);
-        cache_scriptQueueSpeed = config.getString("Scripts.Queue speed", "0.5s");
+        cache_scriptQueueSpeed = config.getString("Scripts.Queue speed", "instant");
+        cache_interactQueueSpeed = config.getString("Scripts.Interact.Queue speed", "0.5s");
         cache_healthTraitEnabledByDefault = config.getBoolean("Traits.Health.Enabled", false);
         cache_healthTraitRespawnEnabled = config.getBoolean("Traits.Health.Respawn.Enabled", true);
         cache_healthTraitAnimatedDeathEnabled = config.getBoolean("Traits.Health.Animated death.Enabled", true);
@@ -90,7 +91,7 @@ public class Settings {
     private static String cache_getAlternateScriptPath, cache_scriptQueueSpeed, cache_healthTraitRespawnDelay,
             cache_engageTimeoutInSeconds, cache_chatMultipleTargetsFormat, cache_chatNoTargetFormat,
             cache_chatToTargetFormat, cache_chatWithTargetToBystandersFormat, cache_chatWithTargetsToBystandersFormat,
-            cache_chatToNpcFormat, cache_chatToNpcOverheardFormat, cache_scriptEncoding;
+            cache_chatToNpcFormat, cache_chatToNpcOverheardFormat, cache_interactQueueSpeed;
 
     private static int cache_consoleWidth = 128, cache_trimLength = 1024, cache_whileMaxLoops, cache_blockTagsMaxBlocks,
             cache_chatHistoryMaxMessages, cache_tagTimeout;
@@ -102,9 +103,7 @@ public class Settings {
     private static DurationTag cache_worldScriptTimeEventFrequency;
 
     /*
-
-    # Scripts location settings
-
+     * Scripts location settings
     */
 
     public static boolean useDefaultScriptPath() {
@@ -116,12 +115,9 @@ public class Settings {
     }
 
 
-    /*
-
-    # Whether Denizen should display debug in the console
-
+    /**
+     * Whether Denizen should display debug in the console
     */
-
     public static boolean showDebug() {
         return cache_showDebug;
     }
@@ -158,14 +154,15 @@ public class Settings {
         return cache_defaultDebugMode;
     }
 
-    /*
-
-    # Sets the default speed between execution of commands in queues
-
+    /**
+     * Sets the default speed between execution of commands in queues
     */
-
     public static String scriptQueueSpeed() {
         return cache_scriptQueueSpeed;
+    }
+
+    public static String interactQueueSpeed() {
+        return cache_interactQueueSpeed;
     }
 
     public static boolean healthTraitEnabledByDefault() {
@@ -188,25 +185,19 @@ public class Settings {
         return cache_healthTraitRespawnDelay;
     }
 
-    /*
-
-    # Whether a certain trigger is enabled by default or not
-
+    /**
+     * Whether a certain trigger is enabled by default or not
     */
-
     public static boolean triggerEnabled(String triggerName) {
         return DenizenAPI.getCurrentInstance().getConfig()
                 .getBoolean("Triggers." + String.valueOf(triggerName.charAt(0)).toUpperCase()
                         + CoreUtilities.toLowerCase(triggerName.substring(1)) + ".Enabled", true);
     }
 
-    /*
-
-    # Default duration of cooldown set to Denizens for when a trigger is
-    # triggered. Not all triggers may use this, it is optional!
-
+    /**
+     * Default duration of cooldown set to Denizens for when a trigger is
+     * triggered. Not all triggers may use this, it is optional!
     */
-
     public static double triggerDefaultCooldown(String triggerName) {
         return DurationTag.valueOf(DenizenAPI.getCurrentInstance().getConfig()
                 .getString("Triggers." + String.valueOf(triggerName.charAt(0)).toUpperCase()
@@ -214,11 +205,9 @@ public class Settings {
     }
 
     /*
-
-    # This set of nodes defines ranges for different types of
-    # interact-script triggers. Not all triggers use a range,
-    # as it may not be applicable to the trigger.
-
+     * This set of nodes defines ranges for different types of
+     * interact-script triggers. Not all triggers use a range,
+     * as it may not be applicable to the trigger.
     */
 
     public static double triggerDefaultRange(String triggerName) {
@@ -228,10 +217,8 @@ public class Settings {
     }
 
     /*
-
-    # This set of nodes defines cooldown-types for different types of
-    # interact-script triggers.
-
+     * This set of nodes defines cooldown-types for different types of
+     * interact-script triggers.
     */
 
     public static String triggerDefaultCooldownType(String triggerName) {
@@ -240,14 +227,11 @@ public class Settings {
                         + CoreUtilities.toLowerCase(triggerName.substring(1)) + ".Cooldown Type", "Player");
     }
 
-    /*
-
-    # Default engage timeout. When NPCs are set to ENGAGE, this is
-    # the default timeout that they will auto-DISENGAGE if not otherwise
-    # specified. (Default, 150 seconds)
-
+    /**
+     * Default engage timeout. When NPCs are set to ENGAGE, this is
+     * the default timeout that they will auto-DISENGAGE if not otherwise
+     * specified. (Default, 150 seconds)
     */
-
     public static String engageTimeoutInSeconds() {
         return cache_engageTimeoutInSeconds;
     }
@@ -339,22 +323,17 @@ public class Settings {
         return cache_chatWithTargetsToBystandersFormat;
     }
 
-    /*
-
-    # Whether the Chat Trigger should use an asynchronous Bukkit
-    # event or not
-
+    /**
+     * Whether the Chat Trigger should use an asynchronous Bukkit
+     * event or not
     */
-
     public static boolean chatAsynchronous() {
         return cache_chatAsynchronous;
     }
 
     /*
-
-    # The formats in which Chat Trigger input from players appears to
-    # themselves and to players who can overhear them
-
+     * The formats in which Chat Trigger input from players appears to
+     * themselves and to players who can overhear them
     */
 
     public static String chatToNpcFormat() {
@@ -365,23 +344,17 @@ public class Settings {
         return cache_chatToNpcOverheardFormat;
     }
 
-    /*
-
-    # The distance from which a player chatting to an NPC can be overheard
-    # by other players
-
+    /**
+     * The distance from which a player chatting to an NPC can be overheard
+     * by other players
     */
-
     public static double chatToNpcOverhearingRange() {
         return cache_chatToNpcOverhearingRange;
     }
 
     /*
-
-    # Prerequisites for triggering a Chat Trigger
-
+     * Prerequisites for triggering a Chat Trigger
     */
-
 
     public static boolean chatMustSeeNPC() {
         return cache_chatMustSeeNPC;
@@ -392,10 +365,8 @@ public class Settings {
     }
 
     /*
-
-    # Circumstances under which a player's Chat Trigger input should
-    # appear in the global chat
-
+     * Circumstances under which a player's Chat Trigger input should
+     * appear in the global chat
     */
 
     public static boolean chatGloballyIfFailedChatTriggers() {
@@ -410,29 +381,18 @@ public class Settings {
         return cache_chatGloballyIfUninteractable;
     }
 
-
-    /////////////////////
-    //   WORLD SCRIPTS
-    /////////////////
-
-    /*
-
-    # Whether the "on player chats" world event should use an
-    # asynchronous Bukkit event or not
-
+    /**
+     * Whether the "on player chats" world event should use an
+     * asynchronous Bukkit event or not
     */
-
     public static boolean worldScriptChatEventAsynchronous() {
         return cache_worldScriptChatEventAsynchronous;
     }
 
-    /*
-
-    # The frequency with which the "on time changes" world script
-    # event will be checked
-
+    /**
+     * The frequency with which the "on time changes" world script
+     * event will be checked
     */
-
     public static DurationTag worldScriptTimeEventFrequency() {
         return cache_worldScriptTimeEventFrequency;
     }
