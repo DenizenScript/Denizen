@@ -37,7 +37,7 @@ public class CommonRegistries {
     // ObjectTags can be used to CREATE new instances of objects, too! Though not all types allow 'new'
     // objects to be created, many do, such as ItemTags. With the use of tags, it's easy to reference a specific
     // item, say -- an item in the Player's hand -- items are also able to use a constructor to make a new item,
-    // and say, drop it in the world. Take the case of the command/usage '- drop i@diamond_ore'. The item object
+    // and say, drop it in the world. Take the case of the command/usage '- drop diamond_ore'. The item object
     // used is a brand new diamond_ore, which is then dropped by the command to a location of your choice -- just
     // specify an additional location argument.
     //

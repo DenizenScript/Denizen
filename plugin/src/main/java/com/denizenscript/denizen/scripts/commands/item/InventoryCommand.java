@@ -47,7 +47,7 @@ public class InventoryCommand extends AbstractCommand {
     // open random inventory:
     //   type: task
     //   script:
-    //   - inventory open "d:in@generic[size=18;title=<red>My <green>Awesome <blue>Inventory;contents=li@i@air|i@snow_ball]"
+    //   - inventory open "d:in@generic[size=18;title=<red>My <green>Awesome <blue>Inventory;contents=li@air|snow_ball]"
     // </code>
     //
     // -->
@@ -82,7 +82,7 @@ public class InventoryCommand extends AbstractCommand {
     //
     // @Usage
     // Use to open a virtual inventory with a title and some items.
-    // - inventory open d:in@generic[size=27;title=BestInventory;contents=li@i@snow_ball|i@clay_brick]
+    // - inventory open d:in@generic[size=27;title=BestInventory;contents=li@snow_ball|clay_brick]
     //
     // @Usage
     // Use to open another player's inventory.
@@ -91,7 +91,7 @@ public class InventoryCommand extends AbstractCommand {
     // @Usage
     // Use to remove all items from a chest, except any items in
     // the specified list.
-    // - inventory keep d:in@location[holder=l@123,123,123,world] o:li@i@snow_ball|i@ItemScript
+    // - inventory keep d:in@location[holder=l@123,123,123,world] o:li@snow_ball|ItemScript
     //
     // @Usage
     // Use to remove items specified in a chest from the current

@@ -28,7 +28,7 @@ public class NBTCommand extends AbstractCommand {
     //
     // @Usage
     // Use to set a hidden value on an item and give the item to a player.
-    // - nbt i@snow_ball "MyCustomNBT.Damage:10" "save:SnowballOfDeath"
+    // - nbt snow_ball "MyCustomNBT.Damage:10" "save:SnowballOfDeath"
     // - give <entry[SnowballOfDeath].new_item>
     //
     // @Usage

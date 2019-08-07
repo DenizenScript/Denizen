@@ -74,7 +74,7 @@ public class InventoryScriptContainer extends ScriptContainer {
     //   procedural items:
     //     - define list li@
     //     - foreach <server.list_online_players>:
-    //       - define item i@human_skull[skull_skin=<[value].name>]
+    //       - define item human_skull[skull_skin=<[value].name>]
     //       - define list <[list].include[<[item]>]>
     //     - determine <[list]>
     //

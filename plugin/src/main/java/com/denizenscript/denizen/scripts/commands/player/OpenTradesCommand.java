@@ -48,7 +48,7 @@ public class OpenTradesCommand extends AbstractCommand {
     //
     // @Usage
     // Use to open a list of trades with an optional title.
-    // - opentrades TradeTag[result=i@stone;inputs=li@i@stone;max_uses=9999]|TradeTag[result=i@barrier] "title:Useless Trades"
+    // - opentrades TradeTag[result=stone;inputs=li@stone;max_uses=9999]|TradeTag[result=barrier] "title:Useless Trades"
     //
     // @Usage
     // Use to force a player to trade with a villager.

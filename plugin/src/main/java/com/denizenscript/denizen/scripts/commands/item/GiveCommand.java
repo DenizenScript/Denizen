@@ -50,7 +50,7 @@ public class GiveCommand extends AbstractCommand {
     //
     // @Usage
     // Use to give an item to the player.
-    // - give i@iron_sword
+    // - give iron_sword
     //
     // @Usage
     // Use to give an item and place it in a specific slot if possible.

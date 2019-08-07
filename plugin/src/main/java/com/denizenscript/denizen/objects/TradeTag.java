@@ -42,7 +42,7 @@ public class TradeTag implements ObjectTag, Adjustable {
     // open two trades:
     //     type: task
     //     script:
-    //     - opentrades trade@trade[max_uses=10;inputs=i@emerald[quantity=2];result=i@sponge|trade@trade[result=i@barrier]
+    //     - opentrades trade@trade[max_uses=10;inputs=emerald[quantity=2];result=sponge|trade@trade[result=barrier]
     // </code>
     //
     // For format info, see <@link language trade@>

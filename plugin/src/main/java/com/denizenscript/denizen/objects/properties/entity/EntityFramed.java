@@ -107,7 +107,7 @@ public class EntityFramed implements Property {
         // @mechanism EntityTag.framed
         // @group properties
         // @description
-        // If the entity is an item frame, returns the rotation of the material currently framed.
+        // If the entity is an item frame, returns the rotation of the item currently framed.
         // -->
         if (attribute.startsWith("framed_item_rotation")) {
             return new ElementTag(CoreUtilities.toLowerCase(getItemFrameEntity().getRotation().name()))
@@ -120,7 +120,7 @@ public class EntityFramed implements Property {
         // @mechanism EntityTag.framed
         // @group properties
         // @description
-        // If the entity is an item frame, returns the material currently framed.
+        // If the entity is an item frame, returns the item currently framed.
         // -->
         if (attribute.startsWith("framed_item")) {
             return getItem()
@@ -153,7 +153,7 @@ public class EntityFramed implements Property {
         // @description
         // Sets the entity's framed item and optionally the rotation as well.
         // Valid rotations: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Rotation.html>
-        // For example: framed:i@diamond_sword|clockwise
+        // For example: framed:diamond_sword|clockwise
         // @tags
         // <EntityTag.is_frame>
         // <EntityTag.has_framed_item>

@@ -22,8 +22,8 @@ public class BookScriptContainer extends ScriptContainer {
     // @description
     // Book script containers are similar to item script containers, except they are specifically
     // for the book items. They work with with the ItemTag object, and can be fetched
-    // with the Object Fetcher by using the ItemTag constructor i@book_script_name
-    // Example: - give <player> i@my_book
+    // with the Object Fetcher by using the ItemTag constructor book_script_name
+    // Example: - give <player> my_book
     //
     // <code>
     // Book_Script_Name:

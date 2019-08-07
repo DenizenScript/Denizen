@@ -35,7 +35,7 @@ public class EquipCommand extends AbstractCommand {
     //
     // @Description
     // This command equips an item or armor to an entity or list of entities to the specified slot(s).
-    // Set the item to 'i@air' to unequip any slot.
+    // Set the item to 'air' to unequip any slot.
     //
     // @Tags
     // <EntityTag.equipment>
@@ -47,23 +47,23 @@ public class EquipCommand extends AbstractCommand {
     //
     // @Usage
     // Use to equip a stone block on the player's head.
-    // - equip <player> head:i@stone
+    // - equip <player> head:stone
     //
     // @Usage
     // Use to equip a iron helmet on two players named Bob and Steve.
-    // - equip p@bob|p@steve head:i@iron_helmet
+    // - equip p@bob|p@steve head:iron_helmet
     //
     // @Usage
     // Use to unequip all armor off the player.
-    // - equip <player> head:i@air chest:i@air legs:i@air boots:i@air
+    // - equip <player> head:air chest:air legs:air boots:air
     //
     // @Usage
     // Use to equip a saddle on a horse.
-    // - equip e@horse saddle:i@saddle
+    // - equip e@horse saddle:saddle
     //
     // @Usage
     // Use to equip a saddle on a pig.
-    // - equip e@pig saddle:i@saddle
+    // - equip e@pig saddle:saddle
     // -->
 
     @Override

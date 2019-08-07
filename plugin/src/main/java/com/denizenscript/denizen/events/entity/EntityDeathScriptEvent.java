@@ -12,6 +12,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -253,12 +254,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
 
         drops = new ListTag();
         for (ItemStack stack : event.getDrops()) {
-            if (stack == null) {
-                drops.add("i@air");
-            }
-            else {
-                drops.add(new ItemTag(stack).identify());
-            }
+            drops.addObject(new ItemTag(stack == null ? new ItemStack(Material.AIR) : stack));
         }
         cancelled = false;
         dropItems = null;

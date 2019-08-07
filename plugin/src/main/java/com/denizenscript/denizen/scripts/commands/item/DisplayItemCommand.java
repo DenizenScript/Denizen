@@ -42,19 +42,19 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
     //
     // @Usage
     // Use to display a stone block dropped at a players location
-    // - displayitem i@stone <player.location>
+    // - displayitem stone <player.location>
     //
     // @Usage
     // Use to display a diamond sword dropped at 12,64,-847 in world survival
-    // - displayitem i@diamond_sword l@12,64,-847,survival
+    // - displayitem diamond_sword l@12,64,-847,survival
     //
     // @Usage
     // Use to display redstone dust dropped at -54,100,-87 in world creative disappear after 10 seconds
-    // - displayitem i@redstone l@-54,100,-87,creative duration:10s
+    // - displayitem redstone l@-54,100,-87,creative duration:10s
     //
     // @Usage
     // Use to save the dropped item to save entry 'item_dropped'
-    // - displayitem i@redstone l@-54,100,-87,creative duration:10s save:item_dropped
+    // - displayitem redstone l@-54,100,-87,creative duration:10s save:item_dropped
     // -->
 
     @Override

@@ -31,7 +31,7 @@ public class ItemScriptContainer extends ScriptContainer {
     // @description
     // Item script containers are an easy way to pre-define custom items for use within scripts. Item
     // scripts work with the ItemTag object, and can be fetched with the Object Fetcher by using the
-    // ItemTag constructor ItemTag_script_name. Example: - drop <player.location> i@super_dooper_diamond
+    // ItemTag constructor ItemTag_script_name. Example: - drop <player.location> super_dooper_diamond
     //
     // The following is the format for the container. Except for the 'material' key (and the dScript
     // required 'type' key), all other keys are optional.
@@ -39,13 +39,13 @@ public class ItemScriptContainer extends ScriptContainer {
     // <code>
     // # The name of the item script is the same name that you can use to construct a new
     // # ItemTag based on this item script. For example, an item script named 'sword of swiftness'
-    // # can be referred to as 'i@sword of swiftness'.
+    // # can be referred to as 'sword of swiftness'.
     // Item Script Name:
     //
     //   type: item
     //
-    //   # Must be a valid ItemTag (EG i@red_wool or i@potion,8226) See 'dItem' for more information.
-    //   material: i@base_material
+    //   # Must be a valid ItemTag (EG red_wool or potion,8226) See 'ItemTag' for more information.
+    //   material: base_material
     //
     //   # List any mechanisms you want to apply to the item within
     //   mechanisms:
@@ -69,7 +69,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //   - enchantment_name:level
     //   - ...
     //
-    //   # You can specify the items required to craft your item. For an empty slot, use i@air.
+    //   # You can specify the items required to craft your item. For an empty slot, use air.
     //   recipe:
     //   - ItemTag|ItemTag|ItemTag
     //   - ItemTag|ItemTag|ItemTag

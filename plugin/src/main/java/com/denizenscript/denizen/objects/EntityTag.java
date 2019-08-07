@@ -1550,7 +1550,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @returns ItemTag
         // @group inventory
         // @description
-        // If the entity is a horse or pig, returns the saddle as a ItemTag, or i@air if none.
+        // If the entity is a horse or pig, returns the saddle as a ItemTag, or air if none.
         // -->
         if (attribute.startsWith("saddle")) {
             if (getLivingEntity().getType() == EntityType.HORSE) {
@@ -1568,7 +1568,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @returns ItemTag
         // @group inventory
         // @description
-        // If the entity is a horse, returns the item equipped as the horses armor, or i@air if none.
+        // If the entity is a horse, returns the item equipped as the horses armor, or air if none.
         // -->
         if (attribute.startsWith("horse_armor") || attribute.startsWith("horse_armour")) {
             if (getLivingEntity().getType() == EntityType.HORSE) {
@@ -1600,7 +1600,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @returns ItemTag
         // @group inventory
         // @description
-        // Returns the item the entity is holding, or i@air if none.
+        // Returns the item the entity is holding, or air if none.
         // -->
         if (attribute.startsWith("item_in_hand") ||
                 attribute.startsWith("iteminhand")) {
@@ -1613,7 +1613,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @returns ItemTag
         // @group inventory
         // @description
-        // Returns the item the entity is holding in their off hand, or i@air if none.
+        // Returns the item the entity is holding in their off hand, or air if none.
         // -->
         if (attribute.startsWith("item_in_offhand") ||
                 attribute.startsWith("iteminoffhand")) {

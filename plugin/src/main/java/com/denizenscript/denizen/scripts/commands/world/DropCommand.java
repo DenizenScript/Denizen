@@ -45,7 +45,7 @@ public class DropCommand extends AbstractCommand {
     //
     // @Usage
     // Use to drop some loot around the player.
-    // - drop i@gold_nugget <cuboid[cu@<player.location.add[-2,-2,-2]>|<player.location.add[2,2,2]>].spawnable_blocks.random>
+    // - drop gold_nugget <cuboid[cu@<player.location.add[-2,-2,-2]>|<player.location.add[2,2,2]>].spawnable_blocks.random>
     //
     // @Usage
     // Use to reward a player with 500 xp.
@@ -57,7 +57,7 @@ public class DropCommand extends AbstractCommand {
     //
     // @Usage
     // Use to drop an item with a pickup delay at the player's location.
-    // - drop i@diamond_sword <player.location> delay:20s
+    // - drop diamond_sword <player.location> delay:20s
     // -->
 
     enum Action {DROP_ITEM, DROP_EXP, DROP_ENTITY}

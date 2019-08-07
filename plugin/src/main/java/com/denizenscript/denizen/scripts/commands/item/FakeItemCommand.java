@@ -42,11 +42,11 @@ public class FakeItemCommand extends AbstractCommand {
     //
     // @Usage
     // Use to show a clientside-only pumpkin on the player's head.
-    // - fakeitem i@pumpkin slot:head
+    // - fakeitem pumpkin slot:head
     //
     // @Usage
     // Use to show a fake book in the player's hand for 1 tick.
-    // - fakeitem "i@written_book[book=author|Morphan1|title|My Book|pages|This is my book!]" slot:<player.item_in_hand.slot> duration:1t
+    // - fakeitem "written_book[book=author|Morphan1|title|My Book|pages|This is my book!]" slot:<player.item_in_hand.slot> duration:1t
     // -->
 
     @Override
