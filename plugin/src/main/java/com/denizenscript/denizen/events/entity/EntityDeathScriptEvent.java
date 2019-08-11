@@ -10,7 +10,6 @@ import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
@@ -38,7 +37,9 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     // @Cancellable true
     //
     // @Regex ^on [^\s]+ (death|dies)$
+    //
     // @Switch in <area>
+    // @Switch by <entity type>
     //
     // @Triggers when an entity dies. Note that this fires *after* the entity dies, and thus some data may be lost from the entity.
     // The death cannot be cancelled, only the death message (for players).
@@ -75,7 +76,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     public static EntityDeathScriptEvent instance;
 
     public EntityTag entity;
-    public ObjectTag damager;
+    public EntityTag damager;
     public ElementTag message;
     public InventoryTag inventory;
     public ElementTag cause;
@@ -87,8 +88,8 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     public EntityDeathEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String cmd = CoreUtilities.getXthArg(1, CoreUtilities.toLowerCase(s));
+    public boolean couldMatch(ScriptPath path) {
+        String cmd = path.eventArgLowerAt(1);
         return cmd.equals("dies") || cmd.equals("death");
     }
 
@@ -101,6 +102,10 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         }
 
         if (!runInCheck(path, entity.getLocation())) {
+            return false;
+        }
+
+        if (path.switches.containsKey("by") && (damager == null || !tryEntity(damager, path.switches.get("by")))) {
             return false;
         }
 
@@ -183,7 +188,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             return entity.getDenizenObject();
         }
         else if (name.equals("damager") && damager != null) {
-            return damager;
+            return damager.getDenizenObject();
         }
         else if (name.equals("message") && message != null) {
             return message;
@@ -225,14 +230,14 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
                 EntityTag damageEntity = new EntityTag(((EntityDamageByEntityEvent) lastDamage).getDamager());
                 EntityTag shooter = damageEntity.getShooter();
                 if (shooter != null) {
-                    damager = shooter.getDenizenObject();
+                    damager = shooter;
                 }
                 else {
-                    damager = damageEntity.getDenizenObject();
+                    damager = damageEntity;
                 }
             }
             else if (livingEntity.getKiller() != null) {
-                damager = new EntityTag(livingEntity.getKiller()).getDenizenObject();
+                damager = new EntityTag(livingEntity.getKiller());
             }
 
         }
