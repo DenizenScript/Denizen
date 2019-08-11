@@ -113,14 +113,64 @@ public class ServerTagBase {
         }
         Attribute attribute = event.getAttributes().fulfill(1);
 
+        if (attribute.startsWith("economy")) {
+            if (Depends.economy == null) {
+                if (!attribute.hasAlternative()) {
+                    Debug.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
+                }
+                return;
+            }
+            attribute = attribute.fulfill(1);
+
+            // <--[tag]
+            // @attribute <server.economy.format[<#.#>]>
+            // @returns ElementTag
+            // @plugin Vault
+            // @description
+            // Returns the amount of money, formatted according to the server's economy.
+            // -->
+            if (attribute.startsWith("format") && attribute.hasContext(1)) {
+                double amount = attribute.getDoubleContext(1);
+                event.setReplacedObject(new ElementTag(Depends.economy.format(amount))
+                        .getObjectAttribute(attribute.fulfill(1)));
+                return;
+            }
+
+            // <--[tag]
+            // @attribute <server.economy.currency_plural>
+            // @returns ElementTag
+            // @plugin Vault
+            // @description
+            // Returns the server's economy currency name (in the plural form, like "Dollars").
+            // -->
+            if (attribute.startsWith("currency_plural")) {
+                event.setReplacedObject(new ElementTag(Depends.economy.currencyNamePlural())
+                        .getObjectAttribute(attribute.fulfill(1)));
+                return;
+            }
+
+            // <--[tag]
+            // @attribute <server.economy.currency_singular>
+            // @returns ElementTag
+            // @plugin Vault
+            // @description
+            // Returns the server's economy currency name (in the singular form, like "Dollar").
+            // -->
+            if (attribute.startsWith("currency_singular")) {
+                event.setReplacedObject(new ElementTag(Depends.economy.currencyNameSingular())
+                        .getObjectAttribute(attribute.fulfill(1)));
+                return;
+            }
+            return;
+        }
+
         // <--[tag]
         // @attribute <server.slot_id[<slot>]>
         // @returns ElementTag(Number)
         // @description
         // Returns the slot ID number for an input slot (see <@link language Slot Inputs>).
         // -->
-        if (attribute.startsWith("slot_id")
-                && attribute.hasContext(1)) {
+        if (attribute.startsWith("slot_id") && attribute.hasContext(1)) {
             int slotId = SlotHelper.nameToIndex(attribute.getContext(1));
             if (slotId != -1) {
                 event.setReplaced(new ElementTag(slotId).getAttribute(attribute.fulfill(1)));

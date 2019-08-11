@@ -113,6 +113,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
     //
     // -->
 
+    public static SlowWarning WARNING_OLD_ECO_TAGS = new SlowWarning("player.money.currency* tags are deprecated in favor of server.economy.currency* tags.");
+
 
     public static PlayerTag valueOf(String string) {
         return valueOf(string, null);
@@ -808,56 +810,42 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // -->
 
         if (attribute.startsWith("money")) {
-            if (Depends.economy != null) {
-
-                // <--[tag]
-                // @attribute <PlayerTag.money.formatted>
-                // @returns ElementTag
-                // @plugin Vault
-                // @description
-                // Returns the formatted form of the player's money balance in the registered Economy system.
-                // -->
-                if (attribute.startsWith("money.formatted")) {
-                    return new ElementTag(Depends.economy.format(Depends.economy.getBalance(getOfflinePlayer())))
-                            .getAttribute(attribute.fulfill(2));
-                }
-
-                // <--[tag]
-                // @attribute <PlayerTag.money.currency_singular>
-                // @returns ElementTag
-                // @plugin Vault
-                // @description
-                // Returns the name of a single piece of currency - For example: Dollar
-                // (Only if supported by the registered Economy system.)
-                // -->
-                if (attribute.startsWith("money.currency_singular")) {
-                    return new ElementTag(Depends.economy.currencyNameSingular())
-                            .getAttribute(attribute.fulfill(2));
-                }
-
-                // <--[tag]
-                // @attribute <PlayerTag.money.currency>
-                // @returns ElementTag
-                // @plugin Vault
-                // @description
-                // Returns the name of multiple pieces of currency - For example: Dollars
-                // (Only if supported by the registered Economy system.)
-                // -->
-                if (attribute.startsWith("money.currency")) {
-                    return new ElementTag(Depends.economy.currencyNamePlural())
-                            .getAttribute(attribute.fulfill(2));
-                }
-
-                return new ElementTag(Depends.economy.getBalance(getOfflinePlayer()))
-                        .getAttribute(attribute.fulfill(1));
-
-            }
-            else {
+            if (Depends.economy == null) {
                 if (!attribute.hasAlternative()) {
                     Debug.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
                 }
                 return null;
             }
+
+            attribute = attribute.fulfill(1);
+
+            // <--[tag]
+            // @attribute <PlayerTag.money.formatted>
+            // @returns ElementTag
+            // @plugin Vault
+            // @description
+            // Returns the formatted form of the player's money balance in the registered Economy system.
+            // -->
+            if (attribute.startsWith("formatted")) {
+                return new ElementTag(Depends.economy.format(Depends.economy.getBalance(getOfflinePlayer())))
+                        .getAttribute(attribute.fulfill(1));
+            }
+
+            if (attribute.startsWith("currency_singular")) {
+                WARNING_OLD_ECO_TAGS.warn();
+                return new ElementTag(Depends.economy.currencyNameSingular())
+                        .getAttribute(attribute.fulfill(1));
+            }
+
+            if (attribute.startsWith("currency")) {
+                WARNING_OLD_ECO_TAGS.warn();
+                return new ElementTag(Depends.economy.currencyNamePlural())
+                        .getAttribute(attribute.fulfill(1));
+            }
+
+            return new ElementTag(Depends.economy.getBalance(getOfflinePlayer()))
+                    .getAttribute(attribute);
+
         }
 
 

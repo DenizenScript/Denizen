@@ -69,6 +69,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     // @NPC when the entity that died is an NPC.
     //
     // -->
+
     public EntityDeathScriptEvent() {
         instance = this;
     }
