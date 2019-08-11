@@ -31,7 +31,7 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Context
     // <context.hook> returns a EntityTag of the hook.
-    // <context.state> returns an ElementTag of the fishing state.
+    // <context.state> returns an ElementTag of the fishing state. Valid states: <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/event/player/PlayerFishEvent.State.html>
     // <context.entity> returns a EntityTag of the entity that got caught.
     // <context.item> returns a ItemTag of the item gotten, if any.
     //
