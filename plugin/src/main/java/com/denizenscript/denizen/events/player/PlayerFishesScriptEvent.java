@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,6 +35,9 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     // <context.state> returns an ElementTag of the fishing state. Valid states: <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/event/player/PlayerFishEvent.State.html>
     // <context.entity> returns a EntityTag of the entity that got caught.
     // <context.item> returns a ItemTag of the item gotten, if any.
+    //
+    // @Determine
+    // "caught:" + ItemTag to change the the item that was caught (only if an item was already being caught).
     //
     // -->
 
@@ -83,6 +87,20 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
         }
 
         return true;
+    }
+
+    @Override
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        if (!isDefaultDetermination(determinationObj) && determinationObj instanceof ElementTag) {
+            String determination = determinationObj.toString();
+            if (determination.startsWith("caught:")) {
+                item = ItemTag.valueOf(determination.substring("caught:".length()));
+                if (entity != null && entity.getBukkitEntityType() == EntityType.DROPPED_ITEM) {
+                    ((Item) entity.getBukkitEntity()).setItemStack(item.getItemStack());
+                }
+            }
+        }
+        return super.applyDetermination(path, determinationObj);
     }
 
     @Override
