@@ -199,7 +199,7 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
     @EventHandler
     public void inventoryClickEvent(InventoryClickEvent event) {
         inventory = InventoryTag.mirrorBukkitInventory(event.getInventory());
-        item = event.getCurrentItem() != null ? new ItemTag(Material.AIR) : new ItemTag(event.getCurrentItem());
+        item = event.getCurrentItem() == null ? new ItemTag(Material.AIR) : new ItemTag(event.getCurrentItem());
         this.event = event;
         fire(event);
     }
