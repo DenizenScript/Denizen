@@ -6,7 +6,6 @@ import com.denizenscript.denizen.events.core.CommandSmartEvent;
 import com.denizenscript.denizen.events.core.CuboidEnterExitSmartEvent;
 import com.denizenscript.denizen.events.core.FlagSmartEvent;
 import com.denizenscript.denizen.events.core.NPCNavigationSmartEvent;
-import com.denizenscript.denizen.events.player.PlayerRightClicksEntityScriptEvent;
 import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.NPCTag;
@@ -423,7 +422,6 @@ public class Denizen extends JavaPlugin {
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
             public void run() {
-                PlayerRightClicksEntityScriptEvent.instance.clickedThisFrame.clear();
                 DenizenCore.tick(50); // Sadly, minecraft has no delta timing, so a tick is always 50ms.
             }
         }, 1, 1);
