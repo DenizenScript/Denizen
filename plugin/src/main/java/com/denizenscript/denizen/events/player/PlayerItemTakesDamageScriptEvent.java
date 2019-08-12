@@ -40,7 +40,7 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     //
     // -->
 
-    PlayerItemTakesDamageScriptEvent instance;
+    public static PlayerItemTakesDamageScriptEvent instance;
     PlayerItemDamageEvent event;
     ElementTag damage;
     ItemTag item;

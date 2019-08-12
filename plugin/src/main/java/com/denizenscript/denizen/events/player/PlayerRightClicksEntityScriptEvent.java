@@ -15,6 +15,9 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
+import java.util.HashSet;
+import java.util.UUID;
+
 
 public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -40,7 +43,7 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
     //
     // -->
 
-    PlayerRightClicksEntityScriptEvent instance;
+    public static PlayerRightClicksEntityScriptEvent instance;
     PlayerInteractEntityEvent event;
     EntityTag entity;
     ItemTag item;
@@ -120,10 +123,17 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
         playerRightClicksEntityHandler(event);
     }
 
+    public HashSet<UUID> clickedThisFrame = new HashSet<>();
+
     public void playerRightClicksEntityHandler(PlayerInteractEntityEvent event) {
         if (event.getHand() == EquipmentSlot.OFF_HAND) {
             return;
         }
+        // Event tends to double-fire, use cooldown to prevent that
+        if (clickedThisFrame.contains(event.getPlayer().getUniqueId())) {
+            return;
+        }
+        clickedThisFrame.add(event.getPlayer().getUniqueId());
         entity = new EntityTag(event.getRightClicked());
         item = new ItemTag(event.getPlayer().getItemInHand());
         location = new LocationTag(event.getRightClicked().getLocation());
