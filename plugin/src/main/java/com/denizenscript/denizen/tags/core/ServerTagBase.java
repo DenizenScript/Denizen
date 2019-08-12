@@ -137,6 +137,20 @@ public class ServerTagBase {
             }
 
             // <--[tag]
+            // @attribute <server.economy.currency_name[<#.#>]>
+            // @returns ElementTag
+            // @plugin Vault
+            // @description
+            // Returns the server's economy currency name (automatically singular or plural based on input value).
+            // -->
+            if (attribute.startsWith("currency_name") && attribute.hasContext(1)) {
+                double amount = attribute.getDoubleContext(1);
+                event.setReplacedObject(new ElementTag(amount == 1 ? Depends.economy.currencyNameSingular() : Depends.economy.currencyNamePlural())
+                        .getObjectAttribute(attribute.fulfill(1)));
+                return;
+            }
+
+            // <--[tag]
             // @attribute <server.economy.currency_plural>
             // @returns ElementTag
             // @plugin Vault
