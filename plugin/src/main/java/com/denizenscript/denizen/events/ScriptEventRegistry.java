@@ -108,6 +108,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new PlayerChangesWorldScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerChangesXPScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerClicksBlockScriptEvent());
+        ScriptEvent.registerScriptEvent(new PlayerClicksInInventoryScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerClosesInvScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerCompletesAdvancementScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerConsumesScriptEvent());
