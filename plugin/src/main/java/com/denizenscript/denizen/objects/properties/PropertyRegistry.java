@@ -6,10 +6,7 @@ import com.denizenscript.denizen.objects.properties.bukkit.BukkitListProperties;
 import com.denizenscript.denizen.objects.properties.bukkit.BukkitQueueProperties;
 import com.denizenscript.denizen.objects.properties.bukkit.BukkitScriptProperties;
 import com.denizenscript.denizen.objects.properties.entity.*;
-import com.denizenscript.denizen.objects.properties.inventory.InventoryContents;
-import com.denizenscript.denizen.objects.properties.inventory.InventoryHolder;
-import com.denizenscript.denizen.objects.properties.inventory.InventorySize;
-import com.denizenscript.denizen.objects.properties.inventory.InventoryTitle;
+import com.denizenscript.denizen.objects.properties.inventory.*;
 import com.denizenscript.denizen.objects.properties.item.*;
 import com.denizenscript.denizen.objects.properties.material.*;
 import com.denizenscript.denizen.objects.properties.trade.*;
@@ -93,6 +90,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(InventoryHolder.class, InventoryTag.class); // Holder must be loaded first to initiate correctly
         PropertyParser.registerProperty(InventorySize.class, InventoryTag.class); // Same with size... (too small for contents)
         PropertyParser.registerProperty(InventoryContents.class, InventoryTag.class);
+        PropertyParser.registerProperty(InventoryScriptName.class, InventoryTag.class);
         PropertyParser.registerProperty(InventoryTitle.class, InventoryTag.class);
 
         // register core ItemTag properties

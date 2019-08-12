@@ -371,6 +371,8 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
     String idType = null;
     String idHolder = null;
 
+    public String scriptName = null;
+
     public InventoryTag(Inventory inventory) {
         this.inventory = inventory;
         loadIdentifiers();
