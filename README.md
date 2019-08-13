@@ -1,5 +1,7 @@
-Denizen: Helpful Citizens for Bukkit!
--------------------------------------
+The Denizen Scripting Language - Spigot Impl
+--------------------------------------------
+
+An implementation of the Denizen Scripting Language for Spigot servers, with strong Citizens interlinks to emphasize the power of using Denizen with NPCs!
 
 **Version 1.1.0**: Compatible with Spigot 1.12.2, 1.13.2, and 1.14.4!
 
@@ -12,20 +14,21 @@ Denizen: Helpful Citizens for Bukkit!
 #### Need help using Denizen? Try one of these places:
 
 - **Discord** - chat room (Modern, strongly recommended): https://discord.gg/Q6pZGSR
-- **Denizen Home Page** (Modern): https://denizenscript.com/
-- **Forum** (New but not used much): https://forum.denizenscript.com/
+- **Denizen Home Page** - a link directory (Modern): https://denizenscript.com/
+- **Forum** (Modern but not used much): https://forum.denizenscript.com/
 - **Meta documentation** - command/tag/event/etc. search (Modern): https://one.denizenscript.com/denizen/logs/
-- **Tutorial Guide Docs** - text form (Modern): https://docs.denizenscript.com/
+- **Textual Beginner's Guide** - text form (Modern): https://guide.denizenscript.com/
 - **Tutorial Videos** (Semi-Modern): https://one.denizenscript.com/denizen/vids
-- **Wiki** (OLD): https://wiki.citizensnpcs.co/Denizen
+- ~~**Wiki** (OLD): https://wiki.citizensnpcs.co/Denizen .~~
 
 #### Also check out:
 
 - **Citizens2 (NPC support)**: https://github.com/CitizensDev/Citizens2/
-- **Depenizen (Other plugin support)**: https://github.com/DenizenScript/Depenizen-For-Bukkit
+- **Depenizen (Other plugin support)**: https://github.com/DenizenScript/Depenizen
 - **dDiscordBot (Adds a Discord bot to Denizen)**: https://github.com/DenizenScript/dDiscordBot
 - **Webizen (Adds a webserver to Denizen)**: https://github.com/DenizenScript/Webizen
 - **DenizenCore (Our core, needed for building)**: https://github.com/DenizenScript/Denizen-Core
+- **DenizenVSCode (extension for writing Denizen scripts in VS Code)**: https://github.com/DenizenScript/DenizenVSCode
 
 ### Building
 
