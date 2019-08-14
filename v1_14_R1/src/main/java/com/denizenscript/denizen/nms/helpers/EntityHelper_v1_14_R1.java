@@ -62,8 +62,7 @@ public class EntityHelper_v1_14_R1 extends EntityHelper {
 
     @Override
     public void setRiptide(Entity entity, boolean state) {
-        // https://wiki.vg/Entity_metadata#Living
-        ((CraftEntity) entity).getHandle().getDataWatcher().set(DataWatcherRegistry.a.a(6), (byte) (state ? 4 : 0));
+        ((CraftLivingEntity) entity).getHandle().q(state ? 0 : 1);
     }
 
     @Override
