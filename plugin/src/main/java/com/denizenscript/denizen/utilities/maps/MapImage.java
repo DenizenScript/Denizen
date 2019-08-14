@@ -61,8 +61,7 @@ public class MapImage extends MapObject {
     @Override
     public void render(MapView mapView, MapCanvas mapCanvas, PlayerTag player, UUID uuid) {
         if (actualFile == null) {
-            String file = fileTag;
-            actualFile = DenizenMapManager.getActualFile(file);
+            actualFile = DenizenMapManager.getActualFile(fileTag);
             if (actualFile == null) {
                 return;
             }
@@ -75,7 +74,7 @@ public class MapImage extends MapObject {
                 height = image.getHeight(null);
             }
             if (width == -1 || height == -1) {
-                Debug.echoError("Image loading failed (bad width/height) for image " + file);
+                Debug.echoError("Image loading failed (bad width/height) for image " + fileTag);
                 disabled = true;
                 return;
             }
@@ -88,6 +87,11 @@ public class MapImage extends MapObject {
         byte[] bytes;
         if (!useCache || cachedImage == null) {
             bytes = imageToBytes(image, width, height);
+            if (bytes == null) {
+                Debug.echoError("Image loading failed (bad imageToBytes) for image " + fileTag);
+                disabled = true;
+                return;
+            }
             if (useCache) {
                 cachedImage = bytes;
             }
@@ -122,8 +126,13 @@ public class MapImage extends MapObject {
         bukkitColors = colors;
     }
 
-    private static byte[] imageToBytes(Image image, int width, int height) {
-        BufferedImage temp = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+    public static byte[] imageToBytes(Image image, int width, int height) {
+        int bufWidth = image.getWidth(null);
+        int bufHeight = image.getHeight(null);
+        if (bufWidth <= 0 || bufHeight <= 0) {
+            return null;
+        }
+        BufferedImage temp = new BufferedImage(bufWidth, bufHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics = temp.createGraphics();
         graphics.drawImage(image, 0, 0, width, height, null);
         graphics.dispose();
@@ -136,7 +145,7 @@ public class MapImage extends MapObject {
         return result;
     }
 
-    private static byte matchColor(Color color) {
+    public static byte matchColor(Color color) {
         if (color.getAlpha() < 128) {
             return 0;
         }
@@ -152,7 +161,7 @@ public class MapImage extends MapObject {
         return (byte) (index < 128 ? index : -129 + (index - 127));
     }
 
-    private static double getDistance(Color c1, Color c2) {
+    public static double getDistance(Color c1, Color c2) {
         double rmean = (c1.getRed() + c2.getRed()) / 2.0;
         double r = c1.getRed() - c2.getRed();
         double g = c1.getGreen() - c2.getGreen();
