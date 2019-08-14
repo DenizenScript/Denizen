@@ -1222,7 +1222,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             org.bukkit.util.Vector rel = target.toVector().subtract(this.toVector());
             double len = rel.length();
             rel = rel.multiply(1d / len);
-            for (double i = 0d; i < len; i += rad) {
+            for (double i = 0d; i <= len; i += rad) {
                 list.add(new LocationTag(this.clone().add(rel.clone().multiply(i))).identify());
             }
             return list.getAttribute(attribute);
