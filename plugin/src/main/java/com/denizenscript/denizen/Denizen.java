@@ -338,7 +338,7 @@ public class Denizen extends JavaPlugin {
             eventManager().registerCoreMembers();
 
             // Register all the modern script events
-            ScriptEventRegistry.registermainEvents();
+            ScriptEventRegistry.registerMainEvents();
 
             CommonRegistries.registerMainObjects();
 

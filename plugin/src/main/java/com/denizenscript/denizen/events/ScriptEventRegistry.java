@@ -11,7 +11,7 @@ import com.denizenscript.denizencore.events.ScriptEvent;
 
 public class ScriptEventRegistry {
 
-    public static void registermainEvents() {
+    public static void registerMainEvents() {
         // Block events
         ScriptEvent.registerScriptEvent(new BlockBuiltScriptEvent());
         ScriptEvent.registerScriptEvent(new BlockBurnsScriptEvent());
