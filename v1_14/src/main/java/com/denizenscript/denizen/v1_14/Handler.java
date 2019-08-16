@@ -2,7 +2,6 @@ package com.denizenscript.denizen.v1_14;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.*;
-import com.denizenscript.denizen.nms.helpers.*;
 import com.denizenscript.denizen.v1_14.impl.BiomeNMS_v1_14_R1;
 import com.denizenscript.denizen.v1_14.impl.ProfileEditor_v1_14_R1;
 import com.denizenscript.denizen.v1_14.impl.Sidebar_v1_14_R1;
@@ -41,7 +40,7 @@ import org.spigotmc.AsyncCatcher;
 import java.lang.reflect.Field;
 import java.util.Map;
 
-public class Handler_v1_14_R1 extends NMSHandler {
+public class Handler extends NMSHandler {
 
     private final AdvancementHelper advancementHelper = new AdvancementHelper_v1_14_R1();
     private final AnimationHelper animationHelper = new AnimationHelper_v1_14_R1();

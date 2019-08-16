@@ -11,7 +11,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 

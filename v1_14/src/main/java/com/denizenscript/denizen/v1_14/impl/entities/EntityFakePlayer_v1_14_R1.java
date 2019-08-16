@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.v1_14.impl.entities;
 
 import com.mojang.authlib.GameProfile;
-import com.denizenscript.denizen.v1_14.Handler_v1_14_R1;
+import com.denizenscript.denizen.v1_14.Handler;
 import com.denizenscript.denizen.v1_14.impl.network.FakeNetworkManager_v1_14_R1;
 import com.denizenscript.denizen.v1_14.impl.network.FakePlayerConnection_v1_14_R1;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -15,7 +15,7 @@ public class EntityFakePlayer_v1_14_R1 extends EntityPlayer {
     public EntityFakePlayer_v1_14_R1(MinecraftServer minecraftserver, WorldServer worldserver, GameProfile gameprofile, PlayerInteractManager playerinteractmanager) {
         super(minecraftserver, worldserver, gameprofile, playerinteractmanager);
         try {
-            Handler_v1_14_R1.ENTITY_BUKKITYENTITY.set(this, new CraftFakePlayer_v1_14_R1((CraftServer) Bukkit.getServer(), this));
+            Handler.ENTITY_BUKKITYENTITY.set(this, new CraftFakePlayer_v1_14_R1((CraftServer) Bukkit.getServer(), this));
         }
         catch (Exception ex) {
             Debug.echoError(ex);

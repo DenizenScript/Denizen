@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.v1_14.impl.entities;
 
-import com.denizenscript.denizen.v1_14.Handler_v1_14_R1;
+import com.denizenscript.denizen.v1_14.Handler;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
@@ -26,7 +26,7 @@ public class EntityItemProjectile_v1_14_R1 extends EntityItem implements IProjec
     public EntityItemProjectile_v1_14_R1(CraftWorld craftWorld, Location location, org.bukkit.inventory.ItemStack itemStack) {
         super(EntityTypes.ITEM, craftWorld.getHandle());
         try {
-            Handler_v1_14_R1.ENTITY_BUKKITYENTITY.set(this, new CraftItemProjectile_v1_14_R1((CraftServer) Bukkit.getServer(), this));
+            Handler.ENTITY_BUKKITYENTITY.set(this, new CraftItemProjectile_v1_14_R1((CraftServer) Bukkit.getServer(), this));
         }
         catch (Exception ex) {
             Debug.echoError(ex);

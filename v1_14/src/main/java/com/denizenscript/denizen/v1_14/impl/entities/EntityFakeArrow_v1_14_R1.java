@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.v1_14.impl.entities;
 
-import com.denizenscript.denizen.v1_14.Handler_v1_14_R1;
+import com.denizenscript.denizen.v1_14.Handler;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_14_R1.EntitySpectralArrow;
 import net.minecraft.server.v1_14_R1.EntityTypes;
@@ -17,7 +17,7 @@ public class EntityFakeArrow_v1_14_R1 extends EntitySpectralArrow {
         // TODO: 1.14 - provide a custom EntityTypes?
         super(EntityTypes.SPECTRAL_ARROW, craftWorld.getHandle());
         try {
-            Handler_v1_14_R1.ENTITY_BUKKITYENTITY.set(this, new CraftFakeArrow_v1_14_R1((CraftServer) Bukkit.getServer(), this));
+            Handler.ENTITY_BUKKITYENTITY.set(this, new CraftFakeArrow_v1_14_R1((CraftServer) Bukkit.getServer(), this));
         }
         catch (Exception ex) {
             Debug.echoError(ex);

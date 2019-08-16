@@ -2,7 +2,6 @@ package com.denizenscript.denizen.v1_14.impl.packets.handlers;
 
 import com.denizenscript.denizen.v1_14.impl.blocks.BlockLight_v1_14_R1;
 import com.denizenscript.denizen.v1_14.impl.entities.EntityFakePlayer_v1_14_R1;
-import com.denizenscript.denizen.nms.impl.packets.*;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketHandler;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
 import com.denizenscript.denizen.v1_14.impl.packets.*;

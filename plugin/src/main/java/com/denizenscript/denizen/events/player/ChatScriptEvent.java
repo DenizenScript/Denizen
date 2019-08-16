@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
 import com.denizenscript.denizen.utilities.debugging.Debug;

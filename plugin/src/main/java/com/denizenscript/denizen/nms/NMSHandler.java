@@ -46,7 +46,7 @@ public abstract class NMSHandler {
         }
         try {
             // Get the class of our handler for this version
-            final Class<?> clazz = Class.forName("com.denizenscript.denizen.nms.Handler_" + version.name());
+            final Class<?> clazz = Class.forName("com.denizenscript.denizen.nms." + version.name() + ".Handler");
             if (NMSHandler.class.isAssignableFrom(clazz)) {
                 // Found and loaded - good to go!
                 instance = (NMSHandler) clazz.newInstance();
