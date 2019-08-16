@@ -31,6 +31,7 @@ public class EntityColor implements Property {
                 type == EntityType.LLAMA ||
                 type == EntityType.PARROT ||
                 type == EntityType.SHULKER ||
+                type == EntityType.MUSHROOM_COW ||
                 (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && type == EntityType.TROPICAL_FISH);
     }
 
@@ -90,6 +91,9 @@ public class EntityColor implements Property {
         else if (type == EntityType.SHULKER) {
             DyeColor color = ((Shulker) colored.getBukkitEntity()).getColor();
             return color == null ? null : color.name();
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1) && type == EntityType.MUSHROOM_COW) {
+            return ((MushroomCow) colored.getBukkitEntity()).getVariant().name();
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && type == EntityType.TROPICAL_FISH) {
             return TropicalFishHelper.getColor(colored);
@@ -165,14 +169,14 @@ public class EntityColor implements Property {
         // @mechanism EntityTag.color
         // @group properties
         // @description
-        // If the entity can have a color, returns the entity's color.
-        // Currently, only Horse, Wolf, Ocelot, Sheep, Rabbit, Llama, Parrot, Shulker, and Tropical_Fish type entities can have a color.
+        // If the entity can have a color, returns the entity's color. A few entity types can have colors:
         // For horses, the output is COLOR|STYLE(|VARIANT), see <@link language horse types>.
         //  NOTE: HORSE VARIANTS DEPRECATED SINCE 1.11, use spawn instead
         // For ocelots, the types are BLACK_CAT, RED_CAT, SIAMESE_CAT, or WILD_OCELOT.
         // For rabbit types, see <@link language rabbit types>.
         // For parrots, the types are BLUE, CYAN, GRAY, GREEN, or RED.
         // For llamas, the types are CREAMY, WHITE, BROWN, and GRAY.
+        // For MushroomCows, the types are RED and BROWN.
         // For Tropical_Fish, the input is Pattern|BodyColor|PatternColor, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/TropicalFish.Pattern.html>
         // For sheep, wolf, and shulker entities, see <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/DyeColor.html>
         // -->
@@ -212,27 +216,22 @@ public class EntityColor implements Property {
                             .setStyle(Horse.Style.valueOf(horse_info.get(1).toUpperCase()));
                 }
             }
-            else if (type == EntityType.SHEEP
-                    && mechanism.getValue().matchesEnum(DyeColor.values())) {
+            else if (type == EntityType.SHEEP && mechanism.getValue().matchesEnum(DyeColor.values())) {
                 ((Sheep) colored.getBukkitEntity())
                         .setColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (type == EntityType.WOLF
-                    && mechanism.getValue().matchesEnum(DyeColor.values())) {
+            else if (type == EntityType.WOLF && mechanism.getValue().matchesEnum(DyeColor.values())) {
                 ((Wolf) colored.getBukkitEntity())
                         .setCollarColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (type == EntityType.OCELOT
-                    && mechanism.getValue().matchesEnum(Ocelot.Type.values())) {
+            else if (type == EntityType.OCELOT && mechanism.getValue().matchesEnum(Ocelot.Type.values())) {
                 ((Ocelot) colored.getBukkitEntity())
                         .setCatType(Ocelot.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (type == EntityType.RABBIT
-                    && mechanism.getValue().matchesEnum(Rabbit.Type.values())) {
+            else if (type == EntityType.RABBIT && mechanism.getValue().matchesEnum(Rabbit.Type.values())) {
                 ((Rabbit) colored.getBukkitEntity()).setRabbitType(Rabbit.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (type == EntityType.RABBIT
-                    && mechanism.getValue().matchesEnum(Rabbit.Type.values())) {
+            else if (type == EntityType.RABBIT && mechanism.getValue().matchesEnum(Rabbit.Type.values())) {
                 ((Rabbit) colored.getBukkitEntity()).setRabbitType(Rabbit.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (type == EntityType.LLAMA) {
@@ -241,9 +240,11 @@ public class EntityColor implements Property {
             else if (type == EntityType.PARROT) {
                 ((Parrot) colored.getBukkitEntity()).setVariant(Parrot.Variant.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (type == EntityType.SHULKER
-                    && mechanism.getValue().matchesEnum(DyeColor.values())) {
+            else if (type == EntityType.SHULKER && mechanism.getValue().matchesEnum(DyeColor.values())) {
                 ((Shulker) colored.getBukkitEntity()).setColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
+            }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1) && type == EntityType.MUSHROOM_COW) {
+                ((MushroomCow) colored.getBukkitEntity()).setVariant(MushroomCow.Variant.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else {
                 Debug.echoError("Could not apply color '" + mechanism.getValue().toString() + "' to entity of type " + type.name() + ".");
