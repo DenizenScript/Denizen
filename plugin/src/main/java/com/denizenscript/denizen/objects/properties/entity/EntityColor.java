@@ -3,6 +3,7 @@ package com.denizenscript.denizen.objects.properties.entity;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizen.utilities.entity.FoxHelper;
 import com.denizenscript.denizen.utilities.entity.TropicalFishHelper;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -98,6 +99,9 @@ public class EntityColor implements Property {
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && type == EntityType.TROPICAL_FISH) {
             return TropicalFishHelper.getColor(colored);
         }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1) && type == EntityType.FOX) {
+            return FoxHelper.getColor(colored);
+        }
         else // Should never happen
         {
             return null;
@@ -131,14 +135,13 @@ public class EntityColor implements Property {
     // This is a quick rundown of the styling information used to create a horse,
     // used for both <@link tag EntityTag.color> and <@link mechanism EntityTag.color>.
     //
-    // The output/input is formatted as COLOR|STYLE(|VARIANT)
+    // The output/input is formatted as COLOR|STYLE
     // Where color is:
     // BLACK, BROWN, CHESTNUT, CREAMY, DARK_BROWN, GRAY, or WHITE.
     // and where style is:
     // WHITE, WHITE_DOTS, WHITEFIELD, BLACK_DOTS, or NONE.
-    // and where variant is:
-    // DONKEY, MULE, SKELETON_HORSE, UNDEAD_HORSE, or HORSE.
-    //  NOTE: HORSE VARIANTS DEPRECATED SINCE 1.11, use spawn instead
+    //
+    // NOTE: Horse variants were part of this mechanism prior to 1.11 - they are now separate entity types.
     // -->
 
     // <--[language]
@@ -170,14 +173,14 @@ public class EntityColor implements Property {
         // @group properties
         // @description
         // If the entity can have a color, returns the entity's color. A few entity types can have colors:
-        // For horses, the output is COLOR|STYLE(|VARIANT), see <@link language horse types>.
-        //  NOTE: HORSE VARIANTS DEPRECATED SINCE 1.11, use spawn instead
+        // For horses, the output is COLOR|STYLE, see <@link language horse types>.
         // For ocelots, the types are BLACK_CAT, RED_CAT, SIAMESE_CAT, or WILD_OCELOT.
         // For rabbit types, see <@link language rabbit types>.
         // For parrots, the types are BLUE, CYAN, GRAY, GREEN, or RED.
         // For llamas, the types are CREAMY, WHITE, BROWN, and GRAY.
-        // For MushroomCows, the types are RED and BROWN.
-        // For Tropical_Fish, the input is Pattern|BodyColor|PatternColor, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/TropicalFish.Pattern.html>
+        // For mushroom_cows, the types are RED and BROWN.
+        // Fox foxes, the types are RED and SNOW.
+        // For tropical_fish, the input is Pattern|BodyColor|PatternColor, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/TropicalFish.Pattern.html>
         // For sheep, wolf, and shulker entities, see <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/DyeColor.html>
         // -->
         if (attribute.startsWith("color")) {
@@ -248,6 +251,9 @@ public class EntityColor implements Property {
             }
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && type == EntityType.TROPICAL_FISH) {
                 TropicalFishHelper.setColor(colored, mechanism.getValue().asString());
+            }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1) && type == EntityType.FOX) {
+                FoxHelper.setColor(colored, mechanism.getValue().asString());
             }
             else {
                 Debug.echoError("Could not apply color '" + mechanism.getValue().toString() + "' to entity of type " + type.name() + ".");
