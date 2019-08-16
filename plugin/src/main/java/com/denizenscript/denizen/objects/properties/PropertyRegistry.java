@@ -35,7 +35,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityAreaEffectCloud.class, EntityTag.class);
         PropertyParser.registerProperty(EntityArmorBonus.class, EntityTag.class);
         PropertyParser.registerProperty(EntityArrowDamage.class, EntityTag.class);
-        PropertyParser.registerProperty(EntityAttributes.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            PropertyParser.registerProperty(EntityAttributes.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityInvulnerable.class, EntityTag.class);
         PropertyParser.registerProperty(EntityBoatType.class, EntityTag.class);
         PropertyParser.registerProperty(EntityArmorPose.class, EntityTag.class);
