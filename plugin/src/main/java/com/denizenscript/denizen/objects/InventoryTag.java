@@ -94,14 +94,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
     }
 
     /////////////////////
-    //   PATTERNS
-    /////////////////
-
-    final static Pattern inventory_by_type = Pattern.compile("(in@)(npc|player|enderchest|workbench|entity|location|generic)\\[(.+?)\\]", Pattern.CASE_INSENSITIVE);
-    final static Pattern inventory_by_script = Pattern.compile("(in@)(.+)", Pattern.CASE_INSENSITIVE);
-
-
-    /////////////////////
     //   STATIC FIELDS
     /////////////////
 
@@ -190,7 +182,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             return valueOf(string, null, null);
         }
         else {
-            return valueOf(string, ((BukkitTagContext) context).player, ((BukkitTagContext) context).npc);
+            return valueOf(string, ((BukkitTagContext) context).player, ((BukkitTagContext) context).npc, !context.debug);
         }
     }
 
@@ -198,13 +190,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         return valueOf(string, player, npc, false);
     }
 
-    /**
-     * Gets a InventoryTag from a string format.
-     *
-     * @param string The inventory in string form. (in@player[playerName], in@scriptName, etc.)
-     * @return The InventoryTag value. If the string is incorrectly formatted or
-     * the specified inventory is invalid, this is null.
-     */
     public static InventoryTag valueOf(String string, PlayerTag player, NPCTag npc, boolean silent) {
 
         if (string == null) {
@@ -213,111 +198,29 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
 
         ///////
         // Handle objects with properties through the object fetcher
-        Matcher m = ObjectFetcher.DESCRIBED_PATTERN.matcher(string);
-        if (m.matches()) {
+        Matcher describedMatcher = ObjectFetcher.DESCRIBED_PATTERN.matcher(string);
+        if (describedMatcher.matches()) {
             return ObjectFetcher.getObjectFrom(InventoryTag.class, string,
                     new BukkitTagContext(player, npc, false, null, false, null));
         }
 
-        // Match in@scriptName for Inventory Scripts, as well as in@notableName
-        m = inventory_by_script.matcher(string);
-
-        if (m.matches()) {
-            if (ScriptRegistry.containsScript(m.group(2), InventoryScriptContainer.class)) {
-                return ScriptRegistry.getScriptContainerAs(m.group(2), InventoryScriptContainer.class)
-                        .getInventoryFrom(player, npc);
-            }
-
-            if (NotableManager.isSaved(m.group(2)) && NotableManager.isType(m.group(2), InventoryTag.class)) {
-                return (InventoryTag) NotableManager.getSavedObject(m.group(2));
-            }
-
-            for (String idType : idTypes) {
-                if (m.group(2).equalsIgnoreCase(idType)) {
-                    return new InventoryTag(m.group(2));
-                }
-            }
+        if (string.startsWith("in@")) {
+            string = string.substring("in@".length());
         }
 
-        m = inventory_by_type.matcher(string);
+        if (ScriptRegistry.containsScript(string, InventoryScriptContainer.class)) {
+            return ScriptRegistry.getScriptContainerAs(string, InventoryScriptContainer.class)
+                    .getInventoryFrom(player, npc);
+        }
 
-        if (m.matches()) {
+        if (NotableManager.isSaved(string) && NotableManager.isType(string, InventoryTag.class)) {
+            return (InventoryTag) NotableManager.getSavedObject(string);
+        }
 
-            // Set the type of the inventory holder
-            String type = CoreUtilities.toLowerCase(m.group(2));
-            // Set the name/id/location of the inventory holder
-            String holder = m.group(3);
-
-            if (type.equals("generic")) {
-                Argument arg = Argument.valueOf(holder);
-                if (arg.matchesEnum(InventoryType.values())) {
-                    return new InventoryTag(InventoryType.valueOf(holder.toUpperCase()));
-                }
-                else if (arg.matchesPrimitive(PrimitiveType.Integer)) {
-                    return new InventoryTag(arg.asElement().asInt());
-                }
-                else {
-                    if (!silent) {
-                        Debug.echoError("That type of inventory does not exist!");
-                    }
-                }
+        for (String idType : idTypes) {
+            if (string.equalsIgnoreCase(idType)) {
+                return new InventoryTag(string);
             }
-            else if (type.equals("npc")) {
-                if (NPCTag.matches(holder)) {
-                    return NPCTag.valueOf(holder).getDenizenInventory();
-                }
-            }
-            else if (type.equals("crafting")) {
-                if (PlayerTag.matches(holder)) {
-                    PlayerTag holderPlayer = PlayerTag.valueOf(holder);
-                    Inventory opened = holderPlayer.getPlayerEntity().getOpenInventory().getTopInventory();
-                    if (opened instanceof CraftingInventory) {
-                        return new InventoryTag(opened);
-                    }
-                    return PlayerTag.valueOf(holder).getInventory();
-                }
-            }
-            else if (type.equals("player")) {
-                if (PlayerTag.matches(holder)) {
-                    return PlayerTag.valueOf(holder).getInventory();
-                }
-            }
-            else if (type.equals("workbench")) {
-                if (PlayerTag.matches(holder)) {
-                    InventoryTag workbench = PlayerTag.valueOf(holder).getWorkbench();
-                    if (workbench == null) {
-                        if (!silent) {
-                            Debug.echoError("Value of InventoryTag returning null (" + string + ")." +
-                                    " Specified player does not have an open workbench.");
-                        }
-                    }
-                    else {
-                        return workbench;
-                    }
-                }
-            }
-            else if (type.equals("enderchest")) {
-                if (PlayerTag.matches(holder)) {
-                    return PlayerTag.valueOf(holder).getEnderChest();
-                }
-            }
-            else if (type.equals("entity")) {
-                if (EntityTag.matches(holder)) {
-                    return EntityTag.valueOf(holder).getInventory();
-                }
-            }
-            else if (type.equals("location")) {
-                if (LocationTag.matches(holder)) {
-                    return LocationTag.valueOf(holder).getInventory();
-                }
-            }
-
-            // If the InventoryTag is invalid, alert the user and return null
-            if (!silent) {
-                Debug.echoError("Value of InventoryTag returning null. Invalid " +
-                        type + " specified: " + holder);
-            }
-            return null;
         }
 
         if (!silent) {
