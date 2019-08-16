@@ -5,6 +5,7 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.CatHelper;
 import com.denizenscript.denizen.utilities.entity.FoxHelper;
+import com.denizenscript.denizen.utilities.entity.PandaHelper;
 import com.denizenscript.denizen.utilities.entity.TropicalFishHelper;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -35,6 +36,7 @@ public class EntityColor implements Property {
                 type == EntityType.SHULKER ||
                 type == EntityType.MUSHROOM_COW ||
                 (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1) && type == EntityType.CAT) ||
+                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1) && type == EntityType.PANDA) ||
                 (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && type == EntityType.TROPICAL_FISH);
     }
 
@@ -106,6 +108,9 @@ public class EntityColor implements Property {
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1) && type == EntityType.CAT) {
             return CatHelper.getColor(colored);
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1) && type == EntityType.PANDA) {
+            return PandaHelper.getColor(colored);
         }
         else // Should never happen
         {
@@ -180,12 +185,13 @@ public class EntityColor implements Property {
         // If the entity can have a color, returns the entity's color. A few entity types can have colors:
         // For horses, the output is COLOR|STYLE, see <@link language horse types>.
         // For ocelots, the types are BLACK_CAT, RED_CAT, SIAMESE_CAT, or WILD_OCELOT. (NOTE: Deprecated since 1.14 - now 'cat' entity type is separate)
-        // For cats, the format is TYPE|COLOR (see dye color link below). The types are TABBY, BLACK, RED, SIAMESE, BRITISH_SHORTHAIR, CALICO, PERSIAN, RAGDOLL, WHITE, JELLIE, ALL_BLACK.
+        // For cats, the format is TYPE|COLOR (see dye color link below). The types are TABBY, BLACK, RED, SIAMESE, BRITISH_SHORTHAIR, CALICO, PERSIAN, RAGDOLL, WHITE, JELLIE, and ALL_BLACK.
         // For rabbit types, see <@link language rabbit types>.
         // For parrots, the types are BLUE, CYAN, GRAY, GREEN, or RED.
         // For llamas, the types are CREAMY, WHITE, BROWN, and GRAY.
         // For mushroom_cows, the types are RED and BROWN.
-        // Fox foxes, the types are RED and SNOW.
+        // For foxes, the types are RED and SNOW.
+        // For pandas, the format is MAIN_GENE|HIDDEN_GENE. The gene types are NORMAL, LAZY, WORRIED, PLAYFUL, BROWN, WEAK, and AGGRESSIVE.
         // For tropical_fish, the input is Pattern|BodyColor|PatternColor, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/TropicalFish.Pattern.html>
         // For sheep, wolf, and shulker entities, see <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/DyeColor.html>
         // -->
@@ -260,6 +266,9 @@ public class EntityColor implements Property {
             }
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1) && type == EntityType.CAT) {
                 CatHelper.setColor(colored, mechanism.getValue().asString());
+            }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1) && type == EntityType.PANDA) {
+                PandaHelper.setColor(colored, mechanism.getValue().asString());
             }
             else {
                 Debug.echoError("Could not apply color '" + mechanism.getValue().toString() + "' to entity of type " + type.name() + ".");
