@@ -3,6 +3,7 @@ package com.denizenscript.denizen.objects.properties.entity;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizen.utilities.entity.CatHelper;
 import com.denizenscript.denizen.utilities.entity.FoxHelper;
 import com.denizenscript.denizen.utilities.entity.TropicalFishHelper;
 import com.denizenscript.denizen.objects.EntityTag;
@@ -33,6 +34,7 @@ public class EntityColor implements Property {
                 type == EntityType.PARROT ||
                 type == EntityType.SHULKER ||
                 type == EntityType.MUSHROOM_COW ||
+                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1) && type == EntityType.CAT) ||
                 (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && type == EntityType.TROPICAL_FISH);
     }
 
@@ -101,6 +103,9 @@ public class EntityColor implements Property {
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1) && type == EntityType.FOX) {
             return FoxHelper.getColor(colored);
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1) && type == EntityType.CAT) {
+            return CatHelper.getColor(colored);
         }
         else // Should never happen
         {
@@ -174,7 +179,8 @@ public class EntityColor implements Property {
         // @description
         // If the entity can have a color, returns the entity's color. A few entity types can have colors:
         // For horses, the output is COLOR|STYLE, see <@link language horse types>.
-        // For ocelots, the types are BLACK_CAT, RED_CAT, SIAMESE_CAT, or WILD_OCELOT.
+        // For ocelots, the types are BLACK_CAT, RED_CAT, SIAMESE_CAT, or WILD_OCELOT. (NOTE: Deprecated since 1.14 - now 'cat' entity type is separate)
+        // For cats, the format is TYPE|COLOR (see dye color link below). The types are TABBY, BLACK, RED, SIAMESE, BRITISH_SHORTHAIR, CALICO, PERSIAN, RAGDOLL, WHITE, JELLIE, ALL_BLACK.
         // For rabbit types, see <@link language rabbit types>.
         // For parrots, the types are BLUE, CYAN, GRAY, GREEN, or RED.
         // For llamas, the types are CREAMY, WHITE, BROWN, and GRAY.
@@ -220,16 +226,13 @@ public class EntityColor implements Property {
                 }
             }
             else if (type == EntityType.SHEEP && mechanism.getValue().matchesEnum(DyeColor.values())) {
-                ((Sheep) colored.getBukkitEntity())
-                        .setColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
+                ((Sheep) colored.getBukkitEntity()).setColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (type == EntityType.WOLF && mechanism.getValue().matchesEnum(DyeColor.values())) {
-                ((Wolf) colored.getBukkitEntity())
-                        .setCollarColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
+                ((Wolf) colored.getBukkitEntity()).setCollarColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (type == EntityType.OCELOT && mechanism.getValue().matchesEnum(Ocelot.Type.values())) {
-                ((Ocelot) colored.getBukkitEntity())
-                        .setCatType(Ocelot.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
+                ((Ocelot) colored.getBukkitEntity()).setCatType(Ocelot.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (type == EntityType.RABBIT && mechanism.getValue().matchesEnum(Rabbit.Type.values())) {
                 ((Rabbit) colored.getBukkitEntity()).setRabbitType(Rabbit.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
@@ -254,6 +257,9 @@ public class EntityColor implements Property {
             }
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1) && type == EntityType.FOX) {
                 FoxHelper.setColor(colored, mechanism.getValue().asString());
+            }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1) && type == EntityType.CAT) {
+                CatHelper.setColor(colored, mechanism.getValue().asString());
             }
             else {
                 Debug.echoError("Could not apply color '" + mechanism.getValue().toString() + "' to entity of type " + type.name() + ".");
