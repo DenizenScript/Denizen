@@ -2,12 +2,12 @@ package com.denizenscript.denizen.v1_14;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.*;
-import com.denizenscript.denizen.v1_14.impl.BiomeNMS_v1_14_R1;
-import com.denizenscript.denizen.v1_14.impl.ProfileEditor_v1_14_R1;
-import com.denizenscript.denizen.v1_14.impl.Sidebar_v1_14_R1;
-import com.denizenscript.denizen.v1_14.impl.blocks.BlockLight_v1_14_R1;
-import com.denizenscript.denizen.v1_14.impl.jnbt.CompoundTag_v1_14_R1;
-import com.denizenscript.denizen.v1_14.impl.packets.handlers.DenizenPacketListener_v1_14_R1;
+import com.denizenscript.denizen.v1_14.impl.BiomeNMSImpl;
+import com.denizenscript.denizen.v1_14.impl.ProfileEditorImpl;
+import com.denizenscript.denizen.v1_14.impl.SidebarImpl;
+import com.denizenscript.denizen.v1_14.impl.blocks.BlockLightImpl;
+import com.denizenscript.denizen.v1_14.impl.jnbt.CompoundTagImpl;
+import com.denizenscript.denizen.v1_14.impl.packets.handlers.DenizenPacketListenerImpl;
 import com.denizenscript.denizen.nms.interfaces.*;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketHandler;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
@@ -42,21 +42,21 @@ import java.util.Map;
 
 public class Handler extends NMSHandler {
 
-    private final AdvancementHelper advancementHelper = new AdvancementHelper_v1_14_R1();
-    private final AnimationHelper animationHelper = new AnimationHelper_v1_14_R1();
-    private final BlockHelper blockHelper = new BlockHelper_v1_14_R1();
-    private final ChunkHelper chunkHelper = new ChunkHelper_v1_14_R1();
-    private final CustomEntityHelper customEntityHelper = new CustomEntityHelper_v1_14_R1();
-    private final EntityHelper entityHelper = new EntityHelper_v1_14_R1();
-    private final FishingHelper fishingHelper = new FishingHelper_v1_14_R1();
-    private final ItemHelper itemHelper = new ItemHelper_v1_14_R1();
-    private final SoundHelper soundHelper = new SoundHelper_v1_14_R1();
-    private final PacketHelper packetHelper = new PacketHelper_v1_14_R1();
-    private final ParticleHelper particleHelper = new ParticleHelper_v1_14_R1();
-    private final PlayerHelper playerHelper = new PlayerHelper_v1_14_R1();
-    private final WorldHelper worldHelper = new WorldHelper_v1_14_R1();
+    private final AdvancementHelper advancementHelper = new AdvancementHelperImpl();
+    private final AnimationHelper animationHelper = new AnimationHelperImpl();
+    private final BlockHelper blockHelper = new BlockHelperImpl();
+    private final ChunkHelper chunkHelper = new ChunkHelperImpl();
+    private final CustomEntityHelper customEntityHelper = new CustomEntityHelperImpl();
+    private final EntityHelper entityHelper = new EntityHelperImpl();
+    private final FishingHelper fishingHelper = new FishingHelperImpl();
+    private final ItemHelper itemHelper = new ItemHelperImpl();
+    private final SoundHelper soundHelper = new SoundHelperImpl();
+    private final PacketHelper packetHelper = new PacketHelperImpl();
+    private final ParticleHelper particleHelper = new ParticleHelperImpl();
+    private final PlayerHelper playerHelper = new PlayerHelperImpl();
+    private final WorldHelper worldHelper = new WorldHelperImpl();
 
-    private final ProfileEditor profileEditor = new ProfileEditor_v1_14_R1();
+    private final ProfileEditor profileEditor = new ProfileEditorImpl();
 
     private boolean wasAsyncCatcherEnabled;
 
@@ -153,22 +153,22 @@ public class Handler extends NMSHandler {
 
     @Override
     public void enablePacketInterception(PacketHandler packetHandler) {
-        DenizenPacketListener_v1_14_R1.enable(packetHandler);
+        DenizenPacketListenerImpl.enable(packetHandler);
     }
 
     @Override
     public CompoundTag createCompoundTag(Map<String, Tag> value) {
-        return new CompoundTag_v1_14_R1(value);
+        return new CompoundTagImpl(value);
     }
 
     @Override
     public Sidebar createSidebar(Player player) {
-        return new Sidebar_v1_14_R1(player);
+        return new SidebarImpl(player);
     }
 
     @Override
     public BlockLight createBlockLight(Location location, int lightLevel, long ticks) {
-        return BlockLight_v1_14_R1.createLight(location, lightLevel, ticks);
+        return BlockLightImpl.createLight(location, lightLevel, ticks);
     }
 
     @Override
@@ -282,6 +282,6 @@ public class Handler extends NMSHandler {
 
     @Override
     public BiomeNMS getBiomeNMS(Biome biome) {
-        return new BiomeNMS_v1_14_R1(biome);
+        return new BiomeNMSImpl(biome);
     }
 }
