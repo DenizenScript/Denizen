@@ -119,7 +119,7 @@ public class CopyBlockCommand extends AbstractCommand {
             Block update = destination.getBlock();
 
             // TODO: 1.13 - confirm this works
-            BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(source);
+            BlockData blockData = NMSHandler.getBlockHelper().getBlockData(source);
             blockData.setBlock(update, false);
 
             BlockState updateState = LocationTag.getBlockStateFor(update);

@@ -318,7 +318,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             return rememberedEntities.get(id);
         }
         for (World world : Bukkit.getWorlds()) {
-            Entity entity = NMSHandler.getInstance().getEntityHelper().getEntity(world, id);
+            Entity entity = NMSHandler.getEntityHelper().getEntity(world, id);
             if (entity != null) {
                 return entity;
             }
@@ -885,7 +885,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         else if (entity != null && isUnique()) {
             entity.teleport(location);
             if (entity.getWorld().equals(location.getWorld())) { // Force the teleport through (for things like mounts)
-                NMSHandler.getInstance().getEntityHelper().teleport(entity, location.toVector());
+                NMSHandler.getEntityHelper().teleport(entity, location.toVector());
             }
         }
         else {
@@ -1044,7 +1044,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             return;
         }
 
-        NMSHandler.getInstance().getEntityHelper().setTarget((Creature) entity, target);
+        NMSHandler.getEntityHelper().setTarget((Creature) entity, target);
     }
 
     public void setEntity(Entity entity) {
@@ -1604,7 +1604,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // -->
         if (attribute.startsWith("item_in_hand") ||
                 attribute.startsWith("iteminhand")) {
-            return new ItemTag(NMSHandler.getInstance().getEntityHelper().getItemInHand(getLivingEntity()))
+            return new ItemTag(NMSHandler.getEntityHelper().getItemInHand(getLivingEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1617,7 +1617,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // -->
         if (attribute.startsWith("item_in_offhand") ||
                 attribute.startsWith("iteminoffhand")) {
-            return new ItemTag(NMSHandler.getInstance().getEntityHelper().getItemInOffHand(getLivingEntity()))
+            return new ItemTag(NMSHandler.getEntityHelper().getItemInOffHand(getLivingEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1660,7 +1660,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Each coordinate is in the range of 0 to 128.
         // -->
         if (attribute.startsWith("map_trace")) {
-            EntityHelper.MapTraceResult mtr = NMSHandler.getInstance().getEntityHelper().mapTrace(getLivingEntity(), 200);
+            EntityHelper.MapTraceResult mtr = NMSHandler.getEntityHelper().mapTrace(getLivingEntity(), 200);
             if (mtr != null) {
                 double x = 0;
                 double y = 0;
@@ -1796,7 +1796,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns the entity's body yaw (separate from head yaw).
         // -->
         if (attribute.startsWith("body_yaw")) {
-            return new ElementTag(NMSHandler.getInstance().getEntityHelper().getBaseYaw(entity))
+            return new ElementTag(NMSHandler.getEntityHelper().getBaseYaw(entity))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1852,7 +1852,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns the material of a fallingblock-type entity.
         // -->
         if (attribute.startsWith("fallingblock_material") && entity instanceof FallingBlock) {
-            return new MaterialTag(NMSHandler.getInstance().getEntityHelper().getBlockDataFor((FallingBlock) entity))
+            return new MaterialTag(NMSHandler.getEntityHelper().getBlockDataFor((FallingBlock) entity))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -2013,7 +2013,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns whether the animal entity is trying to with another of its kind.
         // -->
         if (attribute.startsWith("breeding") || attribute.startsWith("is_breeding")) {
-            return new ElementTag(NMSHandler.getInstance().getEntityHelper().isBreeding((Animals) getLivingEntity()))
+            return new ElementTag(NMSHandler.getEntityHelper().isBreeding((Animals) getLivingEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -2558,7 +2558,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <EntityTag.item_in_hand>
         // -->
         if (mechanism.matches("item_in_hand")) {
-            NMSHandler.getInstance().getEntityHelper().setItemInHand(getLivingEntity(), mechanism.valueAsType(ItemTag.class).getItemStack());
+            NMSHandler.getEntityHelper().setItemInHand(getLivingEntity(), mechanism.valueAsType(ItemTag.class).getItemStack());
         }
 
         // <--[mechanism]
@@ -2572,7 +2572,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <EntityTag.item_in_offhand>
         // -->
         if (mechanism.matches("item_in_offhand")) {
-            NMSHandler.getInstance().getEntityHelper().setItemInOffHand(getLivingEntity(), mechanism.valueAsType(ItemTag.class).getItemStack());
+            NMSHandler.getEntityHelper().setItemInOffHand(getLivingEntity(), mechanism.valueAsType(ItemTag.class).getItemStack());
         }
 
         // <--[mechanism]
@@ -2723,7 +2723,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <EntityTag.can_breed>
         // -->
         if (mechanism.matches("breed") && mechanism.requireBoolean()) {
-            NMSHandler.getInstance().getEntityHelper().setBreeding((Animals) getLivingEntity(), mechanism.getValue().asBoolean());
+            NMSHandler.getEntityHelper().setBreeding((Animals) getLivingEntity(), mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -2987,7 +2987,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Forces an entity to move in the direction of the velocity specified.
         // -->
         if (mechanism.matches("move") && mechanism.requireObject(LocationTag.class)) {
-            NMSHandler.getInstance().getEntityHelper().move(getBukkitEntity(), mechanism.valueAsType(LocationTag.class).toVector());
+            NMSHandler.getEntityHelper().move(getBukkitEntity(), mechanism.valueAsType(LocationTag.class).toVector());
         }
 
         // <--[mechanism]
@@ -3001,7 +3001,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("interact_with") && mechanism.requireObject(LocationTag.class)) {
             LocationTag interactLocation = mechanism.valueAsType(LocationTag.class);
-            NMSHandler.getInstance().getEntityHelper().forceInteraction(getPlayer(), interactLocation);
+            NMSHandler.getEntityHelper().forceInteraction(getPlayer(), interactLocation);
         }
 
         // <--[mechanism]
@@ -3108,7 +3108,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Marks the entity as visible to players by default (if it was hidden).
         // -->
         if (mechanism.matches("show_to_players")) {
-            NMSHandler.getInstance().getEntityHelper().unhideEntity(null, getBukkitEntity());
+            NMSHandler.getEntityHelper().unhideEntity(null, getBukkitEntity());
         }
 
         // <--[mechanism]
@@ -3119,7 +3119,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Hides the entity from players by default.
         // -->
         if (mechanism.matches("hide_from_players")) {
-            NMSHandler.getInstance().getEntityHelper().hideEntity(null, getBukkitEntity(), false);
+            NMSHandler.getEntityHelper().hideEntity(null, getBukkitEntity(), false);
         }
 
         // <--[mechanism]

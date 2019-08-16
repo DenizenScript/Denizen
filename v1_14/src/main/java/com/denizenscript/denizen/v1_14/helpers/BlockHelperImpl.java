@@ -103,9 +103,9 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public CompoundTag getNbtData(Block block) {
-        NMSHandler.getInstance().getChunkHelper().changeChunkServerThread(block.getWorld());
+        NMSHandler.getChunkHelper().changeChunkServerThread(block.getWorld());
         org.bukkit.block.BlockState state = block.getState();
-        NMSHandler.getInstance().getChunkHelper().restoreServerThread(block.getWorld());
+        NMSHandler.getChunkHelper().restoreServerThread(block.getWorld());
         TileEntity tileEntity = getTE((CraftBlockEntityState) state);
         if (tileEntity == null) {
             return null;
@@ -115,9 +115,9 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public void setNbtData(Block block, CompoundTag compoundTag) {
-        NMSHandler.getInstance().getChunkHelper().changeChunkServerThread(block.getWorld());
+        NMSHandler.getChunkHelper().changeChunkServerThread(block.getWorld());
         org.bukkit.block.BlockState state = block.getState();
-        NMSHandler.getInstance().getChunkHelper().restoreServerThread(block.getWorld());
+        NMSHandler.getChunkHelper().restoreServerThread(block.getWorld());
         TileEntity tileEntity = getTE((CraftBlockEntityState) state);
         if (tileEntity == null) {
             return;

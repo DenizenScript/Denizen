@@ -48,7 +48,7 @@ public class EntitySilent implements Property {
 
     @Override
     public String getPropertyString() {
-        return NMSHandler.getInstance().getEntityHelper().isSilent(entity.getBukkitEntity()) ? "true" : null;
+        return NMSHandler.getEntityHelper().isSilent(entity.getBukkitEntity()) ? "true" : null;
     }
 
     @Override
@@ -76,7 +76,7 @@ public class EntitySilent implements Property {
         // Returns whether the entity is silent. (Plays no sounds)
         // -->
         if (attribute.startsWith("silent")) {
-            return new ElementTag(NMSHandler.getInstance().getEntityHelper().isSilent(entity.getBukkitEntity()))
+            return new ElementTag(NMSHandler.getEntityHelper().isSilent(entity.getBukkitEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -97,7 +97,7 @@ public class EntitySilent implements Property {
         // <EntityTag.silent>
         // -->
         if (mechanism.matches("silent") && mechanism.requireBoolean()) {
-            NMSHandler.getInstance().getEntityHelper().setSilent(entity.getBukkitEntity(), mechanism.getValue().asBoolean());
+            NMSHandler.getEntityHelper().setSilent(entity.getBukkitEntity(), mechanism.getValue().asBoolean());
         }
     }
 }

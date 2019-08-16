@@ -581,7 +581,7 @@ public class OldMaterialsHelper {
             if (data != 0) {
                 // upvert old data valued materials
                 if (material.isBlock()) {
-                    material = NMSHandler.getInstance().getBlockHelper().getBlockData(material, (byte) data).getMaterial();
+                    material = NMSHandler.getBlockHelper().getBlockData(material, (byte) data).getMaterial();
                 }
             }
             // Forcible upvert from legacy

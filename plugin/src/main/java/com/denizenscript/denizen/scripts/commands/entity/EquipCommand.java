@@ -235,7 +235,7 @@ public class EquipCommand extends AbstractCommand {
                     else {
 
                         if (equipment.get("hand") != null) {
-                            NMSHandler.getInstance().getEntityHelper().setItemInHand(livingEntity, equipment.get("hand").getItemStack());
+                            NMSHandler.getEntityHelper().setItemInHand(livingEntity, equipment.get("hand").getItemStack());
                         }
                         if (equipment.get("head") != null) {
                             livingEntity.getEquipment().setHelmet(equipment.get("head").getItemStack());
@@ -250,7 +250,7 @@ public class EquipCommand extends AbstractCommand {
                             livingEntity.getEquipment().setBoots(equipment.get("boots").getItemStack());
                         }
                         if (equipment.get("offhand") != null) {
-                            NMSHandler.getInstance().getEntityHelper().setItemInOffHand(livingEntity, equipment.get("offhand").getItemStack());
+                            NMSHandler.getEntityHelper().setItemInOffHand(livingEntity, equipment.get("offhand").getItemStack());
                         }
                     }
                 }

@@ -130,14 +130,14 @@ public class AnimateChestCommand extends AbstractCommand {
                     + ArgumentHelper.debugObj("players", players.toString()));
         }
 
-        PacketHelper packetHelper = NMSHandler.getInstance().getPacketHelper();
+        PacketHelper packetHelper = NMSHandler.getPacketHelper();
 
         switch (ChestAction.valueOf(action.asString().toUpperCase())) {
             case OPEN:
                 for (PlayerTag player : players) {
                     Player ent = player.getPlayerEntity();
                     if (sound.asBoolean()) {
-                        NMSHandler.getInstance().getSoundHelper().playSound(ent, location,
+                        NMSHandler.getSoundHelper().playSound(ent, location,
                                 Sound.BLOCK_CHEST_OPEN, 1, 1, "BLOCKS");
                     }
                     packetHelper.showBlockAction(ent, location, 1, 1);
@@ -148,7 +148,7 @@ public class AnimateChestCommand extends AbstractCommand {
                 for (PlayerTag player : players) {
                     Player ent = player.getPlayerEntity();
                     if (sound.asBoolean()) {
-                        NMSHandler.getInstance().getSoundHelper().playSound(ent, location,
+                        NMSHandler.getSoundHelper().playSound(ent, location,
                                 Sound.BLOCK_CHEST_CLOSE, 1, 1, "BLOCKS");
                     }
                     packetHelper.showBlockAction(ent, location, 1, 0);

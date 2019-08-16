@@ -179,8 +179,8 @@ public class RotateCommand extends AbstractCommand implements Holdable {
                 else if (infinite || ticks < maxTicks) {
                     for (EntityTag entity : entities) {
                         if (entity.isSpawned() && rotatingEntities.contains(entity.getUUID())) {
-                            NMSHandler.getInstance().getEntityHelper().rotate(entity.getBukkitEntity(),
-                                    NMSHandler.getInstance().getEntityHelper().normalizeYaw(entity.getLocation().getYaw() + yaw.asFloat()),
+                            NMSHandler.getEntityHelper().rotate(entity.getBukkitEntity(),
+                                    NMSHandler.getEntityHelper().normalizeYaw(entity.getLocation().getYaw() + yaw.asFloat()),
                                     entity.getLocation().getPitch() + pitch.asFloat());
                         }
                         else {

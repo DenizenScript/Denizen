@@ -147,7 +147,7 @@ public class PacketHelperImpl implements PacketHelper {
                     .putString("Pattern", pattern.getPattern().getIdentifier())
                     .build());
         }
-        CompoundTag compoundTag = NMSHandler.getInstance().getBlockHelper().getNbtData(location.getBlock())
+        CompoundTag compoundTag = NMSHandler.getBlockHelper().getNbtData(location.getBlock())
                 .createBuilder()
                 .putInt("Base", base.getDyeData())
                 .put("Patterns", new ListTag(CompoundTag.class, nbtPatterns))

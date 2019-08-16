@@ -93,7 +93,7 @@ public class EntityRiptide implements Property {
         if (mechanism.matches("is_using_riptide") && mechanism.requireBoolean()) {
             boolean shouldRiptide = mechanism.getValue().asBoolean();
             if (shouldRiptide != entity.getLivingEntity().isRiptiding()) {
-                NMSHandler.getInstance().getEntityHelper().setRiptide(entity.getBukkitEntity(), shouldRiptide);
+                NMSHandler.getEntityHelper().setRiptide(entity.getBukkitEntity(), shouldRiptide);
             }
         }
     }

@@ -337,7 +337,7 @@ public class ItemPotion implements Property {
                 meta.setColor(ColorTag.valueOf(d1[3].replace("&comma", ",")).getColor());
             }
             meta.clearCustomEffects();
-            ItemHelper itemHelper = NMSHandler.getInstance().getItemHelper();
+            ItemHelper itemHelper = NMSHandler.getItemHelper();
             for (int i = 1; i < data.size(); i++) {
                 String[] d2 = data.get(i).split(",");
                 PotionEffectType type = PotionEffectType.getByName(d2[0].toUpperCase());

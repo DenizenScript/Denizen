@@ -46,11 +46,11 @@ public class EntityBodyArrows implements Property {
     ///////
 
     private int getBodyArrows() {
-        return NMSHandler.getInstance().getEntityHelper().getBodyArrows(entity.getBukkitEntity());
+        return NMSHandler.getEntityHelper().getBodyArrows(entity.getBukkitEntity());
     }
 
     private void setBodyArrows(int numArrows) {
-        NMSHandler.getInstance().getEntityHelper().setBodyArrows(entity.getBukkitEntity(), numArrows);
+        NMSHandler.getEntityHelper().setBodyArrows(entity.getBukkitEntity(), numArrows);
     }
 
     @Override

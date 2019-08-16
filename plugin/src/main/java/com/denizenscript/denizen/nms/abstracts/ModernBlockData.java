@@ -23,9 +23,9 @@ public class ModernBlockData {
     }
 
     public ModernBlockData(Block block) {
-        NMSHandler.getInstance().getChunkHelper().changeChunkServerThread(block.getWorld());
+        NMSHandler.getChunkHelper().changeChunkServerThread(block.getWorld());
         this.data = block.getBlockData();
-        NMSHandler.getInstance().getChunkHelper().restoreServerThread(block.getWorld());
+        NMSHandler.getChunkHelper().restoreServerThread(block.getWorld());
     }
 
     public ModernBlockData(BlockState block) {
@@ -41,7 +41,7 @@ public class ModernBlockData {
     }
 
     public BlockState getBlockState() {
-        BlockState state = NMSHandler.getInstance().getBlockHelper().generateBlockState(getMaterial());
+        BlockState state = NMSHandler.getBlockHelper().generateBlockState(getMaterial());
         state.setBlockData(data);
         return state;
     }
@@ -72,10 +72,10 @@ public class ModernBlockData {
         else {
             return false;
         }
-        NMSHandler.getInstance().getChunkHelper().changeChunkServerThread(block.getWorld());
+        NMSHandler.getChunkHelper().changeChunkServerThread(block.getWorld());
         block.setBlockData(data, true);
         block.getState().update(true, true);
-        NMSHandler.getInstance().getChunkHelper().restoreServerThread(block.getWorld());
+        NMSHandler.getChunkHelper().restoreServerThread(block.getWorld());
         return true;
     }
 

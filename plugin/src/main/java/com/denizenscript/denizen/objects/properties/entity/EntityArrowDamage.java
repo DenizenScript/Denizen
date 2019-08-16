@@ -47,7 +47,7 @@ public class EntityArrowDamage implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(NMSHandler.getInstance().getEntityHelper().getArrowDamage(dentity.getBukkitEntity()));
+        return String.valueOf(NMSHandler.getEntityHelper().getArrowDamage(dentity.getBukkitEntity()));
     }
 
     @Override
@@ -76,7 +76,7 @@ public class EntityArrowDamage implements Property {
         // NOTE: The actual damage dealt by the arrow/trident may be different depending on the projectile's flight speed.
         // -->
         if (attribute.startsWith("damage")) {
-            return new ElementTag(NMSHandler.getInstance().getEntityHelper().getArrowDamage(dentity.getBukkitEntity()))
+            return new ElementTag(NMSHandler.getEntityHelper().getArrowDamage(dentity.getBukkitEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -97,7 +97,7 @@ public class EntityArrowDamage implements Property {
         // -->
 
         if (mechanism.matches("damage") && mechanism.requireDouble()) {
-            NMSHandler.getInstance().getEntityHelper().setArrowDamage(dentity.getBukkitEntity(), mechanism.getValue().asDouble());
+            NMSHandler.getEntityHelper().setArrowDamage(dentity.getBukkitEntity(), mechanism.getValue().asDouble());
         }
     }
 }

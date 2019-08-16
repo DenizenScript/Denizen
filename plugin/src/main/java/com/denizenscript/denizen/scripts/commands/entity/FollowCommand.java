@@ -140,10 +140,10 @@ public class FollowCommand extends AbstractCommand {
             }
             else {
                 if (stop.asBoolean()) {
-                    NMSHandler.getInstance().getEntityHelper().stopFollowing(entity.getBukkitEntity());
+                    NMSHandler.getEntityHelper().stopFollowing(entity.getBukkitEntity());
                 }
                 else {
-                    NMSHandler.getInstance().getEntityHelper().follow(target.getBukkitEntity(), entity.getBukkitEntity(),
+                    NMSHandler.getEntityHelper().follow(target.getBukkitEntity(), entity.getBukkitEntity(),
                             speed != null ? speed.asDouble() : 0.3, lead != null ? lead.asDouble() : 5,
                             maxRange != null ? maxRange.asDouble() : 8, allowWander.asBoolean());
                 }

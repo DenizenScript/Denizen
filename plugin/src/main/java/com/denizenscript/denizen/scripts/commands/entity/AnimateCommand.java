@@ -58,7 +58,7 @@ public class AnimateCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        AnimationHelper animationHelper = NMSHandler.getInstance().getAnimationHelper();
+        AnimationHelper animationHelper = NMSHandler.getAnimationHelper();
 
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
@@ -132,7 +132,7 @@ public class AnimateCommand extends AbstractCommand {
                         entity.getBukkitEntity().playEffect(effect);
                     }
                     else {
-                        EntityAnimation entityAnimation = NMSHandler.getInstance().getAnimationHelper().getEntityAnimation(nmsAnimation);
+                        EntityAnimation entityAnimation = NMSHandler.getAnimationHelper().getEntityAnimation(nmsAnimation);
                         entityAnimation.play(entity.getBukkitEntity());
                     }
                 }

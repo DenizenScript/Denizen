@@ -102,7 +102,7 @@ public class SignCommand extends AbstractCommand {
             // TODO: 1.14 - allow new sign types?
             org.bukkit.material.Sign sgntmp = new org.bukkit.material.Sign(MaterialCompat.WALL_SIGN);
             sgntmp.setFacingDirection(bf);
-            BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(MaterialCompat.WALL_SIGN, sgntmp.getData());
+            BlockData blockData = NMSHandler.getBlockHelper().getBlockData(MaterialCompat.WALL_SIGN, sgntmp.getData());
             blockData.setBlock(sign, false);
         }
     }

@@ -522,7 +522,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
             return;
         }
         if (Settings.packetInterception()) {
-            setItemStack(NMSHandler.getInstance().getItemHelper().addNbtData(getItemStack(), "Denizen Item Script", new StringTag(script.getHashID())));
+            setItemStack(NMSHandler.getItemHelper().addNbtData(getItemStack(), "Denizen Item Script", new StringTag(script.getHashID())));
         }
         else {
             ItemMeta meta = item.getItemMeta();
@@ -898,7 +898,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         registerTag("json", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(NMSHandler.getInstance().getItemHelper().getJsonString(((ItemTag) object).item))
+                return new ElementTag(NMSHandler.getItemHelper().getJsonString(((ItemTag) object).item))
                         .getAttribute(attribute.fulfill(1));
             }
         });

@@ -177,7 +177,7 @@ public class ItemScriptHelper implements Listener {
         if (item == null) {
             return null;
         }
-        String nbt = NMSHandler.getInstance().getItemHelper().getNbtData(item).getString("Denizen Item Script");
+        String nbt = NMSHandler.getItemHelper().getNbtData(item).getString("Denizen Item Script");
         if (nbt != null && !nbt.equals("")) {
             return item_scripts_by_hash_id.get(nbt);
         }

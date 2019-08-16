@@ -194,7 +194,7 @@ public class SwitchCommand extends AbstractCommand {
                         else {
                             block = interactLocation;
                         }
-                        BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(MaterialCompat.IRON_DOOR, (byte) (block.getBlock().getData() ^ 4));
+                        BlockData blockData = NMSHandler.getBlockHelper().getBlockData(MaterialCompat.IRON_DOOR, (byte) (block.getBlock().getData() ^ 4));
                         blockData.setBlock(block.getBlock(), false);
                     }
                     else {
@@ -215,7 +215,7 @@ public class SwitchCommand extends AbstractCommand {
                                 // TODO: backup if no human NPC available? (Fake EntityPlayer instance?)
                             }
                         }
-                        NMSHandler.getInstance().getEntityHelper().forceInteraction(player, interactLocation);
+                        NMSHandler.getEntityHelper().forceInteraction(player, interactLocation);
                     }
 
                 }

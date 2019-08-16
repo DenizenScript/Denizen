@@ -29,7 +29,7 @@ public class InventoryScriptHelper implements Listener {
     }
 
     public static void _savePlayerInventories() {
-        PlayerHelper playerHelper = NMSHandler.getInstance().getPlayerHelper();
+        PlayerHelper playerHelper = NMSHandler.getPlayerHelper();
         for (Map.Entry<UUID, PlayerInventory> offlineInv : ImprovedOfflinePlayer.offlineInventories.entrySet()) {
             playerHelper.getOfflineData(offlineInv.getKey()).setInventory(offlineInv.getValue());
         }
@@ -41,7 +41,7 @@ public class InventoryScriptHelper implements Listener {
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
-        PlayerHelper playerHelper = NMSHandler.getInstance().getPlayerHelper();
+        PlayerHelper playerHelper = NMSHandler.getPlayerHelper();
         if (ImprovedOfflinePlayer.offlineInventories.containsKey(uuid)) {
             playerHelper.getOfflineData(uuid).setInventory(ImprovedOfflinePlayer.offlineInventories.get(uuid));
             ImprovedOfflinePlayer.offlineInventories.remove(uuid);

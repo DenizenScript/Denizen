@@ -311,9 +311,9 @@ public class MaterialTag implements ObjectTag, Adjustable {
 
     public BlockData getNmsBlockData() {
         if (modernData != null) {
-            return NMSHandler.getInstance().getBlockHelper().getBlockData(modernData);
+            return NMSHandler.getBlockHelper().getBlockData(modernData);
         }
-        return NMSHandler.getInstance().getBlockHelper().getBlockData(getMaterial(), getData((byte) 0));
+        return NMSHandler.getBlockHelper().getBlockData(getMaterial(), getData((byte) 0));
     }
 
     public String name() {
@@ -726,11 +726,11 @@ public class MaterialTag implements ObjectTag, Adjustable {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 MaterialTag material = (MaterialTag) object;
-                if (!NMSHandler.getInstance().getBlockHelper().hasBlock(material.getMaterial())) {
+                if (!NMSHandler.getBlockHelper().hasBlock(material.getMaterial())) {
                     Debug.echoError("Provided material does not have a placeable block.");
                     return null;
                 }
-                return new ElementTag(NMSHandler.getInstance().getBlockHelper().getBlockResistance(material.getMaterial()))
+                return new ElementTag(NMSHandler.getBlockHelper().getBlockResistance(material.getMaterial()))
                         .getAttribute(attribute.fulfill(1));
             }
         });
@@ -877,7 +877,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         registerTag("piston_reaction", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                String res = NMSHandler.getInstance().getBlockHelper().getPushReaction(((MaterialTag) object).material);
+                String res = NMSHandler.getBlockHelper().getPushReaction(((MaterialTag) object).material);
                 if (res == null) {
                     return null;
                 }
@@ -895,7 +895,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         registerTag("block_strength", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                float res = NMSHandler.getInstance().getBlockHelper().getBlockStength(((MaterialTag) object).material);
+                float res = NMSHandler.getBlockHelper().getBlockStength(((MaterialTag) object).material);
                 return new ElementTag(res).getAttribute(attribute.fulfill(1));
             }
         });
@@ -968,7 +968,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // <MaterialTag.block_resistance>
         // -->
         if (!mechanism.isProperty && mechanism.matches("block_resistance") && mechanism.requireFloat()) {
-            if (!NMSHandler.getInstance().getBlockHelper().setBlockResistance(material, mechanism.getValue().asFloat())) {
+            if (!NMSHandler.getBlockHelper().setBlockResistance(material, mechanism.getValue().asFloat())) {
                 Debug.echoError("Provided material does not have a placeable block.");
             }
         }
@@ -986,7 +986,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
             if (!material.isBlock()) {
                 Debug.echoError("'block_strength' mechanism is only valid for block types.");
             }
-            NMSHandler.getInstance().getBlockHelper().setBlockStrength(material, mechanism.getValue().asFloat());
+            NMSHandler.getBlockHelper().setBlockStrength(material, mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
@@ -1003,7 +1003,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
             if (!material.isBlock()) {
                 Debug.echoError("'piston_reaction' mechanism is only valid for block types.");
             }
-            NMSHandler.getInstance().getBlockHelper().setPushReaction(material, mechanism.getValue().asString().toUpperCase());
+            NMSHandler.getBlockHelper().setPushReaction(material, mechanism.getValue().asString().toUpperCase());
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);

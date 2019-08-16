@@ -123,7 +123,7 @@ public class EntityItem implements Property {
                         .asType(ItemTag.class, mechanism.context).getItemStack());
             }
             else {
-                NMSHandler.getInstance().getEntityHelper().setCarriedItem((Enderman) item.getBukkitEntity(),
+                NMSHandler.getEntityHelper().setCarriedItem((Enderman) item.getBukkitEntity(),
                         mechanism.valueAsType(ItemTag.class).getItemStack());
             }
         }

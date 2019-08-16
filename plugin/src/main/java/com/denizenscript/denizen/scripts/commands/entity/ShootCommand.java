@@ -255,7 +255,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
             entityList.addObject(entity);
 
             if (!no_rotate) {
-                NMSHandler.getInstance().getEntityHelper().faceLocation(entity.getBukkitEntity(), destination);
+                NMSHandler.getEntityHelper().faceLocation(entity.getBukkitEntity(), destination);
             }
 
             // If the current entity is a projectile, set its shooter

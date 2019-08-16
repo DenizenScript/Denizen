@@ -252,7 +252,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     public ImprovedOfflinePlayer getNBTEditor() {
-        return NMSHandler.getInstance().getPlayerHelper().getOfflineData(getOfflinePlayer());
+        return NMSHandler.getPlayerHelper().getOfflineData(getOfflinePlayer());
     }
 
     @Override
@@ -583,7 +583,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     public boolean hasChunkLoaded(Chunk chunk) {
-        return NMSHandler.getInstance().getPlayerHelper().hasChunkLoaded(getPlayerEntity(), chunk);
+        return NMSHandler.getPlayerHelper().hasChunkLoaded(getPlayerEntity(), chunk);
     }
 
 
@@ -1134,7 +1134,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @mechanism PlayerTag.absorption_health
         // -->
         if (attribute.startsWith("absorption_health")) {
-            return new ElementTag(NMSHandler.getInstance().getPlayerHelper().getAbsorption(getPlayerEntity()))
+            return new ElementTag(NMSHandler.getPlayerHelper().getAbsorption(getPlayerEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1656,7 +1656,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             // Returns the amount of time that passed since the start of the attack cooldown.
             // -->
             if (attribute.startsWith("duration")) {
-                return new DurationTag((long) NMSHandler.getInstance().getPlayerHelper()
+                return new DurationTag((long) NMSHandler.getPlayerHelper()
                         .ticksPassedDuringCooldown(getPlayerEntity())).getAttribute(attribute.fulfill(1));
             }
 
@@ -1671,7 +1671,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             // cooldown progress.
             // -->
             else if (attribute.startsWith("max_duration")) {
-                return new DurationTag((long) NMSHandler.getInstance().getPlayerHelper()
+                return new DurationTag((long) NMSHandler.getPlayerHelper()
                         .getMaxAttackCooldownTicks(getPlayerEntity())).getAttribute(attribute.fulfill(1));
             }
 
@@ -1685,7 +1685,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             // NOTE: This may not match exactly with the clientside attack cooldown indicator.
             // -->
             else if (attribute.startsWith("percent")) {
-                return new ElementTag(NMSHandler.getInstance().getPlayerHelper()
+                return new ElementTag(NMSHandler.getPlayerHelper()
                         .getAttackCooldownPercent(getPlayerEntity()) * 100).getAttribute(attribute.fulfill(1));
             }
 
@@ -1963,7 +1963,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns the player's current ping.
         // -->
         if (attribute.startsWith("ping")) {
-            return new ElementTag(NMSHandler.getInstance().getPlayerHelper().getPing(getPlayerEntity()))
+            return new ElementTag(NMSHandler.getPlayerHelper().getPing(getPlayerEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -2234,7 +2234,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // Forces the player to respawn if they are on the death screen.
         // -->
         if (mechanism.matches("respawn")) {
-            NMSHandler.getInstance().getPacketHelper().respawn(getPlayerEntity());
+            NMSHandler.getPacketHelper().respawn(getPlayerEntity());
         }
 
         // <--[mechanism]
@@ -2248,10 +2248,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("vision")) {
             if (mechanism.hasValue() && mechanism.requireEnum(false, EntityType.values())) {
-                NMSHandler.getInstance().getPacketHelper().setVision(getPlayerEntity(), EntityType.valueOf(mechanism.getValue().asString().toUpperCase()));
+                NMSHandler.getPacketHelper().setVision(getPlayerEntity(), EntityType.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else {
-                NMSHandler.getInstance().getPacketHelper().forceSpectate(getPlayerEntity(), getPlayerEntity());
+                NMSHandler.getPacketHelper().forceSpectate(getPlayerEntity(), getPlayerEntity());
             }
         }
 
@@ -2360,7 +2360,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <PlayerTag.absorption_health>
         // -->
         if (mechanism.matches("absorption_health") && mechanism.requireFloat()) {
-            NMSHandler.getInstance().getPlayerHelper().setAbsorption(getPlayerEntity(), mechanism.getValue().asFloat());
+            NMSHandler.getPlayerHelper().setAbsorption(getPlayerEntity(), mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
@@ -2371,7 +2371,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // Shows the player fake absorption health that persists on damage.
         // -->
         if (mechanism.matches("fake_absorption_health") && mechanism.requireFloat()) {
-            NMSHandler.getInstance().getPacketHelper().setFakeAbsorption(getPlayerEntity(), mechanism.getValue().asFloat());
+            NMSHandler.getPacketHelper().setFakeAbsorption(getPlayerEntity(), mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
@@ -2426,7 +2426,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <PlayerTag.attack_cooldown.percent_done>
         // -->
         if (mechanism.matches("redo_attack_cooldown")) {
-            NMSHandler.getInstance().getPlayerHelper().setAttackCooldown(getPlayerEntity(), 0);
+            NMSHandler.getPlayerHelper().setAttackCooldown(getPlayerEntity(), 0);
         }
 
         // <--[mechanism]
@@ -2443,7 +2443,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <PlayerTag.attack_cooldown.percent_done>
         // -->
         if (mechanism.matches("reset_attack_cooldown")) {
-            PlayerHelper playerHelper = NMSHandler.getInstance().getPlayerHelper();
+            PlayerHelper playerHelper = NMSHandler.getPlayerHelper();
             playerHelper.setAttackCooldown(getPlayerEntity(), Math.round(playerHelper.getMaxAttackCooldownTicks(getPlayerEntity())));
         }
 
@@ -2464,7 +2464,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             float percent = mechanism.getValue().asFloat();
             System.out.println(percent + " >> " + (percent >= 0 && percent <= 1));
             if (percent >= 0 && percent <= 1) {
-                PlayerHelper playerHelper = NMSHandler.getInstance().getPlayerHelper();
+                PlayerHelper playerHelper = NMSHandler.getPlayerHelper();
                 playerHelper.setAttackCooldown(getPlayerEntity(),
                         Math.round(playerHelper.getMaxAttackCooldownTicks(getPlayerEntity()) * mechanism.getValue().asFloat()));
             }
@@ -2487,7 +2487,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <PlayerTag.attack_cooldown.percent_done>
         // -->
         if (mechanism.matches("attack_cooldown") && mechanism.requireObject(DurationTag.class)) {
-            NMSHandler.getInstance().getPlayerHelper().setAttackCooldown(getPlayerEntity(),
+            NMSHandler.getPlayerHelper().setAttackCooldown(getPlayerEntity(),
                     mechanism.getValue().asType(DurationTag.class).getTicksAsInt());
         }
 
@@ -2813,7 +2813,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // Shows the player a previously hidden entity.
         // -->
         if (mechanism.matches("show_entity") && mechanism.requireObject(EntityTag.class)) {
-            NMSHandler.getInstance().getEntityHelper().unhideEntity(getPlayerEntity(), mechanism.valueAsType(EntityTag.class).getBukkitEntity());
+            NMSHandler.getEntityHelper().unhideEntity(getPlayerEntity(), mechanism.valueAsType(EntityTag.class).getBukkitEntity());
         }
 
         // <--[mechanism]
@@ -2833,11 +2833,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                         Debug.echoError("Can't hide the unspawned entity '" + split[0] + "'!");
                     }
                     else if (split.length > 1 && new ElementTag(split[1]).isBoolean()) {
-                        NMSHandler.getInstance().getEntityHelper().hideEntity(getPlayerEntity(), entity.getBukkitEntity(),
+                        NMSHandler.getEntityHelper().hideEntity(getPlayerEntity(), entity.getBukkitEntity(),
                                 new ElementTag(split[1]).asBoolean());
                     }
                     else {
-                        NMSHandler.getInstance().getEntityHelper().hideEntity(getPlayerEntity(), entity.getBukkitEntity(), false);
+                        NMSHandler.getEntityHelper().hideEntity(getPlayerEntity(), entity.getBukkitEntity(), false);
                     }
                 }
                 else {
@@ -2897,11 +2897,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 String[] split = mechanism.getValue().asString().split("[\\|" + ListTag.internal_escape + "]", 2);
                 if (split.length > 0 && new ElementTag(split[0]).isFloat()) {
                     if (split.length > 1 && new ElementTag(split[1]).isInt()) {
-                        NMSHandler.getInstance().getPacketHelper().showExperience(getPlayerEntity(),
+                        NMSHandler.getPacketHelper().showExperience(getPlayerEntity(),
                                 new ElementTag(split[0]).asFloat(), new ElementTag(split[1]).asInt());
                     }
                     else {
-                        NMSHandler.getInstance().getPacketHelper().showExperience(getPlayerEntity(),
+                        NMSHandler.getPacketHelper().showExperience(getPlayerEntity(),
                                 new ElementTag(split[0]).asFloat(), getPlayerEntity().getLevel());
                     }
                 }
@@ -2910,7 +2910,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 }
             }
             else {
-                NMSHandler.getInstance().getPacketHelper().resetExperience(getPlayerEntity());
+                NMSHandler.getPacketHelper().resetExperience(getPlayerEntity());
             }
         }
 
@@ -2936,16 +2936,16 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 if (split.length > 0 && new ElementTag(split[0]).isFloat()) {
                     if (split.length > 1 && new ElementTag(split[1]).isInt()) {
                         if (split.length > 2 && new ElementTag(split[2]).isFloat()) {
-                            NMSHandler.getInstance().getPacketHelper().showHealth(getPlayerEntity(), new ElementTag(split[0]).asFloat(),
+                            NMSHandler.getPacketHelper().showHealth(getPlayerEntity(), new ElementTag(split[0]).asFloat(),
                                     new ElementTag(split[1]).asInt(), new ElementTag(split[2]).asFloat());
                         }
                         else {
-                            NMSHandler.getInstance().getPacketHelper().showHealth(getPlayerEntity(), new ElementTag(split[0]).asFloat(),
+                            NMSHandler.getPacketHelper().showHealth(getPlayerEntity(), new ElementTag(split[0]).asFloat(),
                                     new ElementTag(split[1]).asInt(), getPlayerEntity().getSaturation());
                         }
                     }
                     else {
-                        NMSHandler.getInstance().getPacketHelper().showHealth(getPlayerEntity(), new ElementTag(split[0]).asFloat(),
+                        NMSHandler.getPacketHelper().showHealth(getPlayerEntity(), new ElementTag(split[0]).asFloat(),
                                 getPlayerEntity().getFoodLevel(), getPlayerEntity().getSaturation());
                     }
                 }
@@ -2954,7 +2954,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 }
             }
             else {
-                NMSHandler.getInstance().getPacketHelper().resetHealth(getPlayerEntity());
+                NMSHandler.getPacketHelper().resetHealth(getPlayerEntity());
             }
         }
 
@@ -2985,7 +2985,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                             else if (slot.equals("BOOTS")) {
                                 slot = "FEET";
                             }
-                            NMSHandler.getInstance().getPacketHelper().showEquipment(getPlayerEntity(),
+                            NMSHandler.getPacketHelper().showEquipment(getPlayerEntity(),
                                     new ElementTag(split[0]).asType(EntityTag.class, mechanism.context).getLivingEntity(),
                                     EquipmentSlot.valueOf(slot),
                                     new ElementTag(split[2]).asType(ItemTag.class, mechanism.context).getItemStack());
@@ -2998,7 +2998,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                         Debug.echoError("'" + split[1] + "' is not a valid slot; must be HAND, OFF_HAND, BOOTS, LEGS, CHEST, or HEAD!");
                     }
                     else {
-                        NMSHandler.getInstance().getPacketHelper().resetEquipment(getPlayerEntity(),
+                        NMSHandler.getPacketHelper().resetEquipment(getPlayerEntity(),
                                 new ElementTag(split[0]).asType(EntityTag.class, mechanism.context).getLivingEntity());
                     }
                 }
@@ -3019,10 +3019,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("fov_multiplier")) {
             if (mechanism.hasValue() && mechanism.requireFloat()) {
-                NMSHandler.getInstance().getPacketHelper().setFieldOfView(getPlayerEntity(), mechanism.getValue().asFloat());
+                NMSHandler.getPacketHelper().setFieldOfView(getPlayerEntity(), mechanism.getValue().asFloat());
             }
             else {
-                NMSHandler.getInstance().getPacketHelper().setFieldOfView(getPlayerEntity(), Float.NaN);
+                NMSHandler.getPacketHelper().setFieldOfView(getPlayerEntity(), Float.NaN);
             }
         }
 
@@ -3046,7 +3046,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // Shows the player the end credits.
         // -->
         if (mechanism.matches("show_endcredits")) {
-            NMSHandler.getInstance().getPlayerHelper().showEndCredits(getPlayerEntity());
+            NMSHandler.getPlayerHelper().showEndCredits(getPlayerEntity());
         }
 
         // <--[mechanism]
@@ -3057,7 +3057,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // Shows the player the demo screen.
         // -->
         if (mechanism.matches("show_demo")) {
-            NMSHandler.getInstance().getPacketHelper().showDemoScreen(getPlayerEntity());
+            NMSHandler.getPacketHelper().showDemoScreen(getPlayerEntity());
         }
 
         // <--[mechanism]
@@ -3071,7 +3071,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // (i.e. - adjust <player> "spectate:<player>")
         // -->
         if (mechanism.matches("spectate") && mechanism.requireObject(EntityTag.class)) {
-            NMSHandler.getInstance().getPacketHelper().forceSpectate(getPlayerEntity(), mechanism.valueAsType(EntityTag.class).getBukkitEntity());
+            NMSHandler.getPacketHelper().forceSpectate(getPlayerEntity(), mechanism.valueAsType(EntityTag.class).getBukkitEntity());
         }
 
         // <--[mechanism]
@@ -3084,7 +3084,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // without the player closing the book.
         // -->
         if (mechanism.matches("open_book")) {
-            NMSHandler.getInstance().getPacketHelper().openBook(getPlayerEntity(), EquipmentSlot.HAND);
+            NMSHandler.getPacketHelper().openBook(getPlayerEntity(), EquipmentSlot.HAND);
         }
 
         // <--[mechanism]
@@ -3097,7 +3097,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // without the player closing the book.
         // -->
         if (mechanism.matches("open_offhand_book")) {
-            NMSHandler.getInstance().getPacketHelper().openBook(getPlayerEntity(), EquipmentSlot.OFF_HAND);
+            NMSHandler.getPacketHelper().openBook(getPlayerEntity(), EquipmentSlot.OFF_HAND);
         }
 
         // <--[mechanism]
@@ -3114,10 +3114,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 Debug.echoError("show_book mechanism must have a book as input.");
                 return;
             }
-            NMSHandler.getInstance().getPacketHelper().showEquipment(getPlayerEntity(), getPlayerEntity(),
+            NMSHandler.getPacketHelper().showEquipment(getPlayerEntity(), getPlayerEntity(),
                     EquipmentSlot.OFF_HAND, book.getItemStack());
-            NMSHandler.getInstance().getPacketHelper().openBook(getPlayerEntity(), EquipmentSlot.OFF_HAND);
-            NMSHandler.getInstance().getPacketHelper().showEquipment(getPlayerEntity(), getPlayerEntity(),
+            NMSHandler.getPacketHelper().openBook(getPlayerEntity(), EquipmentSlot.OFF_HAND);
+            NMSHandler.getPacketHelper().showEquipment(getPlayerEntity(), getPlayerEntity(),
                     EquipmentSlot.OFF_HAND, getPlayerEntity().getEquipment().getItemInOffHand());
         }
 
@@ -3130,7 +3130,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // sign, see <@link command Sign>.
         // -->
         if (mechanism.matches("edit_sign") && mechanism.requireObject(LocationTag.class)) {
-            if (!NMSHandler.getInstance().getPacketHelper().showSignEditor(getPlayerEntity(), mechanism.valueAsType(LocationTag.class))) {
+            if (!NMSHandler.getPacketHelper().showSignEditor(getPlayerEntity(), mechanism.valueAsType(LocationTag.class))) {
                 Debug.echoError("Can't edit non-sign materials!");
             }
         }
@@ -3153,14 +3153,14 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                     if (split.length > 1) {
                         footer = split[1];
                     }
-                    NMSHandler.getInstance().getPacketHelper().showTabListHeaderFooter(getPlayerEntity(), header, footer);
+                    NMSHandler.getPacketHelper().showTabListHeaderFooter(getPlayerEntity(), header, footer);
                 }
                 else {
                     Debug.echoError("Must specify a header and footer to show!");
                 }
             }
             else {
-                NMSHandler.getInstance().getPacketHelper().resetTabListHeaderFooter(getPlayerEntity());
+                NMSHandler.getPacketHelper().resetTabListHeaderFooter(getPlayerEntity());
             }
         }
 
@@ -3225,7 +3225,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                         Debug.echoError("Could not apply base color to banner: " + split[1]);
                         return;
                     }
-                    NMSHandler.getInstance().getPacketHelper().showBannerUpdate(getPlayerEntity(), location, base, patterns);
+                    NMSHandler.getPacketHelper().showBannerUpdate(getPlayerEntity(), location, base, patterns);
                 }
                 else {
                     Debug.echoError("Must specify a valid location and a base color!");
@@ -3265,7 +3265,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // Sends the player text in the action bar.
         // -->
         if (mechanism.matches("action_bar")) {
-            NMSHandler.getInstance().getPacketHelper().sendActionBarMessage(getPlayerEntity(), mechanism.getValue().asString());
+            NMSHandler.getPacketHelper().sendActionBarMessage(getPlayerEntity(), mechanism.getValue().asString());
         }
 
         // <--[mechanism]
@@ -3276,7 +3276,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // Updates the player's client-side advancements to match their server data.
         // -->
         if (mechanism.matches("update_advancements")) {
-            NMSHandler.getInstance().getAdvancementHelper().update(getPlayerEntity());
+            NMSHandler.getAdvancementHelper().update(getPlayerEntity());
         }
 
         // <--[mechanism]

@@ -74,6 +74,72 @@ public abstract class NMSHandler {
         return javaPlugin;
     }
 
+    public AdvancementHelper advancementHelper;
+    public AnimationHelper animationHelper;
+    public BlockHelper blockHelper;
+    public ChunkHelper chunkHelper;
+    public CustomEntityHelper customEntityHelper;
+    public EntityHelper entityHelper;
+    public FishingHelper fishingHelper;
+    public ItemHelper itemHelper;
+    public SoundHelper soundHelper;
+    public PacketHelper packetHelper;
+    public ParticleHelper particleHelper;
+    public PlayerHelper playerHelper;
+    public WorldHelper worldHelper;
+
+    public static AdvancementHelper getAdvancementHelper() {
+        return getInstance().advancementHelper;
+    }
+
+    public static AnimationHelper getAnimationHelper() {
+        return getInstance().animationHelper;
+    }
+
+    public static BlockHelper getBlockHelper() {
+        return getInstance().blockHelper;
+    }
+
+    public static ChunkHelper getChunkHelper() {
+        return getInstance().chunkHelper;
+    }
+
+    public static CustomEntityHelper getCustomEntityHelper() {
+        return getInstance().customEntityHelper;
+    }
+
+    public static EntityHelper getEntityHelper() {
+        return getInstance().entityHelper;
+    }
+
+    public static FishingHelper getFishingHelper() {
+        return getInstance().fishingHelper;
+    }
+
+    public static ItemHelper getItemHelper() {
+        return getInstance().itemHelper;
+    }
+
+    public static SoundHelper getSoundHelper() {
+        return getInstance().soundHelper;
+    }
+
+    public static PacketHelper getPacketHelper() {
+        return getInstance().packetHelper;
+    }
+
+    public static ParticleHelper getParticleHelper() {
+        return getInstance().particleHelper;
+    }
+
+    public static PlayerHelper getPlayerHelper() {
+        return getInstance().playerHelper;
+    }
+
+    public static WorldHelper getWorldHelper() {
+        return getInstance().worldHelper;
+    }
+
     public boolean isCorrectMappingsCode() {
         return true;
     }
@@ -97,32 +163,6 @@ public abstract class NMSHandler {
     public abstract Thread getMainThread();
 
     public abstract double[] getRecentTps();
-
-    public abstract AdvancementHelper getAdvancementHelper();
-
-    public abstract AnimationHelper getAnimationHelper();
-
-    public abstract BlockHelper getBlockHelper();
-
-    public abstract ChunkHelper getChunkHelper();
-
-    public abstract CustomEntityHelper getCustomEntityHelper();
-
-    public abstract EntityHelper getEntityHelper();
-
-    public abstract FishingHelper getFishingHelper();
-
-    public abstract ItemHelper getItemHelper();
-
-    public abstract SoundHelper getSoundHelper();
-
-    public abstract PacketHelper getPacketHelper();
-
-    public abstract ParticleHelper getParticleHelper();
-
-    public abstract PlayerHelper getPlayerHelper();
-
-    public abstract WorldHelper getWorldHelper();
 
     public abstract void enablePacketInterception(PacketHandler packetHandler);
 

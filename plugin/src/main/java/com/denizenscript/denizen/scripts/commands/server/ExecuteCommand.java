@@ -156,7 +156,7 @@ public class ExecuteCommand extends AbstractCommand {
                     return;
                 }
                 Player player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
-                PlayerHelper playerHelper = NMSHandler.getInstance().getPlayerHelper();
+                PlayerHelper playerHelper = NMSHandler.getPlayerHelper();
                 boolean isOp = player.isOp();
                 if (!isOp) {
                     playerHelper.setTemporaryOp(player, true);

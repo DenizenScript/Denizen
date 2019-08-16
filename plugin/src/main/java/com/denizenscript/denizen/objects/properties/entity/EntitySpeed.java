@@ -78,7 +78,7 @@ public class EntitySpeed implements Property {
 
     public ElementTag getSpeed() {
         if (entity.isLivingEntity()) {
-            return new ElementTag(NMSHandler.getInstance().getEntityHelper().getSpeed(entity.getBukkitEntity()));
+            return new ElementTag(NMSHandler.getEntityHelper().getSpeed(entity.getBukkitEntity()));
         }
         else {
             EntityType entityType = entity.getBukkitEntityType();
@@ -141,7 +141,7 @@ public class EntitySpeed implements Property {
         if (mechanism.matches("speed") && mechanism.requireDouble()) {
             double value = mechanism.getValue().asDouble();
             if (entity.isLivingEntity()) {
-                NMSHandler.getInstance().getEntityHelper().setSpeed(entity.getBukkitEntity(), value);
+                NMSHandler.getEntityHelper().setSpeed(entity.getBukkitEntity(), value);
             }
             else {
                 EntityType entityType = entity.getBukkitEntityType();

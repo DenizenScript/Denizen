@@ -47,7 +47,7 @@ public class EntityPickupStatus implements Property {
 
     @Override
     public String getPropertyString() {
-        return NMSHandler.getInstance().getEntityHelper().getArrowPickupStatus(dentity.getBukkitEntity());
+        return NMSHandler.getEntityHelper().getArrowPickupStatus(dentity.getBukkitEntity());
     }
 
     @Override
@@ -75,7 +75,7 @@ public class EntityPickupStatus implements Property {
         // If the entity is an arrow or trident, returns the pickup status of the arrow/trident.
         // -->
         if (attribute.startsWith("pickup_status")) {
-            return new ElementTag(NMSHandler.getInstance().getEntityHelper().getArrowPickupStatus(dentity.getBukkitEntity()))
+            return new ElementTag(NMSHandler.getEntityHelper().getArrowPickupStatus(dentity.getBukkitEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -97,7 +97,7 @@ public class EntityPickupStatus implements Property {
         // -->
 
         if (mechanism.matches("pickup_status")) {
-            NMSHandler.getInstance().getEntityHelper().setArrowPickupStatus(dentity.getBukkitEntity(), mechanism.getValue().asString().toUpperCase());
+            NMSHandler.getEntityHelper().setArrowPickupStatus(dentity.getBukkitEntity(), mechanism.getValue().asString().toUpperCase());
         }
     }
 }

@@ -161,7 +161,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         }
 
         if (Settings.chatMustLookAtNPC()) {
-            if (!NMSHandler.getInstance().getEntityHelper().isFacingEntity(player, npc.getEntity(), 45)) {
+            if (!NMSHandler.getEntityHelper().isFacingEntity(player, npc.getEntity(), 45)) {
                 if (HyperDebug) {
                     Debug.log("Not facing");
                 }
@@ -230,7 +230,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                 + "(" + npc.getTriggerTrait().getRadius(name) + ")")
                 + ArgumentHelper.debugObj("Trigger text", message)
                 + ArgumentHelper.debugObj("LOS", String.valueOf(player.hasLineOfSight(npc.getEntity())))
-                + ArgumentHelper.debugObj("Facing", String.valueOf(NMSHandler.getInstance().getEntityHelper().isFacingEntity(player, npc.getEntity(), 45))));
+                + ArgumentHelper.debugObj("Facing", String.valueOf(NMSHandler.getEntityHelper().isFacingEntity(player, npc.getEntity(), 45))));
 
         // Check if the NPC has Chat Triggers for this step.
         String step = InteractScriptHelper.getCurrentStep(denizenPlayer, script.getName());

@@ -117,7 +117,7 @@ public class FakeItemCommand extends AbstractCommand {
         }
         final boolean playerOnly = player_only.asBoolean();
 
-        final PacketHelper packetHelper = NMSHandler.getInstance().getPacketHelper();
+        final PacketHelper packetHelper = NMSHandler.getPacketHelper();
 
         for (ItemTag item : items) {
             if (item == null) {

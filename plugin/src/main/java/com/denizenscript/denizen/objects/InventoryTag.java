@@ -80,13 +80,13 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // Iterate through offline player inventories
         for (Map.Entry<UUID, PlayerInventory> inv : ImprovedOfflinePlayer.offlineInventories.entrySet()) {
             if (inv.getValue().equals(inventory)) {
-                return new InventoryTag(NMSHandler.getInstance().getPlayerHelper().getOfflineData(inv.getKey()));
+                return new InventoryTag(NMSHandler.getPlayerHelper().getOfflineData(inv.getKey()));
             }
         }
         // Iterate through offline player enderchests
         for (Map.Entry<UUID, Inventory> inv : ImprovedOfflinePlayer.offlineEnderChests.entrySet()) {
             if (inv.getValue().equals(inventory)) {
-                return new InventoryTag(NMSHandler.getInstance().getPlayerHelper().getOfflineData(inv.getKey()), true);
+                return new InventoryTag(NMSHandler.getPlayerHelper().getOfflineData(inv.getKey()), true);
             }
         }
 

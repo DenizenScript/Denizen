@@ -110,7 +110,7 @@ public class NoteBlockReceiver implements Receiver, MetaEventListener {
         float pitch = (float) ToneUtil.midiToPitch(message);
         float volume = VOLUME_RANGE * (message.getData2() / 127.0f);
 
-        SoundHelper soundHelper = NMSHandler.getInstance().getSoundHelper();
+        SoundHelper soundHelper = NMSHandler.getSoundHelper();
         Sound instrument = soundHelper.getDefaultMidiInstrument();
         if (patch != null) {
             instrument = soundHelper.getMidiInstrumentFromPatch(patch);
@@ -124,10 +124,10 @@ public class NoteBlockReceiver implements Receiver, MetaEventListener {
                 EntityTag entity = entities.get(i);
                 if (entity.isSpawned()) {
                     if (entity.isPlayer()) {
-                        NMSHandler.getInstance().getSoundHelper().playSound(entity.getPlayer(), entity.getLocation(), instrument, volume, pitch, "RECORDS");
+                        NMSHandler.getSoundHelper().playSound(entity.getPlayer(), entity.getLocation(), instrument, volume, pitch, "RECORDS");
                     }
                     else {
-                        NMSHandler.getInstance().getSoundHelper().playSound(null, entity.getLocation(), instrument, volume, pitch, "RECORDS");
+                        NMSHandler.getSoundHelper().playSound(null, entity.getLocation(), instrument, volume, pitch, "RECORDS");
                     }
                 }
                 else {

@@ -173,7 +173,7 @@ public class DenizenPacketHandler implements PacketHandler {
             if (hash != null) {
                 meta.setLore(lore);
                 itemStack.setItemMeta(meta);
-                return NMSHandler.getInstance().getItemHelper().addNbtData(itemStack, "Denizen Item Script", new StringTag(hash));
+                return NMSHandler.getItemHelper().addNbtData(itemStack, "Denizen Item Script", new StringTag(hash));
             }
         }
         return itemStack;

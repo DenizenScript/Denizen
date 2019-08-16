@@ -110,7 +110,7 @@ public class ActionBarCommand extends AbstractCommand {
 
         for (PlayerTag player : targets) {
             if (player.isValid() && player.isOnline()) {
-                NMSHandler.getInstance().getPacketHelper().sendActionBarMessage(player.getPlayerEntity(), text.asString());
+                NMSHandler.getPacketHelper().sendActionBarMessage(player.getPlayerEntity(), text.asString());
             }
             else {
                 Debug.echoError(scriptEntry.getResidingQueue(), "Tried to send action bar message to non-existent or offline player!");

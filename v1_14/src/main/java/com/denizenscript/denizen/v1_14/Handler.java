@@ -8,7 +8,6 @@ import com.denizenscript.denizen.v1_14.impl.SidebarImpl;
 import com.denizenscript.denizen.v1_14.impl.blocks.BlockLightImpl;
 import com.denizenscript.denizen.v1_14.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.v1_14.impl.packets.handlers.DenizenPacketListenerImpl;
-import com.denizenscript.denizen.nms.interfaces.*;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketHandler;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.v1_14.helpers.*;
@@ -42,19 +41,21 @@ import java.util.Map;
 
 public class Handler extends NMSHandler {
 
-    private final AdvancementHelper advancementHelper = new AdvancementHelperImpl();
-    private final AnimationHelper animationHelper = new AnimationHelperImpl();
-    private final BlockHelper blockHelper = new BlockHelperImpl();
-    private final ChunkHelper chunkHelper = new ChunkHelperImpl();
-    private final CustomEntityHelper customEntityHelper = new CustomEntityHelperImpl();
-    private final EntityHelper entityHelper = new EntityHelperImpl();
-    private final FishingHelper fishingHelper = new FishingHelperImpl();
-    private final ItemHelper itemHelper = new ItemHelperImpl();
-    private final SoundHelper soundHelper = new SoundHelperImpl();
-    private final PacketHelper packetHelper = new PacketHelperImpl();
-    private final ParticleHelper particleHelper = new ParticleHelperImpl();
-    private final PlayerHelper playerHelper = new PlayerHelperImpl();
-    private final WorldHelper worldHelper = new WorldHelperImpl();
+    public Handler() {
+        advancementHelper = new AdvancementHelperImpl();
+        animationHelper = new AnimationHelperImpl();
+        blockHelper = new BlockHelperImpl();
+        chunkHelper = new ChunkHelperImpl();
+        customEntityHelper = new CustomEntityHelperImpl();
+        entityHelper = new EntityHelperImpl();
+        fishingHelper = new FishingHelperImpl();
+        itemHelper = new ItemHelperImpl();
+        soundHelper = new SoundHelperImpl();
+        packetHelper = new PacketHelperImpl();
+        particleHelper = new ParticleHelperImpl();
+        playerHelper = new PlayerHelperImpl();
+        worldHelper = new WorldHelperImpl();
+    }
 
     private final ProfileEditor profileEditor = new ProfileEditorImpl();
 
@@ -84,71 +85,6 @@ public class Handler extends NMSHandler {
     @Override
     public double[] getRecentTps() {
         return ((CraftServer) Bukkit.getServer()).getServer().recentTps;
-    }
-
-    @Override
-    public AdvancementHelper getAdvancementHelper() {
-        return advancementHelper;
-    }
-
-    @Override
-    public AnimationHelper getAnimationHelper() {
-        return animationHelper;
-    }
-
-    @Override
-    public BlockHelper getBlockHelper() {
-        return blockHelper;
-    }
-
-    @Override
-    public ChunkHelper getChunkHelper() {
-        return chunkHelper;
-    }
-
-    @Override
-    public CustomEntityHelper getCustomEntityHelper() {
-        return customEntityHelper;
-    }
-
-    @Override
-    public EntityHelper getEntityHelper() {
-        return entityHelper;
-    }
-
-    @Override
-    public FishingHelper getFishingHelper() {
-        return fishingHelper;
-    }
-
-    @Override
-    public ItemHelper getItemHelper() {
-        return itemHelper;
-    }
-
-    @Override
-    public SoundHelper getSoundHelper() {
-        return soundHelper;
-    }
-
-    @Override
-    public PacketHelper getPacketHelper() {
-        return packetHelper;
-    }
-
-    @Override
-    public ParticleHelper getParticleHelper() {
-        return particleHelper;
-    }
-
-    @Override
-    public PlayerHelper getPlayerHelper() {
-        return playerHelper;
-    }
-
-    @Override
-    public WorldHelper getWorldHelper() {
-        return worldHelper;
     }
 
     @Override

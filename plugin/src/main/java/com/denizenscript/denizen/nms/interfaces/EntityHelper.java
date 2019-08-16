@@ -497,6 +497,6 @@ public abstract class EntityHelper {
     public abstract void setCarryingChest(Entity horse, boolean carrying);
 
     public BlockData getBlockDataFor(FallingBlock entity) {
-        return NMSHandler.getInstance().getBlockHelper().getBlockData(entity.getMaterial(), (byte) 0);
+        return NMSHandler.getBlockHelper().getBlockData(entity.getMaterial(), (byte) 0);
     }
 }

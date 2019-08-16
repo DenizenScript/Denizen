@@ -674,7 +674,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         ListTag list = new ListTag();
         int index = 0;
 
-        BlockHelper blockHelper = NMSHandler.getInstance().getBlockHelper();
+        BlockHelper blockHelper = NMSHandler.getBlockHelper();
         for (LocationPair pair : pairs) {
 
             LocationTag loc_1 = pair.low;

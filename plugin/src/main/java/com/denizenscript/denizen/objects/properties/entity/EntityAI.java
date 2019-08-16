@@ -49,7 +49,7 @@ public class EntityAI implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(!NMSHandler.getInstance().getEntityHelper().isAIDisabled(entity.getBukkitEntity()));
+        return String.valueOf(!NMSHandler.getEntityHelper().isAIDisabled(entity.getBukkitEntity()));
     }
 
     @Override
@@ -78,7 +78,7 @@ public class EntityAI implements Property {
         // AI to roam and look around.
         // -->
         if (attribute.startsWith("has_ai")) {
-            return new ElementTag(!NMSHandler.getInstance().getEntityHelper().isAIDisabled(entity.getBukkitEntity()))
+            return new ElementTag(!NMSHandler.getEntityHelper().isAIDisabled(entity.getBukkitEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -100,7 +100,7 @@ public class EntityAI implements Property {
         // <EntityTag.has_ai>
         // -->
         if ((mechanism.matches("has_ai") || mechanism.matches("toggle_ai")) && mechanism.requireBoolean()) {
-            NMSHandler.getInstance().getEntityHelper().toggleAI(entity.getBukkitEntity(), mechanism.getValue().asBoolean());
+            NMSHandler.getEntityHelper().toggleAI(entity.getBukkitEntity(), mechanism.getValue().asBoolean());
         }
     }
 }

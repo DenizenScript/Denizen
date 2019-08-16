@@ -97,7 +97,7 @@ public class LookCommand extends AbstractCommand {
 
         for (EntityTag entity : entities) {
             if (entity.isSpawned()) {
-                NMSHandler.getInstance().getEntityHelper().faceLocation(entity.getBukkitEntity(), loc);
+                NMSHandler.getEntityHelper().faceLocation(entity.getBukkitEntity(), loc);
             }
         }
         if (duration != null && duration.getTicks() > 2) {
@@ -112,7 +112,7 @@ public class LookCommand extends AbstractCommand {
                     }
                     for (EntityTag entity : entities) {
                         if (entity.isSpawned()) {
-                            NMSHandler.getInstance().getEntityHelper().faceLocation(entity.getBukkitEntity(), loc);
+                            NMSHandler.getEntityHelper().faceLocation(entity.getBukkitEntity(), loc);
                         }
                     }
                 }

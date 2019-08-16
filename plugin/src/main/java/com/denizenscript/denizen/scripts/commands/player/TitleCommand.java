@@ -106,7 +106,7 @@ public class TitleCommand extends AbstractCommand {
 
         for (PlayerTag player : targets) {
             if (player.isValid() && player.isOnline()) {
-                NMSHandler.getInstance().getPacketHelper().showTitle(player.getPlayerEntity(),
+                NMSHandler.getPacketHelper().showTitle(player.getPlayerEntity(),
                         title != null ? title.asString() : "",
                         subtitle != null ? subtitle.asString() : "",
                         fade_in.getTicksAsInt(),

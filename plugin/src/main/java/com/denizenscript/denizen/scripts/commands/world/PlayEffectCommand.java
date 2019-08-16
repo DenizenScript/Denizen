@@ -81,7 +81,7 @@ public class PlayEffectCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        ParticleHelper particleHelper = NMSHandler.getInstance().getParticleHelper();
+        ParticleHelper particleHelper = NMSHandler.getParticleHelper();
 
         // Iterate through arguments
         for (Argument arg : scriptEntry.getProcessedArgs()) {
@@ -149,8 +149,8 @@ public class PlayEffectCommand extends AbstractCommand {
                     scriptEntry.addObject("effect", Effect.valueOf(arg.getValue().toUpperCase()));
                     continue;
                 }
-                else if (NMSHandler.getInstance().getParticleHelper().effectRemap.containsKey(arg.getValue().toUpperCase())) {
-                    scriptEntry.addObject("effect", NMSHandler.getInstance().getParticleHelper().effectRemap.get(arg.getValue().toUpperCase()));
+                else if (NMSHandler.getParticleHelper().effectRemap.containsKey(arg.getValue().toUpperCase())) {
+                    scriptEntry.addObject("effect", NMSHandler.getParticleHelper().effectRemap.get(arg.getValue().toUpperCase()));
                 }
             }
             if (!scriptEntry.hasObject("radius")
@@ -352,21 +352,21 @@ public class PlayEffectCommand extends AbstractCommand {
 
                 if (iconcrack != null) {
                     ItemStack itemStack = iconcrack.getItemStack();
-                    Particle particle = NMSHandler.getInstance().getParticleHelper().getParticle("ITEM_CRACK");
+                    Particle particle = NMSHandler.getParticleHelper().getParticle("ITEM_CRACK");
                     for (Player player : players) {
                         particle.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), itemStack);
                     }
                 }
                 else if (blockcrack != null) {
                     MaterialData materialData = blockcrack.getMaterialData();
-                    Particle particle = NMSHandler.getInstance().getParticleHelper().getParticle("BLOCK_CRACK");
+                    Particle particle = NMSHandler.getParticleHelper().getParticle("BLOCK_CRACK");
                     for (Player player : players) {
                         particle.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), materialData);
                     }
                 }
                 else { // blockdust
                     MaterialData materialData = blockdust.getMaterialData();
-                    Particle particle = NMSHandler.getInstance().getParticleHelper().getParticle("BLOCK_DUST");
+                    Particle particle = NMSHandler.getParticleHelper().getParticle("BLOCK_DUST");
                     for (Player player : players) {
                         particle.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), materialData);
                     }

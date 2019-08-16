@@ -59,7 +59,7 @@ public class EntityBoundingBox implements Property {
     EntityTag entity;
 
     private ListTag getBoundingBox() {
-        BoundingBox boundingBox = NMSHandler.getInstance().getEntityHelper().getBoundingBox(entity.getBukkitEntity());
+        BoundingBox boundingBox = NMSHandler.getEntityHelper().getBoundingBox(entity.getBukkitEntity());
         ListTag list = new ListTag();
         list.add(new LocationTag(boundingBox.getLow().toLocation(entity.getWorld())).identify());
         list.add(new LocationTag(boundingBox.getHigh().toLocation(entity.getWorld())).identify());
@@ -128,7 +128,7 @@ public class EntityBoundingBox implements Property {
             List<LocationTag> locations = mechanism.valueAsType(ListTag.class).filter(LocationTag.class, mechanism.context);
             if (locations.size() == 2) {
                 BoundingBox boundingBox = new BoundingBox(locations.get(0).toVector(), locations.get(1).toVector());
-                NMSHandler.getInstance().getEntityHelper().setBoundingBox(entity.getBukkitEntity(), boundingBox);
+                NMSHandler.getEntityHelper().setBoundingBox(entity.getBukkitEntity(), boundingBox);
                 modifiedBoxes.add(entity.getUUID());
             }
             else {

@@ -122,7 +122,7 @@ public class BlockCrackCommand extends AbstractCommand {
 
         boolean stackVal = stack.asBoolean();
 
-        PacketHelper packetHelper = NMSHandler.getInstance().getPacketHelper();
+        PacketHelper packetHelper = NMSHandler.getPacketHelper();
 
         for (PlayerTag player : players) {
             if (!player.isOnline()) {

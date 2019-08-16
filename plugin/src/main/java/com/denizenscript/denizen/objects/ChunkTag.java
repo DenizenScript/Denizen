@@ -180,7 +180,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
     }
 
     public int[] getHeightMap() {
-        return NMSHandler.getInstance().getChunkHelper().getHeightMap(getChunk());
+        return NMSHandler.getChunkHelper().getHeightMap(getChunk());
     }
 
     String prefix = "Chunk";
@@ -671,7 +671,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // None
         // -->
         if (mechanism.matches("refresh_chunk_sections")) {
-            NMSHandler.getInstance().getChunkHelper().refreshChunkSections(getChunk());
+            NMSHandler.getChunkHelper().refreshChunkSections(getChunk());
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);

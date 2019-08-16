@@ -12,7 +12,7 @@ public class EntityChestCarrier implements Property {
 
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag
-                && NMSHandler.getInstance().getEntityHelper().isChestedHorse(((EntityTag) entity).getBukkitEntity());
+                && NMSHandler.getEntityHelper().isChestedHorse(((EntityTag) entity).getBukkitEntity());
     }
 
     public static EntityChestCarrier getFrom(ObjectTag entity) {
@@ -49,7 +49,7 @@ public class EntityChestCarrier implements Property {
 
     @Override
     public String getPropertyString() {
-        return NMSHandler.getInstance().getEntityHelper().isCarryingChest(entity.getBukkitEntity()) ? "true" : "false";
+        return NMSHandler.getEntityHelper().isCarryingChest(entity.getBukkitEntity()) ? "true" : "false";
     }
 
     @Override
@@ -77,7 +77,7 @@ public class EntityChestCarrier implements Property {
         // If the entity is a horse, returns whether it is carrying a chest.
         // -->
         if (attribute.startsWith("carries_chest")) {
-            return new ElementTag(NMSHandler.getInstance().getEntityHelper().isCarryingChest(entity.getBukkitEntity()))
+            return new ElementTag(NMSHandler.getEntityHelper().isCarryingChest(entity.getBukkitEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -98,7 +98,7 @@ public class EntityChestCarrier implements Property {
         // -->
 
         if (mechanism.matches("carries_chest") && mechanism.requireBoolean()) {
-            NMSHandler.getInstance().getEntityHelper().setCarryingChest(entity.getBukkitEntity(), mechanism.getValue().asBoolean());
+            NMSHandler.getEntityHelper().setCarryingChest(entity.getBukkitEntity(), mechanism.getValue().asBoolean());
         }
     }
 }

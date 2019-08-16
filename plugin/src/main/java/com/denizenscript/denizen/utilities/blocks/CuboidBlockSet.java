@@ -40,7 +40,7 @@ public class CuboidBlockSet implements BlockSet {
         for (int x = 0; x < x_width; x++) {
             for (int y = 0; y < y_length; y++) {
                 for (int z = 0; z < z_height; z++) {
-                    blocks.add(NMSHandler.getInstance().getBlockHelper().getBlockData(low.clone().add(x, y, z).getBlock()));
+                    blocks.add(NMSHandler.getBlockHelper().getBlockData(low.clone().add(x, y, z).getBlock()));
                 }
             }
         }
@@ -352,7 +352,7 @@ public class CuboidBlockSet implements BlockSet {
                         int index = (int) (y * (x_width) * (z_height) + z * (x_width) + x);
                         BlockData bd = this.blocks.get(indexer);//blockAt(x, y, z);
                         indexer++;
-                        int matId = NMSHandler.getInstance().getBlockHelper().idFor(bd.getMaterial());
+                        int matId = NMSHandler.getBlockHelper().idFor(bd.getMaterial());
                         if (matId > 255) {
                             if (addBlocks == null) {
                                 addBlocks = new byte[(blocks.length >> 1) + 1];

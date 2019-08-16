@@ -221,7 +221,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
             entityList.add(entity.toString());
 
             if (!no_rotate) {
-                NMSHandler.getInstance().getEntityHelper().faceLocation(entity.getBukkitEntity(), destination);
+                NMSHandler.getEntityHelper().faceLocation(entity.getBukkitEntity(), destination);
             }
 
             // If the current entity is a projectile, set its shooter
@@ -279,7 +279,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
                     // Check if the entity has collided with something
                     // using the most basic possible calculation
-                    BlockHelper blockHelper = NMSHandler.getInstance().getBlockHelper();
+                    BlockHelper blockHelper = NMSHandler.getBlockHelper();
                     if (!blockHelper.isSafeBlock(lastEntity.getLocation().add(v3).getBlock().getType())
                             || !blockHelper.isSafeBlock(lastEntity.getLocation().add(newVel).getBlock().getType())) {
                         runs = maxTicks;

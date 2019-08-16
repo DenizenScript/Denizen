@@ -199,7 +199,7 @@ public class AdvancementCommand extends AbstractCommand {
                     + frame.debug() + toast.debug() + announce.debug() + hidden.debug() + x.debug() + y.debug());
         }
 
-        final AdvancementHelper advancementHelper = NMSHandler.getInstance().getAdvancementHelper();
+        final AdvancementHelper advancementHelper = NMSHandler.getAdvancementHelper();
 
         NamespacedKey key = new NamespacedKey(DenizenAPI.getCurrentInstance(), id.asString());
 

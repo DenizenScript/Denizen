@@ -94,7 +94,7 @@ public class DenizenEntityType {
                 return SpawnEntityHelper.spawn(location, bukkitEntityType, mechanisms, scriptName);
             }
             else {
-                CustomEntityHelper customEntityHelper = NMSHandler.getInstance().getCustomEntityHelper();
+                CustomEntityHelper customEntityHelper = NMSHandler.getCustomEntityHelper();
                 switch (customEntityType) {
                     case FAKE_ARROW:
                         return customEntityHelper.spawnFakeArrow(location);

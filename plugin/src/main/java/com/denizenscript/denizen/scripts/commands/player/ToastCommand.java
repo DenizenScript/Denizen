@@ -136,7 +136,7 @@ public class ToastCommand extends AbstractCommand {
                 icon.getItemStack(), text.asString(), "", backgroundKey,
                 Advancement.Frame.valueOf(frame.asString().toUpperCase()), true, false, true, 0, 0);
 
-        final AdvancementHelper advancementHelper = NMSHandler.getInstance().getAdvancementHelper();
+        final AdvancementHelper advancementHelper = NMSHandler.getAdvancementHelper();
 
         for (PlayerTag target : targets) {
             Player player = target.getPlayerEntity();

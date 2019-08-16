@@ -131,8 +131,8 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
 
         // Prevent entities from continuing to breed with each other
         if (cancelled && !wasCancelled) {
-            NMSHandler.getInstance().getEntityHelper().setBreeding((Animals) father.getLivingEntity(), false);
-            NMSHandler.getInstance().getEntityHelper().setBreeding((Animals) mother.getLivingEntity(), false);
+            NMSHandler.getEntityHelper().setBreeding((Animals) father.getLivingEntity(), false);
+            NMSHandler.getEntityHelper().setBreeding((Animals) mother.getLivingEntity(), false);
         }
     }
 }

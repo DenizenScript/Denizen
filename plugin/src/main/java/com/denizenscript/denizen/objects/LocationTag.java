@@ -382,9 +382,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     }
 
     public static BlockState getBlockStateFor(Block block) {
-        NMSHandler.getInstance().getChunkHelper().changeChunkServerThread(block.getWorld());
+        NMSHandler.getChunkHelper().changeChunkServerThread(block.getWorld());
         BlockState state = block.getState();
-        NMSHandler.getInstance().getChunkHelper().restoreServerThread(block.getWorld());
+        NMSHandler.getChunkHelper().restoreServerThread(block.getWorld());
         return state;
     }
 
@@ -999,7 +999,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 Debug.echoError("As of Minecraft version 1.13 potted flowers each have their own material, such as POTTED_CACTUS.");
             }
             else if (getBlock().getType() == Material.FLOWER_POT) {
-                MaterialData contents = NMSHandler.getInstance().getBlockHelper().getFlowerpotContents(getBlock());
+                MaterialData contents = NMSHandler.getBlockHelper().getFlowerpotContents(getBlock());
                 return OldMaterialsHelper.getMaterialFrom(contents.getItemType(), contents.getData())
                         .getAttribute(attribute.fulfill(1));
             }
@@ -1031,7 +1031,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if (attribute.startsWith("skull_name")) {
             BlockState blockState = getBlockState();
             if (blockState instanceof Skull) {
-                PlayerProfile profile = NMSHandler.getInstance().getBlockHelper().getPlayerProfile((Skull) blockState);
+                PlayerProfile profile = NMSHandler.getBlockHelper().getPlayerProfile((Skull) blockState);
                 if (profile == null) {
                     return null;
                 }
@@ -1053,7 +1053,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if (attribute.startsWith("skull_skin")) {
             BlockState blockState = getBlockState();
             if (blockState instanceof Skull) {
-                PlayerProfile profile = NMSHandler.getInstance().getBlockHelper().getPlayerProfile((Skull) blockState);
+                PlayerProfile profile = NMSHandler.getBlockHelper().getPlayerProfile((Skull) blockState);
                 if (profile == null) {
                     return null;
                 }
@@ -1136,7 +1136,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             double nx = xzLen * Math.sin(-getYaw() * (Math.PI / 180));
             double ny = Math.sin(getPitch() * (Math.PI / 180));
             double nz = xzLen * Math.cos(getYaw() * (Math.PI / 180));
-            Location location = NMSHandler.getInstance().getEntityHelper().getImpactNormal(this, new Vector(nx, -ny, nz), range);
+            Location location = NMSHandler.getEntityHelper().getImpactNormal(this, new Vector(nx, -ny, nz), range);
             if (location != null) {
                 return new LocationTag(location).getAttribute(attribute.fulfill(1));
             }
@@ -1161,7 +1161,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             double nx = xzLen * Math.sin(-getYaw() * (Math.PI / 180));
             double ny = Math.sin(getPitch() * (Math.PI / 180));
             double nz = xzLen * Math.cos(getYaw() * (Math.PI / 180));
-            Location location = NMSHandler.getInstance().getEntityHelper().rayTraceBlock(this, new Vector(nx, -ny, nz), range);
+            Location location = NMSHandler.getEntityHelper().rayTraceBlock(this, new Vector(nx, -ny, nz), range);
             if (location != null) {
                 return new LocationTag(location.getBlock().getLocation()).getAttribute(attribute.fulfill(1));
             }
@@ -1186,7 +1186,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             double nx = xzLen * Math.sin(-getYaw() * (Math.PI / 180));
             double ny = Math.sin(getPitch() * (Math.PI / 180));
             double nz = xzLen * Math.cos(getYaw() * (Math.PI / 180));
-            Location location = NMSHandler.getInstance().getEntityHelper().rayTrace(this, new Vector(nx, -ny, nz), range);
+            Location location = NMSHandler.getEntityHelper().rayTrace(this, new Vector(nx, -ny, nz), range);
             if (location != null) {
                 return new LocationTag(location).getAttribute(attribute.fulfill(1));
             }
@@ -1260,7 +1260,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if (attribute.startsWith("line_of_sight") && attribute.hasContext(1)) {
             LocationTag location = LocationTag.valueOf(attribute.getContext(1));
             if (location != null) {
-                return new ElementTag(NMSHandler.getInstance().getEntityHelper().canTrace(getWorld(), toVector(), location.toVector()))
+                return new ElementTag(NMSHandler.getEntityHelper().canTrace(getWorld(), toVector(), location.toVector()))
                         .getAttribute(attribute.fulfill(1));
             }
         }
@@ -1294,7 +1294,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 // not the other way around
                 LocationTag target = LocationTag.valueOf(attribute.getContext(1));
                 attribute = attribute.fulfill(1);
-                EntityHelper entityHelper = NMSHandler.getInstance().getEntityHelper();
+                EntityHelper entityHelper = NMSHandler.getEntityHelper();
                 // <--[tag]
                 // @attribute <LocationTag.direction[<location>].yaw>
                 // @returns ElementTag(Decimal)
@@ -1316,7 +1316,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             // Get a cardinal direction from this location's yaw
             else {
-                return new ElementTag(NMSHandler.getInstance().getEntityHelper().getCardinal(getYaw()))
+                return new ElementTag(NMSHandler.getEntityHelper().getCardinal(getYaw()))
                         .getAttribute(attribute.fulfill(1));
             }
         }
@@ -1331,7 +1331,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if (attribute.startsWith("face")
                 && attribute.hasContext(1)) {
             Location two = LocationTag.valueOf(attribute.getContext(1));
-            return new LocationTag(NMSHandler.getInstance().getEntityHelper().faceLocation(this, two))
+            return new LocationTag(NMSHandler.getEntityHelper().faceLocation(this, two))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1368,12 +1368,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                         degrees = ArgumentHelper.getIntegerFrom(yaw);
                         int pitchDegrees = ArgumentHelper.getIntegerFrom(pitch);
                         if (LocationTag.matches(attribute.getContext(1))) {
-                            return new ElementTag(NMSHandler.getInstance().getEntityHelper().isFacingLocation
+                            return new ElementTag(NMSHandler.getEntityHelper().isFacingLocation
                                     (this, LocationTag.valueOf(attribute.getContext(1)), degrees, pitchDegrees))
                                     .getAttribute(attribute.fulfill(attributePos));
                         }
                         else if (EntityTag.matches(attribute.getContext(1))) {
-                            return new ElementTag(NMSHandler.getInstance().getEntityHelper().isFacingLocation
+                            return new ElementTag(NMSHandler.getEntityHelper().isFacingLocation
                                     (this, EntityTag.valueOf(attribute.getContext(1))
                                             .getBukkitEntity().getLocation(), degrees, pitchDegrees))
                                     .getAttribute(attribute.fulfill(attributePos));
@@ -1386,12 +1386,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 }
 
                 if (LocationTag.matches(attribute.getContext(1))) {
-                    return new ElementTag(NMSHandler.getInstance().getEntityHelper().isFacingLocation
+                    return new ElementTag(NMSHandler.getEntityHelper().isFacingLocation
                             (this, LocationTag.valueOf(attribute.getContext(1)), degrees))
                             .getAttribute(attribute.fulfill(attributePos));
                 }
                 else if (EntityTag.matches(attribute.getContext(1))) {
-                    return new ElementTag(NMSHandler.getInstance().getEntityHelper().isFacingLocation
+                    return new ElementTag(NMSHandler.getEntityHelper().isFacingLocation
                             (this, EntityTag.valueOf(attribute.getContext(1))
                                     .getBukkitEntity().getLocation(), degrees))
                             .getAttribute(attribute.fulfill(attributePos));
@@ -1444,7 +1444,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the yaw as 'North', 'South', 'East', or 'West'.
         // -->
         if (attribute.startsWith("yaw.simple")) {
-            float yaw = NMSHandler.getInstance().getEntityHelper().normalizeYaw(getYaw());
+            float yaw = NMSHandler.getEntityHelper().normalizeYaw(getYaw());
             if (yaw < 45) {
                 return new ElementTag("South")
                         .getAttribute(attribute.fulfill(2));
@@ -1485,7 +1485,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the normalized yaw of the object at the location.
         // -->
         if (attribute.startsWith("yaw")) {
-            return new ElementTag(NMSHandler.getInstance().getEntityHelper().normalizeYaw(getYaw()))
+            return new ElementTag(NMSHandler.getEntityHelper().normalizeYaw(getYaw()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -2585,7 +2585,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
         if (mechanism.matches("data") && mechanism.hasValue()) {
             Debug.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
-            BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(getBlock().getType(), (byte) mechanism.getValue().asInt());
+            BlockData blockData = NMSHandler.getBlockHelper().getBlockData(getBlock().getType(), (byte) mechanism.getValue().asInt());
             blockData.setBlock(getBlock(), false);
         }
 
@@ -2735,7 +2735,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 if (texture != null) { // Ensure we didn't get overwritten
                     profile.setTexture(texture);
                 }
-                NMSHandler.getInstance().getBlockHelper().setPlayerProfile((Skull) blockState, profile);
+                NMSHandler.getBlockHelper().setPlayerProfile((Skull) blockState, profile);
             }
             else {
                 Debug.echoError("Unable to set skull_skin on block of type " + material.name() + " with state " + blockState.getClass().getCanonicalName());
@@ -2760,7 +2760,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             else if (getBlock().getType() == Material.FLOWER_POT) {
                 MaterialData data = mechanism.valueAsType(MaterialTag.class).getMaterialData();
-                NMSHandler.getInstance().getBlockHelper().setFlowerpotContents(getBlock(), data);
+                NMSHandler.getBlockHelper().setFlowerpotContents(getBlock(), data);
             }
         }
 

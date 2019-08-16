@@ -138,7 +138,7 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
         if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        Entity hookEntity = NMSHandler.getInstance().getEntityHelper().getFishHook(event);
+        Entity hookEntity = NMSHandler.getEntityHelper().getFishHook(event);
         EntityTag.rememberEntity(hookEntity);
         hook = new EntityTag(hookEntity);
         state = new ElementTag(event.getState().toString());

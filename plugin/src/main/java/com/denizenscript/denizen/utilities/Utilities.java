@@ -147,7 +147,7 @@ public class Utilities {
     // TODO: Javadocs, comments
     //
     public static boolean isWalkable(Location location) {
-        BlockHelper blockHelper = NMSHandler.getInstance().getBlockHelper();
+        BlockHelper blockHelper = NMSHandler.getBlockHelper();
         return !blockHelper.isSafeBlock(location.clone().subtract(0, 1, 0).getBlock().getType())
                 && blockHelper.isSafeBlock(location.getBlock().getType())
                 && blockHelper.isSafeBlock(location.clone().add(0, 1, 0).getBlock().getType());

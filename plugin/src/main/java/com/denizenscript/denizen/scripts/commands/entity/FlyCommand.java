@@ -257,9 +257,9 @@ public class FlyCommand extends AbstractCommand {
 
                     // To avoid excessive turbulence, only have the entity rotate
                     // when it really needs to
-                    if (!NMSHandler.getInstance().getEntityHelper().isFacingLocation(entity, location, rotationThreshold)) {
+                    if (!NMSHandler.getEntityHelper().isFacingLocation(entity, location, rotationThreshold)) {
 
-                        NMSHandler.getInstance().getEntityHelper().faceLocation(entity, location);
+                        NMSHandler.getEntityHelper().faceLocation(entity, location);
                     }
 
                     Vector v1 = entity.getLocation().toVector();

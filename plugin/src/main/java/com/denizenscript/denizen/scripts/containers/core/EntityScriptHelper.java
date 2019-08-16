@@ -56,14 +56,14 @@ public class EntityScriptHelper implements Listener {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
             return;
         }
-        NMSHandler.getInstance().getWorldHelper().setWorldAccess(world, new DenizenWorldAccess());
+        NMSHandler.getWorldHelper().setWorldAccess(world, new DenizenWorldAccess());
     }
 
     public static void unlinkWorld(World world) {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
             return;
         }
-        NMSHandler.getInstance().getWorldHelper().removeWorldAccess(world);
+        NMSHandler.getWorldHelper().removeWorldAccess(world);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

@@ -144,13 +144,13 @@ public class PlaySoundCommand extends AbstractCommand {
             if (locations != null) {
                 if (custom.asBoolean()) {
                     for (LocationTag location : locations) {
-                        NMSHandler.getInstance().getSoundHelper().playSound(null, location, sound.asString(), volume.asFloat(),
+                        NMSHandler.getSoundHelper().playSound(null, location, sound.asString(), volume.asFloat(),
                                 pitch.asFloat(), sound_category.asString());
                     }
                 }
                 else {
                     for (LocationTag location : locations) {
-                        NMSHandler.getInstance().getSoundHelper().playSound(null, location, Sound.valueOf(sound.asString().toUpperCase()),
+                        NMSHandler.getSoundHelper().playSound(null, location, Sound.valueOf(sound.asString().toUpperCase()),
                                 volume.asFloat(), pitch.asFloat(), sound_category.asString());
                     }
                 }
@@ -158,11 +158,11 @@ public class PlaySoundCommand extends AbstractCommand {
             else {
                 for (PlayerTag player : players) {
                     if (custom.asBoolean()) {
-                        NMSHandler.getInstance().getSoundHelper().playSound(player.getPlayerEntity(), player.getLocation(), sound.asString(),
+                        NMSHandler.getSoundHelper().playSound(player.getPlayerEntity(), player.getLocation(), sound.asString(),
                                 volume.asFloat(), pitch.asFloat(), sound_category.asString());
                     }
                     else {
-                        NMSHandler.getInstance().getSoundHelper().playSound(player.getPlayerEntity(), player.getLocation(),
+                        NMSHandler.getSoundHelper().playSound(player.getPlayerEntity(), player.getLocation(),
                                 Sound.valueOf(sound.asString().toUpperCase()), volume.asFloat(), pitch.asFloat(), sound_category.asString());
                     }
                 }
