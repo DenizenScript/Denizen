@@ -84,11 +84,15 @@ public class Conversion {
             BukkitScriptEntryData data = (BukkitScriptEntryData) scriptEntry.entryData;
             if (data != null) {
                 InventoryTag inv = InventoryTag.valueOf(string, data.getTagContext());
-                return new AbstractMap.SimpleEntry<>(inv.getContents().length, inv);
+                if (inv != null) {
+                    return new AbstractMap.SimpleEntry<>(inv.getContents().length, inv);
+                }
             }
             else {
                 InventoryTag inv = InventoryTag.valueOf(string, null);
-                return new AbstractMap.SimpleEntry<>(inv.getContents().length, inv);
+                if (inv != null) {
+                    return new AbstractMap.SimpleEntry<>(inv.getContents().length, inv);
+                }
             }
         }
         else if (arg.matchesArgumentList(ItemTag.class)) {
