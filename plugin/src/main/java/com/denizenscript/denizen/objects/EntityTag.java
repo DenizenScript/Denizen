@@ -2309,7 +2309,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether this entity is swimming.
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && attribute.startsWith("swimming")) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && attribute.startsWith("swimming")) {
             return new ElementTag(getLivingEntity().isSwimming())
                     .getAttribute(attribute.fulfill(1));
         }
@@ -3163,7 +3163,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @tags
         // <EntityTag.swimming>
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && mechanism.matches("swimming")
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && mechanism.matches("swimming")
                 && mechanism.requireBoolean()) {
             getLivingEntity().setSwimming(mechanism.getValue().asBoolean());
         }

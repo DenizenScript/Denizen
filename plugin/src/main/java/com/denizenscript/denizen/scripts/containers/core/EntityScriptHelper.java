@@ -53,14 +53,14 @@ public class EntityScriptHelper implements Listener {
     }
 
     public static void linkWorld(World world) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
             return;
         }
         NMSHandler.getInstance().getWorldHelper().setWorldAccess(world, new DenizenWorldAccess());
     }
 
     public static void unlinkWorld(World world) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
             return;
         }
         NMSHandler.getInstance().getWorldHelper().removeWorldAccess(world);
@@ -101,7 +101,7 @@ public class EntityScriptHelper implements Listener {
     }
 
     public static void reloadEntities() {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
             return;
         }
         entities.clear();
@@ -118,7 +118,7 @@ public class EntityScriptHelper implements Listener {
     }
 
     public static void saveEntities() {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
             return;
         }
         FileConfiguration entityScripts = DenizenAPI.getCurrentInstance().getEntities();
@@ -142,7 +142,7 @@ public class EntityScriptHelper implements Listener {
         if (ent == null) {
             return null;
         }
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
             if (!DataPersistenceHelper.hasDenizenKey(ent, "entity_script")) {
                 return null;
             }
@@ -162,7 +162,7 @@ public class EntityScriptHelper implements Listener {
         if (entID == null) {
             return null;
         }
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
             return getEntityScript(Bukkit.getEntity(entID));
         }
         return entities.get(entID);
@@ -175,7 +175,7 @@ public class EntityScriptHelper implements Listener {
         if (ent == null || ent.getUniqueId() == null || script == null) {
             return;
         }
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
             ScriptTag scriptObj = ScriptTag.valueOf(script);
             if (scriptObj == null) {
                 Debug.echoError("Can't set entity script to '" + script + "': not a valid script!");
@@ -190,7 +190,7 @@ public class EntityScriptHelper implements Listener {
      * Removes the entity from the list of scripted entities.
      */
     public static void unlinkEntity(final Entity ent) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
             return;
         }
         if (ent == null || ent.getUniqueId() == null) {

@@ -88,7 +88,7 @@ public class EntityPotionEffects implements Property {
     public static String stringify(PotionEffect effect) {
         return effect.getType().getName() + "," + effect.getAmplifier() + "," + effect.getDuration()
                 + "," + effect.isAmbient() + "," + effect.hasParticles()
-                + (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? "," + effect.hasIcon() : "");
+                + (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) ? "," + effect.hasIcon() : "");
     }
 
     public String getAttribute(Attribute attribute) {

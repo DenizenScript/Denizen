@@ -285,7 +285,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
 
     @Override
     public int getTagTimeout() {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
             return 0;
         }
         return Settings.tagTimeout();

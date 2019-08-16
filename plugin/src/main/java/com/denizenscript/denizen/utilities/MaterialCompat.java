@@ -46,11 +46,11 @@ public class MaterialCompat {
     public static Material WALL_SIGN; // in 1.14, set to OAK_WALL_SIGN
 
     static {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
             SIGN = Material.OAK_SIGN;
             WALL_SIGN = Material.OAK_WALL_SIGN;
         }
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             COMMAND_BLOCK = Material.COMMAND_BLOCK;
             COMPARATOR = Material.COMPARATOR;
             END_PORTAL = Material.END_PORTAL;
@@ -62,7 +62,7 @@ public class MaterialCompat {
             OAK_FENCE = Material.OAK_FENCE;
             OAK_TRAPDOOR = Material.OAK_TRAPDOOR;
             REPEATER = Material.REPEATER;
-            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_13_R2)) {
+            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_13)) {
                 // split in 1.14
                 SIGN = Material.valueOf("SIGN");
                 WALL_SIGN = Material.valueOf("WALL_SIGN");
@@ -106,7 +106,7 @@ public class MaterialCompat {
     }
 
     public static boolean isStandingSign(Material material) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
             switch (material) {
                 case ACACIA_SIGN:
                 case BIRCH_SIGN:
@@ -123,7 +123,7 @@ public class MaterialCompat {
     }
 
     public static boolean isWallSign(Material material) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
             switch (material) {
                 case ACACIA_WALL_SIGN:
                 case BIRCH_WALL_SIGN:
@@ -162,7 +162,7 @@ public class MaterialCompat {
     }
 
     public static ItemStack updateItem(int oldMat) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             Material mat = Bukkit.getUnsafe().fromLegacy(OldMaterialsHelper.getLegacyMaterial(oldMat));
             return new ItemStack(mat);
         }
@@ -170,7 +170,7 @@ public class MaterialCompat {
     }
 
     public static ItemStack updateItem(int oldMat, byte bit) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             BlockData blockDat = Bukkit.getUnsafe().fromLegacy(OldMaterialsHelper.getLegacyMaterial(oldMat), bit);
             Material mat = blockDat.getMaterial();
             return new ItemStack(mat);
@@ -182,7 +182,7 @@ public class MaterialCompat {
         if (material == Material.SHIELD) {
             return true;
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             switch (material) {
                 case BLACK_BANNER:
                 case BLUE_BANNER:

@@ -13,7 +13,7 @@ import org.bukkit.inventory.meta.MapMeta;
 
 public class ItemMap implements Property {
 
-    public static Material MAP_MATERIAL = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? Material.FILLED_MAP : Material.MAP;
+    public static Material MAP_MATERIAL = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) ? Material.FILLED_MAP : Material.MAP;
 
     public static boolean describes(ObjectTag item) {
         return item instanceof ItemTag
@@ -71,7 +71,7 @@ public class ItemMap implements Property {
     }
 
     public boolean hasMapId() {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             MapMeta map = (MapMeta) item.getItemStack().getItemMeta();
             return map.hasMapId();
         }
@@ -79,7 +79,7 @@ public class ItemMap implements Property {
     }
 
     public int getMapId() {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             MapMeta map = (MapMeta) item.getItemStack().getItemMeta();
             if (!map.hasMapId()) {
                 return 0;
@@ -90,7 +90,7 @@ public class ItemMap implements Property {
     }
 
     public void setMapId(int id) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             MapMeta map = (MapMeta) item.getItemStack().getItemMeta();
             map.setMapId(id);
             item.getItemStack().setItemMeta(map);

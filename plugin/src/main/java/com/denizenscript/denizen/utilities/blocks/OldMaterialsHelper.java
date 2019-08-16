@@ -447,10 +447,10 @@ public class OldMaterialsHelper {
 
     // Version checks for version-specific materials
     public static MaterialTag getMaterial1_12(String material, int data, String name) {
-        if (NMSHandler.getVersion() == NMSVersion.v1_12_R1) {
+        if (NMSHandler.getVersion() == NMSVersion.v1_12) {
             return new MaterialTag(Material.valueOf(material), data).forceIdentifyAs(name);
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             if (all_dMaterials == null) {
                 all_dMaterials = new HashMap<>();
             }
@@ -460,7 +460,7 @@ public class OldMaterialsHelper {
     }
 
     public static MaterialTag getMaterialPre1_13(String material, int data, String name) {
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1)) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12)) {
             return new MaterialTag(Material.valueOf(material), data).forceIdentifyAs(name);
         }
         else {
@@ -484,7 +484,7 @@ public class OldMaterialsHelper {
 
     static {
         MATERIAL_BY_LEGACY_ID = new HashMap<>();
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             Map<String, Material> map = ReflectionHelper.getFieldValue(Material.class, "BY_NAME", null);
             for (Material material : map.values()) {
                 if (material.isLegacy()) {
@@ -540,7 +540,7 @@ public class OldMaterialsHelper {
 
     // Called on startup
     public static void _initialize() {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             return;
         }
         for (MaterialTags material : MaterialTags.values()) {
@@ -577,7 +577,7 @@ public class OldMaterialsHelper {
      * @return a MaterialTag representation of the input Bukkit material
      */
     public static MaterialTag getMaterialFrom(Material material, int data) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             if (data != 0) {
                 // upvert old data valued materials
                 if (material.isBlock()) {

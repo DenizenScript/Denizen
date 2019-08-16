@@ -149,7 +149,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                 if (!chunk.isLoaded()) {
                     chunk.load();
                 }
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
                     chunk.setForceLoaded(true);
                     if (length.getSeconds() > 0) {
                         Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
@@ -167,7 +167,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
             case REMOVE:
                 if (chunkDelays.containsKey(chunkString)) {
                     chunkDelays.remove(chunkString);
-                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
                         chunk.setForceLoaded(false);
                     }
                     Debug.echoDebug(scriptEntry, "...allowing unloading of chunk " + chunk.getX() + ", " + chunk.getZ());
@@ -178,7 +178,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                 break;
             case REMOVEALL:
                 Debug.echoDebug(scriptEntry, "...allowing unloading of all stored chunks");
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
                     for (String chunkStr : chunkDelays.keySet()) {
                         ChunkTag loopChunk = ChunkTag.valueOf(chunkStr);
                         loopChunk.getChunk().setForceLoaded(false);

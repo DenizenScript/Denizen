@@ -15,7 +15,7 @@ public class ItemApple implements Property {
     public static boolean describes(ObjectTag item) {
         return item instanceof ItemTag
                 && ((((ItemTag) item).getItemStack().getType() == Material.GOLDEN_APPLE)
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && ((ItemTag) item).getItemStack().getType() == Material.ENCHANTED_GOLDEN_APPLE));
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && ((ItemTag) item).getItemStack().getType() == Material.ENCHANTED_GOLDEN_APPLE));
     }
 
     public static ItemApple getFrom(ObjectTag _item) {
@@ -59,7 +59,7 @@ public class ItemApple implements Property {
         // NOTE: In 1.13+, enchanted golden apples are now a separate Material type, making this tag no longer required.
         // -->
         if (attribute.startsWith("apple_enchanted")) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
                 return new ElementTag(item.getItemStack().getType() == Material.ENCHANTED_GOLDEN_APPLE)
                         .getAttribute(attribute.fulfill(1));
             }
@@ -73,7 +73,7 @@ public class ItemApple implements Property {
 
     @Override
     public String getPropertyString() {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             return null;
         }
         if (item.getItemStack().getDurability() == 1) {
@@ -104,7 +104,7 @@ public class ItemApple implements Property {
         // -->
 
         if (mechanism.matches("apple_enchanted") && mechanism.requireBoolean()) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
                 item.getItemStack().setType(mechanism.getValue().asBoolean() ? Material.ENCHANTED_GOLDEN_APPLE : Material.GOLDEN_APPLE);
             }
             item.getItemStack().setDurability((short) (mechanism.getValue().asBoolean() ? 1 : 0));

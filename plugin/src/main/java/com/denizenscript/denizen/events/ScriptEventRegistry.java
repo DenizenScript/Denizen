@@ -57,14 +57,14 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new EntityHealsScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityInteractScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityKilledScriptEvent());
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             ScriptEvent.registerScriptEvent(new EntityPotionEffectScriptEvent());
         }
         ScriptEvent.registerScriptEvent(new EntityResurrectScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityShootsBowEvent());
         ScriptEvent.registerScriptEvent(new EntitySpawnerSpawnScriptEvent());
         ScriptEvent.registerScriptEvent(new EntitySpawnScriptEvent());
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             ScriptEvent.registerScriptEvent(new EntitySwimScriptEvent());
         }
         ScriptEvent.registerScriptEvent(new EntityTamesScriptEvent());
@@ -137,13 +137,13 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new PlayerPlacesHangingScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerPreparesAnvilCraftScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerQuitsScriptEvent());
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             ScriptEvent.registerScriptEvent(new PlayerReceivesCommandsScriptEvent());
         }
         ScriptEvent.registerScriptEvent(new PlayerReceivesMessageScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerRespawnsScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerRightClicksEntityScriptEvent());
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             ScriptEvent.registerScriptEvent(new PlayerRiptideScriptEvent());
         }
         ScriptEvent.registerScriptEvent(new PlayerShearsScriptEvent());
@@ -156,7 +156,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new PlayerSwapsItemsScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerTabCompleteScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerTakesFromFurnaceScriptEvent());
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
             ScriptEvent.registerScriptEvent(new PlayerTakesFromLecternScriptEvent());
         }
         ScriptEvent.registerScriptEvent(new PlayerThrowsEggScriptEvent());

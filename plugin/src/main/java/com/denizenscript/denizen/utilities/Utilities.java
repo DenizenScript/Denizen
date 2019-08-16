@@ -395,7 +395,7 @@ public class Utilities {
             return;
         }
 
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             DirectionalBlocksHelper.setFace(signState.getBlock(), bf);
         }
         else {

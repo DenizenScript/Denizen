@@ -208,7 +208,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
                 else {
                     MaterialTag mat = MaterialTag.valueOf(material);
                     stack = new ItemTag(mat.getMaterial());
-                    if (mat.hasData() && NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1)) {
+                    if (mat.hasData() && NMSHandler.getVersion().isAtMost(NMSVersion.v1_12)) {
                         stack.setDurability(mat.getData());
                     }
                 }
@@ -301,7 +301,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
     }
 
     public ItemTag(MaterialTag material, int qty) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             this.item = new ItemStack(material.getMaterial(), qty);
         }
         else {
@@ -310,7 +310,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
     }
 
     public ItemTag(MaterialData data) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && item.getType().isLegacy()) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && item.getType().isLegacy()) {
             this.item = new ItemStack(Bukkit.getUnsafe().fromLegacy(data));
         }
         else {
@@ -534,7 +534,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
     }
 
     public MaterialTag getMaterial() {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             return new MaterialTag(getItemStack().getType());
         }
         return OldMaterialsHelper.getMaterialFrom(getItemStack().getType(), getItemStack().getData().getData());
@@ -615,7 +615,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         }
 
         // Else, return the material name
-        else if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1) && (item.getDurability() >= 16 || item.getDurability() < 0) && item.getType() != Material.AIR) {
+        else if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12) && (item.getDurability() >= 16 || item.getDurability() < 0) && item.getType() != Material.AIR) {
             return "i@" + getMaterial().realName() + "," + item.getDurability() + PropertyParser.getPropertiesString(this);
         }
         return "i@" + getMaterial().identifyNoPropertiesNoIdentifier().replace("m@", "") + PropertyParser.getPropertiesString(this);
@@ -875,7 +875,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 ItemTag item = (ItemTag) object;
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) &&
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) &&
                         item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof BlockStateMeta) {
                     return new MaterialTag(new ModernBlockData(((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()))
                             .getAttribute(attribute.fulfill(1));

@@ -107,7 +107,7 @@ public class ItemSkullskin implements Property {
     }
 
     public boolean isCorrectDurability() {
-        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) || item.getItemStack().getDurability() == 3;
+        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) || item.getItemStack().getDurability() == 3;
     }
 
     @Override

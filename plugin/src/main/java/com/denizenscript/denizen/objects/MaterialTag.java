@@ -107,7 +107,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
             string = string.substring(0, index);
         }
         Material m = Material.getMaterial(string);
-        if (m == null && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        if (m == null && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             m = Material.getMaterial(string, true);
             if (m != null) {
                 m = Bukkit.getUnsafe().fromLegacy(m);
@@ -122,7 +122,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
                     Debug.log("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use relevant properties instead.");
                 }
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
                 return new MaterialTag(m);
             }
             return OldMaterialsHelper.getMaterialFrom(m, data);
@@ -134,7 +134,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
                     Debug.log("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use relevant properties instead.");
                 }
                 if (data == 0) {
-                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
                         return new MaterialTag(mat.material);
                     }
                     return mat;
@@ -213,7 +213,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
     }
 
     public boolean matchesBlock(Block b) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             return getMaterial() == b.getType();
         }
         return matchesMaterialData(b.getType().getNewData(b.getData()));
@@ -235,7 +235,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         else {
             this.data = (byte) data;
         }
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)
                 && material.isBlock()) {
             modernData = new ModernBlockData(material);
         }
@@ -247,7 +247,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
 
     public MaterialTag(BlockState state) {
         this.material = state.getType();
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             this.modernData = new ModernBlockData(state);
         }
         else {
@@ -256,7 +256,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
     }
 
     public MaterialTag(BlockData block) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             this.modernData = block.modern();
             this.material = modernData.getMaterial();
         }
@@ -267,7 +267,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
     }
 
     public MaterialTag(Block block) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             this.modernData = new ModernBlockData(block);
             this.material = modernData.getMaterial();
         }
@@ -295,7 +295,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
     }
 
     public ModernBlockData getModernData() {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             return modernData;
         }
         throw new IllegalStateException("Modern block data handler is not available prior to MC 1.13.");
@@ -358,11 +358,11 @@ public class MaterialTag implements ObjectTag, Adjustable {
         if (material == Material.CHORUS_PLANT) {
             return true;
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)
                 && (material == Material.RED_MUSHROOM_BLOCK || material == Material.BROWN_MUSHROOM_BLOCK)) {
             return true;
         }
-        else if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1)) {
+        else if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12)) {
             if (material == Material.RED_MUSHROOM || material == Material.BROWN_MUSHROOM) {
                 return true;
             }
@@ -407,7 +407,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         if (forcedIdentity != null) {
             return forcedIdentityLow;
         }
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1) && getData() != null && getData() > 0) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12) && getData() != null && getData() > 0) {
             return CoreUtilities.toLowerCase(material.name()) + "," + getData();
         }
         return CoreUtilities.toLowerCase(material.name());
@@ -417,7 +417,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         if (forcedIdentity != null) {
             return forcedIdentityLow;
         }
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1) && getData() != null && getData() > 0) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12) && getData() != null && getData() > 0) {
             return CoreUtilities.toLowerCase(material.name()) + "," + getData();
         }
         return CoreUtilities.toLowerCase(material.name()) + PropertyParser.getPropertiesString(this);
@@ -434,7 +434,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         if (forcedIdentity != null) {
             return forcedIdentityLow + (getData() != null ? "," + getData() : "");
         }
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1) && getData() != null && getData() > 0) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12) && getData() != null && getData() > 0) {
             return CoreUtilities.toLowerCase(material.name()) + "," + getData();
         }
         return CoreUtilities.toLowerCase(material.name()) + PropertyParser.getPropertiesString(this);
@@ -849,7 +849,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
                 MaterialTag material = (MaterialTag) object;
                 ItemTag item = new ItemTag(material, 1);
                 attribute = attribute.fulfill(1);
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
                     // Special patch for older material-item tags.
                     if (!attribute.isComplete()) {
                         String tag = attribute.getAttribute(1);

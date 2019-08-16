@@ -995,7 +995,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // NOTE: Replaced by materials (such as POTTED_CACTUS) in 1.13 and above.
         // -->
         if (attribute.startsWith("flowerpot_contents")) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
                 Debug.echoError("As of Minecraft version 1.13 potted flowers each have their own material, such as POTTED_CACTUS.");
             }
             else if (getBlock().getType() == Material.FLOWER_POT) {
@@ -2467,7 +2467,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if (attribute.startsWith("attached_to")) {
             BlockFace face = BlockFace.SELF;
             MaterialTag material = new MaterialTag(getBlock());
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)
                 && MaterialSwitchFace.describes(material)) {
                 face = MaterialSwitchFace.getFrom(material).getAttachedTo();
             }
@@ -2493,7 +2493,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if (attribute.startsWith("other_block")) {
             BlockState state = getBlockState();
             if (state instanceof Chest
-                    && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                    && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
                 Vector direction = DirectionalBlocksHelper.getFacing(getBlock());
                 if (DirectionalBlocksHelper.isLeftHalf(getBlock())) {
                     direction = new Vector(-direction.getZ(), 0, direction.getX());
@@ -2524,7 +2524,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 }
             }
             else if (state instanceof Bed
-                    && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                    && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
                 // There's no pre-1.13 API for this *at all*, and the new API isn't very sane, but can be used.
                 boolean isTop = DirectionalBlocksHelper.isTopHalf(getBlock());
                 BlockFace direction = DirectionalBlocksHelper.getFace(getBlock());
@@ -2708,7 +2708,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if (mechanism.matches("skull_skin")) {
             final BlockState blockState = getBlockState();
             Material material = getBlock().getType();
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)
                     && material != Material.PLAYER_HEAD && material != Material.PLAYER_WALL_HEAD) {
                 Debug.echoError("As of Minecraft version 1.13 you may only set the skin of a PLAYER_HEAD or PLAYER_WALL_HEAD.");
             }
@@ -2755,7 +2755,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <LocationTag.flowerpot_contents>
         // -->
         if (mechanism.matches("flowerpot_contents") && mechanism.requireObject(MaterialTag.class)) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
                 Debug.echoError("As of Minecraft version 1.13 potted flowers each have their own material, such as POTTED_CACTUS.");
             }
             else if (getBlock().getType() == Material.FLOWER_POT) {

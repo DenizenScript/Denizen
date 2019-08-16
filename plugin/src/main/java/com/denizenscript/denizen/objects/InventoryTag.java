@@ -128,7 +128,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
     public String notableColors = null;
 
     // in 1.13, we use "&1.&2.&3.", below that we can just use "&1&2&3"
-    public static int inventoryNameNotableRequired = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? 9 : 6;
+    public static int inventoryNameNotableRequired = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) ? 9 : 6;
     public static int inventoryNameNotableMax = 32 - inventoryNameNotableRequired;
 
     public void makeUnique(String id) {
@@ -149,7 +149,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 Debug.echoError("Inventory note failed - too many notes already!");
                 return;
             }
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
                 colors = Utilities.generateRandomColorsWithDots(3);
             }
             else {
