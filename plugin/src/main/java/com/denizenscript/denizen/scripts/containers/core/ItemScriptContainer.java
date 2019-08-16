@@ -91,7 +91,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //   no_id: true/false
     //
     //   # For colorable items, such as leather armor, you can specify a valid ColorTag to specify the item's appearance.
-    //   # See 'dColor' for more information.
+    //   # See <@link language ColorTag> for more information.
     //   color: ColorTag
     //
     //   # If your material is a 'm@written_book', you can specify a book script to automatically scribe your item
