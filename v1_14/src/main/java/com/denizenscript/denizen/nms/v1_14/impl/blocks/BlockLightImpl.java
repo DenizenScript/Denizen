@@ -20,8 +20,8 @@ public class BlockLightImpl extends BlockLight {
 
     public static final Field PACKETPLAYOUTLIGHTUPDATE_CHUNKX = ReflectionHelper.getFields(PacketPlayOutLightUpdate.class).get("a");
     public static final Field PACKETPLAYOUTLIGHTUPDATE_CHUNKZ = ReflectionHelper.getFields(PacketPlayOutLightUpdate.class).get("b");
-    public static final Field PACKETPLAYOUTLIGHTUPDATE_BLOCKIGHT_BITMASK = ReflectionHelper.getFields(PacketPlayOutLightUpdate.class).get("d");
-    public static final Field PACKETPLAYOUTLIGHTUPDATE_BLOCKIGHT_DATA = ReflectionHelper.getFields(PacketPlayOutLightUpdate.class).get("h");
+    public static final Field PACKETPLAYOUTLIGHTUPDATE_BLOCKLIGHT_BITMASK = ReflectionHelper.getFields(PacketPlayOutLightUpdate.class).get("d");
+    public static final Field PACKETPLAYOUTLIGHTUPDATE_BLOCKLIGHT_DATA = ReflectionHelper.getFields(PacketPlayOutLightUpdate.class).get("h");
     public static final Field PACKETPLAYOUTBLOCKCHANGE_POSITION = ReflectionHelper.getFields(PacketPlayOutBlockChange.class).get("a");
 
     public static final Class LIGHTENGINETHREADED_UPDATE = LightEngineThreaded.class.getDeclaredClasses()[0];
@@ -104,13 +104,13 @@ public class BlockLightImpl extends BlockLight {
                         if (lights != null) {
                             any = true;
                             for (BlockLight light : lights) {
-                                light.update(light.intendedLevel, false);
+                                Bukkit.getScheduler().scheduleSyncDelayedTask(NMSHandler.getJavaPlugin(), () -> light.update(light.intendedLevel, false), 1);
                             }
                         }
                     }
                 }
                 if (any) {
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(NMSHandler.getJavaPlugin(), () -> sendNearbyChunkUpdates(chunk), 1);
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(NMSHandler.getJavaPlugin(), () -> sendNearbyChunkUpdates(chunk), 3);
                 }
             }, 1);
         }
@@ -126,8 +126,8 @@ public class BlockLightImpl extends BlockLight {
         try {
             int cX = PACKETPLAYOUTLIGHTUPDATE_CHUNKX.getInt(packet);
             int cZ = PACKETPLAYOUTLIGHTUPDATE_CHUNKZ.getInt(packet);
-            int bitMask = PACKETPLAYOUTLIGHTUPDATE_BLOCKIGHT_BITMASK.getInt(packet);
-            List<byte[]> blockData = (List<byte[]>) PACKETPLAYOUTLIGHTUPDATE_BLOCKIGHT_DATA.get(packet);
+            int bitMask = PACKETPLAYOUTLIGHTUPDATE_BLOCKLIGHT_BITMASK.getInt(packet);
+            List<byte[]> blockData = (List<byte[]>) PACKETPLAYOUTLIGHTUPDATE_BLOCKLIGHT_DATA.get(packet);
             Bukkit.getScheduler().scheduleSyncDelayedTask(NMSHandler.getJavaPlugin(), () -> {
                 Chunk chk = world.getChunkIfLoaded(cX, cZ);
                 if (chk == null) {
@@ -140,12 +140,12 @@ public class BlockLightImpl extends BlockLight {
                 boolean any = false;
                 for (BlockLight light : lights) {
                     if (((BlockLightImpl) light).checkIfChangedBy(bitMask, blockData)) {
-                        light.update(light.intendedLevel, false);
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(NMSHandler.getJavaPlugin(), () -> light.update(light.intendedLevel, false), 1);
                         any = true;
                     }
                 }
                 if (any) {
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(NMSHandler.getJavaPlugin(), () -> sendNearbyChunkUpdates(chk), 1);
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(NMSHandler.getJavaPlugin(), () -> sendNearbyChunkUpdates(chk), 3);
                 }
             }, 1);
         }
