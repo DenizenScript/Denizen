@@ -11,17 +11,51 @@ import org.bukkit.craftbukkit.v1_14_R1.CraftChunk;
 import org.bukkit.craftbukkit.v1_14_R1.block.CraftBlock;
 import org.bukkit.util.Vector;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BlockLightImpl extends BlockLight {
 
-    private static final Field PACKETPLAYOUTLIGHTUPDATE_CHUNKX = ReflectionHelper.getFields(PacketPlayOutLightUpdate.class).get("a");
-    private static final Field PACKETPLAYOUTLIGHTUPDATE_CHUNKZ = ReflectionHelper.getFields(PacketPlayOutLightUpdate.class).get("b");
-    private static final Field PACKETPLAYOUTLIGHTUPDATE_BLOCKIGHT_BITMASK = ReflectionHelper.getFields(PacketPlayOutLightUpdate.class).get("d");
-    private static final Field PACKETPLAYOUTLIGHTUPDATE_BLOCKIGHT_DATA = ReflectionHelper.getFields(PacketPlayOutLightUpdate.class).get("h");
+    public static final Field PACKETPLAYOUTLIGHTUPDATE_CHUNKX = ReflectionHelper.getFields(PacketPlayOutLightUpdate.class).get("a");
+    public static final Field PACKETPLAYOUTLIGHTUPDATE_CHUNKZ = ReflectionHelper.getFields(PacketPlayOutLightUpdate.class).get("b");
+    public static final Field PACKETPLAYOUTLIGHTUPDATE_BLOCKIGHT_BITMASK = ReflectionHelper.getFields(PacketPlayOutLightUpdate.class).get("d");
+    public static final Field PACKETPLAYOUTLIGHTUPDATE_BLOCKIGHT_DATA = ReflectionHelper.getFields(PacketPlayOutLightUpdate.class).get("h");
     public static final Field PACKETPLAYOUTBLOCKCHANGE_POSITION = ReflectionHelper.getFields(PacketPlayOutBlockChange.class).get("a");
+
+    public static final Class LIGHTENGINETHREADED_UPDATE = LightEngineThreaded.class.getDeclaredClasses()[0];
+    public static final Object LIGHTENGINETHREADED_UPDATE_PRE;
+
+    static {
+        Object preObj = null;
+        try {
+            preObj = ReflectionHelper.getFields(LIGHTENGINETHREADED_UPDATE).get("PRE_UPDATE").get(null);
+        }
+        catch (Throwable ex) {
+            ex.printStackTrace();
+        }
+        LIGHTENGINETHREADED_UPDATE_PRE = preObj;
+    }
+
+    public static final MethodHandle LIGHTENGINETHREADED_QUEUERUNNABLE = ReflectionHelper.getMethodHandle(LightEngineThreaded.class, "a",
+            int.class, int.class,  LIGHTENGINETHREADED_UPDATE, Runnable.class);
+
+    public static void enqueueRunnable(Chunk chunk, Runnable runnable) {
+        LightEngine lightEngine = chunk.e();
+        if (lightEngine instanceof LightEngineThreaded) {
+            ChunkCoordIntPair coord = chunk.getPos();
+            try {
+                LIGHTENGINETHREADED_QUEUERUNNABLE.invoke(lightEngine, coord.x, coord.z, LIGHTENGINETHREADED_UPDATE_PRE, runnable);
+            }
+            catch (Throwable ex) {
+                Debug.echoError(ex);
+            }
+        }
+        else {
+            runnable.run();
+        }
+    }
 
     private BlockLightImpl(Location location, long ticks) {
         super(location, ticks);
@@ -146,11 +180,33 @@ public class BlockLightImpl extends BlockLight {
         return false;
     }
 
+    public static void runResetFor(final Chunk chunk, final BlockPosition pos) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                LightEngine lightEngine = chunk.e();
+                LightEngineBlock engineBlock = (LightEngineBlock) lightEngine.a(EnumSkyBlock.BLOCK);
+                engineBlock.a(pos);
+            }
+        };
+        enqueueRunnable(chunk, runnable);
+    }
+
+    public static void runSetFor(final Chunk chunk, final BlockPosition pos, final int level) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                LightEngine lightEngine = chunk.e();
+                LightEngineBlock engineBlock = (LightEngineBlock) lightEngine.a(EnumSkyBlock.BLOCK);
+                engineBlock.a(pos, level);
+            }
+        };
+        enqueueRunnable(chunk, runnable);
+    }
+
     @Override
     public void reset(boolean updateChunk) {
-        LightEngine lightEngine = ((CraftChunk) chunk).getHandle().e();
-        LightEngineBlock engineBlock = (LightEngineBlock) lightEngine.a(EnumSkyBlock.BLOCK);
-        engineBlock.a(((CraftBlock) block).getPosition());
+        runResetFor(((CraftChunk) chunk).getHandle(), ((CraftBlock) block).getPosition());
         if (updateChunk) {
             updateTask = Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), (Runnable) this::sendNearbyChunkUpdates, 1);
         }
@@ -158,12 +214,10 @@ public class BlockLightImpl extends BlockLight {
 
     @Override
     public void update(int lightLevel, boolean updateChunk) {
-        LightEngine lightEngine = ((CraftChunk) chunk).getHandle().e();
-        LightEngineBlock engineBlock = (LightEngineBlock) lightEngine.a(EnumSkyBlock.BLOCK);
-        engineBlock.a(((CraftBlock) block).getPosition());
+        runResetFor(((CraftChunk) chunk).getHandle(), ((CraftBlock) block).getPosition());
         updateTask = Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), () -> {
             updateTask = null;
-            engineBlock.a(((CraftBlock) block).getPosition(), lightLevel);
+            runSetFor(((CraftChunk) chunk).getHandle(), ((CraftBlock) block).getPosition(), lightLevel);
             if (updateChunk) {
                 updateTask = Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), (Runnable) this::sendNearbyChunkUpdates, 1);
             }
