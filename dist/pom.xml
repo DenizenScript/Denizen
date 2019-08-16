@@ -28,19 +28,19 @@
         </dependency>
         <dependency>
             <groupId>com.denizenscript</groupId>
-            <artifactId>denizen-v1_12_R1</artifactId>
+            <artifactId>denizen-v1_12</artifactId>
             <version>${project.parent.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.denizenscript</groupId>
-            <artifactId>denizen-v1_13_R2</artifactId>
+            <artifactId>denizen-v1_13</artifactId>
             <version>${project.parent.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.denizenscript</groupId>
-            <artifactId>denizen-v1_14_R1</artifactId>
+            <artifactId>denizen-v1_14</artifactId>
             <version>${project.parent.version}</version>
             <scope>compile</scope>
         </dependency>

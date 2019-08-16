@@ -35,6 +35,11 @@ public abstract class NMSHandler {
     public static boolean initialize(JavaPlugin plugin) {
         javaPlugin = plugin;
         String packageName = javaPlugin.getServer().getClass().getPackage().getName();
+        int indexOfSubRevision = packageName.indexOf('R');
+        if (indexOfSubRevision > 0) {
+            // "v1_14_R1" should become "v1_14"
+            packageName = packageName.substring(0, indexOfSubRevision - 1);
+        }
         try {
             // Check if we support this MC version
             version = NMSVersion.valueOf(packageName.substring(packageName.lastIndexOf('.') + 1));
