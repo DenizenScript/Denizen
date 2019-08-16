@@ -2027,6 +2027,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @returns ElementTag(Number)
         // @description
         // Returns the player's current value for the specified statistic.
+        // Valid statistics: <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Statistic.html>
         // -->
         if (attribute.startsWith("statistic")) {
             Statistic statistic = Statistic.valueOf(attribute.getContext(1).toUpperCase());
@@ -2040,6 +2041,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             // @description
             // Returns the player's current value for the specified statistic, with the
             // specified qualifier, which can be either an entity or material.
+            // Valid statistics: <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Statistic.html>
             // -->
             if (attribute.getAttribute(2).startsWith("qualifier")) {
                 ObjectTag obj = ObjectFetcher.pickObjectFor(attribute.getContext(2), attribute.context);

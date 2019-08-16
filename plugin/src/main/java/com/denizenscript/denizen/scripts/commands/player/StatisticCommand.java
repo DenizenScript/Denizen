@@ -27,8 +27,8 @@ public class StatisticCommand extends AbstractCommand {
     //
     // @Description
     // Changes the specified statistic for the player.
-    // For more info on statistics, see https://minecraft.gamepedia.com/Statistics
-    // For statistic names, see https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Statistic.html
+    // For more info on statistics, see <@link url https://minecraft.gamepedia.com/Statistics>
+    // For statistic names, see <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Statistic.html>
     //
     // @Tags
     // <PlayerTag.statistic[<statistic>]>
