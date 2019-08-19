@@ -75,7 +75,6 @@ public class CommonRegistries {
     // | object notation: i@    can reference unique objects: no     can be notable: yes
     // | constructors: ( <>'s represent non-static information and are not literal)
     // |   i@<material_name> - fetches a new item of the specified material
-    // |   i@<material_name>,<data> - fetches a new item with the specified data (deprecated)
     // |   i@<item_script_name> - fetches a new custom item as specified by the referenced item script
     // |   i@<notable_name> - fetches the item that has been noted with the specified ID
     //
@@ -124,8 +123,6 @@ public class CommonRegistries {
     // | object notation: m@    can reference unique objects: no      can be notable: no
     // | constructors: ( <>'s represent non-static information and are not literal)
     // |   m@<material_name> - fetches the material as specified by Bukkit's material enumeration
-    // |   m@<material_name>,<data> - fetches the material as specified by Bukkit's material enumeration with specified data (deprecated)
-    // |   m@<data_variety_material> - fetches the material specified by Denizen's 'data variety' MaterialTags (deprecated)
     // |   m@random - fetches a random material
     //
     // + ----- TradeTag -----+

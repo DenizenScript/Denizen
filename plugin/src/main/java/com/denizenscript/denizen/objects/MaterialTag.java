@@ -17,6 +17,7 @@ import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -118,8 +119,8 @@ public class MaterialTag implements ObjectTag, Adjustable {
         }
         if (m != null) {
             if (index >= 0) {
-                if (context == null || context.debug) {
-                    Debug.log("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use relevant properties instead.");
+                if (context != noDebugContext && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+                    Deprecations.materialIdsSuggestProperties.warn(context);
                 }
             }
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
@@ -130,8 +131,8 @@ public class MaterialTag implements ObjectTag, Adjustable {
         if (OldMaterialsHelper.all_dMaterials != null) {
             MaterialTag mat = OldMaterialsHelper.all_dMaterials.get(string);
             if (mat != null) {
-                if ((context == null || context.debug) && index >= 0) {
-                    Debug.log("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use relevant properties instead.");
+                if (index >= 0 && context != noDebugContext && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+                    Deprecations.materialIdsSuggestProperties.warn(context);
                 }
                 if (data == 0) {
                     if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
@@ -146,7 +147,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         if (matid != 0) {
             // It's always an error (except in the 'matches' call) to use a material ID number instead of a name.
             if (context != noDebugContext) {
-                Debug.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use material names instead.");
+                Deprecations.materialIdsSuggestNames.warn(context);
             }
             m = OldMaterialsHelper.getLegacyMaterial(matid);
             if (m != null) {
@@ -465,7 +466,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         registerTag("id", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                Debug.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use material names instead.");
+                Deprecations.materialIdsSuggestNames.warn(attribute.getScriptEntry());
                 return new ElementTag(((MaterialTag) object).material.getId())
                         .getAttribute(attribute.fulfill(1));
             }
@@ -475,7 +476,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 if (attribute.context == null || attribute.context.debug) {
-                    Debug.log("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use relevant properties instead.");
+                    Deprecations.materialIdsSuggestProperties.warn(attribute.getScriptEntry());
                 }
                 return new ElementTag(((MaterialTag) object).getData())
                         .getAttribute(attribute.fulfill(1));

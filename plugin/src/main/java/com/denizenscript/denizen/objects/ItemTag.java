@@ -23,6 +23,7 @@ import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debuggable;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -201,7 +202,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
 
                 if (ArgumentHelper.matchesInteger(material)) {
                     if (!nope) {
-                        Debug.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release. For item input of '" + string + "'.");
+                        Deprecations.materialIds.warn();
                     }
                     stack = new ItemTag(Integer.valueOf(material));
                 }
@@ -693,7 +694,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         registerTag("id", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                Debug.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
+                Deprecations.materialIds.warn(attribute.getScriptEntry());
                 return new ElementTag(((ItemTag) object).getItemStack().getType().getId())
                         .getAttribute(attribute.fulfill(1));
             }
@@ -702,7 +703,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         registerTag("data", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                Debug.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
+                Deprecations.materialIds.warn(attribute.getScriptEntry());
                 return new ElementTag(((ItemTag) object).getItemStack().getData().getData())
                         .getAttribute(attribute.fulfill(1));
             }

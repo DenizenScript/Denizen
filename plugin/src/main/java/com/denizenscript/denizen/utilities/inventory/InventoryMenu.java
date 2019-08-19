@@ -81,7 +81,7 @@ public class InventoryMenu implements InventoryHolder {
 
     public void updateMenu() {
         for (HumanEntity entity : getInventory().getViewers()) {
-            ((Player) entity).updateInventory(); // Currently deprecated, but there is no alternative :(
+            ((Player) entity).updateInventory();
         }
     }
 

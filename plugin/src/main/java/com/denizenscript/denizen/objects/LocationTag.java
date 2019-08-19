@@ -26,6 +26,7 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.core.EscapeTagBase;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
@@ -2584,7 +2585,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     public void adjust(Mechanism mechanism) {
 
         if (mechanism.matches("data") && mechanism.hasValue()) {
-            Debug.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
+            Deprecations.materialIds.warn(mechanism.context);
             BlockData blockData = NMSHandler.getBlockHelper().getBlockData(getBlock().getType(), (byte) mechanism.getValue().asInt());
             blockData.setBlock(getBlock(), false);
         }
@@ -2710,7 +2711,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             Material material = getBlock().getType();
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)
                     && material != Material.PLAYER_HEAD && material != Material.PLAYER_WALL_HEAD) {
-                Debug.echoError("As of Minecraft version 1.13 you may only set the skin of a PLAYER_HEAD or PLAYER_WALL_HEAD.");
+                Deprecations.skullSkinMaterials.warn(mechanism.context);
             }
             else if (blockState instanceof Skull) {
                 ListTag list = mechanism.valueAsType(ListTag.class);
@@ -2756,7 +2757,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         if (mechanism.matches("flowerpot_contents") && mechanism.requireObject(MaterialTag.class)) {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                Debug.echoError("As of Minecraft version 1.13 potted flowers each have their own material, such as POTTED_CACTUS.");
+                Deprecations.flowerpotMechanism.warn(mechanism.context);
             }
             else if (getBlock().getType() == Material.FLOWER_POT) {
                 MaterialData data = mechanism.valueAsType(MaterialTag.class).getMaterialData();

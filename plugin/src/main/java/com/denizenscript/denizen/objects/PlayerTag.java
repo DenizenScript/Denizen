@@ -160,7 +160,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             OfflinePlayer player = Bukkit.getOfflinePlayer(playerNames.get(CoreUtilities.toLowerCase(string)));
             if (announce) {
                 Deprecations.playerByNameWarning.message = playerByNameMessage + " Player named '" + player.getName() + "' has UUID: " + player.getUniqueId();
-                Deprecations.playerByNameWarning.warn(context == null ? null : context.entry);
+                Deprecations.playerByNameWarning.warn(context);
             }
             return new PlayerTag(player);
         }
@@ -830,13 +830,13 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             }
 
             if (attribute.startsWith("currency_singular")) {
-                Deprecations.oldEconomyTags.warn();
+                Deprecations.oldEconomyTags.warn(attribute.getScriptEntry());
                 return new ElementTag(Depends.economy.currencyNameSingular())
                         .getAttribute(attribute.fulfill(1));
             }
 
             if (attribute.startsWith("currency")) {
-                Deprecations.oldEconomyTags.warn();
+                Deprecations.oldEconomyTags.warn(attribute.getScriptEntry());
                 return new ElementTag(Depends.economy.currencyNamePlural())
                         .getAttribute(attribute.fulfill(1));
             }
