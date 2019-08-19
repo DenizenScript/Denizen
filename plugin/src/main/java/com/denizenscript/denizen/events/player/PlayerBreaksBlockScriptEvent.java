@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.events.player;
 
 import com.denizenscript.denizen.objects.*;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.*;
@@ -124,14 +123,6 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         }
         else if (name.equals("material")) {
             return material;
-        }
-        else if (name.equals("cuboids")) {
-            Debug.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
-            ListTag cuboids = new ListTag();
-            for (CuboidTag cuboid : CuboidTag.getNotableCuboidsContaining(location)) {
-                cuboids.add(cuboid.identifySimple());
-            }
-            return cuboids;
         }
         else if (name.equals("xp")) {
             return new ElementTag(event.getExpToDrop());

@@ -1,13 +1,10 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.CuboidTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -109,14 +106,6 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
         }
         else if (name.equals("reason")) {
             return reason;
-        }
-        else if (name.equals("cuboids")) {
-            Debug.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
-            ListTag cuboids = new ListTag();
-            for (CuboidTag cuboid : CuboidTag.getNotableCuboidsContaining(location)) {
-                cuboids.add(cuboid.identifySimple());
-            }
-            return cuboids;
         }
         else if (name.equals("target") && target != null) {
             return target.getDenizenObject();

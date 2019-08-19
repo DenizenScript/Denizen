@@ -12,7 +12,6 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizencore.objects.ArgumentHelper.PrimitiveType;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
@@ -35,7 +34,6 @@ import org.bukkit.inventory.meta.BookMeta;
 
 import java.util.*;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class InventoryTag implements ObjectTag, Notable, Adjustable {
 

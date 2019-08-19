@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.events.player;
 
 import com.denizenscript.denizen.objects.*;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -113,14 +112,6 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
         }
         else if (name.equals("old")) {
             return old_sign;
-        }
-        else if (name.equals("cuboids")) {
-            Debug.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
-            ListTag cuboids = new ListTag();
-            for (CuboidTag cuboid : CuboidTag.getNotableCuboidsContaining(location)) {
-                cuboids.add(cuboid.identifySimple());
-            }
-            return cuboids;
         }
         return super.getContext(name);
     }
