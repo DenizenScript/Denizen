@@ -6,6 +6,7 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.ChatColor;
 
 public class TextTagBase {
@@ -349,25 +350,65 @@ public class TextTagBase {
         String lower = CoreUtilities.toLowerCase(event.getName());
         Attribute attribute = event.getAttributes();
 
-        // TODO: Handle case-sensitivity stuff better here!
-
         if (event.getName().equals("&auml")) {
+            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
             event.setReplaced(new ElementTag("ä").getAttribute(attribute.fulfill(1)));
         }
         else if (event.getName().equals("&Auml")) {
+            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
             event.setReplaced(new ElementTag("Ä").getAttribute(attribute.fulfill(1)));
         }
         else if (event.getName().equals("&ouml")) {
+            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
             event.setReplaced(new ElementTag("ö").getAttribute(attribute.fulfill(1)));
         }
         else if (event.getName().equals("&Ouml")) {
+            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
             event.setReplaced(new ElementTag("Ö").getAttribute(attribute.fulfill(1)));
         }
         else if (event.getName().equals("&uuml")) {
+            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
             event.setReplaced(new ElementTag("ü").getAttribute(attribute.fulfill(1)));
         }
         else if (event.getName().equals("&Uuml")) {
+            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
             event.setReplaced(new ElementTag("Ü").getAttribute(attribute.fulfill(1)));
+        }
+        else if (lower.equals("&amp")) {
+            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+            event.setReplaced(new ElementTag("&").getAttribute(attribute.fulfill(1)));
+        }
+        else if (lower.equals("&cm")) {
+            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+            event.setReplaced(new ElementTag(",").getAttribute(attribute.fulfill(1)));
+        }
+        else if (lower.equals("&sc")) {
+            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+            event.setReplaced(new ElementTag(String.valueOf((char) 0x2011)).getAttribute(attribute.fulfill(1)));
+        }
+        else if (lower.equals("&pc")) {
+            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+            event.setReplaced(new ElementTag("%").getAttribute(attribute.fulfill(1)));
+        }
+        else if (lower.equals("&pipe")) {
+            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+            event.setReplaced(new ElementTag("|").getAttribute(attribute.fulfill(1)));
+        }
+        else if (lower.equals("&ds")) {
+            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+            event.setReplaced(new ElementTag("$").getAttribute(attribute.fulfill(1)));
+        }
+        else if (lower.equals("&at")) {
+            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+            event.setReplaced(new ElementTag("@").getAttribute(attribute.fulfill(1)));
+        }
+        else if (lower.equals("&dot")) {
+            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+            event.setReplaced(new ElementTag(".").getAttribute(attribute.fulfill(1)));
+        }
+        else if (lower.equals("&hrt")) {
+            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+            event.setReplaced(new ElementTag("\u2665").getAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]
@@ -378,26 +419,6 @@ public class TextTagBase {
         // -->
         if (lower.equals("&nl")) {
             event.setReplaced(new ElementTag("\n").getAttribute(attribute.fulfill(1)));
-        }
-
-        // <--[tag]
-        // @attribute <&amp>
-        // @returns ElementTag
-        // @description
-        // Returns an ampersand symbol: &
-        // -->
-        else if (lower.equals("&amp")) {
-            event.setReplaced(new ElementTag("&").getAttribute(attribute.fulfill(1)));
-        }
-
-        // <--[tag]
-        // @attribute <&cm>
-        // @returns ElementTag
-        // @description
-        // Returns a comma symbol: ,
-        // -->
-        else if (lower.equals("&cm")) {
-            event.setReplaced(new ElementTag(",").getAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]
@@ -461,16 +482,6 @@ public class TextTagBase {
         }
 
         // <--[tag]
-        // @attribute <&sc>
-        // @returns ElementTag
-        // @description
-        // Returns a semicolon symbol: ;
-        // -->
-        else if (lower.equals("&sc")) {
-            event.setReplaced(new ElementTag(String.valueOf((char) 0x2011)).getAttribute(attribute.fulfill(1)));
-        }
-
-        // <--[tag]
         // @attribute <&rb>
         // @returns ElementTag
         // @description
@@ -521,36 +532,6 @@ public class TextTagBase {
         }
 
         // <--[tag]
-        // @attribute <&pc>
-        // @returns ElementTag
-        // @description
-        // Returns a percent symbol: %
-        // -->
-        else if (lower.equals("&pc")) {
-            event.setReplaced(new ElementTag("%").getAttribute(attribute.fulfill(1)));
-        }
-
-        // <--[tag]
-        // @attribute <&pipe>
-        // @returns ElementTag
-        // @description
-        // Returns a pipe symbol: |
-        // -->
-        else if (lower.equals("&pipe")) {
-            event.setReplaced(new ElementTag("|").getAttribute(attribute.fulfill(1)));
-        }
-
-        // <--[tag]
-        // @attribute <&ds>
-        // @returns ElementTag
-        // @description
-        // Returns a dollar sign: $
-        // -->
-        else if (lower.equals("&ds")) {
-            event.setReplaced(new ElementTag("$").getAttribute(attribute.fulfill(1)));
-        }
-
-        // <--[tag]
         // @attribute <&lt>
         // @returns ElementTag
         // @description
@@ -578,36 +559,6 @@ public class TextTagBase {
         // -->
         else if (lower.equals("&bs")) {
             event.setReplaced(new ElementTag("\\").getAttribute(attribute.fulfill(1)));
-        }
-
-        // <--[tag]
-        // @attribute <&at>
-        // @returns ElementTag
-        // @description
-        // Returns an at symbol: @
-        // -->
-        else if (lower.equals("&at")) {
-            event.setReplaced(new ElementTag("@").getAttribute(attribute.fulfill(1)));
-        }
-
-        // <--[tag]
-        // @attribute <&dot>
-        // @returns ElementTag
-        // @description
-        // Returns a dot symbol: .
-        // -->
-        else if (lower.equals("&dot")) {
-            event.setReplaced(new ElementTag(".").getAttribute(attribute.fulfill(1)));
-        }
-
-        // <--[tag]
-        // @attribute <&hrt>
-        // @returns ElementTag
-        // @description
-        // Returns a heart symbol: ♥
-        // -->
-        else if (lower.equals("&hrt")) {
-            event.setReplaced(new ElementTag("\u2665").getAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]
