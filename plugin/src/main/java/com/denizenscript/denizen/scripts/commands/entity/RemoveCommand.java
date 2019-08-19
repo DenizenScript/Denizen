@@ -7,7 +7,6 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
@@ -58,10 +57,6 @@ public class RemoveCommand extends AbstractCommand {
                     && arg.matchesArgumentList(EntityTag.class)) {
                 scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
-            else if (!scriptEntry.hasObject("region")
-                    && arg.matchesPrefix("region", "r")) {
-                scriptEntry.addObject("region", arg.asElement());
-            }
             else if (!scriptEntry.hasObject("world")
                     && arg.matchesArgumentType(WorldTag.class)) {
                 scriptEntry.addObject("world", arg.asType(WorldTag.class));
@@ -93,42 +88,26 @@ public class RemoveCommand extends AbstractCommand {
         // Get objects
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         WorldTag world = (WorldTag) scriptEntry.getObject("world");
-        ElementTag region = (ElementTag) scriptEntry.getObject("region");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), ArgumentHelper.debugList("entities", entities) +
-                    (region != null ? ArgumentHelper.debugObj("region", region) : ""));
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugList("entities", entities));
         }
-
-        boolean conditionsMet;
 
         // Go through all of our entities and remove them
 
         for (EntityTag entity : entities) {
-
-            conditionsMet = true;
 
             // If this is a specific spawned entity, and all
             // other applicable conditions are met, remove it
 
             if (!entity.isGeneric()) {
 
-                if (region != null) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Region support is deprecated!");
-                    /*conditionsMet = WorldGuardUtilities.inRegion
-                                    (entity.getBukkitEntity().getLocation(),
-                                    region.asString());*/
+                if (entity.isCitizensNPC()) {
+                    entity.getDenizenNPC().getCitizen().destroy();
                 }
-
-                if (conditionsMet) {
-
-                    if (entity.isCitizensNPC()) {
-                        entity.getDenizenNPC().getCitizen().destroy();
-                    }
-                    else {
-                        entity.remove();
-                    }
+                else {
+                    entity.remove();
                 }
             }
 
@@ -150,16 +129,7 @@ public class RemoveCommand extends AbstractCommand {
 
                     if (entity.getEntityType().equals(DenizenEntityType.getByEntity(worldEntity))) {
 
-                        if (region != null) {
-                            Debug.echoError(scriptEntry.getResidingQueue(), "Region support is deprecated!");
-                            /*conditionsMet = WorldGuardUtilities.inRegion
-                                            (worldEntity.getLocation(),
-                                            region.asString());*/
-                        }
-
-                        if (conditionsMet) {
-                            worldEntity.remove();
-                        }
+                        worldEntity.remove();
                     }
                 }
             }
