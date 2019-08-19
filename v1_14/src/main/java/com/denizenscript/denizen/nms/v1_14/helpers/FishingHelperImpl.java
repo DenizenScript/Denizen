@@ -57,6 +57,16 @@ public class FishingHelperImpl implements FishingHelper {
         }
     }
 
+    public ItemStack getRandomReward(EntityFishingHook hook, MinecraftKey key) {
+        WorldServer worldServer = (WorldServer) hook.getWorld();
+        LootTableInfo.Builder playerFishEvent2 = new LootTableInfo.Builder(worldServer);
+        LootTableRegistry registry = hook.getWorld().getMinecraftServer().getLootTableRegistry();
+        // registry.getLootTable(key).getLootContextParameterSet()
+        LootTableInfo info = playerFishEvent2.build(LootContextParameterSets.FISHING);
+        List<ItemStack> itemStacks = registry.getLootTable(key).populateLoot(info);
+        return itemStacks.get(worldServer.random.nextInt(itemStacks.size()));
+    }
+
     @Override
     public FishHook spawnHook(Location location, Player player) {
         WorldServer nmsWorld = ((CraftWorld) location.getWorld()).getHandle();
@@ -66,39 +76,14 @@ public class FishingHelperImpl implements FishingHelper {
     }
 
     private ItemStack catchRandomJunk(EntityFishingHook fishHook) {
-        //fishHook.owner.a(StatisticList.F, 1); -- removed stat as of 1.12
-        WorldServer worldServer = (WorldServer) fishHook.getWorld();
-        LootTableInfo.Builder playerFishEvent2 = new LootTableInfo.Builder(worldServer);
-        // TODO: 1.14 - set luck?
-        //playerFishEvent2.luck((float) EnchantmentManager.a(Enchantments.LUCK, fishHook.owner) + fishHook.owner.dJ());
-        LootTableRegistry registry = fishHook.getWorld().getMinecraftServer().getLootTableRegistry();
-        List<ItemStack> itemStacks = registry.getLootTable(LootTables.ac)
-                .populateLoot(playerFishEvent2.build(registry.getLootTable(LootTables.ac).getLootContextParameterSet()));
-        return itemStacks.get(worldServer.random.nextInt(itemStacks.size()));
+        return getRandomReward(fishHook, LootTables.ac);
     }
 
     private ItemStack catchRandomTreasure(EntityFishingHook fishHook) {
-        //fishHook.owner.a(StatisticList.G, 1); -- removed stat as of 1.12
-        WorldServer worldServer = (WorldServer) fishHook.getWorld();
-        LootTableInfo.Builder playerFishEvent2 = new LootTableInfo.Builder((WorldServer) fishHook.getWorld());
-        // TODO: 1.14 - set luck?
-        //playerFishEvent2.luck((float) EnchantmentManager.a(Enchantments.LUCK, fishHook.owner) + fishHook.owner.dJ());
-        LootTableRegistry registry = fishHook.getWorld().getMinecraftServer().getLootTableRegistry();
-        List<ItemStack> itemStacks = registry.getLootTable(LootTables.ad)
-                .populateLoot(playerFishEvent2.build(registry.getLootTable(LootTables.ad).getLootContextParameterSet()));
-        return itemStacks.get(worldServer.random.nextInt(itemStacks.size()));
+        return getRandomReward(fishHook, LootTables.ad);
     }
 
     private ItemStack catchRandomFish(EntityFishingHook fishHook) {
-        //float f3 = f - f2;
-        fishHook.owner.a(StatisticList.FISH_CAUGHT, 1);
-        WorldServer worldServer = (WorldServer) fishHook.getWorld();
-        LootTableInfo.Builder playerFishEvent2 = new LootTableInfo.Builder((WorldServer) fishHook.getWorld());
-        // TODO: 1.14 - set luck?
-        //playerFishEvent2.luck((float) EnchantmentManager.a(Enchantments.LUCK, fishHook.owner) + fishHook.owner.dJ());
-        LootTableRegistry registry = fishHook.getWorld().getMinecraftServer().getLootTableRegistry();
-        List<ItemStack> itemStacks = registry.getLootTable(LootTables.ae)
-                .populateLoot(playerFishEvent2.build(registry.getLootTable(LootTables.ae).getLootContextParameterSet()));
-        return itemStacks.get(worldServer.random.nextInt(itemStacks.size()));
+        return getRandomReward(fishHook, LootTables.ae);
     }
 }
