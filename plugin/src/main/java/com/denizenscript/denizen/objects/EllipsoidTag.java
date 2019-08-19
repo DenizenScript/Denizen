@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
 public class EllipsoidTag implements ObjectTag, Notable {
 
     // <--[language]
@@ -131,16 +130,16 @@ public class EllipsoidTag implements ObjectTag, Notable {
 
     private LocationTag size;
 
-    public ListTag getBlocks() {
-        return getBlocks(null);
+    public ListTag getBlocks(Attribute attribute) {
+        return getBlocks(null, attribute);
     }
 
-    public ListTag getBlocks(List<MaterialTag> materials) {
+    public ListTag getBlocks(List<MaterialTag> materials, Attribute attribute) {
         List<LocationTag> initial = new CuboidTag(new Location(loc.getWorld(),
                 loc.getX() - size.getX(), loc.getY() - size.getY(), loc.getZ() - size.getZ()),
                 new Location(loc.getWorld(),
                         loc.getX() + size.getX(), loc.getY() + size.getY(), loc.getZ() + size.getZ()))
-                .getBlocks_internal(materials);
+                .getBlocks_internal(materials, attribute);
         ListTag list = new ListTag();
         for (LocationTag loc : initial) {
             if (contains(loc)) {
@@ -150,12 +149,27 @@ public class EllipsoidTag implements ObjectTag, Notable {
         return list;
     }
 
-    public List<LocationTag> getBlockLocations() {
+    public List<LocationTag> getBlockLocationsUnfiltered() {
         List<LocationTag> initial = new CuboidTag(new Location(loc.getWorld(),
                 loc.getX() - size.getX(), loc.getY() - size.getY(), loc.getZ() - size.getZ()),
                 new Location(loc.getWorld(),
                         loc.getX() + size.getX(), loc.getY() + size.getY(), loc.getZ() + size.getZ()))
-                .getBlocks_internal(null);
+                .getBlockLocationsUnfiltered();
+        List<LocationTag> locations = new ArrayList<>();
+        for (LocationTag loc : initial) {
+            if (contains(loc)) {
+                locations.add(loc);
+            }
+        }
+        return locations;
+    }
+
+    public List<LocationTag> getBlockLocations(Attribute attribute) {
+        List<LocationTag> initial = new CuboidTag(new Location(loc.getWorld(),
+                loc.getX() - size.getX(), loc.getY() - size.getY(), loc.getZ() - size.getZ()),
+                new Location(loc.getWorld(),
+                        loc.getX() + size.getX(), loc.getY() + size.getY(), loc.getZ() + size.getZ()))
+                .getBlocks_internal(null, attribute);
         List<LocationTag> locations = new ArrayList<>();
         for (LocationTag loc : initial) {
             if (contains(loc)) {
@@ -264,11 +278,11 @@ public class EllipsoidTag implements ObjectTag, Notable {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 if (attribute.hasContext(1)) {
-                    return new ListTag(((EllipsoidTag) object).getBlocks(ListTag.valueOf(attribute.getContext(1)).filter(MaterialTag.class, attribute.context)))
+                    return new ListTag(((EllipsoidTag) object).getBlocks(ListTag.valueOf(attribute.getContext(1)).filter(MaterialTag.class, attribute.context), attribute))
                             .getAttribute(attribute.fulfill(1));
                 }
                 else {
-                    return new ListTag(((EllipsoidTag) object).getBlocks())
+                    return new ListTag(((EllipsoidTag) object).getBlocks(attribute))
                             .getAttribute(attribute.fulfill(1));
                 }
             }

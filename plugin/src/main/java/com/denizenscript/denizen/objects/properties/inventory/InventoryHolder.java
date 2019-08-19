@@ -124,6 +124,9 @@ public class InventoryHolder implements Property {
     }
 
     public void setHolder(LocationTag location) {
+        if (!location.isChunkLoaded()) {
+            return;
+        }
         inventory.setInventory(location.getBukkitInventory());
     }
 

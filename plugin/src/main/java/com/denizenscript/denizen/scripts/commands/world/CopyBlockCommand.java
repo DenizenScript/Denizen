@@ -3,7 +3,6 @@ package com.denizenscript.denizen.scripts.commands.world;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.BlockData;
-import com.denizenscript.denizen.objects.CuboidTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
@@ -49,20 +48,11 @@ public class CopyBlockCommand extends AbstractCommand {
 
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
-            // CopyBlock can move a single 'location' ...
             if (arg.matchesArgumentType(LocationTag.class)
                     && !scriptEntry.hasObject("location")
                     && !arg.matchesPrefix("t", "to")) {
                 scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
-
-            // ... or and entire cuboid ...
-            else if (arg.matchesArgumentType(CuboidTag.class)
-                    && !scriptEntry.hasObject("cuboid")) {
-                scriptEntry.addObject("cuboid", arg.asType(CuboidTag.class));
-            }
-
-            // ... to a location.
             else if (arg.matchesArgumentType(LocationTag.class)
                     && arg.matchesPrefix("t", "to")) {
                 scriptEntry.addObject("destination", arg.asType(LocationTag.class));
@@ -93,13 +83,12 @@ public class CopyBlockCommand extends AbstractCommand {
 
         LocationTag copy_location = (LocationTag) scriptEntry.getObject("location");
         LocationTag destination = (LocationTag) scriptEntry.getObject("destination");
-        CuboidTag copy_cuboid = (CuboidTag) scriptEntry.getObject("cuboid");
         ElementTag remove_original = (ElementTag) scriptEntry.getObject("remove");
 
         if (scriptEntry.dbCallShouldDebug()) {
 
             Debug.report(scriptEntry, getName(), (copy_location != null ? copy_location.debug() : "")
-                    + (copy_cuboid != null ? copy_cuboid.debug() : "") + destination.debug() + remove_original.debug());
+                    + destination.debug() + remove_original.debug());
 
         }
 
@@ -107,9 +96,6 @@ public class CopyBlockCommand extends AbstractCommand {
 
         if (copy_location != null) {
             locations.add(copy_location);
-        }
-        else if (copy_cuboid != null) {
-            locations.addAll(copy_cuboid.getBlockLocations()); // TODO: make this work?...
         }
 
         for (Location loc : locations) {

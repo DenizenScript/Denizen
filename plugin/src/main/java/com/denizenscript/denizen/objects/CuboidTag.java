@@ -492,15 +492,15 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
     }
 
 
-    public ListTag getBlocks() {
-        return getBlocks(null);
+    public ListTag getBlocks(Attribute attribute) {
+        return getBlocks(null, attribute);
     }
 
-    private boolean matchesMaterialList(Location loc, List<MaterialTag> materials) {
+    private boolean matchesMaterialList(Location loc, List<MaterialTag> materials, Attribute attribute) {
         if (materials == null) {
             return true;
         }
-        MaterialTag mat = new MaterialTag(loc.getBlock());
+        MaterialTag mat = new MaterialTag(new LocationTag(loc).getBlockForTag(attribute));
         for (MaterialTag material : materials) {
             if (mat.equals(material) || mat.getMaterial() == material.getMaterial()) {
                 return true;
@@ -509,8 +509,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         return false;
     }
 
-    public ListTag getBlocks(List<MaterialTag> materials) {
-        List<LocationTag> locs = getBlocks_internal(materials);
+    public ListTag getBlocks(List<MaterialTag> materials, Attribute attribute) {
+        List<LocationTag> locs = getBlocks_internal(materials, attribute);
         ListTag list = new ListTag();
         for (LocationTag loc : locs) {
             list.add(loc.identify());
@@ -518,7 +518,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         return list;
     }
 
-    public List<LocationTag> getBlocks_internal(List<MaterialTag> materials) {
+    public List<LocationTag> getBlocks_internal(List<MaterialTag> materials, Attribute attribute) {
         int max = Settings.blockTagsMaxBlocks();
         LocationTag loc;
         List<LocationTag> list = new ArrayList<>();
@@ -541,15 +541,15 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                         if (!filter.isEmpty()) { // TODO: Should 'filter' exist?
                             // Check filter
                             for (ObjectTag material : filter) {
-                                if (((MaterialTag) material).matchesBlock(loc.getBlock())) {
-                                    if (matchesMaterialList(loc, materials)) {
+                                if (((MaterialTag) material).matchesBlock(loc.getBlockForTag(attribute))) {
+                                    if (matchesMaterialList(loc, materials, attribute)) {
                                         list.add(loc);
                                     }
                                 }
                             }
                         }
                         else {
-                            if (matchesMaterialList(loc, materials)) {
+                            if (matchesMaterialList(loc, materials, attribute)) {
                                 list.add(loc);
                             }
                         }
@@ -612,29 +612,52 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         return null;
     }
 
-    public List<LocationTag> getBlockLocations() {
+    public List<LocationTag> getBlockLocationsUnfiltered() {
         int max = Settings.blockTagsMaxBlocks();
         LocationTag loc;
         List<LocationTag> list = new ArrayList<>();
         int index = 0;
 
         for (LocationPair pair : pairs) {
-
             LocationTag loc_1 = pair.low;
             int y_distance = pair.y_distance;
             int z_distance = pair.z_distance;
             int x_distance = pair.x_distance;
-
             for (int x = 0; x != x_distance + 1; x++) {
                 for (int z = 0; z != z_distance + 1; z++) {
                     for (int y = 0; y != y_distance + 1; y++) {
-                        loc = new LocationTag(loc_1.clone()
-                                .add(x, y, z));
+                        loc = new LocationTag(loc_1.clone().add(x, y, z));
+                        list.add(loc);
+                        index++;
+                        if (index > max) {
+                            return list;
+                        }
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
+    public List<LocationTag> getBlockLocations(Attribute attribute) {
+        int max = Settings.blockTagsMaxBlocks();
+        LocationTag loc;
+        List<LocationTag> list = new ArrayList<>();
+        int index = 0;
+
+        for (LocationPair pair : pairs) {
+            LocationTag loc_1 = pair.low;
+            int y_distance = pair.y_distance;
+            int z_distance = pair.z_distance;
+            int x_distance = pair.x_distance;
+            for (int x = 0; x != x_distance + 1; x++) {
+                for (int z = 0; z != z_distance + 1; z++) {
+                    for (int y = 0; y != y_distance + 1; y++) {
+                        loc = new LocationTag(loc_1.clone().add(x, y, z));
                         if (!filter.isEmpty()) {
                             // Check filter
                             for (ObjectTag material : filter) {
-                                if (loc.getBlock().getType().name().equalsIgnoreCase(((MaterialTag) material)
-                                        .getMaterial().name())) {
+                                if (loc.getBlockForTag(attribute).getType().name().equalsIgnoreCase(((MaterialTag) material).getMaterial().name())) {
                                     list.add(loc);
                                 }
                             }
@@ -649,15 +672,13 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                     }
                 }
             }
-
         }
-
         return list;
     }
 
 
-    public ListTag getSpawnableBlocks() {
-        return getSpawnableBlocks(null);
+    public ListTag getSpawnableBlocks(Attribute attribute) {
+        return getSpawnableBlocks(null, attribute);
     }
 
     /**
@@ -668,7 +689,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
      * @return The ListTag
      */
 
-    public ListTag getSpawnableBlocks(List<MaterialTag> mats) {
+    public ListTag getSpawnableBlocks(List<MaterialTag> mats, Attribute attribute) {
         int max = Settings.blockTagsMaxBlocks();
         LocationTag loc;
         ListTag list = new ListTag();
@@ -688,10 +709,10 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                         loc = new LocationTag(loc_1.clone()
                                 .add(x, y, z));
 
-                        if (blockHelper.isSafeBlock(loc.getBlock().getType())
-                                && blockHelper.isSafeBlock(loc.clone().add(0, 1, 0).getBlock().getType())
-                                && loc.clone().add(0, -1, 0).getBlock().getType().isSolid()
-                                && matchesMaterialList(loc.clone().add(0, -1, 0), mats)) {
+                        if (blockHelper.isSafeBlock(loc.getBlockForTag(attribute).getType())
+                                && blockHelper.isSafeBlock(new LocationTag(loc.clone().add(0, 1, 0)).getBlockForTag(attribute).getType())
+                                && new LocationTag(loc.clone().add(0, -1, 0)).getBlockForTag(attribute).getType().isSolid()
+                                && matchesMaterialList(loc.clone().add(0, -1, 0), mats, attribute)) {
                             // Get the center of the block, so the entity won't suffocate
                             // inside the edges for a couple of seconds
                             loc.add(0.5, 0, 0.5);
@@ -859,11 +880,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 if (attribute.hasContext(1)) {
-                    return new ListTag(((CuboidTag) object).getBlocks(ListTag.valueOf(attribute.getContext(1)).filter(MaterialTag.class, attribute.context)))
+                    return new ListTag(((CuboidTag) object).getBlocks(ListTag.valueOf(attribute.getContext(1)).filter(MaterialTag.class, attribute.context), attribute))
                             .getAttribute(attribute.fulfill(1));
                 }
                 else {
-                    return new ListTag(((CuboidTag) object).getBlocks())
+                    return new ListTag(((CuboidTag) object).getBlocks(attribute))
                             .getAttribute(attribute.fulfill(1));
                 }
             }
@@ -897,11 +918,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 if (attribute.hasContext(1)) {
-                    return new ListTag(((CuboidTag) object).getSpawnableBlocks(ListTag.valueOf(attribute.getContext(1)).filter(MaterialTag.class, attribute.context)))
+                    return new ListTag(((CuboidTag) object).getSpawnableBlocks(ListTag.valueOf(attribute.getContext(1)).filter(MaterialTag.class, attribute.context), attribute))
                             .getAttribute(attribute.fulfill(1));
                 }
                 else {
-                    return new ListTag(((CuboidTag) object).getSpawnableBlocks())
+                    return new ListTag(((CuboidTag) object).getSpawnableBlocks(attribute))
                             .getAttribute(attribute.fulfill(1));
                 }
             }

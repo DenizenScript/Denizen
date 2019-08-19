@@ -126,7 +126,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
     public Chunk getChunkForTag(Attribute attribute) {
         if (!isLoaded()) {
             if (!attribute.hasAlternative()) {
-                Debug.echoError("Cannot get chunk at " + chunkX + ", " + chunkZ + ": Chunk is not loaded. Use 'chunkload' command to ensure the chunk is loaded.");
+                Debug.echoError("Cannot get chunk at " + chunkX + ", " + chunkZ + ": Chunk is not loaded. Use the 'chunkload' command to ensure the chunk is loaded.");
             }
             return null;
         }
