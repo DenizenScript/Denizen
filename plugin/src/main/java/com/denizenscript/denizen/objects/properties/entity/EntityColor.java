@@ -139,35 +139,32 @@ public class EntityColor implements Property {
     ////////
 
     // <--[language]
-    // @name Horse Types
+    // @name Entity Color Types
     // @group Properties
     // @description
-    // This is a quick rundown of the styling information used to create a horse,
-    // used for both <@link tag EntityTag.color> and <@link mechanism EntityTag.color>.
+    // This is a quick rundown of the styling information used to handle the coloration of a mob,
+    // in both <@link tag EntityTag.color> and <@link mechanism EntityTag.color>.
     //
-    // The output/input is formatted as COLOR|STYLE
-    // Where color is:
-    // BLACK, BROWN, CHESTNUT, CREAMY, DARK_BROWN, GRAY, or WHITE.
-    // and where style is:
-    // WHITE, WHITE_DOTS, WHITEFIELD, BLACK_DOTS, or NONE.
+    // For horses, the format is COLOR|STYLE,
+    //          where COLOR is BLACK, BROWN, CHESTNUT, CREAMY, DARK_BROWN, GRAY, or WHITE.
+    //          and where STYLE is WHITE, WHITE_DOTS, WHITEFIELD, BLACK_DOTS, or NONE.
+    // For rabbits, the types are BROWN, WHITE, BLACK, BLACK_AND_WHITE, GOLD, SALT_AND_PEPPER, or THE_KILLER_BUNNY.
+    // For ocelots, the types are BLACK_CAT, RED_CAT, SIAMESE_CAT, or WILD_OCELOT. (NOTE: Deprecated since 1.14 - now 'cat' entity type is separate)
+    // For cats, the format is TYPE|COLOR (see below).
+    //          The types are TABBY, BLACK, RED, SIAMESE, BRITISH_SHORTHAIR, CALICO, PERSIAN, RAGDOLL, WHITE, JELLIE, and ALL_BLACK.
+    // For parrots, the types are BLUE, CYAN, GRAY, GREEN, or RED.
+    // For llamas, the types are CREAMY, WHITE, BROWN, and GRAY.
+    // For mushroom_cows, the types are RED and BROWN.
+    // For foxes, the types are RED and SNOW.
+    // For pandas, the format is MAIN_GENE|HIDDEN_GENE.
+    //          The gene types are NORMAL, LAZY, WORRIED, PLAYFUL, BROWN, WEAK, and AGGRESSIVE.
+    // For tropical_fish, the input is PATTERN|BODYCOLOR|PATTERNCOLOR, where BodyColor and PatterenColor are both DyeColor (see below),
+    //          and PATTERN is KOB, SUNSTREAK, SNOOPER, DASHER, BRINELY, SPOTTY, FLOPPER, STRIPEY, GLITTER, BLOCKFISH, BETTY, is CLAYFISH.
+    // For sheep, wolf, and shulker entities, the input is a Dye Color.
     //
-    // NOTE: Horse variants were part of this mechanism prior to 1.11 - they are now separate entity types.
+    // For all places where a DyeColor is needed, the options are:
+    // BLACK, BLUE, BROWN, CYAN, GRAY, GREEN, LIGHT_BLUE, LIGHT_GRAY, LIME, MAGENTA, ORANGE, PINK, PURPLE, RED, WHITE, or YELLOW.
     // -->
-
-    // <--[language]
-    // @name Rabbit Types
-    // @group Properties
-    // @description
-    // Denizen includes its own user-friendly list of rabbit type names, instead
-    // of relying on Bukkit names which did not exist at the time of writing.
-    //
-    // Types currently available:
-    // BROWN, WHITE, BLACK, WHITE_SPLOTCHED, GOLD, SALT, KILLER.
-    //
-    // Note: The KILLER rabbit type is a hostile rabbit type. It will attempt to kill
-    //       nearby players and wolves. Use at your own risk.
-    // -->
-
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -182,18 +179,8 @@ public class EntityColor implements Property {
         // @mechanism EntityTag.color
         // @group properties
         // @description
-        // If the entity can have a color, returns the entity's color. A few entity types can have colors:
-        // For horses, the output is COLOR|STYLE, see <@link language horse types>.
-        // For ocelots, the types are BLACK_CAT, RED_CAT, SIAMESE_CAT, or WILD_OCELOT. (NOTE: Deprecated since 1.14 - now 'cat' entity type is separate)
-        // For cats, the format is TYPE|COLOR (see dye color link below). The types are TABBY, BLACK, RED, SIAMESE, BRITISH_SHORTHAIR, CALICO, PERSIAN, RAGDOLL, WHITE, JELLIE, and ALL_BLACK.
-        // For rabbit types, see <@link language rabbit types>.
-        // For parrots, the types are BLUE, CYAN, GRAY, GREEN, or RED.
-        // For llamas, the types are CREAMY, WHITE, BROWN, and GRAY.
-        // For mushroom_cows, the types are RED and BROWN.
-        // For foxes, the types are RED and SNOW.
-        // For pandas, the format is MAIN_GENE|HIDDEN_GENE. The gene types are NORMAL, LAZY, WORRIED, PLAYFUL, BROWN, WEAK, and AGGRESSIVE.
-        // For tropical_fish, the input is Pattern|BodyColor|PatternColor, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/TropicalFish.Pattern.html>
-        // For sheep, wolf, and shulker entities, see <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/DyeColor.html>
+        // If the entity can have a color, returns the entity's color.
+        // For the available color options, refer to <@link language Entity Color Types>.
         // -->
         if (attribute.startsWith("color")) {
             return new ElementTag(CoreUtilities.toLowerCase(getColor()))
@@ -211,7 +198,8 @@ public class EntityColor implements Property {
         // @name color
         // @input Element
         // @description
-        // Changes the entity's color. Refer to <@link tag EntityTag.color>.
+        // Changes the entity's color.
+        // For the available color options, refer to <@link language Entity Color Types>.
         // @tags
         // <EntityTag.color>
         // <EntityTag.is_colorable>
