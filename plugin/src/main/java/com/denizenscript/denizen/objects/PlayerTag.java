@@ -21,7 +21,7 @@ import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.debugging.SlowWarning;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
@@ -113,7 +113,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
     //
     // -->
 
-    public static SlowWarning WARNING_OLD_ECO_TAGS = new SlowWarning("player.money.currency* tags are deprecated in favor of server.economy.currency* tags.");
 
 
     public static PlayerTag valueOf(String string) {
@@ -125,11 +124,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         return valueOfInternal(string, context, true);
     }
 
-    public static SlowWarning playerByNameWarning = new SlowWarning("");
-
     public static PlayerTag valueOfInternal(String string, boolean announce) {
         return valueOfInternal(string, null, announce);
     }
+
+    public static String playerByNameMessage = Deprecations.playerByNameWarning.message;
 
     public static PlayerTag valueOfInternal(String string, TagContext context, boolean defaultAnnounce) {
         if (string == null) {
@@ -160,9 +159,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         if (playerNames.containsKey(CoreUtilities.toLowerCase(string))) {
             OfflinePlayer player = Bukkit.getOfflinePlayer(playerNames.get(CoreUtilities.toLowerCase(string)));
             if (announce) {
-                playerByNameWarning.message = "Warning: loading player by name - use the UUID instead" +
-                        " (or use tag server.match_player)! Player named '" + player.getName() + "' has UUID: " + player.getUniqueId();
-                playerByNameWarning.warn(context == null ? null : context.entry);
+                Deprecations.playerByNameWarning.message = playerByNameMessage + " Player named '" + player.getName() + "' has UUID: " + player.getUniqueId();
+                Deprecations.playerByNameWarning.warn(context == null ? null : context.entry);
             }
             return new PlayerTag(player);
         }
@@ -832,13 +830,13 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             }
 
             if (attribute.startsWith("currency_singular")) {
-                WARNING_OLD_ECO_TAGS.warn();
+                Deprecations.oldEconomyTags.warn();
                 return new ElementTag(Depends.economy.currencyNameSingular())
                         .getAttribute(attribute.fulfill(1));
             }
 
             if (attribute.startsWith("currency")) {
-                WARNING_OLD_ECO_TAGS.warn();
+                Deprecations.oldEconomyTags.warn();
                 return new ElementTag(Depends.economy.currencyNamePlural())
                         .getAttribute(attribute.fulfill(1));
             }

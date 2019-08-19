@@ -8,7 +8,7 @@ import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.debugging.SlowWarning;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -67,15 +67,14 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
             return false;
         }
         if (!isModern) {
-            oldStyleEvent.message = oldWarningMessage + " (for event: " + path.toString() + ").";
-            oldStyleEvent.warn();
+            Deprecations.oldStylePlayerBreaksItemEvent.message = oldWarningMessage + " (for event: " + path.toString() + ").";
+            Deprecations.oldStylePlayerBreaksItemEvent.warn();
         }
         return true;
     }
 
-    public static String oldWarningMessage = "Event 'player breaks <item>' is old. Use 'player breaks held <item>' instead (this is to prevent conflict with breaks block)";
+    public static String oldWarningMessage = Deprecations.oldStylePlayerBreaksItemEvent.message;
 
-    public static SlowWarning oldStyleEvent = new SlowWarning("<tofill>");
 
     @Override
     public String getName() {

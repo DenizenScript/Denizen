@@ -19,7 +19,7 @@ public class ParseTagBase {
     }
 
     public void parseTags(ReplaceableTagEvent event) {
-        // TODO: DEPRECATE (in favor of element.parsed)
+        // TODO: Future: Deprecations.oldParseTag.warn(event.getScriptEntry());
         if (event.matches("parse")) {
             if (!event.hasValue()) {
                 Debug.echoError("Escape tag '" + event.raw_tag + "' does not have a value!");

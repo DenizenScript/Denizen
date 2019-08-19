@@ -50,13 +50,11 @@ public class CommonRegistries {
     // | object notation: p@    can reference unique objects: yes    can be notable: no
     // | constructors: ( <>'s represent non-static information and are not literal)
     // |   p@<UUID> - fetches an online or offline player with the specified UUID
-    // |   p@<player_name> - Outdated constructor for back-support, fetches by name instead of UUID
     //
     // + ----- NPCTag ---------+
     // | object notation: n@    can reference unique objects: yes    can be notable: no
     // | constructors: ( <>'s represent non-static information and are not literal)
     // |   n@<npc_id> - fetches the NPC with the specified ID
-    // |   n@<npc_name> - fetches the first NPC found with the specified name
     //
     // + ----- LocationTag ----+
     // | object notation: l@    can reference unique objects: no     can be notable: yes
@@ -71,7 +69,6 @@ public class CommonRegistries {
     // |   e@<entity_type> - fetches a new entity with the specified type as implemented by Bukkit's entity type enumeration
     // |   e@<entity_type>,<setting> - fetches a new entity of the specified type with a custom setting unique to the type
     // |   e@<entity_script_name> - fetches a new custom entity as specified by the referenced entity script (soon)
-    // |   e@<entity_id> - fetches the entity that has the (temporary) entity ID set by Bukkit
     // |   e@random - fetches a new, random entity
     //
     // + ----- ItemTag --------+

@@ -5,7 +5,7 @@ import com.denizenscript.denizencore.objects.TagRunnable;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.debugging.SlowWarning;
+import com.denizenscript.denizencore.utilities.Deprecations;
 
 public class LocationTagBase {
 
@@ -18,8 +18,6 @@ public class LocationTagBase {
         }, "location", "l");
     }
 
-    public SlowWarning locationShorthand = new SlowWarning("Short-named tags are hard to read. Please use 'location' instead of 'l' as a root tag.");
-
     public void locationTags(ReplaceableTagEvent event) {
 
         if (!event.matches("location", "l") || event.replaced()) {
@@ -27,7 +25,7 @@ public class LocationTagBase {
         }
 
         if (event.matches("l")) {
-            locationShorthand.warn(event.getScriptEntry());
+            Deprecations.locationShorthand.warn(event.getScriptEntry());
         }
 
         // Stage the location

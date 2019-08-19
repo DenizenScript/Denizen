@@ -34,7 +34,7 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.debugging.SlowWarning;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.javaluator.DoubleEvaluator;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
@@ -86,7 +86,7 @@ public class ServerTagBase {
         if (!event.matches("math", "m")) {
             return;
         }
-        Debug.echoError("'math:' tags have been non-recommended for years. Please use modern element math tags like 'element.add[...]', etc.");
+        Deprecations.mathTagBase.warn(event.getScriptEntry());
         try {
             Double evaluation = new DoubleEvaluator().evaluate(event.getValue());
             event.setReplaced(new ElementTag(String.valueOf(evaluation)).getAttribute(event.getAttributes().fulfill(1)));
@@ -97,19 +97,16 @@ public class ServerTagBase {
         }
     }
 
-    public SlowWarning serverShorthand = new SlowWarning("Short-named tags are hard to read. Please use 'server' instead of 'svr' as a root tag.");
-
 
     public void serverTag(ReplaceableTagEvent event) {
         if (!event.matches("server", "svr", "global") || event.replaced()) {
             return;
         }
         if (event.matches("srv")) {
-            serverShorthand.warn(event.getScriptEntry());
+            Deprecations.serverShorthand.warn(event.getScriptEntry());
         }
         if (event.matches("global")) {
-            Debug.echoError(event.getScriptEntry() == null ? null : event.getScriptEntry().getResidingQueue(),
-                    "Using 'global' as a base tag is a deprecated alternate name. Please use 'server' instead.");
+            Deprecations.globalTagName.warn(event.getScriptEntry());
         }
         Attribute attribute = event.getAttributes().fulfill(1);
 
