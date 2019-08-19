@@ -123,6 +123,16 @@ public class ChunkTag implements ObjectTag, Adjustable {
 
     Chunk cachedChunk;
 
+    public Chunk getChunkForTag(Attribute attribute) {
+        if (!isLoaded()) {
+            if (!attribute.hasAlternative()) {
+                Debug.echoError("Cannot get chunk at " + chunkX + ", " + chunkZ + ": Chunk is not loaded. Use 'chunkload' command to ensure the chunk is loaded.");
+            }
+            return null;
+        }
+        return getChunk();
+    }
+
     public Chunk getChunk() {
         if (cachedChunk == null) {
             cachedChunk = world.getWorld().getChunkAt(chunkX, chunkZ);
@@ -173,14 +183,6 @@ public class ChunkTag implements ObjectTag, Adjustable {
 
     public World getWorld() {
         return world.getWorld();
-    }
-
-    public ChunkSnapshot getSnapshot() {
-        return getChunk().getChunkSnapshot();
-    }
-
-    public int[] getHeightMap() {
-        return NMSHandler.getChunkHelper().getHeightMap(getChunk());
     }
 
     String prefix = "Chunk";
@@ -362,12 +364,13 @@ public class ChunkTag implements ObjectTag, Adjustable {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 ListTag entities = new ListTag();
-                if (((ChunkTag) object).isLoaded()) {
-                    for (Entity ent : ((ChunkTag) object).getChunk().getEntities()) {
-                        entities.addObject(new EntityTag(ent).getDenizenObject());
-                    }
+                Chunk chunk = ((ChunkTag) object).getChunkForTag(attribute);
+                if (chunk == null) {
+                    return null;
                 }
-
+                for (Entity ent : chunk.getEntities()) {
+                    entities.addObject(new EntityTag(ent).getDenizenObject());
+                }
                 return entities.getAttribute(attribute.fulfill(1));
             }
         });
@@ -383,14 +386,15 @@ public class ChunkTag implements ObjectTag, Adjustable {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 ListTag entities = new ListTag();
-                if (((ChunkTag) object).isLoaded()) {
-                    for (Entity ent : ((ChunkTag) object).getChunk().getEntities()) {
-                        if (ent instanceof LivingEntity) {
-                            entities.addObject(new EntityTag(ent).getDenizenObject());
-                        }
+                Chunk chunk = ((ChunkTag) object).getChunkForTag(attribute);
+                if (chunk == null) {
+                    return null;
+                }
+                for (Entity ent : chunk.getEntities()) {
+                    if (ent instanceof LivingEntity) {
+                        entities.addObject(new EntityTag(ent).getDenizenObject());
                     }
                 }
-
                 return entities.getAttribute(attribute.fulfill(1));
             }
         });
@@ -405,14 +409,15 @@ public class ChunkTag implements ObjectTag, Adjustable {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 ListTag entities = new ListTag();
-                if (((ChunkTag) object).isLoaded()) {
-                    for (Entity ent : ((ChunkTag) object).getChunk().getEntities()) {
-                        if (EntityTag.isPlayer(ent)) {
-                            entities.addObject(new PlayerTag((Player) ent));
-                        }
+                Chunk chunk = ((ChunkTag) object).getChunkForTag(attribute);
+                if (chunk == null) {
+                    return null;
+                }
+                for (Entity ent : chunk.getEntities()) {
+                    if (EntityTag.isPlayer(ent)) {
+                        entities.addObject(new PlayerTag((Player) ent));
                     }
                 }
-
                 return entities.getAttribute(attribute.fulfill(1));
             }
         });
@@ -426,7 +431,11 @@ public class ChunkTag implements ObjectTag, Adjustable {
         registerTag("height_map", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                int[] heightMap = ((ChunkTag) object).getHeightMap();
+                Chunk chunk = ((ChunkTag) object).getChunkForTag(attribute);
+                if (chunk == null) {
+                    return null;
+                }
+                int[] heightMap = NMSHandler.getChunkHelper().getHeightMap(chunk);
                 List<String> height_map = new ArrayList<>(heightMap.length);
                 for (int i : heightMap) {
                     height_map.add(String.valueOf(i));
@@ -444,8 +453,12 @@ public class ChunkTag implements ObjectTag, Adjustable {
         registerTag("average_height", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
+                Chunk chunk = ((ChunkTag) object).getChunkForTag(attribute);
+                if (chunk == null) {
+                    return null;
+                }
+                int[] heightMap = NMSHandler.getChunkHelper().getHeightMap(chunk);
                 int sum = 0;
-                int[] heightMap = ((ChunkTag) object).getHeightMap();
                 for (int i : heightMap) {
                     sum += i;
                 }
@@ -464,9 +477,12 @@ public class ChunkTag implements ObjectTag, Adjustable {
         registerTag("is_flat", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                int tolerance = attribute.hasContext(1) && ArgumentHelper.matchesInteger(attribute.getContext(1)) ?
-                        Integer.valueOf(attribute.getContext(1)) : 2;
-                int[] heightMap = ((ChunkTag) object).getHeightMap();
+                Chunk chunk = ((ChunkTag) object).getChunkForTag(attribute);
+                if (chunk == null) {
+                    return null;
+                }
+                int[] heightMap = NMSHandler.getChunkHelper().getHeightMap(chunk);
+                int tolerance = attribute.hasContext(1) ? ArgumentHelper.getIntegerFrom(attribute.getContext(1)) : 2;
                 int x = heightMap[0];
                 for (int i : heightMap) {
                     if (Math.abs(x - i) > tolerance) {
@@ -488,10 +504,14 @@ public class ChunkTag implements ObjectTag, Adjustable {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 ListTag surface_blocks = new ListTag();
+                Chunk chunk = ((ChunkTag) object).getChunkForTag(attribute);
+                if (chunk == null) {
+                    return null;
+                }
+                ChunkSnapshot snapshot = chunk.getChunkSnapshot();
                 for (int x = 0; x < 16; x++) {
                     for (int z = 0; z < 16; z++) {
-                        surface_blocks.add(new LocationTag(((ChunkTag) object).getChunk().getBlock(x, ((ChunkTag) object)
-                                .getSnapshot().getHighestBlockYAt(x, z) - 1, z).getLocation()).identify());
+                        surface_blocks.add(new LocationTag(chunk.getBlock(x, snapshot.getHighestBlockYAt(x, z) - 1, z).getLocation()).identify());
                     }
                 }
 
@@ -508,13 +528,11 @@ public class ChunkTag implements ObjectTag, Adjustable {
         registerTag("spawn_slimes", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                ChunkTag chunk = (ChunkTag) object;
-                Random random = new Random(chunk.getWorld().getSeed() +
-                        chunk.getX() * chunk.getX() * 4987142 +
-                        chunk.getX() * 5947611 +
-                        chunk.getZ() * chunk.getZ() * 4392871L +
-                        chunk.getZ() * 389711 ^ 0x3AD8025F);
-                return new ElementTag(random.nextInt(10) == 0).getAttribute(attribute.fulfill(1));
+                Chunk chunk = ((ChunkTag) object).getChunkForTag(attribute);
+                if (chunk == null) {
+                    return null;
+                }
+                return new ElementTag(chunk.isSlimeChunk()).getAttribute(attribute.fulfill(1));
             }
         });
 

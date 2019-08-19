@@ -1838,7 +1838,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             if (chunk == null) {
                 return null;
             }
-            return new ElementTag(hasChunkLoaded(chunk.getChunk())).getAttribute(attribute.fulfill(1));
+            return new ElementTag(chunk.isLoaded() && hasChunkLoaded(chunk.getChunkForTag(attribute))).getAttribute(attribute.fulfill(1));
         }
 
 
