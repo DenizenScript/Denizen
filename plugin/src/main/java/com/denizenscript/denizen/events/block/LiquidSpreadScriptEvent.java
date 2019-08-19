@@ -4,6 +4,7 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFromToEvent;
@@ -14,6 +15,7 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
     // @Events
     // liquid spreads
     // <liquid block> spreads
+    // dragon egg moves
     //
     // @Regex ^on [^\s]+ spreads$
     //
@@ -47,16 +49,26 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
         if (path.eventLower.startsWith("block")) {
             return false;
         }
+        if (path.eventLower.startsWith("dragon egg moves")) {
+            return true;
+        }
         return path.eventArgLowerAt(1).equals("spreads");
     }
 
     @Override
     public boolean matches(ScriptPath path) {
-        String mat = path.eventArgLowerAt(0);
-        if (!runInCheck(path, location) && !runInCheck(path, destination)) {
-            return false;
+        if (path.eventLower.startsWith("dragon egg moves")) {
+            if (material.getMaterial() != Material.DRAGON_EGG) {
+                return false;
+            }
         }
-        if (!mat.equals("liquid") && !tryMaterial(material, mat)) {
+        else {
+            String mat = path.eventArgLowerAt(0);
+            if (!mat.equals("liquid") && !tryMaterial(material, mat)) {
+                return false;
+            }
+        }
+        if (!runInCheck(path, location) && !runInCheck(path, destination)) {
             return false;
         }
         return true;
