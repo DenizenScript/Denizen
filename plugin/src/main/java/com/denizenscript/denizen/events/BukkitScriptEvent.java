@@ -339,6 +339,53 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return true;
     }
 
+    // <--[language]
+    // @name Safety In Events
+    // @group Script Events
+    // @description
+    // One of the more common issues in Denizen scripts (particularly ones relating to inventories) is
+    // *event safety*. That is, using commands inside an event that don't get along with the event.
+    //
+    // The most common example of this is editing a player's inventory, within an inventory-related event.
+    // Generally speaking, this problem becomes relevant any time an edit is made to something involved with an event,
+    // within the firing of an example.
+    // Take the following examples:
+    // <code>
+    // on player clicks in inventory:
+    // - take <player.item_in_hand>
+    // on entity damaged:
+    // - remove <context.entity>
+    // </code>
+    //
+    // In both examples above, something related to the event (the player's inventory, and the entity being damaged)
+    // is being modified within the event itself.
+    // These break due a rather important reason: The event is firing before and/or during the change to the object.
+    // Most events operate this way. A series of changes *to the object* are pending, and will run immediately after
+    // your script does... the problems resultant can range from your changes being lost to situational issues
+    // (eg an inventory suddenly being emptied entirely) to even server crashes!
+    // The second example event also is a good example of another way this can go wrong:
+    // Many scripts and plugins will listen to the entity damage event, in ways that are simply unable to handle
+    // the damaged entity just being gone now (when the event fires, it's *guaranteed* the entity is still present
+    // but that remove command breaks the guarantee!).
+    //
+    // The solution to this problem is simple: Just wait a tick. Literally.
+    // <code>
+    // on player clicks in inventory:
+    // - wait 1t
+    // - take <player.item_in_hand>
+    // on entity damaged:
+    // - wait 1t
+    // - if <context.entity.is_spawned||false>:
+    //   - remove <context.entity>
+    // </code>
+    //
+    // By waiting a tick, you cause your script to run *after* the event, and thus outside of the problem area.
+    // And thus should be fine. One limitation you should note is demonstrated in the second example event:
+    // The normal guarantees of the event are no longer present (eg that the entity is still valid) and as such
+    // you should validate these expectations remain true after the event (as seen with the 'if is_spawned' check).
+    //
+    // -->
+
     public boolean tryInventory(InventoryTag inv, String comparedto) {
         comparedto = CoreUtilities.toLowerCase(comparedto);
         if (comparedto.equals("inventory")) {
