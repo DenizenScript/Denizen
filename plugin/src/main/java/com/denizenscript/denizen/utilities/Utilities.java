@@ -93,6 +93,9 @@ public class Utilities {
                     !f.getCanonicalPath().startsWith(new File(".").getCanonicalPath())) {
                 return false;
             }
+            if (!CoreUtilities.toLowerCase(Settings.fileLimitPath()).equals("none")
+                    && !f.getCanonicalPath().startsWith(new File("./" + Settings.fileLimitPath()).getCanonicalPath())) {
+            }
             return isFileCanonicalStringSafeToWrite(lown) && isFileCanonicalStringSafeToWrite(lown + "/");
         }
         catch (Exception ex) {

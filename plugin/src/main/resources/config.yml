@@ -139,6 +139,10 @@ Commands:
         # Whether the YAML command (or any other file-alteration command) is allowed to save outside the minecraft server folder.
         # Set to 'false' if you're worried about security.
         Allow saving outside folder: false
+        # Optionally: set a limited path, where all edits must be contained to.
+        # A good path to use for extra security is: plugins/Denizen/data/
+        # Leave at "none" to disable this optional protection.
+        Limit path: none
   Webget:
         # Whether to allow scripts to read arbitrary data from the web, which can also potentially enable tracking of your private server data.
         # Generally this is safe, but set to 'false' if you want very strict security.
