@@ -101,19 +101,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             }
         }
 
-        ////////
-        // Match NPC name
-        else {
-            for (NPC test : CitizensAPI.getNPCRegistry()) {
-                if (test.getName().equalsIgnoreCase(string)) {
-                    if (context == null || context.debug) {
-                        Debug.echoError("Warning: loading NPC by name - use the ID instead! NPC named '" + test.getName() + "' has ID: " + test.getId());
-                    }
-                    return new NPCTag(test);
-                }
-            }
-        }
-
         return null;
     }
 
