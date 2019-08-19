@@ -59,13 +59,6 @@ public class ItemLore implements Property {
             return null;
         }
 
-        // deprecated in favor of .escape_contents
-        if (attribute.startsWith("lore.escaped")) {
-            if (hasLore()) {
-                return new ElementTag(getPropertyString()).getAttribute(attribute.fulfill(2));
-            }
-        }
-
         // <--[tag]
         // @attribute <ItemTag.lore>
         // @returns ListTag
