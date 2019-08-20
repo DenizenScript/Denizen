@@ -25,9 +25,11 @@ Match the general format/style of existing code within the project. For the most
 
 ## Mini-license pre-warning
 
-By contributing to the project, you give up all rights to your contribution.
+By contributing to the project, you give up all rights to your contribution\*.
 
 If you later decide you don't want us using your code - you may make a polite request and it will be treated as such, but that is the extent of your abilities.
+
+\* This does not include your rights to continue making use of any involved code yourself, which you of course may continue to do. You give up specifically your rights to the contribution *within this project*. Or to put it another way: your rights to the specific copy of the contribution that is now contained within this project, as specifically opposed to ideas and/or expressions thereof within the code or other work contributed, which you remain free to do with as you wish (excluding actions that conflict with our ownership of the copy given to us).
 
 ### You agree by contributing:
 
