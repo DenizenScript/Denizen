@@ -40,6 +40,7 @@ import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.command.CommandContext;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.trait.TraitInfo;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.banner.PatternType;
@@ -357,6 +358,21 @@ public class ServerTagBase {
                         .getAttribute(attribute));
             }
             return;
+        }
+
+        // <--[tag]
+        // @attribute <server.list_traits>
+        // @Plugin Citizens
+        // @returns ListTag
+        // @description
+        // Returns a list of all available NPC traits on the server.
+        // -->
+        if (attribute.startsWith("list_traits") && Depends.citizens != null) {
+            ListTag allTraits = new ListTag();
+            for (TraitInfo trait : CitizensAPI.getTraitFactory().getRegisteredTraits()) {
+                allTraits.add(trait.getTraitName());
+            }
+            event.setReplaced(allTraits.getAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]
