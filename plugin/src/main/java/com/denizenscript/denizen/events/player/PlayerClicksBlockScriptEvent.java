@@ -64,7 +64,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         }
 
         String in = CoreUtilities.getXthArg(index + 1, lower);
-        if (InventoryTag.matches(in) || in.equalsIgnoreCase("inventory")) {
+        if (InventoryTag.matches(in) || in.equalsIgnoreCase("inventory") || isRegexMatchable(in)) {
             return false;
         }
         if (in.equalsIgnoreCase("notable")) {
