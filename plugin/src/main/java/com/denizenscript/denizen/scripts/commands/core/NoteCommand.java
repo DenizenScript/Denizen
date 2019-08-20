@@ -117,7 +117,7 @@ public class NoteCommand extends AbstractCommand {
                 return;
             }
 
-            arg = ObjectFetcher.getObjectFrom(object_class, object);
+            arg = ObjectFetcher.getObjectFrom(object_class, object, scriptEntry.entryData.getTagContext());
 
             if (arg instanceof Notable) {
                 ((Notable) arg).makeUnique(id.asString());
