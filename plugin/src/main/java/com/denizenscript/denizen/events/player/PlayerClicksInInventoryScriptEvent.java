@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -168,6 +169,9 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
         }
         else if (name.equals("item")) {
             return item;
+        }
+        else if (name.equals("cursor_item")) {
+            return new ItemTag(event.getCursor() == null ? new ItemStack(Material.AIR) : event.getCursor());
         }
         else if (name.equals("click")) {
             return new ElementTag(event.getClick().name());
