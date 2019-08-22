@@ -53,7 +53,7 @@ public class MaterialAge implements Property {
         // @returns ElementTag(Number)
         // @group properties
         // @description
-        // Returns the maximum age for an ageable material.
+        // Returns the maximum age for an ageable material. This includes plant growth.
         // -->
         if (attribute.startsWith("maximum_age") || attribute.startsWith("maximum_plant_growth")) {
             return new ElementTag(getMax()).getAttribute(attribute.fulfill(1));
@@ -65,7 +65,7 @@ public class MaterialAge implements Property {
         // @mechanism MaterialTag.age
         // @group properties
         // @description
-        // Returns the current age for an ageable material.
+        // Returns the current age for an ageable material. This includes plant growth.
         // -->
         if (attribute.startsWith("age") || attribute.startsWith("plant_growth")) {
             return new ElementTag(getCurrent()).getAttribute(attribute.fulfill(1));
@@ -104,7 +104,7 @@ public class MaterialAge implements Property {
         // @name age
         // @input Element(Number)
         // @description
-        // Sets an ageable material's current age.
+        // Sets an ageable material's current age. This includes plant growth.
         // @tags
         // <MaterialTag.age>
         // <MaterialTag.maximum_age>

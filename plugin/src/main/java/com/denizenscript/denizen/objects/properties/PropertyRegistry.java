@@ -118,7 +118,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(ItemNBT.class, ItemTag.class);
         PropertyParser.registerProperty(ItemAttributeNBT.class, ItemTag.class);
         PropertyParser.registerProperty(ItemPatterns.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemPlantgrowth.class, ItemTag.class);
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12)) {
+            PropertyParser.registerProperty(ItemPlantgrowth.class, ItemTag.class);
+        }
         PropertyParser.registerProperty(ItemPotion.class, ItemTag.class);
         PropertyParser.registerProperty(ItemQuantity.class, ItemTag.class);
         PropertyParser.registerProperty(ItemRepairCost.class, ItemTag.class);
