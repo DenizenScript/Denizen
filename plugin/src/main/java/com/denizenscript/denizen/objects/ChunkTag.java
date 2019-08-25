@@ -124,13 +124,19 @@ public class ChunkTag implements ObjectTag, Adjustable {
     Chunk cachedChunk;
 
     public Chunk getChunkForTag(Attribute attribute) {
-        if (!isLoaded()) {
-            if (!attribute.hasAlternative()) {
-                Debug.echoError("Cannot get chunk at " + chunkX + ", " + chunkZ + ": Chunk is not loaded. Use the 'chunkload' command to ensure the chunk is loaded.");
+        NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+        try {
+            if (!isLoaded()) {
+                if (!attribute.hasAlternative()) {
+                    Debug.echoError("Cannot get chunk at " + chunkX + ", " + chunkZ + ": Chunk is not loaded. Use the 'chunkload' command to ensure the chunk is loaded.");
+                }
+                return null;
             }
-            return null;
+            return getChunk();
         }
-        return getChunk();
+        finally {
+            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+        }
     }
 
     public Chunk getChunk() {
@@ -227,6 +233,16 @@ public class ChunkTag implements ObjectTag, Adjustable {
         return world.getWorld().isChunkLoaded(chunkX, chunkZ);
     }
 
+    public boolean isLoadedSafe() {
+        try {
+            NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+            return isLoaded();
+        }
+        finally {
+            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+        }
+    }
+
     public static void registerTags() {
 
         // <--[tag]
@@ -294,7 +310,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
         registerTag("is_loaded", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((ChunkTag) object).isLoaded())
+                return new ElementTag(((ChunkTag) object).isLoadedSafe())
                         .getAttribute(attribute.fulfill(1));
             }
         });

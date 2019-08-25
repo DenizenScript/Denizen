@@ -371,6 +371,16 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         return getWorld() != null && getWorld().isChunkLoaded(getBlockX() >> 4, getBlockZ() >> 4);
     }
 
+    public boolean isChunkLoadedSafe() {
+        try {
+            NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+            return isChunkLoaded();
+        }
+        finally {
+            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+        }
+    }
+
     @Override
     public Block getBlock() {
         if (getWorld() == null) {
@@ -381,26 +391,35 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     }
 
     public Block getBlockForTag(Attribute attribute) {
-        if (getWorld() == null) {
-            if (!attribute.hasAlternative()) {
-                Debug.echoError("LocationTag trying to read block, but cannot because no world is specified.");
+        NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+        try {
+            if (getWorld() == null) {
+                if (!attribute.hasAlternative()) {
+                    Debug.echoError("LocationTag trying to read block, but cannot because no world is specified.");
+                }
+                return null;
             }
-            return null;
-        }
-        if (!isChunkLoaded()) {
-            if (!attribute.hasAlternative()) {
-                Debug.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
+            if (!isChunkLoaded()) {
+                if (!attribute.hasAlternative()) {
+                    Debug.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
+                }
+                return null;
             }
-            return null;
+            return super.getBlock();
         }
-        return super.getBlock();
+        finally {
+            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+        }
     }
 
     public static BlockState getBlockStateFor(Block block) {
         NMSHandler.getChunkHelper().changeChunkServerThread(block.getWorld());
-        BlockState state = block.getState();
-        NMSHandler.getChunkHelper().restoreServerThread(block.getWorld());
-        return state;
+        try {
+            return block.getState();
+        }
+        finally {
+            NMSHandler.getChunkHelper().restoreServerThread(block.getWorld());
+        }
     }
 
     public BlockState getBlockState() {
@@ -864,7 +883,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // block is not a container, returns null.
         // -->
         if (attribute.startsWith("inventory")) {
-            if (!isChunkLoaded()) {
+            if (!isChunkLoadedSafe()) {
                 return null;
             }
             ObjectTag obj = ElementTag.handleNull(identify() + ".inventory", getInventory(), "dInventory", attribute.hasAlternative());
@@ -878,7 +897,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the material of the block at the location.
         // -->
         if (attribute.startsWith("material")) {
-            return new MaterialTag(getBlockForTag(attribute)).getAttribute(attribute.fulfill(1));
+            Block block = getBlockForTag(attribute);
+            if (block == null) {
+                return null;
+            }
+            return new MaterialTag(block).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
