@@ -37,6 +37,7 @@ public class Settings {
         cache_allowConsoleRedirection = config.getBoolean("Debug.Allow console redirection", false);
         cache_canRecordStats = config.getBoolean("Debug.Stats", true);
         cache_defaultDebugMode = config.getBoolean("Debug.Container default", true);
+        cache_debugLimitPerTick = config.getInt("Debug.Limit per tick", 5000);
         cache_scriptQueueSpeed = config.getString("Scripts.Queue speed", "instant");
         cache_interactQueueSpeed = config.getString("Scripts.Interact.Queue speed", "0.5s");
         cache_healthTraitEnabledByDefault = config.getBoolean("Traits.Health.Enabled", false);
@@ -95,7 +96,7 @@ public class Settings {
             cache_chatToNpcFormat, cache_chatToNpcOverheardFormat, cache_interactQueueSpeed, cache_limitPath;
 
     private static int cache_consoleWidth = 128, cache_trimLength = 1024, cache_whileMaxLoops, cache_blockTagsMaxBlocks,
-            cache_chatHistoryMaxMessages, cache_tagTimeout;
+            cache_chatHistoryMaxMessages, cache_tagTimeout, cache_debugLimitPerTick;
 
     private static long cache_warningRate;
 
@@ -153,6 +154,10 @@ public class Settings {
 
     public static boolean defaultDebugMode() {
         return cache_defaultDebugMode;
+    }
+
+    public static int debugLimitPerTick() {
+        return cache_debugLimitPerTick;
     }
 
     /**

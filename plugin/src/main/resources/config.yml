@@ -24,6 +24,10 @@ Debug:
   # The default debug mode for script containers.
   # This should almost always be left at 'true'.
   Container default: true
+  # How many debug messages can appear within the span of a single tick before they simply get blocked.
+  # This is available as a backup safety feature to prevent debug output from crashing a server.
+  # Set the value lower to better protect this, set the value higher to willfully debug a very very long script.
+  Limit per tick: 5000
 
 Scripts:
   World:

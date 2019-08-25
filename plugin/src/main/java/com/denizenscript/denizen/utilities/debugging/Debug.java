@@ -554,7 +554,16 @@ public class Debug {
                 .replace("<W>", ChatColor.WHITE.toString()));
     }
 
+    public static int outputThisTick = 0;
+
     static void finalOutputDebugText(String message, Debuggable caller, boolean reformat) {
+        outputThisTick++;
+        if (outputThisTick >= Settings.debugLimitPerTick()) {
+            if (outputThisTick == Settings.debugLimitPerTick()) {
+                ConsoleSender.sendMessage("... Debug rate limit per-tick hit, edit config.yml to adjust this limit...", true);
+            }
+            return;
+        }
         // These colors are used a lot in the debugging of commands/etc, so having a few shortcuts is nicer
         // than having a bunch of ChatColor.XXXX
         message = cleanTextForDebugOutput(message);
