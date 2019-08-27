@@ -6,7 +6,7 @@ import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.abstracts.ModernBlockData;
+import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
 import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;

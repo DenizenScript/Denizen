@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.utilities.blocks;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.nms.abstracts.ModernBlockData;
 import com.denizenscript.denizen.utilities.Utilities;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;

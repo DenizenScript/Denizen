@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.nms.v1_13.helpers;
 
-import com.denizenscript.denizen.nms.abstracts.ModernBlockData;
+import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
 import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;

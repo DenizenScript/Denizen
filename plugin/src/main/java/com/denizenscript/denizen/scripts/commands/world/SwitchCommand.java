@@ -7,7 +7,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
-import com.denizenscript.denizen.nms.abstracts.ModernBlockData;
+import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
 import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;

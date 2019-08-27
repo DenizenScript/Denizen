@@ -9,7 +9,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
-import com.denizenscript.denizen.nms.abstracts.ModernBlockData;
+import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
 import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -26,6 +26,7 @@ import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.material.MaterialData;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class MaterialTag implements ObjectTag, Adjustable {
 
@@ -915,6 +916,34 @@ public class MaterialTag implements ObjectTag, Adjustable {
             }
         });
 
+
+        // <--[tag]
+        // @attribute <MaterialTag.with[<mechanism>=<value>;...]>
+        // @returns MaterialTag
+        // @group properties
+        // @description
+        // Returns a copy of the material with mechanism adjustments applied.
+        // -->
+        registerTag("with", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, ObjectTag object) {
+                if (!attribute.hasContext(1)) {
+                    Debug.echoError("MaterialTag.with[...] tag must have an input mechanism list.");
+                }
+                MaterialTag mat = new MaterialTag(((MaterialTag) object).getModernData().clone());
+                List<String> properties = ObjectFetcher.separateProperties("[" + attribute.getContext(1) + "]");
+                for (int i = 1; i < properties.size(); i++) {
+                    List<String> data = CoreUtilities.split(properties.get(i), '=', 2);
+                    if (data.size() != 2) {
+                        Debug.echoError("Invalid property string '" + properties.get(i) + "'!");
+                    }
+                    else {
+                        mat.safeApplyProperty(new Mechanism(new ElementTag(data.get(0)), new ElementTag((data.get(1)).replace((char) 0x2011, ';')), attribute.context));
+                    }
+                }
+                return mat.getAttribute(attribute.fulfill(1));
+            }
+        });
     }
 
     public static HashMap<String, TagRunnable> registeredTags = new HashMap<>();

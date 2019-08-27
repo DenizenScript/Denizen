@@ -346,7 +346,6 @@ public class SidebarCommand extends AbstractCommand {
                         continue;
                     }
                     List<Sidebar.SidebarLine> current = new ArrayList<>();
-                    boolean currEdited = false;
                     if (per_player) {
                         TagContext context = new BukkitTagContext(player, Utilities.getEntryNPC(scriptEntry),
                                 false, scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
@@ -379,13 +378,10 @@ public class SidebarCommand extends AbstractCommand {
                             Debug.echoError(e);
                             continue;
                         }
-                        currEdited = true;
+                        sidebar.setLines(current);
                     }
                     if (title != null) {
                         sidebar.setTitle(title.asString());
-                    }
-                    if (currEdited) {
-                        sidebar.setLines(current);
                     }
                     sidebar.sendUpdate();
                 }

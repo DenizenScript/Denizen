@@ -11,7 +11,7 @@ import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
-import com.denizenscript.denizen.nms.abstracts.ModernBlockData;
+import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
 import com.denizenscript.denizen.nms.util.jnbt.StringTag;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.tags.BukkitTagContext;
@@ -730,7 +730,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
                         Debug.echoError("Invalid property string '" + properties.get(i) + "'!");
                     }
                     else {
-                        item.safeApplyProperty(new Mechanism(new ElementTag(data.get(0)), new ElementTag((data.get(1)).replace('‑', ';')), attribute.context));
+                        item.safeApplyProperty(new Mechanism(new ElementTag(data.get(0)), new ElementTag((data.get(1)).replace((char) 0x2011, ';')), attribute.context));
                     }
                 }
                 return item.getAttribute(attribute.fulfill(1));

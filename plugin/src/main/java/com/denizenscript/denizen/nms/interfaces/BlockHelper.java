@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.nms.interfaces;
 
-import com.denizenscript.denizen.nms.abstracts.ModernBlockData;
+import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import org.bukkit.Location;

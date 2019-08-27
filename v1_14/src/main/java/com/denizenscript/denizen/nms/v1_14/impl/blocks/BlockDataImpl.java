@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.nms.v1_14.impl.blocks;
 
-import com.denizenscript.denizen.nms.abstracts.ModernBlockData;
+import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
 import com.denizenscript.denizen.nms.v1_14.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;

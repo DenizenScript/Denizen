@@ -1,6 +1,7 @@
-package com.denizenscript.denizen.nms.abstracts;
+package com.denizenscript.denizen.utilities.blocks;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -14,7 +15,7 @@ import org.bukkit.entity.Player;
 /**
  * Helper for 1.13+ block data.
  */
-public class ModernBlockData {
+public class ModernBlockData implements Cloneable {
 
     public BlockData data;
 
@@ -81,5 +82,18 @@ public class ModernBlockData {
 
     public void sendFakeChangeTo(Player player, Location location) {
         player.sendBlockChange(location, data);
+    }
+
+    @Override
+    public ModernBlockData clone() {
+        try {
+            ModernBlockData data = (ModernBlockData) super.clone();
+            data.data = data.data.clone();
+            return data;
+        }
+        catch (CloneNotSupportedException ex) {
+            Debug.echoError(ex);
+            return null;
+        }
     }
 }
