@@ -826,6 +826,16 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         return null;
     }
 
+    public Location getTargetBlockSafe(Set<Material> mats, int range) {
+        try {
+            NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+            return getLivingEntity().getTargetBlock(mats, range).getLocation();
+        }
+        finally {
+            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+        }
+    }
+
     /**
      * Gets the velocity of this entity
      *
@@ -1759,7 +1769,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                 }
                 attribute = attribute.fulfill(1);
             }
-            return new LocationTag(getLivingEntity().getTargetBlock(set, range).getLocation()).getAttribute(attribute);
+            return new LocationTag(getTargetBlockSafe(set, range)).getAttribute(attribute);
         }
 
         // <--[tag]
