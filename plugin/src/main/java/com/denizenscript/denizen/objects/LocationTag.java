@@ -426,6 +426,28 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         }
     }
 
+    public Biome getBiomeForTag(Attribute attribute) {
+        NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+        try {
+            if (getWorld() == null) {
+                if (!attribute.hasAlternative()) {
+                    Debug.echoError("LocationTag trying to read block, but cannot because no world is specified.");
+                }
+                return null;
+            }
+            if (!isChunkLoaded()) {
+                if (!attribute.hasAlternative()) {
+                    Debug.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
+                }
+                return null;
+            }
+            return super.getBlock().getBiome();
+        }
+        finally {
+            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+        }
+    }
+
     public BlockState getBlockState() {
         return getBlockStateFor(getBlock());
     }
@@ -2352,7 +2374,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the formatted biome name at the location.
         // -->
         if (attribute.startsWith("biome.formatted")) {
-            return new ElementTag(CoreUtilities.toLowerCase(getBlockForTag(attribute).getBiome().name()).replace('_', ' '))
+            return new ElementTag(CoreUtilities.toLowerCase(getBiomeForTag(attribute).name()).replace('_', ' '))
                     .getAttribute(attribute.fulfill(2));
         }
 
@@ -2364,7 +2386,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the biome at the location.
         // -->
         if (attribute.startsWith("biome")) {
-            return new BiomeTag(getBlockForTag(attribute).getBiome())
+            return new BiomeTag(getBiomeForTag(attribute))
                     .getAttribute(attribute.fulfill(1));
         }
 
