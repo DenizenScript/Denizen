@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -86,9 +87,23 @@ public class EntityRotation implements Property {
         }
 
         // <--[tag]
+        // @attribute <EntityTag.rotation_vector>
+        // @returns LocationTag
+        // @mechanism EntityTag.rotation
+        // @group properties
+        // @description
+        // If the entity can have a rotation, returns the entity's rotation as a direction vector.
+        // Currently, only Hanging-type entities can have rotations.
+        // -->
+        if (attribute.startsWith("rotation_vector")) {
+            return new LocationTag(getRotation().getDirection())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <EntityTag.rotation>
         // @returns ElementTag
-        // @mechanism EntityTag.rotiation
+        // @mechanism EntityTag.rotation
         // @group properties
         // @description
         // If the entity can have a rotation, returns the entity's rotation.
@@ -114,6 +129,7 @@ public class EntityRotation implements Property {
         // Currently, only Hanging-type entities can have rotations.
         // @tags
         // <EntityTag.rotation>
+        // <EntityTag.rotation_vector>
         // -->
 
         if (mechanism.matches("rotation") && mechanism.requireEnum(false, BlockFace.values())) {

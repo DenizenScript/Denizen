@@ -2286,7 +2286,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @returns LocationTag
         // @group attributes
         // @description
-        // Returns the location of the block that the arrow/trident entity is attached to.
+        // Returns the location of the block that the arrow/trident or hanging entity is attached to.
         // -->
         if (attribute.startsWith("attached_block")) {
             if (getBukkitEntity() instanceof Arrow) {
@@ -2294,6 +2294,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                 if (attachedBlock != null) {
                     return new LocationTag(attachedBlock.getLocation()).getAttribute(attribute.fulfill(1));
                 }
+            }
+            else if (getBukkitEntity() instanceof Hanging) {
+                Vector dir = ((Hanging) getBukkitEntity()).getAttachedFace().getDirection();
+                return new LocationTag(getLocation().clone().add(dir.multiply(0.5))).getBlockLocation()
+                        .getAttribute(attribute.fulfill(1));
             }
             return null;
         }
