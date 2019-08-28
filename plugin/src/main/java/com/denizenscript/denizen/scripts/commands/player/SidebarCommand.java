@@ -115,7 +115,7 @@ public class SidebarCommand extends AbstractCommand {
                     && arg.matchesPrefix("title", "t", "objective", "obj", "o")) {
                 scriptEntry.addObject("title", arg.asElement());
             }
-            else if (!scriptEntry.hasObject("lines")
+            else if (!scriptEntry.hasObject("scores")
                     && arg.matchesPrefix("scores", "score", "lines", "line", "l")) {
                 scriptEntry.addObject("scores", arg.asElement());
             }

@@ -397,7 +397,7 @@ public class Denizen extends JavaPlugin {
                     // Load the saves.yml into memory
                     reloadSaves();
 
-                    // Fire the 'on Pre Server Start' world event
+                    // Fire the 'on Server PreStart' world event
                     ws_helper.serverPreStartEvent();
 
                     // Reload notables from notables.yml into memory
