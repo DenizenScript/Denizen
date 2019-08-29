@@ -377,11 +377,6 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     }
 
     @Override
-    public Thread getMainThread() {
-        return NMSHandler.getInstance().getMainThread();
-    }
-
-    @Override
     public boolean allowedToWebget() {
         return Settings.allowWebget();
     }

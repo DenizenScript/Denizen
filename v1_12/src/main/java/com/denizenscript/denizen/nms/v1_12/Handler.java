@@ -66,11 +66,6 @@ public class Handler extends NMSHandler {
     }
 
     @Override
-    public Thread getMainThread() {
-        return ((CraftServer) Bukkit.getServer()).getServer().primaryThread;
-    }
-
-    @Override
     public double[] getRecentTps() {
         return ((CraftServer) Bukkit.getServer()).getServer().recentTps;
     }
