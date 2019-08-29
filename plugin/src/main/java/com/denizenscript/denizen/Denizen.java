@@ -135,6 +135,19 @@ public class Denizen extends JavaPlugin {
      */
     @Override
     public void onEnable() {
+        try {
+            versionTag = this.getDescription().getVersion();
+
+            // Load Denizen's core
+            DenizenCore.init(coreImplementation);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            getServer().getPluginManager().disablePlugin(this);
+            startedSuccessful = false;
+            return;
+        }
+
         if (!NMSHandler.initialize(this)) {
             getLogger().warning("-------------------------------------");
             getLogger().warning("This build of Denizen is not compatible with this Spigot version! Deactivating Denizen!");
@@ -153,18 +166,11 @@ public class Denizen extends JavaPlugin {
         }
 
         try {
-            versionTag = this.getDescription().getVersion();
-
-            // Load Denizen's core
-            DenizenCore.init(coreImplementation);
-
             // Activate dependencies
             Depends.initialize();
 
             if (Depends.citizens == null || !Depends.citizens.isEnabled()) {
                 getLogger().warning("Citizens does not seem to be activated! Denizen will have greatly reduced functionality!");
-                //getServer().getPluginManager().disablePlugin(this);
-                //return;
             }
             startedSuccessful = true;
         }
