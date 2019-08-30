@@ -443,6 +443,7 @@ public class Denizen extends JavaPlugin {
         }.runTaskTimer(this, 100, 20 * 60 * 60);
     }
 
+    public boolean hasDisabled = false;
 
     /*
      * Unloads Denizen on shutdown of the craftbukkit server.
@@ -452,6 +453,11 @@ public class Denizen extends JavaPlugin {
         if (!startedSuccessful) {
             return;
         }
+
+        if (hasDisabled) {
+            return;
+        }
+        hasDisabled = true;
 
         // <--[event]
         // @Events
