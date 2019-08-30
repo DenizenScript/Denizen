@@ -67,7 +67,7 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
                 return false;
             }
         }
-        if (changeType.equals("lowers")) {
+        else if (changeType.equals("lowers")) {
             if (event.getNewLevel() >= event.getOldLevel()) {
                 return false;
             }
