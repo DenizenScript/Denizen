@@ -48,7 +48,7 @@ public class MaterialSlab implements Property {
         }
 
         // <--[tag]
-        // @attribute <MaterialTag.half>
+        // @attribute <MaterialTag.slab_type>
         // @returns ElementTag
         // @mechanism MaterialTag.slab_type
         // @group properties
@@ -82,12 +82,12 @@ public class MaterialSlab implements Property {
 
         // <--[mechanism]
         // @object MaterialTag
-        // @name half
+        // @name slab_type
         // @input Element
         // @description
         // Sets the current type of the slab.
         // @tags
-        // <MaterialTag.half>
+        // <MaterialTag.slab_type>
         // -->
         if (mechanism.matches("slab_type") && mechanism.requireEnum(false, Slab.Type.values())) {
             getSlab().setType(Slab.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
