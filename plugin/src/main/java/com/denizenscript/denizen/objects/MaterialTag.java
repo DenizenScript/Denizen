@@ -1,10 +1,6 @@
 package com.denizenscript.denizen.objects;
 
-import com.denizenscript.denizen.objects.properties.material.MaterialAge;
-import com.denizenscript.denizen.objects.properties.material.MaterialHalf;
-import com.denizenscript.denizen.objects.properties.material.MaterialSlab;
-import com.denizenscript.denizen.objects.properties.material.MaterialLevel;
-import com.denizenscript.denizen.objects.properties.material.MaterialLightable;
+import com.denizenscript.denizen.objects.properties.material.*;
 import com.denizenscript.denizen.utilities.blocks.OldMaterialsHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
@@ -519,10 +515,10 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // When this returns true, <@link tag MaterialTag.direction>, <@link tag MaterialTag.valid_directions>,
         // and <@link mechanism MaterialTag.direction> are accessible.
         // -->
-        registerTag("is_bisected", new TagRunnable() {
+        registerTag("is_directional", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(MaterialHalf.describes(object))
+                return new ElementTag(MaterialDirectional.describes(object))
                         .getAttribute(attribute.fulfill(1));
             }
         });
