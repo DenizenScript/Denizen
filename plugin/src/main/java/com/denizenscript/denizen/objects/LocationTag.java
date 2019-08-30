@@ -448,6 +448,28 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         }
     }
 
+    public Location getHighestBlockForTag(Attribute attribute) {
+        NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+        try {
+            if (getWorld() == null) {
+                if (!attribute.hasAlternative()) {
+                    Debug.echoError("LocationTag trying to read block, but cannot because no world is specified.");
+                }
+                return null;
+            }
+            if (!isChunkLoaded()) {
+                if (!attribute.hasAlternative()) {
+                    Debug.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
+                }
+                return null;
+            }
+            return getWorld().getHighestBlockAt(this).getLocation();
+        }
+        finally {
+            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+        }
+    }
+
     public BlockState getBlockState() {
         return getBlockStateFor(getBlock());
     }
@@ -875,7 +897,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the location of the highest solid block at the location.
         // -->
         if (attribute.startsWith("highest")) {
-            return new LocationTag(getWorld().getHighestBlockAt(this).getLocation().add(0, -1, 0))
+            return new LocationTag(getHighestBlockForTag(attribute).add(0, -1, 0))
                     .getAttribute(attribute.fulfill(1));
         }
 
