@@ -3,6 +3,7 @@ package com.denizenscript.denizen.objects;
 import com.denizenscript.denizen.objects.properties.material.MaterialAge;
 import com.denizenscript.denizen.objects.properties.material.MaterialHalf;
 import com.denizenscript.denizen.objects.properties.material.MaterialSlab;
+import com.denizenscript.denizen.objects.properties.material.MaterialLeaves;
 import com.denizenscript.denizen.objects.properties.material.MaterialLevel;
 import com.denizenscript.denizen.objects.properties.material.MaterialLightable;
 import com.denizenscript.denizen.utilities.blocks.OldMaterialsHelper;
@@ -519,7 +520,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // When this returns true, <@link tag MaterialTag.direction>, <@link tag MaterialTag.valid_directions>,
         // and <@link mechanism MaterialTag.direction> are accessible.
         // -->
-        registerTag("is_bisected", new TagRunnable() {
+        registerTag("is_directional", new TagRunnable() {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 return new ElementTag(MaterialHalf.describes(object))
@@ -540,6 +541,24 @@ public class MaterialTag implements ObjectTag, Adjustable {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 return new ElementTag(MaterialHalf.describes(object))
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <MaterialTag.is_leaves>
+        // @returns ElementTag(Boolean)
+        // @group properties
+        // @description
+        // Returns whether the material is a leaves material.
+        // When this returns true, <@link tag MaterialTag.tree_distance>,
+        // <@link tag MaterialTag.persistent>, and
+        // <@link mechanism MaterialTag.persistent> are accessible.
+        // -->
+        registerTag("is_leaves", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(MaterialLeaves.describes(object))
                         .getAttribute(attribute.fulfill(1));
             }
         });
