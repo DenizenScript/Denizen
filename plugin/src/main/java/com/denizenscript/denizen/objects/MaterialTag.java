@@ -2,6 +2,7 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.objects.properties.material.MaterialAge;
 import com.denizenscript.denizen.objects.properties.material.MaterialHalf;
+import com.denizenscript.denizen.objects.properties.material.MaterialSlab;
 import com.denizenscript.denizen.objects.properties.material.MaterialLevel;
 import com.denizenscript.denizen.objects.properties.material.MaterialLightable;
 import com.denizenscript.denizen.utilities.blocks.OldMaterialsHelper;
@@ -539,6 +540,23 @@ public class MaterialTag implements ObjectTag, Adjustable {
             @Override
             public String run(Attribute attribute, ObjectTag object) {
                 return new ElementTag(MaterialHalf.describes(object))
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <MaterialTag.is_slab>
+        // @returns ElementTag(Boolean)
+        // @group properties
+        // @description
+        // Returns whether the material is a slab.
+        // When this returns true, <@link tag MaterialTag.slab_type>,
+        // and <@link mechanism MaterialTag.slab_type> are accessible.
+        // -->
+        registerTag("is_slab", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(MaterialSlab.describes(object))
                         .getAttribute(attribute.fulfill(1));
             }
         });
