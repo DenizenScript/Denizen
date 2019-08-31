@@ -54,7 +54,7 @@ public class MaterialLeaves implements Property {
         // @returns ElementTag(Boolean)
         // @group properties
         // @description
-        // Returns if this block will decay from being too far away from a tree.
+        // Returns whether this block will decay from being too far away from a tree.
         // -->
         if (attribute.startsWith("persistent")) {
             return new ElementTag(getLeaves().isPersistent()).getAttribute(attribute.fulfill(1));
