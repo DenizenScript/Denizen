@@ -7,7 +7,6 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
-import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.type.Leaves;
 
 public class MaterialLeaves implements Property {
