@@ -97,7 +97,9 @@ public class PropertyRegistry {
 
         // register core ItemTag properties
         PropertyParser.registerProperty(ItemApple.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemBaseColor.class, ItemTag.class);
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12)) {
+            PropertyParser.registerProperty(ItemBaseColor.class, ItemTag.class);
+        }
         PropertyParser.registerProperty(ItemBook.class, ItemTag.class);
         PropertyParser.registerProperty(ItemDisplayname.class, ItemTag.class);
         PropertyParser.registerProperty(ItemDurability.class, ItemTag.class);

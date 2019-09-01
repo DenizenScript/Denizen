@@ -907,8 +907,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @description
         // Returns the base color of the banner at this location.
         // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
+        // As of 1.13+, this tag is no longer relevant.
         // -->
         if (attribute.startsWith("base_color")) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+                Debug.echoError("Base_Color tag no longer relevant: banner types are now distinct materials.");
+            }
             DyeColor color = ((Banner) getBlockStateForTag(attribute)).getBaseColor();
             return new ElementTag(color != null ? color.name() : "BLACK").getAttribute(attribute.fulfill(1));
         }
@@ -2964,10 +2968,14 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @description
         // Changes the base color of the banner at this location.
         // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
+        // As of 1.13+, this mechanism is no longer relevant.
         // @tags
         // <LocationTag.base_color>
         // -->
         if (mechanism.matches("base_color")) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+                Debug.echoError("Base_Color mechanism no longer relevant: banner types are now distinct materials.");
+            }
             Banner banner = (Banner) getBlockState();
             banner.setBaseColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
             banner.update();
