@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-public class AdvancementHelperImpl implements AdvancementHelper {
+public class AdvancementHelperImpl extends AdvancementHelper {
 
     private static final String IMPOSSIBLE_KEY = "impossible";
     private static final Map<String, Criterion> IMPOSSIBLE_CRITERIA = Collections.singletonMap(IMPOSSIBLE_KEY, new Criterion(new CriterionTriggerImpossible.a()));

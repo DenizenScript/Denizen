@@ -213,6 +213,21 @@ public class ServerTagBase {
         }
 
         // <--[tag]
+        // @attribute <server.list_advancements>
+        // @returns ListTag
+        // @description
+        // Returns a list of all registered advancement names.
+        // -->
+        if (attribute.startsWith("list_advancements")) {
+            ListTag list = new ListTag();
+            Bukkit.advancementIterator().forEachRemaining((adv) -> {
+                list.add(adv.getKey().toString());
+            });
+            event.setReplaced(list.getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
         // @attribute <server.list_commands>
         // @returns ListTag
         // @description
