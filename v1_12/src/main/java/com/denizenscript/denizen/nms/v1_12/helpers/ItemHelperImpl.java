@@ -19,7 +19,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
 
-public class ItemHelperImpl implements ItemHelper {
+public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public String getInternalNameFromMaterial(Material material) {

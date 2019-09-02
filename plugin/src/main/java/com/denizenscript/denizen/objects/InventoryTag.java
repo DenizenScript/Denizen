@@ -433,7 +433,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             String newItem = CoreUtilities.toLowerCase(ItemTag.valueOf(new ItemTag(is).getFullString(), false).getFullString());
             if (myItem.equals(newItem)) {
                 if (count <= amount) {
-                    inventory.setItem(i, null);
+                    NMSHandler.getItemHelper().setInventoryItem(inventory, null, i);
                     amount -= count;
                     if (amount == 0) {
                         return true;
@@ -441,7 +441,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 }
                 else if (count > amount) {
                     is.setAmount(count - amount);
-                    inventory.setItem(i, is);
+                    NMSHandler.getItemHelper().setInventoryItem(inventory, is, i);
                     return true;
                 }
             }
@@ -763,12 +763,12 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                         if (amount > max) {
                             ItemStack clone = item.clone();
                             clone.setAmount(max);
-                            inventory.setItem(firstFree, clone);
+                            NMSHandler.getItemHelper().setInventoryItem(inventory, clone, firstFree);
                             item.setAmount(amount -= max);
                         }
                         else {
                             // Just store it
-                            inventory.setItem(firstFree, item);
+                            NMSHandler.getItemHelper().setInventoryItem(inventory, item, firstFree);
                             break;
                         }
                     }
@@ -835,12 +835,12 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                         if (amount > max) {
                             ItemStack clone = item.clone();
                             clone.setAmount(max);
-                            inventory.setItem(firstFree, clone);
+                            NMSHandler.getItemHelper().setInventoryItem(inventory, clone, firstFree);
                             item.setAmount(amount -= max);
                         }
                         else {
                             // Just store it
-                            inventory.setItem(firstFree, item);
+                            NMSHandler.getItemHelper().setInventoryItem(inventory, item, firstFree);
                             break;
                         }
                     }
@@ -878,7 +878,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         for (int i = 0; i < items.length; i++) {
             ItemStack item = items[i];
             try {
-                inventory.setItem(i + slot, item);
+                NMSHandler.getItemHelper().setInventoryItem(inventory, item, i + slot);
             }
             catch (Exception e) {
                 leftovers.add(i + slot, item);
@@ -1178,13 +1178,13 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
 
         for (int i = 0; i < c; i++) {
             if (i >= items.length || items[i] == null) {
-                inventory.setItem(slot + i, new ItemStack(Material.AIR));
+                NMSHandler.getItemHelper().setInventoryItem(inventory, new ItemStack(Material.AIR), slot + i);
             }
             ItemStack item = items[i];
             if (slot + i < 0 || slot + i >= inventory.getSize()) {
                 break;
             }
-            inventory.setItem(slot + i, item);
+            NMSHandler.getItemHelper().setInventoryItem(inventory, item, slot + i);
         }
         if (Depends.citizens != null && NPCTag.matches(idHolder)) { // TODO: Directly store holder
             NPCTag.valueOf(idHolder).getInventoryTrait().setContents(inventory.getContents());

@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.item;
 
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.scripts.containers.core.BookScriptContainer;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -237,6 +238,7 @@ public class ScribeCommand extends AbstractCommand {
         }
         // move current held item to empty spot, set item in hand to the book
         else {
+            NMSHandler.getItemHelper().setInventoryItem(inv, currItem, emptySpot);
             inv.setItem(emptySpot, currItem);
             player.setItemInHand(book);
             Debug.log("...added book to player hand, moved original item");
