@@ -158,9 +158,16 @@ public class ItemScriptContainer extends ScriptContainer {
         return getItemFrom(null, null);
     }
 
+    boolean isProcessing = false;
+
     public ItemTag getItemFrom(PlayerTag player, NPCTag npc) {
+        if (isProcessing) {
+            Debug.echoError("Item script contains (or chains to) a reference to itself. Cannot process.");
+            return null;
+        }
         // Try to use this script to make an item.
         ItemTag stack = null;
+        isProcessing = true;
         try {
             boolean debug = true;
             if (contains("DEBUG")) {
@@ -268,6 +275,9 @@ public class ItemScriptContainer extends ScriptContainer {
             Debug.echoError("Woah! An exception has been called with this item script!");
             Debug.echoError(e);
             stack = null;
+        }
+        finally {
+            isProcessing = false;
         }
 
         return stack;
