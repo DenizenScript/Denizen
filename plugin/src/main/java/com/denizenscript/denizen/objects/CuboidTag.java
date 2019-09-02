@@ -657,7 +657,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                         if (!filter.isEmpty()) {
                             // Check filter
                             for (ObjectTag material : filter) {
-                                if (loc.getBlockForTag(attribute).getType().name().equalsIgnoreCase(((MaterialTag) material).getMaterial().name())) {
+                                if (loc.getBlockTypeForTag(attribute).name().equalsIgnoreCase(((MaterialTag) material).getMaterial().name())) {
                                     list.add(loc);
                                 }
                             }
@@ -709,9 +709,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                         loc = new LocationTag(loc_1.clone()
                                 .add(x, y, z));
 
-                        if (blockHelper.isSafeBlock(loc.getBlockForTag(attribute).getType())
-                                && blockHelper.isSafeBlock(new LocationTag(loc.clone().add(0, 1, 0)).getBlockForTag(attribute).getType())
-                                && new LocationTag(loc.clone().add(0, -1, 0)).getBlockForTag(attribute).getType().isSolid()
+                        if (blockHelper.isSafeBlock(loc.getBlockTypeForTag(attribute))
+                                && blockHelper.isSafeBlock(new LocationTag(loc.clone().add(0, 1, 0)).getBlockTypeForTag(attribute))
+                                && new LocationTag(loc.clone().add(0, -1, 0)).getBlockTypeForTag(attribute).isSolid()
                                 && matchesMaterialList(loc.clone().add(0, -1, 0), mats, attribute)) {
                             // Get the center of the block, so the entity won't suffocate
                             // inside the edges for a couple of seconds

@@ -1144,7 +1144,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
                 Debug.echoError("As of Minecraft version 1.13 potted flowers each have their own material, such as POTTED_CACTUS.");
             }
-            else if (getBlockForTag(attribute).getType() == Material.FLOWER_POT) {
+            else if (getBlockTypeForTag(attribute) == Material.FLOWER_POT) {
                 MaterialData contents = NMSHandler.getBlockHelper().getFlowerpotContents(getBlockForTag(attribute));
                 return OldMaterialsHelper.getMaterialFrom(contents.getItemType(), contents.getData())
                         .getAttribute(attribute.fulfill(1));
@@ -1775,7 +1775,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                                                 found.add(new LocationTag(tstart.clone().add(x, y, z)));
                                             }
                                         }
-                                        else if (material.getMaterial() == new LocationTag(tstart.clone().add(x, y, z)).getBlockForTag(attribute).getType()) {
+                                        else if (material.getMaterial() == new LocationTag(tstart.clone().add(x, y, z)).getBlockTypeForTag(attribute)) {
                                             found.add(new LocationTag(tstart.clone().add(x, y, z)));
                                         }
                                     }
@@ -1837,18 +1837,18 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                                 if (!materials.isEmpty()) {
                                     for (MaterialTag material : materials) {
                                         if (material.matchesBlock(l.getBlockForTag(attribute))) {
-                                            if (new LocationTag(l.clone().add(0, 1, 0)).getBlockForTag(attribute).getType() == Material.AIR
-                                                    && new LocationTag(l.clone().add(0, 2, 0)).getBlockForTag(attribute).getType() == Material.AIR
-                                                    && l.getBlockForTag(attribute).getType() != Material.AIR) {
+                                            if (new LocationTag(l.clone().add(0, 1, 0)).getBlockTypeForTag(attribute) == Material.AIR
+                                                    && new LocationTag(l.clone().add(0, 2, 0)).getBlockTypeForTag(attribute) == Material.AIR
+                                                    && l.getBlockTypeForTag(attribute) != Material.AIR) {
                                                 found.add(new LocationTag(blockLoc.clone().add(x + 0.5, y, z + 0.5)));
                                             }
                                         }
                                     }
                                 }
                                 else {
-                                    if (new LocationTag(l.clone().add(0, 1, 0)).getBlockForTag(attribute).getType() == Material.AIR
-                                            && new LocationTag(l.clone().add(0, 2, 0)).getBlockForTag(attribute).getType() == Material.AIR
-                                            && l.getBlockForTag(attribute).getType() != Material.AIR) {
+                                    if (new LocationTag(l.clone().add(0, 1, 0)).getBlockTypeForTag(attribute) == Material.AIR
+                                            && new LocationTag(l.clone().add(0, 2, 0)).getBlockTypeForTag(attribute) == Material.AIR
+                                            && l.getBlockTypeForTag(attribute) != Material.AIR) {
                                         found.add(new LocationTag(blockLoc.clone().add(x + 0.5, y, z + 0.5)));
                                     }
                                 }
@@ -2765,12 +2765,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             else {
                 if (!attribute.hasAlternative()) {
-                    Debug.echoError("Block of type " + getBlockForTag(attribute).getType().name() + " isn't supported by other_block.");
+                    Debug.echoError("Block of type " + getBlockTypeForTag(attribute).name() + " isn't supported by other_block.");
                 }
                 return null;
             }
             if (!attribute.hasAlternative()) {
-                Debug.echoError("Block of type " + getBlockForTag(attribute).getType().name() + " doesn't have an other block.");
+                Debug.echoError("Block of type " + getBlockTypeForTag(attribute).name() + " doesn't have an other block.");
             }
             return null;
         }
