@@ -35,6 +35,20 @@ import java.util.UUID;
 
 public class BlockHelperImpl implements BlockHelper {
 
+    public static final Field craftBlockEntityState_tileEntity;
+
+    static {
+        Field f = null;
+        try {
+            f = CraftBlockEntityState.class.getDeclaredField("tileEntity");
+            f.setAccessible(true);
+        }
+        catch (NoSuchFieldException e) {
+            Debug.echoError(e);
+        }
+        craftBlockEntityState_tileEntity = f;
+    }
+
     @Override
     public List<Location> getBlocksList(PortalCreateEvent event) {
         List<Location> blocks = new ArrayList<>();
@@ -46,14 +60,9 @@ public class BlockHelperImpl implements BlockHelper {
 
     public <T extends TileEntity> T getTE(CraftBlockEntityState<T> cbs) {
         try {
-            Field f = CraftBlockEntityState.class.getDeclaredField("tileEntity");
-            f.setAccessible(true);
-            return (T) f.get(cbs);
+            return (T) craftBlockEntityState_tileEntity.get(cbs);
         }
         catch (IllegalAccessException e) {
-            Debug.echoError(e);
-        }
-        catch (NoSuchFieldException e) {
             Debug.echoError(e);
         }
         return null;
