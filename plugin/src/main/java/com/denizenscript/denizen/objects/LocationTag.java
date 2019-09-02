@@ -470,6 +470,28 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         }
     }
 
+    public Collection<ItemStack> getDropsForTag(Attribute attribute, ItemStack item) {
+        NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+        try {
+            if (getWorld() == null) {
+                if (!attribute.hasAlternative()) {
+                    Debug.echoError("LocationTag trying to read block, but cannot because no world is specified.");
+                }
+                return null;
+            }
+            if (!isChunkLoaded()) {
+                if (!attribute.hasAlternative()) {
+                    Debug.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
+                }
+                return null;
+            }
+            return item == null ? super.getBlock().getDrops() : super.getBlock().getDrops(item);
+        }
+        finally {
+            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+        }
+    }
+
     public BlockState getBlockState() {
         return getBlockStateFor(getBlock());
     }
@@ -1078,16 +1100,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Optionally specifier a breaker item.
         // -->
         if (attribute.startsWith("drops")) {
-            Collection<ItemStack> its;
+            ItemStack inputItem = null;
             if (attribute.hasContext(1)) {
-                ItemTag item = ItemTag.valueOf(attribute.getContext(1), attribute.context);
-                its = getBlockForTag(attribute).getDrops(item.getItemStack());
-            }
-            else {
-                its = getBlockForTag(attribute).getDrops();
+                inputItem = ItemTag.valueOf(attribute.getContext(1), attribute.context).getItemStack();
             }
             ListTag list = new ListTag();
-            for (ItemStack it : its) {
+            for (ItemStack it : getDropsForTag(attribute, inputItem)) {
                 list.add(new ItemTag(it).identify());
             }
             return list.getAttribute(attribute.fulfill(1));
