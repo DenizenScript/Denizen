@@ -412,6 +412,28 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         }
     }
 
+    public Material getBlockTypeForTag(Attribute attribute) {
+        NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+        try {
+            if (getWorld() == null) {
+                if (!attribute.hasAlternative()) {
+                    Debug.echoError("LocationTag trying to read block, but cannot because no world is specified.");
+                }
+                return null;
+            }
+            if (!isChunkLoaded()) {
+                if (!attribute.hasAlternative()) {
+                    Debug.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
+                }
+                return null;
+            }
+            return super.getBlock().getType();
+        }
+        finally {
+            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+        }
+    }
+
     public static BlockState getBlockStateFor(Block block) {
         return block.getState();
     }
@@ -1260,12 +1282,18 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             double nx = xzLen * Math.sin(-getYaw() * (Math.PI / 180));
             double ny = Math.sin(getPitch() * (Math.PI / 180));
             double nz = xzLen * Math.cos(getYaw() * (Math.PI / 180));
-            Location location = NMSHandler.getEntityHelper().getImpactNormal(this, new Vector(nx, -ny, nz), range);
-            if (location != null) {
-                return new LocationTag(location).getAttribute(attribute.fulfill(1));
+            try {
+                NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+                Location location = NMSHandler.getEntityHelper().getImpactNormal(this, new Vector(nx, -ny, nz), range);
+                if (location != null) {
+                    return new LocationTag(location).getAttribute(attribute.fulfill(1));
+                }
+                else {
+                    return null;
+                }
             }
-            else {
-                return null;
+            finally {
+                NMSHandler.getChunkHelper().restoreServerThread(getWorld());
             }
         }
 
@@ -1285,12 +1313,18 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             double nx = xzLen * Math.sin(-getYaw() * (Math.PI / 180));
             double ny = Math.sin(getPitch() * (Math.PI / 180));
             double nz = xzLen * Math.cos(getYaw() * (Math.PI / 180));
-            Location location = NMSHandler.getEntityHelper().rayTraceBlock(this, new Vector(nx, -ny, nz), range);
-            if (location != null) {
-                return new LocationTag(location).getBlockLocation().getAttribute(attribute.fulfill(1));
+            try {
+                NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+                Location location = NMSHandler.getEntityHelper().rayTraceBlock(this, new Vector(nx, -ny, nz), range);
+                if (location != null) {
+                    return new LocationTag(location).getBlockLocation().getAttribute(attribute.fulfill(1));
+                }
+                else {
+                    return null;
+                }
             }
-            else {
-                return null;
+            finally {
+                NMSHandler.getChunkHelper().restoreServerThread(getWorld());
             }
         }
 
@@ -1310,12 +1344,18 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             double nx = xzLen * Math.sin(-getYaw() * (Math.PI / 180));
             double ny = Math.sin(getPitch() * (Math.PI / 180));
             double nz = xzLen * Math.cos(getYaw() * (Math.PI / 180));
-            Location location = NMSHandler.getEntityHelper().rayTrace(this, new Vector(nx, -ny, nz), range);
-            if (location != null) {
-                return new LocationTag(location).getAttribute(attribute.fulfill(1));
+            try {
+                NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+                Location location = NMSHandler.getEntityHelper().rayTrace(this, new Vector(nx, -ny, nz), range);
+                if (location != null) {
+                    return new LocationTag(location).getAttribute(attribute.fulfill(1));
+                }
+                else {
+                    return null;
+                }
             }
-            else {
-                return null;
+            finally {
+                NMSHandler.getChunkHelper().restoreServerThread(getWorld());
             }
         }
 
@@ -1367,9 +1407,15 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 range = 100;
             }
             ListTag list = new ListTag();
-            BlockIterator iterator = new BlockIterator(this, 0, range);
-            while (iterator.hasNext()) {
-                list.add(new LocationTag(iterator.next().getLocation()).identify());
+            try {
+                NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+                BlockIterator iterator = new BlockIterator(this, 0, range);
+                while (iterator.hasNext()) {
+                    list.add(new LocationTag(iterator.next().getLocation()).identify());
+                }
+            }
+            finally {
+                NMSHandler.getChunkHelper().restoreServerThread(getWorld());
             }
             return list.getAttribute(attribute.fulfill(1));
         }
@@ -1384,8 +1430,14 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if (attribute.startsWith("line_of_sight") && attribute.hasContext(1)) {
             LocationTag location = LocationTag.valueOf(attribute.getContext(1));
             if (location != null) {
-                return new ElementTag(NMSHandler.getEntityHelper().canTrace(getWorld(), toVector(), location.toVector()))
-                        .getAttribute(attribute.fulfill(1));
+                try {
+                    NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+                    return new ElementTag(NMSHandler.getEntityHelper().canTrace(getWorld(), toVector(), location.toVector()))
+                            .getAttribute(attribute.fulfill(1));
+                }
+                finally {
+                    NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+                }
             }
         }
 
@@ -1717,7 +1769,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                             if (Utilities.checkLocation(this, tstart.clone().add(x + 0.5, y + 0.5, z + 0.5), radius)) {
                                 if (!materials.isEmpty()) {
                                     for (MaterialTag material : materials) {
-                                        if (material.hasData() && material.getData() != 0) { // TODO: less arbitrary matching
+                                        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12) && material.hasData() && material.getData() != 0) {
                                             BlockState bs = new LocationTag(tstart.clone().add(x, y, z)).getBlockStateForTag(attribute);
                                             if (bs != null && material.matchesMaterialData(bs.getData())) {
                                                 found.add(new LocationTag(tstart.clone().add(x, y, z)));
@@ -2471,7 +2523,16 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns whether the block at the location is a liquid.
         // -->
         if (attribute.startsWith("is_liquid")) {
-            return new ElementTag(getBlockForTag(attribute).isLiquid()).getAttribute(attribute.fulfill(1));
+            Block b = getBlockForTag(attribute);
+            if (b != null) {
+                try {
+                    NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+                    return new ElementTag(b.isLiquid()).getAttribute(attribute.fulfill(1));
+                }
+                finally {
+                    NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+                }
+            }
         }
 
 
@@ -2484,8 +2545,17 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         if (attribute.startsWith("light.from_blocks") ||
                 attribute.startsWith("light.blocks")) {
-            return new ElementTag(getBlockForTag(attribute).getLightFromBlocks())
-                    .getAttribute(attribute.fulfill(2));
+            Block b = getBlockForTag(attribute);
+            if (b != null) {
+                try {
+                    NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+                    return new ElementTag(getBlockForTag(attribute).getLightFromBlocks())
+                            .getAttribute(attribute.fulfill(2));
+                }
+                finally {
+                    NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+                }
+            }
         }
 
         // <--[tag]
@@ -2497,8 +2567,17 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         if (attribute.startsWith("light.from_sky") ||
                 attribute.startsWith("light.sky")) {
-            return new ElementTag(getBlockForTag(attribute).getLightFromSky())
-                    .getAttribute(attribute.fulfill(2));
+            Block b = getBlockForTag(attribute);
+            if (b != null) {
+                try {
+                    NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+                    return new ElementTag(getBlockForTag(attribute).getLightFromSky())
+                            .getAttribute(attribute.fulfill(2));
+                }
+                finally {
+                    NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+                }
+            }
         }
 
         // <--[tag]
@@ -2508,8 +2587,17 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the total amount of light on the location.
         // -->
         if (attribute.startsWith("light")) {
-            return new ElementTag(getBlockForTag(attribute).getLightLevel())
-                    .getAttribute(attribute.fulfill(1));
+            Block b = getBlockForTag(attribute);
+            if (b != null) {
+                try {
+                    NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+                    return new ElementTag(getBlockForTag(attribute).getLightLevel())
+                            .getAttribute(attribute.fulfill(1));
+                }
+                finally {
+                    NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+                }
+            }
         }
 
         // <--[tag]
@@ -2519,8 +2607,17 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the current redstone power level of a block.
         // -->
         if (attribute.startsWith("power")) {
-            return new ElementTag(getBlockForTag(attribute).getBlockPower())
-                    .getAttribute(attribute.fulfill(1));
+            Block b = getBlockForTag(attribute);
+            if (b != null) {
+                try {
+                    NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+                    return new ElementTag(getBlockForTag(attribute).getBlockPower())
+                            .getAttribute(attribute.fulfill(1));
+                }
+                finally {
+                    NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+                }
+            }
         }
 
         // <--[tag]

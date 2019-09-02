@@ -925,46 +925,52 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 }
             }
 
-            // Find the valid target
-            BlockIterator bi;
             try {
-                bi = new BlockIterator(getPlayerEntity(), range);
-            }
-            catch (IllegalStateException e) {
-                return null;
-            }
-            Block b;
-            Location l;
-            int bx, by, bz;
-            double ex, ey, ez;
-
-            // Loop through player's line of sight
-            while (bi.hasNext()) {
-                b = bi.next();
-                bx = b.getX();
-                by = b.getY();
-                bz = b.getZ();
-
-                if (b.getType().isSolid()) {
-                    // Line of sight is broken
-                    break;
+                NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+                // Find the valid target
+                BlockIterator bi;
+                try {
+                    bi = new BlockIterator(getPlayerEntity(), range);
                 }
-                else {
-                    // Check for entities near this block in the line of sight
-                    for (LivingEntity possibleTarget : possibleTargets) {
-                        l = possibleTarget.getLocation();
-                        ex = l.getX();
-                        ey = l.getY();
-                        ez = l.getZ();
+                catch (IllegalStateException e) {
+                    return null;
+                }
+                Block b;
+                Location l;
+                int bx, by, bz;
+                double ex, ey, ez;
 
-                        if ((bx - .50 <= ex && ex <= bx + 1.50) &&
-                                (bz - .50 <= ez && ez <= bz + 1.50) &&
-                                (by - 1 <= ey && ey <= by + 2.5)) {
-                            // Entity is close enough, so return it
-                            return new EntityTag(possibleTarget).getDenizenObject().getAttribute(attribute.fulfill(attribs));
+                // Loop through player's line of sight
+                while (bi.hasNext()) {
+                    b = bi.next();
+                    bx = b.getX();
+                    by = b.getY();
+                    bz = b.getZ();
+
+                    if (b.getType().isSolid()) {
+                        // Line of sight is broken
+                        break;
+                    }
+                    else {
+                        // Check for entities near this block in the line of sight
+                        for (LivingEntity possibleTarget : possibleTargets) {
+                            l = possibleTarget.getLocation();
+                            ex = l.getX();
+                            ey = l.getY();
+                            ez = l.getZ();
+
+                            if ((bx - .50 <= ex && ex <= bx + 1.50) &&
+                                    (bz - .50 <= ez && ez <= bz + 1.50) &&
+                                    (by - 1 <= ey && ey <= by + 2.5)) {
+                                // Entity is close enough, so return it
+                                return new EntityTag(possibleTarget).getDenizenObject().getAttribute(attribute.fulfill(attribs));
+                            }
                         }
                     }
                 }
+            }
+            finally {
+                NMSHandler.getChunkHelper().restoreServerThread(getWorld());
             }
             return null;
         }
