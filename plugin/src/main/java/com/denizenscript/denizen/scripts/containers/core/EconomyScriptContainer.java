@@ -96,8 +96,7 @@ public class EconomyScriptContainer extends ScriptContainer {
             if (value == null) {
                 return null;
             }
-            return TagManager.tag(value, new BukkitTagContext(player == null ? null : new PlayerTag(player),
-                    null, false, null, backingScript.shouldDebug(), new ScriptTag(backingScript)));
+            return TagManager.tag(value, new BukkitTagContext(player == null ? null : new PlayerTag(player), null, new ScriptTag(backingScript)));
         }
 
         public String runSubScript(String pathName, OfflinePlayer player, double amount) {

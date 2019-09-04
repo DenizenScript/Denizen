@@ -30,12 +30,12 @@ public class FormatScriptContainer extends ScriptContainer {
     public String getFormattedText(String textToReplace, NPCTag npc, PlayerTag player) {
         String text = getFormat().replace("<text", "<element[" + EscapeTagBase.escape(textToReplace) + "].unescaped")
                 .replace("<name", "<el@val[" + EscapeTagBase.escape(npc != null ? npc.getName() : (player != null ? player.getName() : "")) + "].unescaped");
-        return TagManager.tag(text, new BukkitTagContext(player, npc, false, null, shouldDebug(), new ScriptTag(this)));
+        return TagManager.tag(text, new BukkitTagContext(player, npc, new ScriptTag(this)));
     }
 
     public String getFormatText(NPCTag npc, PlayerTag player) {
         String text = getFormat().replace("<text>", String.valueOf((char) 0x00)).replace("<name>", String.valueOf((char) 0x04));
-        return TagManager.tag(text, new BukkitTagContext(player, npc, false, null, shouldDebug(), new ScriptTag(this)))
+        return TagManager.tag(text, new BukkitTagContext(player, npc, new ScriptTag(this)))
                 .replace("%", "%%").replace(String.valueOf((char) 0x00), "%2$s").replace(String.valueOf((char) 0x04), "%1$s");
     }
 }

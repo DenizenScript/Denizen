@@ -12,6 +12,12 @@ public class BukkitTagContext extends TagContext {
     public final PlayerTag player;
     public final NPCTag npc;
 
+    public BukkitTagContext(PlayerTag player, NPCTag npc, ScriptTag script) {
+        super(false, script.getContainer().shouldDebug(), null, script);
+        this.player = player;
+        this.npc = npc;
+    }
+
     public BukkitTagContext(PlayerTag player, NPCTag npc, boolean instant, ScriptEntry entry, boolean debug, ScriptTag script) {
         super(instant, debug, entry, script);
         this.player = player;

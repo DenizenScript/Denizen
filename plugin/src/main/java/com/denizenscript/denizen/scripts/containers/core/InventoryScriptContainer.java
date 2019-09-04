@@ -109,7 +109,7 @@ public class InventoryScriptContainer extends ScriptContainer {
         // TODO: Clean all this code!
 
         InventoryTag inventory = null;
-        BukkitTagContext context = new BukkitTagContext(player, npc, false, null, shouldDebug(), new ScriptTag(this));
+        BukkitTagContext context = new BukkitTagContext(player, npc, new ScriptTag(this));
 
         try {
             if (contains("INVENTORY")) {
@@ -168,7 +168,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                     String[] itemsInLine = items.substring(1, items.length() - 1).split("\\[?\\]?\\s+\\[", -1);
                     for (String item : itemsInLine) {
                         if (contains("DEFINITIONS." + item)) {
-                            ItemTag def = ItemTag.valueOf(TagManager.tag(getString("DEFINITIONS." + item), context), player, npc);
+                            ItemTag def = ItemTag.valueOf(TagManager.tag(getString("DEFINITIONS." + item), context), context);
                             if (def == null) {
                                 Debug.echoError("Invalid definition '" + item + "' in inventory script '" + getName() + "'"
                                         + "... Ignoring it and assuming \"AIR\"");
@@ -180,7 +180,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                         }
                         else if (ItemTag.matches(item)) {
                             try {
-                                finalItems[itemsAdded] = ItemTag.valueOf(item, player, npc).getItemStack();
+                                finalItems[itemsAdded] = ItemTag.valueOf(item, context).getItemStack();
                             }
                             catch (Exception ex) {
                                 Debug.echoError("Inventory script \"" + getName() + "\" has an invalid slot item: ["

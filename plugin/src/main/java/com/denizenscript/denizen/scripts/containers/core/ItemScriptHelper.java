@@ -61,8 +61,7 @@ public class ItemScriptHelper implements Listener {
 
             // Process all tags in list
             for (int n = 0; n < recipeList.size(); n++) {
-                recipeList.set(n, TagManager.tag(recipeList.get(n), new BukkitTagContext(container.player, container.npc,
-                        false, null, Debug.shouldDebug(container), new ScriptTag(container))));
+                recipeList.set(n, TagManager.tag(recipeList.get(n), new BukkitTagContext(container.player, container.npc, new ScriptTag(container))));
             }
 
             // Store every ingredient in a List
@@ -97,8 +96,7 @@ public class ItemScriptHelper implements Listener {
             ItemScriptContainer container = entry.getKey();
             String string = entry.getValue();
 
-            String list = TagManager.tag(string, new BukkitTagContext(container.player, container.npc,
-                    false, null, Debug.shouldDebug(container), new ScriptTag(container)));
+            String list = TagManager.tag(string, new BukkitTagContext(container.player, container.npc, new ScriptTag(container)));
 
             List<ItemTag> ingredients = new ArrayList<>();
 

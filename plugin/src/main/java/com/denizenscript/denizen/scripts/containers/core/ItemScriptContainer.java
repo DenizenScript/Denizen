@@ -105,8 +105,8 @@ public class ItemScriptContainer extends ScriptContainer {
     public static Map<ItemScriptContainer, List<ItemTag>> specialrecipesMap = new HashMap<>();
     public static Map<ItemScriptContainer, List<ItemTag>> shapelessRecipesMap = new HashMap<>();
 
-    NPCTag npc = null;
-    PlayerTag player = null;
+    public NPCTag npc = null;
+    public PlayerTag player = null;
     public boolean bound = false;
     String hash = "";
 
@@ -169,11 +169,7 @@ public class ItemScriptContainer extends ScriptContainer {
         ItemTag stack = null;
         isProcessing = true;
         try {
-            boolean debug = true;
-            if (contains("DEBUG")) {
-                debug = Boolean.valueOf(getString("DEBUG"));
-            }
-            BukkitTagContext context = new BukkitTagContext(player, npc, false, null, debug, new ScriptTag(this));
+            BukkitTagContext context = new BukkitTagContext(player, npc, new ScriptTag(this));
             // Check validity of material
             if (contains("MATERIAL")) {
                 String material = TagManager.tag(getString("MATERIAL"), context);
