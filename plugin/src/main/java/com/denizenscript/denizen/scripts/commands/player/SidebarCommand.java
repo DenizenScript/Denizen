@@ -246,7 +246,7 @@ public class SidebarCommand extends AbstractCommand {
         }
 
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), action.debug() + debug + ArgumentHelper.debugObj("players", players.debug()));
+            Debug.report(scriptEntry, getName(), action.debug() + debug + ArgumentHelper.debugObj("players", players.debuggable()));
         }
 
         switch (Action.valueOf(action.asString())) {
@@ -353,11 +353,11 @@ public class SidebarCommand extends AbstractCommand {
                         Debug.echoError("Invalid player!");
                         continue;
                     }
-                    if (scores == null || scores.size() == 0) {
+                    if ((scores == null || scores.size() == 0) && perScores == null) {
                         Debug.echoError("Missing or invalid 'scores' parameter.");
                         return;
                     }
-                    if (value == null || value.size() != scores.size()) {
+                    if ((value == null || value.size() != scores.size()) && perValue == null) {
                         Debug.echoError("Missing or invalid 'values' parameter.");
                         return;
                     }
