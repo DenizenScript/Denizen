@@ -74,7 +74,7 @@ public class SidebarCommand extends AbstractCommand {
     //
     // @Usage
     // Set a sidebar with the score values indicating information to the user.
-    // - sidebar set "line:<server.list_online_players.size>|<server.max_players>" "value:Players online|Players allowed"
+    // - sidebar set "scores:<server.list_online_players.size>|<server.max_players>" "value:Players online|Players allowed"
     //
     // @Usage
     // Add a line to the bottom of the sidebar.
@@ -82,7 +82,7 @@ public class SidebarCommand extends AbstractCommand {
     //
     // @Usage
     // Remove multiple lines from the sidebar.
-    // - sidebar remove "lines:2|4|6"
+    // - sidebar remove "scores:2|4|6"
     //
     // @Usage
     // Stop showing the sidebar.
