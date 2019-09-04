@@ -161,6 +161,15 @@ public class SidebarCommand extends AbstractCommand {
                 .defaultObject("players", new ElementTag(entryData.hasPlayer() ? entryData.getPlayer().identify() : "li@"));
     }
 
+    public static boolean hasScoreAlready(List<Sidebar.SidebarLine> lines, int score) {
+        for (Sidebar.SidebarLine line : lines) {
+            if (line.score == score) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
@@ -266,6 +275,9 @@ public class SidebarCommand extends AbstractCommand {
                         int incr = increment != null ? increment.asInt() : -1;
                         for (int i = 0; i < value.size(); i++, index += incr) {
                             int score = (scores != null && i < scores.size()) ? Integer.valueOf(scores.get(i)) : index;
+                            while (hasScoreAlready(current, score)) {
+                                score += (incr == 0 ? 1 : incr);
+                            }
                             current.add(new Sidebar.SidebarLine(value.get(i), score));
                         }
                     }
