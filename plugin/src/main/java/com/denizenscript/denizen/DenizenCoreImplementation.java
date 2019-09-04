@@ -376,10 +376,17 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         return Settings.allowWebget();
     }
 
+    public static Thread tagThread = null;
+
+    public static boolean isSafeThread() {
+        return Bukkit.isPrimaryThread() || Thread.currentThread().equals(tagThread);
+    }
+
     @Override
     public void preTagExecute() {
         try {
             NMSHandler.getInstance().disableAsyncCatcher();
+            tagThread = Thread.currentThread();
         }
         catch (Throwable e) {
             Debug.echoError("Running not-Spigot?!");

@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.utilities.packets;
 
+import com.denizenscript.denizen.DenizenCoreImplementation;
 import com.denizenscript.denizen.nms.interfaces.packets.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.player.PlayerReceivesMessageScriptEvent;
@@ -105,7 +106,7 @@ public class DenizenPacketHandler implements PacketHandler {
                     return false;
                 }
             });
-            if (Bukkit.isPrimaryThread()) {
+            if (DenizenCoreImplementation.isSafeThread()) {
                 futureTask.run();
             }
             else {
