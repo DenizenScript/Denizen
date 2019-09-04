@@ -29,7 +29,7 @@ public class SidebarCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Sidebar
-    // @Syntax sidebar (add/remove/{set}) (title:<title>) (scores:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...) (per_player)
+    // @Syntax sidebar (add/remove/{set}/set_line) (title:<title>) (scores:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...) (per_player)
     // @Required 1
     // @Short Controls clientside-only sidebars.
     // @Group player
@@ -91,7 +91,7 @@ public class SidebarCommand extends AbstractCommand {
 
     // TODO: Clean me!
 
-    private enum Action {ADD, REMOVE, SET}
+    private enum Action {ADD, REMOVE, SET, SET_LINE}
 
     @Override
     public void onEnable() {
@@ -344,6 +344,60 @@ public class SidebarCommand extends AbstractCommand {
                         sidebar.remove();
                         sidebars.remove(player.getPlayerEntity().getUniqueId());
                     }
+                }
+                break;
+
+            case SET_LINE:
+                for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
+                    if (player == null || !player.isValid()) {
+                        Debug.echoError("Invalid player!");
+                        continue;
+                    }
+                    if (scores == null || scores.size() == 0) {
+                        Debug.echoError("Missing or invalid 'scores' parameter.");
+                        return;
+                    }
+                    if (value == null || value.size() != scores.size()) {
+                        Debug.echoError("Missing or invalid 'values' parameter.");
+                        return;
+                    }
+                    Sidebar sidebar = createSidebar(player);
+                    if (sidebar == null) {
+                        continue;
+                    }
+                    List<Sidebar.SidebarLine> current = sidebar.getLines();
+                    if (per_player) {
+                        TagContext context = new BukkitTagContext(player, Utilities.getEntryNPC(scriptEntry),
+                                false, scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
+                        if (perValue != null) {
+                            value = ListTag.valueOf(TagManager.tag(perValue, context));
+                        }
+                        if (perScores != null) {
+                            scores = ListTag.valueOf(TagManager.tag(perScores, context));
+                        }
+                    }
+                    try {
+                        for (int i = 0; i < value.size(); i++) {
+                            int score = ArgumentHelper.getIntegerFrom(scores.get(i));
+                            if (hasScoreAlready(current, score)) {
+                                for (Sidebar.SidebarLine line : current) {
+                                    if (line.score == score) {
+                                        line.text = value.get(i);
+                                        break;
+                                    }
+                                }
+                            }
+                            else {
+                                current.add(new Sidebar.SidebarLine(value.get(i), score));
+                            }
+                        }
+                    }
+                    catch (Exception e) {
+                        Debug.echoError(e);
+                        continue;
+                    }
+                    sidebar.setLines(current);
+                    sidebar.sendUpdate();
                 }
                 break;
 
