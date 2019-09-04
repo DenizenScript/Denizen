@@ -5,6 +5,7 @@ import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
+import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -2036,7 +2037,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 return null;
             }
             else if (slots.size() == 1) {
-                int slot = new ElementTag(attribute.getContext(1)).asInt() - 1;
+                int slot = SlotHelper.nameToIndex(attribute.getContext(1));
                 if (slot < 0) {
                     slot = 0;
                 }
@@ -2048,7 +2049,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             else {
                 ListTag result = new ListTag();
                 for (String slotText : slots) {
-                    int slot = new ElementTag(slotText).asInt() - 1;
+                    int slot = SlotHelper.nameToIndex(slotText);
                     if (slot < 0) {
                         slot = 0;
                     }
