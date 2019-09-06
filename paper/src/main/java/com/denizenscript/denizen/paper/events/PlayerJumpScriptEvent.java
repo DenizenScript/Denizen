@@ -78,7 +78,6 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
         if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        // Check that the block level changed (Upward)
         location = new LocationTag(event.getFrom());
         this.event = event;
         fire(event);
