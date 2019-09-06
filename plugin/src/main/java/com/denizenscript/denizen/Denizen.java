@@ -74,6 +74,8 @@ public class Denizen extends JavaPlugin {
     public static String versionTag = null;
     private boolean startedSuccessful = false;
 
+    public static boolean supportsPaper = false;
+
     private CommandManager commandManager;
 
     public CommandManager getCommandManager() {
@@ -196,6 +198,18 @@ public class Denizen extends JavaPlugin {
         }
         catch (Exception e) {
             Debug.echoError(e);
+        }
+
+        try {
+            if (Class.forName("com.destroystokyo.paper.PaperConfig") != null) {
+                supportsPaper = true;
+            }
+        }
+        catch (ClassNotFoundException ex) {
+            // Ignore.
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
         }
 
         // bstats.org
@@ -378,15 +392,16 @@ public class Denizen extends JavaPlugin {
             NMSHandler.getInstance().enablePacketInterception(new DenizenPacketHandler());
         }
         try {
-            if (Class.forName("com.destroystokyo.paper.PaperConfig") != null) {
+            if (supportsPaper) {
                 final Class<?> clazz = Class.forName("com.denizenscript.denizen.paper.PaperModule");
                 clazz.getMethod("init").invoke(null);
             }
         }
         catch (ClassNotFoundException ex) {
-            // Ignore.
+            supportsPaper = false;
         }
         catch (Throwable ex) {
+            supportsPaper = false;
             Debug.echoError(ex);
         }
 
