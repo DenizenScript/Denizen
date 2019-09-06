@@ -29,8 +29,7 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
     // @Triggers when a player jumps.
     //
     // @Context
-    // <context.from_location> returns the location the player jumped from.
-    // <context.from_location> returns the location the player jumped to (not guaranteed to be accurate).
+    // <context.location> returns the location the player jumped from.
     //
     // -->
 
@@ -40,8 +39,7 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
 
     public static PlayerJumpScriptEvent instance;
 
-    public LocationTag fromLocation;
-    public LocationTag toLocation;
+    public LocationTag location;
     public PlayerJumpEvent event;
 
     @Override
@@ -69,11 +67,8 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("from_location")) {
-            return fromLocation;
-        }
-        if (name.equals("to_location")) {
-            return toLocation;
+        if (name.equals("location")) {
+            return location;
         }
         return super.getContext(name);
     }
@@ -84,8 +79,7 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
             return;
         }
         // Check that the block level changed (Upward)
-        fromLocation = new LocationTag(event.getFrom());
-        toLocation = new LocationTag(event.getTo());
+        location = new LocationTag(event.getFrom());
         this.event = event;
         fire(event);
     }
