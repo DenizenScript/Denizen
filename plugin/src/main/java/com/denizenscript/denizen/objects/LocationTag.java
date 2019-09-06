@@ -2626,14 +2626,15 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @returns ElementTag(Number)
         // @group properties
         // @description
-        // Returns a number of how many blocks away from a connected tree it is.
+        // Returns a number of how many blocks away from a connected tree leaves are.
         // Defaults to 7 if not connected to a tree.
         // -->
         if (attribute.startsWith("tree_distance")) {
             MaterialTag material = new MaterialTag(getBlockForTag(attribute));
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)
                     && MaterialLeaves.describes(material)) {
-                return new ElementTag(MaterialLeaves.getFrom(material).getLeaves().getDistance()).getAttribute(attribute.fulfill(1));
+                return new ElementTag(MaterialLeaves.getFrom(material).getLeaves().getDistance())
+                        .getAttribute(attribute.fulfill(1));
             }
         }
 
