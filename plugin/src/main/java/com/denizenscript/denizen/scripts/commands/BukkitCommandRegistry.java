@@ -87,7 +87,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         else {
             AutoNoCitizensCommand.registerFor("CREATE");
         }
-        registerCoreMember(CreateWorldCommand.class, "CREATEWORLD", "createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>) (seed:<seed>)", 1);
+        registerCoreMember(CreateWorldCommand.class, "CREATEWORLD", "createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>) (seed:<seed>) (settings:<json>)", 1);
         if (Depends.citizens != null) {
             registerCoreMember(DespawnCommand.class, "DESPAWN", "despawn (<npc>)", 0);
         }

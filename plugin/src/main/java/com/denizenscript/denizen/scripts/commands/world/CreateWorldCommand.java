@@ -19,19 +19,19 @@ public class CreateWorldCommand extends AbstractCommand {
 
     // <--[command]
     // @Name CreateWorld
-    // @Syntax createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>) (seed:<seed>)
+    // @Syntax createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>) (seed:<seed>) (settings:<json>)
     // @Required 1
     // @Short Creates a new world, or loads an existing world.
     // @Group world
     //
     // @Description
-    // This command creates a new minecraft world with the specified name, or loads an existing world by thet name.
-    // TODO: Document Command Details (generator)
-    // It accepts a world type which can be specified with 'worldtype:'.
-    // If a worldtype is not specified it will create a world with a world type of NORMAL.
+    // This command creates a new minecraft world with the specified name, or loads an existing world by that name.
+    // Optionally specify a plugin-based world generator by it's generator ID.
+    // Optionally specify a world type which can be specified with 'worldtype:' (defaults to NORMAL).
     // For all world types, see: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/WorldType.html>
-    // An environment is expected and will be defaulted to NORMAL. Alternatives are NETHER and THE_END.
-    // Optionally, specify an existing world to copy files from.
+    // Optionally specify an environment (defaults to NORMAL, can also be NETHER or THE_END).
+    // Optionally specify an existing world to copy files from.
+    // Optionally specify additional generator settings as JSON input.
     //
     // @Tags
     // <server.list_world_types>
@@ -75,6 +75,10 @@ public class CreateWorldCommand extends AbstractCommand {
                     && arg.matchesPrefix("copy_from")) {
                 scriptEntry.addObject("copy_from", arg.asElement());
             }
+            else if (!scriptEntry.hasObject("settings")
+                    && arg.matchesPrefix("settings")) {
+                scriptEntry.addObject("settings", arg.asElement());
+            }
             else if (!scriptEntry.hasObject("seed")
                     && arg.matchesPrefix("seed", "s")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
@@ -108,6 +112,7 @@ public class CreateWorldCommand extends AbstractCommand {
         ElementTag worldType = scriptEntry.getElement("worldtype");
         ElementTag environment = scriptEntry.getElement("environment");
         ElementTag copy_from = scriptEntry.getElement("copy_from");
+        ElementTag settings = scriptEntry.getElement("settings");
         ElementTag seed = scriptEntry.getElement("seed");
 
         if (scriptEntry.dbCallShouldDebug()) {
@@ -116,6 +121,7 @@ public class CreateWorldCommand extends AbstractCommand {
                     (generator != null ? generator.debug() : "") +
                     environment.debug() +
                     (copy_from != null ? copy_from.debug() : "") +
+                    (settings != null ? settings.debug() : "") +
                     worldType.debug() +
                     (seed != null ? seed.debug() : ""));
 
@@ -161,6 +167,10 @@ public class CreateWorldCommand extends AbstractCommand {
 
         if (seed != null) {
             worldCreator.seed(seed.asLong());
+        }
+
+        if (settings != null) {
+            worldCreator.generatorSettings(settings.asString());
         }
 
         world = Bukkit.getServer().createWorld(worldCreator);
