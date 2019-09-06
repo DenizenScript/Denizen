@@ -27,7 +27,7 @@ public class MaterialLeaves implements Property {
     }
 
     public static final String[] handledTags = new String[] {
-            "persistent", "tree_distance"
+            "persistent"
     };
 
     public static final String[] handledMechs = new String[] {
@@ -57,18 +57,6 @@ public class MaterialLeaves implements Property {
         // -->
         if (attribute.startsWith("persistent")) {
             return new ElementTag(getLeaves().isPersistent()).getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <MaterialTag.tree_distance>
-        // @returns ElementTag(Number)
-        // @group properties
-        // @description
-        // Returns a number of how many blocks away from a connected tree it is.
-        // Defaults to 7 if not connected to a tree.
-        // -->
-        if (attribute.startsWith("tree_distance")) {
-            return new ElementTag(getLeaves().getDistance()).getAttribute(attribute.fulfill(1));
         }
 
         return null;
