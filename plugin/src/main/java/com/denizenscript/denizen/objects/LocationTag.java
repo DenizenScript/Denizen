@@ -2633,7 +2633,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             MaterialTag material = new MaterialTag(getBlockForTag(attribute));
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)
                     && MaterialLeaves.describes(material)) {
-                return new ElementTag(MaterialLeaves.getFrom(material).getLeaves().getDistance())
+                return new ElementTag(MaterialLeaves.getFrom(material).getDistance())
                         .getAttribute(attribute.fulfill(1));
             }
         }
