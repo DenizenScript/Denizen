@@ -1494,10 +1494,21 @@ public class ServerTagBase {
         // @attribute <server.motd>
         // @returns ElementTag
         // @description
-        // Returns the server's current MOTD
+        // Returns the server's current MOTD.
         // -->
         if (attribute.startsWith("motd")) {
             event.setReplaced(new ElementTag(Bukkit.getServer().getMotd()).getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.view_distance>
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the server's current view distance.
+        // -->
+        if (attribute.startsWith("motd")) {
+            event.setReplaced(new ElementTag(Bukkit.getServer().getViewDistance()).getAttribute(attribute.fulfill(1)));
             return;
         }
 
