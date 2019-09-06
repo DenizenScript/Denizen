@@ -38,7 +38,6 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     public static PlayerJumpScriptEvent instance;
-
     public LocationTag location;
     public PlayerJumpEvent event;
 
@@ -62,7 +61,7 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(event != null ? EntityTag.getPlayerFrom(event.getPlayer()) : null, null);
+        return new BukkitScriptEntryData(EntityTag.getPlayerFrom(event.getPlayer()), null);
     }
 
     @Override
