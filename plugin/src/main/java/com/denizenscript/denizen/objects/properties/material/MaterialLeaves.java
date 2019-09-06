@@ -62,9 +62,7 @@ public class MaterialLeaves implements Property {
         return null;
     }
 
-    public Leaves getLeaves() {
-        return (Leaves) material.getModernData().data;
-    }
+    public Leaves getLeaves() { return (Leaves) material.getModernData().data; }
 
     public int getDistance() { return getLeaves().getDistance(); }
 
