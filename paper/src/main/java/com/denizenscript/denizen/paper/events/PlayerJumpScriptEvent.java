@@ -29,7 +29,7 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
     // @Triggers when a player jumps.
     //
     // @Context
-    // <context.location> returns the location the player jumped from.
+    // <context.location> returns the location the player is jumping from.
     //
     // -->
 
