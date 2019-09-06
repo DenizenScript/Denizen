@@ -2622,7 +2622,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         }
 
         // <--[tag]
-        // @attribute <MaterialTag.tree_distance>
+        // @attribute <LocationTag.tree_distance>
         // @returns ElementTag(Number)
         // @group properties
         // @description

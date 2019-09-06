@@ -546,7 +546,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // @group properties
         // @description
         // Returns whether the material is a leaves material.
-        // When this returns true, <@link tag MaterialTag.tree_distance>,
+        // When this returns true, <@link tag LocationTag.tree_distance>,
         // <@link tag MaterialTag.persistent>, and
         // <@link mechanism MaterialTag.persistent> are accessible.
         // -->
