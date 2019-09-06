@@ -1507,7 +1507,7 @@ public class ServerTagBase {
         // @description
         // Returns the server's current view distance.
         // -->
-        if (attribute.startsWith("motd")) {
+        if (attribute.startsWith("view_distance")) {
             event.setReplaced(new ElementTag(Bukkit.getServer().getViewDistance()).getAttribute(attribute.fulfill(1)));
             return;
         }
