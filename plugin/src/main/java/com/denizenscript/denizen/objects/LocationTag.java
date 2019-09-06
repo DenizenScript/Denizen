@@ -2,6 +2,7 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.objects.properties.material.MaterialSwitchFace;
+import com.denizenscript.denizen.objects.properties.material.MaterialLeaves;
 import com.denizenscript.denizen.scripts.commands.world.SwitchCommand;
 import com.denizenscript.denizen.utilities.MaterialCompat;
 import com.denizenscript.denizen.utilities.PathFinder;
@@ -2617,6 +2618,23 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 finally {
                     NMSHandler.getChunkHelper().restoreServerThread(getWorld());
                 }
+            }
+        }
+
+        // <--[tag]
+        // @attribute <LocationTag.tree_distance>
+        // @returns ElementTag(Number)
+        // @group properties
+        // @description
+        // Returns a number of how many blocks away from a connected tree leaves are.
+        // Defaults to 7 if not connected to a tree.
+        // -->
+        if (attribute.startsWith("tree_distance")) {
+            MaterialTag material = new MaterialTag(getBlockForTag(attribute));
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)
+                    && MaterialLeaves.describes(material)) {
+                return new ElementTag(MaterialLeaves.getFrom(material).getDistance())
+                        .getAttribute(attribute.fulfill(1));
             }
         }
 

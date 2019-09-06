@@ -541,6 +541,24 @@ public class MaterialTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <MaterialTag.is_leaves>
+        // @returns ElementTag(Boolean)
+        // @group properties
+        // @description
+        // Returns whether the material is a leaves material.
+        // When this returns true, <@link tag LocationTag.tree_distance>,
+        // <@link tag MaterialTag.persistent>, and
+        // <@link mechanism MaterialTag.persistent> are accessible.
+        // -->
+        registerTag("is_leaves", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(MaterialLeaves.describes(object))
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
         // @attribute <MaterialTag.is_slab>
         // @returns ElementTag(Boolean)
         // @group properties
