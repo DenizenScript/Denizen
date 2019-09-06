@@ -657,7 +657,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                         if (!filter.isEmpty()) {
                             // Check filter
                             for (ObjectTag material : filter) {
-                                if (loc.getBlockForTag(attribute).getType().name().equalsIgnoreCase(((MaterialTag) material).getMaterial().name())) {
+                                if (loc.getBlockTypeForTag(attribute).name().equalsIgnoreCase(((MaterialTag) material).getMaterial().name())) {
                                     list.add(loc);
                                 }
                             }
@@ -709,9 +709,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                         loc = new LocationTag(loc_1.clone()
                                 .add(x, y, z));
 
-                        if (blockHelper.isSafeBlock(loc.getBlockForTag(attribute).getType())
-                                && blockHelper.isSafeBlock(new LocationTag(loc.clone().add(0, 1, 0)).getBlockForTag(attribute).getType())
-                                && new LocationTag(loc.clone().add(0, -1, 0)).getBlockForTag(attribute).getType().isSolid()
+                        if (blockHelper.isSafeBlock(loc.getBlockTypeForTag(attribute))
+                                && blockHelper.isSafeBlock(new LocationTag(loc.clone().add(0, 1, 0)).getBlockTypeForTag(attribute))
+                                && new LocationTag(loc.clone().add(0, -1, 0)).getBlockTypeForTag(attribute).isSolid()
                                 && matchesMaterialList(loc.clone().add(0, -1, 0), mats, attribute)) {
                             // Get the center of the block, so the entity won't suffocate
                             // inside the edges for a couple of seconds
@@ -1165,6 +1165,60 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                         Debug.echoError(ex); // This should never happen
                         return null;
                     }
+                }
+            }
+        });
+
+        // <--[tag]
+        // @attribute <CuboidTag.add_member[<cuboid>]>
+        // @returns CuboidTag
+        // @description
+        // Returns a modified copy of this cuboid, with the input cuboid added at the end.
+        // -->
+        registerTag("add", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, ObjectTag object) {
+                if (!attribute.hasContext(1)) {
+                    Debug.echoError("The tag CuboidTag.add[...] must have a value.");
+                    return null;
+                }
+                else {
+                    CuboidTag cuboid;
+
+                    try {
+                        cuboid = ((CuboidTag) object).clone();
+                    }
+                    catch (CloneNotSupportedException ex) {
+                        Debug.echoError(ex); // This should never happen
+                        return null;
+                    }
+                    CuboidTag subCuboid = CuboidTag.valueOf(attribute.getContext(1));
+                    attribute = attribute.fulfill(1);
+                    int member = cuboid.pairs.size() + 1;
+                    // <--[tag]
+                    // @attribute <CuboidTag.add_member[<cuboid>].at[<index>]>
+                    // @returns CuboidTag
+                    // @description
+                    // Returns a modified copy of this cuboid, with the input cuboid added at the specified index.
+                    // -->
+                    if (attribute.matches("at")) {
+                        attribute.fulfill(1);
+                        if (!attribute.hasContext(1)) {
+                            attribute.fulfill(1);
+                            Debug.echoError("The tag CuboidTag.add[...].at[...] must have an 'at' value.");
+                            return null;
+                        }
+                        member = attribute.getIntContext(1);
+                    }
+                    if (member < 1) {
+                        member = 1;
+                    }
+                    if (member > cuboid.pairs.size() + 1) {
+                        member = cuboid.pairs.size() + 1;
+                    }
+                    LocationPair pair = subCuboid.pairs.get(0);
+                    cuboid.pairs.add(member - 1, new LocationPair(pair.point_1, pair.point_2));
+                    return cuboid.getAttribute(attribute.fulfill(1));
                 }
             }
         });
@@ -1725,10 +1779,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // <--[mechanism]
         // @object CuboidTag
         // @name set_member
-        // @input (#,)dCuboid
+        // @input (#,)CuboidTag
         // @description
         // Sets a given sub-cuboid of the cuboid.
-        // Input is of the form like "2,cu@..." where 2 is the sub-cuboid index or just a direct CuboidTag input.
+        // Input is of the form like "2,cu@..." where 2 is the sub-cuboid index, or just a direct CuboidTag input.
+        // The default index, if unspecified, is 1 (ie the first member).
         // @tags
         // <CuboidTag.get>
         // <CuboidTag.set[<cuboid>].at[<#>]>
@@ -1751,56 +1806,35 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
             pairs.set(member - 1, new LocationPair(pair.point_1, pair.point_2));
         }
 
-        // TODO: Better mechanisms!
-
-        if (mechanism.matches("outset")) {
-            int mod = 1;
-            if (mechanism.hasValue() && mechanism.requireInteger("Invalid integer specified. Assuming '1'.")) {
-                mod = mechanism.getValue().asInt();
+        // <--[mechanism]
+        // @object CuboidTag
+        // @name add_member
+        // @input (#,)CuboidTag
+        // @description
+        // Adds a sub-member to the cuboid (optionally at a specified index - otherwise, at the end).
+        // Input is of the form like "2,cu@..." where 2 is the sub-cuboid index, or just a direct CuboidTag input.
+        // Note that the index is where the member will end up. So, index 1 will add the cuboid as the very first member (moving the rest up +1 index value).
+        // @tags
+        // <CuboidTag.get>
+        // <CuboidTag.add_member[<cuboid>]>
+        // <CuboidTag.add_member[<cuboid>].at[<#>]>
+        // -->
+        if (mechanism.matches("add_member")) {
+            String value = mechanism.getValue().asString();
+            int comma = value.indexOf(',');
+            int member = pairs.size() + 1;
+            if (comma > 0) {
+                member = new ElementTag(value.substring(0, comma)).asInt();
             }
-            for (LocationPair pair : pairs) {
-                pair.low.add(-1 * mod, -1 * mod, -1 * mod);
-                pair.high.add(mod, mod, mod);
-                // Modify the locations, need to readjust the distances generated
-                pair.generateDistances();
+            CuboidTag subCuboid = CuboidTag.valueOf(comma == -1 ? value : value.substring(comma + 1));
+            if (member < 1) {
+                member = 1;
             }
-
-            // TODO: Make sure negative numbers don't collapse (and invert) the Cuboid
-            return;
-        }
-
-        if (mechanism.matches("expand")) {
-            int mod = 1;
-            if (mechanism.hasValue() && mechanism.requireInteger("Invalid integer specified. Assuming '1'.")) {
-                mod = mechanism.getValue().asInt();
+            if (member > pairs.size()) {
+                member = pairs.size();
             }
-            for (LocationPair pair : pairs) {
-                pair.low.add(-1 * mod, -1 * mod, -1 * mod);
-                pair.high.add(mod, mod, mod);
-                // Modify the locations, need to readjust the distances generated
-                pair.generateDistances();
-            }
-
-            // TODO: Make sure negative numbers don't collapse (and invert)
-            // the Cuboid
-            return;
-        }
-
-        if (mechanism.matches("set_location")) {
-            int mod = 1;
-            if (mechanism.hasValue() && mechanism.requireInteger("Invalid integer specified. Assuming '1'.")) {
-                mod = mechanism.getValue().asInt();
-            }
-            for (LocationPair pair : pairs) {
-                pair.low.add(-1 * mod, -1 * mod, -1 * mod);
-                pair.high.add(mod, mod, mod);
-                // Modify the locations, need to readjust the distances generated
-                pair.generateDistances();
-            }
-
-            // TODO: Make sure negative numbers don't collapse (and invert)
-            // the Cuboid
-            return;
+            LocationPair pair = subCuboid.pairs.get(0);
+            pairs.add(member - 1, new LocationPair(pair.point_1, pair.point_2));
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);

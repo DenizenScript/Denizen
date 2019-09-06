@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.item;
 
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -342,7 +343,7 @@ public class InventoryCommand extends AbstractCommand {
                 case ADJUST:
                     ItemTag toAdjust = new ItemTag(destination.getInventory().getItem(slotId));
                     toAdjust.safeAdjust(new Mechanism(mechanism, mechanismValue, scriptEntry.entryData.getTagContext()));
-                    destination.getInventory().setItem(slotId, toAdjust.getItemStack());
+                    NMSHandler.getItemHelper().setInventoryItem(destination.getInventory(), toAdjust.getItemStack(), slotId);
                     break;
             }
         }

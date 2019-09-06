@@ -5,6 +5,7 @@ import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
+import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -433,7 +434,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             String newItem = CoreUtilities.toLowerCase(ItemTag.valueOf(new ItemTag(is).getFullString(), false).getFullString());
             if (myItem.equals(newItem)) {
                 if (count <= amount) {
-                    inventory.setItem(i, null);
+                    NMSHandler.getItemHelper().setInventoryItem(inventory, null, i);
                     amount -= count;
                     if (amount == 0) {
                         return true;
@@ -441,7 +442,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 }
                 else if (count > amount) {
                     is.setAmount(count - amount);
-                    inventory.setItem(i, is);
+                    NMSHandler.getItemHelper().setInventoryItem(inventory, is, i);
                     return true;
                 }
             }
@@ -763,12 +764,12 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                         if (amount > max) {
                             ItemStack clone = item.clone();
                             clone.setAmount(max);
-                            inventory.setItem(firstFree, clone);
+                            NMSHandler.getItemHelper().setInventoryItem(inventory, clone, firstFree);
                             item.setAmount(amount -= max);
                         }
                         else {
                             // Just store it
-                            inventory.setItem(firstFree, item);
+                            NMSHandler.getItemHelper().setInventoryItem(inventory, item, firstFree);
                             break;
                         }
                     }
@@ -835,12 +836,12 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                         if (amount > max) {
                             ItemStack clone = item.clone();
                             clone.setAmount(max);
-                            inventory.setItem(firstFree, clone);
+                            NMSHandler.getItemHelper().setInventoryItem(inventory, clone, firstFree);
                             item.setAmount(amount -= max);
                         }
                         else {
                             // Just store it
-                            inventory.setItem(firstFree, item);
+                            NMSHandler.getItemHelper().setInventoryItem(inventory, item, firstFree);
                             break;
                         }
                     }
@@ -878,7 +879,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         for (int i = 0; i < items.length; i++) {
             ItemStack item = items[i];
             try {
-                inventory.setItem(i + slot, item);
+                NMSHandler.getItemHelper().setInventoryItem(inventory, item, i + slot);
             }
             catch (Exception e) {
                 leftovers.add(i + slot, item);
@@ -1178,13 +1179,13 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
 
         for (int i = 0; i < c; i++) {
             if (i >= items.length || items[i] == null) {
-                inventory.setItem(slot + i, new ItemStack(Material.AIR));
+                NMSHandler.getItemHelper().setInventoryItem(inventory, new ItemStack(Material.AIR), slot + i);
             }
             ItemStack item = items[i];
             if (slot + i < 0 || slot + i >= inventory.getSize()) {
                 break;
             }
-            inventory.setItem(slot + i, item);
+            NMSHandler.getItemHelper().setInventoryItem(inventory, item, slot + i);
         }
         if (Depends.citizens != null && NPCTag.matches(idHolder)) { // TODO: Directly store holder
             NPCTag.valueOf(idHolder).getInventoryTrait().setContents(inventory.getContents());
@@ -2020,23 +2021,45 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <InventoryTag.slot[<#>]>
-        // @returns ItemTag
+        // @attribute <InventoryTag.slot[<#>|...]>
+        // @returns ItemTag or ListTag(ItemTag)
         // @description
-        // Returns the item in the specified slot.
+        // If one slot is specified, returns the item in the specified slot.
+        // If more than what slot is specified, returns a list of the item in each given slot.
         // -->
         if (attribute.startsWith("slot")
-                && attribute.hasContext(1)
-                && ArgumentHelper.matchesInteger(attribute.getContext(1))) {
-            int slot = new ElementTag(attribute.getContext(1)).asInt() - 1;
-            if (slot < 0) {
-                slot = 0;
+                && attribute.hasContext(1)) {
+            ListTag slots = ListTag.getListFor(attribute.getContextObject(1));
+            if (slots.size() == 0) {
+                if (!attribute.hasAlternative()) {
+                    Debug.echoError("Cannot get a list of zero slots.");
+                }
+                return null;
             }
-            else if (slot > getInventory().getSize() - 1) {
-                slot = getInventory().getSize() - 1;
+            else if (slots.size() == 1) {
+                int slot = SlotHelper.nameToIndex(attribute.getContext(1));
+                if (slot < 0) {
+                    slot = 0;
+                }
+                else if (slot > getInventory().getSize() - 1) {
+                    slot = getInventory().getSize() - 1;
+                }
+                return new ItemTag(getInventory().getItem(slot)).getAttribute(attribute.fulfill(1));
             }
-            return new ItemTag(getInventory().getItem(slot))
-                    .getAttribute(attribute.fulfill(1));
+            else {
+                ListTag result = new ListTag();
+                for (String slotText : slots) {
+                    int slot = SlotHelper.nameToIndex(slotText);
+                    if (slot < 0) {
+                        slot = 0;
+                    }
+                    else if (slot > getInventory().getSize() - 1) {
+                        slot = getInventory().getSize() - 1;
+                    }
+                    result.addObject(new ItemTag(getInventory().getItem(slot)));
+                }
+                return result.getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--[tag]

@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.utilities.packets;
 
+import com.denizenscript.denizen.DenizenCoreImplementation;
 import com.denizenscript.denizen.nms.interfaces.packets.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.player.PlayerReceivesMessageScriptEvent;
@@ -81,7 +82,7 @@ public class DenizenPacketHandler implements PacketHandler {
         }
         final PlayerReceivesMessageScriptEvent event = PlayerReceivesMessageScriptEvent.instance;
         if (event.loaded) {
-            FutureTask<Boolean> futureTask = new FutureTask<>(new Callable<Boolean>() {
+            Callable<Boolean> eventCall = new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
                     int pos = chat.getPosition();
@@ -104,15 +105,16 @@ public class DenizenPacketHandler implements PacketHandler {
                     }
                     return false;
                 }
-            });
-            if (Bukkit.isPrimaryThread()) {
-                futureTask.run();
-            }
-            else {
-                Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), futureTask);
-            }
+            };
             try {
-                return futureTask.get();
+                if (DenizenCoreImplementation.isSafeThread()) {
+                    return eventCall.call();
+                }
+                else {
+                    FutureTask<Boolean> futureTask = new FutureTask<>(eventCall);
+                    Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), futureTask);
+                    return futureTask.get();
+                }
             }
             catch (Exception e) {
                 Debug.echoError(e);

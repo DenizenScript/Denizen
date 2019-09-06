@@ -66,7 +66,7 @@ public class BookScriptContainer extends ScriptContainer {
 
         if (contains("TITLE")) {
             String title = getString("TITLE");
-            title = TagManager.tag(title, new BukkitTagContext(player, npc, false, null, shouldDebug(), new ScriptTag(this)));
+            title = TagManager.tag(title, new BukkitTagContext(player, npc, new ScriptTag(this)));
             bookInfo.setTitle(title);
         }
 
@@ -78,7 +78,7 @@ public class BookScriptContainer extends ScriptContainer {
 
         if (contains("AUTHOR")) {
             String author = getString("AUTHOR");
-            author = TagManager.tag(author, new BukkitTagContext(player, npc, false, null, shouldDebug(), new ScriptTag(this)));
+            author = TagManager.tag(author, new BukkitTagContext(player, npc, new ScriptTag(this)));
             bookInfo.setAuthor(author);
         }
 
@@ -86,7 +86,7 @@ public class BookScriptContainer extends ScriptContainer {
             List<String> pages = getStringList("TEXT");
 
             for (String page : pages) {
-                page = TagManager.tag(page, new BukkitTagContext(player, npc, false, null, shouldDebug(), new ScriptTag(this)));
+                page = TagManager.tag(page, new BukkitTagContext(player, npc, new ScriptTag(this)));
                 bookInfo.addPage(page);
             }
         }

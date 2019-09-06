@@ -105,8 +105,8 @@ public class ItemScriptContainer extends ScriptContainer {
     public static Map<ItemScriptContainer, List<ItemTag>> specialrecipesMap = new HashMap<>();
     public static Map<ItemScriptContainer, List<ItemTag>> shapelessRecipesMap = new HashMap<>();
 
-    NPCTag npc = null;
-    PlayerTag player = null;
+    public NPCTag npc = null;
+    public PlayerTag player = null;
     public boolean bound = false;
     String hash = "";
 
@@ -158,15 +158,18 @@ public class ItemScriptContainer extends ScriptContainer {
         return getItemFrom(null, null);
     }
 
+    boolean isProcessing = false;
+
     public ItemTag getItemFrom(PlayerTag player, NPCTag npc) {
+        if (isProcessing) {
+            Debug.echoError("Item script contains (or chains to) a reference to itself. Cannot process.");
+            return null;
+        }
         // Try to use this script to make an item.
         ItemTag stack = null;
+        isProcessing = true;
         try {
-            boolean debug = true;
-            if (contains("DEBUG")) {
-                debug = Boolean.valueOf(getString("DEBUG"));
-            }
-            BukkitTagContext context = new BukkitTagContext(player, npc, false, null, debug, new ScriptTag(this));
+            BukkitTagContext context = new BukkitTagContext(player, npc, new ScriptTag(this));
             // Check validity of material
             if (contains("MATERIAL")) {
                 String material = TagManager.tag(getString("MATERIAL"), context);
@@ -268,6 +271,9 @@ public class ItemScriptContainer extends ScriptContainer {
             Debug.echoError("Woah! An exception has been called with this item script!");
             Debug.echoError(e);
             stack = null;
+        }
+        finally {
+            isProcessing = false;
         }
 
         return stack;

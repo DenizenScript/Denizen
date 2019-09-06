@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
 import com.denizenscript.denizen.objects.properties.entity.EntityHealth;
 import com.denizenscript.denizen.scripts.commands.player.SidebarCommand;
 import com.denizenscript.denizen.utilities.DenizenAPI;
@@ -25,6 +26,8 @@ import com.denizenscript.denizencore.utilities.Deprecations;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
+import org.bukkit.advancement.Advancement;
+import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.block.Block;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.entity.Entity;
@@ -925,46 +928,52 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 }
             }
 
-            // Find the valid target
-            BlockIterator bi;
             try {
-                bi = new BlockIterator(getPlayerEntity(), range);
-            }
-            catch (IllegalStateException e) {
-                return null;
-            }
-            Block b;
-            Location l;
-            int bx, by, bz;
-            double ex, ey, ez;
-
-            // Loop through player's line of sight
-            while (bi.hasNext()) {
-                b = bi.next();
-                bx = b.getX();
-                by = b.getY();
-                bz = b.getZ();
-
-                if (b.getType().isSolid()) {
-                    // Line of sight is broken
-                    break;
+                NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+                // Find the valid target
+                BlockIterator bi;
+                try {
+                    bi = new BlockIterator(getPlayerEntity(), range);
                 }
-                else {
-                    // Check for entities near this block in the line of sight
-                    for (LivingEntity possibleTarget : possibleTargets) {
-                        l = possibleTarget.getLocation();
-                        ex = l.getX();
-                        ey = l.getY();
-                        ez = l.getZ();
+                catch (IllegalStateException e) {
+                    return null;
+                }
+                Block b;
+                Location l;
+                int bx, by, bz;
+                double ex, ey, ez;
 
-                        if ((bx - .50 <= ex && ex <= bx + 1.50) &&
-                                (bz - .50 <= ez && ez <= bz + 1.50) &&
-                                (by - 1 <= ey && ey <= by + 2.5)) {
-                            // Entity is close enough, so return it
-                            return new EntityTag(possibleTarget).getDenizenObject().getAttribute(attribute.fulfill(attribs));
+                // Loop through player's line of sight
+                while (bi.hasNext()) {
+                    b = bi.next();
+                    bx = b.getX();
+                    by = b.getY();
+                    bz = b.getZ();
+
+                    if (b.getType().isSolid()) {
+                        // Line of sight is broken
+                        break;
+                    }
+                    else {
+                        // Check for entities near this block in the line of sight
+                        for (LivingEntity possibleTarget : possibleTargets) {
+                            l = possibleTarget.getLocation();
+                            ex = l.getX();
+                            ey = l.getY();
+                            ez = l.getZ();
+
+                            if ((bx - .50 <= ex && ex <= bx + 1.50) &&
+                                    (bz - .50 <= ez && ez <= bz + 1.50) &&
+                                    (by - 1 <= ey && ey <= by + 2.5)) {
+                                // Entity is close enough, so return it
+                                return new EntityTag(possibleTarget).getDenizenObject().getAttribute(attribute.fulfill(attribs));
+                            }
                         }
                     }
                 }
+            }
+            finally {
+                NMSHandler.getChunkHelper().restoreServerThread(getWorld());
             }
             return null;
         }
@@ -2010,14 +2019,37 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <PlayerTag.has_achievement[<achievement>]>
+        // @attribute <PlayerTag.has_advancement[<advancement>]>
         // @returns ElementTag(Boolean)
         // @description
-        // Returns whether the player has the specified achievement.
+        // Returns whether the player has completed the specified advancement.
         // -->
-        if (attribute.startsWith("has_achievement")) {
-            Achievement ach = Achievement.valueOf(attribute.getContext(1).toUpperCase());
-            return new ElementTag(getPlayerEntity().hasAchievement(ach)).getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("has_advancement") && attribute.hasContext(1)) {
+            Advancement adv = AdvancementHelper.getAdvancement(attribute.getContext(1).toUpperCase());
+            if (adv == null) {
+                if (!attribute.hasAlternative()) {
+                    Debug.echoError("Advancement '" + attribute.getContext(1) + "' does not exist.");
+                }
+                return null;
+            }
+            AdvancementProgress progress = getPlayerEntity().getAdvancementProgress(adv);
+            return new ElementTag(progress.isDone()).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <PlayerTag.list_advancements>
+        // @returns ListTag
+        // @description
+        // Returns a list of the names of all advancements the player has completed.
+        // -->
+        if (attribute.startsWith("list_advancements")) {
+            ListTag list = new ListTag();
+            Bukkit.advancementIterator().forEachRemaining((adv) -> {
+                if (getPlayerEntity().getAdvancementProgress(adv).isDone()) {
+                    list.add(adv.getKey().toString());
+                }
+            });
+            return list.getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -2027,7 +2059,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns the player's current value for the specified statistic.
         // Valid statistics: <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Statistic.html>
         // -->
-        if (attribute.startsWith("statistic")) {
+        if (attribute.startsWith("statistic") && attribute.hasContext(1)) {
             Statistic statistic = Statistic.valueOf(attribute.getContext(1).toUpperCase());
             if (statistic == null) {
                 return null;
@@ -2330,22 +2362,25 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
 
         // <--[mechanism]
         // @object PlayerTag
-        // @name award_achievement
+        // @name award_advancement
         // @input Element
         // @description
-        // Awards an achievement to the player. Valid achievements:
-        // ACQUIRE_IRON, BAKE_CAKE, BOOKCASE, BREED_COW, BREW_POTION, BUILD_BETTER_PICKAXE,
-        // BUILD_FURNACE, BUILD_HOE, BUILD_PICKAXE, BUILD_SWORD, BUILD_WORKBENCH, COOK_FISH,
-        // DIAMONDS_TO_YOU, ENCHANTMENTS, END_PORTAL, EXPLORE_ALL_BIOMES, FLY_PIG, FULL_BEACON,
-        // GET_BLAZE_ROD, GET_DIAMONDS, GHAST_RETURN, KILL_COW, KILL_ENEMY, KILL_WITHER,
-        // MAKE_BREAD, MINE_WOOD, NETHER_PORTAL, ON_A_RAIL, OPEN_INVENTORY, OVERKILL,
-        // SNIPE_SKELETON, SPAWN_WITHER, THE_END
+        // Awards an achievement to the player.
         // @tags
-        // None
+        // <PlayerTag.has_advancement[<name>]>
         // -->
-        // TODO: Player achievement tags.
-        if (mechanism.matches("award_achievement") && mechanism.requireEnum(false, Achievement.values())) {
-            getPlayerEntity().awardAchievement(Achievement.valueOf(mechanism.getValue().asString().toUpperCase()));
+        if (mechanism.matches("award_advancement")) {
+            Advancement adv = AdvancementHelper.getAdvancement(mechanism.getValue().asString().toUpperCase());
+            if (adv == null) {
+                if (mechanism.shouldDebug()) {
+                    Debug.echoError("Advancement '" + mechanism.getValue().asString() + "' does not exist.");
+                }
+                return;
+            }
+            AdvancementProgress prog = getPlayerEntity().getAdvancementProgress(adv);
+            for (String criteria : prog.getRemainingCriteria()) {
+                prog.awardCriteria(criteria);
+            }
         }
 
         // <--[mechanism]

@@ -12,14 +12,16 @@ import net.minecraft.server.v1_14_R1.GameProfileSerializer;
 import net.minecraft.server.v1_14_R1.NBTTagCompound;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
-public class ItemHelperImpl implements ItemHelper {
+public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public String getInternalNameFromMaterial(Material material) {
@@ -103,5 +105,15 @@ public class ItemHelperImpl implements ItemHelper {
     @Override
     public PotionEffect getPotionEffect(PotionEffectType type, int duration, int amplifier, boolean ambient, boolean particles, Color color, boolean icon) {
         return new PotionEffect(type, duration, amplifier, ambient, particles, icon);
+    }
+
+    @Override
+    public void setInventoryItem(Inventory inventory, ItemStack item, int slot) {
+        if (inventory instanceof CraftInventory) {
+            ((CraftInventory) inventory).getInventory().setItem(slot, CraftItemStack.asNMSCopy(item));
+        }
+        else {
+            inventory.setItem(slot, item);
+        }
     }
 }

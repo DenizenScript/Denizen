@@ -89,6 +89,7 @@ public class ItemBaseColor implements Property {
         // @description
         // Gets the base color of a banner.
         // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
+        // As of 1.13+, this tag is no longer relevant.
         // -->
         if (attribute.startsWith("base_color")) {
             DyeColor baseColor = getBaseColor();
@@ -126,6 +127,7 @@ public class ItemBaseColor implements Property {
         // @description
         // Changes the base color of a banner.
         // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
+        // As of 1.13+, this mechanism is no longer relevant.
         // @tags
         // <ItemTag.base_color>
         // -->
