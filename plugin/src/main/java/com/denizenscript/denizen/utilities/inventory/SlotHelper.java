@@ -46,7 +46,7 @@ public class SlotHelper {
             return CHESTPLATE;
         }
         if (MaterialCompat.LEGGINGS_MATERIALS.contains(type) && item.equals(inventory.getLeggings())) {
-            return CHESTPLATE;
+            return LEGGINGS;
         }
         if (MaterialCompat.BOOTS_MATERIALS.contains(type) && item.equals(inventory.getBoots())) {
             return BOOTS;
