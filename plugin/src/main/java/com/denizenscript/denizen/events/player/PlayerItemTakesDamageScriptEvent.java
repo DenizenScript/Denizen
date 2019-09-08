@@ -7,6 +7,7 @@ import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -34,6 +35,7 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     // @Context
     // <context.damage> returns the amount of damage the item has taken.
     // <context.item> returns the item that has taken damage.
+    // <context.slot> returns the slot of the item that has taken damage.
     //
     // @Determine
     // Element(Number) to set the amount of damage the item will take.
@@ -98,6 +100,9 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
         }
         else if (name.equals("damage")) {
             return damage;
+        }
+        else if (name.equals("slot")) {
+            return new ElementTag(SlotHelper.slotForItem(event.getPlayer().getInventory(), item.getItemStack()));
         }
         return super.getContext(name);
     }

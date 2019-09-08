@@ -1,7 +1,11 @@
 package com.denizenscript.denizen.utilities.inventory;
 
+import com.denizenscript.denizen.utilities.MaterialCompat;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
+import org.bukkit.Material;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.util.HashMap;
 
@@ -28,6 +32,36 @@ public class SlotHelper {
     public static final int HELMET = 39; // MC ID: 103
 
     public static final int OFFHAND = 40; // MC ID: -106 // wtf mojang? Negative?
+
+    /**
+     * Returns the slot an item in the player's inventory is at (for events like PlayerItemDamageEvent where the exact item is available).
+     * Returns -1 if unknown.
+     */
+    public static int slotForItem(PlayerInventory inventory, ItemStack item) {
+        Material type = item.getType();
+        if (MaterialCompat.HELMET_MATERIALS.contains(type) && item.equals(inventory.getHelmet())) {
+            return HELMET;
+        }
+        if (MaterialCompat.CHESTPLATE_MATERIALS.contains(type) && item.equals(inventory.getChestplate())) {
+            return CHESTPLATE;
+        }
+        if (MaterialCompat.LEGGINGS_MATERIALS.contains(type) && item.equals(inventory.getLeggings())) {
+            return CHESTPLATE;
+        }
+        if (MaterialCompat.BOOTS_MATERIALS.contains(type) && item.equals(inventory.getBoots())) {
+            return BOOTS;
+        }
+        if (item.equals(inventory.getItemInMainHand())) {
+            return inventory.getHeldItemSlot() + 1;
+        }
+        ItemStack[] contents = inventory.getContents();
+        for (int i = 0; i < contents.length; i++) {
+            if (item.equals(contents[i])) {
+                return i + 1;
+            }
+        }
+        return -1;
+    }
 
     // <--[language]
     // @name Slot Inputs

@@ -6,7 +6,9 @@ import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.entity.Player;
@@ -33,6 +35,7 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Context
     // <context.item> returns the item that broke.
+    // <context.slot> returns the slot of the item that broke.
     //
     // -->
 
@@ -90,6 +93,9 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
     public ObjectTag getContext(String name) {
         if (name.equals("item")) {
             return item;
+        }
+        else if (name.equals("slot")) {
+            return new ElementTag(SlotHelper.slotForItem(event.getPlayer().getInventory(), item.getItemStack()));
         }
         return super.getContext(name);
     }

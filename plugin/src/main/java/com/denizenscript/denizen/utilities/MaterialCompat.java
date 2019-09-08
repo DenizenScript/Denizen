@@ -9,6 +9,9 @@ import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class MaterialCompat {
 
     // Materials changed in 1.13
@@ -45,6 +48,17 @@ public class MaterialCompat {
     // Materials split in 1.14
     public static Material WALL_SIGN; // in 1.14, set to OAK_WALL_SIGN
 
+    public static HashSet<Material> HELMET_MATERIALS = new HashSet<>(),
+            CHESTPLATE_MATERIALS = new HashSet<>(),
+            LEGGINGS_MATERIALS = new HashSet<>(),
+            BOOTS_MATERIALS = new HashSet<>();
+
+    public static void addAllMaterials(Set<Material> set, String... matNames) {
+        for (String mat : matNames) {
+            set.add(Material.valueOf(mat));
+        }
+    }
+
     static {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
             SIGN = Material.OAK_SIGN;
@@ -68,8 +82,12 @@ public class MaterialCompat {
                 WALL_SIGN = Material.valueOf("WALL_SIGN");
             }
             WRITABLE_BOOK = Material.WRITABLE_BOOK;
+            addAllMaterials(HELMET_MATERIALS, "DIAMOND_HELMET", "GOLDEN_HELMET", "IRON_HELMET", "LEATHER_HELMET", "CHAINMAIL_HELMET", "TURTLE_HELMET");
+            addAllMaterials(CHESTPLATE_MATERIALS, "DIAMOND_CHESTPLATE", "GOLDEN_CHESTPLATE", "IRON_CHESTPLATE", "LEATHER_CHESTPLATE", "CHAINMAIL_CHESTPLATE");
+            addAllMaterials(LEGGINGS_MATERIALS, "DIAMOND_LEGGINGS", "GOLDEN_LEGGINGS", "IRON_LEGGINGS", "LEATHER_LEGGINGS", "CHAINMAIL_LEGGINGS");
+            addAllMaterials(BOOTS_MATERIALS, "DIAMOND_BOOTS", "GOLDEN_BOOTS", "IRON_BOOTS", "LEATHER_BOOTS", "CHAINMAIL_BOOTS");
         }
-        else {
+        else { // 1.12
             BANNER = Material.valueOf("BANNER");
             BURNING_FURNACE = Material.valueOf("BURNING_FURNACE");
             COMMAND_BLOCK = Material.valueOf("COMMAND");
@@ -90,6 +108,10 @@ public class MaterialCompat {
             STANDING_BANNER = Material.valueOf("STANDING_BANNER");
             WALL_BANNER = Material.valueOf("WALL_BANNER");
             WRITABLE_BOOK = Material.valueOf("BOOK_AND_QUILL");
+            addAllMaterials(HELMET_MATERIALS, "DIAMOND_HELMET", "GOLD_HELMET", "IRON_HELMET", "LEATHER_HELMET", "CHAINMAIL_HELMET");
+            addAllMaterials(CHESTPLATE_MATERIALS, "DIAMOND_CHESTPLATE", "GOLD_CHESTPLATE", "IRON_CHESTPLATE", "LEATHER_CHESTPLATE", "CHAINMAIL_CHESTPLATE");
+            addAllMaterials(LEGGINGS_MATERIALS, "DIAMOND_LEGGINGS", "GOLD_LEGGINGS", "IRON_LEGGINGS", "LEATHER_LEGGINGS", "CHAINMAIL_LEGGINGS");
+            addAllMaterials(BOOTS_MATERIALS, "DIAMOND_BOOTS", "GOLD_BOOTS", "IRON_BOOTS", "LEATHER_BOOTS", "CHAINMAIL_BOOTS");
         }
     }
 
