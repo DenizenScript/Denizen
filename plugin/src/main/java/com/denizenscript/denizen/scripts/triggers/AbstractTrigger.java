@@ -11,6 +11,8 @@ import com.denizenscript.denizencore.events.OldEventManager;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
+import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
+import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
 import com.denizenscript.denizencore.scripts.queues.core.TimedQueue;
 import com.denizenscript.denizencore.utilities.debugging.Debug.DebugElement;
 import net.citizensnpcs.api.CitizensAPI;
@@ -93,8 +95,20 @@ public abstract class AbstractTrigger {
 
         Debug.echoDebug(script, DebugElement.Header, "Parsing " + name + " trigger: n@" + npc.getName() + "/p@" + player.getName());
         // Create Queue
-        TimedQueue queue = new TimedQueue(script.getName());
-        queue.setSpeed(DurationTag.valueOf(Settings.interactQueueSpeed()).getTicks());
+        long speedTicks;
+        if (script.contains("SPEED")) {
+            speedTicks = DurationTag.valueOf(script.getString("SPEED", "0")).getTicks();
+        }
+        else {
+            speedTicks = DurationTag.valueOf(Settings.interactQueueSpeed()).getTicks();
+        }
+        ScriptQueue queue;
+        if (speedTicks > 0) {
+            queue = new TimedQueue(script.getName()).setSpeed(speedTicks).addEntries(entries);
+        }
+        else {
+            queue = new InstantQueue(script.getName()).addEntries(entries);
+        }
         // Add all entries to set it up
         queue.addEntries(entries);
         // Add context
