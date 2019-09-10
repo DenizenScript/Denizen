@@ -6,7 +6,6 @@ import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptHelper;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.flags.FlagManager;
@@ -945,6 +944,17 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         }
 
         // <--[tag]
+        // @attribute <NPCTag.distance_margin>
+        // @returns ElementTag(Decimal)
+        // @mechanism distance_margin
+        // @description
+        // Returns the NPC's current pathfinding distance margin. That is, how close it needs to get to its destination (in block-lengths).
+        // -->
+        if (attribute.startsWith("distance_margin")) {
+            return new ElementTag(getNavigator().getDefaultParameters().distanceMargin()).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <NPCTag.is_navigating>
         // @returns ElementTag(Boolean)
         // @description
@@ -1502,14 +1512,14 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
 
         // <--[mechanism]
         // @object NPCTag
-        // @name set_distance
+        // @name distance_margin
         // @input Element(Decimal)
         // @description
         // Sets the NPC's distance margin.
         // @tags
-        // TODO
+        // <NPCTag.distance_margin>
         // -->
-        if (mechanism.matches("set_distance") && mechanism.requireDouble()) {
+        if ((mechanism.matches("distance_margin") || mechanism.matches("set_distance")) && mechanism.requireDouble()) {
             getNavigator().getDefaultParameters().distanceMargin(mechanism.getValue().asDouble());
         }
 
