@@ -818,7 +818,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         }
 
         // <--[tag]
-        // @attribute <LocationTag.forward_flat[(<#.#>)]>
+        // @attribute <LocationTag.backward_flat[(<#.#>)]>
         // @returns LocationTag
         // @description
         // Returns the location behind this location based on yaw but not pitch. Optionally specify a number of blocks to go backward.
