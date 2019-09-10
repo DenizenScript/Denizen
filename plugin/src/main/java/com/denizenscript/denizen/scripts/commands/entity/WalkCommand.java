@@ -34,7 +34,22 @@ public class WalkCommand extends AbstractCommand implements Holdable {
     // @Group entity
     //
     // @Description
-    // TODO: Document Command Details
+    // Causes an entity or list of entities to walk to another location.
+    //
+    // Specify a destination location to walk to, or 'stop' to stop all walking.
+    //
+    // Optionally, specify a "speed:<#.#>" argument to control the speed of the NPCs.
+    //
+    // Optionally, specify "auto_range" to automatically set the path range for the walk instruction
+    // (if not specified, an NPC will not be able to walk to a location outside of its existing path range, by default 25 blocks).
+    // (Does not apply to non-NPC entities).
+    //
+    // Optionally, specify a list of entities to give them all the same walk instruction at the same time.
+    // If the list is of NPCs, optionally specify a "radius:<#.#>" argument to change the flocking radius.
+    // ('Radius' does not apply to non-NPC entities).
+    //
+    // Optionally, specify "lookat:<location>" to cause the NPCs to stare at a specific location while walking (as opposed to straight ahead).
+    // ('Radius' does not apply to non-NPC entities).
     //
     // @Tags
     // <NPCTag.navigator.is_navigating>
@@ -43,7 +58,20 @@ public class WalkCommand extends AbstractCommand implements Holdable {
     // <NPCTag.navigator.target_location>
     //
     // @Usage
-    // TODO: Document Command Details
+    // Use to make the NPC walk to an anchored position.
+    // - walk <npc> <npc.anchor[spot1]>
+    //
+    // @Usage
+    // Use to make the NPC walk to an anchored position that may be far away.
+    // - walk <npc> <npc.anchor[spot2]> auto_range
+    //
+    // @Usage
+    // Use to make the NPC walk to an anchored position while looking backwards.
+    // - walk <npc> <npc.anchor[spot3]> lookat:<npc.anchor[spot2]>
+    //
+    // @Usage
+    // Use to make a list of NPCs stored in a flag all move together, with a flocking radius based on the number of NPCs included.
+    // - walk <player.flag[squad]> radius:<player.flag[squad].size> <player.location>
     // -->
 
     @Override
