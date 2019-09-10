@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.Settings;
@@ -142,6 +143,16 @@ public class WorldTag implements ObjectTag, Adjustable {
         return getWorld().getEntities();
     }
 
+    public List<Entity> getEntitiesForTag() {
+        NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+        try {
+            return getWorld().getEntities();
+        }
+        finally {
+            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+        }
+    }
+
     private String prefix;
     String world_name;
 
@@ -216,7 +227,7 @@ public class WorldTag implements ObjectTag, Adjustable {
             public String run(Attribute attribute, ObjectTag object) {
                 ArrayList<EntityTag> entities = new ArrayList<>();
 
-                for (Entity entity : ((WorldTag) object).getWorld().getEntities()) {
+                for (Entity entity : ((WorldTag) object).getEntitiesForTag()) {
                     entities.add(new EntityTag(entity));
                 }
 

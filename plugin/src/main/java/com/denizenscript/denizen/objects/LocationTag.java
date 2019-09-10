@@ -1970,7 +1970,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 ArrayList<EntityTag> found = new ArrayList<>();
                 double radius = ArgumentHelper.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
                 attribute.fulfill(2);
-                for (Entity entity : getWorld().getEntities()) {
+                for (Entity entity : new WorldTag(getWorld()).getEntitiesForTag()) {
                     if (Utilities.checkLocation(this, entity.getLocation(), radius)) {
                         EntityTag current = new EntityTag(entity);
                         if (!ent_list.isEmpty()) {
@@ -2009,7 +2009,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 ArrayList<EntityTag> found = new ArrayList<>();
                 double radius = ArgumentHelper.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
                 attribute.fulfill(2);
-                for (Entity entity : getWorld().getEntities()) {
+                for (Entity entity : new WorldTag(getWorld()).getEntitiesForTag()) {
                     if (entity instanceof LivingEntity
                             && Utilities.checkLocation(this, entity.getLocation(), radius)) {
                         found.add(new EntityTag(entity));

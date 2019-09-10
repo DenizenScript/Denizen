@@ -16,6 +16,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_14_R1.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_14_R1.entity.*;
+import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityTargetEvent;
@@ -78,6 +79,16 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public Entity getFishHook(PlayerFishEvent event) {
         return event.getHook();
+    }
+
+    @Override
+    public ItemStack getItemFromTrident(Entity entity) {
+        return CraftItemStack.asBukkitCopy(((CraftTrident) entity).getHandle().trident);
+    }
+
+    @Override
+    public void setItemForTrident(Entity entity, ItemStack item) {
+        ((CraftTrident) entity).getHandle().trident = CraftItemStack.asNMSCopy(item);
     }
 
     @Override

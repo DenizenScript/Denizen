@@ -1019,11 +1019,21 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     public boolean isSpawned() {
-        return entity != null && isValid();
+        return entity != null && isValidForTag();
     }
 
     public boolean isValid() {
         return entity != null && entity.isValid();
+    }
+
+    public boolean isValidForTag() {
+        NMSHandler.getChunkHelper().changeChunkServerThread(entity.getWorld());
+        try {
+            return entity.isValid();
+        }
+        finally {
+            NMSHandler.getChunkHelper().restoreServerThread(entity.getWorld());
+        }
     }
 
     public void remove() {

@@ -1587,9 +1587,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 if (attribute.hasContext(1)) {
                     types = ListTag.valueOf(attribute.getContext(1));
                 }
-                for (Entity ent : ((CuboidTag) object).getWorld().getEntities()) {
+                for (Entity ent : new WorldTag(((CuboidTag) object).getWorld()).getEntitiesForTag()) {
                     EntityTag current = new EntityTag(ent);
-                    if (ent.isValid() && ((CuboidTag) object).isInsideCuboid(ent.getLocation())) {
+                    if (((CuboidTag) object).isInsideCuboid(ent.getLocation())) {
                         if (!types.isEmpty()) {
                             for (String type : types) {
                                 if (current.identifySimpleType().equalsIgnoreCase(type)) {
@@ -1618,7 +1618,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
             public String run(Attribute attribute, ObjectTag object) {
                 ArrayList<EntityTag> entities = new ArrayList<>();
                 for (Entity ent : ((CuboidTag) object).getWorld().getLivingEntities()) {
-                    if (ent.isValid() && ((CuboidTag) object).isInsideCuboid(ent.getLocation()) && !EntityTag.isCitizensNPC(ent)) {
+                    if (((CuboidTag) object).isInsideCuboid(ent.getLocation()) && !EntityTag.isCitizensNPC(ent)) {
                         entities.add(new EntityTag(ent));
                     }
                 }
