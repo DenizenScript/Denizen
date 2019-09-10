@@ -955,6 +955,17 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         }
 
         // <--[tag]
+        // @attribute <NPCTag.path_distance_margin>
+        // @returns ElementTag(Decimal)
+        // @mechanism path_distance_margin
+        // @description
+        // Returns the NPC's current pathfinding distance margin. That is, how close it needs to get to individual points along its path.
+        // -->
+        if (attribute.startsWith("path_distance_margin")) {
+            return new ElementTag(getNavigator().getDefaultParameters().pathDistanceMargin()).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <NPCTag.is_navigating>
         // @returns ElementTag(Boolean)
         // @description
@@ -1521,6 +1532,19 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         if ((mechanism.matches("distance_margin") || mechanism.matches("set_distance")) && mechanism.requireDouble()) {
             getNavigator().getDefaultParameters().distanceMargin(mechanism.getValue().asDouble());
+        }
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name path_distance_margin
+        // @input Element(Decimal)
+        // @description
+        // Sets the NPC's path distance margin.
+        // @tags
+        // <NPCTag.path_distance_margin>
+        // -->
+        if (mechanism.matches("path_distance_margin") && mechanism.requireDouble()) {
+            getNavigator().getDefaultParameters().pathDistanceMargin(mechanism.getValue().asDouble());
         }
 
         // <--[mechanism]
