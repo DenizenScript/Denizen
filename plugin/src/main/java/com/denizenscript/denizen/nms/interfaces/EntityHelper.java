@@ -44,6 +44,10 @@ public abstract class EntityHelper {
 
     public abstract Entity getFishHook(PlayerFishEvent event);
 
+    public abstract ItemStack getItemFromTrident(Entity entity);
+
+    public abstract void setItemForTrident(Entity entity, ItemStack item);
+
     public abstract void forceInteraction(Player player, Location location);
 
     public abstract Entity getEntity(World world, UUID uuid);

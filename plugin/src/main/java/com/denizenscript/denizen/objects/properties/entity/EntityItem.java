@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -17,7 +18,8 @@ public class EntityItem implements Property {
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag &&
                 (((EntityTag) entity).getBukkitEntityType() == EntityType.DROPPED_ITEM
-                        || ((EntityTag) entity).getBukkitEntityType() == EntityType.ENDERMAN);
+                        || ((EntityTag) entity).getBukkitEntityType() == EntityType.ENDERMAN
+                        || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && ((EntityTag) entity).getBukkitEntityType() == EntityType.TRIDENT));
     }
 
     public static EntityItem getFrom(ObjectTag entity) {
@@ -51,6 +53,9 @@ public class EntityItem implements Property {
     public ItemTag getItem() {
         if (item.getBukkitEntity() instanceof Item) {
             return new ItemTag(((Item) item.getBukkitEntity()).getItemStack());
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && item.getBukkitEntityType() == EntityType.TRIDENT) {
+            return new ItemTag(NMSHandler.getEntityHelper().getItemFromTrident(item.getBukkitEntity()));
         }
         else {
             return new ItemTag(((Enderman) item.getBukkitEntity())
@@ -95,7 +100,9 @@ public class EntityItem implements Property {
         // @mechanism EntityTag.item
         // @group properties
         // @description
-        // If the entity is a dropped item or an Enderman, returns the ItemTag the entity holds.
+        // If the entity is a dropped item, returns the item represented by the entity.
+        // If the entity is an enderman, returns the item that the enderman is holding.
+        // If the entity is a trident, returns the trident item represented by the entity.
         // -->
         if (attribute.startsWith("item")) {
             return getItem().getAttribute(attribute.fulfill(1));
@@ -112,19 +119,20 @@ public class EntityItem implements Property {
         // @name item
         // @input ItemTag
         // @description
-        // Changes what item a dropped item or an Enderman holds.
+        // Changes what item a dropped item or trident represents, or that an Enderman holds.
         // @tags
         // <EntityTag.item>
         // -->
 
         if (mechanism.matches("item") && mechanism.requireObject(ItemTag.class)) {
             if (item.getBukkitEntity() instanceof Item) {
-                ((Item) item.getBukkitEntity()).setItemStack(mechanism.getValue()
-                        .asType(ItemTag.class, mechanism.context).getItemStack());
+                ((Item) item.getBukkitEntity()).setItemStack(mechanism.valueAsType(ItemTag.class).getItemStack());
+            }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && item.getBukkitEntityType() == EntityType.TRIDENT) {
+                NMSHandler.getEntityHelper().setItemForTrident(item.getBukkitEntity(), mechanism.valueAsType(ItemTag.class).getItemStack());
             }
             else {
-                NMSHandler.getEntityHelper().setCarriedItem((Enderman) item.getBukkitEntity(),
-                        mechanism.valueAsType(ItemTag.class).getItemStack());
+                NMSHandler.getEntityHelper().setCarriedItem((Enderman) item.getBukkitEntity(), mechanism.valueAsType(ItemTag.class).getItemStack());
             }
         }
     }

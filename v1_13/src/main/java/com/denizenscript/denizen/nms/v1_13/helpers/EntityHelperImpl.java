@@ -15,11 +15,8 @@ import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_13_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_13_R2.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_13_R2.entity.CraftAnimals;
-import org.bukkit.craftbukkit.v1_13_R2.entity.CraftCreature;
-import org.bukkit.craftbukkit.v1_13_R2.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_13_R2.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_13_R2.entity.*;
+import org.bukkit.craftbukkit.v1_13_R2.inventory.CraftItemStack;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityTargetEvent;
@@ -85,6 +82,16 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public Entity getFishHook(PlayerFishEvent event) {
         return event.getHook();
+    }
+
+    @Override
+    public ItemStack getItemFromTrident(Entity entity) {
+        return CraftItemStack.asBukkitCopy(((CraftTrident) entity).getHandle().trident);
+    }
+
+    @Override
+    public void setItemForTrident(Entity entity, ItemStack item) {
+        ((CraftTrident) entity).getHandle().trident = CraftItemStack.asNMSCopy(item);
     }
 
     @Override

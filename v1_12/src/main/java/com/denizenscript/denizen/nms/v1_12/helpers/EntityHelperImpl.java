@@ -73,6 +73,16 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
+    public ItemStack getItemFromTrident(Entity entity) {
+        return null;
+    }
+
+    @Override
+    public void setItemForTrident(Entity entity, ItemStack item) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void forceInteraction(Player player, Location location) {
         CraftPlayer craftPlayer = (CraftPlayer) player;
         BlockPosition pos = new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ());
