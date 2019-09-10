@@ -804,6 +804,35 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         }
 
         // <--[tag]
+        // @attribute <LocationTag.forward_flat[(<#.#>)]>
+        // @returns LocationTag
+        // @description
+        // Returns the location in front of this location based on yaw but not pitch. Optionally specify a number of blocks to go forward.
+        // -->
+        if (attribute.startsWith("forward_flat")) {
+            Location loc = this.clone();
+            loc.setPitch(0);
+            Vector vector = loc.getDirection().multiply(attribute.hasContext(1) ? attribute.getDoubleContext(1) : 1);
+            return new LocationTag(this.clone().add(vector))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <LocationTag.forward_flat[(<#.#>)]>
+        // @returns LocationTag
+        // @description
+        // Returns the location behind this location based on yaw but not pitch. Optionally specify a number of blocks to go backward.
+        // This is equivalent to <@link tag LocationTag.forward_flat> in the opposite direction.
+        // -->
+        if (attribute.startsWith("backward_flat")) {
+            Location loc = this.clone();
+            loc.setPitch(0);
+            Vector vector = loc.getDirection().multiply(attribute.hasContext(1) ? attribute.getDoubleContext(1) : 1);
+            return new LocationTag(this.clone().subtract(vector))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <LocationTag.forward[(<#.#>)]>
         // @returns LocationTag
         // @description
