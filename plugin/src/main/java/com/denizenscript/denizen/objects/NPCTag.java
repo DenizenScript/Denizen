@@ -6,6 +6,7 @@ import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptHelper;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.flags.FlagManager;
@@ -944,139 +945,207 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         }
 
         // <--[tag]
-        // @attribute <NPCTag.navigator.is_navigating>
+        // @attribute <NPCTag.is_navigating>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the NPC is currently navigating.
         // -->
+        if (attribute.startsWith("is_navigating")) {
+            return new ElementTag(getNavigator().isNavigating()).getAttribute(attribute.fulfill(1));
+        }
         if (attribute.startsWith("navigator.is_navigating")) {
+            //Deprecations.oldNPCNavigator.warn(attribute.context);
             return new ElementTag(getNavigator().isNavigating()).getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
-        // @attribute <NPCTag.navigator.speed>
-        // @returns ElementTag(Number)
+        // @attribute <NPCTag.speed>
+        // @returns ElementTag(Decimal)
         // @description
         // Returns the current speed of the NPC.
         // -->
+        if (attribute.startsWith("speed")) {
+            return new ElementTag(getNavigator().getLocalParameters().speed())
+                    .getAttribute(attribute.fulfill(1));
+        }
         if (attribute.startsWith("navigator.speed")) {
+            //Deprecations.oldNPCNavigator.warn(attribute.context);
             return new ElementTag(getNavigator().getLocalParameters().speed())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
-        // @attribute <NPCTag.navigator.range>
-        // @returns ElementTag(Number)
+        // @attribute <NPCTag.range>
+        // @returns ElementTag(Decimal)
         // @description
-        // Returns the maximum pathfinding range.
+        // Returns the NPC's current maximum pathfinding range.
         // -->
+        if (attribute.startsWith("range")) {
+            return new ElementTag(getNavigator().getLocalParameters().range())
+                    .getAttribute(attribute.fulfill(1));
+        }
         if (attribute.startsWith("navigator.range")) {
+            //Deprecations.oldNPCNavigator.warn(attribute.context);
             return new ElementTag(getNavigator().getLocalParameters().range())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
-        // @attribute <NPCTag.navigator.attack_range>
-        // @returns ElementTag(Number)
+        // @attribute <NPCTag.attack_range>
+        // @returns ElementTag(Decimal)
         // @description
-        // Returns the maximum attack range.
+        // Returns the NPC's current navigator attack range limit.
         // -->
+        if (attribute.startsWith("attack_range")) {
+            return new ElementTag(getNavigator().getLocalParameters().attackRange())
+                    .getAttribute(attribute.fulfill(1));
+        }
         if (attribute.startsWith("navigator.attack_range")) {
+            //Deprecations.oldNPCNavigator.warn(attribute.context);
             return new ElementTag(getNavigator().getLocalParameters().attackRange())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
-        // @attribute <NPCTag.navigator.attack_strategy>
+        // @attribute <NPCTag.attack_strategy>
         // @returns ElementTag
         // @description
-        // Returns the NPC's attack strategy.
+        // Returns the NPC's current navigator attack strategy.
         // -->
+        if (attribute.startsWith("attack_strategy")) {
+            return new ElementTag(getNavigator().getLocalParameters().attackStrategy().toString())
+                    .getAttribute(attribute.fulfill(1));
+        }
         if (attribute.startsWith("navigator.attack_strategy")) {
+            //Deprecations.oldNPCNavigator.warn(attribute.context);
             return new ElementTag(getNavigator().getLocalParameters().attackStrategy().toString())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
-        // @attribute <NPCTag.navigator.speed_modifier>
-        // @returns ElementTag(Number)
+        // @attribute <NPCTag.speed_modifier>
+        // @returns ElementTag(Decimal)
         // @description
-        // Returns the NPC movement speed modifier.
+        // Returns the NPC's current movement speed modifier (a multiplier applied over their base speed).
         // -->
+        if (attribute.startsWith("speed_modifier")) {
+            return new ElementTag(getNavigator().getLocalParameters().speedModifier())
+                    .getAttribute(attribute.fulfill(1));
+        }
         if (attribute.startsWith("navigator.speed_modifier")) {
+            //Deprecations.oldNPCNavigator.warn(attribute.context);
             return new ElementTag(getNavigator().getLocalParameters().speedModifier())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
-        // @attribute <NPCTag.navigator.base_speed>
-        // @returns ElementTag(Number)
+        // @attribute <NPCTag.base_speed>
+        // @returns ElementTag(Decimal)
         // @description
-        // Returns the base navigation speed.
+        // Returns the NPC's base navigation speed.
         // -->
+        if (attribute.startsWith("base_speed")) {
+            return new ElementTag(getNavigator().getLocalParameters().baseSpeed())
+                    .getAttribute(attribute.fulfill(1));
+        }
         if (attribute.startsWith("navigator.base_speed")) {
+            //Deprecations.oldNPCNavigator.warn(attribute.context);
             return new ElementTag(getNavigator().getLocalParameters().baseSpeed())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
-        // @attribute <NPCTag.navigator.avoid_water>
+        // @attribute <NPCTag.avoid_water>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the NPC will avoid water.
         // -->
+        if (attribute.startsWith("avoid_water")) {
+            return new ElementTag(getNavigator().getLocalParameters().avoidWater())
+                    .getAttribute(attribute.fulfill(1));
+        }
         if (attribute.startsWith("navigator.avoid_water")) {
+            //Deprecations.oldNPCNavigator.warn(attribute.context);
             return new ElementTag(getNavigator().getLocalParameters().avoidWater())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
-        // @attribute <NPCTag.navigator.target_location>
+        // @attribute <NPCTag.target_location>
         // @returns LocationTag
         // @description
-        // Returns the location the NPC is curently navigating towards.
+        // Returns the location the NPC is currently navigating towards (if any).
         // -->
+        if (attribute.startsWith("target_location")) {
+            if (getNavigator().getTargetAsLocation() == null) {
+                return null;
+            }
+            return new LocationTag(getNavigator().getTargetAsLocation()).getAttribute(attribute.fulfill(1));
+        }
         if (attribute.startsWith("navigator.target_location")) {
-            return (getNavigator().getTargetAsLocation() != null
-                    ? new LocationTag(getNavigator().getTargetAsLocation()).getAttribute(attribute.fulfill(2))
-                    : null);
+            //Deprecations.oldNPCNavigator.warn(attribute.context);
+            if (getNavigator().getTargetAsLocation() == null) {
+                return null;
+            }
+            return new LocationTag(getNavigator().getTargetAsLocation()).getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
-        // @attribute <NPCTag.navigator.is_fighting>
+        // @attribute <NPCTag.is_fighting>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the NPC is in combat.
         // -->
+        if (attribute.startsWith("is_fighting")) {
+            return new ElementTag(getNavigator().getEntityTarget() != null && getNavigator().getEntityTarget().isAggressive())
+                    .getAttribute(attribute.fulfill(1));
+        }
         if (attribute.startsWith("navigator.is_fighting")) {
+            //Deprecations.oldNPCNavigator.warn(attribute.context);
             return new ElementTag(getNavigator().getEntityTarget() != null && getNavigator().getEntityTarget().isAggressive())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
-        // @attribute <NPCTag.navigator.target_type>
+        // @attribute <NPCTag.target_type>
         // @returns ElementTag
         // @description
-        // Returns the entity type of the target.
+        // Returns the entity type of the NPC's current navigation target (if any).
         // -->
-        if (attribute.startsWith("navigator.target_type"))
-        // TODO: IMPROVE
-        {
-            return new ElementTag(getNavigator().getTargetType() == null ? "null"
-                    : getNavigator().getTargetType().toString())
+        if (attribute.startsWith("target_type")) {
+            if (getNavigator().getTargetType() == null) {
+                return null;
+            }
+            return new ElementTag(getNavigator().getTargetType().toString())
+                    .getAttribute(attribute.fulfill(1));
+        }
+        if (attribute.startsWith("navigator.target_type")) {
+            //Deprecations.oldNPCNavigator.warn(attribute.context);
+            if (getNavigator().getTargetType() == null) {
+                return null;
+            }
+            return new ElementTag(getNavigator().getTargetType().toString())
                     .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
-        // @attribute <NPCTag.navigator.target_entity>
+        // @attribute <NPCTag.target_entity>
         // @returns EntityTag
         // @description
-        // Returns the entity being targeted.
+        // Returns the entity being targeted by the NPC's current navigation (if any).
         // -->
+        if (attribute.startsWith("target_entity")) {
+            if (getNavigator().getEntityTarget() == null || getNavigator().getEntityTarget().getTarget() == null) {
+                return null;
+            }
+            return new EntityTag(getNavigator().getEntityTarget().getTarget()).getAttribute(attribute.fulfill(1));
+        }
         if (attribute.startsWith("navigator.target_entity")) {
-            return (getNavigator().getEntityTarget() != null && getNavigator().getEntityTarget().getTarget() != null
-                    ? new EntityTag(getNavigator().getEntityTarget().getTarget()).getAttribute(attribute.fulfill(2))
-                    : null);
+            //Deprecations.oldNPCNavigator.warn(attribute.context);
+            if (getNavigator().getEntityTarget() == null || getNavigator().getEntityTarget().getTarget() == null) {
+                return null;
+            }
+            return new EntityTag(getNavigator().getEntityTarget().getTarget()).getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
