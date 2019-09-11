@@ -386,10 +386,6 @@ public class TextTagBase {
             Deprecations.pointlessTextTags.warn(event.getScriptEntry());
             event.setReplaced(new ElementTag(String.valueOf((char) 0x2011)).getAttribute(attribute.fulfill(1)));
         }
-        else if (lower.equals("&pc")) {
-            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-            event.setReplaced(new ElementTag("%").getAttribute(attribute.fulfill(1)));
-        }
         else if (lower.equals("&pipe")) {
             Deprecations.pointlessTextTags.warn(event.getScriptEntry());
             event.setReplaced(new ElementTag("|").getAttribute(attribute.fulfill(1)));
@@ -409,6 +405,16 @@ public class TextTagBase {
         else if (lower.equals("&hrt")) {
             Deprecations.pointlessTextTags.warn(event.getScriptEntry());
             event.setReplaced(new ElementTag("\u2665").getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <&pc>
+        // @returns ElementTag
+        // @description
+        // Returns a percent symbol: %
+        // -->
+        else if (lower.equals("&pc")) {
+            event.setReplaced(new ElementTag("%").getAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]
