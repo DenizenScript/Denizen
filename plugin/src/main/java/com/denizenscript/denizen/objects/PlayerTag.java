@@ -2025,7 +2025,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns whether the player has completed the specified advancement.
         // -->
         if (attribute.startsWith("has_advancement") && attribute.hasContext(1)) {
-            Advancement adv = AdvancementHelper.getAdvancement(attribute.getContext(1).toUpperCase());
+            Advancement adv = AdvancementHelper.getAdvancement(attribute.getContext(1));
             if (adv == null) {
                 if (!attribute.hasAlternative()) {
                     Debug.echoError("Advancement '" + attribute.getContext(1) + "' does not exist.");
@@ -2370,7 +2370,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <PlayerTag.has_advancement[<name>]>
         // -->
         if (mechanism.matches("award_advancement")) {
-            Advancement adv = AdvancementHelper.getAdvancement(mechanism.getValue().asString().toUpperCase());
+            Advancement adv = AdvancementHelper.getAdvancement(mechanism.getValue().asString());
             if (adv == null) {
                 if (mechanism.shouldDebug()) {
                     Debug.echoError("Advancement '" + mechanism.getValue().asString() + "' does not exist.");
