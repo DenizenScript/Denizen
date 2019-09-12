@@ -104,10 +104,10 @@ public abstract class AbstractTrigger {
         }
         ScriptQueue queue;
         if (speedTicks > 0) {
-            queue = new TimedQueue(script.getName()).setSpeed(speedTicks).addEntries(entries);
+            queue = new TimedQueue(script.getName()).setSpeed(speedTicks);
         }
         else {
-            queue = new InstantQueue(script.getName()).addEntries(entries);
+            queue = new InstantQueue(script.getName());
         }
         // Add all entries to set it up
         queue.addEntries(entries);
