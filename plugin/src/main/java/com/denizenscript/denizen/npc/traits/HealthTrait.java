@@ -94,9 +94,7 @@ public class HealthTrait extends Trait implements Listener {
     }
 
     public void setRespawnLocation(String string) {
-        if (ArgumentHelper.matchesLocation("location:" + string)) {
-            respawnLocation = string;
-        }
+        respawnLocation = string;
     }
 
     public void setRespawnDelay(int seconds) {
@@ -104,9 +102,7 @@ public class HealthTrait extends Trait implements Listener {
     }
 
     public void setRespawnDelay(String string) {
-        if (ArgumentHelper.matchesDuration("duration:" + string)) {
-            respawnDelay = string;
-        }
+        respawnDelay = string;
     }
 
     public String getRespawnLocationAsString() {
