@@ -1066,11 +1066,17 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @mechanism PlayerTag.bed_spawn_location
         // -->
         if (attribute.startsWith("bed_spawn")) {
-            if (getOfflinePlayer().getBedSpawnLocation() == null) {
-                return null;
+            try {
+                NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+                if (getOfflinePlayer().getBedSpawnLocation() == null) {
+                    return null;
+                }
+                return new LocationTag(getOfflinePlayer().getBedSpawnLocation())
+                        .getAttribute(attribute.fulfill(1));
             }
-            return new LocationTag(getOfflinePlayer().getBedSpawnLocation())
-                    .getAttribute(attribute.fulfill(1));
+            finally {
+                NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+            }
         }
 
         // If online, let EntityTag handle location tags since there are more options
