@@ -1312,18 +1312,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             double nx = xzLen * Math.sin(-getYaw() * (Math.PI / 180));
             double ny = Math.sin(getPitch() * (Math.PI / 180));
             double nz = xzLen * Math.cos(getYaw() * (Math.PI / 180));
-            try {
-                NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
-                Location location = NMSHandler.getEntityHelper().getImpactNormal(this, new Vector(nx, -ny, nz), range);
-                if (location != null) {
-                    return new LocationTag(location).getAttribute(attribute.fulfill(1));
-                }
-                else {
-                    return null;
-                }
+            Location location = NMSHandler.getEntityHelper().getImpactNormal(this, new Vector(nx, -ny, nz), range);
+            if (location != null) {
+                return new LocationTag(location).getAttribute(attribute.fulfill(1));
             }
-            finally {
-                NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+            else {
+                return null;
             }
         }
 
@@ -1343,18 +1337,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             double nx = xzLen * Math.sin(-getYaw() * (Math.PI / 180));
             double ny = Math.sin(getPitch() * (Math.PI / 180));
             double nz = xzLen * Math.cos(getYaw() * (Math.PI / 180));
-            try {
-                NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
-                Location location = NMSHandler.getEntityHelper().rayTraceBlock(this, new Vector(nx, -ny, nz), range);
-                if (location != null) {
-                    return new LocationTag(location).getBlockLocation().getAttribute(attribute.fulfill(1));
-                }
-                else {
-                    return null;
-                }
+            Location location = NMSHandler.getEntityHelper().rayTraceBlock(this, new Vector(nx, -ny, nz), range);
+            if (location != null) {
+                return new LocationTag(location).getBlockLocation().getAttribute(attribute.fulfill(1));
             }
-            finally {
-                NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+            else {
+                return null;
             }
         }
 
@@ -1374,18 +1362,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             double nx = xzLen * Math.sin(-getYaw() * (Math.PI / 180));
             double ny = Math.sin(getPitch() * (Math.PI / 180));
             double nz = xzLen * Math.cos(getYaw() * (Math.PI / 180));
-            try {
-                NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
-                Location location = NMSHandler.getEntityHelper().rayTrace(this, new Vector(nx, -ny, nz), range);
-                if (location != null) {
-                    return new LocationTag(location).getAttribute(attribute.fulfill(1));
-                }
-                else {
-                    return null;
-                }
+            Location location = NMSHandler.getEntityHelper().rayTrace(this, new Vector(nx, -ny, nz), range);
+            if (location != null) {
+                return new LocationTag(location).getAttribute(attribute.fulfill(1));
             }
-            finally {
-                NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+            else {
+                return null;
             }
         }
 
