@@ -8,7 +8,9 @@ import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
+import com.denizenscript.denizencore.scripts.ScriptBuilder;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.tags.TagManager;
@@ -188,7 +190,17 @@ public class ItemScriptContainer extends ScriptContainer {
             if (contains("MECHANISMS")) {
                 YamlConfiguration mechs = getConfigurationSection("MECHANISMS");
                 for (StringHolder key : mechs.getKeys(false)) {
-                    String val = TagManager.tag(mechs.getString(key.str), context);
+                    String val;
+                    if (mechs.isList(key.str)) {
+                        ListTag list = new ListTag();
+                        for (String listVal : mechs.getStringList(key.str)) {
+                            list.add(ScriptBuilder.stripLinePrefix(TagManager.tag(listVal, context)));
+                        };
+                        val = list.identify();
+                    }
+                    else {
+                        val = TagManager.tag(mechs.getString(key.str), context);
+                    }
                     stack.safeAdjust(new Mechanism(new ElementTag(key.low), new ElementTag(val), context));
                 }
             }
