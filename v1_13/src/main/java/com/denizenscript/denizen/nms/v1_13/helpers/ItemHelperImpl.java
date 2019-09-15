@@ -3,15 +3,13 @@ package com.denizenscript.denizen.nms.v1_13.helpers;
 import com.denizenscript.denizen.nms.interfaces.ItemHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.jnbt.*;
+import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.nms.v1_13.impl.jnbt.CompoundTagImpl;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import net.minecraft.server.v1_13_R2.GameProfileSerializer;
-import net.minecraft.server.v1_13_R2.IRecipe;
-import net.minecraft.server.v1_13_R2.MinecraftKey;
-import net.minecraft.server.v1_13_R2.NBTTagCompound;
+import net.minecraft.server.v1_13_R2.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -23,6 +21,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class ItemHelperImpl extends ItemHelper {
@@ -35,6 +34,14 @@ public class ItemHelperImpl extends ItemHelper {
                 recipeMap.remove(key);
             }
         }
+    }
+
+    @Override
+    public void registerFurnaceRecipe(String keyName, ItemStack result, ItemStack ingredient, float exp, int time) {
+        MinecraftKey key = new MinecraftKey("denizen", "furnace_recipe_" + keyName);
+        RecipeItemStack itemRecipe = new RecipeItemStack(Arrays.asList(new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(ingredient))).stream());
+        FurnaceRecipe recipe = new FurnaceRecipe(key, "custom", itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+        ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().a(recipe);
     }
 
     @Override

@@ -91,7 +91,6 @@ public class ItemScriptHelper implements Listener {
                     for (int i = 0; i < ingredients.size(); i++) {
                         recipe.setIngredient("ABCDEFGHI".charAt(i), new RecipeChoice.ExactChoice(ingredients.get(i).getItemStack().clone()));
                     }
-                    Debug.log("Added " + recipe.getIngredientMap() + " asa " + key + " for " + recipe.getResult()); // TODO: Delete line
                     Bukkit.addRecipe(recipe);
                 }
                 else {
@@ -149,13 +148,12 @@ public class ItemScriptHelper implements Listener {
                 Debug.echoError("Invalid item '" + string + "', furnace recipe will not be registered for item script '" + container.getName() + "'.");
                 continue;
             }
-            // TODO: When ExactChoice is patched:
-            /*if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                NamespacedKey key = new NamespacedKey("denizen", "item_" + CoreUtilities.toLowerCase(container.getName()) + "_furnace_recipe");
-                FurnaceRecipe recipe = new FurnaceRecipe(key, container.getCleanReference().getItemStack(), new RecipeChoice.ExactChoice(furnace_item.getItemStack().clone()), 0, 20);
-                Bukkit.addRecipe(recipe);
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+                ItemStack result = container.getCleanReference().getItemStack().clone();
+                ItemStack input = furnace_item.getItemStack().clone();
+                NMSHandler.getItemHelper().registerFurnaceRecipe(CoreUtilities.toLowerCase(container.getName()), result, input, 0, 20);
             }
-            else*/ {
+            else {
                 FurnaceRecipe recipe = new FurnaceRecipe(container.getCleanReference().getItemStack(), furnace_item.getMaterial().getMaterial(), furnace_item.getItemStack().getDurability());
                 Bukkit.addRecipe(recipe);
                 currentFurnaceRecipes.put(container, furnace_item);
@@ -230,7 +228,11 @@ public class ItemScriptHelper implements Listener {
     public void furnaceSmeltHandler(FurnaceSmeltEvent event) {
         if (isItemscript(event.getResult())) {
             ItemScriptContainer isc = getItemScriptContainer(event.getResult());
-            ItemTag itm = new ItemTag(currentFurnaceRecipes.get(isc).getItemStack().clone());
+            ItemTag convertResult = currentFurnaceRecipes.get(isc);
+            if (convertResult == null) {
+                return;
+            }
+            ItemTag itm = new ItemTag(convertResult.getItemStack().clone());
             itm.setAmount(1);
             ItemTag src = new ItemTag(event.getSource().clone());
             src.setAmount(1);
@@ -238,7 +240,6 @@ public class ItemScriptHelper implements Listener {
                 List<Recipe> recipes = Bukkit.getServer().getRecipesFor(event.getSource());
                 for (Recipe rec : recipes) {
                     if (rec instanceof FurnaceRecipe) {
-                        // TODO: Also make sure non-script recipes still burn somehow. FurnaceBurnEvent? Maybe also listen to inventory clicking and manually start a burn?
                         event.setResult(rec.getResult());
                         return;
                     }

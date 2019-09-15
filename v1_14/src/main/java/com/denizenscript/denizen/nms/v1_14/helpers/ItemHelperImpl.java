@@ -33,10 +33,18 @@ public class ItemHelperImpl extends ItemHelper {
             for (MinecraftKey key : new ArrayList<>(recipeMap.keySet())) {
                 if (key.getNamespace().equalsIgnoreCase("denizen")) {
                     recipeMap.remove(key);
-                    Debug.log("Removed " + key); // TODO: Delete line
                 }
             }
         }
+    }
+
+    @Override
+    public void registerFurnaceRecipe(String keyName, ItemStack result, ItemStack ingredient, float exp, int time) {
+        MinecraftKey key = new MinecraftKey("denizen", "furnace_recipe_" + keyName);
+        RecipeItemStack itemRecipe = new RecipeItemStack(Arrays.asList(new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(ingredient))).stream());
+        itemRecipe.exact = true;
+        FurnaceRecipe recipe = new FurnaceRecipe(key, "custom", itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+        ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().addRecipe(recipe);
     }
 
     @Override

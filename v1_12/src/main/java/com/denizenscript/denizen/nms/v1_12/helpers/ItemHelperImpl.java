@@ -27,6 +27,11 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
+    public void registerFurnaceRecipe(String keyName, ItemStack result, ItemStack ingredient, float exp, int time) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public String getInternalNameFromMaterial(Material material) {
         return CraftItemStack.asNMSCopy(new ItemStack(material)).save(new NBTTagCompound()).getString("id");
     }
