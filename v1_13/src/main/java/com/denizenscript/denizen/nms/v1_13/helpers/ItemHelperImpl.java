@@ -30,7 +30,7 @@ public class ItemHelperImpl extends ItemHelper {
     public void clearDenizenRecipes() {
         Object2ObjectLinkedOpenHashMap<MinecraftKey, IRecipe> recipeMap = ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().recipes;
         for (MinecraftKey key : new ArrayList<>(recipeMap.keySet())) {
-            if (key.getKey().equalsIgnoreCase("denizen")) {
+            if (key.b().equalsIgnoreCase("denizen")) {
                 recipeMap.remove(key);
             }
         }
