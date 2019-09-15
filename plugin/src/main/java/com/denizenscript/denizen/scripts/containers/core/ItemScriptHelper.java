@@ -50,112 +50,93 @@ public class ItemScriptHelper implements Listener {
         }
     }
 
-    @EventHandler
-    public void scriptReload(ScriptReloadEvent event) {
-
-        for (ItemScriptContainer container : item_scripts.values()) {
-            if (!container.contains("RECIPE")) {
-                continue;
-            }
-            List<String> recipeList = container.getStringList("RECIPE");
-
-            // Process all tags in list
-            for (int n = 0; n < recipeList.size(); n++) {
-                recipeList.set(n, TagManager.tag(recipeList.get(n), new BukkitTagContext(container.player, container.npc, new ScriptTag(container))));
-            }
-
-            // Store every ingredient in a List
-            List<ItemTag> ingredients = new ArrayList<>();
-
-            boolean shouldRegister = true;
-            recipeLoop:
-            for (String recipeRow : recipeList) {
-                String[] elements = recipeRow.split("\\|", 3);
-
-                for (String element : elements) {
-                    ItemTag ingredient = ItemTag.valueOf(element.replaceAll("[iImM]@", ""), container);
-                    if (ingredient == null) {
-                        Debug.echoError("Invalid ItemTag ingredient, recipe will not be registered for item script '"
-                                + container.getName() + "': " + element);
-                        shouldRegister = false;
-                        break recipeLoop;
-                    }
-                    ingredients.add(ingredient);
-                }
-            }
-
-            if (shouldRegister) {
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                    NamespacedKey key = new NamespacedKey("denizen", "item_" + CoreUtilities.toLowerCase(container.getName()) + "_shaped_recipe");
-                    ShapedRecipe recipe = new ShapedRecipe(key, container.getCleanReference().getItemStack()).shape("ABC", "DEF", "GHI");
-                    for (int i = 0; i < ingredients.size(); i++) {
-                        recipe.setIngredient("ABCDEFGHI".charAt(i), new RecipeChoice.ExactChoice(ingredients.get(i).getItemStack().clone()));
-                    }
-                    Bukkit.addRecipe(recipe);
-                }
-                else {
-                    specialrecipesMap.put(container, ingredients);
-                }
-            }
+    public void registerShapedRecipe(ItemScriptContainer container, List<String> recipeList) {
+        for (int n = 0; n < recipeList.size(); n++) {
+            recipeList.set(n, TagManager.tag(recipeList.get(n), new BukkitTagContext(container.player, container.npc, new ScriptTag(container))));
         }
+        List<ItemTag> ingredients = new ArrayList<>();
+        for (String recipeRow : recipeList) {
+            String[] elements = recipeRow.split("\\|", 3);
 
-        for (ItemScriptContainer container : item_scripts.values()) {
-            if (!container.contains("SHAPELESS_RECIPE")) {
-                continue;
-            }
-            String string = container.getString("SHAPELESS_RECIPE");
-
-            String list = TagManager.tag(string, new BukkitTagContext(container.player, container.npc, new ScriptTag(container)));
-
-            List<ItemTag> ingredients = new ArrayList<>();
-
-            boolean shouldRegister = true;
-            for (String element : ListTag.valueOf(list)) {
+            for (String element : elements) {
                 ItemTag ingredient = ItemTag.valueOf(element.replaceAll("[iImM]@", ""), container);
                 if (ingredient == null) {
-                    Debug.echoError("Invalid ItemTag ingredient, shapeless recipe will not be registered for item script '"
+                    Debug.echoError("Invalid ItemTag ingredient, recipe will not be registered for item script '"
                             + container.getName() + "': " + element);
-                    shouldRegister = false;
-                    break;
+                    return;
                 }
                 ingredients.add(ingredient);
             }
-            if (shouldRegister) {
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                    ItemStack result = container.getCleanReference().getItemStack().clone();
-                    ItemStack[] input = new ItemStack[ingredients.size()];
-                    for (int i = 0; i < input.length; i++) {
-                        input[i] = ingredients.get(i).getItemStack().clone();
-                    }
-                    NMSHandler.getItemHelper().registerShapelessRecipe(CoreUtilities.toLowerCase(container.getName()), result, input);
-                }
-                else {
-                    shapelessRecipesMap.put(container, ingredients);
-                }
-            }
         }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+            NamespacedKey key = new NamespacedKey("denizen", "item_" + CoreUtilities.toLowerCase(container.getName()) + "_shaped_recipe");
+            ShapedRecipe recipe = new ShapedRecipe(key, container.getCleanReference().getItemStack()).shape("ABC", "DEF", "GHI");
+            for (int i = 0; i < ingredients.size(); i++) {
+                recipe.setIngredient("ABCDEFGHI".charAt(i), new RecipeChoice.ExactChoice(ingredients.get(i).getItemStack().clone()));
+            }
+            Bukkit.addRecipe(recipe);
+        }
+        else {
+            specialrecipesMap.put(container, ingredients);
+        }
+    }
+
+    public void registerShapelessRecipe(ItemScriptContainer container, String shapelessString) {
+        String list = TagManager.tag(shapelessString, new BukkitTagContext(container.player, container.npc, new ScriptTag(container)));
+        List<ItemTag> ingredients = new ArrayList<>();
+        for (String element : ListTag.valueOf(list)) {
+            ItemTag ingredient = ItemTag.valueOf(element.replaceAll("[iImM]@", ""), container);
+            if (ingredient == null) {
+                Debug.echoError("Invalid ItemTag ingredient, shapeless recipe will not be registered for item script '"
+                        + container.getName() + "': " + element);
+                return;
+            }
+            ingredients.add(ingredient);
+        }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+            ItemStack result = container.getCleanReference().getItemStack().clone();
+            ItemStack[] input = new ItemStack[ingredients.size()];
+            for (int i = 0; i < input.length; i++) {
+                input[i] = ingredients.get(i).getItemStack().clone();
+            }
+            NMSHandler.getItemHelper().registerShapelessRecipe(CoreUtilities.toLowerCase(container.getName()), result, input);
+        }
+        else {
+            shapelessRecipesMap.put(container, ingredients);
+        }
+    }
+
+    public void registerFurnaceRecipe(ItemScriptContainer container, String furnaceItemString, float exp, int time) {
+        ItemTag furnace_item = ItemTag.valueOf(furnaceItemString, container);
+        if (furnace_item == null) {
+            Debug.echoError("Invalid item '" + furnaceItemString + "', furnace recipe will not be registered for item script '" + container.getName() + "'.");
+            return;
+        }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+            ItemStack result = container.getCleanReference().getItemStack().clone();
+            ItemStack input = furnace_item.getItemStack().clone();
+            NMSHandler.getItemHelper().registerFurnaceRecipe(CoreUtilities.toLowerCase(container.getName()), result, input, exp, time);
+        }
+        else {
+            FurnaceRecipe recipe = new FurnaceRecipe(container.getCleanReference().getItemStack(), furnace_item.getMaterial().getMaterial(), furnace_item.getItemStack().getDurability());
+            Bukkit.addRecipe(recipe);
+            currentFurnaceRecipes.put(container, furnace_item);
+        }
+    }
+
+    @EventHandler
+    public void scriptReload(ScriptReloadEvent event) {
 
         currentFurnaceRecipes.clear();
         for (ItemScriptContainer container : item_scripts.values()) {
-            if (!container.contains("FURNACE_RECIPE")) {
-                continue;
+            if (container.contains("RECIPE")) {
+                registerShapedRecipe(container, container.getStringList("RECIPE"));
             }
-            String string = container.getString("FURNACE_RECIPE");
-
-            ItemTag furnace_item = ItemTag.valueOf(string, container);
-            if (furnace_item == null) {
-                Debug.echoError("Invalid item '" + string + "', furnace recipe will not be registered for item script '" + container.getName() + "'.");
-                continue;
+            if (container.contains("SHAPELESS_RECIPE")) {
+                registerShapelessRecipe(container, container.getString("SHAPELESS_RECIPE"));
             }
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                ItemStack result = container.getCleanReference().getItemStack().clone();
-                ItemStack input = furnace_item.getItemStack().clone();
-                NMSHandler.getItemHelper().registerFurnaceRecipe(CoreUtilities.toLowerCase(container.getName()), result, input, 0, 20);
-            }
-            else {
-                FurnaceRecipe recipe = new FurnaceRecipe(container.getCleanReference().getItemStack(), furnace_item.getMaterial().getMaterial(), furnace_item.getItemStack().getDurability());
-                Bukkit.addRecipe(recipe);
-                currentFurnaceRecipes.put(container, furnace_item);
+            if (container.contains("FURNACE_RECIPE")) {
+                registerFurnaceRecipe(container, container.getString("FURNACE_RECIPE"), 0, 40);
             }
         }
     }
