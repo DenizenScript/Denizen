@@ -70,21 +70,30 @@ public class ItemScriptContainer extends ScriptContainer {
     //   - ...
     //
     //   # You can specify the items required to craft your item. For an empty slot, use air.
-    //   recipe:
-    //   - ItemTag|ItemTag|ItemTag
-    //   - ItemTag|ItemTag|ItemTag
-    //   - ItemTag|ItemTag|ItemTag
-    //
-    //   # You can specify a material that can be smelted into your item.
-    //   # Note: This can overwrite existing furnace recipes.
-    //   # If no_id is specified, only the material/data pair will be validated.
-    //   # This might misbehave with some smelting systems, as the Minecraft smelting logic may refuse
-    //   # To continue smelting items in some cases when the script validator gets in the way.
-    //   furnace_recipe: ItemTag
+    //   recipes:
+    //       1:
+    //       - ItemTag|ItemTag|ItemTag
+    //       - ItemTag|ItemTag|ItemTag
+    //       - ItemTag|ItemTag|ItemTag
+    //       # Add more recipes if you want.
+    //       2:
+    //       - ...
     //
     //   # You can specify a list of materials that make up a shapeless recipe.
     //   # Note: This can overwrite existing shapeless recipes.
-    //   shapeless_recipe: ItemTag|...
+    //   shapeless_recipes:
+    //      1: ItemTag|...
+    //      # Add more shapeless recipes if you want.
+    //      2: ...
+    //
+    //   # You can specify a material that can be smelted into your item.
+    //   # Note: This can overwrite existing furnace recipes.
+    //   furnace_recipes:
+    //      1:
+    //          # The input item
+    //          input: ItemTag
+    //      # Add more furnace recipes if you want.
+    //      2: ...
     //
     //   # Set to true to not store the scriptID on the item, treating it as an item dropped by any other plugin.
     //   # NOTE: THIS IS NOT RECOMMENDED UNLESS YOU HAVE A SPECIFIC REASON TO USE IT.
