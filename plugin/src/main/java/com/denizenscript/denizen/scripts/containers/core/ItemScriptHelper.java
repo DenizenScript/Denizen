@@ -59,8 +59,15 @@ public class ItemScriptHelper implements Listener {
             recipeList.set(n, TagManager.tag(ScriptBuilder.stripLinePrefix(recipeList.get(n)), new BukkitTagContext(container.player, container.npc, new ScriptTag(container))));
         }
         List<ItemTag> ingredients = new ArrayList<>();
+        int width = 1;
         for (String recipeRow : recipeList) {
             String[] elements = recipeRow.split("\\|", 3);
+            if (width < 3 && elements.length == 3) {
+                width = 3;
+            }
+            if (width < 2 && elements.length >= 2) {
+                width = 2;
+            }
 
             for (String element : elements) {
                 ItemTag ingredient = ItemTag.valueOf(element.replaceAll("[iImM]@", ""), container);
@@ -74,9 +81,22 @@ public class ItemScriptHelper implements Listener {
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             NamespacedKey key = new NamespacedKey("denizen", "item_" + CoreUtilities.toLowerCase(container.getName()) + "_shaped_recipe_" + id);
-            ShapedRecipe recipe = new ShapedRecipe(key, container.getCleanReference().getItemStack()).shape("ABC", "DEF", "GHI");
+            ShapedRecipe recipe = new ShapedRecipe(key, container.getCleanReference().getItemStack());
+            String shape1 = "ABC".substring(0, width);
+            String shape2 = "DEF".substring(0, width);
+            String shape3 = "GHI".substring(0, width);
+            String itemChars = shape1 + shape2 + shape3;
+            if (recipeList.size() == 3) {
+                recipe = recipe.shape(shape1, shape2, shape3);
+            }
+            else if (recipeList.size() == 2) {
+                recipe = recipe.shape(shape1, shape2);
+            }
+            else {
+                recipe = recipe.shape(shape1);
+            }
             for (int i = 0; i < ingredients.size(); i++) {
-                recipe.setIngredient("ABCDEFGHI".charAt(i), new RecipeChoice.ExactChoice(ingredients.get(i).getItemStack().clone()));
+                recipe.setIngredient(itemChars.charAt(i), new RecipeChoice.ExactChoice(ingredients.get(i).getItemStack().clone()));
             }
             Bukkit.addRecipe(recipe);
         }

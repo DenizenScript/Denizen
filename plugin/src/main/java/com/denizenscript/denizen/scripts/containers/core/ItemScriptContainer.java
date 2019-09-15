@@ -69,14 +69,22 @@ public class ItemScriptContainer extends ScriptContainer {
     //   - enchantment_name:level
     //   - ...
     //
-    //   # You can specify the items required to craft your item. For an empty slot, use air.
+    //   # You can specify the items required to craft your item. For an empty slot, use "air".
+    //   # You are allowed to have non-3x3 shapes (can be any value 1-3 x 1-3, so for example 1x3, 2x1, and 2x2 are fine).
     //   recipes:
     //       1:
     //       - ItemTag|ItemTag|ItemTag
     //       - ItemTag|ItemTag|ItemTag
     //       - ItemTag|ItemTag|ItemTag
-    //       # Add more recipes if you want.
+    //       # Format of a 2x2 recipe
     //       2:
+    //       - ItemTag|ItemTag
+    //       - ItemTag|ItemTag
+    //       # Format of a 1x1 recipe
+    //       3:
+    //       - ItemTag
+    //       # Add more recipes if you want.
+    //       4:
     //       - ...
     //
     //   # You can specify a list of materials that make up a shapeless recipe.
