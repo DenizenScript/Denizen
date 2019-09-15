@@ -27,7 +27,7 @@ public class ItemChangeMessage implements Listener {
     private static final Map<UUID, Integer> slotChanged = new HashMap<>();
 
     public static void sendMessage(Player player, String message) {
-        ItemStack item = NMSHandler.getEntityHelper().getItemInHand(player);
+        ItemStack item = player.getEquipment().getItemInMainHand();
         // If the player is holding air, force a light gray stained glass pane,
         // which is probably the least intrusive
         if (item == null || item.getType() == Material.AIR) {
@@ -51,7 +51,7 @@ public class ItemChangeMessage implements Listener {
         UUID uuid = player.getUniqueId();
         if (slotChanged.containsKey(uuid)) {
             int slot = slotChanged.get(uuid);
-            ItemStack itemStack = NMSHandler.getEntityHelper().getItemInHand(player);
+            ItemStack itemStack = player.getEquipment().getItemInMainHand();
             NMSHandler.getPacketHelper().setSlot(player, slot, itemStack, true);
             slotChanged.remove(uuid);
         }

@@ -1282,9 +1282,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 InventoryTag dummyInv;
-                if (inventory.getType() == InventoryType.PLAYER) {
+                if (((InventoryTag) object).inventory.getType() == InventoryType.PLAYER) {
                     dummyInv = new InventoryTag(Bukkit.createInventory(null, InventoryType.CHEST));
-                    ItemStack[] contents = getStorageContents();
+                    ItemStack[] contents = ((InventoryTag) object).getStorageContents();
                     dummyInv.setSize(contents.length);
                     if (contents.length != dummyInv.getSize()) {
                         contents = Arrays.copyOf(contents, dummyInv.getSize());
@@ -1292,7 +1292,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     dummyInv.setContents(contents);
                 }
                 else {
-                    dummyInv = new InventoryTag(inventory);
+                    dummyInv = new InventoryTag(((InventoryTag) object).inventory);
                 }
                 int full = dummyInv.count(null, true);
                 return new ElementTag(dummyInv.getSize() - full).getObjectAttribute(attribute.fulfill(1));
@@ -1317,9 +1317,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 }
                 int attribs = 1;
 
-                InventoryType type = inventory.getType();
-                InventoryTag dummyInv = new InventoryTag(Bukkit.createInventory(null, type == InventoryType.PLAYER ? InventoryType.CHEST : type, NMSHandler.getInstance().getTitle(inventory)));
-                ItemStack[] contents = getStorageContents();
+                InventoryType type = ((InventoryTag) object).inventory.getType();
+                InventoryTag dummyInv = new InventoryTag(Bukkit.createInventory(null, type == InventoryType.PLAYER ? InventoryType.CHEST : type, NMSHandler.getInstance().getTitle(((InventoryTag) object).inventory)));
+                ItemStack[] contents = ((InventoryTag) object).getStorageContents();
                 if (dummyInv.getInventoryType() == InventoryType.CHEST) {
                     dummyInv.setSize(contents.length);
                 }
@@ -1391,11 +1391,11 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 int attribs = 1;
                 int qty = 1;
 
-                InventoryTag dummyInv = new InventoryTag(Bukkit.createInventory(null, inventory.getType(), NMSHandler.getInstance().getTitle(inventory)));
-                if (inventory.getType() == InventoryType.CHEST) {
-                    dummyInv.setSize(inventory.getSize());
+                InventoryTag dummyInv = new InventoryTag(Bukkit.createInventory(null, ((InventoryTag) object).inventory.getType(), NMSHandler.getInstance().getTitle(((InventoryTag) object).inventory)));
+                if (((InventoryTag) object).inventory.getType() == InventoryType.CHEST) {
+                    dummyInv.setSize(((InventoryTag) object).inventory.getSize());
                 }
-                dummyInv.setContents(getContents());
+                dummyInv.setContents(((InventoryTag) object).getContents());
 
                 // <--[tag]
                 // @attribute <InventoryTag.include[<item>].quantity[<#>]>
@@ -1424,7 +1424,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 boolean empty = true;
-                for (ItemStack item : getStorageContents()) {
+                for (ItemStack item : ((InventoryTag) object).getStorageContents()) {
                     if (item != null && item.getType() != Material.AIR) {
                         empty = false;
                         break;
@@ -1445,7 +1445,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 boolean full = true;
 
-                for (ItemStack item : getStorageContents()) {
+                for (ItemStack item : ((InventoryTag) object).getStorageContents()) {
                     if ((item == null) ||
                             (item.getType() == Material.AIR) ||
                             (item.getAmount() < item.getMaxStackSize())) {
@@ -1510,7 +1510,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     int found_items = 0;
 
                     if (strict) {
-                        for (ItemStack item : getContents()) {
+                        for (ItemStack item : ((InventoryTag) object).getContents()) {
                             if (item != null && item.getType() == Material.WRITTEN_BOOK
                                     && ((BookMeta) item.getItemMeta()).getTitle().equalsIgnoreCase(search_string)) {
                                 found_items += item.getAmount();
@@ -1528,7 +1528,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                         }
                     }
                     else {
-                        for (ItemStack item : getContents()) {
+                        for (ItemStack item : ((InventoryTag) object).getContents()) {
                             if (item != null && item.getType() == Material.WRITTEN_BOOK
                                     && CoreUtilities.toLowerCase(((BookMeta) item.getItemMeta()).getTitle())
                                     .contains(CoreUtilities.toLowerCase(search_string))) {
@@ -1596,7 +1596,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
 
                     if (strict) {
                         strict_items:
-                        for (ItemStack item : getContents()) {
+                        for (ItemStack item : ((InventoryTag) object).getContents()) {
                             if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
                                 List<String> item_lore = item.getItemMeta().getLore();
                                 if (lore.size() != item_lore.size()) {
@@ -1619,7 +1619,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                         }
                     }
                     else {
-                        for (ItemStack item : getContents()) {
+                        for (ItemStack item : ((InventoryTag) object).getContents()) {
                             if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
                                 List<String> item_lore = item.getItemMeta().getLore();
                                 int loreCount = 0;
@@ -1673,7 +1673,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
 
                     int found_items = 0;
 
-                    for (ItemStack item : getContents()) {
+                    for (ItemStack item : ((InventoryTag) object).getContents()) {
                         if (item != null && scrName.equalsIgnoreCase(new ItemTag(item).getScriptName())) {
                             found_items += item.getAmount();
                             if (found_items >= qty) {
@@ -1713,7 +1713,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
 
                     int found_items = 0;
 
-                    for (ItemStack item : getContents()) {
+                    for (ItemStack item : ((InventoryTag) object).getContents()) {
                         if (CustomNBT.hasCustomNBT(item, keyName, CustomNBT.KEY_DENIZEN)) {
                             found_items += item.getAmount();
                             if (found_items >= qty) {
@@ -1754,7 +1754,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
 
                     int found_items = 0;
 
-                    for (ItemStack item : getContents()) {
+                    for (ItemStack item : ((InventoryTag) object).getContents()) {
                         if (item != null && item.getType() == material.getMaterial()) {
                             found_items += item.getAmount();
                             if (found_items >= qty) {
@@ -1789,7 +1789,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 List<ItemTag> contains = list.filter(ItemTag.class, attribute.getScriptEntry());
                 if (contains.size() == list.size()) {
                     for (ItemTag item : contains) {
-                        if (!containsItem(item, qty)) {
+                        if (!((InventoryTag) object).containsItem(item, qty)) {
                             return new ElementTag(false).getObjectAttribute(attribute.fulfill(attribs));
                         }
                     }
@@ -1832,7 +1832,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 List<ItemTag> contains = list.filter(ItemTag.class, attribute.getScriptEntry());
                 if (!contains.isEmpty()) {
                     for (ItemTag item : contains) {
-                        if (containsItem(item, qty)) {
+                        if (((InventoryTag) object).containsItem(item, qty)) {
                             return new ElementTag(true).getObjectAttribute(attribute.fulfill(attribs));
                         }
                     }
@@ -1851,7 +1851,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         registerTag("first_empty", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                int val = firstEmpty(0);
+                int val = ((InventoryTag) object).firstEmpty(0);
                 return new ElementTag(val >= 0 ? (val + 1) : -1).getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -1880,8 +1880,8 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                         return null;
                     }
                     int slot = -1;
-                    for (int i = 0; i < inventory.getSize(); i++) {
-                        if (inventory.getItem(i) != null && inventory.getItem(i).getType() == material.getMaterial()) {
+                    for (int i = 0; i < ((InventoryTag) object).inventory.getSize(); i++) {
+                        if (((InventoryTag) object).inventory.getItem(i) != null && ((InventoryTag) object).inventory.getItem(i).getType() == material.getMaterial()) {
                             slot = i + 1;
                             break;
                         }
@@ -1902,9 +1902,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                         return null;
                     }
                     int slot = -1;
-                    for (int i = 0; i < inventory.getSize(); i++) {
-                        if (inventory.getItem(i) != null
-                                && scrname.equalsIgnoreCase(new ItemTag(inventory.getItem(i)).getScriptName())) {
+                    for (int i = 0; i < ((InventoryTag) object).inventory.getSize(); i++) {
+                        if (((InventoryTag) object).inventory.getItem(i) != null
+                                && scrname.equalsIgnoreCase(new ItemTag(((InventoryTag) object).inventory.getItem(i)).getScriptName())) {
                             slot = i + 1;
                             break;
                         }
@@ -1917,9 +1917,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 ItemTag item = ItemTag.valueOf(attribute.getContext(1), attribute.context);
                 item.setAmount(1);
                 int slot = -1;
-                for (int i = 0; i < inventory.getSize(); i++) {
-                    if (inventory.getItem(i) != null) {
-                        ItemTag compare_to = new ItemTag(inventory.getItem(i).clone());
+                for (int i = 0; i < ((InventoryTag) object).inventory.getSize(); i++) {
+                    if (((InventoryTag) object).inventory.getItem(i) != null) {
+                        ItemTag compare_to = new ItemTag(((InventoryTag) object).inventory.getItem(i).clone());
                         compare_to.setAmount(1);
                         if (item.getFullString().equalsIgnoreCase(compare_to.getFullString())) {
                             slot = i + 1;
@@ -1948,9 +1948,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 ItemTag item = ItemTag.valueOf(attribute.getContext(1), attribute.context);
                 item.setAmount(1);
                 int slot = -1;
-                for (int i = 0; i < inventory.getSize(); i++) {
-                    if (inventory.getItem(i) != null) {
-                        ItemTag compare_to = new ItemTag(inventory.getItem(i).clone());
+                for (int i = 0; i < ((InventoryTag) object).inventory.getSize(); i++) {
+                    if (((InventoryTag) object).inventory.getItem(i) != null) {
+                        ItemTag compare_to = new ItemTag(((InventoryTag) object).inventory.getItem(i).clone());
                         compare_to.setAmount(1);
                         if (item.identify().equalsIgnoreCase(compare_to.identify())
                                 || item.getScriptName().equalsIgnoreCase(compare_to.getScriptName())) {
@@ -1972,7 +1972,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         registerTag("id_type", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(idType).getObjectAttribute(attribute.fulfill(1));
+                return new ElementTag(((InventoryTag) object).idType).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -2003,7 +2003,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         registerTag("location", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                LocationTag location = getLocation();
+                LocationTag location = ((InventoryTag) object).getLocation();
                 if (location == null) {
                     return null;
                 }
@@ -2023,7 +2023,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 if (!attribute.hasContext(2)) {
                     return null;
                 }
-                return new ElementTag(countByScriptName(attribute.getContext(2)))
+                return new ElementTag(((InventoryTag) object).countByScriptName(attribute.getContext(2)))
                         .getObjectAttribute(attribute.fulfill(2));
             }
         });
@@ -2040,7 +2040,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 if (!attribute.hasContext(2) && MaterialTag.matches(attribute.getContext(2))) {
                     return null;
                 }
-                return new ElementTag(countByMaterial(MaterialTag.valueOf(attribute.getContext(2)).getMaterial()))
+                return new ElementTag(((InventoryTag) object).countByMaterial(MaterialTag.valueOf(attribute.getContext(2)).getMaterial()))
                         .getObjectAttribute(attribute.fulfill(2));
             }
         });
@@ -2057,12 +2057,12 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 if (attribute.hasContext(1) && ItemTag.matches(attribute.getContext(1))) {
-                    return new ElementTag(count // TODO: Handle no-script-entry cases
+                    return new ElementTag(((InventoryTag) object).count
                             (ItemTag.valueOf(attribute.getContext(1), attribute.context).getItemStack(), false))
                             .getObjectAttribute(attribute.fulfill(1));
                 }
                 else {
-                    return new ElementTag(count(null, false))
+                    return new ElementTag(((InventoryTag) object).count(null, false))
                             .getObjectAttribute(attribute.fulfill(1));
                 }
             }
@@ -2080,12 +2080,12 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 if (attribute.hasContext(1) && ItemTag.matches(attribute.getContext(1))) {
-                    return new ElementTag(count // TODO: Handle no-script-entry cases
+                    return new ElementTag(((InventoryTag) object).count
                             (ItemTag.valueOf(attribute.getContext(1), attribute.context).getItemStack(), true))
                             .getObjectAttribute(attribute.fulfill(1));
                 }
                 else {
-                    return new ElementTag(count(null, true))
+                    return new ElementTag(((InventoryTag) object).count(null, true))
                             .getObjectAttribute(attribute.fulfill(1));
                 }
             }
@@ -2116,10 +2116,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     if (slot < 0) {
                         slot = 0;
                     }
-                    else if (slot > getInventory().getSize() - 1) {
-                        slot = getInventory().getSize() - 1;
+                    else if (slot > ((InventoryTag) object).getInventory().getSize() - 1) {
+                        slot = ((InventoryTag) object).getInventory().getSize() - 1;
                     }
-                    return new ItemTag(getInventory().getItem(slot)).getObjectAttribute(attribute.fulfill(1));
+                    return new ItemTag(((InventoryTag) object).getInventory().getItem(slot)).getObjectAttribute(attribute.fulfill(1));
                 }
                 else {
                     ListTag result = new ListTag();
@@ -2128,10 +2128,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                         if (slot < 0) {
                             slot = 0;
                         }
-                        else if (slot > getInventory().getSize() - 1) {
-                            slot = getInventory().getSize() - 1;
+                        else if (slot > ((InventoryTag) object).getInventory().getSize() - 1) {
+                            slot = ((InventoryTag) object).getInventory().getSize() - 1;
                         }
-                        result.addObject(new ItemTag(getInventory().getItem(slot)));
+                        result.addObject(new ItemTag(((InventoryTag) object).getInventory().getItem(slot)));
                     }
                     return result.getObjectAttribute(attribute.fulfill(1));
                 }
@@ -2147,7 +2147,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         registerTag("inventory_type", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(inventory instanceof HorseInventory ? "HORSE" : getInventory().getType().name())
+                return new ElementTag(((InventoryTag) object).inventory instanceof HorseInventory ? "HORSE" : ((InventoryTag) object).getInventory().getType().name())
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -2161,7 +2161,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         registerTag("equipment", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                ListTag equipment = getEquipment();
+                ListTag equipment = ((InventoryTag) object).getEquipment();
                 if (equipment == null) {
                     return null;
                 }
@@ -2178,11 +2178,11 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         registerTag("matrix", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                if (!(inventory instanceof CraftingInventory)) {
+                if (!(((InventoryTag) object).inventory instanceof CraftingInventory)) {
                     return null;
                 }
                 ListTag recipeList = new ListTag();
-                for (ItemStack item : ((CraftingInventory) inventory).getMatrix()) {
+                for (ItemStack item : ((CraftingInventory) ((InventoryTag) object).inventory).getMatrix()) {
                     if (item != null) {
                         recipeList.add(new ItemTag(item).identify());
                     }
@@ -2203,10 +2203,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         registerTag("result", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                if (!(inventory instanceof CraftingInventory)) {
+                if (!(((InventoryTag) object).inventory instanceof CraftingInventory)) {
                     return null;
                 }
-                ItemStack result = ((CraftingInventory) inventory).getResult();
+                ItemStack result = ((CraftingInventory) ((InventoryTag) object).inventory).getResult();
                 if (result == null) {
                     return null;
                 }
@@ -2224,10 +2224,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         registerTag("anvil_repair_cost", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                if (!(inventory instanceof AnvilInventory)) {
+                if (!(((InventoryTag) object).inventory instanceof AnvilInventory)) {
                     return null;
                 }
-                return new ElementTag(((AnvilInventory) inventory).getRepairCost()).getObjectAttribute(attribute.fulfill(1));
+                return new ElementTag(((AnvilInventory) ((InventoryTag) object).inventory).getRepairCost()).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -2241,10 +2241,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         registerTag("anvil_max_repair_cost", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                if (!(inventory instanceof AnvilInventory)) {
+                if (!(((InventoryTag) object).inventory instanceof AnvilInventory)) {
                     return null;
                 }
-                return new ElementTag(((AnvilInventory) inventory).getMaximumRepairCost()).getObjectAttribute(attribute.fulfill(1));
+                return new ElementTag(((AnvilInventory) ((InventoryTag) object).inventory).getMaximumRepairCost()).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -2257,10 +2257,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         registerTag("anvil_rename_text", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                if (!(inventory instanceof AnvilInventory)) {
+                if (!(((InventoryTag) object).inventory instanceof AnvilInventory)) {
                     return null;
                 }
-                return new ElementTag(((AnvilInventory) inventory).getRenameText()).getObjectAttribute(attribute.fulfill(1));
+                return new ElementTag(((AnvilInventory) ((InventoryTag) object).inventory).getRenameText()).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
