@@ -851,7 +851,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 return new ElementTag(((NPCTag) object).isEngaged()).getObjectAttribute(attribute.fulfill(1));
             }
         });
-        registerTag("is_engage", tagProcessor.registeredObjectTags.get("engage"));
+        registerTag("is_engaged", tagProcessor.registeredObjectTags.get("engaged"));
 
         // <--[tag]
         // @attribute <NPCTag.invulnerable>
