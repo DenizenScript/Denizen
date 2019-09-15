@@ -21,9 +21,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ItemScriptContainer extends ScriptContainer {
 
@@ -103,10 +101,6 @@ public class ItemScriptContainer extends ScriptContainer {
     //
     // -->
 
-    // A map storing special recipes that use itemscripts as ingredients
-    public static Map<ItemScriptContainer, List<ItemTag>> specialrecipesMap = new HashMap<>();
-    public static Map<ItemScriptContainer, List<ItemTag>> shapelessRecipesMap = new HashMap<>();
-
     public NPCTag npc = null;
     public PlayerTag player = null;
     public boolean bound = false;
@@ -117,26 +111,6 @@ public class ItemScriptContainer extends ScriptContainer {
 
         ItemScriptHelper.item_scripts.put(getName(), this);
         ItemScriptHelper.item_scripts_by_hash_id.put(ItemScriptHelper.createItemScriptID(this), this);
-
-        // Set Recipe
-        if (contains("RECIPE")) {
-
-            // Get recipe list from item script
-            List<String> recipeList = getStringList("RECIPE");
-
-            // Process later so that any item script ingredients can be fulfilled
-            ItemScriptHelper.recipes_to_register.put(this, recipeList);
-
-        }
-
-        if (contains("SHAPELESS_RECIPE")) {
-            ItemScriptHelper.shapeless_to_register.put(this, getString("SHAPELESS_RECIPE"));
-        }
-
-        if (contains("FURNACE_RECIPE")) {
-            // Process later so that any item script ingredients can be fulfilled
-            ItemScriptHelper.furnace_to_register.put(this, getString("FURNACE_RECIPE"));
-        }
     }
 
     private ItemTag cleanReference;

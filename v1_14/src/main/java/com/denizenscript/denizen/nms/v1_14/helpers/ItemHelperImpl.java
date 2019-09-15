@@ -1,17 +1,21 @@
 package com.denizenscript.denizen.nms.v1_14.helpers;
 
 import com.denizenscript.denizen.nms.util.jnbt.*;
+import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.nms.v1_14.impl.jnbt.CompoundTagImpl;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.denizenscript.denizen.nms.interfaces.ItemHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import net.minecraft.server.v1_14_R1.GameProfileSerializer;
-import net.minecraft.server.v1_14_R1.NBTTagCompound;
+import net.minecraft.server.v1_14_R1.*;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import org.bukkit.craftbukkit.v1_14_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.Inventory;
@@ -22,6 +26,18 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.*;
 
 public class ItemHelperImpl extends ItemHelper {
+
+    @Override
+    public void clearDenizenRecipes() {
+        for (Object2ObjectLinkedOpenHashMap<MinecraftKey, IRecipe<?>> recipeMap : ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().recipes.values()) {
+            for (MinecraftKey key : new ArrayList<>(recipeMap.keySet())) {
+                if (key.getNamespace().equalsIgnoreCase("denizen")) {
+                    recipeMap.remove(key);
+                    Debug.log("Removed " + key); // TODO: Delete line
+                }
+            }
+        }
+    }
 
     @Override
     public String getInternalNameFromMaterial(Material material) {

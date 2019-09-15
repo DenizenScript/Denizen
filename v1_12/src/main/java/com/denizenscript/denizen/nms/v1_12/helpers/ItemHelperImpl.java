@@ -22,6 +22,11 @@ import java.util.HashMap;
 public class ItemHelperImpl extends ItemHelper {
 
     @Override
+    public void clearDenizenRecipes() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public String getInternalNameFromMaterial(Material material) {
         return CraftItemStack.asNMSCopy(new ItemStack(material)).save(new NBTTagCompound()).getString("id");
     }

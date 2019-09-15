@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
@@ -11,6 +12,7 @@ import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.tags.TagManager;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,11 +22,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.inventory.CraftingInventory;
-import org.bukkit.inventory.FurnaceRecipe;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.*;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -36,28 +34,30 @@ public class ItemScriptHelper implements Listener {
 
     public static final Map<String, ItemScriptContainer> item_scripts = new ConcurrentHashMap<>(8, 0.9f, 1);
     public static final Map<String, ItemScriptContainer> item_scripts_by_hash_id = new HashMap<>();
-    public static final Map<ItemScriptContainer, List<String>> recipes_to_register = new HashMap<>();
-    public static final Map<ItemScriptContainer, String> shapeless_to_register = new HashMap<>();
-    public static final Map<ItemScriptContainer, String> furnace_to_register = new HashMap<>();
 
     public ItemScriptHelper() {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
                 .registerEvents(this, DenizenAPI.getCurrentInstance());
     }
 
-    // Remove all recipes stored by Denizen
     public static void removeDenizenRecipes() {
-        ItemScriptContainer.specialrecipesMap.clear();
-        ItemScriptContainer.shapelessRecipesMap.clear();
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+            NMSHandler.getItemHelper().clearDenizenRecipes();
+        }
+        else {
+            specialrecipesMap.clear();
+            shapelessRecipesMap.clear();
+        }
     }
 
     @EventHandler
     public void scriptReload(ScriptReloadEvent event) {
 
-        for (Map.Entry<ItemScriptContainer, List<String>> entry : recipes_to_register.entrySet()) {
-
-            ItemScriptContainer container = entry.getKey();
-            List<String> recipeList = entry.getValue();
+        for (ItemScriptContainer container : item_scripts.values()) {
+            if (!container.contains("RECIPE")) {
+                continue;
+            }
+            List<String> recipeList = container.getStringList("RECIPE");
 
             // Process all tags in list
             for (int n = 0; n < recipeList.size(); n++) {
@@ -84,17 +84,27 @@ public class ItemScriptHelper implements Listener {
                 }
             }
 
-            // Add the recipe to Denizen's item script recipe list so it
-            // will be checked manually inside ItemScriptHelper
             if (shouldRegister) {
-                ItemScriptContainer.specialrecipesMap.put(container, ingredients);
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+                    NamespacedKey key = new NamespacedKey("denizen", "item_" + CoreUtilities.toLowerCase(container.getName()) + "_shaped_recipe");
+                    ShapedRecipe recipe = new ShapedRecipe(key, container.getCleanReference().getItemStack()).shape("ABC", "DEF", "GHI");
+                    for (int i = 0; i < ingredients.size(); i++) {
+                        recipe.setIngredient("ABCDEFGHI".charAt(i), new RecipeChoice.ExactChoice(ingredients.get(i).getItemStack().clone()));
+                    }
+                    Debug.log("Added " + recipe.getIngredientMap() + " asa " + key + " for " + recipe.getResult()); // TODO: Delete line
+                    Bukkit.addRecipe(recipe);
+                }
+                else {
+                    specialrecipesMap.put(container, ingredients);
+                }
             }
         }
 
-        for (Map.Entry<ItemScriptContainer, String> entry : shapeless_to_register.entrySet()) {
-
-            ItemScriptContainer container = entry.getKey();
-            String string = entry.getValue();
+        for (ItemScriptContainer container : item_scripts.values()) {
+            if (!container.contains("SHAPELESS_RECIPE")) {
+                continue;
+            }
+            String string = container.getString("SHAPELESS_RECIPE");
 
             String list = TagManager.tag(string, new BukkitTagContext(container.player, container.npc, new ScriptTag(container)));
 
@@ -112,59 +122,45 @@ public class ItemScriptHelper implements Listener {
                 ingredients.add(ingredient);
             }
             if (shouldRegister) {
-                ItemScriptContainer.shapelessRecipesMap.put(container, ingredients);
-            }
-        }
-
-        for (Map.Entry<ItemScriptContainer, String> entry : furnace_to_register.entrySet()) {
-
-            ItemTag furnace_item = ItemTag.valueOf(entry.getValue(), entry.getKey());
-            if (furnace_item == null) {
-                Debug.echoError("Invalid item '" + entry.getValue() + "'");
-                continue;
-            }
-            FurnaceRecipe recipe = new FurnaceRecipe(entry.getKey().getCleanReference().getItemStack(), furnace_item.getMaterial().getMaterial(), furnace_item.getItemStack().getDurability());
-            Bukkit.getServer().addRecipe(recipe);
-        }
-        currentFurnaceRecipes = new HashMap<>(furnace_to_register);
-
-        recipes_to_register.clear();
-        shapeless_to_register.clear();
-        furnace_to_register.clear();
-    }
-
-    public Map<ItemScriptContainer, String> currentFurnaceRecipes = new HashMap<>();
-
-    @EventHandler
-    public void furnaceSmeltHandler(FurnaceSmeltEvent event) {
-        if (isItemscript(event.getResult())) {
-            ItemScriptContainer isc = getItemScriptContainer(event.getResult());
-            String inp = currentFurnaceRecipes.get(isc);
-            if (inp != null) {
-                ItemTag itm = ItemTag.valueOf(inp, isc);
-                if (itm != null) {
-                    itm.setAmount(1);
-                    ItemTag src = new ItemTag(event.getSource().clone());
-                    src.setAmount(1);
-                    if (!itm.getFullString().equals(src.getFullString())) {
-                        List<Recipe> recipes = Bukkit.getServer().getRecipesFor(event.getSource());
-                        for (Recipe rec : recipes) {
-                            if (rec instanceof FurnaceRecipe) {
-                                // TODO: Also make sure non-script recipes still burn somehow. FurnaceBurnEvent? Maybe also listen to inventory clicking and manually start a burn?
-                                event.setResult(rec.getResult());
-                                return;
-                            }
-                        }
-                        event.setCancelled(true);
-                        return;
+                // TODO: When ExactChoice is patched:
+                /*if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+                    NamespacedKey key = new NamespacedKey("denizen", "item_" + CoreUtilities.toLowerCase(container.getName()) + "_shapeless_recipe");
+                    ShapelessRecipe recipe = new ShapelessRecipe(key, container.getCleanReference().getItemStack());
+                    for (ItemTag ingredient : ingredients) {
+                        recipe.addIngredient(new RecipeChoice.ExactChoice(ingredient.getItemStack().clone()));
                     }
+                    Bukkit.addRecipe(recipe);
+                }
+                else*/ {
+                    shapelessRecipesMap.put(container, ingredients);
                 }
             }
         }
-    }
 
-    public static boolean isBound(ItemStack item) {
-        return (isItemscript(item) && getItemScriptContainer(item).bound);
+        currentFurnaceRecipes.clear();
+        for (ItemScriptContainer container : item_scripts.values()) {
+            if (!container.contains("FURNACE_RECIPE")) {
+                continue;
+            }
+            String string = container.getString("FURNACE_RECIPE");
+
+            ItemTag furnace_item = ItemTag.valueOf(string, container);
+            if (furnace_item == null) {
+                Debug.echoError("Invalid item '" + string + "', furnace recipe will not be registered for item script '" + container.getName() + "'.");
+                continue;
+            }
+            // TODO: When ExactChoice is patched:
+            /*if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+                NamespacedKey key = new NamespacedKey("denizen", "item_" + CoreUtilities.toLowerCase(container.getName()) + "_furnace_recipe");
+                FurnaceRecipe recipe = new FurnaceRecipe(key, container.getCleanReference().getItemStack(), new RecipeChoice.ExactChoice(furnace_item.getItemStack().clone()), 0, 20);
+                Bukkit.addRecipe(recipe);
+            }
+            else*/ {
+                FurnaceRecipe recipe = new FurnaceRecipe(container.getCleanReference().getItemStack(), furnace_item.getMaterial().getMaterial(), furnace_item.getItemStack().getDurability());
+                Bukkit.addRecipe(recipe);
+                currentFurnaceRecipes.put(container, furnace_item);
+            }
+        }
     }
 
     public static boolean isItemscript(ItemStack item) {
@@ -221,14 +217,45 @@ public class ItemScriptHelper implements Listener {
         return colors.toString();
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////// All the below is for the legacy crafting system, which is still used for 1.12 and some recipe types! ///////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    public static Map<ItemScriptContainer, List<ItemTag>> specialrecipesMap = new HashMap<>();
+    public static Map<ItemScriptContainer, List<ItemTag>> shapelessRecipesMap = new HashMap<>();
+    public Map<ItemScriptContainer, ItemTag> currentFurnaceRecipes = new HashMap<>();
+
+    @EventHandler
+    public void furnaceSmeltHandler(FurnaceSmeltEvent event) {
+        if (isItemscript(event.getResult())) {
+            ItemScriptContainer isc = getItemScriptContainer(event.getResult());
+            ItemTag itm = new ItemTag(currentFurnaceRecipes.get(isc).getItemStack().clone());
+            itm.setAmount(1);
+            ItemTag src = new ItemTag(event.getSource().clone());
+            src.setAmount(1);
+            if (!itm.getFullString().equals(src.getFullString())) {
+                List<Recipe> recipes = Bukkit.getServer().getRecipesFor(event.getSource());
+                for (Recipe rec : recipes) {
+                    if (rec instanceof FurnaceRecipe) {
+                        // TODO: Also make sure non-script recipes still burn somehow. FurnaceBurnEvent? Maybe also listen to inventory clicking and manually start a burn?
+                        event.setResult(rec.getResult());
+                        return;
+                    }
+                }
+                event.setCancelled(true);
+                return;
+            }
+        }
+    }
+
     // When special Denizen recipes that have itemscripts as ingredients
     // are being used, check crafting matrix for recipe matches whenever
     // clicks are made in CRAFTING or RESULT slots
     @EventHandler
     public void specialRecipeClick(InventoryClickEvent event) {
         // Proceed only if at least one special recipe has been stored
-        if (ItemScriptContainer.specialrecipesMap.isEmpty()
-                && ItemScriptContainer.shapelessRecipesMap.isEmpty()) {
+        if (specialrecipesMap.isEmpty() && shapelessRecipesMap.isEmpty()) {
             return;
         }
 
@@ -343,10 +370,8 @@ public class ItemScriptHelper implements Listener {
     // drags (which are entirely separate from clicks) are made in CRAFTING slots
     @EventHandler
     public void specialRecipeDrag(InventoryDragEvent event) {
-
         // Proceed only if at least one special recipe has been stored
-        if (ItemScriptContainer.specialrecipesMap.isEmpty()
-                && ItemScriptContainer.shapelessRecipesMap.isEmpty()) {
+        if (specialrecipesMap.isEmpty() && shapelessRecipesMap.isEmpty()) {
             return;
         }
 
@@ -440,8 +465,7 @@ public class ItemScriptHelper implements Listener {
     public Map.Entry<ItemScriptContainer, List<ItemTag>> getSpecialRecipeEntry(ItemStack[] matrix) {
         // Iterate through all the special recipes
         master:
-        for (Map.Entry<ItemScriptContainer, List<ItemTag>> entry :
-                ItemScriptContainer.specialrecipesMap.entrySet()) {
+        for (Map.Entry<ItemScriptContainer, List<ItemTag>> entry : specialrecipesMap.entrySet()) {
 
             // Check if the two sets of items match each other
             for (int n = 0; n < 9; n++) {
@@ -480,8 +504,7 @@ public class ItemScriptHelper implements Listener {
 
         // Forms a shaped recipe from a shapeless recipe
         primary:
-        for (Map.Entry<ItemScriptContainer, List<ItemTag>> entry :
-                ItemScriptContainer.shapelessRecipesMap.entrySet()) {
+        for (Map.Entry<ItemScriptContainer, List<ItemTag>> entry : shapelessRecipesMap.entrySet()) {
 
             // Clone recipe & matrix so we can remove items from them
             List<ItemStack> entryList = new ArrayList<>();
@@ -624,56 +647,5 @@ public class ItemScriptHelper implements Listener {
             return true;
         }
         return false;
-    }
-
-    @EventHandler
-    public void boundInventoryClickEvent(InventoryClickEvent event) {
-        // Proceed only if this is a CraftingInventory
-        if (!(event.getInventory() instanceof CraftingInventory)) {
-            return;
-        }
-
-        // Proceed only if the click has a cursor item that is bound
-        ItemStack item = event.getCursor();
-        if (item == null || !isBound(item)) {
-            return;
-        }
-
-        if (event.getInventory().getType() != InventoryType.PLAYER) {
-            event.setCancelled(true);
-            return;
-        }
-
-        if (!((Player) event.getInventory().getHolder()).getName().equalsIgnoreCase(event.getWhoClicked().getName())) {
-            event.setCancelled(true);
-            return;
-        }
-    }
-
-    @EventHandler
-    public void boundInventoryDragEvent(InventoryDragEvent event) {
-        // Proceed only if this is a CraftingInventory
-        if (!(event.getInventory() instanceof CraftingInventory)) {
-            return;
-        }
-
-        // Proceed only if the items are bound
-        ItemStack item = event.getOldCursor();
-        if (item == null || !isBound(item)) {
-            return;
-        }
-
-        if (event.getInventory().getType() != InventoryType.PLAYER) {
-            event.setCancelled(true);
-            return;
-        }
-    }
-
-    @EventHandler
-    public void boundDropItem(PlayerDropItemEvent event) {
-        // If the item is bound, don't let them drop it!
-        if (isBound(event.getItemDrop().getItemStack())) {
-            event.setCancelled(true);
-        }
     }
 }

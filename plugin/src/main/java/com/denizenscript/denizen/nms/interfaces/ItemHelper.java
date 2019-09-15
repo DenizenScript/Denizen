@@ -12,6 +12,8 @@ import org.bukkit.potion.PotionEffectType;
 
 public abstract class ItemHelper {
 
+    public abstract void clearDenizenRecipes();
+
     public abstract String getInternalNameFromMaterial(Material material);
 
     public abstract Material getMaterialFromInternalName(String internalName);

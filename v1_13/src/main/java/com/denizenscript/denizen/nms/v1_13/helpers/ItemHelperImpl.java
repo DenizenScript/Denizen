@@ -9,17 +9,33 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.minecraft.server.v1_13_R2.GameProfileSerializer;
+import net.minecraft.server.v1_13_R2.IRecipe;
+import net.minecraft.server.v1_13_R2.MinecraftKey;
 import net.minecraft.server.v1_13_R2.NBTTagCompound;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import org.bukkit.craftbukkit.v1_13_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_13_R2.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ItemHelperImpl extends ItemHelper {
+
+    @Override
+    public void clearDenizenRecipes() {
+        Object2ObjectLinkedOpenHashMap<MinecraftKey, IRecipe> recipeMap = ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().recipes;
+        for (MinecraftKey key : new ArrayList<>(recipeMap.keySet())) {
+            if (key.getKey().equalsIgnoreCase("denizen")) {
+                recipeMap.remove(key);
+            }
+        }
+    }
 
     @Override
     public String getInternalNameFromMaterial(Material material) {
