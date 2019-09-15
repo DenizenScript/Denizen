@@ -2584,7 +2584,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <EntityTag.item_in_hand>
         // -->
         if (mechanism.matches("item_in_hand")) {
-            NMSHandler.getEntityHelper().setItemInHand(getLivingEntity(), mechanism.valueAsType(ItemTag.class).getItemStack());
+            getLivingEntity().getEquipment().setItemInMainHand(mechanism.valueAsType(ItemTag.class).getItemStack());
         }
 
         // <--[mechanism]
@@ -2598,7 +2598,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <EntityTag.item_in_offhand>
         // -->
         if (mechanism.matches("item_in_offhand")) {
-            NMSHandler.getEntityHelper().setItemInOffHand(getLivingEntity(), mechanism.valueAsType(ItemTag.class).getItemStack());
+            getLivingEntity().getEquipment().setItemInOffHand(mechanism.valueAsType(ItemTag.class).getItemStack());
         }
 
         // <--[mechanism]

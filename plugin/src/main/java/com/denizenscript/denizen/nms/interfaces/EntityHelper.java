@@ -62,18 +62,6 @@ public abstract class EntityHelper {
 
     public abstract void setNbtData(Entity entity, CompoundTag compoundTag);
 
-    public abstract void setSilent(Entity entity, boolean silent);
-
-    public abstract boolean isSilent(Entity entity);
-
-    public abstract ItemStack getItemInHand(LivingEntity entity);
-
-    public abstract void setItemInHand(LivingEntity entity, ItemStack itemStack);
-
-    public abstract ItemStack getItemInOffHand(LivingEntity entity);
-
-    public abstract void setItemInOffHand(LivingEntity entity, ItemStack itemStack);
-
     public abstract void stopFollowing(Entity follower);
 
     public abstract void stopWalking(Entity entity);

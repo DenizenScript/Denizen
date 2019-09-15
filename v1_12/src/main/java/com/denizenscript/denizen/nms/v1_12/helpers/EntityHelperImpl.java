@@ -132,36 +132,6 @@ public class EntityHelperImpl extends EntityHelper {
         ((CraftEntity) entity).getHandle().f(((CompoundTagImpl) compoundTag).toNMSTag());
     }
 
-    @Override
-    public void setSilent(Entity entity, boolean silent) {
-        entity.setSilent(silent);
-    }
-
-    @Override
-    public boolean isSilent(Entity entity) {
-        return entity.isSilent();
-    }
-
-    @Override
-    public ItemStack getItemInHand(LivingEntity entity) {
-        return entity.getEquipment().getItemInMainHand();
-    }
-
-    @Override
-    public void setItemInHand(LivingEntity entity, ItemStack itemStack) {
-        entity.getEquipment().setItemInMainHand(itemStack);
-    }
-
-    @Override
-    public ItemStack getItemInOffHand(LivingEntity entity) {
-        return entity.getEquipment().getItemInOffHand();
-    }
-
-    @Override
-    public void setItemInOffHand(LivingEntity entity, ItemStack itemStack) {
-        entity.getEquipment().setItemInOffHand(itemStack);
-    }
-
     /*
         Entity Movement
      */
