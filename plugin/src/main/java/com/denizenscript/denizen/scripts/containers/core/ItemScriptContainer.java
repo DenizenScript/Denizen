@@ -92,6 +92,12 @@ public class ItemScriptContainer extends ScriptContainer {
     //      1:
     //          # The input item
     //          input: ItemTag
+    //          # The furnace type. Can be: Furnace (default), Blast, Smoker, or Campfire.
+    //          type: furnace
+    //          # The cook time (as a duration)
+    //          cook_time: 1s
+    //          # The experience reward amount (if any)
+    //          experience: 5
     //      # Add more furnace recipes if you want.
     //      2: ...
     //

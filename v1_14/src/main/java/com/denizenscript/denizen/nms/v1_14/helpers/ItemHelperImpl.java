@@ -38,11 +38,23 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public void registerFurnaceRecipe(String keyName, ItemStack result, ItemStack ingredient, float exp, int time) {
+    public void registerFurnaceRecipe(String keyName, ItemStack result, ItemStack ingredient, float exp, int time, String type) {
         MinecraftKey key = new MinecraftKey("denizen", "furnace_recipe_" + keyName);
         RecipeItemStack itemRecipe = new RecipeItemStack(Arrays.asList(new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(ingredient))).stream());
         itemRecipe.exact = true;
-        FurnaceRecipe recipe = new FurnaceRecipe(key, "custom", itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+        RecipeCooking recipe;
+        if (type.equalsIgnoreCase("smoker")) {
+            recipe = new RecipeSmoking(key, "custom", itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+        }
+        else if (type.equalsIgnoreCase("blast")) {
+            recipe = new RecipeBlasting(key, "custom", itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+        }
+        else if (type.equalsIgnoreCase("campfire")) {
+            recipe = new RecipeCampfire(key, "custom", itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+        }
+        else {
+            recipe = new FurnaceRecipe(key, "custom", itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+        }
         ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().addRecipe(recipe);
     }
 

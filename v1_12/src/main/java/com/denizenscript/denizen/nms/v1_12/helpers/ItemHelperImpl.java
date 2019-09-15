@@ -27,7 +27,7 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public void registerFurnaceRecipe(String keyName, ItemStack result, ItemStack ingredient, float exp, int time) {
+    public void registerFurnaceRecipe(String keyName, ItemStack result, ItemStack ingredient, float exp, int time, String type) {
         throw new UnsupportedOperationException();
     }
 
