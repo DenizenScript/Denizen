@@ -4,13 +4,13 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -228,10 +228,10 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the red value of this color.
         // -->
-        registerTag("red", new TagRunnable() {
+        registerTag("red", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((ColorTag) object).color.getRed()).getAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((ColorTag) object).color.getRed()).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -241,10 +241,10 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the green value of this color.
         // -->
-        registerTag("green", new TagRunnable() {
+        registerTag("green", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((ColorTag) object).color.getGreen()).getAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((ColorTag) object).color.getGreen()).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -254,10 +254,10 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the blue value of this color.
         // -->
-        registerTag("blue", new TagRunnable() {
+        registerTag("blue", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((ColorTag) object).color.getBlue()).getAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((ColorTag) object).color.getBlue()).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -268,11 +268,11 @@ public class ColorTag implements ObjectTag {
         // Returns the RGB value of this color.
         // EG, 255,0,255
         // -->
-        registerTag("rgb", new TagRunnable() {
+        registerTag("rgb", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 Color color = ((ColorTag) object).color;
-                return new ElementTag(color.getRed() + "," + color.getGreen() + "," + color.getBlue()).getAttribute(attribute.fulfill(1));
+                return new ElementTag(color.getRed() + "," + color.getGreen() + "," + color.getBlue()).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -282,10 +282,10 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the hue value of this color.
         // -->
-        registerTag("hue", new TagRunnable() {
+        registerTag("hue", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((ColorTag) object).ToHSB()[0]).getAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((ColorTag) object).ToHSB()[0]).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -295,10 +295,10 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the saturation value of this color.
         // -->
-        registerTag("saturation", new TagRunnable() {
+        registerTag("saturation", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((ColorTag) object).ToHSB()[1]).getAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((ColorTag) object).ToHSB()[1]).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -308,10 +308,10 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the brightness value of this color.
         // -->
-        registerTag("brightness", new TagRunnable() {
+        registerTag("brightness", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((ColorTag) object).ToHSB()[2]).getAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((ColorTag) object).ToHSB()[2]).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -322,11 +322,11 @@ public class ColorTag implements ObjectTag {
         // Returns the HSV value of this color.
         // EG, 100,100,255
         // -->
-        registerTag("hsv", new TagRunnable() {
+        registerTag("hsv", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 int[] HSV = ((ColorTag) object).ToHSB();
-                return new ElementTag(HSV[1] + "," + HSV[1] + "," + HSV[2]).getAttribute(attribute.fulfill(1));
+                return new ElementTag(HSV[1] + "," + HSV[1] + "," + HSV[2]).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -336,10 +336,10 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the name of this color (or red,green,blue if none).
         // -->
-        registerTag("name", new TagRunnable() {
+        registerTag("name", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(object.identify().substring(3)).getAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(object.identify().substring(3)).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -349,16 +349,16 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the color that results if you mix this color with another.
         // -->
-        registerTag("mix", new TagRunnable() {
+        registerTag("mix", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag ListTag.insert[...] must have a value.");
                     return null;
                 }
                 ColorTag mixed_with = ColorTag.valueOf(attribute.getContext(1));
                 if (mixed_with != null) {
-                    return new ColorTag(((ColorTag) object).color.mixColors(mixed_with.getColor())).getAttribute(attribute.fulfill(1));
+                    return new ColorTag(((ColorTag) object).color.mixColors(mixed_with.getColor())).getObjectAttribute(attribute.fulfill(1));
                 }
                 else {
                     Debug.echoError("'" + attribute.getContext(1) + "' is not a valid color!");
@@ -373,15 +373,15 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the color as a particle offset, for use with PlayEffect.
         // -->
-        registerTag("to_particle_offset", new TagRunnable() {
+        registerTag("to_particle_offset", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 Color valid = ((ColorTag) object).color;
                 if (valid.asRGB() == 0) {
                     valid = Color.fromRGB(1, 0, 0);
                 }
                 return new LocationTag(null, valid.getRed() / 255F, valid.getGreen() / 255F, valid.getBlue() / 255F)
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -392,43 +392,24 @@ public class ColorTag implements ObjectTag {
         // Always returns 'Color' for ColorTag objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
-        registerTag("type", new TagRunnable() {
+        registerTag("type", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag("Color").getAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag("Color").getObjectAttribute(attribute.fulfill(1));
             }
         });
 
     }
 
-    public static HashMap<String, TagRunnable> registeredTags = new HashMap<>();
+    public static ObjectTagProcessor tagProcessor = new ObjectTagProcessor();
 
-    public static void registerTag(String name, TagRunnable runnable) {
-        if (runnable.name == null) {
-            runnable.name = name;
-        }
-        registeredTags.put(name, runnable);
+    public static void registerTag(String name, TagRunnable.ObjectForm runnable) {
+        tagProcessor.registerTag(name, runnable);
     }
 
     @Override
-    public String getAttribute(Attribute attribute) {
-        // TODO: Scrap getAttribute, make this functionality a core system
-        String attrLow = CoreUtilities.toLowerCase(attribute.getAttributeWithoutContext(1));
-        TagRunnable tr = registeredTags.get(attrLow);
-        if (tr != null) {
-            if (!tr.name.equals(attrLow)) {
-                com.denizenscript.denizencore.utilities.debugging.Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
-                        "Using deprecated form of tag '" + tr.name + "': '" + attrLow + "'.");
-            }
-            return tr.run(attribute, this);
-        }
-
-        String returned = CoreUtilities.autoPropertyTag(this, attribute);
-        if (returned != null) {
-            return returned;
-        }
-
-        return new ElementTag(identify()).getAttribute(attribute);
+    public ObjectTag getObjectAttribute(Attribute attribute) {
+        return tagProcessor.getObjectAttribute(this, attribute);
     }
 
     int[] ToHSB() {

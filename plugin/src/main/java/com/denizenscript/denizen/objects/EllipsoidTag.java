@@ -4,7 +4,7 @@ import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.Note;
 import com.denizenscript.denizencore.tags.Attribute;
@@ -13,7 +13,6 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class EllipsoidTag implements ObjectTag, Notable {
@@ -274,20 +273,20 @@ public class EllipsoidTag implements ObjectTag, Notable {
         // Optionally, specify a list of materials to only return locations
         // with that block type.
         // -->
-        registerTag("blocks", new TagRunnable() {
+        registerTag("blocks", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 if (attribute.hasContext(1)) {
                     return new ListTag(((EllipsoidTag) object).getBlocks(ListTag.valueOf(attribute.getContext(1)).filter(MaterialTag.class, attribute.context), attribute))
-                            .getAttribute(attribute.fulfill(1));
+                            .getObjectAttribute(attribute.fulfill(1));
                 }
                 else {
                     return new ListTag(((EllipsoidTag) object).getBlocks(attribute))
-                            .getAttribute(attribute.fulfill(1));
+                            .getObjectAttribute(attribute.fulfill(1));
                 }
             }
         });
-        registerTag("get_blocks", registeredTags.get("blocks"));
+        registerTag("get_blocks", tagProcessor.registeredObjectTags.get("blocks"));
 
         // <--[tag]
         // @attribute <EllipsoidTag.location>
@@ -295,10 +294,10 @@ public class EllipsoidTag implements ObjectTag, Notable {
         // @description
         // Returns the location of the ellipsoid.
         // -->
-        registerTag("location", new TagRunnable() {
+        registerTag("location", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
-                return ((EllipsoidTag) object).loc.getAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return ((EllipsoidTag) object).loc.getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -308,10 +307,10 @@ public class EllipsoidTag implements ObjectTag, Notable {
         // @description
         // Returns the size of the ellipsoid.
         // -->
-        registerTag("size", new TagRunnable() {
+        registerTag("size", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
-                return ((EllipsoidTag) object).size.getAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return ((EllipsoidTag) object).size.getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -322,43 +321,22 @@ public class EllipsoidTag implements ObjectTag, Notable {
         // Always returns 'Ellipsoid' for EllipsoidTag objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
-        registerTag("type", new TagRunnable() {
+        registerTag("type", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag("Ellipsoid").getAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag("Ellipsoid").getObjectAttribute(attribute.fulfill(1));
             }
         });
     }
 
-    public static HashMap<String, TagRunnable> registeredTags = new HashMap<>();
+    public static ObjectTagProcessor tagProcessor = new ObjectTagProcessor();
 
-    public static void registerTag(String name, TagRunnable runnable) {
-        if (runnable.name == null) {
-            runnable.name = name;
-        }
-        registeredTags.put(name, runnable);
+    public static void registerTag(String name, TagRunnable.ObjectForm runnable) {
+        tagProcessor.registerTag(name, runnable);
     }
 
     @Override
-    public String getAttribute(Attribute attribute) {
-
-        // TODO: Scrap getAttribute, make this functionality a core system
-        String attrLow = CoreUtilities.toLowerCase(attribute.getAttributeWithoutContext(1));
-        TagRunnable tr = registeredTags.get(attrLow);
-        if (tr != null) {
-            if (!tr.name.equals(attrLow)) {
-                Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
-                        "Using deprecated form of tag '" + tr.name + "': '" + attrLow + "'.");
-            }
-            return tr.run(attribute, this);
-        }
-
-        String returned = CoreUtilities.autoPropertyTag(this, attribute);
-        if (returned != null) {
-            return returned;
-        }
-
-        return new ElementTag(identify()).getAttribute(attribute);
+    public ObjectTag getObjectAttribute(Attribute attribute) {
+        return tagProcessor.getObjectAttribute(this, attribute);
     }
-
 }

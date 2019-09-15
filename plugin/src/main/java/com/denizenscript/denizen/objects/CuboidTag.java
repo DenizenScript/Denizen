@@ -14,6 +14,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.Note;
 import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
@@ -25,7 +26,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -876,20 +876,20 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // Optionally, specify a list of materials to only return locations
         // with that block type.
         // -->
-        registerTag("blocks", new TagRunnable() {
+        registerTag("blocks", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 if (attribute.hasContext(1)) {
                     return new ListTag(((CuboidTag) object).getBlocks(ListTag.valueOf(attribute.getContext(1)).filter(MaterialTag.class, attribute.context), attribute))
-                            .getAttribute(attribute.fulfill(1));
+                            .getObjectAttribute(attribute.fulfill(1));
                 }
                 else {
                     return new ListTag(((CuboidTag) object).getBlocks(attribute))
-                            .getAttribute(attribute.fulfill(1));
+                            .getObjectAttribute(attribute.fulfill(1));
                 }
             }
         });
-        registerTag("get_blocks", registeredTags.get("blocks"));
+        registerTag("get_blocks", tagProcessor.registeredObjectTags.get("blocks"));
 
         // <--[tag]
         // @attribute <CuboidTag.members_size>
@@ -897,11 +897,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @description
         // Returns the number of cuboids defined in the CuboidTag.
         // -->
-        registerTag("members_size", new TagRunnable() {
+        registerTag("members_size", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 return new ElementTag(((CuboidTag) object).pairs.size())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -914,20 +914,20 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // Optionally, specify a list of materials to only return locations
         // with that block type.
         // -->
-        registerTag("spawnable_blocks", new TagRunnable() {
+        registerTag("spawnable_blocks", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 if (attribute.hasContext(1)) {
                     return new ListTag(((CuboidTag) object).getSpawnableBlocks(ListTag.valueOf(attribute.getContext(1)).filter(MaterialTag.class, attribute.context), attribute))
-                            .getAttribute(attribute.fulfill(1));
+                            .getObjectAttribute(attribute.fulfill(1));
                 }
                 else {
                     return new ListTag(((CuboidTag) object).getSpawnableBlocks(attribute))
-                            .getAttribute(attribute.fulfill(1));
+                            .getObjectAttribute(attribute.fulfill(1));
                 }
             }
         });
-        registerTag("get_spawnable_blocks", registeredTags.get("spawnable_blocks"));
+        registerTag("get_spawnable_blocks", tagProcessor.registeredObjectTags.get("spawnable_blocks"));
 
         // <--[tag]
         // @attribute <CuboidTag.shell>
@@ -935,11 +935,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @description
         // Returns each block location on the shell of the CuboidTag.
         // -->
-        registerTag("shell", new TagRunnable() {
+        registerTag("shell", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 return ((CuboidTag) object).getShell()
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -949,14 +949,14 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @description
         // Returns each block location on the outline of the CuboidTag.
         // -->
-        registerTag("outline", new TagRunnable() {
+        registerTag("outline", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 return ((CuboidTag) object).getOutline()
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
         });
-        registerTag("get_outline", registeredTags.get("outline"));
+        registerTag("get_outline", tagProcessor.registeredObjectTags.get("outline"));
 
         // <--[tag]
         // @attribute <CuboidTag.filter>
@@ -964,11 +964,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @description
         // Returns the block locations from the CuboidTag's filter.
         // -->
-        registerTag("filter", new TagRunnable() {
+        registerTag("filter", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 return new ListTag(((CuboidTag) object).filter)
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -978,9 +978,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @description
         // Returns whether this cuboid and another intersect.
         // -->
-        registerTag("intersects", new TagRunnable() {
+        registerTag("intersects", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag CuboidTag.intersects[...] must have a value.");
                     return null;
@@ -992,7 +992,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                     for (LocationPair pair : ((CuboidTag) object).pairs) {
                         for (LocationPair pair2 : cub2.pairs) {
                             if (!pair.low.getWorld().getName().equalsIgnoreCase(pair2.low.getWorld().getName())) {
-                                return new ElementTag("false").getAttribute(attribute.fulfill(1));
+                                return new ElementTag("false").getObjectAttribute(attribute.fulfill(1));
                             }
                             if (pair2.low.getX() <= pair.high.getX()
                                     && pair2.low.getY() <= pair.high.getY()
@@ -1005,7 +1005,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                             }
                         }
                     }
-                    return new ElementTag(intersects).getAttribute(attribute.fulfill(1));
+                    return new ElementTag(intersects).getObjectAttribute(attribute.fulfill(1));
                 }
                 return null;
             }
@@ -1017,15 +1017,15 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @description
         // Returns whether this cuboid contains a location.
         // -->
-        registerTag("contains_location", new TagRunnable() {
+        registerTag("contains_location", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag CuboidTag.contains_location[...] must have a value.");
                     return null;
                 }
                 LocationTag loc = LocationTag.valueOf(attribute.getContext(1));
-                return new ElementTag(((CuboidTag) object).isInsideCuboid(loc)).getAttribute(attribute.fulfill(1));
+                return new ElementTag(((CuboidTag) object).isInsideCuboid(loc)).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1035,9 +1035,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @description
         // Returns whether this cuboid is fully inside another cuboid.
         // -->
-        registerTag("is_within", new TagRunnable() {
+        registerTag("is_within", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag CuboidTag.is_within[...] must have a value.");
                     return null;
@@ -1052,7 +1052,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                                 if (com.denizenscript.denizencore.utilities.debugging.Debug.verbose) {
                                     Debug.log("Worlds don't match!");
                                 }
-                                return new ElementTag("false").getAttribute(attribute.fulfill(1));
+                                return new ElementTag("false").getObjectAttribute(attribute.fulfill(1));
                             }
                             if (pair2.low.getX() >= pair.low.getX()
                                     && pair2.low.getY() >= pair.low.getY()
@@ -1069,7 +1069,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                             break;
                         }
                     }
-                    return new ElementTag(contains).getAttribute(attribute.fulfill(1));
+                    return new ElementTag(contains).getObjectAttribute(attribute.fulfill(1));
                 }
                 return null;
             }
@@ -1081,15 +1081,15 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @description
         // Returns a list of all sub-cuboids in this CuboidTag (for cuboids that contain multiple sub-cuboids).
         // -->
-        registerTag("list_members", new TagRunnable() {
+        registerTag("list_members", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 List<LocationPair> pairs = ((CuboidTag) object).pairs;
                 ListTag list = new ListTag();
                 for (LocationPair pair : pairs) {
                     list.addObject(new CuboidTag(pair.low, pair.high));
                 }
-                return list.getAttribute(attribute.fulfill(1));
+                return list.getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1099,9 +1099,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @description
         // Returns a cuboid representing the one component of this cuboid (for cuboids that contain multiple sub-cuboids).
         // -->
-        registerTag("get", new TagRunnable() {
+        registerTag("get", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag CuboidTag.get[...] must have a value.");
                     return null;
@@ -1115,12 +1115,12 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                         member = ((CuboidTag) object).pairs.size();
                     }
                     LocationPair pair = ((CuboidTag) object).pairs.get(member - 1);
-                    return new CuboidTag(pair.point_1, pair.point_2).getAttribute(attribute.fulfill(1));
+                    return new CuboidTag(pair.point_1, pair.point_2).getObjectAttribute(attribute.fulfill(1));
                 }
             }
         });
-        registerTag("member", registeredTags.get("get"));
-        registerTag("get_member", registeredTags.get("get"));
+        registerTag("member", tagProcessor.registeredObjectTags.get("get"));
+        registerTag("get_member", tagProcessor.registeredObjectTags.get("get"));
 
         // <--[tag]
         // @attribute <CuboidTag.set[<cuboid>].at[<index>]>
@@ -1128,9 +1128,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @description
         // Returns a modified copy of this cuboid, with the specific sub-cuboid index changed to hold the input cuboid.
         // -->
-        registerTag("set", new TagRunnable() {
+        registerTag("set", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag CuboidTag.set[...] must have a value.");
                     return null;
@@ -1159,7 +1159,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                     try {
                         CuboidTag cloned = ((CuboidTag) object).clone();
                         cloned.pairs.set(member - 1, new LocationPair(pair.point_1, pair.point_2));
-                        return cloned.getAttribute(attribute.fulfill(1));
+                        return cloned.getObjectAttribute(attribute.fulfill(1));
                     }
                     catch (CloneNotSupportedException ex) {
                         Debug.echoError(ex); // This should never happen
@@ -1175,9 +1175,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @description
         // Returns a modified copy of this cuboid, with the input cuboid added at the end.
         // -->
-        registerTag("add", new TagRunnable() {
+        registerTag("add", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag CuboidTag.add[...] must have a value.");
                     return null;
@@ -1218,7 +1218,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                     }
                     LocationPair pair = subCuboid.pairs.get(0);
                     cuboid.pairs.add(member - 1, new LocationPair(pair.point_1, pair.point_2));
-                    return cuboid.getAttribute(attribute.fulfill(1));
+                    return cuboid.getObjectAttribute(attribute.fulfill(1));
                 }
             }
         });
@@ -1229,9 +1229,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @description
         // Returns the location of the exact center of the cuboid.
         // -->
-        registerTag("center", new TagRunnable() {
+        registerTag("center", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 LocationPair pair;
                 if (!attribute.hasContext(1)) {
                     pair = ((CuboidTag) object).pairs.get(0);
@@ -1250,7 +1250,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 base.setX(base.getX() / 2.0);
                 base.setY(base.getY() / 2.0);
                 base.setZ(base.getZ() / 2.0);
-                return new LocationTag(base).getAttribute(attribute.fulfill(1));
+                return new LocationTag(base).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1261,12 +1261,12 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // Returns the volume of the cuboid.
         // Effectively equivalent to: (size.x * size.y * size.z).
         // -->
-        registerTag("volume", new TagRunnable() {
+        registerTag("volume", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 LocationPair pair = ((CuboidTag) object).pairs.get(0);
                 Location base = pair.high.clone().subtract(pair.low.clone()).add(1, 1, 1);
-                return new ElementTag(base.getX() * base.getY() * base.getZ()).getAttribute(attribute.fulfill(1));
+                return new ElementTag(base.getX() * base.getY() * base.getZ()).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1277,9 +1277,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // Returns the size of the cuboid.
         // Effectively equivalent to: (max - min) + (1,1,1)
         // -->
-        registerTag("size", new TagRunnable() {
+        registerTag("size", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 LocationPair pair;
                 if (!attribute.hasContext(1)) {
                     pair = ((CuboidTag) object).pairs.get(0);
@@ -1295,7 +1295,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                     pair = ((CuboidTag) object).pairs.get(member - 1);
                 }
                 Location base = pair.high.clone().subtract(pair.low.clone()).add(1, 1, 1);
-                return new LocationTag(base).getAttribute(attribute.fulfill(1));
+                return new LocationTag(base).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1305,11 +1305,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @description
         // Returns the highest-numbered (maximum) corner location.
         // -->
-        registerTag("max", new TagRunnable() {
+        registerTag("max", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
-                    return ((CuboidTag) object).pairs.get(0).high.getAttribute(attribute.fulfill(1));
+                    return ((CuboidTag) object).pairs.get(0).high.getObjectAttribute(attribute.fulfill(1));
                 }
                 else {
                     int member = attribute.getIntContext(1);
@@ -1319,7 +1319,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                     if (member > ((CuboidTag) object).pairs.size()) {
                         member = ((CuboidTag) object).pairs.size();
                     }
-                    return ((CuboidTag) object).pairs.get(member - 1).high.getAttribute(attribute.fulfill(1));
+                    return ((CuboidTag) object).pairs.get(member - 1).high.getObjectAttribute(attribute.fulfill(1));
                 }
             }
         });
@@ -1330,11 +1330,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @description
         // Returns the lowest-numbered (minimum) corner location.
         // -->
-        registerTag("min", new TagRunnable() {
+        registerTag("min", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
-                    return ((CuboidTag) object).pairs.get(0).low.getAttribute(attribute.fulfill(1));
+                    return ((CuboidTag) object).pairs.get(0).low.getObjectAttribute(attribute.fulfill(1));
                 }
                 else {
                     int member = attribute.getIntContext(1);
@@ -1344,7 +1344,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                     if (member > ((CuboidTag) object).pairs.size()) {
                         member = ((CuboidTag) object).pairs.size();
                     }
-                    return ((CuboidTag) object).pairs.get(member - 1).low.getAttribute(attribute.fulfill(1));
+                    return ((CuboidTag) object).pairs.get(member - 1).low.getObjectAttribute(attribute.fulfill(1));
                 }
             }
         });
@@ -1355,9 +1355,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @description
         // Expands the first member of the CuboidTag to contain the given location, and returns the expanded cuboid.
         // -->
-        registerTag("include", new TagRunnable() {
+        registerTag("include", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag CuboidTag.include[...] must have a value.");
                     return null;
@@ -1384,7 +1384,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                         if (loc.getZ() > cuboid.pairs.get(0).high.getZ()) {
                             cuboid.pairs.get(0).high = new LocationTag(cuboid.pairs.get(0).high.getWorld(), cuboid.pairs.get(0).high.getX(), cuboid.pairs.get(0).high.getY(), loc.getZ());
                         }
-                        return cuboid.getAttribute(attribute.fulfill(1));
+                        return cuboid.getObjectAttribute(attribute.fulfill(1));
                     }
                 }
                 catch (CloneNotSupportedException ex) {
@@ -1400,9 +1400,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @description
         // Expands the first member of the CuboidTag to contain the given X value, and returns the expanded cuboid.
         // -->
-        registerTag("include_x", new TagRunnable() {
+        registerTag("include_x", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag CuboidTag.include_x[...] must have a value.");
                     return null;
@@ -1416,7 +1416,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                     if (x > cuboid.pairs.get(0).high.getX()) {
                         cuboid.pairs.get(0).high = new LocationTag(cuboid.pairs.get(0).high.getWorld(), x, cuboid.pairs.get(0).high.getY(), cuboid.pairs.get(0).high.getZ());
                     }
-                    return cuboid.getAttribute(attribute.fulfill(1));
+                    return cuboid.getObjectAttribute(attribute.fulfill(1));
                 }
                 catch (CloneNotSupportedException ex) {
                     Debug.echoError(ex); // This should never happen
@@ -1431,9 +1431,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @description
         // Expands the first member of the CuboidTag to contain the given Y value, and returns the expanded cuboid.
         // -->
-        registerTag("include_y", new TagRunnable() {
+        registerTag("include_y", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag CuboidTag.include_y[...] must have a value.");
                     return null;
@@ -1447,7 +1447,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                     if (y > cuboid.pairs.get(0).high.getY()) {
                         cuboid.pairs.get(0).high = new LocationTag(cuboid.pairs.get(0).high.getWorld(), cuboid.pairs.get(0).high.getX(), y, cuboid.pairs.get(0).high.getZ());
                     }
-                    return cuboid.getAttribute(attribute.fulfill(1));
+                    return cuboid.getObjectAttribute(attribute.fulfill(1));
                 }
                 catch (CloneNotSupportedException ex) {
                     Debug.echoError(ex); // This should never happen
@@ -1462,9 +1462,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @description
         // Expands the first member of the CuboidTag to contain the given Z value, and returns the expanded cuboid.
         // -->
-        registerTag("include_z", new TagRunnable() {
+        registerTag("include_z", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag CuboidTag.include_z[...] must have a value.");
                     return null;
@@ -1478,7 +1478,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                     if (z > cuboid.pairs.get(0).high.getZ()) {
                         cuboid.pairs.get(0).high = new LocationTag(cuboid.pairs.get(0).high.getWorld(), cuboid.pairs.get(0).high.getX(), cuboid.pairs.get(0).high.getY(), z);
                     }
-                    return cuboid.getAttribute(attribute.fulfill(1));
+                    return cuboid.getObjectAttribute(attribute.fulfill(1));
                 }
                 catch (CloneNotSupportedException ex) {
                     Debug.echoError(ex); // This should never happen
@@ -1496,16 +1496,16 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // and the output min will contain the old max values.
         // Note that this is equivalent to constructing a cuboid with the input value and the original cuboids max value.
         // -->
-        registerTag("with_min", new TagRunnable() {
+        registerTag("with_min", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag CuboidTag.with_min[...] must have a value.");
                     return null;
                 }
                 CuboidTag cuboid = (CuboidTag) object;
                 LocationTag location = LocationTag.valueOf(attribute.getContext(1));
-                return new CuboidTag(location, cuboid.pairs.get(0).high).getAttribute(attribute.fulfill(1));
+                return new CuboidTag(location, cuboid.pairs.get(0).high).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1518,16 +1518,16 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // and the output max will contain the old min values.
         // Note that this is equivalent to constructing a cuboid with the input value and the original cuboids min value.
         // -->
-        registerTag("with_max", new TagRunnable() {
+        registerTag("with_max", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag CuboidTag.with_max[...] must have a value.");
                     return null;
                 }
                 CuboidTag cuboid = (CuboidTag) object;
                 LocationTag location = LocationTag.valueOf(attribute.getContext(1));
-                return new CuboidTag(location, cuboid.pairs.get(0).low).getAttribute(attribute.fulfill(1));
+                return new CuboidTag(location, cuboid.pairs.get(0).low).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1537,16 +1537,16 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @description
         // Gets a list of all players currently within the CuboidTag.
         // -->
-        registerTag("list_players", new TagRunnable() {
+        registerTag("list_players", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 ArrayList<PlayerTag> players = new ArrayList<>();
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (((CuboidTag) object).isInsideCuboid(player.getLocation())) {
                         players.add(PlayerTag.mirrorBukkitPlayer(player));
                     }
                 }
-                return new ListTag(players).getAttribute(attribute.fulfill(1));
+                return new ListTag(players).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1557,9 +1557,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // Gets a list of all NPCs currently within the CuboidTag.
         // -->
         if (Depends.citizens != null) {
-            registerTag("list_npcs", new TagRunnable() {
+            registerTag("list_npcs", new TagRunnable.ObjectForm() {
                 @Override
-                public String run(Attribute attribute, ObjectTag object) {
+                public ObjectTag run(Attribute attribute, ObjectTag object) {
                     ArrayList<NPCTag> npcs = new ArrayList<>();
                     for (NPC npc : CitizensAPI.getNPCRegistry()) {
                         NPCTag dnpc = NPCTag.mirrorCitizensNPC(npc);
@@ -1567,7 +1567,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                             npcs.add(dnpc);
                         }
                     }
-                    return new ListTag(npcs).getAttribute(attribute.fulfill(1));
+                    return new ListTag(npcs).getObjectAttribute(attribute.fulfill(1));
                 }
             });
         }
@@ -1579,9 +1579,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // Gets a list of all entities currently within the CuboidTag, with
         // an optional search parameter for the entity type.
         // -->
-        registerTag("list_entities", new TagRunnable() {
+        registerTag("list_entities", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 ArrayList<EntityTag> entities = new ArrayList<>();
                 ListTag types = new ListTag();
                 if (attribute.hasContext(1)) {
@@ -1603,7 +1603,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                         }
                     }
                 }
-                return new ListTag(entities).getAttribute(attribute.fulfill(1));
+                return new ListTag(entities).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1613,16 +1613,16 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @description
         // Gets a list of all living entities currently within the CuboidTag.
         // -->
-        registerTag("list_living_entities", new TagRunnable() {
+        registerTag("list_living_entities", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 ArrayList<EntityTag> entities = new ArrayList<>();
                 for (Entity ent : ((CuboidTag) object).getWorld().getLivingEntities()) {
                     if (((CuboidTag) object).isInsideCuboid(ent.getLocation()) && !EntityTag.isCitizensNPC(ent)) {
                         entities.add(new EntityTag(ent));
                     }
                 }
-                return new ListTag(entities).getAttribute(attribute.fulfill(1));
+                return new ListTag(entities).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1632,9 +1632,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @description
         // Gets a list of all chunks entirely within the CuboidTag.
         // -->
-        registerTag("list_chunks", new TagRunnable() {
+        registerTag("list_chunks", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 ListTag chunks = new ListTag();
                 CuboidTag obj = (CuboidTag) object;
                 for (LocationPair pair : obj.pairs) {
@@ -1653,7 +1653,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                         }
                     }
                 }
-                return chunks.getAttribute(attribute.fulfill(1));
+                return chunks.getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1663,9 +1663,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @description
         // Gets a list of all chunks partially or entirely within the CuboidTag.
         // -->
-        registerTag("list_partial_chunks", new TagRunnable() {
+        registerTag("list_partial_chunks", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 ListTag chunks = new ListTag();
                 for (LocationPair pair : ((CuboidTag) object).pairs) {
                     ChunkTag minChunk = new ChunkTag(pair.low);
@@ -1676,7 +1676,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                         }
                     }
                 }
-                return chunks.getAttribute(attribute.fulfill(1));
+                return chunks.getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1687,14 +1687,14 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // Gets the name of a Notable CuboidTag. If the cuboid isn't noted,
         // this is null.
         // -->
-        registerTag("notable_name", new TagRunnable() {
+        registerTag("notable_name", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
                 String notname = NotableManager.getSavedId((CuboidTag) object);
                 if (notname == null) {
                     return null;
                 }
-                return new ElementTag(notname).getAttribute(attribute.fulfill(1));
+                return new ElementTag(notname).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1705,10 +1705,10 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @description
         // Returns a full reusable identification for this cuboid, with extra, generally useless data.
         // -->
-        registerTag("full", new TagRunnable() {
+        registerTag("full", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((CuboidTag) object).identifyFull()).getAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((CuboidTag) object).identifyFull()).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1719,50 +1719,23 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // Always returns 'Cuboid' for CuboidTag objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
-        registerTag("type", new TagRunnable() {
+        registerTag("type", new TagRunnable.ObjectForm() {
             @Override
-            public String run(Attribute attribute, ObjectTag object) {
-                return new ElementTag("Cuboid").getAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag("Cuboid").getObjectAttribute(attribute.fulfill(1));
             }
         });
     }
 
-    public static HashMap<String, TagRunnable> registeredTags = new HashMap<>();
+    public static ObjectTagProcessor tagProcessor = new ObjectTagProcessor();
 
-    public static void registerTag(String name, TagRunnable runnable) {
-        if (runnable.name == null) {
-            runnable.name = name;
-        }
-        registeredTags.put(name, runnable);
+    public static void registerTag(String name, TagRunnable.ObjectForm runnable) {
+        tagProcessor.registerTag(name, runnable);
     }
 
-    /////////////////////
-    // ObjectTag Attributes
-    /////////////////////
-
     @Override
-    public String getAttribute(Attribute attribute) {
-        if (attribute == null) {
-            return null;
-        }
-
-        // TODO: Scrap getAttribute, make this functionality a core system
-        String attrLow = CoreUtilities.toLowerCase(attribute.getAttributeWithoutContext(1));
-        TagRunnable tr = registeredTags.get(attrLow);
-        if (tr != null) {
-            if (!tr.name.equals(attrLow)) {
-                Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
-                        "Using deprecated form of tag '" + tr.name + "': '" + attrLow + "'.");
-            }
-            return tr.run(attribute, this);
-        }
-
-        String returned = CoreUtilities.autoPropertyTag(this, attribute);
-        if (returned != null) {
-            return returned;
-        }
-
-        return new ElementTag(identify()).getAttribute(attribute);
+    public ObjectTag getObjectAttribute(Attribute attribute) {
+        return tagProcessor.getObjectAttribute(this, attribute);
     }
 
     public void applyProperty(Mechanism mechanism) {

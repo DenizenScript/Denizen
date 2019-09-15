@@ -147,17 +147,17 @@ public class TradeTag implements ObjectTag, Adjustable {
         return identify();
     }
 
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
         if (attribute == null) {
             return null;
         }
 
-        String returned = CoreUtilities.autoPropertyTag(this, attribute);
+        ObjectTag returned = CoreUtilities.autoPropertyTagObject(this, attribute);
         if (returned != null) {
             return returned;
         }
 
-        return new ElementTag(identify()).getAttribute(attribute);
+        return new ElementTag(identify()).getObjectAttribute(attribute);
     }
 
     public void applyProperty(Mechanism mechanism) {
