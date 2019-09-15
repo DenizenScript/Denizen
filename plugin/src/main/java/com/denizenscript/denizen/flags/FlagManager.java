@@ -592,8 +592,7 @@ public class FlagManager {
 
         @Override
         public String toString() {
-            checkExpired();
-            return (flagOwner.equalsIgnoreCase("SERVER") ? "fl@" + flagName : "fl[" + flagOwner + "]@" + flagName);
+            return flagOwner + ":" + flagName;
         }
 
         // <--[event]

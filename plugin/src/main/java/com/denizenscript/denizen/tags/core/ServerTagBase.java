@@ -344,24 +344,22 @@ public class ServerTagBase {
         // @description
         // Returns the specified flag from the server.
         // -->
-        if (attribute.startsWith("flag")) {
-            String flag_name;
-            if (attribute.hasContext(1)) {
-                flag_name = attribute.getContext(1);
-            }
-            else {
-                event.setReplaced("null");
-                return;
-            }
+        if (attribute.startsWith("flag") && attribute.hasContext(1)) {
+            String flag_name = attribute.getContext(1);
             attribute.fulfill(1);
-            // NOTE: Meta is in ListTag.java
+
+            // <--[tag]
+            // @attribute <server.flag[<flag_name>].is_expired>
+            // @returns ElementTag(Boolean)
+            // @description
+            // returns true if the flag is expired or does not exist, false if it is not yet expired or has no expiration.
+            // -->
             if (attribute.startsWith("is_expired")
                     || attribute.startsWith("isexpired")) {
                 event.setReplaced(new ElementTag(!FlagManager.serverHasFlag(flag_name))
                         .getAttribute(attribute.fulfill(1)));
                 return;
             }
-            // NOTE: Meta is in ListTag.java
             if (attribute.startsWith("size") && !FlagManager.serverHasFlag(flag_name)) {
                 event.setReplaced(new ElementTag(0).getAttribute(attribute.fulfill(1)));
                 return;
@@ -369,6 +367,18 @@ public class ServerTagBase {
             if (FlagManager.serverHasFlag(flag_name)) {
                 FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager()
                         .getGlobalFlag(flag_name);
+
+                // <--[tag]
+                // @attribute <server.flag[<flag_name>].expiration>
+                // @returns DurationTag
+                // @description
+                // Returns a DurationTag of the time remaining on the flag, if it has an expiration.
+                // Works with offline players.
+                // -->
+                if (attribute.startsWith("expiration")) {
+                    event.setReplaced(flag.expiration().getAttribute(attribute.fulfill(1)));
+                }
+
                 event.setReplaced(new ListTag(flag.toString(), true, flag.values())
                         .getAttribute(attribute));
             }

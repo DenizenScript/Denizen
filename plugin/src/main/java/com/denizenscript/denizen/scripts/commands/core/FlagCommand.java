@@ -60,9 +60,6 @@ public class FlagCommand extends AbstractCommand implements Listener {
     // <server.list_players_flagged[<flag_name>]>
     // <server.list_spawned_npcs_flagged[<flag_name>]>
     // <server.list_npcs_flagged[<flag_name>]>
-    // <fl@flag_name.is_expired>
-    // <fl@flag_name.expiration>
-    // <fl@flag_name.as_list>
     //
     // @Usage
     // Use to create or set a flag on a player.

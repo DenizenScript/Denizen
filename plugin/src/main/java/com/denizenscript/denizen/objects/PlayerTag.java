@@ -707,6 +707,14 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // -->
         if (attribute.startsWith("flag") && attribute.hasContext(1)) {
             String flag_name = attribute.getContext(1);
+
+            // <--[tag]
+            // @attribute <PlayerTag.flag[<flag_name>].is_expired>
+            // @returns ElementTag(Boolean)
+            // @description
+            // returns true if the flag is expired or does not exist, false if it is not yet expired or has no expiration.
+            // Works with offline players.
+            // -->
             if (attribute.getAttribute(2).equalsIgnoreCase("is_expired")
                     || attribute.startsWith("isexpired")) {
                 return new ElementTag(!FlagManager.playerHasFlag(this, flag_name))
@@ -718,6 +726,18 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             if (FlagManager.playerHasFlag(this, flag_name)) {
                 FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager()
                         .getPlayerFlag(this, flag_name);
+
+                // <--[tag]
+                // @attribute <PlayerTag.flag[<flag_name>].expiration>
+                // @returns DurationTag
+                // @description
+                // Returns a DurationTag of the time remaining on the flag, if it has an expiration.
+                // Works with offline players.
+                // -->
+                if (attribute.getAttribute(2).equalsIgnoreCase("expiration")) {
+                    return flag.expiration().getAttribute(attribute.fulfill(2));
+                }
+
                 return new ListTag(flag.toString(), true, flag.values())
                         .getAttribute(attribute.fulfill(1));
             }

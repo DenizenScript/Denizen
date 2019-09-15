@@ -622,14 +622,15 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the specified flag from the NPC.
         // -->
-        if (attribute.startsWith("flag")) {
-            String flag_name;
-            if (attribute.hasContext(1)) {
-                flag_name = attribute.getContext(1);
-            }
-            else {
-                return null;
-            }
+        if (attribute.startsWith("flag") && attribute.hasContext(1)) {
+            String flag_name = attribute.getContext(1);
+
+            // <--[tag]
+            // @attribute <NPCTag.flag[<flag_name>].is_expired>
+            // @returns ElementTag(Boolean)
+            // @description
+            // returns true if the flag is expired or does not exist, false if it is not yet expired or has no expiration.
+            // -->
             if (attribute.getAttribute(2).equalsIgnoreCase("is_expired")
                     || attribute.startsWith("isexpired")) {
                 return new ElementTag(!FlagManager.npcHasFlag(this, flag_name))
@@ -641,6 +642,17 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             if (FlagManager.npcHasFlag(this, flag_name)) {
                 FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager()
                         .getNPCFlag(getId(), flag_name);
+
+                // <--[tag]
+                // @attribute <NPCTag.flag[<flag_name>].expiration>
+                // @returns DurationTag
+                // @description
+                // Returns a DurationTag of the time remaining on the flag, if it has an expiration.
+                // -->
+                if (attribute.getAttribute(2).equalsIgnoreCase("expiration")) {
+                    return flag.expiration().getAttribute(attribute.fulfill(2));
+                }
+
                 return new ListTag(flag.toString(), true, flag.values())
                         .getAttribute(attribute.fulfill(1));
             }
