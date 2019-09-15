@@ -2012,40 +2012,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <InventoryTag.quantity.scriptname[<script>]>
-        // @returns ElementTag(Number)
-        // @description
-        // Returns the combined quantity of itemstacks that have the specified script name.
-        // -->
-        registerTag("quantity.scriptname", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                if (!attribute.hasContext(2)) {
-                    return null;
-                }
-                return new ElementTag(((InventoryTag) object).countByScriptName(attribute.getContext(2)))
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-        });
-
-        // <--[tag]
-        // @attribute <InventoryTag.quantity.material[<material>]>
-        // @returns ElementTag(Number)
-        // @description
-        // Returns the combined quantity of itemstacks that have the specified material.
-        // -->
-        registerTag("quantity.material", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                if (!attribute.hasContext(2) && MaterialTag.matches(attribute.getContext(2))) {
-                    return null;
-                }
-                return new ElementTag(((InventoryTag) object).countByMaterial(MaterialTag.valueOf(attribute.getContext(2)).getMaterial()))
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-        });
-
-        // <--[tag]
         // @attribute <InventoryTag.quantity[<item>]>
         // @returns ElementTag(Number)
         // @description
@@ -2056,6 +2022,32 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         registerTag("quantity", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
+                // <--[tag]
+                // @attribute <InventoryTag.quantity.scriptname[<script>]>
+                // @returns ElementTag(Number)
+                // @description
+                // Returns the combined quantity of itemstacks that have the specified script name.
+                // -->
+                if (attribute.getAttributeWithoutContext(2).equals("scriptname")) {
+                    if (!attribute.hasContext(2)) {
+                        return null;
+                    }
+                    return new ElementTag(((InventoryTag) object).countByScriptName(attribute.getContext(2)))
+                            .getObjectAttribute(attribute.fulfill(2));
+                }
+                // <--[tag]
+                // @attribute <InventoryTag.quantity.material[<material>]>
+                // @returns ElementTag(Number)
+                // @description
+                // Returns the combined quantity of itemstacks that have the specified material.
+                // -->
+                if (attribute.getAttributeWithoutContext(2).equals("material")) {
+                    if (!attribute.hasContext(2) && MaterialTag.matches(attribute.getContext(2))) {
+                        return null;
+                    }
+                    return new ElementTag(((InventoryTag) object).countByMaterial(MaterialTag.valueOf(attribute.getContext(2)).getMaterial()))
+                            .getObjectAttribute(attribute.fulfill(2));
+                }
                 if (attribute.hasContext(1) && ItemTag.matches(attribute.getContext(1))) {
                     return new ElementTag(((InventoryTag) object).count
                             (ItemTag.valueOf(attribute.getContext(1), attribute.context).getItemStack(), false))

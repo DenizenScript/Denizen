@@ -1362,24 +1362,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
-        // @attribute <LocationTag.simple.formatted>
-        // @returns ElementTag
-        // @description
-        // Returns the formatted simple version of the LocationTag's block coordinates.
-        // In the format: X 'x', Y 'y', Z 'z', in world 'world'
-        // For example, X '1', Y '2', Z '3', in world 'world_nether'
-        // -->
-        registerTag("simple.formatted", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag("X '" + ((LocationTag) object).getBlockX()
-                        + "', Y '" + ((LocationTag) object).getBlockY()
-                        + "', Z '" + ((LocationTag) object).getBlockZ()
-                        + "', in world '" + ((LocationTag) object).getWorldName() + "'").getObjectAttribute(attribute.fulfill(2));
-            }
-        });
-
-        // <--[tag]
         // @attribute <LocationTag.simple>
         // @returns ElementTag
         // @description
@@ -1390,6 +1372,20 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         registerTag("simple", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
+                // <--[tag]
+                // @attribute <LocationTag.simple.formatted>
+                // @returns ElementTag
+                // @description
+                // Returns the formatted simple version of the LocationTag's block coordinates.
+                // In the format: X 'x', Y 'y', Z 'z', in world 'world'
+                // For example, X '1', Y '2', Z '3', in world 'world_nether'
+                // -->
+                if (attribute.getAttributeWithoutContext(2).equals("formatted")) {
+                    return new ElementTag("X '" + ((LocationTag) object).getBlockX()
+                            + "', Y '" + ((LocationTag) object).getBlockY()
+                            + "', Z '" + ((LocationTag) object).getBlockZ()
+                            + "', in world '" + ((LocationTag) object).getWorldName() + "'").getObjectAttribute(attribute.fulfill(2));
+                }
                 if (((LocationTag) object).getWorldName() == null) {
                     return new ElementTag(((LocationTag) object).getBlockX() + "," + ((LocationTag) object).getBlockY() + "," + ((LocationTag) object).getBlockZ())
                             .getObjectAttribute(attribute.fulfill(1));
@@ -1586,23 +1582,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
-        // @attribute <LocationTag.direction.vector>
-        // @returns LocationTag
-        // @description
-        // Returns the location's direction as a one-length vector.
-        // -->
-        registerTag("direction.vector", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                double xzLen = Math.cos((((LocationTag) object).getPitch() % 360) * (Math.PI / 180));
-                double nx = xzLen * Math.sin(-((LocationTag) object).getYaw() * (Math.PI / 180));
-                double ny = Math.sin(((LocationTag) object).getPitch() * (Math.PI / 180));
-                double nz = xzLen * Math.cos(((LocationTag) object).getYaw() * (Math.PI / 180));
-                return new LocationTag(((LocationTag) object).getWorld(), nx, -ny, nz).getObjectAttribute(attribute.fulfill(2));
-            }
-        });
-
-        // <--[tag]
         // @attribute <LocationTag.direction[<location>]>
         // @returns ElementTag
         // @description
@@ -1613,6 +1592,19 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         registerTag("direction", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
+                // <--[tag]
+                // @attribute <LocationTag.direction.vector>
+                // @returns LocationTag
+                // @description
+                // Returns the location's direction as a one-length vector.
+                // -->
+                if (attribute.getAttributeWithoutContext(2).equals("vector")) {
+                    double xzLen = Math.cos((((LocationTag) object).getPitch() % 360) * (Math.PI / 180));
+                    double nx = xzLen * Math.sin(-((LocationTag) object).getYaw() * (Math.PI / 180));
+                    double ny = Math.sin(((LocationTag) object).getPitch() * (Math.PI / 180));
+                    double nz = xzLen * Math.cos(((LocationTag) object).getYaw() * (Math.PI / 180));
+                    return new LocationTag(((LocationTag) object).getWorld(), nx, -ny, nz).getObjectAttribute(attribute.fulfill(2));
+                }
                 // Get the cardinal direction from this location to another
                 if (attribute.hasContext(1) && LocationTag.matches(attribute.getContext(1))) {
                     // Subtract this location's vector from the other location's vector,
@@ -1779,53 +1771,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
-        // @attribute <LocationTag.yaw.simple>
-        // @returns ElementTag
-        // @description
-        // Returns the yaw as 'North', 'South', 'East', or 'West'.
-        // -->
-        registerTag("yaw.simple", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                float yaw = NMSHandler.getEntityHelper().normalizeYaw(((LocationTag) object).getYaw());
-                if (yaw < 45) {
-                    return new ElementTag("South")
-                            .getObjectAttribute(attribute.fulfill(2));
-                }
-                else if (yaw < 135) {
-                    return new ElementTag("West")
-                            .getObjectAttribute(attribute.fulfill(2));
-                }
-                else if (yaw < 225) {
-                    return new ElementTag("North")
-                            .getObjectAttribute(attribute.fulfill(2));
-                }
-                else if (yaw < 315) {
-                    return new ElementTag("East")
-                            .getObjectAttribute(attribute.fulfill(2));
-                }
-                else {
-                    return new ElementTag("South")
-                            .getObjectAttribute(attribute.fulfill(2));
-                }
-            }
-        });
-
-        // <--[tag]
-        // @attribute <LocationTag.yaw.raw>
-        // @returns ElementTag(Decimal)
-        // @description
-        // Returns the raw yaw of the object at the location.
-        // -->
-        registerTag("yaw.raw", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((LocationTag) object).getYaw())
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-        });
-
-        // <--[tag]
         // @attribute <LocationTag.yaw>
         // @returns ElementTag(Decimal)
         // @description
@@ -1834,6 +1779,45 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         registerTag("yaw", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
+                // <--[tag]
+                // @attribute <LocationTag.yaw.simple>
+                // @returns ElementTag
+                // @description
+                // Returns the yaw as 'North', 'South', 'East', or 'West'.
+                // -->
+                if (attribute.getAttributeWithoutContext(2).equals("simple")) {
+                    float yaw = NMSHandler.getEntityHelper().normalizeYaw(((LocationTag) object).getYaw());
+                    if (yaw < 45) {
+                        return new ElementTag("South")
+                                .getObjectAttribute(attribute.fulfill(2));
+                    }
+                    else if (yaw < 135) {
+                        return new ElementTag("West")
+                                .getObjectAttribute(attribute.fulfill(2));
+                    }
+                    else if (yaw < 225) {
+                        return new ElementTag("North")
+                                .getObjectAttribute(attribute.fulfill(2));
+                    }
+                    else if (yaw < 315) {
+                        return new ElementTag("East")
+                                .getObjectAttribute(attribute.fulfill(2));
+                    }
+                    else {
+                        return new ElementTag("South")
+                                .getObjectAttribute(attribute.fulfill(2));
+                    }
+                }
+                // <--[tag]
+                // @attribute <LocationTag.yaw.raw>
+                // @returns ElementTag(Decimal)
+                // @description
+                // Returns the raw yaw of the object at the location.
+                // -->
+                if (attribute.getAttributeWithoutContext(2).equals("raw")) {
+                    return new ElementTag(((LocationTag) object).getYaw())
+                            .getObjectAttribute(attribute.fulfill(2));
+                }
                 return new ElementTag(NMSHandler.getEntityHelper().normalizeYaw(((LocationTag) object).getYaw()))
                         .getObjectAttribute(attribute.fulfill(1));
             }
@@ -2225,21 +2209,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         /////////////////
 
         // <--[tag]
-        // @attribute <LocationTag.formatted.citizens>
-        // @returns ElementTag
-        // @description
-        // Returns the location formatted for a Citizens command.
-        // In the format: x.x:y.y:z.z:world
-        // For example: 1.0:2.0:3.0:world_nether
-        // -->
-        registerTag("formatted.citizens", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((LocationTag) object).getX() + ":" + ((LocationTag) object).getY() + ":" + ((LocationTag) object).getZ() + ":" + ((LocationTag) object).getWorldName()).getObjectAttribute(attribute.fulfill(2));
-            }
-        });
-
-        // <--[tag]
         // @attribute <LocationTag.formatted>
         // @returns ElementTag
         // @description
@@ -2250,6 +2219,17 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         registerTag("formatted", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
+                // <--[tag]
+                // @attribute <LocationTag.formatted.citizens>
+                // @returns ElementTag
+                // @description
+                // Returns the location formatted for a Citizens command.
+                // In the format: x.x:y.y:z.z:world
+                // For example: 1.0:2.0:3.0:world_nether
+                // -->
+                if (attribute.getAttributeWithoutContext(2).equals("citzens")) {
+                    return new ElementTag(((LocationTag) object).getX() + ":" + ((LocationTag) object).getY() + ":" + ((LocationTag) object).getZ() + ":" + ((LocationTag) object).getWorldName()).getObjectAttribute(attribute.fulfill(2));
+                }
                 return new ElementTag("X '" + ((LocationTag) object).getX()
                         + "', Y '" + ((LocationTag) object).getY()
                         + "', Z '" + ((LocationTag) object).getZ()
@@ -2779,20 +2759,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         /////////////////
 
         // <--[tag]
-        // @attribute <LocationTag.biome.formatted>
-        // @returns ElementTag
-        // @description
-        // Returns the formatted biome name at the location.
-        // -->
-        registerTag("biome.formatted", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(CoreUtilities.toLowerCase(((LocationTag) object).getBiomeForTag(attribute).name()).replace('_', ' '))
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-        });
-
-        // <--[tag]
         // @attribute <LocationTag.biome>
         // @mechanism LocationTag.biome
         // @returns BiomeTag
@@ -2802,8 +2768,19 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         registerTag("biome", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
+                attribute = attribute.fulfill(1);
+                // <--[tag]
+                // @attribute <LocationTag.biome.formatted>
+                // @returns ElementTag
+                // @description
+                // Returns the formatted biome name at the location.
+                // -->
+                if (attribute.startsWith("formatted")) {
+                    return new ElementTag(CoreUtilities.toLowerCase(((LocationTag) object).getBiomeForTag(attribute).name()).replace('_', ' '))
+                            .getObjectAttribute(attribute.fulfill(1));
+                }
                 return new BiomeTag(((LocationTag) object).getBiomeForTag(attribute))
-                        .getObjectAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute);
             }
         });
 

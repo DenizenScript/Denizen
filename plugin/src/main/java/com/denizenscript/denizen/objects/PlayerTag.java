@@ -1219,34 +1219,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
-        // @attribute <PlayerTag.health.is_scaled>
-        // @returns ElementTag(Boolean)
-        // @description
-        // Returns whether the player's health bar is currently being scaled.
-        // -->
-        registerTag("health.is_scaled", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((PlayerTag) object).getPlayerEntity().isHealthScaled())
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-        });
-
-        // <--[tag]
-        // @attribute <PlayerTag.health.scale>
-        // @returns ElementTag(Decimal)
-        // @description
-        // Returns the current scale for the player's health bar
-        // -->
-        registerTag("health.scale", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((PlayerTag) object).getPlayerEntity().getHealthScale())
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-        });
-
-        // <--[tag]
         // @attribute <PlayerTag.exhaustion>
         // @returns ElementTag(Decimal)
         // @description
@@ -1277,6 +1249,26 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 attribute = attribute.fulfill(1);
+                // <--[tag]
+                // @attribute <PlayerTag.health.is_scaled>
+                // @returns ElementTag(Boolean)
+                // @description
+                // Returns whether the player's health bar is currently being scaled.
+                // -->
+                if (attribute.startsWith("is_scaled")) {
+                    return new ElementTag(((PlayerTag) object).getPlayerEntity().isHealthScaled())
+                            .getObjectAttribute(attribute.fulfill(2));
+                }
+                // <--[tag]
+                // @attribute <PlayerTag.health.scale>
+                // @returns ElementTag(Decimal)
+                // @description
+                // Returns the current scale for the player's health bar
+                // -->
+                if (attribute.startsWith("scale")) {
+                    return new ElementTag(((PlayerTag) object).getPlayerEntity().getHealthScale())
+                            .getObjectAttribute(attribute.fulfill(2));
+                }
                 if (attribute.startsWith("formatted")) {
                     return EntityHealth.getHealthFormatted(new EntityTag(((PlayerTag) object).getPlayerEntity()), attribute.fulfill(1));
                 }

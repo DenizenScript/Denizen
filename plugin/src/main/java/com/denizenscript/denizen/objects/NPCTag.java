@@ -460,6 +460,17 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         registerTag("location", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
+                // <--[tag]
+                // @attribute <NPCTag.location.previous_location>
+                // @returns LocationTag
+                // @description
+                // Returns the NPC's previous navigated location.
+                // -->
+                if (attribute.getAttributeWithoutContext(2).equals("previous_location")) {
+                    return (NPCTagBase.previousLocations.containsKey(((NPCTag) object).getId())
+                            ? NPCTagBase.previousLocations.get(((NPCTag) object).getId()).getObjectAttribute(attribute.fulfill(2))
+                            : null);
+                }
                 if (((NPCTag) object).isSpawned()) {
                     return new EntityTag(((NPCTag) object)).getObjectAttribute(attribute);
                 }
@@ -492,20 +503,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         });
 
         // <--[tag]
-        // @attribute <NPCTag.name.nickname>
-        // @returns ElementTag
-        // @description
-        // Returns the NPC's display name.
-        // -->
-        registerTag("name.nickname", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((NPCTag) object).getCitizen().hasTrait(NicknameTrait.class) ? ((NPCTag) object).getCitizen().getTrait(NicknameTrait.class)
-                        .getNickname() : ((NPCTag) object).getName()).getObjectAttribute(attribute.fulfill(2));
-            }
-        });
-
-        // <--[tag]
         // @attribute <NPCTag.name>
         // @returns ElementTag
         // @description
@@ -514,6 +511,16 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         registerTag("name", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
+                // <--[tag]
+                // @attribute <NPCTag.name.nickname>
+                // @returns ElementTag
+                // @description
+                // Returns the NPC's display name.
+                // -->
+                if (attribute.getAttributeWithoutContext(2).equals("nickname")) {
+                    return new ElementTag(((NPCTag) object).getCitizen().hasTrait(NicknameTrait.class) ? ((NPCTag) object).getCitizen().getTrait(NicknameTrait.class)
+                            .getNickname() : ((NPCTag) object).getName()).getObjectAttribute(attribute.fulfill(2));
+                }
                 return new ElementTag(((NPCTag) object).getName())
                         .getObjectAttribute(attribute.fulfill(1));
             }
@@ -1008,21 +1015,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         });
 
         // <--[tag]
-        // @attribute <NPCTag.location.previous_location>
-        // @returns LocationTag
-        // @description
-        // Returns the NPC's previous navigated location.
-        // -->
-        registerTag("location.previous_location", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return (NPCTagBase.previousLocations.containsKey(((NPCTag) object).getId())
-                        ? NPCTagBase.previousLocations.get(((NPCTag) object).getId()).getObjectAttribute(attribute.fulfill(2))
-                        : null);
-            }
-        });
-
-        // <--[tag]
         // @attribute <NPCTag.teleport_on_stuck>
         // @returns LocationTag
         // @mechanism NPCTag.teleport_on_stuck
@@ -1112,13 +1104,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 return new ElementTag(((NPCTag) object).getNavigator().isNavigating()).getObjectAttribute(attribute.fulfill(1));
             }
         });
-        registerTag("navigator.is_navigating", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                //Deprecations.oldNPCNavigator.warn(attribute.context);
-                return new ElementTag(((NPCTag) object).getNavigator().isNavigating()).getObjectAttribute(attribute.fulfill(2));
-            }
-        });
 
         // <--[tag]
         // @attribute <NPCTag.speed>
@@ -1131,14 +1116,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 return new ElementTag(((NPCTag) object).getNavigator().getLocalParameters().speed())
                         .getObjectAttribute(attribute.fulfill(1));
-            }
-        });
-        registerTag("navigator.speed", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                //Deprecations.oldNPCNavigator.warn(attribute.context);
-                return new ElementTag(((NPCTag) object).getNavigator().getLocalParameters().speed())
-                        .getObjectAttribute(attribute.fulfill(2));
             }
         });
 
@@ -1155,14 +1132,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
-        registerTag("navigator.range", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                //Deprecations.oldNPCNavigator.warn(attribute.context);
-                return new ElementTag(((NPCTag) object).getNavigator().getLocalParameters().range())
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-        });
 
         // <--[tag]
         // @attribute <NPCTag.attack_range>
@@ -1175,14 +1144,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 return new ElementTag(((NPCTag) object).getNavigator().getLocalParameters().attackRange())
                         .getObjectAttribute(attribute.fulfill(1));
-            }
-        });
-        registerTag("navigator.attack_range", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                //Deprecations.oldNPCNavigator.warn(attribute.context);
-                return new ElementTag(((NPCTag) object).getNavigator().getLocalParameters().attackRange())
-                        .getObjectAttribute(attribute.fulfill(2));
             }
         });
 
@@ -1199,14 +1160,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
-        registerTag("navigator.attack_strategy", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                //Deprecations.oldNPCNavigator.warn(attribute.context);
-                return new ElementTag(((NPCTag) object).getNavigator().getLocalParameters().attackStrategy().toString())
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-        });
 
         // <--[tag]
         // @attribute <NPCTag.speed_modifier>
@@ -1219,14 +1172,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 return new ElementTag(((NPCTag) object).getNavigator().getLocalParameters().speedModifier())
                         .getObjectAttribute(attribute.fulfill(1));
-            }
-        });
-        registerTag("navigator.speed_modifier", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                //Deprecations.oldNPCNavigator.warn(attribute.context);
-                return new ElementTag(((NPCTag) object).getNavigator().getLocalParameters().speedModifier())
-                        .getObjectAttribute(attribute.fulfill(2));
             }
         });
 
@@ -1243,14 +1188,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
-        registerTag("navigator.base_speed", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                //Deprecations.oldNPCNavigator.warn(attribute.context);
-                return new ElementTag(((NPCTag) object).getNavigator().getLocalParameters().baseSpeed())
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-        });
 
         // <--[tag]
         // @attribute <NPCTag.avoid_water>
@@ -1263,14 +1200,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 return new ElementTag(((NPCTag) object).getNavigator().getLocalParameters().avoidWater())
                         .getObjectAttribute(attribute.fulfill(1));
-            }
-        });
-        registerTag("navigator.avoid_water", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                //Deprecations.oldNPCNavigator.warn(attribute.context);
-                return new ElementTag(((NPCTag) object).getNavigator().getLocalParameters().avoidWater())
-                        .getObjectAttribute(attribute.fulfill(2));
             }
         });
 
@@ -1289,16 +1218,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 return new LocationTag(((NPCTag) object).getNavigator().getTargetAsLocation()).getObjectAttribute(attribute.fulfill(1));
             }
         });
-        registerTag("navigator.target_location", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                //Deprecations.oldNPCNavigator.warn(attribute.context);
-                if (((NPCTag) object).getNavigator().getTargetAsLocation() == null) {
-                    return null;
-                }
-                return new LocationTag(((NPCTag) object).getNavigator().getTargetAsLocation()).getObjectAttribute(attribute.fulfill(2));
-            }
-        });
 
         // <--[tag]
         // @attribute <NPCTag.is_fighting>
@@ -1311,14 +1230,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 return new ElementTag(((NPCTag) object).getNavigator().getEntityTarget() != null && ((NPCTag) object).getNavigator().getEntityTarget().isAggressive())
                         .getObjectAttribute(attribute.fulfill(1));
-            }
-        });
-        registerTag("navigator.is_fighting", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                //Deprecations.oldNPCNavigator.warn(attribute.context);
-                return new ElementTag(((NPCTag) object).getNavigator().getEntityTarget() != null && ((NPCTag) object).getNavigator().getEntityTarget().isAggressive())
-                        .getObjectAttribute(attribute.fulfill(2));
             }
         });
 
@@ -1338,17 +1249,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
-        registerTag("navigator.target_type", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                //Deprecations.oldNPCNavigator.warn(attribute.context);
-                if (((NPCTag) object).getNavigator().getTargetType() == null) {
-                    return null;
-                }
-                return new ElementTag(((NPCTag) object).getNavigator().getTargetType().toString())
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-        });
 
         // <--[tag]
         // @attribute <NPCTag.target_entity>
@@ -1365,14 +1265,12 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 return new EntityTag(((NPCTag) object).getNavigator().getEntityTarget().getTarget()).getObjectAttribute(attribute.fulfill(1));
             }
         });
-        registerTag("navigator.target_entity", new TagRunnable.ObjectForm() {
+
+        registerTag("navigator", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 //Deprecations.oldNPCNavigator.warn(attribute.context);
-                if (((NPCTag) object).getNavigator().getEntityTarget() == null || ((NPCTag) object).getNavigator().getEntityTarget().getTarget() == null) {
-                    return null;
-                }
-                return new EntityTag(((NPCTag) object).getNavigator().getEntityTarget().getTarget()).getObjectAttribute(attribute.fulfill(2));
+                return object.getObjectAttribute(attribute.fulfill(1));
             }
         });
 

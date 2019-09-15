@@ -214,16 +214,21 @@ public class CommonRegistries {
         ObjectFetcher.registerWithObjectFetcher(EllipsoidTag.class); // ellipsoid@
         EllipsoidTag.registerTags(); // TODO: Automate this once all classes have tag registries
         ObjectFetcher.registerWithObjectFetcher(EntityTag.class);    // e@
+        EntityTag.registerTags(); // TODO: Automate this once all classes have tag registries
         ObjectFetcher.registerWithObjectFetcher(InventoryTag.class); // in@
+        InventoryTag.registerTags(); // TODO: Automate this once all classes have tag registries
         ObjectFetcher.registerWithObjectFetcher(ItemTag.class);      // i@
         ItemTag.registerTags(); // TODO: Automate this once all classes have tag registries
         ObjectFetcher.registerWithObjectFetcher(LocationTag.class);  // l@
+        LocationTag.registerTags(); // TODO: Automate this once all classes have tag registries
         ObjectFetcher.registerWithObjectFetcher(MaterialTag.class);  // m@
         MaterialTag.registerTags(); // TODO: Automate this once all classes have tag registries
         if (Depends.citizens != null) {
             ObjectFetcher.registerWithObjectFetcher(NPCTag.class);   // n@
+            NPCTag.registerTags(); // TODO: Automate this once all classes have tag registries
         }
         ObjectFetcher.registerWithObjectFetcher(PlayerTag.class);    // p@
+        PlayerTag.registerTags(); // TODO: Automate this once all classes have tag registries
         ObjectFetcher.registerWithObjectFetcher(PluginTag.class);    // pl@
         PluginTag.registerTags(); // TODO: Automate this once all classes have tag registries
         ObjectFetcher.registerWithObjectFetcher(TradeTag.class);     // trade@

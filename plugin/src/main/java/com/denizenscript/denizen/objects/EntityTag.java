@@ -2189,7 +2189,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
-        registerSpawnedOnlyTag("is_empty", tagProcessor.registeredObjectTags.get("empty"));
+        registerSpawnedOnlyTag("empty", tagProcessor.registeredObjectTags.get("is_empty"));
 
         // <--[tag]
         // @attribute <EntityTag.is_inside_vehicle>
@@ -2271,7 +2271,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
-        registerSpawnedOnlyTag("is_persistent", tagProcessor.registeredObjectTags.get("persistent"));
+        registerSpawnedOnlyTag("persistent", tagProcessor.registeredObjectTags.get("is_persistent"));
 
         // <--[tag]
         // @attribute <EntityTag.is_collidable>
