@@ -71,7 +71,7 @@ public class EntitySize implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -88,10 +88,10 @@ public class EntitySize implements Property {
         if (attribute.startsWith("size")) {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && entity.getBukkitEntity() instanceof Phantom) {
                 return new ElementTag(((Phantom) entity.getBukkitEntity()).getSize())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
             return new ElementTag(((Slime) entity.getBukkitEntity()).getSize())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

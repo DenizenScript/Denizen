@@ -63,7 +63,7 @@ public class EntitySkeleton implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -72,7 +72,7 @@ public class EntitySkeleton implements Property {
         if (attribute.startsWith("skeleton_type")) {
             Debug.echoError("Different skeleton types are represented by different entity types. Please remove usage of the 'skeleton_type' tag.");
             return new ElementTag(((Skeleton) skeleton.getBukkitEntity())
-                    .getSkeletonType().name()).getAttribute(attribute.fulfill(1));
+                    .getSkeletonType().name()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

@@ -78,7 +78,7 @@ public class EntityAreaEffectCloud implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -104,7 +104,7 @@ public class EntityAreaEffectCloud implements Property {
             // -->
             if (attribute.startsWith("type")) {
                 return new ElementTag(getHelper().getBPName())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
 
             // <--[tag]
@@ -116,7 +116,7 @@ public class EntityAreaEffectCloud implements Property {
             // -->
             if (attribute.startsWith("is_upgraded")) {
                 return new ElementTag(getHelper().getBPUpgraded())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
 
             // <--[tag]
@@ -128,11 +128,11 @@ public class EntityAreaEffectCloud implements Property {
             // -->
             if (attribute.startsWith("is_extended")) {
                 return new ElementTag(getHelper().getBPExtended())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
 
             return new ElementTag(getHelper().getBPName() + "," + getHelper().getBPUpgraded() + "," + getHelper().getBPExtended())
-                    .getAttribute(attribute);
+                    .getObjectAttribute(attribute);
         }
 
         // <--[tag]
@@ -154,11 +154,11 @@ public class EntityAreaEffectCloud implements Property {
             // -->
             if (attribute.startsWith("color")) {
                 return new ColorTag(getHelper().getColor())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
 
             return new ElementTag(getHelper().getParticle())
-                    .getAttribute(attribute);
+                    .getObjectAttribute(attribute);
         }
 
         // <--[tag]
@@ -181,11 +181,11 @@ public class EntityAreaEffectCloud implements Property {
             // -->
             if (attribute.startsWith("on_use")) {
                 return new DurationTag(getHelper().getDurationOnUse())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
 
             return new DurationTag(getHelper().getDuration())
-                    .getAttribute(attribute);
+                    .getObjectAttribute(attribute);
         }
 
         // <--[tag]
@@ -208,7 +208,7 @@ public class EntityAreaEffectCloud implements Property {
             // -->
             if (attribute.startsWith("on_use")) {
                 return new ElementTag(getHelper().getRadiusOnUse())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
 
             // <--[tag]
@@ -221,11 +221,11 @@ public class EntityAreaEffectCloud implements Property {
             // -->
             if (attribute.startsWith("per_tick")) {
                 return new ElementTag(getHelper().getRadiusPerTick())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
 
             return new ElementTag(getHelper().getRadius())
-                    .getAttribute(attribute);
+                    .getObjectAttribute(attribute);
         }
 
         // <--[tag]
@@ -238,7 +238,7 @@ public class EntityAreaEffectCloud implements Property {
         // -->
         if (attribute.startsWith("reapplication_delay")) {
             return new DurationTag(getHelper().getReappDelay())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -251,7 +251,7 @@ public class EntityAreaEffectCloud implements Property {
         // -->
         if (attribute.startsWith("wait_time")) {
             return new DurationTag(getHelper().getWaitTime())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -268,14 +268,14 @@ public class EntityAreaEffectCloud implements Property {
                 PotionEffectType effectType = PotionEffectType.getByName(attribute.getContext(1));
                 for (PotionEffect effect : getHelper().getCustomEffects()) {
                     if (effect.getType().equals(effectType)) {
-                        return new ElementTag(true).getAttribute(attribute.fulfill(1));
+                        return new ElementTag(true).getObjectAttribute(attribute.fulfill(1));
                     }
                 }
-                return new ElementTag(false).getAttribute(attribute.fulfill(1));
+                return new ElementTag(false).getObjectAttribute(attribute.fulfill(1));
             }
 
             return new ElementTag(getHelper().hasCustomEffects())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -289,7 +289,7 @@ public class EntityAreaEffectCloud implements Property {
             ProjectileSource shooter = getHelper().getSource();
             if (shooter != null && shooter instanceof LivingEntity) {
                 return new EntityTag((LivingEntity) shooter)
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
         }
 
@@ -313,7 +313,7 @@ public class EntityAreaEffectCloud implements Property {
                             effect.isAmbient() + "," +
                             effect.hasParticles());
                 }
-                return list.getAttribute(attribute.fulfill(1));
+                return list.getObjectAttribute(attribute.fulfill(1));
             }
 
             int val = attribute.getIntContext(1) - 1;
@@ -333,7 +333,7 @@ public class EntityAreaEffectCloud implements Property {
             // -->
             if (attribute.startsWith("type")) {
                 return new ElementTag(effect.getType().getName())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
 
             // <--[tag]
@@ -345,7 +345,7 @@ public class EntityAreaEffectCloud implements Property {
             // -->
             if (attribute.startsWith("amplifier")) {
                 return new ElementTag(effect.getAmplifier())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
 
             // <--[tag]
@@ -357,7 +357,7 @@ public class EntityAreaEffectCloud implements Property {
             // -->
             if (attribute.startsWith("duration")) {
                 return new DurationTag((long) effect.getDuration())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
 
             // <--[tag]
@@ -369,7 +369,7 @@ public class EntityAreaEffectCloud implements Property {
             // -->
             if (attribute.startsWith("has_particles")) {
                 return new ElementTag(effect.hasParticles())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
 
             // <--[tag]
@@ -381,14 +381,14 @@ public class EntityAreaEffectCloud implements Property {
             // -->
             if (attribute.startsWith("is_ambient")) {
                 return new ElementTag(effect.isAmbient())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
 
             return new ElementTag(effect.getType().getName() + "," +
                     effect.getAmplifier() + "," +
                     new DurationTag((long) effect.getDuration()).identify() + "," +
                     effect.isAmbient() + "," +
-                    effect.hasParticles()).getAttribute(attribute);
+                    effect.hasParticles()).getObjectAttribute(attribute);
         }
 
         return null;

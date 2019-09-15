@@ -1215,7 +1215,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
 
         // Same with health tags
         if (attribute.startsWith("health.formatted")) {
-            return EntityHealth.getHealthFormatted(new EntityTag(getPlayerEntity()), attribute);
+            return EntityHealth.getHealthFormatted(new EntityTag(getPlayerEntity()), attribute).toString();
         }
 
         if (attribute.startsWith("health.percentage")) {

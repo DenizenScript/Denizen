@@ -52,7 +52,7 @@ public class ItemLock implements Property {
     ItemTag item;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -67,7 +67,7 @@ public class ItemLock implements Property {
         // Returns the lock password of this item.
         // -->
         if (attribute.startsWith("lock")) {
-            return new ElementTag(isLocked() ? getItemLock() : null).getAttribute(attribute.fulfill(1));
+            return new ElementTag(isLocked() ? getItemLock() : null).getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -79,7 +79,7 @@ public class ItemLock implements Property {
         // Returns whether this item has a lock password.
         // -->
         if (attribute.startsWith("is_locked")) {
-            return new ElementTag(isLocked()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(isLocked()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

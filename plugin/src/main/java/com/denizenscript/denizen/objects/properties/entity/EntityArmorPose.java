@@ -79,7 +79,7 @@ public class EntityArmorPose implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -96,7 +96,7 @@ public class EntityArmorPose implements Property {
         // Angles are in radians!
         // -->
         if (attribute.startsWith("armor_pose_list")) {
-            return getPoseList().getAttribute(attribute.fulfill(1));
+            return getPoseList().getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -117,7 +117,7 @@ public class EntityArmorPose implements Property {
             }
             else {
                 return fromEulerAngle(posePart.getAngle((ArmorStand) entity.getBukkitEntity()))
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
         }
 

@@ -56,7 +56,7 @@ public class EntityRiptide implements Property {
     }
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -72,7 +72,7 @@ public class EntityRiptide implements Property {
         // -->
         if (attribute.startsWith("is_using_riptide")) {
             return new ElementTag(entity.getLivingEntity().isRiptiding())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

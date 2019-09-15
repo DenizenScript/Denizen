@@ -37,7 +37,7 @@ public class ItemUnbreakable implements Property {
 
     ItemTag item;
 
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -52,7 +52,7 @@ public class ItemUnbreakable implements Property {
         // Returns whether an item has the unbreakable flag.
         // -->
         if (attribute.startsWith("unbreakable")) {
-            return new ElementTag(getPropertyString() != null).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getPropertyString() != null).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

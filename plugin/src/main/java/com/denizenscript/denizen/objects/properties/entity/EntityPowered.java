@@ -79,7 +79,7 @@ public class EntityPowered implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -95,7 +95,7 @@ public class EntityPowered implements Property {
         // -->
         if (attribute.startsWith("powered")) {
             return new ElementTag(getPowered())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

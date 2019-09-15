@@ -128,7 +128,7 @@ public class InventoryContents implements Property {
     }
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -154,7 +154,7 @@ public class InventoryContents implements Property {
             // Returns a list of all items in the inventory, without item properties.
             // -->
             if (attribute.startsWith("simple")) {
-                return getContents(1).getAttribute(attribute.fulfill(1));
+                return getContents(1).getObjectAttribute(attribute.fulfill(1));
             }
 
             // <--[tag]
@@ -167,7 +167,7 @@ public class InventoryContents implements Property {
             // Irrelevant on modern (1.13+) servers.
             // -->
             if (attribute.startsWith("full")) {
-                return getContents(2).getAttribute(attribute.fulfill(1));
+                return getContents(2).getObjectAttribute(attribute.fulfill(1));
             }
 
             // <--[tag]
@@ -197,14 +197,14 @@ public class InventoryContents implements Property {
                 // -->
                 if (attribute.startsWith("simple")) {
                     return getContentsWithLore(lore, true)
-                            .getAttribute(attribute.fulfill(1));
+                            .getObjectAttribute(attribute.fulfill(1));
                 }
 
                 return getContentsWithLore(lore, false)
-                        .getAttribute(attribute);
+                        .getObjectAttribute(attribute);
             }
 
-            return getContents(0).getAttribute(attribute);
+            return getContents(0).getObjectAttribute(attribute);
         }
 
         return null;

@@ -91,10 +91,10 @@ public class EntityPotionEffects implements Property {
                 + (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) ? "," + effect.hasIcon() : "");
     }
 
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
-            return "null";
+            return null;
         }
 
         // <--[tag]
@@ -112,7 +112,7 @@ public class EntityPotionEffects implements Property {
             for (PotionEffect effect : getEffectsList()) {
                 effects.add(stringify(effect));
             }
-            return effects.getAttribute(attribute.fulfill(1));
+            return effects.getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -136,7 +136,7 @@ public class EntityPotionEffects implements Property {
             else if (!getEffectsList().isEmpty()) {
                 returnElement = true;
             }
-            return new ElementTag(returnElement).getAttribute(attribute.fulfill(1));
+            return new ElementTag(returnElement).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

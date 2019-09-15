@@ -104,7 +104,7 @@ public class EntityInfected implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -113,7 +113,7 @@ public class EntityInfected implements Property {
         if (attribute.startsWith("is_infected")) {
             Debug.echoError("Different infection types are represented by different entity types. Please remove usage of the 'is_infected' tag.");
             return new ElementTag(isInfected())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

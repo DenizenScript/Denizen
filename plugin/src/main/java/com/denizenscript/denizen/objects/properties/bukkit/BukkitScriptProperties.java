@@ -40,7 +40,7 @@ public class BukkitScriptProperties implements Property {
     ScriptTag script;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -59,7 +59,7 @@ public class BukkitScriptProperties implements Property {
                     : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
             if (player != null && player.isValid()) {
                 return new ElementTag(CooldownCommand.checkCooldown(player, script.getContainer().getName()))
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
             else {
                 return null;
@@ -76,7 +76,7 @@ public class BukkitScriptProperties implements Property {
             PlayerTag player = (attribute.hasContext(1) ? PlayerTag.valueOf(attribute.getContext(1))
                     : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
             return CooldownCommand.getCooldownDuration(player, script.getName())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
 
         }
 
@@ -94,7 +94,7 @@ public class BukkitScriptProperties implements Property {
 
             if (player != null && player.isValid()) {
                 return new ElementTag(InteractScriptHelper.getCurrentStep(player, script.getContainer().getName()))
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
         }
         return null;

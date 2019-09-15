@@ -45,7 +45,7 @@ public class TradeUses implements Property {
         return "uses";
     }
 
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
         if (attribute == null) {
             return null;
         }
@@ -58,7 +58,7 @@ public class TradeUses implements Property {
         // Returns how many times the trade has been used.
         // -->
         if (attribute.startsWith("uses")) {
-            return new ElementTag(recipe.getRecipe().getUses()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(recipe.getRecipe().getUses()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

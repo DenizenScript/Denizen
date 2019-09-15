@@ -42,7 +42,7 @@ public class MaterialAge implements Property {
     MaterialTag material;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -56,7 +56,7 @@ public class MaterialAge implements Property {
         // Returns the maximum age for an ageable material. This includes plant growth.
         // -->
         if (attribute.startsWith("maximum_age") || attribute.startsWith("maximum_plant_growth")) {
-            return new ElementTag(getMax()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getMax()).getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -68,7 +68,7 @@ public class MaterialAge implements Property {
         // Returns the current age for an ageable material. This includes plant growth.
         // -->
         if (attribute.startsWith("age") || attribute.startsWith("plant_growth")) {
-            return new ElementTag(getCurrent()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getCurrent()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

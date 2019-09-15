@@ -95,7 +95,7 @@ public class EntityFramed implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -111,7 +111,7 @@ public class EntityFramed implements Property {
         // -->
         if (attribute.startsWith("framed_item_rotation")) {
             return new ElementTag(CoreUtilities.toLowerCase(getItemFrameEntity().getRotation().name()))
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -124,7 +124,7 @@ public class EntityFramed implements Property {
         // -->
         if (attribute.startsWith("framed_item")) {
             return getItem()
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -137,7 +137,7 @@ public class EntityFramed implements Property {
         // -->
         if (attribute.startsWith("has_framed_item")) {
             return new ElementTag(hasItem())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

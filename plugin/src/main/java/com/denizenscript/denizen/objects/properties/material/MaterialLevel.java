@@ -44,7 +44,7 @@ public class MaterialLevel implements Property {
     MaterialTag material;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -58,7 +58,7 @@ public class MaterialLevel implements Property {
         // Returns the maximum level for a levelable material (like water, lava, and Cauldrons), or a cake.
         // -->
         if (attribute.startsWith("maximum_level")) {
-            return new ElementTag(getMax()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getMax()).getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -70,7 +70,7 @@ public class MaterialLevel implements Property {
         // Returns the current level for a levelable material (like water, lava, and Cauldrons), or a cake.
         // -->
         if (attribute.startsWith("level")) {
-            return new ElementTag(getCurrent()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getCurrent()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

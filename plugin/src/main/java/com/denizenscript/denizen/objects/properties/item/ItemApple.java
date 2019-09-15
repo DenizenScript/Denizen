@@ -43,7 +43,7 @@ public class ItemApple implements Property {
     ItemTag item;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -61,10 +61,10 @@ public class ItemApple implements Property {
         if (attribute.startsWith("apple_enchanted")) {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
                 return new ElementTag(item.getItemStack().getType() == Material.ENCHANTED_GOLDEN_APPLE)
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
             return new ElementTag(item.getItemStack().getDurability() == 1)
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

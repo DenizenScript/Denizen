@@ -60,10 +60,10 @@ public class EntityPickupStatus implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
-            return "null";
+            return null;
         }
 
         // <--[tag]
@@ -76,7 +76,7 @@ public class EntityPickupStatus implements Property {
         // -->
         if (attribute.startsWith("pickup_status")) {
             return new ElementTag(NMSHandler.getEntityHelper().getArrowPickupStatus(dentity.getBukkitEntity()))
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

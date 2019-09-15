@@ -51,7 +51,7 @@ public class EntityCustomName implements Property {
     }
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -69,7 +69,7 @@ public class EntityCustomName implements Property {
             if (attribute.startsWith("custom_name.visible")) {
                 fulfilled = 2;
             }
-            return new ElementTag(entity.getBukkitEntity().isCustomNameVisible()).getAttribute(attribute.fulfill(fulfilled));
+            return new ElementTag(entity.getBukkitEntity().isCustomNameVisible()).getObjectAttribute(attribute.fulfill(fulfilled));
         }
 
         // <--[tag]
@@ -85,7 +85,7 @@ public class EntityCustomName implements Property {
                 return null;
             }
             else {
-                return new ElementTag(name).getAttribute(attribute.fulfill(1));
+                return new ElementTag(name).getObjectAttribute(attribute.fulfill(1));
             }
         }
         else {

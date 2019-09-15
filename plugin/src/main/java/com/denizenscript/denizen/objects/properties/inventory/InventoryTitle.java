@@ -79,7 +79,7 @@ public class InventoryTitle implements Property {
     }
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -94,7 +94,7 @@ public class InventoryTitle implements Property {
         // Returns the title of the inventory.
         // -->
         if (attribute.startsWith("title")) {
-            return new ElementTag(getTitle()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getTitle()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

@@ -45,7 +45,7 @@ public class TradeHasXp implements Property {
         return "has_xp";
     }
 
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
         if (attribute == null) {
             return null;
         }
@@ -58,7 +58,7 @@ public class TradeHasXp implements Property {
         // Returns whether the trade has an experience reward.
         // -->
         if (attribute.startsWith("has_xp")) {
-            return new ElementTag(recipe.getRecipe().hasExperienceReward()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(recipe.getRecipe().hasExperienceReward()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

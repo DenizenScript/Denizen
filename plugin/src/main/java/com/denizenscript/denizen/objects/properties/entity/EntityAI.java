@@ -63,7 +63,7 @@ public class EntityAI implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -79,7 +79,7 @@ public class EntityAI implements Property {
         // -->
         if (attribute.startsWith("has_ai")) {
             return new ElementTag(!NMSHandler.getEntityHelper().isAIDisabled(entity.getBukkitEntity()))
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
 

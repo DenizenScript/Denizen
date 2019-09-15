@@ -48,7 +48,7 @@ public class ItemAttributeNBT implements Property {
     ItemTag item;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -63,7 +63,7 @@ public class ItemAttributeNBT implements Property {
         // Returns the NBT attribute data (as matches the mechanism input), if any.
         // -->
         if (attribute.startsWith("nbt_attributes")) {
-            return getList().getAttribute(attribute.fulfill(1));
+            return getList().getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

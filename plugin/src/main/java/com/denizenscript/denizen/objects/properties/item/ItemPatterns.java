@@ -103,7 +103,7 @@ public class ItemPatterns implements Property {
     }
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -121,7 +121,7 @@ public class ItemPatterns implements Property {
         // For the list of possible patterns, see <@link url http://bit.ly/1MqRn7T>.
         // -->
         if (attribute.startsWith("patterns")) {
-            return listPatterns().getAttribute(attribute.fulfill(1));
+            return listPatterns().getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

@@ -63,7 +63,7 @@ public class EntityPainting implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -79,7 +79,7 @@ public class EntityPainting implements Property {
         // -->
         if (attribute.startsWith("painting_width")) {
             return new ElementTag(((Painting) painting.getBukkitEntity()).getArt().getBlockWidth())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -92,7 +92,7 @@ public class EntityPainting implements Property {
         // -->
         if (attribute.startsWith("painting_height")) {
             return new ElementTag(((Painting) painting.getBukkitEntity()).getArt().getBlockHeight())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -105,7 +105,7 @@ public class EntityPainting implements Property {
         // -->
         if (attribute.startsWith("painting")) {
             return new ElementTag(((Painting) painting.getBukkitEntity()).getArt().name())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

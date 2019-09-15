@@ -43,7 +43,7 @@ public class ItemChargedProjectile implements Property {
     ItemTag item;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
         if (attribute == null) {
             return null;
         }
@@ -58,7 +58,7 @@ public class ItemChargedProjectile implements Property {
         // -->
         if (attribute.startsWith("charged_projectiles")) {
             return getChargedProjectiles()
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -71,7 +71,7 @@ public class ItemChargedProjectile implements Property {
         // -->
         if (attribute.startsWith("is_charged")) {
             return new ElementTag(((CrossbowMeta) item.getItemStack().getItemMeta()).hasChargedProjectiles())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

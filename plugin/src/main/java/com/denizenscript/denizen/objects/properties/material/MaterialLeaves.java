@@ -41,7 +41,7 @@ public class MaterialLeaves implements Property {
     MaterialTag material;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -55,7 +55,7 @@ public class MaterialLeaves implements Property {
         // Returns whether this block will decay from being too far away from a tree.
         // -->
         if (attribute.startsWith("persistent")) {
-            return new ElementTag(getLeaves().isPersistent()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getLeaves().isPersistent()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

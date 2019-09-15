@@ -93,7 +93,7 @@ public class ItemPotion implements Property {
     }
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -117,7 +117,7 @@ public class ItemPotion implements Property {
             return new ElementTag(meta.getBasePotionData().getType().name() + "," + (meta.getBasePotionData().isUpgraded() ? 2 : 1)
                     + "," + meta.getBasePotionData().isExtended() + "," + (item.getItemStack().getType() == Material.SPLASH_POTION)
                     + (meta.hasColor() ? "," + new ColorTag(meta.getColor()).identify() : "")
-            ).getAttribute(attribute.fulfill(1));
+            ).getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -129,7 +129,7 @@ public class ItemPotion implements Property {
         // -->
         if (attribute.startsWith("has_potion_effect")) {
             return new ElementTag(has)
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         if (has) {
@@ -154,7 +154,7 @@ public class ItemPotion implements Property {
                 // -->
                 if (attribute.startsWith("is_splash")) {
                     return new ElementTag(item.getItemStack().getType() == Material.SPLASH_POTION)
-                            .getAttribute(attribute.fulfill(1));
+                            .getObjectAttribute(attribute.fulfill(1));
                 }
 
                 // <--[tag]
@@ -167,7 +167,7 @@ public class ItemPotion implements Property {
                 // -->
                 if (attribute.startsWith("is_extended")) {
                     return new ElementTag(meta.getBasePotionData().isExtended())
-                            .getAttribute(attribute.fulfill(1));
+                            .getObjectAttribute(attribute.fulfill(1));
                 }
 
                 // <--[tag]
@@ -180,7 +180,7 @@ public class ItemPotion implements Property {
                 // -->
                 if (attribute.startsWith("level")) {
                     return new ElementTag(meta.getBasePotionData().isUpgraded() ? 2 : 1)
-                            .getAttribute(attribute.fulfill(1));
+                            .getObjectAttribute(attribute.fulfill(1));
                 }
 
                 // <--[tag]
@@ -193,7 +193,7 @@ public class ItemPotion implements Property {
                 // -->
                 if (attribute.startsWith("is_ambient")) {
                     return new ElementTag(meta.getCustomEffects().get(potN).isAmbient())
-                            .getAttribute(attribute.fulfill(1));
+                            .getObjectAttribute(attribute.fulfill(1));
                 }
 
                 // <--[tag]
@@ -211,7 +211,7 @@ public class ItemPotion implements Property {
                         return null;
                     }
                     return new ColorTag(meta.getCustomEffects().get(potN).getColor())
-                            .getAttribute(attribute.fulfill(1));
+                            .getObjectAttribute(attribute.fulfill(1));
                 }
 
                 // <--[tag]
@@ -223,7 +223,7 @@ public class ItemPotion implements Property {
                 // Returns whether the potion effect shows an icon.
                 // -->
                 if (attribute.startsWith("icon") && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                    return new ElementTag(meta.getCustomEffects().get(potN).hasIcon()).getAttribute(attribute.fulfill(1));
+                    return new ElementTag(meta.getCustomEffects().get(potN).hasIcon()).getObjectAttribute(attribute.fulfill(1));
                 }
 
                 // <--[tag]
@@ -236,7 +236,7 @@ public class ItemPotion implements Property {
                 // -->
                 if (attribute.startsWith("has_particles")) {
                     return new ElementTag(meta.getCustomEffects().get(potN).hasParticles())
-                            .getAttribute(attribute.fulfill(1));
+                            .getObjectAttribute(attribute.fulfill(1));
                 }
 
                 // <--[tag]
@@ -249,7 +249,7 @@ public class ItemPotion implements Property {
                 // -->
                 if (attribute.startsWith("duration")) {
                     return new ElementTag(meta.getCustomEffects().get(potN).getDuration())
-                            .getAttribute(attribute.fulfill(1));
+                            .getObjectAttribute(attribute.fulfill(1));
                 }
 
                 // <--[tag]
@@ -262,7 +262,7 @@ public class ItemPotion implements Property {
                 // -->
                 if (attribute.startsWith("amplifier")) {
                     return new ElementTag(meta.getCustomEffects().get(potN).getAmplifier())
-                            .getAttribute(attribute.fulfill(1));
+                            .getObjectAttribute(attribute.fulfill(1));
                 }
 
                 // <--[tag]
@@ -275,12 +275,12 @@ public class ItemPotion implements Property {
                 // -->
                 if (attribute.startsWith("type")) {
                     return new ElementTag(meta.getCustomEffects().get(potN).getType().getName())
-                            .getAttribute(attribute.fulfill(1));
+                            .getObjectAttribute(attribute.fulfill(1));
                 }
 
                 if (attribute.startsWith("data")) {
                     return new ElementTag(0)
-                            .getAttribute(attribute.fulfill(1));
+                            .getObjectAttribute(attribute.fulfill(1));
                 }
 
                 // <--[tag]
@@ -295,7 +295,7 @@ public class ItemPotion implements Property {
                 // -->
                 return new ElementTag(meta.getBasePotionData().getType().name() + "," + (meta.getBasePotionData().isUpgraded() ? 2 : 1)
                         + "," + meta.getBasePotionData().isExtended() + "," + (item.getItemStack().getType() == Material.SPLASH_POTION))
-                        .getAttribute(attribute);
+                        .getObjectAttribute(attribute);
             }
         }
 

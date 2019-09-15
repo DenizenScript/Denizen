@@ -80,7 +80,7 @@ public class EntityAngry implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -97,11 +97,11 @@ public class EntityAngry implements Property {
         if (attribute.startsWith("angry")) {
             if (entity.getBukkitEntityType() == EntityType.WOLF) {
                 return new ElementTag(((Wolf) entity.getBukkitEntity()).isAngry())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
             else if (entity.getBukkitEntityType() == EntityType.PIG_ZOMBIE) {
                 return new ElementTag(((PigZombie) entity.getBukkitEntity()).isAngry())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
         }
 

@@ -48,7 +48,7 @@ public class ItemSpawnEgg implements Property {
     }
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -67,7 +67,7 @@ public class ItemSpawnEgg implements Property {
         if ((attribute.startsWith("spawn_id") || attribute.startsWith("spawn_egg_entity"))
                 && getEntityType() != null) {
             return new ElementTag(getEntityType().getTypeId())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -80,7 +80,7 @@ public class ItemSpawnEgg implements Property {
         // -->
         if (attribute.startsWith("spawn_type") && getEntityType() != null) {
             return new ElementTag(getEntityType().name())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

@@ -167,7 +167,7 @@ public class EntityColor implements Property {
     // -->
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -184,7 +184,7 @@ public class EntityColor implements Property {
         // -->
         if (attribute.startsWith("color")) {
             return new ElementTag(CoreUtilities.toLowerCase(getColor()))
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

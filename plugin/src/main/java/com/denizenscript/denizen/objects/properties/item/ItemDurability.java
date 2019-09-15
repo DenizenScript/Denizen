@@ -39,7 +39,7 @@ public class ItemDurability implements Property {
     ItemTag item;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -55,7 +55,7 @@ public class ItemDurability implements Property {
         // -->
         if (attribute.startsWith("durability")) {
             return new ElementTag(item.getItemStack().getDurability())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -68,7 +68,7 @@ public class ItemDurability implements Property {
         // -->
         if (attribute.startsWith("max_durability")) {
             return new ElementTag(item.getMaterial().getMaterial().getMaxDurability())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

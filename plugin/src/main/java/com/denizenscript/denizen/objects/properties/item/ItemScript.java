@@ -42,7 +42,7 @@ public class ItemScript implements Property {
     ItemTag item;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -57,7 +57,7 @@ public class ItemScript implements Property {
         // -->
         if (attribute.startsWith("has_script")) {
             return new ElementTag(item.isItemscript())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -70,7 +70,7 @@ public class ItemScript implements Property {
         if (attribute.startsWith("scriptname")) {
             if (item.isItemscript()) {
                 return new ElementTag(item.getScriptName())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
         }
 
@@ -84,7 +84,7 @@ public class ItemScript implements Property {
         if (attribute.startsWith("script")) {
             if (item.isItemscript()) {
                 return new ScriptTag(item.getScriptName())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
         }
         return null;

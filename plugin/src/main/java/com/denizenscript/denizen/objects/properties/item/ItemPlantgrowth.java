@@ -53,7 +53,7 @@ public class ItemPlantgrowth implements Property {
     ItemTag item;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -75,19 +75,19 @@ public class ItemPlantgrowth implements Property {
         if (attribute.startsWith("plant_growth")) {
             if (item.getItemStack().getData() instanceof Crops) {
                 return new ElementTag(((Crops) item.getItemStack().getData()).getState().name())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
             else if (item.getItemStack().getData() instanceof NetherWarts) {
                 return new ElementTag(((NetherWarts) item.getItemStack().getData()).getState().name())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
             else if (item.getItemStack().getData() instanceof CocoaPlant) {
                 return new ElementTag(((CocoaPlant) item.getItemStack().getData()).getSize().name())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
             else {
                 return new ElementTag(item.getItemStack().getData().getData())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
         }
 

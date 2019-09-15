@@ -59,7 +59,7 @@ public class EntityBoatType implements Property {
     }
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
         if (attribute == null) {
             return null;
         }
@@ -75,7 +75,7 @@ public class EntityBoatType implements Property {
         // -->
         if (attribute.startsWith("boat_type")) {
             return new ElementTag(((Boat) entity.getBukkitEntity()).getWoodType().name())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

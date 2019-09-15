@@ -46,7 +46,7 @@ public class ItemDisplayname implements Property {
     }
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -63,7 +63,7 @@ public class ItemDisplayname implements Property {
         if (attribute.startsWith("display")) {
             if (hasDisplayName()) {
                 return new ElementTag(item.getItemStack().getItemMeta().getDisplayName())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
         }
 
@@ -77,7 +77,7 @@ public class ItemDisplayname implements Property {
         // -->
         if (attribute.startsWith("has_display")) {
             return new ElementTag(hasDisplayName())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

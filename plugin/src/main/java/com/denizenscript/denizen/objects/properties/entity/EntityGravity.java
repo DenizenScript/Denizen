@@ -65,7 +65,7 @@ public class EntityGravity implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -81,7 +81,7 @@ public class EntityGravity implements Property {
         // -->
         if (attribute.startsWith("gravity")) {
             return new ElementTag(dentity.getBukkitEntity().hasGravity())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

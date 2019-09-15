@@ -47,7 +47,7 @@ public class ItemEnchantments implements Property {
     ItemTag item;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -63,7 +63,7 @@ public class ItemEnchantments implements Property {
         // -->
         if (attribute.startsWith("is_enchanted")) {
             return new ElementTag(getEnchantments().size() > 0)
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -83,7 +83,7 @@ public class ItemEnchantments implements Property {
                     enchants.add(enchantment.getKey().getName() + "," + enchantment.getValue());
                 }
                 return new ListTag(enchants)
-                        .getAttribute(attribute.fulfill(2));
+                        .getObjectAttribute(attribute.fulfill(2));
             }
         }
 
@@ -103,7 +103,7 @@ public class ItemEnchantments implements Property {
                     enchants.add(String.valueOf(enchantment.getValue()));
                 }
                 return new ListTag(enchants)
-                        .getAttribute(attribute.fulfill(2));
+                        .getObjectAttribute(attribute.fulfill(2));
             }
         }
 
@@ -122,12 +122,12 @@ public class ItemEnchantments implements Property {
                 for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
                     if (enchantment.getKey().getName().equalsIgnoreCase(attribute.getContext(2))) {
                         return new ElementTag(enchantment.getValue())
-                                .getAttribute(attribute.fulfill(2));
+                                .getObjectAttribute(attribute.fulfill(2));
                     }
                 }
             }
             return new ElementTag(0)
-                    .getAttribute(attribute.fulfill(2));
+                    .getObjectAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
@@ -146,7 +146,7 @@ public class ItemEnchantments implements Property {
                     enchants.add(enchantment.getKey().getName());
                 }
                 return new ListTag(enchants)
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
         }
 

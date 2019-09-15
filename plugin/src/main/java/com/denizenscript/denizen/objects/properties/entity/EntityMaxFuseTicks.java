@@ -58,7 +58,7 @@ public class EntityMaxFuseTicks implements Property {
     }
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -74,7 +74,7 @@ public class EntityMaxFuseTicks implements Property {
         // -->
         if (attribute.startsWith("max_fuse_ticks")) {
             return new ElementTag(((Creeper) entity.getBukkitEntity()).getMaxFuseTicks())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

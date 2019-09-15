@@ -87,7 +87,7 @@ public class EntityBoundingBox implements Property {
     }
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
         if (attribute == null) {
             return null;
         }
@@ -101,7 +101,7 @@ public class EntityBoundingBox implements Property {
         // Returns the collision bounding box of the entity in the format "<low>|<high>", essentially a cuboid with decimals.
         // -->
         if (attribute.startsWith("bounding_box")) {
-            return getBoundingBox().getAttribute(attribute.fulfill(1));
+            return getBoundingBox().getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

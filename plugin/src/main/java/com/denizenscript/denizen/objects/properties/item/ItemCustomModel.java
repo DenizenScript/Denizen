@@ -39,7 +39,7 @@ public class ItemCustomModel implements Property {
     ItemTag item;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -56,7 +56,7 @@ public class ItemCustomModel implements Property {
         // -->
         if (attribute.startsWith("has_custom_model_data")) {
             return new ElementTag(item.getItemStack().getItemMeta().hasCustomModelData())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -72,7 +72,7 @@ public class ItemCustomModel implements Property {
         if (attribute.startsWith("custom_model_data")) {
             if (item.getItemStack().getItemMeta().hasCustomModelData()) {
                 return new ElementTag(item.getItemStack().getItemMeta().getCustomModelData())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
         }
 

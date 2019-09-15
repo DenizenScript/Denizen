@@ -62,7 +62,7 @@ public class EntityAnger implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -79,7 +79,7 @@ public class EntityAnger implements Property {
         if (attribute.startsWith("anger")) {
             if (entity.getBukkitEntityType() == EntityType.PIG_ZOMBIE) {
                 return new ElementTag(((PigZombie) entity.getBukkitEntity()).getAnger())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
         }
 

@@ -65,7 +65,7 @@ public class EntityExplosionRadius implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -81,7 +81,7 @@ public class EntityExplosionRadius implements Property {
         // -->
         if (attribute.startsWith("explosion_radius")) {
             return new ElementTag(getExplosionRadius())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

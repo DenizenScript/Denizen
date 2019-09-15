@@ -66,7 +66,7 @@ public class EntityInventory implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -82,7 +82,7 @@ public class EntityInventory implements Property {
         if (attribute.startsWith("inventory")) {
             InventoryTag inventory = entity.getInventory();
             if (inventory != null) {
-                return inventory.getAttribute(attribute.fulfill(1));
+                return inventory.getObjectAttribute(attribute.fulfill(1));
             }
             else {
                 return null;

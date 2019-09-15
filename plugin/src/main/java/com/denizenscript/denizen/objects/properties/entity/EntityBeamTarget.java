@@ -63,10 +63,10 @@ public class EntityBeamTarget implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
-            return "null";
+            return null;
         }
 
         // <--[tag]
@@ -80,7 +80,7 @@ public class EntityBeamTarget implements Property {
         if (attribute.startsWith("beam_target")) {
             Location beamTarget = ((EnderCrystal) dentity.getBukkitEntity()).getBeamTarget();
             if (beamTarget != null) {
-                return new LocationTag(beamTarget).getAttribute(attribute.fulfill(1));
+                return new LocationTag(beamTarget).getObjectAttribute(attribute.fulfill(1));
             }
         }
 

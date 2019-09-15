@@ -41,7 +41,7 @@ public class MaterialHalf implements Property {
     MaterialTag material;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -57,7 +57,7 @@ public class MaterialHalf implements Property {
         // Output is "BOTTOM" or "TOP".
         // -->
         if (attribute.startsWith("half")) {
-            return new ElementTag(getBisected().getHalf().name()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getBisected().getHalf().name()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

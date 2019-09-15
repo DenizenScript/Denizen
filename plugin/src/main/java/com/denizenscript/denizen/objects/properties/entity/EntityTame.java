@@ -79,7 +79,7 @@ public class EntityTame implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -95,7 +95,7 @@ public class EntityTame implements Property {
         // -->
         if (attribute.startsWith("is_tamed")) {
             return new ElementTag(((Tameable) entity.getBukkitEntity()).isTamed())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -109,7 +109,7 @@ public class EntityTame implements Property {
         if (attribute.startsWith("owner") || attribute.startsWith("get_owner")) {
             if (((Tameable) entity.getBukkitEntity()).isTamed()) {
                 return new PlayerTag((OfflinePlayer) ((Tameable) entity.getBukkitEntity()).getOwner())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
             else {
                 return null;

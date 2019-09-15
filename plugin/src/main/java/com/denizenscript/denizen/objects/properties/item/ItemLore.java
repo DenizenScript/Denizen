@@ -53,7 +53,7 @@ public class ItemLore implements Property {
     ItemTag item;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -77,7 +77,7 @@ public class ItemLore implements Property {
                         loreList.add(itemLore);
                     }
                 }
-                return new ListTag(loreList).getAttribute(attribute.fulfill(1));
+                return new ListTag(loreList).getObjectAttribute(attribute.fulfill(1));
             }
         }
 
@@ -91,7 +91,7 @@ public class ItemLore implements Property {
         // -->
         if (attribute.startsWith("has_lore")) {
             return new ElementTag(hasLore())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

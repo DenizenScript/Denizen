@@ -68,7 +68,7 @@ public class EntityFirework implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -85,7 +85,7 @@ public class EntityFirework implements Property {
         if (attribute.startsWith("firework_item")) {
             ItemStack item = new ItemStack(MaterialCompat.FIREWORK_ROCKET);
             item.setItemMeta(((Firework) firework.getBukkitEntity()).getFireworkMeta());
-            return new ItemTag(item).getAttribute(attribute.fulfill(1));
+            return new ItemTag(item).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

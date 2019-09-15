@@ -42,7 +42,7 @@ public class BukkitQueueProperties implements Property {
     ScriptQueue queue;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         // <--[tag]
         // @attribute <QueueTag.npc>
@@ -66,7 +66,7 @@ public class BukkitQueueProperties implements Property {
                 return null;
             }
             else {
-                return npc.getAttribute(attribute.fulfill(1));
+                return npc.getObjectAttribute(attribute.fulfill(1));
             }
         }
 
@@ -92,7 +92,7 @@ public class BukkitQueueProperties implements Property {
                 return null;
             }
             else {
-                return player.getAttribute(attribute.fulfill(1));
+                return player.getObjectAttribute(attribute.fulfill(1));
             }
         }
         return null;

@@ -85,7 +85,7 @@ public class EntityPotion implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
         if (attribute == null) {
             return null;
         }
@@ -99,7 +99,7 @@ public class EntityPotion implements Property {
         // Returns the ItemTag of the splash potion.
         // -->
         if (attribute.startsWith("potion")) {
-            return new ItemTag(getPotion().getItem()).getAttribute(attribute.fulfill(1));
+            return new ItemTag(getPotion().getItem()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

@@ -39,7 +39,7 @@ public class ItemQuantity implements Property {
     ItemTag item;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -55,7 +55,7 @@ public class ItemQuantity implements Property {
         // -->
         if (attribute.startsWith("quantity") || attribute.startsWith("qty")) {
             return new ElementTag(item.getItemStack().getAmount())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -68,7 +68,7 @@ public class ItemQuantity implements Property {
         // -->
         if (attribute.startsWith("max_stack")) {
             return new ElementTag(item.getItemStack().getMaxStackSize())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

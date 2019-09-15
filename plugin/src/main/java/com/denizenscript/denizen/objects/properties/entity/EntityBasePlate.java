@@ -67,10 +67,10 @@ public class EntityBasePlate implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
-            return "null";
+            return null;
         }
 
         // <--[tag]
@@ -83,7 +83,7 @@ public class EntityBasePlate implements Property {
         // -->
         if (attribute.startsWith("base_plate")) {
             return new ElementTag(((ArmorStand) dentity.getBukkitEntity()).hasBasePlate())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

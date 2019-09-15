@@ -50,7 +50,7 @@ public class ItemColor implements Property {
     ItemTag item;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -71,11 +71,11 @@ public class ItemColor implements Property {
                     || mat == Material.SPLASH_POTION) {
                 PotionMeta pm = (PotionMeta) item.getItemStack().getItemMeta();
                 if (!pm.hasColor()) {
-                    return new ColorTag(Color.WHITE).getAttribute(attribute.fulfill((1)));
+                    return new ColorTag(Color.WHITE).getObjectAttribute(attribute.fulfill((1)));
                 }
-                return new ColorTag(pm.getColor()).getAttribute(attribute.fulfill((1)));
+                return new ColorTag(pm.getColor()).getObjectAttribute(attribute.fulfill((1)));
             }
-            return new ColorTag(((LeatherArmorMeta) item.getItemStack().getItemMeta()).getColor()).getAttribute(attribute.fulfill(1));
+            return new ColorTag(((LeatherArmorMeta) item.getItemStack().getItemMeta()).getColor()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

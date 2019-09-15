@@ -41,7 +41,7 @@ public class MaterialLightable implements Property {
     MaterialTag material;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -56,7 +56,7 @@ public class MaterialLightable implements Property {
         // Returns whether a lightable material (such as a redstone torch) is lit currently.
         // -->
         if (attribute.startsWith("lit")) {
-            return new ElementTag(getLightable().isLit()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getLightable().isLit()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

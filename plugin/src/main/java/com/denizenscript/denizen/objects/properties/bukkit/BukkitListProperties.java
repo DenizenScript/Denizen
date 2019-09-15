@@ -37,7 +37,7 @@ public class BukkitListProperties implements Property {
     ListTag list;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         // <--[tag]
         // @attribute <ListTag.formatted>
@@ -48,7 +48,7 @@ public class BukkitListProperties implements Property {
         // -->
         if (attribute.startsWith("formatted")) {
             if (list.isEmpty()) {
-                return new ElementTag("").getAttribute(attribute.fulfill(1));
+                return new ElementTag("").getObjectAttribute(attribute.fulfill(1));
             }
             StringBuilder dScriptArg = new StringBuilder();
 
@@ -84,7 +84,7 @@ public class BukkitListProperties implements Property {
             }
 
             return new ElementTag(dScriptArg.toString().substring(0, dScriptArg.length() - 2))
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

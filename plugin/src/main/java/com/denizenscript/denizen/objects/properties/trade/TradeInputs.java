@@ -55,7 +55,7 @@ public class TradeInputs implements Property {
         return "inputs";
     }
 
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
         if (attribute == null) {
             return null;
         }
@@ -72,7 +72,7 @@ public class TradeInputs implements Property {
             for (ItemStack item : recipe.getRecipe().getIngredients()) {
                 itemList.add(new ItemTag(item));
             }
-            return new ListTag(itemList).getAttribute(attribute.fulfill(1));
+            return new ListTag(itemList).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

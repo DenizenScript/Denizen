@@ -47,7 +47,7 @@ public class TradeResult implements Property {
         return "result";
     }
 
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
         if (attribute == null) {
             return null;
         }
@@ -60,7 +60,7 @@ public class TradeResult implements Property {
         // Returns what the trade will give the player.
         // -->
         if (attribute.startsWith("result")) {
-            return new ItemTag(recipe.getRecipe().getResult()).getAttribute(attribute.fulfill(1));
+            return new ItemTag(recipe.getRecipe().getResult()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

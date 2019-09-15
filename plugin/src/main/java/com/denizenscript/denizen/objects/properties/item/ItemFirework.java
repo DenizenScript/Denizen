@@ -78,7 +78,7 @@ public class ItemFirework implements Property {
     }
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -94,7 +94,7 @@ public class ItemFirework implements Property {
         // -->
         // TODO: Easy tags to get individual parts...
         if (attribute.startsWith("firework")) {
-            return getFireworkData().getAttribute(attribute.fulfill(1));
+            return getFireworkData().getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

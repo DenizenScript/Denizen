@@ -138,7 +138,7 @@ public class EntityAge implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -154,7 +154,7 @@ public class EntityAge implements Property {
         // -->
         if (attribute.startsWith("age")) {
             return new ElementTag(getAge())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -167,7 +167,7 @@ public class EntityAge implements Property {
         // -->
         if (attribute.startsWith("is_age_locked")) {
             return new ElementTag(getLock())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -180,7 +180,7 @@ public class EntityAge implements Property {
         // -->
         if (attribute.startsWith("is_baby")) {
             return new ElementTag(isBaby())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
 

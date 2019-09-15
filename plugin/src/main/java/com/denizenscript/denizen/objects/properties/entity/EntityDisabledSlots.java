@@ -94,10 +94,10 @@ public class EntityDisabledSlots implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
-            return "null";
+            return null;
         }
 
         // <--[tag]
@@ -111,7 +111,7 @@ public class EntityDisabledSlots implements Property {
         // -->
         if (attribute.startsWith("disabled_slots.raw")) {
             return new ElementTag(CustomNBT.getCustomIntNBT(dentity.getBukkitEntity(), CustomNBT.KEY_DISABLED_SLOTS))
-                    .getAttribute(attribute.fulfill(2));
+                    .getObjectAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
@@ -123,7 +123,7 @@ public class EntityDisabledSlots implements Property {
         // If the entity is an armor stand, returns a list of its disabled slots in the form li@slot/action|...
         // -->
         if (attribute.startsWith("disabled_slots")) {
-            return getDisabledSlots().getAttribute(attribute.fulfill(1));
+            return getDisabledSlots().getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

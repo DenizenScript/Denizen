@@ -67,10 +67,10 @@ public class EntityMarker implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
-            return "null";
+            return null;
         }
 
         // <--[tag]
@@ -83,7 +83,7 @@ public class EntityMarker implements Property {
         // -->
         if (attribute.startsWith("marker")) {
             return new ElementTag(((ArmorStand) dentity.getBukkitEntity()).isMarker())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

@@ -88,7 +88,7 @@ public class EntityProfession implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -106,7 +106,7 @@ public class EntityProfession implements Property {
         // -->
         if (attribute.startsWith("profession")) {
             return new ElementTag(CoreUtilities.toLowerCase(getProfession().name()))
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

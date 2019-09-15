@@ -65,7 +65,7 @@ public class EntityJumpStrength implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -81,7 +81,7 @@ public class EntityJumpStrength implements Property {
         // -->
         if (attribute.startsWith("jump_strength")) {
             return new ElementTag(((Horse) entity.getBukkitEntity()).getJumpStrength())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

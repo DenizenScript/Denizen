@@ -60,7 +60,7 @@ public class EntityExplosionFire implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -76,7 +76,7 @@ public class EntityExplosionFire implements Property {
         // -->
         if (attribute.startsWith("explosion_fire")) {
             return new ElementTag(isIncendiary())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

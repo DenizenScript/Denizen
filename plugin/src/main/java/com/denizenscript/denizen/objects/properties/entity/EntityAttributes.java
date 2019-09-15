@@ -97,7 +97,7 @@ public class EntityAttributes implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -112,7 +112,7 @@ public class EntityAttributes implements Property {
         // Returns a list of all attributes on the entity, formatted in a way that can be sent back into the 'attributes' mechanism.
         // -->
         if (attribute.startsWith("attributes")) {
-            return getAttributes().getAttribute(attribute.fulfill(1));
+            return getAttributes().getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -127,7 +127,7 @@ public class EntityAttributes implements Property {
         if (attribute.startsWith("has_attribute") && attribute.hasContext(1)) {
             AttributeInstance instance = ((Attributable) entity.getBukkitEntity()).getAttribute(
                     org.bukkit.attribute.Attribute.valueOf(attribute.getContext(1).toUpperCase()));
-            return new ElementTag(instance != null).getAttribute(attribute.fulfill(1));
+            return new ElementTag(instance != null).getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -149,7 +149,7 @@ public class EntityAttributes implements Property {
                 }
                 return null;
             }
-            return new ElementTag(instance.getValue()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(instance.getValue()).getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -171,7 +171,7 @@ public class EntityAttributes implements Property {
                 }
                 return null;
             }
-            return new ElementTag(instance.getBaseValue()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(instance.getBaseValue()).getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -193,7 +193,7 @@ public class EntityAttributes implements Property {
                 }
                 return null;
             }
-            return new ElementTag(instance.getDefaultValue()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(instance.getDefaultValue()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

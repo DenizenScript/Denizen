@@ -66,7 +66,7 @@ public class EntityEquipment implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -82,11 +82,11 @@ public class EntityEquipment implements Property {
         if (attribute.startsWith("equipment.boots")) {
             if (entity.getLivingEntity().getEquipment().getBoots() != null) {
                 return new ItemTag(entity.getLivingEntity().getEquipment().getBoots())
-                        .getAttribute(attribute.fulfill(2));
+                        .getObjectAttribute(attribute.fulfill(2));
             }
             else {
                 return new ItemTag(Material.AIR)
-                        .getAttribute(attribute.fulfill(2));
+                        .getObjectAttribute(attribute.fulfill(2));
             }
         }
 
@@ -101,11 +101,11 @@ public class EntityEquipment implements Property {
                 attribute.startsWith("equipment.chest")) {
             if (entity.getLivingEntity().getEquipment().getChestplate() != null) {
                 return new ItemTag(entity.getLivingEntity().getEquipment().getChestplate())
-                        .getAttribute(attribute.fulfill(2));
+                        .getObjectAttribute(attribute.fulfill(2));
             }
             else {
                 return new ItemTag(Material.AIR)
-                        .getAttribute(attribute.fulfill(2));
+                        .getObjectAttribute(attribute.fulfill(2));
             }
         }
 
@@ -120,11 +120,11 @@ public class EntityEquipment implements Property {
                 attribute.startsWith("equipment.head")) {
             if (entity.getLivingEntity().getEquipment().getHelmet() != null) {
                 return new ItemTag(entity.getLivingEntity().getEquipment().getHelmet())
-                        .getAttribute(attribute.fulfill(2));
+                        .getObjectAttribute(attribute.fulfill(2));
             }
             else {
                 return new ItemTag(Material.AIR)
-                        .getAttribute(attribute.fulfill(2));
+                        .getObjectAttribute(attribute.fulfill(2));
             }
         }
 
@@ -139,11 +139,11 @@ public class EntityEquipment implements Property {
                 attribute.startsWith("equipment.legs")) {
             if (entity.getLivingEntity().getEquipment().getLeggings() != null) {
                 return new ItemTag(entity.getLivingEntity().getEquipment().getLeggings())
-                        .getAttribute(attribute.fulfill(2));
+                        .getObjectAttribute(attribute.fulfill(2));
             }
             else {
                 return new ItemTag(Material.AIR)
-                        .getAttribute(attribute.fulfill(2));
+                        .getObjectAttribute(attribute.fulfill(2));
             }
         }
 
@@ -156,7 +156,7 @@ public class EntityEquipment implements Property {
         // Output list is boots|leggings|chestplate|helmet
         // -->
         else if (attribute.startsWith("equipment")) {
-            return entity.getEquipment().getAttribute(attribute.fulfill(1));
+            return entity.getEquipment().getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

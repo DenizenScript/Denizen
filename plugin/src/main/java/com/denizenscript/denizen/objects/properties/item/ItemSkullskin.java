@@ -48,7 +48,7 @@ public class ItemSkullskin implements Property {
     ItemTag item;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -79,9 +79,9 @@ public class ItemSkullskin implements Property {
             if (skin != null) {
                 attribute = attribute.fulfill(1);
                 if (attribute.startsWith("full")) {
-                    return new ElementTag(skin).getAttribute(attribute.fulfill(1));
+                    return new ElementTag(skin).getObjectAttribute(attribute.fulfill(1));
                 }
-                return new ElementTag(CoreUtilities.split(skin, '|').get(0)).getAttribute(attribute);
+                return new ElementTag(CoreUtilities.split(skin, '|').get(0)).getObjectAttribute(attribute);
             }
             else {
                 Debug.echoError("This skull item does not have a skin set!");
@@ -99,7 +99,7 @@ public class ItemSkullskin implements Property {
         // -->
         if (attribute.startsWith("has_skin")) {
             return new ElementTag(getPropertyString() != null)
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
 

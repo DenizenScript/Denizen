@@ -49,7 +49,7 @@ public class ItemInventory implements Property {
     ItemTag item;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -64,7 +64,7 @@ public class ItemInventory implements Property {
         // Returns a InventoryTag of a container item.
         // -->
         if (attribute.startsWith("inventory")) {
-            return getItemInventory().getAttribute(attribute.fulfill(1));
+            return getItemInventory().getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

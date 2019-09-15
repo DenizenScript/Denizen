@@ -46,7 +46,7 @@ public class ItemNBT implements Property {
     ItemTag item;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -61,7 +61,7 @@ public class ItemNBT implements Property {
         // -->
         if (attribute.startsWith("has_nbt")) {
             return new ElementTag(CustomNBT.hasCustomNBT(item.getItemStack(), attribute.getContext(1), CustomNBT.KEY_DENIZEN))
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -73,7 +73,7 @@ public class ItemNBT implements Property {
         // -->
         if (attribute.startsWith("nbt_keys")) {
             return new ListTag(CustomNBT.listNBT(item.getItemStack(), CustomNBT.KEY_DENIZEN))
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -92,14 +92,14 @@ public class ItemNBT implements Property {
                 if (list == null) {
                     return null;
                 }
-                return list.getAttribute(attribute.fulfill(1));
+                return list.getObjectAttribute(attribute.fulfill(1));
             }
             String res = CustomNBT.getCustomNBT(item.getItemStack(), attribute.getContext(1), CustomNBT.KEY_DENIZEN);
             if (res == null) {
                 return null;
             }
             return new ElementTag(res)
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

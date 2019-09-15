@@ -41,7 +41,7 @@ public class MaterialSlab implements Property {
     MaterialTag material;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -57,7 +57,7 @@ public class MaterialSlab implements Property {
         // Output is "BOTTOM", "TOP", or "DOUBLE".
         // -->
         if (attribute.startsWith("slab_type")) {
-            return new ElementTag(getSlab().getType().name()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getSlab().getType().name()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

@@ -69,7 +69,7 @@ public class EntityArmorBonus implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -84,7 +84,7 @@ public class EntityArmorBonus implements Property {
         // Returns the entity's base armor bonus.
         // -->
         if (attribute.startsWith("armor_bonus")) {
-            return getArmorBonus().getAttribute(attribute.fulfill(1));
+            return getArmorBonus().getObjectAttribute(attribute.fulfill(1));
         }
 
 

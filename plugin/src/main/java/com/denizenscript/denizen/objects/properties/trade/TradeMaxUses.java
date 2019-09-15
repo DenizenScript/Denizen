@@ -45,7 +45,7 @@ public class TradeMaxUses implements Property {
         return "max_uses";
     }
 
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
         if (attribute == null) {
             return null;
         }
@@ -58,7 +58,7 @@ public class TradeMaxUses implements Property {
         // Returns the maximum amount of times that the trade can be used.
         // -->
         if (attribute.startsWith("max_uses")) {
-            return new ElementTag(recipe.getRecipe().getMaxUses()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(recipe.getRecipe().getMaxUses()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

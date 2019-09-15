@@ -59,7 +59,7 @@ public class ItemCanPlaceOn implements Property {
     }
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -76,7 +76,7 @@ public class ItemCanPlaceOn implements Property {
         if (attribute.startsWith("can_place_on")) {
             ListTag materials = getMaterials();
             if (materials != null) {
-                return materials.getAttribute(attribute.fulfill(1));
+                return materials.getObjectAttribute(attribute.fulfill(1));
             }
         }
 

@@ -73,7 +73,7 @@ public class EntityVisible implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -87,7 +87,7 @@ public class EntityVisible implements Property {
         // Returns whether the armor stand is visible.
         // -->
         if (attribute.startsWith("visible")) {
-            return new ElementTag(stand.isVisible()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(stand.isVisible()).getObjectAttribute(attribute.fulfill(1));
         }
 
 

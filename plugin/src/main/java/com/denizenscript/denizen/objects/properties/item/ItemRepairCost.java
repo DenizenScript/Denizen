@@ -41,7 +41,7 @@ public class ItemRepairCost implements Property {
     ItemTag item;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -58,7 +58,7 @@ public class ItemRepairCost implements Property {
         // -->
         if (attribute.startsWith("repair_cost")) {
             return new ElementTag(((Repairable) item.getItemStack().getItemMeta()).getRepairCost())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

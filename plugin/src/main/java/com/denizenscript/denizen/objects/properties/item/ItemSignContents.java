@@ -51,7 +51,7 @@ public class ItemSignContents implements Property {
     ItemTag item;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -66,7 +66,7 @@ public class ItemSignContents implements Property {
         // Returns a list of lines on a sign item.
         // -->
         if (attribute.startsWith("sign_contents")) {
-            return getSignContents().getAttribute(attribute.fulfill(1));
+            return getSignContents().getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

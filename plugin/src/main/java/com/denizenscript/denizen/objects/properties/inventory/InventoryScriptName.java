@@ -54,7 +54,7 @@ public class InventoryScriptName implements Property {
     }
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -69,7 +69,7 @@ public class InventoryScriptName implements Property {
         // -->
         if (attribute.startsWith("script_name")) {
             return new ElementTag(inventory.scriptName)
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

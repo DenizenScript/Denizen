@@ -62,7 +62,7 @@ public class EntityTrades implements Property {
         return "trades";
     }
 
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
         if (attribute == null) {
             return null;
         }
@@ -75,7 +75,7 @@ public class EntityTrades implements Property {
         // Returns a list of the Villager's trade recipes.
         // -->
         if (attribute.startsWith("trades")) {
-            return getTradeRecipes().getAttribute(attribute.fulfill(1));
+            return getTradeRecipes().getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

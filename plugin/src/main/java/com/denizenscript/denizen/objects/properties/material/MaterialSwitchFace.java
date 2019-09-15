@@ -42,7 +42,7 @@ public class MaterialSwitchFace implements Property {
     MaterialTag material;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -58,7 +58,7 @@ public class MaterialSwitchFace implements Property {
         // Output is "CEILING", "FLOOR", or "WALL".
         // -->
         if (attribute.startsWith("switch_face")) {
-            return new ElementTag(getSwitch().getFace().name()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getSwitch().getFace().name()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

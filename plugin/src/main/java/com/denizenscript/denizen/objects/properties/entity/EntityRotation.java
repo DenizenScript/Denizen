@@ -80,7 +80,7 @@ public class EntityRotation implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -97,7 +97,7 @@ public class EntityRotation implements Property {
         // -->
         if (attribute.startsWith("rotation_vector")) {
             return new LocationTag(getRotation().getDirection())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -111,7 +111,7 @@ public class EntityRotation implements Property {
         // -->
         if (attribute.startsWith("rotation")) {
             return new ElementTag(CoreUtilities.toLowerCase(getRotation().name()))
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

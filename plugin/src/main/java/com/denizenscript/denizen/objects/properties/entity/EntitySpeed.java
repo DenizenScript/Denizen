@@ -104,7 +104,7 @@ public class EntitySpeed implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -119,7 +119,7 @@ public class EntitySpeed implements Property {
         // Returns how fast the entity can move.
         // -->
         if (attribute.startsWith("speed")) {
-            return getSpeed().getAttribute(attribute.fulfill(1));
+            return getSpeed().getObjectAttribute(attribute.fulfill(1));
         }
 
 

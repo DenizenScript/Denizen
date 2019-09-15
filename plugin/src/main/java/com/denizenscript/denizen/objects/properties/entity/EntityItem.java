@@ -88,7 +88,7 @@ public class EntityItem implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -105,7 +105,7 @@ public class EntityItem implements Property {
         // If the entity is a trident, returns the trident item represented by the entity.
         // -->
         if (attribute.startsWith("item")) {
-            return getItem().getAttribute(attribute.fulfill(1));
+            return getItem().getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

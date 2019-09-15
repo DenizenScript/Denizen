@@ -77,7 +77,7 @@ public class InventorySize implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -93,7 +93,7 @@ public class InventorySize implements Property {
         // -->
         if (attribute.startsWith("size")) {
             return new ElementTag(getSize())
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

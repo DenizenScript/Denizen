@@ -50,7 +50,7 @@ public class ItemBook implements Property {
     ItemTag item;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -72,7 +72,7 @@ public class ItemBook implements Property {
                 // -->
                 if (attribute.startsWith("author")) {
                     return new ElementTag(bookInfo.getAuthor())
-                            .getAttribute(attribute.fulfill(1));
+                            .getObjectAttribute(attribute.fulfill(1));
                 }
 
                 // <--[tag]
@@ -85,7 +85,7 @@ public class ItemBook implements Property {
                 // -->
                 if (attribute.startsWith("title")) {
                     return new ElementTag(bookInfo.getTitle())
-                            .getAttribute(attribute.fulfill(1));
+                            .getObjectAttribute(attribute.fulfill(1));
                 }
             }
 
@@ -99,7 +99,7 @@ public class ItemBook implements Property {
             // -->
             if (attribute.startsWith("page_count")) {
                 return new ElementTag(bookInfo.getPageCount())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
 
             // <--[tag]
@@ -112,7 +112,7 @@ public class ItemBook implements Property {
             // -->
             if ((attribute.startsWith("page") || attribute.startsWith("get_page")) && attribute.hasContext(1) && ArgumentHelper.matchesInteger(attribute.getContext(1))) {
                 return new ElementTag(bookInfo.getPage(attribute.getIntContext(1)))
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
 
             // <--[tag]
@@ -125,7 +125,7 @@ public class ItemBook implements Property {
             // -->
             if ((attribute.startsWith("raw_page") || attribute.startsWith("get_raw_page")) && attribute.hasContext(1) && ArgumentHelper.matchesInteger(attribute.getContext(1))) {
                 return new ElementTag(ComponentSerializer.toString(bookInfo.spigot().getPage(attribute.getIntContext(1))))
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
 
             // Deprecated in favor of pages.escape_contents
@@ -136,7 +136,7 @@ public class ItemBook implements Property {
                 }
                 return new ListTag(output.length() > 0 ?
                         output.substring(0, output.length() - 1) : output.toString())
-                        .getAttribute(attribute.fulfill(2));
+                        .getObjectAttribute(attribute.fulfill(2));
             }
 
             // <--[tag]
@@ -149,7 +149,7 @@ public class ItemBook implements Property {
             // -->
             if (attribute.startsWith("pages")) {
                 return new ListTag(bookInfo.getPages())
-                        .getAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute.fulfill(1));
             }
 
             // <--[tag]
@@ -165,7 +165,7 @@ public class ItemBook implements Property {
                 for (BaseComponent[] page : bookInfo.spigot().getPages()) {
                     output.add(ComponentSerializer.toString(page));
                 }
-                return output.getAttribute(attribute.fulfill(1));
+                return output.getObjectAttribute(attribute.fulfill(1));
             }
 
             // <--[tag]
@@ -185,7 +185,7 @@ public class ItemBook implements Property {
                 output = "null";
             }
             return new ElementTag(output)
-                    .getAttribute(attribute);
+                    .getObjectAttribute(attribute);
         }
 
         return null;

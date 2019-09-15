@@ -43,7 +43,7 @@ public class MaterialDirectional implements Property {
     MaterialTag material;
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -63,7 +63,7 @@ public class MaterialDirectional implements Property {
             for (BlockFace face : getDirectional().getFaces()) {
                 toReturn.add(face.name());
             }
-            return toReturn.getAttribute(attribute.fulfill(1));
+            return toReturn.getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -76,7 +76,7 @@ public class MaterialDirectional implements Property {
         // Output is a direction name like "NORTH".
         // -->
         if (attribute.startsWith("direction")) {
-            return new ElementTag(getDirectional().getFacing().name()).getAttribute(attribute.fulfill(1));
+            return new ElementTag(getDirectional().getFacing().name()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

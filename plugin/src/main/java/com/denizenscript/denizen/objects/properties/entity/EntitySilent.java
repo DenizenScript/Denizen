@@ -62,7 +62,7 @@ public class EntitySilent implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -77,7 +77,7 @@ public class EntitySilent implements Property {
         // -->
         if (attribute.startsWith("silent")) {
             return new ElementTag(NMSHandler.getEntityHelper().isSilent(entity.getBukkitEntity()))
-                    .getAttribute(attribute.fulfill(1));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
 

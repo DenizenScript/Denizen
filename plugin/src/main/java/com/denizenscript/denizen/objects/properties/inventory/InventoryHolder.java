@@ -164,7 +164,7 @@ public class InventoryHolder implements Property {
     ////////
 
     @Override
-    public String getAttribute(Attribute attribute) {
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
             return null;
@@ -182,7 +182,7 @@ public class InventoryHolder implements Property {
             if (holder == null) {
                 return null;
             }
-            return holder.getAttribute(attribute.fulfill(1));
+            return holder.getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;
