@@ -45,6 +45,19 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
+    public void registerShapelessRecipe(String keyName, ItemStack result, ItemStack[] ingredients) {
+        MinecraftKey key = new MinecraftKey("denizen", "shapeless_recipe_" + keyName);
+        ArrayList<RecipeItemStack> ingredientList = new ArrayList<>();
+        for (ItemStack ingredient : ingredients) {
+            RecipeItemStack itemRecipe = new RecipeItemStack(Arrays.asList(new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(ingredient))).stream());
+            itemRecipe.exact = true;
+            ingredientList.add(itemRecipe);
+        }
+        ShapelessRecipes recipe = new ShapelessRecipes(key, "custom", CraftItemStack.asNMSCopy(result), NonNullList.a(null, ingredientList.toArray(new RecipeItemStack[ingredientList.size()])));
+        ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().a(recipe);
+    }
+
+    @Override
     public String getInternalNameFromMaterial(Material material) {
         // In 1.13+ Material names match their internal name
         return "minecraft:" + CoreUtilities.toLowerCase(material.name());

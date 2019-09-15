@@ -16,6 +16,8 @@ public abstract class ItemHelper {
 
     public abstract void registerFurnaceRecipe(String keyName, ItemStack result, ItemStack ingredient, float exp, int time);
 
+    public abstract void registerShapelessRecipe(String keyName, ItemStack result, ItemStack[] ingredients);
+
     public abstract String getInternalNameFromMaterial(Material material);
 
     public abstract Material getMaterialFromInternalName(String internalName);

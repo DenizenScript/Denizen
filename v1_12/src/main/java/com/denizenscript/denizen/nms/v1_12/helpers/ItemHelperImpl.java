@@ -32,6 +32,11 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
+    public void registerShapelessRecipe(String keyName, ItemStack result, ItemStack[] ingredients) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public String getInternalNameFromMaterial(Material material) {
         return CraftItemStack.asNMSCopy(new ItemStack(material)).save(new NBTTagCompound()).getString("id");
     }

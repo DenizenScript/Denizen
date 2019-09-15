@@ -121,16 +121,15 @@ public class ItemScriptHelper implements Listener {
                 ingredients.add(ingredient);
             }
             if (shouldRegister) {
-                // TODO: When ExactChoice is patched:
-                /*if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                    NamespacedKey key = new NamespacedKey("denizen", "item_" + CoreUtilities.toLowerCase(container.getName()) + "_shapeless_recipe");
-                    ShapelessRecipe recipe = new ShapelessRecipe(key, container.getCleanReference().getItemStack());
-                    for (ItemTag ingredient : ingredients) {
-                        recipe.addIngredient(new RecipeChoice.ExactChoice(ingredient.getItemStack().clone()));
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+                    ItemStack result = container.getCleanReference().getItemStack().clone();
+                    ItemStack[] input = new ItemStack[ingredients.size()];
+                    for (int i = 0; i < input.length; i++) {
+                        input[i] = ingredients.get(i).getItemStack().clone();
                     }
-                    Bukkit.addRecipe(recipe);
+                    NMSHandler.getItemHelper().registerShapelessRecipe(CoreUtilities.toLowerCase(container.getName()), result, input);
                 }
-                else*/ {
+                else {
                     shapelessRecipesMap.put(container, ingredients);
                 }
             }

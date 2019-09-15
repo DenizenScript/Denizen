@@ -3,7 +3,6 @@ package com.denizenscript.denizen.nms.v1_14.helpers;
 import com.denizenscript.denizen.nms.util.jnbt.*;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.nms.v1_14.impl.jnbt.CompoundTagImpl;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -44,6 +43,19 @@ public class ItemHelperImpl extends ItemHelper {
         RecipeItemStack itemRecipe = new RecipeItemStack(Arrays.asList(new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(ingredient))).stream());
         itemRecipe.exact = true;
         FurnaceRecipe recipe = new FurnaceRecipe(key, "custom", itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+        ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().addRecipe(recipe);
+    }
+
+    @Override
+    public void registerShapelessRecipe(String keyName, ItemStack result, ItemStack[] ingredients) {
+        MinecraftKey key = new MinecraftKey("denizen", "shapeless_recipe_" + keyName);
+        ArrayList<RecipeItemStack> ingredientList = new ArrayList<>();
+        for (ItemStack ingredient : ingredients) {
+            RecipeItemStack itemRecipe = new RecipeItemStack(Arrays.asList(new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(ingredient))).stream());
+            itemRecipe.exact = true;
+            ingredientList.add(itemRecipe);
+        }
+        ShapelessRecipes recipe = new ShapelessRecipes(key, "custom", CraftItemStack.asNMSCopy(result), NonNullList.a(null, ingredientList.toArray(new RecipeItemStack[ingredientList.size()])));
         ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().addRecipe(recipe);
     }
 
