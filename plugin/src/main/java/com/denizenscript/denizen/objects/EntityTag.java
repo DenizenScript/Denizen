@@ -22,6 +22,7 @@ import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
+import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
@@ -1330,18 +1331,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) {
-            return null;
-        }
-
-        if (entity == null && entity_type == null) {
-            if (npc != null) {
-                return new ElementTag(identify()).getAttribute(attribute);
-            }
-            Debug.echoError("dEntity has returned null.");
-            return null;
-        }
-
         // <--[tag]
         // @attribute <EntityTag.type>
         // @returns ElementTag
@@ -1349,9 +1338,12 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Always returns 'Entity' for EntityTag objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
-        if (attribute.startsWith("type")) {
-            return new ElementTag("Entity").getAttribute(attribute.fulfill(1));
-        }
+        registerTag("type", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag("Entity").getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         /////////////////////
         //   UNSPAWNED ATTRIBUTES
@@ -1364,9 +1356,12 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the type of the entity.
         // -->
-        if (attribute.startsWith("entity_type")) {
-            return new ElementTag(entity_type.getName()).getAttribute(attribute.fulfill(1));
-        }
+        registerTag("entity_type", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(entity_type.getName()).getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.is_spawned>
@@ -1375,10 +1370,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether the entity is spawned.
         // -->
-        if (attribute.startsWith("is_spawned")) {
-            return new ElementTag(isSpawned())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerTag("is_spawned", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(isSpawned())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.eid>
@@ -1387,10 +1385,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the entity's temporary server entity ID.
         // -->
-        if (attribute.startsWith("eid")) {
-            return new ElementTag(entity.getEntityId())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerTag("eid", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(entity.getEntityId())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.uuid>
@@ -1400,10 +1401,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns the permanent unique ID of the entity.
         // Works with offline players.
         // -->
-        if (attribute.startsWith("uuid")) {
-            return new ElementTag(getUUID().toString())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerTag("uuid", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(getUUID().toString())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.scriptname>
@@ -1412,13 +1416,16 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the name of the entity script that spawned this entity, if any.
         // -->
-        if (attribute.startsWith("scriptname")) {
-            if (entityScript == null) {
-                return null;
+        registerTag("scriptname", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (entityScript == null) {
+                    return null;
+                }
+                return new ElementTag(entityScript)
+                        .getObjectAttribute(attribute.fulfill(1));
             }
-            return new ElementTag(entityScript)
-                    .getAttribute(attribute.fulfill(1));
-        }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.has_flag[<flag_name>]>
@@ -1426,20 +1433,23 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns true if the entity has the specified flag, otherwise returns false.
         // -->
-        if (attribute.startsWith("has_flag")) {
-            String flag_name;
-            if (attribute.hasContext(1)) {
-                flag_name = attribute.getContext(1);
+        registerSpawnedOnlyTag("has_flag", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                String flag_name;
+                if (attribute.hasContext(1)) {
+                    flag_name = attribute.getContext(1);
+                }
+                else {
+                    return null;
+                }
+                if (isPlayer() || isCitizensNPC()) {
+                    Debug.echoError("Reading flag for PLAYER or NPC as if it were an ENTITY!");
+                    return null;
+                }
+                return new ElementTag(FlagManager.entityHasFlag((EntityTag) object, flag_name)).getObjectAttribute(attribute.fulfill(1));
             }
-            else {
-                return null;
-            }
-            if (isPlayer() || isCitizensNPC()) {
-                Debug.echoError("Reading flag for PLAYER or NPC as if it were an ENTITY!");
-                return null;
-            }
-            return new ElementTag(FlagManager.entityHasFlag(this, flag_name)).getAttribute(attribute.fulfill(1));
-        }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.flag[<flag_name>]>
@@ -1447,32 +1457,35 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the specified flag from the entity.
         // -->
-        if (attribute.startsWith("flag")) {
-            String flag_name;
-            if (attribute.hasContext(1)) {
-                flag_name = attribute.getContext(1);
+        registerSpawnedOnlyTag("flag", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                String flag_name;
+                if (attribute.hasContext(1)) {
+                    flag_name = attribute.getContext(1);
+                }
+                else {
+                    return null;
+                }
+                if (isPlayer() || isCitizensNPC()) {
+                    Debug.echoError("Reading flag for PLAYER or NPC as if it were an ENTITY!");
+                    return null;
+                }
+                if (attribute.getAttribute(2).equalsIgnoreCase("is_expired")
+                        || attribute.startsWith("isexpired")) {
+                    return new ElementTag(!FlagManager.entityHasFlag((EntityTag) object, flag_name))
+                            .getObjectAttribute(attribute.fulfill(2));
+                }
+                if (attribute.getAttribute(2).equalsIgnoreCase("size") && !FlagManager.entityHasFlag((EntityTag) object, flag_name)) {
+                    return new ElementTag(0).getObjectAttribute(attribute.fulfill(2));
+                }
+                if (FlagManager.entityHasFlag((EntityTag) object, flag_name)) {
+                    FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager().getEntityFlag((EntityTag) object, flag_name);
+                    return new ListTag(flag.toString(), true, flag.values()).getObjectAttribute(attribute.fulfill(1));
+                }
+                return new ElementTag(identify()).getObjectAttribute(attribute);
             }
-            else {
-                return null;
-            }
-            if (isPlayer() || isCitizensNPC()) {
-                Debug.echoError("Reading flag for PLAYER or NPC as if it were an ENTITY!");
-                return null;
-            }
-            if (attribute.getAttribute(2).equalsIgnoreCase("is_expired")
-                    || attribute.startsWith("isexpired")) {
-                return new ElementTag(!FlagManager.entityHasFlag(this, flag_name))
-                        .getAttribute(attribute.fulfill(2));
-            }
-            if (attribute.getAttribute(2).equalsIgnoreCase("size") && !FlagManager.entityHasFlag(this, flag_name)) {
-                return new ElementTag(0).getAttribute(attribute.fulfill(2));
-            }
-            if (FlagManager.entityHasFlag(this, flag_name)) {
-                FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager().getEntityFlag(this, flag_name);
-                return new ListTag(flag.toString(), true, flag.values()).getAttribute(attribute.fulfill(1));
-            }
-            return new ElementTag(identify()).getAttribute(attribute);
-        }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.list_flags[(regex:)<search>]>
@@ -1481,47 +1494,44 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns a list of an entity's flag names, with an optional search for
         // names containing a certain pattern.
         // -->
-        if (attribute.startsWith("list_flags")) {
-            ListTag allFlags = new ListTag(DenizenAPI.getCurrentInstance().flagManager().listEntityFlags(this));
-            ListTag searchFlags = null;
-            if (!allFlags.isEmpty() && attribute.hasContext(1)) {
-                searchFlags = new ListTag();
-                String search = attribute.getContext(1);
-                if (search.startsWith("regex:")) {
-                    try {
-                        Pattern pattern = Pattern.compile(search.substring(6), Pattern.CASE_INSENSITIVE);
+        registerSpawnedOnlyTag("list_flags", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                ListTag allFlags = new ListTag(DenizenAPI.getCurrentInstance().flagManager().listEntityFlags((EntityTag) object));
+                ListTag searchFlags = null;
+                if (!allFlags.isEmpty() && attribute.hasContext(1)) {
+                    searchFlags = new ListTag();
+                    String search = attribute.getContext(1);
+                    if (search.startsWith("regex:")) {
+                        try {
+                            Pattern pattern = Pattern.compile(search.substring(6), Pattern.CASE_INSENSITIVE);
+                            for (String flag : allFlags) {
+                                if (pattern.matcher(flag).matches()) {
+                                    searchFlags.add(flag);
+                                }
+                            }
+                        }
+                        catch (Exception e) {
+                            Debug.echoError(e);
+                        }
+                    }
+                    else {
+                        search = CoreUtilities.toLowerCase(search);
                         for (String flag : allFlags) {
-                            if (pattern.matcher(flag).matches()) {
+                            if (CoreUtilities.toLowerCase(flag).contains(search)) {
                                 searchFlags.add(flag);
                             }
                         }
                     }
-                    catch (Exception e) {
-                        Debug.echoError(e);
-                    }
+                    DenizenAPI.getCurrentInstance().flagManager().shrinkEntityFlags((EntityTag) object, searchFlags);
                 }
                 else {
-                    search = CoreUtilities.toLowerCase(search);
-                    for (String flag : allFlags) {
-                        if (CoreUtilities.toLowerCase(flag).contains(search)) {
-                            searchFlags.add(flag);
-                        }
-                    }
+                    DenizenAPI.getCurrentInstance().flagManager().shrinkEntityFlags((EntityTag) object, allFlags);
                 }
-                DenizenAPI.getCurrentInstance().flagManager().shrinkEntityFlags(this, searchFlags);
+                return searchFlags == null ? allFlags.getObjectAttribute(attribute.fulfill(1))
+                        : searchFlags.getObjectAttribute(attribute.fulfill(1));
             }
-            else {
-                DenizenAPI.getCurrentInstance().flagManager().shrinkEntityFlags(this, allFlags);
-            }
-            return searchFlags == null ? allFlags.getAttribute(attribute.fulfill(1))
-                    : searchFlags.getAttribute(attribute.fulfill(1));
-        }
-
-        if (entity == null) {
-            return new ElementTag(identify()).getAttribute(attribute);
-        }
-        // Only spawned entities past this point!
-
+        });
 
         /////////////////////
         //   IDENTIFICATION ATTRIBUTES
@@ -1535,16 +1545,19 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // If the entity has a script ID, returns the ScriptTag of that ID.
         // Otherwise, returns the name of the entity type.
         // -->
-        if (attribute.startsWith("custom_id")) {
-            if (CustomNBT.hasCustomNBT(getLivingEntity(), "denizen-script-id")) {
-                return new ScriptTag(CustomNBT.getCustomNBT(getLivingEntity(), "denizen-script-id"))
-                        .getAttribute(attribute.fulfill(1));
+        registerSpawnedOnlyTag("custom_id", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (CustomNBT.hasCustomNBT(getLivingEntity(), "denizen-script-id")) {
+                    return new ScriptTag(CustomNBT.getCustomNBT(getLivingEntity(), "denizen-script-id"))
+                            .getObjectAttribute(attribute.fulfill(1));
+                }
+                else {
+                    return new ElementTag(entity.getType().name())
+                            .getObjectAttribute(attribute.fulfill(1));
+                }
             }
-            else {
-                return new ElementTag(entity.getType().name())
-                        .getAttribute(attribute.fulfill(1));
-            }
-        }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.name>
@@ -1555,9 +1568,12 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // This can be a player name, an NPC name, a custom_name, or the entity type.
         // Works with offline players.
         // -->
-        if (attribute.startsWith("name")) {
-            return new ElementTag(getName()).getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("name", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(getName()).getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
 
         /////////////////////
@@ -1572,16 +1588,20 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // If the entity is a horse or pig, returns the saddle as a ItemTag, or air if none.
         // -->
-        if (attribute.startsWith("saddle")) {
-            if (getLivingEntity().getType() == EntityType.HORSE) {
-                return new ItemTag(((Horse) getLivingEntity()).getInventory().getSaddle())
-                        .getAttribute(attribute.fulfill(1));
+        registerSpawnedOnlyTag("saddle", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (getLivingEntity().getType() == EntityType.HORSE) {
+                    return new ItemTag(((Horse) getLivingEntity()).getInventory().getSaddle())
+                            .getObjectAttribute(attribute.fulfill(1));
+                }
+                else if (getLivingEntity().getType() == EntityType.PIG) {
+                    return new ItemTag(((Pig) getLivingEntity()).hasSaddle() ? Material.SADDLE : Material.AIR)
+                            .getObjectAttribute(attribute.fulfill(1));
+                }
+                return null;
             }
-            else if (getLivingEntity().getType() == EntityType.PIG) {
-                return new ItemTag(((Pig) getLivingEntity()).hasSaddle() ? Material.SADDLE : Material.AIR)
-                        .getAttribute(attribute.fulfill(1));
-            }
-        }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.horse_armor>
@@ -1590,12 +1610,17 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // If the entity is a horse, returns the item equipped as the horses armor, or air if none.
         // -->
-        if (attribute.startsWith("horse_armor") || attribute.startsWith("horse_armour")) {
-            if (getLivingEntity().getType() == EntityType.HORSE) {
-                return new ItemTag(((Horse) getLivingEntity()).getInventory().getArmor())
-                        .getAttribute(attribute.fulfill(1));
+        registerTag("horse_armor", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (getBukkitEntityType() == EntityType.HORSE) {
+                    return new ItemTag(((Horse) getLivingEntity()).getInventory().getArmor())
+                            .getObjectAttribute(attribute.fulfill(1));
+                }
+                return null;
             }
-        }
+        });
+        registerSpawnedOnlyTag("horse_armour", tagProcessor.registeredObjectTags.get("horse_armor"));
 
         // <--[tag]
         // @attribute <EntityTag.has_saddle>
@@ -1604,16 +1629,20 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // If the entity s a pig or horse, returns whether it has a saddle equipped.
         // -->
-        if (attribute.startsWith("has_saddle")) {
-            if (getLivingEntity().getType() == EntityType.HORSE) {
-                return new ElementTag(((Horse) getLivingEntity()).getInventory().getSaddle().getType() == Material.SADDLE)
-                        .getAttribute(attribute.fulfill(1));
+        registerSpawnedOnlyTag("has_saddle", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (getBukkitEntityType() == EntityType.HORSE) {
+                    return new ElementTag(((Horse) getLivingEntity()).getInventory().getSaddle().getType() == Material.SADDLE)
+                            .getObjectAttribute(attribute.fulfill(1));
+                }
+                else if (getBukkitEntityType() == EntityType.PIG) {
+                    return new ElementTag(((Pig) getLivingEntity()).hasSaddle())
+                            .getObjectAttribute(attribute.fulfill(1));
+                }
+                return null;
             }
-            else if (getLivingEntity().getType() == EntityType.PIG) {
-                return new ElementTag(((Pig) getLivingEntity()).hasSaddle())
-                        .getAttribute(attribute.fulfill(1));
-            }
-        }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.item_in_hand>
@@ -1622,11 +1651,14 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the item the entity is holding, or air if none.
         // -->
-        if (attribute.startsWith("item_in_hand") ||
-                attribute.startsWith("iteminhand")) {
-            return new ItemTag(NMSHandler.getEntityHelper().getItemInHand(getLivingEntity()))
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("item_in_hand", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ItemTag(getLivingEntity().getEquipment().getItemInMainHand())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
+        registerSpawnedOnlyTag("iteminhand", tagProcessor.registeredObjectTags.get("item_in_hand"));
 
         // <--[tag]
         // @attribute <EntityTag.item_in_offhand>
@@ -1635,11 +1667,14 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the item the entity is holding in their off hand, or air if none.
         // -->
-        if (attribute.startsWith("item_in_offhand") ||
-                attribute.startsWith("iteminoffhand")) {
-            return new ItemTag(NMSHandler.getEntityHelper().getItemInOffHand(getLivingEntity()))
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("item_in_offhand", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ItemTag(getLivingEntity().getEquipment().getItemInOffHand())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
+        registerSpawnedOnlyTag("iteminoffhand", tagProcessor.registeredObjectTags.get("item_in_offhand"));
 
         // <--[tag]
         // @attribute <EntityTag.is_trading>
@@ -1647,11 +1682,15 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether the villager entity is trading.
         // -->
-        if (attribute.startsWith("is_trading")) {
-            if (entity instanceof Merchant) {
-                return new ElementTag(((Merchant) entity).isTrading()).getAttribute(attribute.fulfill(1));
+        registerSpawnedOnlyTag("is_trading", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (entity instanceof Merchant) {
+                    return new ElementTag(((Merchant) entity).isTrading()).getObjectAttribute(attribute.fulfill(1));
+                }
+                return null;
             }
-        }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.trading_with>
@@ -1659,12 +1698,16 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the player who is trading with the villager entity, or null if it is not trading.
         // -->
-        if (attribute.startsWith("trading_with")) {
-            if (entity instanceof Merchant
-                    && ((Merchant) entity).getTrader() != null) {
-                return new EntityTag(((Merchant) entity).getTrader()).getAttribute(attribute.fulfill(1));
+        registerSpawnedOnlyTag("trading_with", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (entity instanceof Merchant
+                        && ((Merchant) entity).getTrader() != null) {
+                    return new EntityTag(((Merchant) entity).getTrader()).getObjectAttribute(attribute.fulfill(1));
+                }
+                return null;
             }
-        }
+        });
 
 
         /////////////////////
@@ -1679,30 +1722,34 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns a 2D location indicating where on the map the entity's looking at.
         // Each coordinate is in the range of 0 to 128.
         // -->
-        if (attribute.startsWith("map_trace")) {
-            EntityHelper.MapTraceResult mtr = NMSHandler.getEntityHelper().mapTrace(getLivingEntity(), 200);
-            if (mtr != null) {
-                double x = 0;
-                double y = 0;
-                double basex = mtr.hitLocation.getX() - Math.floor(mtr.hitLocation.getX());
-                double basey = mtr.hitLocation.getY() - Math.floor(mtr.hitLocation.getY());
-                double basez = mtr.hitLocation.getZ() - Math.floor(mtr.hitLocation.getZ());
-                if (mtr.angle == BlockFace.NORTH) {
-                    x = 128f - (basex * 128f);
+        registerSpawnedOnlyTag("map_trace", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                EntityHelper.MapTraceResult mtr = NMSHandler.getEntityHelper().mapTrace(getLivingEntity(), 200);
+                if (mtr != null) {
+                    double x = 0;
+                    double y = 0;
+                    double basex = mtr.hitLocation.getX() - Math.floor(mtr.hitLocation.getX());
+                    double basey = mtr.hitLocation.getY() - Math.floor(mtr.hitLocation.getY());
+                    double basez = mtr.hitLocation.getZ() - Math.floor(mtr.hitLocation.getZ());
+                    if (mtr.angle == BlockFace.NORTH) {
+                        x = 128f - (basex * 128f);
+                    }
+                    else if (mtr.angle == BlockFace.SOUTH) {
+                        x = basex * 128f;
+                    }
+                    else if (mtr.angle == BlockFace.WEST) {
+                        x = basez * 128f;
+                    }
+                    else if (mtr.angle == BlockFace.EAST) {
+                        x = 128f - (basez * 128f);
+                    }
+                    y = 128f - (basey * 128f);
+                    return new LocationTag(null, Math.round(x), Math.round(y)).getObjectAttribute(attribute.fulfill(1));
                 }
-                else if (mtr.angle == BlockFace.SOUTH) {
-                    x = basex * 128f;
-                }
-                else if (mtr.angle == BlockFace.WEST) {
-                    x = basez * 128f;
-                }
-                else if (mtr.angle == BlockFace.EAST) {
-                    x = 128f - (basez * 128f);
-                }
-                y = 128f - (basey * 128f);
-                return new LocationTag(null, Math.round(x), Math.round(y)).getAttribute(attribute.fulfill(1));
+                return null;
             }
-        }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.can_see[<entity>]>
@@ -1711,14 +1758,18 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether the entity can see the specified other entity (has an uninterrupted line-of-sight).
         // -->
-        if (attribute.startsWith("can_see")) {
-            if (isLivingEntity() && attribute.hasContext(1) && EntityTag.matches(attribute.getContext(1))) {
-                EntityTag toEntity = EntityTag.valueOf(attribute.getContext(1));
-                if (toEntity != null && toEntity.isSpawned()) {
-                    return new ElementTag(getLivingEntity().hasLineOfSight(toEntity.getBukkitEntity())).getAttribute(attribute.fulfill(1));
+        registerSpawnedOnlyTag("can_see", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (isLivingEntity() && attribute.hasContext(1) && EntityTag.matches(attribute.getContext(1))) {
+                    EntityTag toEntity = EntityTag.valueOf(attribute.getContext(1));
+                    if (toEntity != null && toEntity.isSpawned()) {
+                        return new ElementTag(getLivingEntity().hasLineOfSight(toEntity.getBukkitEntity())).getObjectAttribute(attribute.fulfill(1));
+                    }
                 }
+                return null;
             }
-        }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.eye_location>
@@ -1727,10 +1778,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the location of the entity's eyes.
         // -->
-        if (attribute.startsWith("eye_location")) {
-            return new LocationTag(getEyeLocation())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("eye_location", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new LocationTag(getEyeLocation())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.eye_height>
@@ -1739,12 +1793,16 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the height of the entity's eyes above its location.
         // -->
-        if (attribute.startsWith("eye_height")) {
-            if (isLivingEntity()) {
-                return new ElementTag(getLivingEntity().getEyeHeight())
-                        .getAttribute(attribute.fulfill(1));
+        registerSpawnedOnlyTag("eye_height", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (isLivingEntity()) {
+                    return new ElementTag(getLivingEntity().getEyeHeight())
+                            .getObjectAttribute(attribute.fulfill(1));
+                }
+                return null;
             }
-        }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.location.cursor_on[<range>]>
@@ -1764,23 +1822,26 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // ignored material.
         // Optionally, specify a maximum range to find the location from.
         // -->
-        if (attribute.startsWith("location.cursor_on")) {
-            int range = attribute.getIntContext(2);
-            if (range < 1) {
-                range = 50;
-            }
-            Set<Material> set = new HashSet<>();
-            set.add(Material.AIR);
-            attribute = attribute.fulfill(2);
-            if (attribute.startsWith("ignore") && attribute.hasContext(1)) {
-                List<MaterialTag> ignoreList = ListTag.valueOf(attribute.getContext(1)).filter(MaterialTag.class, attribute.context);
-                for (MaterialTag material : ignoreList) {
-                    set.add(material.getMaterial());
+        registerSpawnedOnlyTag("location.cursor_on", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                int range = attribute.getIntContext(2);
+                if (range < 1) {
+                    range = 50;
                 }
-                attribute = attribute.fulfill(1);
+                Set<Material> set = new HashSet<>();
+                set.add(Material.AIR);
+                attribute = attribute.fulfill(2);
+                if (attribute.startsWith("ignore") && attribute.hasContext(1)) {
+                    List<MaterialTag> ignoreList = ListTag.valueOf(attribute.getContext(1)).filter(MaterialTag.class, attribute.context);
+                    for (MaterialTag material : ignoreList) {
+                        set.add(material.getMaterial());
+                    }
+                    attribute = attribute.fulfill(1);
+                }
+                return new LocationTag(getTargetBlockSafe(set, range)).getObjectAttribute(attribute);
             }
-            return new LocationTag(getTargetBlockSafe(set, range)).getAttribute(attribute);
-        }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.location.standing_on>
@@ -1790,10 +1851,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns the location of what the entity is standing on.
         // Works with offline players.
         // -->
-        if (attribute.startsWith("location.standing_on")) {
-            return new LocationTag(entity.getLocation().clone().add(0, -0.5f, 0))
-                    .getAttribute(attribute.fulfill(2));
-        }
+        registerSpawnedOnlyTag("location.standing_on", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new LocationTag(entity.getLocation().clone().add(0, -0.5f, 0))
+                        .getObjectAttribute(attribute.fulfill(2));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.location>
@@ -1803,10 +1867,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns the location of the entity.
         // Works with offline players.
         // -->
-        if (attribute.startsWith("location")) {
-            return new LocationTag(entity.getLocation())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("location", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new LocationTag(entity.getLocation())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.body_yaw>
@@ -1815,10 +1882,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the entity's body yaw (separate from head yaw).
         // -->
-        if (attribute.startsWith("body_yaw")) {
-            return new ElementTag(NMSHandler.getEntityHelper().getBaseYaw(entity))
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("body_yaw", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(NMSHandler.getEntityHelper().getBaseYaw(entity))
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.velocity>
@@ -1828,10 +1898,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns the movement velocity of the entity.
         // Note: Does not accurately calculate player clientside movement velocity.
         // -->
-        if (attribute.startsWith("velocity")) {
-            return new LocationTag(entity.getVelocity().toLocation(entity.getWorld()))
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("velocity", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new LocationTag(entity.getVelocity().toLocation(entity.getWorld()))
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.world>
@@ -1840,10 +1913,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the world the entity is in. Works with offline players.
         // -->
-        if (attribute.startsWith("world")) {
-            return new WorldTag(entity.getWorld())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("world", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new WorldTag(entity.getWorld())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
 
         /////////////////////
@@ -1857,12 +1933,16 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether the entity can pick up items.
         // -->
-        if (attribute.startsWith("can_pickup_items")) {
-            if (isLivingEntity()) {
-                return new ElementTag(getLivingEntity().getCanPickupItems())
-                        .getAttribute(attribute.fulfill(1));
+        registerSpawnedOnlyTag("can_pickup_items", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (isLivingEntity()) {
+                    return new ElementTag(getLivingEntity().getCanPickupItems())
+                            .getObjectAttribute(attribute.fulfill(1));
+                }
+                return null;
             }
-        }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.fallingblock_material>
@@ -1871,10 +1951,16 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the material of a fallingblock-type entity.
         // -->
-        if (attribute.startsWith("fallingblock_material") && entity instanceof FallingBlock) {
-            return new MaterialTag(NMSHandler.getEntityHelper().getBlockDataFor((FallingBlock) entity))
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("fallingblock_material", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (!(entity instanceof FallingBlock)) {
+                    return null;
+                }
+                return new MaterialTag(NMSHandler.getEntityHelper().getBlockDataFor((FallingBlock) entity))
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.fall_distance>
@@ -1883,10 +1969,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns how far the entity has fallen.
         // -->
-        if (attribute.startsWith("fall_distance")) {
-            return new ElementTag(entity.getFallDistance())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("fall_distance", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(entity.getFallDistance())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.fire_time>
@@ -1895,10 +1984,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the duration for which the entity will remain on fire
         // -->
-        if (attribute.startsWith("fire_time")) {
-            return new DurationTag(entity.getFireTicks() / 20)
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("fire_time", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new DurationTag(entity.getFireTicks() / 20)
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.on_fire>
@@ -1907,9 +1999,12 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether the entity is currently ablaze or not.
         // -->
-        if (attribute.startsWith("on_fire")) {
-            return new ElementTag(entity.getFireTicks() > 0).getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("on_fire", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(entity.getFireTicks() > 0).getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.leash_holder>
@@ -1918,12 +2013,17 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the leash holder of entity.
         // -->
-        if (attribute.startsWith("leash_holder") || attribute.startsWith("get_leash_holder")) {
-            if (isLivingEntity() && getLivingEntity().isLeashed()) {
-                return new EntityTag(getLivingEntity().getLeashHolder())
-                        .getAttribute(attribute.fulfill(1));
+        registerSpawnedOnlyTag("leash_holder", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (isLivingEntity() && getLivingEntity().isLeashed()) {
+                    return new EntityTag(getLivingEntity().getLeashHolder())
+                            .getObjectAttribute(attribute.fulfill(1));
+                }
+                return null;
             }
-        }
+        });
+        registerSpawnedOnlyTag("get_leash_holder", tagProcessor.registeredObjectTags.get("leash_holder"));
 
         // <--[tag]
         // @attribute <EntityTag.passengers>
@@ -1932,13 +2032,17 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns a list of the entity's passengers, if any.
         // -->
-        if (attribute.startsWith("passengers") || attribute.startsWith("get_passengers")) {
-            ArrayList<EntityTag> passengers = new ArrayList<>();
-            for (Entity ent : entity.getPassengers()) {
-                passengers.add(new EntityTag(ent));
+        registerSpawnedOnlyTag("passengers", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                ArrayList<EntityTag> passengers = new ArrayList<>();
+                for (Entity ent : entity.getPassengers()) {
+                    passengers.add(new EntityTag(ent));
+                }
+                return new ListTag(passengers).getObjectAttribute(attribute.fulfill(1));
             }
-            return new ListTag(passengers).getAttribute(attribute.fulfill(1));
-        }
+        });
+        registerSpawnedOnlyTag("get_passengers", tagProcessor.registeredObjectTags.get("passengers"));
 
         // <--[tag]
         // @attribute <EntityTag.passenger>
@@ -1947,12 +2051,17 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the entity's passenger, if any.
         // -->
-        if (attribute.startsWith("passenger") || attribute.startsWith("get_passenger")) {
-            if (!entity.isEmpty()) {
-                return new EntityTag(entity.getPassenger())
-                        .getAttribute(attribute.fulfill(1));
+        registerSpawnedOnlyTag("passenger", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (!entity.isEmpty()) {
+                    return new EntityTag(entity.getPassenger())
+                            .getObjectAttribute(attribute.fulfill(1));
+                }
+                return null;
             }
-        }
+        });
+        registerSpawnedOnlyTag("get_passenger", tagProcessor.registeredObjectTags.get("passenger"));
 
         // <--[tag]
         // @attribute <EntityTag.shooter>
@@ -1962,12 +2071,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the entity's shooter, if any.
         // -->
-        if (attribute.startsWith("shooter") ||
-                attribute.startsWith("get_shooter")) {
-            if (isProjectile() && hasShooter()) {
-                return getShooter().getAttribute(attribute.fulfill(1));
+        registerSpawnedOnlyTag("shooter", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return getShooter().getObjectAttribute(attribute.fulfill(1));
             }
-        }
+        });
+        registerSpawnedOnlyTag("get_shooter", tagProcessor.registeredObjectTags.get("shooter"));
 
         // <--[tag]
         // @attribute <EntityTag.left_shoulder>
@@ -1978,11 +2088,16 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // NOTE: The returned entity will not be spawned within the world,
         // so most operations are invalid unless the entity is first spawned in.
         // -->
-        if (getLivingEntity() instanceof HumanEntity
-                && attribute.startsWith("left_shoulder")) {
-            return new EntityTag(((HumanEntity) getLivingEntity()).getShoulderEntityLeft())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("left_shoulder", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (!(getLivingEntity() instanceof HumanEntity)) {
+                    return null;
+                }
+                return new EntityTag(((HumanEntity) getLivingEntity()).getShoulderEntityLeft())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.right_shoulder>
@@ -1993,11 +2108,16 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // NOTE: The returned entity will not be spawned within the world,
         // so most operations are invalid unless the entity is first spawned in.
         // -->
-        if (getLivingEntity() instanceof HumanEntity
-                && attribute.startsWith("right_shoulder")) {
-            return new EntityTag(((HumanEntity) getLivingEntity()).getShoulderEntityRight())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("right_shoulder", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (!(getLivingEntity() instanceof HumanEntity)) {
+                    return null;
+                }
+                return new EntityTag(((HumanEntity) getLivingEntity()).getShoulderEntityRight())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.vehicle>
@@ -2006,12 +2126,17 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // If the entity is in a vehicle, returns the vehicle as a EntityTag.
         // -->
-        if (attribute.startsWith("vehicle") || attribute.startsWith("get_vehicle")) {
-            if (entity.isInsideVehicle()) {
-                return new EntityTag(entity.getVehicle())
-                        .getAttribute(attribute.fulfill(1));
+        registerSpawnedOnlyTag("vehicle", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (entity.isInsideVehicle()) {
+                    return new EntityTag(entity.getVehicle())
+                            .getObjectAttribute(attribute.fulfill(1));
+                }
+                return null;
             }
-        }
+        });
+        registerSpawnedOnlyTag("get_vehicle", tagProcessor.registeredObjectTags.get("vehicle"));
 
         // <--[tag]
         // @attribute <EntityTag.can_breed>
@@ -2020,10 +2145,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether the animal entity is capable of mating with another of its kind.
         // -->
-        if (attribute.startsWith("can_breed")) {
-            return new ElementTag(((Ageable) getLivingEntity()).canBreed())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("can_breed", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(((Ageable) getLivingEntity()).canBreed())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.breeding>
@@ -2032,10 +2160,14 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether the animal entity is trying to with another of its kind.
         // -->
-        if (attribute.startsWith("breeding") || attribute.startsWith("is_breeding")) {
-            return new ElementTag(NMSHandler.getEntityHelper().isBreeding((Animals) getLivingEntity()))
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("breeding", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(NMSHandler.getEntityHelper().isBreeding((Animals) getLivingEntity()))
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
+        registerSpawnedOnlyTag("is_breeding", tagProcessor.registeredObjectTags.get("breeding"));
 
         // <--[tag]
         // @attribute <EntityTag.has_passenger>
@@ -2044,10 +2176,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether the entity has a passenger.
         // -->
-        if (attribute.startsWith("has_passenger")) {
-            return new ElementTag(!entity.isEmpty())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("has_passenger", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(!entity.isEmpty())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.is_empty>
@@ -2056,10 +2191,14 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether the entity does not have a passenger.
         // -->
-        if (attribute.startsWith("empty") || attribute.startsWith("is_empty")) {
-            return new ElementTag(entity.isEmpty())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("is_empty", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(entity.isEmpty())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
+        registerSpawnedOnlyTag("is_empty", tagProcessor.registeredObjectTags.get("empty"));
 
         // <--[tag]
         // @attribute <EntityTag.is_inside_vehicle>
@@ -2068,10 +2207,14 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether the entity is inside a vehicle.
         // -->
-        if (attribute.startsWith("inside_vehicle") || attribute.startsWith("is_inside_vehicle")) {
-            return new ElementTag(entity.isInsideVehicle())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("is_inside_vehicle", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(entity.isInsideVehicle())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
+        registerSpawnedOnlyTag("inside_vehicle", tagProcessor.registeredObjectTags.get("is_inside_vehicle"));
 
         // <--[tag]
         // @attribute <EntityTag.is_leashed>
@@ -2080,10 +2223,14 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether the entity is leashed.
         // -->
-        if (attribute.startsWith("leashed") || attribute.startsWith("is_leashed")) {
-            return new ElementTag(isLivingEntity() && getLivingEntity().isLeashed())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("is_leashed", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(isLivingEntity() && getLivingEntity().isLeashed())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
+        registerSpawnedOnlyTag("leashed", tagProcessor.registeredObjectTags.get("is_leashed"));
 
         // <--[tag]
         // @attribute <EntityTag.is_sheared>
@@ -2092,10 +2239,16 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether a sheep is sheared.
         // -->
-        if (attribute.startsWith("is_sheared") && getBukkitEntity() instanceof Sheep) {
-            return new ElementTag(((Sheep) getBukkitEntity()).isSheared())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("is_sheared", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (!(getBukkitEntity() instanceof Sheep)) {
+                    return null;
+                }
+                return new ElementTag(((Sheep) getBukkitEntity()).isSheared())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.is_on_ground>
@@ -2104,10 +2257,14 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether the entity is supported by a block.
         // -->
-        if (attribute.startsWith("on_ground") || attribute.startsWith("is_on_ground")) {
-            return new ElementTag(entity.isOnGround())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("is_on_ground", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(entity.isOnGround())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
+        registerSpawnedOnlyTag("on_ground", tagProcessor.registeredObjectTags.get("is_on_ground"));
 
         // <--[tag]
         // @attribute <EntityTag.is_persistent>
@@ -2116,10 +2273,14 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether the entity will not be removed completely when far away from players.
         // -->
-        if (attribute.startsWith("persistent") || attribute.startsWith("is_persistent")) {
-            return new ElementTag(isLivingEntity() && !getLivingEntity().getRemoveWhenFarAway())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("is_persistent", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(isLivingEntity() && !getLivingEntity().getRemoveWhenFarAway())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
+        registerSpawnedOnlyTag("is_persistent", tagProcessor.registeredObjectTags.get("persistent"));
 
         // <--[tag]
         // @attribute <EntityTag.is_collidable>
@@ -2129,10 +2290,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether the entity is collidable.
         // -->
-        if (attribute.startsWith("is_collidable")) {
-            return new ElementTag(getLivingEntity().isCollidable())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("is_collidable", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(getLivingEntity().isCollidable())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.killer>
@@ -2141,10 +2305,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the player that last killed the entity.
         // -->
-        if (attribute.startsWith("killer")) {
-            return getPlayerFrom(getLivingEntity().getKiller())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("killer", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return getPlayerFrom(getLivingEntity().getKiller())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.last_damage.amount>
@@ -2153,10 +2320,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the amount of the last damage taken by the entity.
         // -->
-        if (attribute.startsWith("last_damage.amount")) {
-            return new ElementTag(getLivingEntity().getLastDamage())
-                    .getAttribute(attribute.fulfill(2));
-        }
+        registerSpawnedOnlyTag("last_damage.amount", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(getLivingEntity().getLastDamage())
+                        .getObjectAttribute(attribute.fulfill(2));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.last_damage.cause>
@@ -2165,11 +2335,16 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the cause of the last damage taken by the entity.
         // -->
-        if (attribute.startsWith("last_damage.cause")
-                && entity.getLastDamageCause() != null) {
-            return new ElementTag(entity.getLastDamageCause().getCause().name())
-                    .getAttribute(attribute.fulfill(2));
-        }
+        registerSpawnedOnlyTag("last_damage.cause", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (entity.getLastDamageCause() == null) {
+                    return null;
+                }
+                return new ElementTag(entity.getLastDamageCause().getCause().name())
+                        .getObjectAttribute(attribute.fulfill(2));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.last_damage.duration>
@@ -2179,10 +2354,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the duration of the last damage taken by the entity.
         // -->
-        if (attribute.startsWith("last_damage.duration")) {
-            return new DurationTag((long) getLivingEntity().getNoDamageTicks())
-                    .getAttribute(attribute.fulfill(2));
-        }
+        registerSpawnedOnlyTag("last_damage.duration", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new DurationTag((long) getLivingEntity().getNoDamageTicks())
+                        .getObjectAttribute(attribute.fulfill(2));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.last_damage.max_duration>
@@ -2192,10 +2370,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the maximum duration of the last damage taken by the entity.
         // -->
-        if (attribute.startsWith("last_damage.max_duration")) {
-            return new DurationTag((long) getLivingEntity().getMaximumNoDamageTicks())
-                    .getAttribute(attribute.fulfill(2));
-        }
+        registerSpawnedOnlyTag("last_damage.max_duration", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new DurationTag((long) getLivingEntity().getMaximumNoDamageTicks())
+                        .getObjectAttribute(attribute.fulfill(2));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.oxygen.max>
@@ -2205,10 +2386,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns the maximum duration of oxygen the entity can have.
         // Works with offline players.
         // -->
-        if (attribute.startsWith("oxygen.max")) {
-            return new DurationTag((long) getLivingEntity().getMaximumAir())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("oxygen.max", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new DurationTag((long) getLivingEntity().getMaximumAir())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.oxygen>
@@ -2218,10 +2402,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns the duration of oxygen the entity has left.
         // Works with offline players.
         // -->
-        if (attribute.startsWith("oxygen")) {
-            return new DurationTag((long) getLivingEntity().getRemainingAir())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("oxygen", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new DurationTag((long) getLivingEntity().getRemainingAir())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.remove_when_far>
@@ -2230,10 +2417,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether the entity despawns when away from players.
         // -->
-        if (attribute.startsWith("remove_when_far")) {
-            return new ElementTag(getLivingEntity().getRemoveWhenFarAway())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("remove_when_far", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(getLivingEntity().getRemoveWhenFarAway())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.target>
@@ -2243,15 +2433,18 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns the target entity of the creature, if any.
         // Note: use <NPCTag.navigator.target_entity> for NPC's.
         // -->
-        if (attribute.startsWith("target")) {
-            if (getBukkitEntity() instanceof Creature) {
-                Entity target = ((Creature) getLivingEntity()).getTarget();
-                if (target != null) {
-                    return new EntityTag(target).getAttribute(attribute.fulfill(1));
+        registerSpawnedOnlyTag("target", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (getBukkitEntity() instanceof Creature) {
+                    Entity target = ((Creature) getLivingEntity()).getTarget();
+                    if (target != null) {
+                        return new EntityTag(target).getObjectAttribute(attribute.fulfill(1));
+                    }
                 }
+                return null;
             }
-            return null;
-        }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.time_lived>
@@ -2260,10 +2453,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns how long the entity has lived.
         // -->
-        if (attribute.startsWith("time_lived")) {
-            return new DurationTag(entity.getTicksLived() / 20)
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("time_lived", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new DurationTag(entity.getTicksLived() / 20)
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.pickup_delay>
@@ -2272,10 +2468,16 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns how long before the item-type entity can be picked up by a player.
         // -->
-        if ((attribute.startsWith("pickup_delay") || attribute.startsWith("pickupdelay"))
-                && getBukkitEntity() instanceof Item) {
-            return new DurationTag(((Item) getBukkitEntity()).getPickupDelay() * 20).getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("pickup_delay", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (!(getBukkitEntity() instanceof Item)) {
+                    return null;
+                }
+                return new DurationTag(((Item) getBukkitEntity()).getPickupDelay() * 20).getObjectAttribute(attribute.fulfill(1));
+            }
+        });
+        registerSpawnedOnlyTag("pickupdelay", tagProcessor.registeredObjectTags.get("pickup_delay"));
 
         // <--[tag]
         // @attribute <EntityTag.is_in_block>
@@ -2284,12 +2486,15 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether or not the arrow/trident entity is in a block.
         // -->
-        if (attribute.startsWith("is_in_block")) {
-            if (getBukkitEntity() instanceof Arrow) {
-                return new ElementTag(((Arrow) getBukkitEntity()).isInBlock()).getAttribute(attribute.fulfill(1));
+        registerSpawnedOnlyTag("is_in_block", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (getBukkitEntity() instanceof Arrow) {
+                    return new ElementTag(((Arrow) getBukkitEntity()).isInBlock()).getObjectAttribute(attribute.fulfill(1));
+                }
+                return null;
             }
-            return null;
-        }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.attached_block>
@@ -2298,20 +2503,23 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the location of the block that the arrow/trident or hanging entity is attached to.
         // -->
-        if (attribute.startsWith("attached_block")) {
-            if (getBukkitEntity() instanceof Arrow) {
-                Block attachedBlock = ((Arrow) getBukkitEntity()).getAttachedBlock();
-                if (attachedBlock != null) {
-                    return new LocationTag(attachedBlock.getLocation()).getAttribute(attribute.fulfill(1));
+        registerSpawnedOnlyTag("attached_block", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (getBukkitEntity() instanceof Arrow) {
+                    Block attachedBlock = ((Arrow) getBukkitEntity()).getAttachedBlock();
+                    if (attachedBlock != null) {
+                        return new LocationTag(attachedBlock.getLocation()).getObjectAttribute(attribute.fulfill(1));
+                    }
                 }
+                else if (getBukkitEntity() instanceof Hanging) {
+                    Vector dir = ((Hanging) getBukkitEntity()).getAttachedFace().getDirection();
+                    return new LocationTag(getLocation().clone().add(dir.multiply(0.5))).getBlockLocation()
+                            .getObjectAttribute(attribute.fulfill(1));
+                }
+                return null;
             }
-            else if (getBukkitEntity() instanceof Hanging) {
-                Vector dir = ((Hanging) getBukkitEntity()).getAttachedFace().getDirection();
-                return new LocationTag(getLocation().clone().add(dir.multiply(0.5))).getBlockLocation()
-                        .getAttribute(attribute.fulfill(1));
-            }
-            return null;
-        }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.gliding>
@@ -2321,10 +2529,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether this entity is gliding.
         // -->
-        if (attribute.startsWith("gliding")) {
-            return new ElementTag(getLivingEntity().isGliding())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("gliding", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(getLivingEntity().isGliding())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.swimming>
@@ -2334,9 +2545,14 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether this entity is swimming.
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && attribute.startsWith("swimming")) {
-            return new ElementTag(getLivingEntity().isSwimming())
-                    .getAttribute(attribute.fulfill(1));
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+            registerSpawnedOnlyTag("swimming", new TagRunnable.ObjectForm() {
+                @Override
+                public ObjectTag run(Attribute attribute, ObjectTag object) {
+                    return new ElementTag(getLivingEntity().isSwimming())
+                            .getObjectAttribute(attribute.fulfill(1));
+                }
+            });
         }
 
         // <--[tag]
@@ -2347,10 +2563,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether this entity is glowing.
         // -->
-        if (attribute.startsWith("glowing")) {
-            return new ElementTag(getBukkitEntity().isGlowing())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("glowing", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(getBukkitEntity().isGlowing())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         /////////////////////
         //   TYPE ATTRIBUTES
@@ -2364,10 +2583,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns whether the entity is a living-type entity (eg a cow or a player or anything else that lives, as specifically opposed to non-living entities like paintings, etc).
         // Not to be confused with the idea of being alive - see <@link tag EntityTag.is_spawned>.
         // -->
-        if (attribute.startsWith("is_living")) {
-            return new ElementTag(isLivingEntity())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("is_living", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(isLivingEntity())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.is_monster>
@@ -2376,10 +2598,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether the entity is a hostile monster.
         // -->
-        if (attribute.startsWith("is_monster")) {
-            return new ElementTag(getBukkitEntity() instanceof Monster)
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("is_monster", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(getBukkitEntity() instanceof Monster)
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.is_mob>
@@ -2388,10 +2613,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether the entity is a mob (Not a player or NPC).
         // -->
-        if (attribute.startsWith("is_mob")) {
-            return new ElementTag(!isPlayer() && !isNPC() && isLivingEntity())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("is_mob", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(!isPlayer() && !isNPC() && isLivingEntity())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.is_npc>
@@ -2400,10 +2628,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether the entity is a Citizens NPC.
         // -->
-        if (attribute.startsWith("is_npc")) {
-            return new ElementTag(isCitizensNPC())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("is_npc", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(isCitizensNPC())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.is_player>
@@ -2413,10 +2644,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns whether the entity is a player.
         // Works with offline players.
         // -->
-        if (attribute.startsWith("is_player")) {
-            return new ElementTag(isPlayer())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("is_player", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(isPlayer())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.is_projectile>
@@ -2425,10 +2659,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether the entity is a projectile.
         // -->
-        if (attribute.startsWith("is_projectile")) {
-            return new ElementTag(isProjectile())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("is_projectile", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(isProjectile())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         /////////////////////
         //   PROPERTY ATTRIBUTES
@@ -2444,10 +2681,14 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <@link mechanism EntityTag.tame>, <@link mechanism EntityTag.owner>,
         // <@link tag EntityTag.is_tamed>, and <@link tag EntityTag.owner>
         // -->
-        if (attribute.startsWith("tameable") || attribute.startsWith("is_tameable")) {
-            return new ElementTag(EntityTame.describes(this))
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("tameable", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(EntityTame.describes(object))
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
+        registerSpawnedOnlyTag("is_tameable", tagProcessor.registeredObjectTags.get("tameable"));
 
         // <--[tag]
         // @attribute <EntityTag.ageable>
@@ -2460,10 +2701,14 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <@link tag EntityTag.is_baby>, <@link tag EntityTag.age>,
         // and <@link tag EntityTag.is_age_locked>
         // -->
-        if (attribute.startsWith("ageable") || attribute.startsWith("is_ageable")) {
-            return new ElementTag(EntityAge.describes(this))
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("ageable", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(EntityAge.describes(object))
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
+        registerSpawnedOnlyTag("is_ageable", tagProcessor.registeredObjectTags.get("ageable"));
 
         // <--[tag]
         // @attribute <EntityTag.colorable>
@@ -2474,10 +2719,14 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // If this returns true, it will enable access to:
         // <@link mechanism EntityTag.color> and <@link tag EntityTag.color>
         // -->
-        if (attribute.startsWith("colorable") || attribute.startsWith("is_colorable")) {
-            return new ElementTag(EntityColor.describes(this))
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("colorable", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ElementTag(EntityColor.describes(object))
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
+        registerSpawnedOnlyTag("is_colorable", tagProcessor.registeredObjectTags.get("colorable"));
 
         // <--[tag]
         // @attribute <EntityTag.experience>
@@ -2486,10 +2735,16 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the experience value of this experience orb entity.
         // -->
-        if (attribute.startsWith("experience") && getBukkitEntity() instanceof ExperienceOrb) {
-            return new ElementTag(((ExperienceOrb) getBukkitEntity()).getExperience())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("experience", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (!(getBukkitEntity() instanceof ExperienceOrb)) {
+                    return null;
+                }
+                return new ElementTag(((ExperienceOrb) getBukkitEntity()).getExperience())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.fuse_ticks>
@@ -2498,10 +2753,16 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the number of ticks until the explosion of the primed TNT.
         // -->
-        if (attribute.startsWith("fuse_ticks") && getBukkitEntity() instanceof TNTPrimed) {
-            return new ElementTag(((TNTPrimed) getBukkitEntity()).getFuseTicks())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("fuse_ticks", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (!(getBukkitEntity() instanceof TNTPrimed)) {
+                    return null;
+                }
+                return new ElementTag(((TNTPrimed) getBukkitEntity()).getFuseTicks())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.dragon_phase>
@@ -2511,10 +2772,16 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns the phase an EnderDragon is currently in.
         // Valid phases: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EnderDragon.Phase.html>
         // -->
-        if (attribute.startsWith("dragon_phase") && getBukkitEntity() instanceof EnderDragon) {
-            return new ElementTag(((EnderDragon) getLivingEntity()).getPhase().name())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("dragon_phase", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (!(getBukkitEntity() instanceof EnderDragon)) {
+                    return null;
+                }
+                return new ElementTag(((EnderDragon) getLivingEntity()).getPhase().name())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.describe>
@@ -2523,19 +2790,43 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the entity's full description, including all properties.
         // -->
-        if (attribute.startsWith("describe")) {
-            String escript = getEntityScript();
-            return new ElementTag("e@" + (escript != null && escript.length() > 0 ? escript : getEntityType().getLowercaseName())
-                    + PropertyParser.getPropertiesString(this))
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerSpawnedOnlyTag("describe", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                String escript = getEntityScript();
+                return new ElementTag("e@" + (escript != null && escript.length() > 0 ? escript : getEntityType().getLowercaseName())
+                        + PropertyParser.getPropertiesString((EntityTag) object))
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
+    }
 
-        String returned = CoreUtilities.autoPropertyTag(this, attribute);
-        if (returned != null) {
-            return returned;
-        }
+    public static ObjectTagProcessor tagProcessor = new ObjectTagProcessor();
 
-        return new ElementTag(identify()).getAttribute(attribute);
+    public static void registerSpawnedOnlyTag(String name, TagRunnable.ObjectForm runnable) {
+        TagRunnable.ObjectForm newRunnable = new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                if (!((EntityTag) object).isSpawned()) {
+                    if (!attribute.hasAlternative()) {
+                        com.denizenscript.denizen.utilities.debugging.Debug.echoError("Entity is not spawned, but tag '" + attribute.getAttributeWithoutContext(1) + "' requires the entity be spawned, for entity: " + object.debuggable());
+                    }
+                    return null;
+                }
+                return runnable.run(attribute, object);
+            }
+        };
+        newRunnable.name = runnable.name;
+        registerTag(name, newRunnable);
+    }
+
+    public static void registerTag(String name, TagRunnable.ObjectForm runnable) {
+        tagProcessor.registerTag(name, runnable);
+    }
+
+    @Override
+    public ObjectTag getObjectAttribute(Attribute attribute) {
+        return tagProcessor.getObjectAttribute(this, attribute);
     }
 
     private ArrayList<Mechanism> mechanisms = new ArrayList<>();
