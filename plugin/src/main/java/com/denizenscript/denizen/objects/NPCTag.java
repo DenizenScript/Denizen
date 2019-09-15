@@ -446,12 +446,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         return getId();
     }
 
-    @Override
-    public String getAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // Defined in EntityTag
         registerTag("is_npc", new TagRunnable.ObjectForm() {

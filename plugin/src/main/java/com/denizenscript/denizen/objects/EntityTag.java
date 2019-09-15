@@ -1328,8 +1328,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         return false;
     }
 
-    @Override
-    public String getAttribute(Attribute attribute) {
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <EntityTag.type>
@@ -1805,61 +1804,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
-        // @attribute <EntityTag.location.cursor_on[<range>]>
-        // @returns LocationTag
-        // @group location
-        // @description
-        // Returns the location of the block the entity is looking at.
-        // Optionally, specify a maximum range to find the location from.
-        // -->
-        // <--[tag]
-        // @attribute <EntityTag.location.cursor_on[<range>].ignore[<material>|...]>
-        // @returns LocationTag
-        // @group location
-        // @description
-        // Returns the location of the block the entity is looking at, ignoring
-        // the specified materials along the way. Note that air is always an
-        // ignored material.
-        // Optionally, specify a maximum range to find the location from.
-        // -->
-        registerSpawnedOnlyTag("location.cursor_on", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                int range = attribute.getIntContext(2);
-                if (range < 1) {
-                    range = 50;
-                }
-                Set<Material> set = new HashSet<>();
-                set.add(Material.AIR);
-                attribute = attribute.fulfill(2);
-                if (attribute.startsWith("ignore") && attribute.hasContext(1)) {
-                    List<MaterialTag> ignoreList = ListTag.valueOf(attribute.getContext(1)).filter(MaterialTag.class, attribute.context);
-                    for (MaterialTag material : ignoreList) {
-                        set.add(material.getMaterial());
-                    }
-                    attribute = attribute.fulfill(1);
-                }
-                return new LocationTag(getTargetBlockSafe(set, range)).getObjectAttribute(attribute);
-            }
-        });
-
-        // <--[tag]
-        // @attribute <EntityTag.location.standing_on>
-        // @returns LocationTag
-        // @group location
-        // @description
-        // Returns the location of what the entity is standing on.
-        // Works with offline players.
-        // -->
-        registerSpawnedOnlyTag("location.standing_on", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new LocationTag(entity.getLocation().clone().add(0, -0.5f, 0))
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-        });
-
-        // <--[tag]
         // @attribute <EntityTag.location>
         // @returns LocationTag
         // @group location
@@ -1870,7 +1814,54 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         registerSpawnedOnlyTag("location", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new LocationTag(entity.getLocation())
+                // <--[tag]
+                // @attribute <EntityTag.location.cursor_on[<range>]>
+                // @returns LocationTag
+                // @group location
+                // @description
+                // Returns the location of the block the entity is looking at.
+                // Optionally, specify a maximum range to find the location from.
+                // -->
+                if (attribute.getAttributeWithoutContext(2).equals("cursor_on")) {
+                    int range = attribute.getIntContext(2);
+                    if (range < 1) {
+                        range = 50;
+                    }
+                    Set<Material> set = new HashSet<>();
+                    set.add(Material.AIR);
+                    attribute = attribute.fulfill(2);
+                    // <--[tag]
+                    // @attribute <EntityTag.location.cursor_on[<range>].ignore[<material>|...]>
+                    // @returns LocationTag
+                    // @group location
+                    // @description
+                    // Returns the location of the block the entity is looking at, ignoring
+                    // the specified materials along the way. Note that air is always an
+                    // ignored material.
+                    // Optionally, specify a maximum range to find the location from.
+                    // -->
+                    if (attribute.startsWith("ignore") && attribute.hasContext(1)) {
+                        List<MaterialTag> ignoreList = ListTag.valueOf(attribute.getContext(1)).filter(MaterialTag.class, attribute.context);
+                        for (MaterialTag material : ignoreList) {
+                            set.add(material.getMaterial());
+                        }
+                        attribute = attribute.fulfill(1);
+                    }
+                    return new LocationTag(((EntityTag) object).getTargetBlockSafe(set, range)).getObjectAttribute(attribute);
+                }
+                // <--[tag]
+                // @attribute <EntityTag.location.standing_on>
+                // @returns LocationTag
+                // @group location
+                // @description
+                // Returns the location of what the entity is standing on.
+                // Works with offline players.
+                // -->
+                if (attribute.getAttributeWithoutContext(2).equals("standing_on")) {
+                    return new LocationTag(((EntityTag) object).entity.getLocation().clone().add(0, -0.5f, 0))
+                            .getObjectAttribute(attribute.fulfill(2));
+                }
+                return new LocationTag(((EntityTag) object).entity.getLocation())
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });

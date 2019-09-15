@@ -1270,11 +1270,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
     /////////////////////
 
 
-    public String getAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <InventoryTag.empty_slots>

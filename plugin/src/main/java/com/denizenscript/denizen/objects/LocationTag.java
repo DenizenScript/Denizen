@@ -752,12 +752,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         return identify();
     }
 
-    @Override
-    public String getAttribute(Attribute attribute) {
-        if (attribute == null) {
-            return null;
-        }
-
+    public static void registerTags() {
 
         /////////////////////
         //   BLOCK ATTRIBUTES

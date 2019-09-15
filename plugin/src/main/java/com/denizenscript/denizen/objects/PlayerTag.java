@@ -636,17 +636,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         return identify();
     }
 
-
-    @Override
-    public String getAttribute(Attribute attribute) {
-        if (attribute == null) {
-            return null;
-        }
-
-
-        if (offlinePlayer == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         /////////////////////
         //   OFFLINE ATTRIBUTES
@@ -675,7 +665,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerTag("chat_history_list", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ListTag(PlayerTagBase.playerChatHistory.get(getPlayerEntity().getUniqueId()))
+                return new ListTag(PlayerTagBase.playerChatHistory.get(((PlayerTag) object).getOfflinePlayer().getUniqueId()))
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -696,10 +686,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                     x = attribute.getIntContext(1);
                 }
                 // No playerchathistory? Return null.
-                if (!PlayerTagBase.playerChatHistory.containsKey(getPlayerEntity().getUniqueId())) {
+                if (!PlayerTagBase.playerChatHistory.containsKey(((PlayerTag) object).getOfflinePlayer().getUniqueId())) {
                     return null;
                 }
-                List<String> messages = PlayerTagBase.playerChatHistory.get(getPlayerEntity().getUniqueId());
+                List<String> messages = PlayerTagBase.playerChatHistory.get(((PlayerTag) object).getOfflinePlayer().getUniqueId());
                 if (messages.size() < x || x < 1) {
                     return null;
                 }
@@ -756,7 +746,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                     return new ListTag(flag.toString(), true, flag.values())
                             .getObjectAttribute(attribute.fulfill(1));
                 }
-                return new ElementTag(identify()).getObjectAttribute(attribute);
+                return new ElementTag(((PlayerTag) object).identify()).getObjectAttribute(attribute);
             }
         });
 
@@ -832,7 +822,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 String outcome = "null";
                 if (attribute.hasContext(1)) {
                     try {
-                        outcome = DenizenAPI.getCurrentInstance().getSaves().getString("Players." + getName() + ".Scripts."
+                        outcome = DenizenAPI.getCurrentInstance().getSaves().getString("Players." + ((PlayerTag) object).getName() + ".Scripts."
                                 + ScriptTag.valueOf(attribute.getContext(1)).getName() + ".Current Step");
                     }
                     catch (Exception e) {
@@ -878,7 +868,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 // Returns the formatted form of the player's money balance in the registered Economy system.
                 // -->
                 if (attribute.startsWith("formatted")) {
-                    return new ElementTag(Depends.economy.format(Depends.economy.getBalance(getOfflinePlayer())))
+                    return new ElementTag(Depends.economy.format(Depends.economy.getBalance(((PlayerTag) object).getOfflinePlayer())))
                             .getObjectAttribute(attribute.fulfill(1));
                 }
 
@@ -894,7 +884,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                             .getObjectAttribute(attribute.fulfill(1));
                 }
 
-                return new ElementTag(Depends.economy.getBalance(getOfflinePlayer()))
+                return new ElementTag(Depends.economy.getBalance(((PlayerTag) object).getOfflinePlayer()))
                         .getObjectAttribute(attribute);
 
             }
@@ -935,7 +925,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                     range = attribute.getIntContext(2);
                 }
 
-                List<Entity> entities = getPlayerEntity().getNearbyEntities(range, range, range);
+                List<Entity> entities = ((PlayerTag) object).getPlayerEntity().getNearbyEntities(range, range, range);
                 ArrayList<LivingEntity> possibleTargets = new ArrayList<>();
                 if (!attribute.hasContext(1)) {
                     for (Entity entity : entities) {
@@ -982,11 +972,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 }
 
                 try {
-                    NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+                    NMSHandler.getChunkHelper().changeChunkServerThread(((PlayerTag) object).getWorld());
                     // Find the valid target
                     BlockIterator bi;
                     try {
-                        bi = new BlockIterator(getPlayerEntity(), range);
+                        bi = new BlockIterator(((PlayerTag) object).getPlayerEntity(), range);
                     }
                     catch (IllegalStateException e) {
                         return null;
@@ -1026,7 +1016,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                     }
                 }
                 finally {
-                    NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+                    NMSHandler.getChunkHelper().restoreServerThread(((PlayerTag) object).getWorld());
                 }
                 return null;
             }
@@ -1037,7 +1027,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 ListTag effects = new ListTag();
-                for (PotionEffect effect : getPlayerEntity().getActivePotionEffects()) {
+                for (PotionEffect effect : ((PlayerTag) object).getPlayerEntity().getActivePotionEffects()) {
                     effects.add(effect.getType().getName() + "," + effect.getAmplifier() + "," + effect.getDuration() + "t");
                 }
                 return effects.getObjectAttribute(attribute.fulfill(1));
@@ -1102,7 +1092,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerTag("save_name", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(getSaveName()).getObjectAttribute(attribute.fulfill(1));
+                return new ElementTag(((PlayerTag) object).getSaveName()).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1124,39 +1114,33 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 try {
-                    NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
-                    if (getOfflinePlayer().getBedSpawnLocation() == null) {
+                    NMSHandler.getChunkHelper().changeChunkServerThread(((PlayerTag) object).getWorld());
+                    if (((PlayerTag) object).getOfflinePlayer().getBedSpawnLocation() == null) {
                         return null;
                     }
-                    return new LocationTag(getOfflinePlayer().getBedSpawnLocation())
+                    return new LocationTag(((PlayerTag) object).getOfflinePlayer().getBedSpawnLocation())
                             .getObjectAttribute(attribute.fulfill(1));
                 }
                 finally {
-                    NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+                    NMSHandler.getChunkHelper().restoreServerThread(((PlayerTag) object).getWorld());
                 }
             }
         });
 
-        // If online, let EntityTag handle location tags since there are more options
-        // for online Players
-
         registerTag("location", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                if (!!isOnline()) {
-                    return null;
+                if (((PlayerTag) object).isOnline()) {
+                    return new EntityTag(((PlayerTag) object).getPlayerEntity()).getObjectAttribute(attribute);
                 }
-                return getLocation().getObjectAttribute(attribute.fulfill(1));
+                return ((PlayerTag) object).getLocation().getObjectAttribute(attribute.fulfill(1));
             }
         });
 
         registerTag("world", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                if (!!isOnline()) {
-                    return null;
-                }
-                return new WorldTag(getWorld()).getObjectAttribute(attribute.fulfill(1));
+                return new WorldTag(((PlayerTag) object).getWorld()).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1176,7 +1160,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 MaterialTag mat = new ElementTag(attribute.getContext(1)).asType(MaterialTag.class, attribute.context);
                 if (mat != null) {
-                    return new DurationTag((long) getPlayerEntity().getCooldown(mat.getMaterial()))
+                    return new DurationTag((long) ((PlayerTag) object).getPlayerEntity().getCooldown(mat.getMaterial()))
                             .getObjectAttribute(attribute.fulfill(1));
                 }
                 return null;
@@ -1195,10 +1179,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 attribute = attribute.fulfill(1);
                 if (attribute.startsWith("milliseconds") || attribute.startsWith("in_milliseconds")) {
-                    return new ElementTag(getOfflinePlayer().getFirstPlayed())
+                    return new ElementTag(((PlayerTag) object).getOfflinePlayer().getFirstPlayed())
                             .getObjectAttribute(attribute.fulfill(1));
                 }
-                return new DurationTag(getOfflinePlayer().getFirstPlayed() / 50)
+                return new DurationTag(((PlayerTag) object).getOfflinePlayer().getFirstPlayed() / 50)
                         .getObjectAttribute(attribute);
             }
         });
@@ -1229,7 +1213,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerTag("absorption_health", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(NMSHandler.getPlayerHelper().getAbsorption(getPlayerEntity()))
+                return new ElementTag(NMSHandler.getPlayerHelper().getAbsorption(((PlayerTag) object).getPlayerEntity()))
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -1243,7 +1227,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerTag("health.is_scaled", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(getPlayerEntity().isHealthScaled())
+                return new ElementTag(((PlayerTag) object).getPlayerEntity().isHealthScaled())
                         .getObjectAttribute(attribute.fulfill(2));
             }
         });
@@ -1257,7 +1241,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerTag("health.scale", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(getPlayerEntity().getHealthScale())
+                return new ElementTag(((PlayerTag) object).getPlayerEntity().getHealthScale())
                         .getObjectAttribute(attribute.fulfill(2));
             }
         });
@@ -1271,7 +1255,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerTag("exhaustion", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(getPlayerEntity().getExhaustion())
+                return new ElementTag(((PlayerTag) object).getPlayerEntity().getExhaustion())
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -1282,9 +1266,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 attribute = attribute.fulfill(1);
                 if (attribute.startsWith("max")) {
-                    return new DurationTag((long) getMaximumAir()).getObjectAttribute(attribute.fulfill(1));
+                    return new DurationTag((long) ((PlayerTag) object).getMaximumAir()).getObjectAttribute(attribute.fulfill(1));
                 }
-                return new DurationTag((long) getRemainingAir()).getObjectAttribute(attribute);
+                return new DurationTag((long) ((PlayerTag) object).getRemainingAir()).getObjectAttribute(attribute);
             }
         });
 
@@ -1294,20 +1278,20 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 attribute = attribute.fulfill(1);
                 if (attribute.startsWith("formatted")) {
-                    return EntityHealth.getHealthFormatted(new EntityTag(getPlayerEntity()), attribute.fulfill(1));
+                    return EntityHealth.getHealthFormatted(new EntityTag(((PlayerTag) object).getPlayerEntity()), attribute.fulfill(1));
                 }
                 if (attribute.startsWith("percentage")) {
-                    double maxHealth = getPlayerEntity().getMaxHealth();
+                    double maxHealth = ((PlayerTag) object).getPlayerEntity().getMaxHealth();
                     if (attribute.hasContext(1)) {
                         maxHealth = attribute.getIntContext(1);
                     }
-                    return new ElementTag((getPlayerEntity().getHealth() / maxHealth) * 100)
+                    return new ElementTag((((PlayerTag) object).getPlayerEntity().getHealth() / maxHealth) * 100)
                             .getObjectAttribute(attribute.fulfill(1));
                 }
                 if (attribute.startsWith("max")) {
-                    return new ElementTag(getMaxHealth()).getObjectAttribute(attribute.fulfill(1));
+                    return new ElementTag(((PlayerTag) object).getMaxHealth()).getObjectAttribute(attribute.fulfill(1));
                 }
-                return new ElementTag(getHealth()).getObjectAttribute(attribute);
+                return new ElementTag(((PlayerTag) object).getHealth()).getObjectAttribute(attribute);
             }
         });
 
@@ -1320,7 +1304,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerTag("is_banned", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(getName());
+                BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(((PlayerTag) object).getName());
                 if (ban == null) {
                     return new ElementTag(false).getObjectAttribute(attribute.fulfill(1));
                 }
@@ -1341,7 +1325,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerTag("is_online", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(isOnline()).getObjectAttribute(attribute.fulfill(1));
+                return new ElementTag(((PlayerTag) object).isOnline()).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1356,7 +1340,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerTag("is_op", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(getOfflinePlayer().isOp())
+                return new ElementTag(((PlayerTag) object).getOfflinePlayer().isOp())
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -1372,7 +1356,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerTag("is_whitelisted", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(getOfflinePlayer().isWhitelisted())
+                return new ElementTag(((PlayerTag) object).getOfflinePlayer().isWhitelisted())
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -1389,18 +1373,18 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 attribute = attribute.fulfill(1);
                 if (attribute.startsWith("milliseconds") || attribute.startsWith("in_milliseconds")) {
-                    if (isOnline()) {
+                    if (((PlayerTag) object).isOnline()) {
                         return new ElementTag(System.currentTimeMillis())
                                 .getObjectAttribute(attribute.fulfill(1));
                     }
-                    return new ElementTag(getOfflinePlayer().getLastPlayed())
+                    return new ElementTag(((PlayerTag) object).getOfflinePlayer().getLastPlayed())
                             .getObjectAttribute(attribute.fulfill(1));
                 }
-                if (isOnline()) {
+                if (((PlayerTag) object).isOnline()) {
                     return new DurationTag(System.currentTimeMillis() / 50)
                             .getObjectAttribute(attribute);
                 }
-                return new DurationTag(getOfflinePlayer().getLastPlayed() / 50)
+                return new DurationTag(((PlayerTag) object).getOfflinePlayer().getLastPlayed() / 50)
                         .getObjectAttribute(attribute);
             }
         });
@@ -1424,7 +1408,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 ListTag list = new ListTag();
                 // TODO: optionally specify world
                 for (String group : Depends.permissions.getGroups()) {
-                    if (Depends.permissions.playerInGroup(null, offlinePlayer, group)) {
+                    if (Depends.permissions.playerInGroup(null, ((PlayerTag) object).offlinePlayer, group)) {
                         list.add(group);
                     }
                 }
@@ -1436,7 +1420,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 attribute.fulfill(1);
-                BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(getName());
+                BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(((PlayerTag) object).getName());
                 if (ban == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
                     return null;
                 }
@@ -1522,7 +1506,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
 
                 // Non-world specific permission
                 if (attribute.getAttribute(2).startsWith("global")) {
-                    return new ElementTag(Depends.permissions.playerInGroup((World) null, getName(), group)) // TODO: Vault UUID support?
+                    return new ElementTag(Depends.permissions.playerInGroup((World) null, ((PlayerTag) object).getName(), group)) // TODO: Vault UUID support?
                             .getObjectAttribute(attribute.fulfill(2));
                 }
 
@@ -1537,13 +1521,13 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
 
                 // Permission in certain world
                 else if (attribute.getAttribute(2).startsWith("world")) {
-                    return new ElementTag(Depends.permissions.playerInGroup(attribute.getContext(2), getName(), group)) // TODO: Vault UUID support?
+                    return new ElementTag(Depends.permissions.playerInGroup(attribute.getContext(2), ((PlayerTag) object).getName(), group)) // TODO: Vault UUID support?
                             .getObjectAttribute(attribute.fulfill(2));
                 }
 
                 // Permission in current world
-                else if (isOnline()) {
-                    return new ElementTag(Depends.permissions.playerInGroup(getPlayerEntity(), group))
+                else if (((PlayerTag) object).isOnline()) {
+                    return new ElementTag(Depends.permissions.playerInGroup(((PlayerTag) object).getPlayerEntity(), group))
                             .getObjectAttribute(attribute.fulfill(1));
                 }
                 return null;
@@ -1580,7 +1564,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                         return null;
                     }
 
-                    return new ElementTag(Depends.permissions.has((World) null, getName(), permission)) // TODO: Vault UUID support?
+                    return new ElementTag(Depends.permissions.has((World) null, ((PlayerTag) object).getName(), permission)) // TODO: Vault UUID support?
                             .getObjectAttribute(attribute.fulfill(2));
                 }
 
@@ -1603,13 +1587,13 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                         return null;
                     }
 
-                    return new ElementTag(Depends.permissions.has(attribute.getContext(2), getName(), permission)) // TODO: Vault UUID support?
+                    return new ElementTag(Depends.permissions.has(attribute.getContext(2), ((PlayerTag) object).getName(), permission)) // TODO: Vault UUID support?
                             .getObjectAttribute(attribute.fulfill(2));
                 }
 
                 // Permission in current world
-                else if (isOnline()) {
-                    return new ElementTag(getPlayerEntity().hasPermission(permission))
+                else if (((PlayerTag) object).isOnline()) {
+                    return new ElementTag(((PlayerTag) object).getPlayerEntity().hasPermission(permission))
                             .getObjectAttribute(attribute.fulfill(1));
                 }
                 return null;
@@ -1627,7 +1611,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerTag("uuid", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(getOfflinePlayer().getUniqueId().toString()).getObjectAttribute(attribute.fulfill(1));
+                return new ElementTag(((PlayerTag) object).getOfflinePlayer().getUniqueId().toString()).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1648,8 +1632,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 // @description
                 // Returns the name of the player as shown in the player list.
                 // -->
-                if (attribute.startsWith("list") && isOnline()) {
-                    return new ElementTag(getPlayerEntity().getPlayerListName())
+                if (attribute.startsWith("list") && ((PlayerTag) object).isOnline()) {
+                    return new ElementTag(((PlayerTag) object).getPlayerEntity().getPlayerListName())
                             .getObjectAttribute(attribute.fulfill(1));
                 }
                 // <--[tag]
@@ -1659,11 +1643,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 // Returns the display name of the player, which may contain
                 // prefixes and suffixes, colors, etc.
                 // -->
-                if (attribute.startsWith("display") && isOnline()) {
-                    return new ElementTag(getPlayerEntity().getDisplayName())
+                if (attribute.startsWith("display") && ((PlayerTag) object).isOnline()) {
+                    return new ElementTag(((PlayerTag) object).getPlayerEntity().getDisplayName())
                             .getObjectAttribute(attribute.fulfill(1));
                 }
-                return new ElementTag(getName()).getObjectAttribute(attribute);
+                return new ElementTag(((PlayerTag) object).getName()).getObjectAttribute(attribute);
             }
         });
 
@@ -1681,7 +1665,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerTag("inventory", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return getInventory().getObjectAttribute(attribute.fulfill(1));
+                return ((PlayerTag) object).getInventory().getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1695,7 +1679,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerTag("enderchest", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return getEnderChest().getObjectAttribute(attribute.fulfill(1));
+                return ((PlayerTag) object).getEnderChest().getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1714,7 +1698,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("open_inventory", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return InventoryTag.mirrorBukkitInventory(getPlayerEntity().getOpenInventory().getTopInventory())
+                return InventoryTag.mirrorBukkitInventory(((PlayerTag) object).getPlayerEntity().getOpenInventory().getTopInventory())
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -1728,8 +1712,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("selected_trade_index", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                if (getPlayerEntity().getOpenInventory().getTopInventory() instanceof MerchantInventory) {
-                    return new ElementTag(((MerchantInventory) getPlayerEntity().getOpenInventory().getTopInventory())
+                if (((PlayerTag) object).getPlayerEntity().getOpenInventory().getTopInventory() instanceof MerchantInventory) {
+                    return new ElementTag(((MerchantInventory) ((PlayerTag) object).getPlayerEntity().getOpenInventory().getTopInventory())
                             .getSelectedRecipeIndex() + 1).getObjectAttribute(attribute.fulfill(1));
                 }
                 return null;
@@ -1766,7 +1750,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("item_on_cursor", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ItemTag(getPlayerEntity().getItemOnCursor())
+                return new ItemTag(((PlayerTag) object).getPlayerEntity().getItemOnCursor())
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -1780,7 +1764,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("item_in_hand.slot", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(getPlayerEntity().getInventory().getHeldItemSlot() + 1)
+                return new ElementTag(((PlayerTag) object).getPlayerEntity().getInventory().getHeldItemSlot() + 1)
                         .getObjectAttribute(attribute.fulfill(2));
             }
         });
@@ -1851,7 +1835,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("skin_blob", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(NMSHandler.getInstance().getProfileEditor().getPlayerSkinBlob(getPlayerEntity()))
+                return new ElementTag(NMSHandler.getInstance().getProfileEditor().getPlayerSkinBlob(((PlayerTag) object).getPlayerEntity()))
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -1869,7 +1853,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 // -->
                 if (attribute.startsWith("duration")) {
                     return new DurationTag((long) NMSHandler.getPlayerHelper()
-                            .ticksPassedDuringCooldown(getPlayerEntity())).getObjectAttribute(attribute.fulfill(1));
+                            .ticksPassedDuringCooldown(((PlayerTag) object).getPlayerEntity())).getObjectAttribute(attribute.fulfill(1));
                 }
 
 
@@ -1884,7 +1868,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 // -->
                 else if (attribute.startsWith("max_duration")) {
                     return new DurationTag((long) NMSHandler.getPlayerHelper()
-                            .getMaxAttackCooldownTicks(getPlayerEntity())).getObjectAttribute(attribute.fulfill(1));
+                            .getMaxAttackCooldownTicks(((PlayerTag) object).getPlayerEntity())).getObjectAttribute(attribute.fulfill(1));
                 }
 
 
@@ -1898,7 +1882,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 // -->
                 else if (attribute.startsWith("percent")) {
                     return new ElementTag(NMSHandler.getPlayerHelper()
-                            .getAttackCooldownPercent(getPlayerEntity()) * 100).getObjectAttribute(attribute.fulfill(1));
+                            .getAttackCooldownPercent(((PlayerTag) object).getPlayerEntity()) * 100).getObjectAttribute(attribute.fulfill(1));
                 }
 
                 Debug.echoError("The tag 'player.attack_cooldown...' must be followed by a sub-tag.");
@@ -1922,8 +1906,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("selected_npc", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                if (getPlayerEntity().hasMetadata("selected")) {
-                    return getSelectedNPC().getObjectAttribute(attribute.fulfill(1));
+                if (((PlayerTag) object).getPlayerEntity().hasMetadata("selected")) {
+                    return ((PlayerTag) object).getSelectedNPC().getObjectAttribute(attribute.fulfill(1));
                 }
                 return null;
             }
@@ -1944,7 +1928,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("entity", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new EntityTag(getPlayerEntity())
+                return new EntityTag(((PlayerTag) object).getPlayerEntity())
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -1971,10 +1955,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 // Returns the player's IP address.
                 // -->
                 if (attribute.startsWith("address_only")) {
-                    return new ElementTag(getPlayerEntity().getAddress().toString())
+                    return new ElementTag(((PlayerTag) object).getPlayerEntity().getAddress().toString())
                             .getObjectAttribute(attribute.fulfill(1));
                 }
-                String host = getPlayerEntity().getAddress().getHostName();
+                String host = ((PlayerTag) object).getPlayerEntity().getAddress().getHostName();
                 // <--[tag]
                 // @attribute <PlayerTag.ip.address>
                 // @returns ElementTag
@@ -1982,7 +1966,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 // Returns the player's IP address.
                 // -->
                 if (attribute.startsWith("address")) {
-                    return new ElementTag(getPlayerEntity().getAddress().toString())
+                    return new ElementTag(((PlayerTag) object).getPlayerEntity().getAddress().toString())
                             .getObjectAttribute(attribute.fulfill(1));
                 }
                 return new ElementTag(host)
@@ -2000,7 +1984,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("nameplate", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(NMSHandler.getInstance().getProfileEditor().getPlayerName(getPlayerEntity()))
+                return new ElementTag(NMSHandler.getInstance().getProfileEditor().getPlayerName(((PlayerTag) object).getPlayerEntity()))
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -2018,7 +2002,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("compass_target", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                Location target = getPlayerEntity().getCompassTarget();
+                Location target = ((PlayerTag) object).getPlayerEntity().getCompassTarget();
                 if (target != null) {
                     return new LocationTag(target).getObjectAttribute(attribute.fulfill(1));
                 }
@@ -2042,7 +2026,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 if (chunk == null) {
                     return null;
                 }
-                return new ElementTag(chunk.isLoadedSafe() && hasChunkLoaded(chunk.getChunkForTag(attribute))).getObjectAttribute(attribute.fulfill(1));
+                return new ElementTag(chunk.isLoadedSafe() && ((PlayerTag) object).hasChunkLoaded(chunk.getChunkForTag(attribute))).getObjectAttribute(attribute.fulfill(1));
             }
         });
 
@@ -2061,7 +2045,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("can_fly", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(getPlayerEntity().getAllowFlight())
+                return new ElementTag(((PlayerTag) object).getPlayerEntity().getAllowFlight())
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -2076,7 +2060,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("fly_speed", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(getPlayerEntity().getFlySpeed())
+                return new ElementTag(((PlayerTag) object).getPlayerEntity().getFlySpeed())
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -2091,11 +2075,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("food_level.formatted", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                double maxHunger = getPlayerEntity().getMaxHealth();
+                double maxHunger = ((PlayerTag) object).getPlayerEntity().getMaxHealth();
                 if (attribute.hasContext(2)) {
                     maxHunger = attribute.getIntContext(2);
                 }
-                int foodLevel = getFoodLevel();
+                int foodLevel = ((PlayerTag) object).getFoodLevel();
                 if (foodLevel / maxHunger < .10) {
                     return new ElementTag("starving").getObjectAttribute(attribute.fulfill(2));
                 }
@@ -2123,7 +2107,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("saturation", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(getPlayerEntity().getSaturation())
+                return new ElementTag(((PlayerTag) object).getPlayerEntity().getSaturation())
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -2137,7 +2121,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("food_level", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(getFoodLevel())
+                return new ElementTag(((PlayerTag) object).getFoodLevel())
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -2159,10 +2143,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 // Returns the gamemode ID of the player. 0 = survival, 1 = creative, 2 = adventure, 3 = spectator
                 // -->
                 if (attribute.startsWith("id")) {
-                    return new ElementTag(getPlayerEntity().getGameMode().getValue())
+                    return new ElementTag(((PlayerTag) object).getPlayerEntity().getGameMode().getValue())
                             .getObjectAttribute(attribute.fulfill(1));
                 }
-                return new ElementTag(getPlayerEntity().getGameMode().name())
+                return new ElementTag(((PlayerTag) object).getPlayerEntity().getGameMode().name())
                         .getObjectAttribute(attribute);
             }
         });
@@ -2176,7 +2160,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("is_blocking", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(getPlayerEntity().isBlocking())
+                return new ElementTag(((PlayerTag) object).getPlayerEntity().isBlocking())
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -2190,7 +2174,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("ping", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(NMSHandler.getPlayerHelper().getPing(getPlayerEntity()))
+                return new ElementTag(NMSHandler.getPlayerHelper().getPing(((PlayerTag) object).getPlayerEntity()))
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -2204,7 +2188,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("is_flying", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(getPlayerEntity().isFlying())
+                return new ElementTag(((PlayerTag) object).getPlayerEntity().isFlying())
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -2218,7 +2202,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("is_sleeping", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(getPlayerEntity().isSleeping())
+                return new ElementTag(((PlayerTag) object).getPlayerEntity().isSleeping())
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -2232,7 +2216,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("is_sneaking", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(getPlayerEntity().isSneaking())
+                return new ElementTag(((PlayerTag) object).getPlayerEntity().isSneaking())
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -2246,7 +2230,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("is_sprinting", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(getPlayerEntity().isSprinting())
+                return new ElementTag(((PlayerTag) object).getPlayerEntity().isSprinting())
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -2270,7 +2254,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                     }
                     return null;
                 }
-                AdvancementProgress progress = getPlayerEntity().getAdvancementProgress(adv);
+                AdvancementProgress progress = ((PlayerTag) object).getPlayerEntity().getAdvancementProgress(adv);
                 return new ElementTag(progress.isDone()).getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -2286,7 +2270,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 ListTag list = new ListTag();
                 Bukkit.advancementIterator().forEachRemaining((adv) -> {
-                    if (getPlayerEntity().getAdvancementProgress(adv).isDone()) {
+                    if (((PlayerTag) object).getPlayerEntity().getAdvancementProgress(adv).isDone()) {
                         list.add(adv.getKey().toString());
                     }
                 });
@@ -2324,11 +2308,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                     ObjectTag obj = ObjectFetcher.pickObjectFor(attribute.getContext(2), attribute.context);
                     try {
                         if (obj instanceof MaterialTag) {
-                            return new ElementTag(getPlayerEntity().getStatistic(statistic, ((MaterialTag) obj).getMaterial()))
+                            return new ElementTag(((PlayerTag) object).getPlayerEntity().getStatistic(statistic, ((MaterialTag) obj).getMaterial()))
                                     .getObjectAttribute(attribute.fulfill(2));
                         }
                         else if (obj instanceof EntityTag) {
-                            return new ElementTag(getPlayerEntity().getStatistic(statistic, ((EntityTag) obj).getBukkitEntityType()))
+                            return new ElementTag(((PlayerTag) object).getPlayerEntity().getStatistic(statistic, ((EntityTag) obj).getBukkitEntityType()))
                                     .getObjectAttribute(attribute.fulfill(2));
                         }
                         else {
@@ -2341,7 +2325,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                     }
                 }
                 try {
-                    return new ElementTag(getPlayerEntity().getStatistic(statistic)).getObjectAttribute(attribute.fulfill(1));
+                    return new ElementTag(((PlayerTag) object).getPlayerEntity().getStatistic(statistic)).getObjectAttribute(attribute.fulfill(1));
                 }
                 catch (Exception e) {
                     Debug.echoError("Invalid statistic: " + statistic + " for this player!");
@@ -2359,7 +2343,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("time_asleep", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new DurationTag(getPlayerEntity().getSleepTicks() / 20)
+                return new DurationTag(((PlayerTag) object).getPlayerEntity().getSleepTicks() / 20)
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -2375,7 +2359,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("time", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(getPlayerEntity().getPlayerTime())
+                return new ElementTag(((PlayerTag) object).getPlayerEntity().getPlayerTime())
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -2389,7 +2373,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("walk_speed", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(getPlayerEntity().getWalkSpeed())
+                return new ElementTag(((PlayerTag) object).getPlayerEntity().getWalkSpeed())
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -2407,8 +2391,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("weather", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                if (getPlayerEntity().getPlayerWeather() != null) {
-                    return new ElementTag(getPlayerEntity().getPlayerWeather().name())
+                if (((PlayerTag) object).getPlayerEntity().getPlayerWeather() != null) {
+                    return new ElementTag(((PlayerTag) object).getPlayerEntity().getPlayerWeather().name())
                             .getObjectAttribute(attribute.fulfill(1));
                 }
                 else {
@@ -2426,7 +2410,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("xp.level", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(getPlayerEntity().getLevel())
+                return new ElementTag(((PlayerTag) object).getPlayerEntity().getLevel())
                         .getObjectAttribute(attribute.fulfill(2));
             }
         });
@@ -2440,7 +2424,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("xp.to_next_level", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(getPlayerEntity().getExpToLevel())
+                return new ElementTag(((PlayerTag) object).getPlayerEntity().getExpToLevel())
                         .getObjectAttribute(attribute.fulfill(2));
             }
         });
@@ -2454,7 +2438,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("xp.total", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(getPlayerEntity().getTotalExperience())
+                return new ElementTag(((PlayerTag) object).getPlayerEntity().getTotalExperience())
                         .getObjectAttribute(attribute.fulfill(2));
             }
         });
@@ -2468,7 +2452,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("xp", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(getPlayerEntity().getExp() * 100)
+                return new ElementTag(((PlayerTag) object).getPlayerEntity().getExp() * 100)
                         .getObjectAttribute(attribute.fulfill(1));
             }
         });
@@ -2492,7 +2476,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                     }
                     return null;
                 }
-                String prefix = Depends.chat.getPlayerPrefix(getWorld().getName(), getOfflinePlayer());
+                String prefix = Depends.chat.getPlayerPrefix(((PlayerTag) object).getWorld().getName(), ((PlayerTag) object).getOfflinePlayer());
                 if (prefix == null) {
                     return null;
                 }
@@ -2519,7 +2503,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                     }
                     return null;
                 }
-                String suffix = Depends.chat.getPlayerSuffix(getWorld().getName(), getOfflinePlayer());
+                String suffix = Depends.chat.getPlayerSuffix(((PlayerTag) object).getWorld().getName(), ((PlayerTag) object).getOfflinePlayer());
                 if (suffix == null) {
                     return null;
                 }
