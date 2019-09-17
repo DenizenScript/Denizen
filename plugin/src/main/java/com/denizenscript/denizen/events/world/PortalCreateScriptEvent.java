@@ -50,7 +50,7 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!runGenericCheck(path.eventArgLowerAt(2).equals("because") ? path.eventArgLowerAt(3) : path.eventArgLowerAt(5), reason.asString())) {
+      if (path.eventArgLowerAt(2).equals("because") && !runGenericCheck(path.eventArgLowerAt(3), reason.asString())) {
             return false;
         }
         if (!runInCheck(path, event.getBlocks().get(0).getLocation())) {
