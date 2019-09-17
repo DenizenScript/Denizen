@@ -2304,84 +2304,60 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             }
         });
 
-        // <--[tag]
-        // @attribute <EntityTag.last_damage.amount>
-        // @returns ElementTag(Decimal)
-        // @group attributes
-        // @description
-        // Returns the amount of the last damage taken by the entity.
-        // -->
-        registerSpawnedOnlyTag("last_damage.amount", new TagRunnable.ObjectForm() {
+        registerSpawnedOnlyTag("last_damage", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((EntityTag) object).getLivingEntity().getLastDamage())
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-        });
-
-        // <--[tag]
-        // @attribute <EntityTag.last_damage.cause>
-        // @returns ElementTag
-        // @group attributes
-        // @description
-        // Returns the cause of the last damage taken by the entity.
-        // -->
-        registerSpawnedOnlyTag("last_damage.cause", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                if (((EntityTag) object).entity.getLastDamageCause() == null) {
-                    return null;
+                attribute = attribute.fulfill(1);
+                // <--[tag]
+                // @attribute <EntityTag.last_damage.amount>
+                // @returns ElementTag(Decimal)
+                // @group attributes
+                // @description
+                // Returns the amount of the last damage taken by the entity.
+                // -->
+                if (attribute.startsWith("amount")) {
+                    return new ElementTag(((EntityTag) object).getLivingEntity().getLastDamage())
+                            .getObjectAttribute(attribute.fulfill(1));
                 }
-                return new ElementTag(((EntityTag) object).entity.getLastDamageCause().getCause().name())
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-        });
-
-        // <--[tag]
-        // @attribute <EntityTag.last_damage.duration>
-        // @returns DurationTag
-        // @mechanism EntityTag.no_damage_duration
-        // @group attributes
-        // @description
-        // Returns the duration of the last damage taken by the entity.
-        // -->
-        registerSpawnedOnlyTag("last_damage.duration", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new DurationTag((long) ((EntityTag) object).getLivingEntity().getNoDamageTicks())
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-        });
-
-        // <--[tag]
-        // @attribute <EntityTag.last_damage.max_duration>
-        // @returns DurationTag
-        // @mechanism EntityTag.max_no_damage_duration
-        // @group attributes
-        // @description
-        // Returns the maximum duration of the last damage taken by the entity.
-        // -->
-        registerSpawnedOnlyTag("last_damage.max_duration", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new DurationTag((long) ((EntityTag) object).getLivingEntity().getMaximumNoDamageTicks())
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-        });
-
-        // <--[tag]
-        // @attribute <EntityTag.oxygen.max>
-        // @returns DurationTag
-        // @group attributes
-        // @description
-        // Returns the maximum duration of oxygen the entity can have.
-        // Works with offline players.
-        // -->
-        registerSpawnedOnlyTag("oxygen.max", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new DurationTag((long) ((EntityTag) object).getLivingEntity().getMaximumAir())
-                        .getObjectAttribute(attribute.fulfill(1));
+                // <--[tag]
+                // @attribute <EntityTag.last_damage.cause>
+                // @returns ElementTag
+                // @group attributes
+                // @description
+                // Returns the cause of the last damage taken by the entity.
+                // -->
+                if (attribute.startsWith("cause")) {
+                    if (((EntityTag) object).entity.getLastDamageCause() == null) {
+                        return null;
+                    }
+                    return new ElementTag(((EntityTag) object).entity.getLastDamageCause().getCause().name())
+                            .getObjectAttribute(attribute.fulfill(1));
+                }
+                // <--[tag]
+                // @attribute <EntityTag.last_damage.duration>
+                // @returns DurationTag
+                // @mechanism EntityTag.no_damage_duration
+                // @group attributes
+                // @description
+                // Returns the duration of the last damage taken by the entity.
+                // -->
+                if (attribute.startsWith("duration")) {
+                    return new DurationTag((long) ((EntityTag) object).getLivingEntity().getNoDamageTicks())
+                            .getObjectAttribute(attribute.fulfill(1));
+                }
+                // <--[tag]
+                // @attribute <EntityTag.last_damage.max_duration>
+                // @returns DurationTag
+                // @mechanism EntityTag.max_no_damage_duration
+                // @group attributes
+                // @description
+                // Returns the maximum duration of the last damage taken by the entity.
+                // -->
+                if (attribute.startsWith("max_duration")) {
+                    return new DurationTag((long) ((EntityTag) object).getLivingEntity().getMaximumNoDamageTicks())
+                            .getObjectAttribute(attribute.fulfill(1));
+                }
+                return null;
             }
         });
 
@@ -2396,8 +2372,21 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         registerSpawnedOnlyTag("oxygen", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
+                attribute = attribute.fulfill(1);
+                // <--[tag]
+                // @attribute <EntityTag.oxygen.max>
+                // @returns DurationTag
+                // @group attributes
+                // @description
+                // Returns the maximum duration of oxygen the entity can have.
+                // Works with offline players.
+                // -->
+                if (attribute.startsWith("max")) {
+                    return new DurationTag((long) ((EntityTag) object).getLivingEntity().getMaximumAir())
+                            .getObjectAttribute(attribute.fulfill(1));
+                }
                 return new DurationTag((long) ((EntityTag) object).getLivingEntity().getRemainingAir())
-                        .getObjectAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute);
             }
         });
 

@@ -1747,73 +1747,75 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             }
         });
 
-        // <--[tag]
-        // @attribute <PlayerTag.item_in_hand.slot>
-        // @returns ElementTag(Number)
-        // @description
-        // Returns the slot location of the player's selected item.
-        // -->
-        registerOnlineOnlyTag("item_in_hand.slot", new TagRunnable.ObjectForm() {
+        registerOnlineOnlyTag("item_in_hand", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((PlayerTag) object).getPlayerEntity().getInventory().getHeldItemSlot() + 1)
-                        .getObjectAttribute(attribute.fulfill(2));
+                attribute = attribute.fulfill(1);
+
+                // <--[tag]
+                // @attribute <PlayerTag.item_in_hand.slot>
+                // @returns ElementTag(Number)
+                // @description
+                // Returns the slot location of the player's selected item.
+                // -->
+                if (attribute.startsWith("slot")) {
+                    return new ElementTag(((PlayerTag) object).getPlayerEntity().getInventory().getHeldItemSlot() + 1)
+                            .getObjectAttribute(attribute.fulfill(1));
+                }
+                return new ItemTag(((PlayerTag) object).getPlayerEntity().getEquipment().getItemInMainHand())
+                        .getObjectAttribute(attribute);
             }
         });
 
-        // <--[tag]
-        // @attribute <PlayerTag.sidebar.lines>
-        // @returns ListTag
-        // @description
-        // Returns the current lines set on the player's Sidebar via the Sidebar command.
-        // -->
-        registerOnlineOnlyTag("sidebar.lines", new TagRunnable.ObjectForm() {
+        registerOnlineOnlyTag("sidebar", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                Sidebar sidebar = SidebarCommand.getSidebar((PlayerTag) object);
-                if (sidebar == null) {
-                    return null;
+                attribute = attribute.fulfill(1);
+                // <--[tag]
+                // @attribute <PlayerTag.sidebar.lines>
+                // @returns ListTag
+                // @description
+                // Returns the current lines set on the player's Sidebar via the Sidebar command.
+                // -->
+                if (attribute.startsWith("lines")) {
+                    Sidebar sidebar = SidebarCommand.getSidebar((PlayerTag) object);
+                    if (sidebar == null) {
+                        return null;
+                    }
+                    return new ListTag(sidebar.getLinesText()).getObjectAttribute(attribute.fulfill(1));
                 }
-                return new ListTag(sidebar.getLinesText()).getObjectAttribute(attribute.fulfill(2));
-            }
-        });
-
-        // <--[tag]
-        // @attribute <PlayerTag.sidebar.title>
-        // @returns ElementTag
-        // @description
-        // Returns the current title set on the player's Sidebar via the Sidebar command.
-        // -->
-        registerOnlineOnlyTag("sidebar.title", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                Sidebar sidebar = SidebarCommand.getSidebar((PlayerTag) object);
-                if (sidebar == null) {
-                    return null;
+                // <--[tag]
+                // @attribute <PlayerTag.sidebar.title>
+                // @returns ElementTag
+                // @description
+                // Returns the current title set on the player's Sidebar via the Sidebar command.
+                // -->
+                if (attribute.startsWith("title")) {
+                    Sidebar sidebar = SidebarCommand.getSidebar((PlayerTag) object);
+                    if (sidebar == null) {
+                        return null;
+                    }
+                    return new ElementTag(sidebar.getTitle()).getObjectAttribute(attribute.fulfill(1));
                 }
-                return new ElementTag(sidebar.getTitle()).getObjectAttribute(attribute.fulfill(2));
-            }
-        });
-
-        // <--[tag]
-        // @attribute <PlayerTag.sidebar.scores>
-        // @returns ListTag
-        // @description
-        // Returns the current scores set on the player's Sidebar via the Sidebar command,
-        // in the same order as <@link tag PlayerTag.sidebar.lines>.
-        // -->
-        registerOnlineOnlyTag("sidebar.scores", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                Sidebar sidebar = SidebarCommand.getSidebar((PlayerTag) object);
-                if (sidebar == null) {
-                    return null;
+                // <--[tag]
+                // @attribute <PlayerTag.sidebar.scores>
+                // @returns ListTag
+                // @description
+                // Returns the current scores set on the player's Sidebar via the Sidebar command,
+                // in the same order as <@link tag PlayerTag.sidebar.lines>.
+                // -->
+                if (attribute.startsWith("scores")) {
+                    Sidebar sidebar = SidebarCommand.getSidebar((PlayerTag) object);
+                    if (sidebar == null) {
+                        return null;
+                    }
+                    ListTag scores = new ListTag();
+                    for (int score : sidebar.getScores()) {
+                        scores.add(String.valueOf(score));
+                    }
+                    return scores.getObjectAttribute(attribute.fulfill(1));
                 }
-                ListTag scores = new ListTag();
-                for (int score : sidebar.getScores()) {
-                    scores.add(String.valueOf(score));
-                }
-                return scores.getObjectAttribute(attribute.fulfill(2));
+                return null;
             }
         });
 
@@ -2058,39 +2060,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
-        // @attribute <PlayerTag.food_level.formatted>
-        // @returns ElementTag
-        // @description
-        // Returns a 'formatted' value of the player's current food level.
-        // May be 'starving', 'famished', 'parched, 'hungry' or 'healthy'.
-        // -->
-        registerOnlineOnlyTag("food_level.formatted", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                double maxHunger = ((PlayerTag) object).getPlayerEntity().getMaxHealth();
-                if (attribute.hasContext(2)) {
-                    maxHunger = attribute.getIntContext(2);
-                }
-                int foodLevel = ((PlayerTag) object).getFoodLevel();
-                if (foodLevel / maxHunger < .10) {
-                    return new ElementTag("starving").getObjectAttribute(attribute.fulfill(2));
-                }
-                else if (foodLevel / maxHunger < .40) {
-                    return new ElementTag("famished").getObjectAttribute(attribute.fulfill(2));
-                }
-                else if (foodLevel / maxHunger < .75) {
-                    return new ElementTag("parched").getObjectAttribute(attribute.fulfill(2));
-                }
-                else if (foodLevel / maxHunger < 1) {
-                    return new ElementTag("hungry").getObjectAttribute(attribute.fulfill(2));
-                }
-                else {
-                    return new ElementTag("healthy").getObjectAttribute(attribute.fulfill(2));
-                }
-            }
-        });
-
-        // <--[tag]
         // @attribute <PlayerTag.saturation>
         // @returns ElementTag(Decimal)
         // @description
@@ -2113,8 +2082,38 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("food_level", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
+                attribute = attribute.fulfill(1);
+                // <--[tag]
+                // @attribute <PlayerTag.food_level.formatted[(<max>)]>
+                // @returns ElementTag
+                // @description
+                // Returns a 'formatted' value of the player's current food level.
+                // May be 'starving', 'famished', 'parched, 'hungry', or 'healthy'.
+                // -->
+                if (attribute.startsWith("formatted")) {
+                    double maxHunger = ((PlayerTag) object).getPlayerEntity().getMaxHealth();
+                    if (attribute.hasContext(1)) {
+                        maxHunger = attribute.getIntContext(1);
+                    }
+                    int foodLevel = ((PlayerTag) object).getFoodLevel();
+                    if (foodLevel / maxHunger < .10) {
+                        return new ElementTag("starving").getObjectAttribute(attribute.fulfill(1));
+                    }
+                    else if (foodLevel / maxHunger < .40) {
+                        return new ElementTag("famished").getObjectAttribute(attribute.fulfill(1));
+                    }
+                    else if (foodLevel / maxHunger < .75) {
+                        return new ElementTag("parched").getObjectAttribute(attribute.fulfill(1));
+                    }
+                    else if (foodLevel / maxHunger < 1) {
+                        return new ElementTag("hungry").getObjectAttribute(attribute.fulfill(1));
+                    }
+                    else {
+                        return new ElementTag("healthy").getObjectAttribute(attribute.fulfill(1));
+                    }
+                }
                 return new ElementTag(((PlayerTag) object).getFoodLevel())
-                        .getObjectAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute);
             }
         });
 
@@ -2394,48 +2393,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
-        // @attribute <PlayerTag.xp.level>
-        // @returns ElementTag(Number)
-        // @description
-        // Returns the number of XP levels the player has.
-        // -->
-        registerOnlineOnlyTag("xp.level", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((PlayerTag) object).getPlayerEntity().getLevel())
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-        });
-
-        // <--[tag]
-        // @attribute <PlayerTag.xp.to_next_level>
-        // @returns ElementTag(Number)
-        // @description
-        // Returns the amount of XP needed to get to the next level.
-        // -->
-        registerOnlineOnlyTag("xp.to_next_level", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((PlayerTag) object).getPlayerEntity().getExpToLevel())
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-        });
-
-        // <--[tag]
-        // @attribute <PlayerTag.xp.total>
-        // @returns ElementTag(Number)
-        // @description
-        // Returns the total amount of experience points.
-        // -->
-        registerOnlineOnlyTag("xp.total", new TagRunnable.ObjectForm() {
-            @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((PlayerTag) object).getPlayerEntity().getTotalExperience())
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-        });
-
-        // <--[tag]
         // @attribute <PlayerTag.xp>
         // @returns ElementTag(Decimal)
         // @description
@@ -2444,8 +2401,39 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("xp", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
+                attribute = attribute.fulfill(1);
+                // <--[tag]
+                // @attribute <PlayerTag.xp.level>
+                // @returns ElementTag(Number)
+                // @description
+                // Returns the number of XP levels the player has.
+                // -->
+                if (attribute.startsWith("level")) {
+                    return new ElementTag(((PlayerTag) object).getPlayerEntity().getLevel())
+                            .getObjectAttribute(attribute.fulfill(1));
+                }
+                // <--[tag]
+                // @attribute <PlayerTag.xp.to_next_level>
+                // @returns ElementTag(Number)
+                // @description
+                // Returns the amount of XP needed to get to the next level.
+                // -->
+                if (attribute.startsWith("to_next_level")) {
+                    return new ElementTag(((PlayerTag) object).getPlayerEntity().getExpToLevel())
+                            .getObjectAttribute(attribute.fulfill(1));
+                }
+                // <--[tag]
+                // @attribute <PlayerTag.xp.total>
+                // @returns ElementTag(Number)
+                // @description
+                // Returns the total amount of experience points.
+                // -->
+                if (attribute.startsWith("total")) {
+                    return new ElementTag(((PlayerTag) object).getPlayerEntity().getTotalExperience())
+                            .getObjectAttribute(attribute.fulfill(1));
+                }
                 return new ElementTag(((PlayerTag) object).getPlayerEntity().getExp() * 100)
-                        .getObjectAttribute(attribute.fulfill(1));
+                        .getObjectAttribute(attribute);
             }
         });
 
