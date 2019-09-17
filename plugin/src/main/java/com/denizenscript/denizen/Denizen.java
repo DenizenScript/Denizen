@@ -2,10 +2,7 @@ package com.denizenscript.denizen;
 
 import com.denizenscript.denizen.events.ScriptEventRegistry;
 import com.denizenscript.denizen.events.bukkit.SavesReloadEvent;
-import com.denizenscript.denizen.events.core.CommandSmartEvent;
-import com.denizenscript.denizen.events.core.CuboidEnterExitSmartEvent;
-import com.denizenscript.denizen.events.core.FlagSmartEvent;
-import com.denizenscript.denizen.events.core.NPCNavigationSmartEvent;
+import com.denizenscript.denizen.events.core.*;
 import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.NPCTag;
@@ -405,21 +402,25 @@ public class Denizen extends JavaPlugin {
             Debug.echoError(ex);
         }
 
+        // Load script files without processing.
+        DenizenCore.preloadScripts();
+
+        // Load the saves.yml into memory
+        reloadSaves();
+
+        // Fire the 'on Server PreStart' world event
+        ServerPrestartScriptEvent.instance.specialHackRunEvent();
+
         // Run everything else on the first server tick
         getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
             @Override
             public void run() {
                 try {
-                    DenizenCore.loadScripts();
+                    // Process script files (events, etc).
+                    DenizenCore.postLoadScripts();
 
                     // Synchronize any script commands added while loading scripts.
                     CommandScriptHelper.syncDenizenCommands();
-
-                    // Load the saves.yml into memory
-                    reloadSaves();
-
-                    // Fire the 'on Server PreStart' world event
-                    ws_helper.serverPreStartEvent();
 
                     // Reload notables from notables.yml into memory
                     notableManager.reloadNotables();
@@ -461,7 +462,7 @@ public class Denizen extends JavaPlugin {
     public boolean hasDisabled = false;
 
     /*
-     * Unloads Denizen on shutdown of the craftbukkit server.
+     * Unloads Denizen on shutdown of the server.
      */
     @Override
     public void onDisable() {

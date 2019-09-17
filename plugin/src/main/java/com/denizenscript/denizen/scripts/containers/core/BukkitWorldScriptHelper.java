@@ -74,21 +74,6 @@ public class BukkitWorldScriptHelper implements Listener {
         doEvents(Arrays.asList("server start"), null, null, null);
     }
 
-    // <--[event]
-    // @Events
-    // server prestart
-    //
-    // @Regex ^on server prestart$
-    //
-    // @Triggers before the server finishes starting... fired after saves are loaded, but before notables are loaded.
-    //
-    // -->
-    public void serverPreStartEvent() {
-        // Fire the 'Server Start' event
-        String determination = doEvents(Arrays.asList("server prestart"),
-                null, null, null);
-    }
-
     private final Map<String, Integer> current_time = new HashMap<>();
 
     // <--[event]

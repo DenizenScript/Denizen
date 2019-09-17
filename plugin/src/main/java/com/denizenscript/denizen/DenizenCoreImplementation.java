@@ -128,11 +128,6 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     }
 
     @Override
-    public void buildCoreContainers(YamlConfiguration config) {
-        ScriptRegistry._buildCoreYamlScriptContainers(config);
-    }
-
-    @Override
     public List<YamlConfiguration> getOutsideScripts() {
         List<YamlConfiguration> files = new ArrayList<>();
         try {

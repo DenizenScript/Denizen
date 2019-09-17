@@ -2,6 +2,7 @@ package com.denizenscript.denizen.events;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.block.*;
+import com.denizenscript.denizen.events.core.ServerPrestartScriptEvent;
 import com.denizenscript.denizen.events.entity.*;
 import com.denizenscript.denizen.events.player.*;
 import com.denizenscript.denizen.events.world.*;
@@ -33,6 +34,9 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new PistonExtendsScriptEvent());
         ScriptEvent.registerScriptEvent(new PistonRetractsScriptEvent());
         ScriptEvent.registerScriptEvent(new RedstoneScriptEvent());
+
+        // Core events
+        ScriptEvent.registerScriptEvent(new ServerPrestartScriptEvent());
 
         // Entity events
         ScriptEvent.registerScriptEvent(new CreeperPoweredScriptEvent());
