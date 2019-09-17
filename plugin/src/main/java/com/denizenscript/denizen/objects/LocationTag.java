@@ -1753,7 +1753,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 float yaw = 0f;
                 if (EntityTag.matches(context)) {
                     EntityTag ent = EntityTag.valueOf(context);
-                    if (ent.isSpawned()) {
+                    if (ent.isSpawnedOrValidForTag()) {
                         pitch = ent.getBukkitEntity().getLocation().getPitch();
                         yaw = ent.getBukkitEntity().getLocation().getYaw();
                     }

@@ -3141,7 +3141,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 String[] split = mechanism.getValue().asString().split("[\\|" + ListTag.internal_escape + "]", 2);
                 if (split.length > 0 && new ElementTag(split[0]).matchesType(EntityTag.class)) {
                     EntityTag entity = mechanism.valueAsType(EntityTag.class);
-                    if (!entity.isSpawned()) {
+                    if (!entity.isSpawnedOrValidForTag()) {
                         Debug.echoError("Can't hide the unspawned entity '" + split[0] + "'!");
                     }
                     else if (split.length > 1 && new ElementTag(split[1]).isBoolean()) {

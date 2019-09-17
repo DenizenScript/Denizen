@@ -1531,7 +1531,7 @@ public class ServerTagBase {
         else if (attribute.startsWith("entity_is_spawned")
                 && attribute.hasContext(1)) {
             EntityTag ent = EntityTag.valueOf(attribute.getContext(1), new BukkitTagContext(null, null, false, null, false, null));
-            event.setReplaced(new ElementTag((ent != null && ent.isUnique() && ent.isSpawned()) ? "true" : "false")
+            event.setReplaced(new ElementTag((ent != null && ent.isUnique() && ent.isSpawnedOrValidForTag()) ? "true" : "false")
                     .getAttribute(attribute.fulfill(1)));
         }
 

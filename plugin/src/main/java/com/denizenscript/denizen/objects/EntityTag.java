@@ -1019,8 +1019,12 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
 
     }
 
+    public boolean isSpawnedOrValidForTag() {
+        return entity != null && (isValidForTag() || rememberedEntities.containsKey(entity.getUniqueId()));
+    }
+
     public boolean isSpawned() {
-        return entity != null && isValidForTag();
+        return entity != null && entity.isValid();
     }
 
     public boolean isValid() {
@@ -1173,7 +1177,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             if (isPlayer()) {
                 return getDenizenPlayer().debuggable();
             }
-            if (isSpawned() || rememberedEntities.containsKey(entity.getUniqueId())) {
+            if (isSpawnedOrValidForTag()) {
                 return "e@ " + entity.getUniqueId().toString() + "<GR>(" + entity.getType().name() + "/" + entity.getName() + ")";
             }
         }
@@ -1205,7 +1209,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             // if (isSaved(this))
             //    return "e@" + getSaved(this);
 
-            else if (isSpawned() || rememberedEntities.containsKey(entity.getUniqueId())) {
+            else if (isSpawnedOrValidForTag()) {
                 return "e@" + entity.getUniqueId().toString();
             }
         }
@@ -1762,7 +1766,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 if (((EntityTag) object).isLivingEntity() && attribute.hasContext(1) && EntityTag.matches(attribute.getContext(1))) {
                     EntityTag toEntity = EntityTag.valueOf(attribute.getContext(1));
-                    if (toEntity != null && toEntity.isSpawned()) {
+                    if (toEntity != null && toEntity.isSpawnedOrValidForTag()) {
                         return new ElementTag(((EntityTag) object).getLivingEntity().hasLineOfSight(toEntity.getBukkitEntity())).getObjectAttribute(attribute.fulfill(1));
                     }
                 }
@@ -2787,7 +2791,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         TagRunnable.ObjectForm newRunnable = new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                if (!((EntityTag) object).isSpawned()) {
+                if (!((EntityTag) object).isSpawnedOrValidForTag()) {
                     if (!attribute.hasAlternative()) {
                         com.denizenscript.denizen.utilities.debugging.Debug.echoError("Entity is not spawned, but tag '" + attribute.getAttributeWithoutContext(1) + "' requires the entity be spawned, for entity: " + object.debuggable());
                     }
