@@ -1376,7 +1376,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @attribute <InventoryTag.include[<item>]>
         // @returns InventoryTag
         // @description
-        // Returns the InventoryTag with an item added.
+        // Returns a copy of the InventoryTag with an item added.
         // -->
         registerTag("include", new TagRunnable.ObjectForm() {
             @Override
@@ -1470,10 +1470,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 // @attribute <InventoryTag.contains.display[(strict:)<element>]>
                 // @returns ElementTag(Boolean)
                 // @description
-                // Returns whether the inventory contains an item with the specified display
-                // name. Use 'strict:' in front of the search element to ensure the display
-                // name is EXACTLY the search element, otherwise the searching will only
-                // check if the search element is contained in the display name.
+                // Returns whether the inventory contains an item with the specified display name.
+                // Use 'strict:' in front of the search element to ensure the display name is EXACTLY the search element,
+                // otherwise the searching will only check if the search element is contained in the display name.
                 // -->
                 if (attribute.getAttributeWithoutContext(2).equals("display")) {
                     if (!attribute.hasContext(2)) {
@@ -1495,10 +1494,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     // @attribute <InventoryTag.contains.display[(strict:)<element>].quantity[<#>]>
                     // @returns ElementTag(Boolean)
                     // @description
-                    // Returns whether the inventory contains a certain quantity of an item with the
-                    // specified display name. Use 'strict:' in front of the search element to ensure
-                    // the display name is EXACTLY the search element, otherwise the searching will only
-                    // check if the search element is contained in the display name.
+                    // Returns whether the inventory contains a certain quantity of an item with the specified display name.
+                    // Use 'strict:' in front of the search element to ensure the display name is EXACTLY the search element,
+                    // otherwise the searching will only check if the search element is contained in the display name.
                     // -->
                     if ((attribute.getAttribute(3).startsWith("quantity") || attribute.getAttribute(3).startsWith("qty")) &&
                             attribute.hasContext(3) &&
@@ -1555,9 +1553,8 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 // @returns ElementTag(Boolean)
                 // @description
                 // Returns whether the inventory contains an item with the specified lore.
-                // Use 'strict:' in front of the search elements to ensure all lore lines
-                // are EXACTLY the search elements, otherwise the searching will only
-                // check if the search elements are contained in the lore.
+                // Use 'strict:' in front of the search elements to ensure all lore lines are EXACTLY the search elements,
+                // otherwise the searching will only check if the search elements are contained in the lore.
                 // -->
                 if (attribute.getAttributeWithoutContext(2).equals("lore")) {
                     if (!attribute.hasContext(2)) {
@@ -1580,10 +1577,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     // @attribute <InventoryTag.contains.lore[(strict:)<element>|...].quantity[<#>]>
                     // @returns ElementTag(Boolean)
                     // @description
-                    // Returns whether the inventory contains a certain quantity of an item
-                    // with the specified lore. Use 'strict:' in front of the search elements
-                    // to ensure all lore lines are EXACTLY the search elements, otherwise the
-                    // searching will only check if the search elements are contained in the lore.
+                    // Returns whether the inventory contains a certain quantity of an item with the specified lore.
+                    // Use 'strict:' in front of the search elements to ensure all lore lines are EXACTLY the search elements,
+                    // otherwise the searching will only check if the search elements are contained in the lore.
                     // -->
                     if ((attribute.getAttribute(3).startsWith("quantity") || attribute.getAttribute(3).startsWith("qty")) &&
                             attribute.hasContext(3) &&
@@ -1742,8 +1738,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     // @attribute <InventoryTag.contains.material[<material>].quantity[<#>]>
                     // @returns ElementTag(Boolean)
                     // @description
-                    // Returns whether the inventory contains a certain quantity of an item with the
-                    // specified material.
+                    // Returns whether the inventory contains a certain quantity of an item with the specified material.
                     // -->
                     if ((attribute.getAttribute(3).startsWith("quantity") || attribute.getAttribute(3).startsWith("qty")) &&
                             attribute.hasContext(3) &&
@@ -1892,8 +1887,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 // @attribute <InventoryTag.find.scriptname[<item>]>
                 // @returns ElementTag(Number)
                 // @description
-                // Returns the location of the first slot that contains the item
-                // with the specified script name.
+                // Returns the location of the first slot that contains the item with the specified script name.
                 // Returns -1 if there's no match.
                 // -->
                 if (attribute.getAttributeWithoutContext(2).equals("scriptname")) {
@@ -1967,7 +1961,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @attribute <InventoryTag.id_type>
         // @returns ElementTag
         // @description
-        // Returns Denizen's type ID for this inventory. (player, location, etc.)
+        // Returns Denizen's type ID for this inventory (player, location, etc.).
         // -->
         registerTag("id_type", new TagRunnable.ObjectForm() {
             @Override
@@ -1980,8 +1974,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @attribute <InventoryTag.notable_name>
         // @returns ElementTag
         // @description
-        // Gets the name of a Notable InventoryTag. If the inventory isn't noted,
-        // this is null.
+        // Gets the name of a Notable InventoryTag. If the inventory isn't noted, this is null.
         // -->
         registerTag("notable_name", new TagRunnable.ObjectForm() {
             @Override
@@ -2012,12 +2005,11 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <InventoryTag.quantity[<item>]>
+        // @attribute <InventoryTag.quantity[(<item>)]>
         // @returns ElementTag(Number)
         // @description
-        // Returns the combined quantity of itemstacks that match an item if
-        // one is specified, or the combined quantity of all itemstacks
-        // if one is not.
+        // Returns the combined quantity of itemstacks that match an item if one is specified,
+        // or the combined quantity of all itemstacks if one is not.
         // -->
         registerTag("quantity", new TagRunnable.ObjectForm() {
             @Override
@@ -2062,11 +2054,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         registerTag("qty", tagProcessor.registeredObjectTags.get("quantity"));
 
         // <--[tag]
-        // @attribute <InventoryTag.stacks[<item>]>
+        // @attribute <InventoryTag.stacks[(<item>)]>
         // @returns ElementTag(Number)
         // @description
-        // Returns the number of itemstacks that match an item if one is
-        // specified, or the number of all itemstacks if one is not.
+        // Returns the number of itemstacks that match an item if one is specified, or the number of all itemstacks if one is not.
         // -->
         registerTag("stacks", new TagRunnable.ObjectForm() {
             @Override
@@ -2148,7 +2139,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @attribute <InventoryTag.equipment>
         // @returns ListTag(ItemTag)
         // @description
-        // Returns the equipment of an inventory.
+        // Returns the equipment of an inventory as a list of items.
+        // For players, the order is boots|leggings|chestplate|helmet.
+        // For horses, the order is saddle|armor.
         // -->
         registerTag("equipment", new TagRunnable.ObjectForm() {
             @Override
@@ -2165,7 +2158,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @attribute <InventoryTag.matrix>
         // @returns ListTag(ItemTag)
         // @description
-        // Returns the ItemTags currently in a crafting inventory's matrix.
+        // Returns the items currently in a crafting inventory's matrix.
         // -->
         registerTag("matrix", new TagRunnable.ObjectForm() {
             @Override
@@ -2190,7 +2183,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @attribute <InventoryTag.result>
         // @returns ItemTag
         // @description
-        // Returns the ItemTag currently in the result section of a crafting inventory.
+        // Returns the item currently in the result section of a crafting inventory.
         // -->
         registerTag("result", new TagRunnable.ObjectForm() {
             @Override
