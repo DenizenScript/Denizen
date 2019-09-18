@@ -969,6 +969,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 String type = attribute.hasContext(1) ? CoreUtilities.toLowerCase(attribute.getContext(1)) : null;
                 ItemTag item = (ItemTag) object;
+                boolean isScripted = item.isItemscript();
                 ListTag list = new ListTag();
                 for (Recipe recipe : Bukkit.getRecipesFor(item.getItemStack())) {
                     if (type != null && (
@@ -984,6 +985,9 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
                         continue;
                     }
                     if (recipe instanceof Keyed) {
+                        if (isScripted && !((Keyed) recipe).getKey().getKey().equalsIgnoreCase("denizen")) {
+                            continue;
+                        }
                         list.add(((Keyed) recipe).getKey().toString());
                     }
                 }
