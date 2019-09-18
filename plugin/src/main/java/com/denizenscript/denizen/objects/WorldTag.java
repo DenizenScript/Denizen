@@ -15,6 +15,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -154,6 +155,16 @@ public class WorldTag implements ObjectTag, Adjustable {
         }
     }
 
+    public List<LivingEntity> getLivingEntitiesForTag() {
+        NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+        try {
+            return getWorld().getLivingEntities();
+        }
+        finally {
+            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+        }
+    }
+
     private String prefix;
     String world_name;
 
@@ -248,7 +259,7 @@ public class WorldTag implements ObjectTag, Adjustable {
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 ArrayList<EntityTag> entities = new ArrayList<>();
 
-                for (Entity entity : ((WorldTag) object).getWorld().getLivingEntities()) {
+                for (Entity entity : ((WorldTag) object).getLivingEntitiesForTag()) {
                     entities.add(new EntityTag(entity));
                 }
 
