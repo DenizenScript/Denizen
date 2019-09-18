@@ -59,6 +59,15 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
+    public void registerStonecuttingRecipe(String keyName, ItemStack result, ItemStack ingredient) {
+        MinecraftKey key = new MinecraftKey("denizen", keyName);
+        RecipeItemStack itemRecipe = new RecipeItemStack(Arrays.asList(new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(ingredient))).stream());
+        itemRecipe.exact = true;
+        RecipeStonecutting recipe = new RecipeStonecutting(key, "custom", itemRecipe, CraftItemStack.asNMSCopy(result));
+        ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().addRecipe(recipe);
+    }
+
+    @Override
     public void registerShapelessRecipe(String keyName, ItemStack result, ItemStack[] ingredients) {
         MinecraftKey key = new MinecraftKey("denizen", keyName);
         ArrayList<RecipeItemStack> ingredientList = new ArrayList<>();

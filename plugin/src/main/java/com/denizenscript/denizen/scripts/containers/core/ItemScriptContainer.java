@@ -96,6 +96,13 @@ public class ItemScriptContainer extends ScriptContainer {
     //      # Add more shapeless recipes if you want.
     //      2: ...
     //
+    //   # You can specify a list of materials that make up a stonecutting recipe.
+    //   # Recipe internal IDs will be of the form "denizen:stonecutting_recipe_<script.name>_<id>" where ID is the recipe list index (starting at 1, counting up).
+    //   stonecutting_recipes:
+    //      1: ItemTag|...
+    //      # Add more stonecutting recipes if you want.
+    //      2: ...
+    //
     //   # You can specify a material that can be smelted into your item.
     //   # Note: This can overwrite existing furnace recipes.
     //   # Recipe internal IDs will be of the form "denizen:furnace_recipe_<script.name>_<id>" where ID is the recipe list index (starting at 1, counting up).

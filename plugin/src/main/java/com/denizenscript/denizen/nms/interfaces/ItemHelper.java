@@ -14,6 +14,10 @@ public abstract class ItemHelper {
 
     public abstract void clearDenizenRecipes();
 
+    public void registerStonecuttingRecipe(String keyName, ItemStack result, ItemStack ingredient) {
+        throw new UnsupportedOperationException();
+    }
+
     public abstract void registerFurnaceRecipe(String keyName, ItemStack result, ItemStack ingredient, float exp, int time, String type);
 
     public abstract void registerShapelessRecipe(String keyName, ItemStack result, ItemStack[] ingredients);

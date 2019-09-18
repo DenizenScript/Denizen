@@ -155,6 +155,22 @@ public class ItemScriptHelper implements Listener {
         }
     }
 
+    public void registerStonecuttingRecipe(ItemScriptContainer container, String inputItemString, int id) {
+        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
+
+        }
+        ItemTag furnace_item = ItemTag.valueOf(inputItemString, container);
+        if (furnace_item == null) {
+            Debug.echoError("Invalid item '" + inputItemString + "', stonecutting recipe will not be registered for item script '" + container.getName() + "'.");
+            return;
+        }
+        ItemStack result = container.getCleanReference().getItemStack().clone();
+        ItemStack input = furnace_item.getItemStack().clone();
+        String fullId = "stonecutting_recipe_" + CoreUtilities.toLowerCase(container.getName()) + "_" + id;
+        container.recipeIds.add("denizen:" + fullId);
+        NMSHandler.getItemHelper().registerStonecuttingRecipe(fullId, result, input);
+    }
+
     @EventHandler
     public void scriptReload(ScriptReloadEvent event) {
 
@@ -172,6 +188,13 @@ public class ItemScriptHelper implements Listener {
                 int id = 1;
                 for (StringHolder key : section.getKeys(false)) {
                     registerShapelessRecipe(container, section.getString(key.str), id++);
+                }
+            }
+            if (container.contains("stonecutting_recipes")) {
+                YamlConfiguration section = container.getConfigurationSection("stonecutting_recipes");
+                int id = 1;
+                for (StringHolder key : section.getKeys(false)) {
+                    registerStonecuttingRecipe(container, section.getString(key.str), id++);
                 }
             }
             if (container.contains("furnace_recipes")) {
