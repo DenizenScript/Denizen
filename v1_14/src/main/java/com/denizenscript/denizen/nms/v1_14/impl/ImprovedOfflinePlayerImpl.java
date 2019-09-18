@@ -7,7 +7,9 @@ import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftInventoryPlayer;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,14 +22,38 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
         super(playeruuid);
     }
 
+    public class OfflinePlayerInventory extends PlayerInventory {
+
+        public OfflinePlayerInventory(EntityHuman entityhuman) {
+            super(entityhuman);
+        }
+
+        @Override
+        public InventoryHolder getOwner() {
+            return null;
+        }
+    }
+
+    public class OfflineCraftInventoryPlayer extends CraftInventoryPlayer {
+
+        public OfflineCraftInventoryPlayer(PlayerInventory inventory) {
+            super(inventory);
+        }
+
+        @Override
+        public HumanEntity getHolder() {
+            return null;
+        }
+    }
+
     @Override
     public org.bukkit.inventory.PlayerInventory getInventory() {
         if (offlineInventories.containsKey(getUniqueId())) {
             return offlineInventories.get(getUniqueId());
         }
-        PlayerInventory inventory = new PlayerInventory(null);
+        PlayerInventory inventory = new OfflinePlayerInventory(null);
         inventory.b(((CompoundTagImpl) this.compound).toNMSTag().getList("Inventory", 10));
-        org.bukkit.inventory.PlayerInventory inv = new CraftInventoryPlayer(inventory);
+        org.bukkit.inventory.PlayerInventory inv = new OfflineCraftInventoryPlayer(inventory);
         offlineInventories.put(getUniqueId(), inv);
         return inv;
     }
