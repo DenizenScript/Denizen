@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.events.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -9,6 +8,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
@@ -42,7 +42,6 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
     public ElementTag cause;
     public EntityTag entity;
     public EntityTag hanging;
-    public LocationTag location;
     public HangingBreakEvent event;
 
     @Override
@@ -65,7 +64,7 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
             return false;
         }
 
-        if (!runInCheck(path, location)) {
+        if (!runInCheck(path, hanging.getLocation())) {
             return false;
         }
 
@@ -94,8 +93,9 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
         else if (name.equals("hanging")) {
             return hanging;
         }
-        else if (name.equals("location")) { // NOTE: Deprecated
-            return location;
+        else if (name.equals("location")) {
+            Deprecations.hangingBreaksEventContext.warn();
+            return hanging.getLocation();
         }
         return super.getContext(name);
     }
@@ -104,7 +104,6 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
     public void onHangingBreaks(HangingBreakEvent event) {
         hanging = new EntityTag(event.getEntity());
         cause = new ElementTag(event.getCause().name());
-        location = new LocationTag(hanging.getLocation());
         if (event instanceof HangingBreakByEntityEvent) {
             entity = new EntityTag(((HangingBreakByEntityEvent) event).getRemover());
         }

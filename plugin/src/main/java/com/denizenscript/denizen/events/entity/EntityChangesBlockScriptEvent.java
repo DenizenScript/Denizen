@@ -1,13 +1,11 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.CuboidTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -52,7 +50,6 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     public LocationTag location;
     public MaterialTag old_material;
     public MaterialTag new_material;
-    public ListTag cuboids;
     public EntityChangeBlockEvent event;
 
     @Override
@@ -107,15 +104,6 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
         if (name.equals("entity")) {
             return entity;
         }
-        else if (name.equals("cuboids")) { // NOTE: Deprecated
-            if (cuboids == null) {
-                cuboids = new ListTag();
-                for (CuboidTag cuboid : CuboidTag.getNotableCuboidsContaining(location)) {
-                    cuboids.add(cuboid.identifySimple());
-                }
-            }
-            return cuboids;
-        }
         else if (name.equals("location")) {
             return location;
         }
@@ -134,7 +122,6 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
         location = new LocationTag(event.getBlock().getLocation());
         old_material = new MaterialTag(location.getBlock());
         new_material = new MaterialTag(event.getTo());
-        cuboids = null;
         this.event = event;
         fire(event);
     }

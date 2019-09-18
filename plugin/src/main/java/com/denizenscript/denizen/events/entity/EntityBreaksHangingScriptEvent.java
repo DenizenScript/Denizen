@@ -9,6 +9,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
@@ -99,7 +100,8 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
         if (name.equals("cause")) {
             return cause;
         }
-        else if (name.equals("entity")) { // NOTE: Deprecated in favor of context.breaker
+        else if (name.equals("entity")) {
+            Deprecations.entityBreaksHangingEventContext.warn();
             return breaker;
         }
         else if (name.equals("breaker")) {

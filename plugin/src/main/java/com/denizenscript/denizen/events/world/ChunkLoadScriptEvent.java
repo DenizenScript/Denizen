@@ -4,6 +4,7 @@ import com.denizenscript.denizen.objects.ChunkTag;
 import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -61,7 +62,8 @@ public class ChunkLoadScriptEvent extends BukkitScriptEvent implements Listener 
         if (name.equals("chunk")) {
             return chunk;
         }
-        else if (name.equals("world")) { // NOTE: Deprecated in favor of context.chunk.world
+        else if (name.equals("world")) {
+            Deprecations.worldContext.warn();
             return new WorldTag(event.getWorld());
         }
         return super.getContext(name);
