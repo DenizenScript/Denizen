@@ -3451,23 +3451,31 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name discover_recipe
-        // @input Element
+        // @input ListTag
         // @description
-        // Causes the player to discover a recipe. Input is in the Namespace:Key format, for example "minecraft:gold_nugget".
+        // Causes the player to discover a recipe, or list of recipes. Input is in the Namespace:Key format, for example "minecraft:gold_nugget".
         // -->
         if (mechanism.matches("discover_recipe")) {
-            getPlayerEntity().discoverRecipe(Utilities.parseNamespacedKey(mechanism.getValue().asString()));
+            List<NamespacedKey> keys = new ArrayList<>();
+            for (String key : mechanism.valueAsType(ListTag.class)) {
+                keys.add(Utilities.parseNamespacedKey(key));
+            }
+            getPlayerEntity().discoverRecipes(keys);
         }
 
         // <--[mechanism]
         // @object PlayerTag
         // @name forget_recipe
-        // @input Element
+        // @input ListTag
         // @description
-        // Causes the player to forget ('undiscover') a recipe. Input is in the Namespace:Key format, for example "minecraft:gold_nugget".
+        // Causes the player to forget ('undiscover') a recipe, or list of recipes. Input is in the Namespace:Key format, for example "minecraft:gold_nugget".
         // -->
         if (mechanism.matches("forget_recipe")) {
-            getPlayerEntity().undiscoverRecipe(Utilities.parseNamespacedKey(mechanism.getValue().asString()));
+            List<NamespacedKey> keys = new ArrayList<>();
+            for (String key : mechanism.valueAsType(ListTag.class)) {
+                keys.add(Utilities.parseNamespacedKey(key));
+            }
+            getPlayerEntity().undiscoverRecipes(keys);
         }
 
         // <--[mechanism]
