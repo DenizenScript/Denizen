@@ -985,7 +985,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
                         continue;
                     }
                     if (recipe instanceof Keyed) {
-                        if (isScripted && !((Keyed) recipe).getKey().getKey().equalsIgnoreCase("denizen")) {
+                        if (isScripted != ((Keyed) recipe).getKey().getKey().equalsIgnoreCase("denizen")) {
                             continue;
                         }
                         list.add(((Keyed) recipe).getKey().toString());
