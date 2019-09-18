@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
 import com.denizenscript.denizen.objects.properties.entity.EntityHealth;
 import com.denizenscript.denizen.scripts.commands.player.SidebarCommand;
 import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.BossBarHelper;
@@ -3431,6 +3432,28 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             NMSHandler.getPacketHelper().openBook(getPlayerEntity(), EquipmentSlot.OFF_HAND);
             NMSHandler.getPacketHelper().showEquipment(getPlayerEntity(), getPlayerEntity(),
                     EquipmentSlot.OFF_HAND, getPlayerEntity().getEquipment().getItemInOffHand());
+        }
+
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name discover_recipe
+        // @input Element
+        // @description
+        // Causes the player to discover a recipe. Input is in the Namespace:Key format, for example "minecraft:gold_nugget".
+        // -->
+        if (mechanism.matches("discover_recipe")) {
+            getPlayerEntity().discoverRecipe(Utilities.parseNamespacedKey(mechanism.getValue().asString()));
+        }
+
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name forget_recipe
+        // @input Element
+        // @description
+        // Causes the player to forget ('undiscover') a recipe. Input is in the Namespace:Key format, for example "minecraft:gold_nugget".
+        // -->
+        if (mechanism.matches("forget_recipe")) {
+            getPlayerEntity().undiscoverRecipe(Utilities.parseNamespacedKey(mechanism.getValue().asString()));
         }
 
         // <--[mechanism]

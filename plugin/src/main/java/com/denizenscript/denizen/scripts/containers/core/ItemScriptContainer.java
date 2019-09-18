@@ -71,6 +71,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //
     //   # You can specify the items required to craft your item. For an empty slot, use "air".
     //   # You are allowed to have non-3x3 shapes (can be any value 1-3 x 1-3, so for example 1x3, 2x1, and 2x2 are fine).
+    //   # Recipe internal IDs will be of the form "denizen:shaped_recipe_<script.name>_<id>" where ID is the recipe list index (starting at 1, counting up).
     //   recipes:
     //       1:
     //       - ItemTag|ItemTag|ItemTag
@@ -89,6 +90,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //
     //   # You can specify a list of materials that make up a shapeless recipe.
     //   # Note: This can overwrite existing shapeless recipes.
+    //   # Recipe internal IDs will be of the form "denizen:shapeless_recipe_<script.name>_<id>" where ID is the recipe list index (starting at 1, counting up).
     //   shapeless_recipes:
     //      1: ItemTag|...
     //      # Add more shapeless recipes if you want.
@@ -96,6 +98,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //
     //   # You can specify a material that can be smelted into your item.
     //   # Note: This can overwrite existing furnace recipes.
+    //   # Recipe internal IDs will be of the form "denizen:furnace_recipe_<script.name>_<id>" where ID is the recipe list index (starting at 1, counting up).
     //   furnace_recipes:
     //      1:
     //          # The input item
