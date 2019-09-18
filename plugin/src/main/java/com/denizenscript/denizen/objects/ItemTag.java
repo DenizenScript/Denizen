@@ -30,6 +30,7 @@ import com.denizenscript.denizencore.utilities.debugging.Debuggable;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
@@ -969,7 +970,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 String type = attribute.hasContext(1) ? CoreUtilities.toLowerCase(attribute.getContext(1)) : null;
                 ItemTag item = (ItemTag) object;
-                boolean isScripted = item.isItemscript();
+                ItemScriptContainer container = item.isItemscript() ? ItemScriptHelper.getItemScriptContainer(item.getItemStack()) : null;
                 ListTag list = new ListTag();
                 for (Recipe recipe : Bukkit.getRecipesFor(item.getItemStack())) {
                     if (type != null && (
@@ -985,10 +986,16 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
                         continue;
                     }
                     if (recipe instanceof Keyed) {
-                        if (isScripted != ((Keyed) recipe).getKey().getKey().equalsIgnoreCase("denizen")) {
+                        NamespacedKey key = ((Keyed) recipe).getKey();
+                        if (key.getNamespace().equalsIgnoreCase("denizen")) {
+                            if (container != ItemScriptHelper.recipeIdToItemScript.get(key.toString())) {
+                                continue;
+                            }
+                        }
+                        else if (container != null) {
                             continue;
                         }
-                        list.add(((Keyed) recipe).getKey().toString());
+                        list.add(key.toString());
                     }
                 }
                 return list.getObjectAttribute(attribute.fulfill(1));

@@ -52,7 +52,7 @@ public class Utilities {
         StringBuilder output = new StringBuilder(input.length());
         for (char c : input.toCharArray()) {
             if (c >= 'A' && c <= 'Z') {
-                output.append((char)(c - ('a' - 'A')));
+                output.append((char)(c - ('A' - 'a')));
             }
             else if ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_') {
                 output.append(c);

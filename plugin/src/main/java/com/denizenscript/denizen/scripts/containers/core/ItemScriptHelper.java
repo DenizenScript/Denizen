@@ -38,6 +38,7 @@ public class ItemScriptHelper implements Listener {
 
     public static final Map<String, ItemScriptContainer> item_scripts = new ConcurrentHashMap<>(8, 0.9f, 1);
     public static final Map<String, ItemScriptContainer> item_scripts_by_hash_id = new HashMap<>();
+    public static final Map<String, ItemScriptContainer> recipeIdToItemScript = new HashMap<>();
 
     public ItemScriptHelper() {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
@@ -45,6 +46,7 @@ public class ItemScriptHelper implements Listener {
     }
 
     public static void removeDenizenRecipes() {
+        recipeIdToItemScript.clear();
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             NMSHandler.getItemHelper().clearDenizenRecipes();
         }
@@ -52,6 +54,21 @@ public class ItemScriptHelper implements Listener {
             specialrecipesMap.clear();
             shapelessRecipesMap.clear();
         }
+    }
+
+    public String getIdFor(ItemScriptContainer container, String type, int id) {
+        String basicId = type + "_" + Utilities.cleanseNamespaceID(container.getName()) + "_" + id;
+        if (!recipeIdToItemScript.containsKey(basicId)) {
+            recipeIdToItemScript.put("denizen:" + basicId, container);
+            return basicId;
+        }
+        int newNumber = 1;
+        String newId = basicId + "_1";
+        while (recipeIdToItemScript.containsKey(newId)) {
+            newId = basicId + "_" + newNumber++;
+        }
+        recipeIdToItemScript.put("denizen:" + newId, container);
+        return newId;
     }
 
     public void registerShapedRecipe(ItemScriptContainer container, List<String> recipeList, int id) {
@@ -80,8 +97,7 @@ public class ItemScriptHelper implements Listener {
             }
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            String fullId = "shaped_recipe_" + Utilities.cleanseNamespaceID(container.getName()) + "_" + id;
-            NamespacedKey key = new NamespacedKey("denizen", fullId);
+            NamespacedKey key = new NamespacedKey("denizen", getIdFor(container, "shaped_recipe", id));
             ShapedRecipe recipe = new ShapedRecipe(key, container.getCleanReference().getItemStack());
             String shape1 = "ABC".substring(0, width);
             String shape2 = "DEF".substring(0, width);
@@ -125,8 +141,7 @@ public class ItemScriptHelper implements Listener {
             for (int i = 0; i < input.length; i++) {
                 input[i] = ingredients.get(i).getItemStack().clone();
             }
-            String fullId = "shapeless_recipe_" + Utilities.cleanseNamespaceID(container.getName()) + "_" + id;
-            NMSHandler.getItemHelper().registerShapelessRecipe(fullId, result, input);
+            NMSHandler.getItemHelper().registerShapelessRecipe(getIdFor(container, "shapeless_recipe", id), result, input);
         }
         else {
             shapelessRecipesMap.put(container, ingredients);
@@ -142,8 +157,7 @@ public class ItemScriptHelper implements Listener {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             ItemStack result = container.getCleanReference().getItemStack().clone();
             ItemStack input = furnace_item.getItemStack().clone();
-            String fullId = "furnace_recipe_" + Utilities.cleanseNamespaceID(container.getName()) + "_" + id;
-            NMSHandler.getItemHelper().registerFurnaceRecipe(fullId, result, input, exp, time, type);
+            NMSHandler.getItemHelper().registerFurnaceRecipe(getIdFor(container, "furnace_recipe", id), result, input, exp, time, type);
         }
         else {
             FurnaceRecipe recipe = new FurnaceRecipe(container.getCleanReference().getItemStack(), furnace_item.getMaterial().getMaterial(), furnace_item.getItemStack().getDurability());
@@ -163,8 +177,7 @@ public class ItemScriptHelper implements Listener {
         }
         ItemStack result = container.getCleanReference().getItemStack().clone();
         ItemStack input = furnace_item.getItemStack().clone();
-        String fullId = "stonecutting_recipe_" + Utilities.cleanseNamespaceID(container.getName()) + "_" + id;
-        NMSHandler.getItemHelper().registerStonecuttingRecipe(fullId, result, input);
+        NMSHandler.getItemHelper().registerStonecuttingRecipe(getIdFor(container, "stonecutting_recipe", id), result, input);
     }
 
     @EventHandler
