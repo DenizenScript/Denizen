@@ -33,8 +33,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
@@ -956,24 +955,39 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <ItemTag.recipe_ids>
+        // @attribute <ItemTag.recipe_ids[(<type>)]>
         // @returns ListTag
         // @description
         // If the item is a scripted item, returns a list of all recipe IDs created by the item script.
         // Others, returns a list of all recipe IDs that the server lists as capable of crafting the item.
         // Returns a list in the Namespace:Key format, for example "minecraft:gold_nugget".
+        // Optionally, specify a recipe type (CRAFTING, FURNACE, COOKING, BLASTING, SHAPED, SHAPELESS, SMOKING, STONECUTTING)
+        // to limit to just recipes of that type.
         // -->
         registerTag("recipe_ids", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
+                String type = attribute.hasContext(1) ? CoreUtilities.toLowerCase(attribute.getContext(1)) : null;
                 ItemTag item = (ItemTag) object;
                 ListTag list;
-                if (item.isItemscript()) {
+                if (item.isItemscript() && type == null) {
                     list = new ListTag(ItemScriptHelper.getItemScriptContainer(item.getItemStack()).recipeIds);
                 }
                 else {
                     list = new ListTag();
                     for (Recipe recipe : Bukkit.getRecipesFor(item.getItemStack())) {
+                        if (type != null && (
+                                (type.equals("crafting") && !(recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe)) ||
+                                (type.equals("furnace") && !(recipe instanceof FurnaceRecipe)) ||
+                                        (type.equals("cooking") && !(recipe instanceof CookingRecipe)) ||
+                                        (type.equals("blasting") && !(recipe instanceof BlastingRecipe)) ||
+                                        (type.equals("shaped") && !(recipe instanceof ShapedRecipe)) ||
+                                        (type.equals("shapeless") && !(recipe instanceof ShapelessRecipe)) ||
+                                        (type.equals("smoking") && !(recipe instanceof SmokingRecipe)) ||
+                                        (type.equals("stonecutting") && !(recipe instanceof StonecuttingRecipe))
+                                )) {
+                            continue;
+                        }
                         if (recipe instanceof Keyed) {
                             list.add(((Keyed) recipe).getKey().toString());
                         }
