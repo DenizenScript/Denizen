@@ -101,7 +101,23 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     public static boolean isCitizensNPC(Entity entity) {
-        return entity != null && Depends.citizens != null && CitizensAPI.hasImplementation() && CitizensAPI.getNPCRegistry().isNPC(entity);
+        if (entity == null) {
+            return false;
+        }
+        if (Depends.citizens == null) {
+            return false;
+        }
+        if (!CitizensAPI.hasImplementation()) {
+            return false;
+        }
+        NPC npc = CitizensAPI.getNPCRegistry().getNPC(entity);
+        if (npc == null) {
+            return false;
+        }
+        if (npc.getOwningRegistry() != CitizensAPI.getNPCRegistry()) {
+            return false;
+        }
+        return true;
     }
 
     public static NPCTag getNPCFrom(Entity entity) {
