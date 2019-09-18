@@ -1697,6 +1697,20 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
+        // @attribute <PlayerTag.discovered_recipes>
+        // @returns ListTag
+        // @description
+        // Returns a list of the recipes the player has discovered, in the Namespace:Key format, for example "minecraft:gold_nugget".
+        // -->
+        registerOnlineOnlyTag("discovered_recipes", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                return new ListTag(NMSHandler.getEntityHelper().getDiscoveredRecipes(((PlayerTag) object).getPlayerEntity()))
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
         // @attribute <PlayerTag.selected_trade_index>
         // @returns ElementTag(Number)
         // @description

@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.nms.v1_14.helpers;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.util.ReflectionHelper;
 import com.denizenscript.denizen.nms.v1_14.impl.blocks.BlockDataImpl;
 import com.denizenscript.denizen.nms.v1_14.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.nms.interfaces.BlockData;
@@ -8,6 +9,7 @@ import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.nms.util.BoundingBox;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -26,15 +28,28 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.lang.reflect.Field;
+import java.util.*;
 
 public class EntityHelperImpl extends EntityHelper {
 
-    /*
-        General Entity Methods
-     */
+    public static final Field RECIPE_BOOK_DISCOVERED_SET = ReflectionHelper.getFields(RecipeBook.class).get("a");
+
+    public List<String> getDiscoveredRecipes(Player player) {
+        try {
+            RecipeBookServer book = ((CraftPlayer) player).getHandle().B();
+            Set<MinecraftKey> set = (Set<MinecraftKey>) RECIPE_BOOK_DISCOVERED_SET.get(book);
+            List<String> output = new ArrayList<>();
+            for (MinecraftKey key : set) {
+                output.add(key.toString());
+            }
+            return output;
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+        return null;
+    }
 
     @Override
     public String getArrowPickupStatus(Entity entity) {

@@ -22,6 +22,10 @@ import java.util.*;
 
 public abstract class EntityHelper {
 
+    public List<String> getDiscoveredRecipes(Player player) {
+        throw new UnsupportedOperationException();
+    }
+
     public void setRiptide(Entity entity, boolean state) {
         Debug.echoError("Riptide control not available on this server version.");
     }
