@@ -2,6 +2,7 @@ package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
 import com.denizenscript.denizen.events.player.PlayerCraftsItemScriptEvent;
@@ -14,7 +15,6 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptBuilder;
 import com.denizenscript.denizencore.tags.TagManager;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.*;
@@ -80,7 +80,7 @@ public class ItemScriptHelper implements Listener {
             }
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            String fullId = "shaped_recipe_" + CoreUtilities.toLowerCase(container.getName()) + "_" + id;
+            String fullId = "shaped_recipe_" + Utilities.cleanseNamespaceID(container.getName()) + "_" + id;
             NamespacedKey key = new NamespacedKey("denizen", fullId);
             ShapedRecipe recipe = new ShapedRecipe(key, container.getCleanReference().getItemStack());
             String shape1 = "ABC".substring(0, width);
@@ -125,7 +125,7 @@ public class ItemScriptHelper implements Listener {
             for (int i = 0; i < input.length; i++) {
                 input[i] = ingredients.get(i).getItemStack().clone();
             }
-            String fullId = "shapeless_recipe_" + CoreUtilities.toLowerCase(container.getName()) + "_" + id;
+            String fullId = "shapeless_recipe_" + Utilities.cleanseNamespaceID(container.getName()) + "_" + id;
             NMSHandler.getItemHelper().registerShapelessRecipe(fullId, result, input);
         }
         else {
@@ -142,7 +142,7 @@ public class ItemScriptHelper implements Listener {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             ItemStack result = container.getCleanReference().getItemStack().clone();
             ItemStack input = furnace_item.getItemStack().clone();
-            String fullId = "furnace_recipe_" + CoreUtilities.toLowerCase(container.getName()) + "_" + id;
+            String fullId = "furnace_recipe_" + Utilities.cleanseNamespaceID(container.getName()) + "_" + id;
             NMSHandler.getItemHelper().registerFurnaceRecipe(fullId, result, input, exp, time, type);
         }
         else {
@@ -163,7 +163,7 @@ public class ItemScriptHelper implements Listener {
         }
         ItemStack result = container.getCleanReference().getItemStack().clone();
         ItemStack input = furnace_item.getItemStack().clone();
-        String fullId = "stonecutting_recipe_" + CoreUtilities.toLowerCase(container.getName()) + "_" + id;
+        String fullId = "stonecutting_recipe_" + Utilities.cleanseNamespaceID(container.getName()) + "_" + id;
         NMSHandler.getItemHelper().registerStonecuttingRecipe(fullId, result, input);
     }
 
