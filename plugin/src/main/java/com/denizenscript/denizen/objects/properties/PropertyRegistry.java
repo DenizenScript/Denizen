@@ -114,6 +114,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(ItemFirework.class, ItemTag.class);
         PropertyParser.registerProperty(ItemFlags.class, ItemTag.class);
         PropertyParser.registerProperty(ItemInventory.class, ItemTag.class);
+        PropertyParser.registerProperty(ItemKnowledgeBookRecipes.class, ItemTag.class);
         PropertyParser.registerProperty(ItemLock.class, ItemTag.class);
         PropertyParser.registerProperty(ItemLore.class, ItemTag.class);
         PropertyParser.registerProperty(ItemMap.class, ItemTag.class);

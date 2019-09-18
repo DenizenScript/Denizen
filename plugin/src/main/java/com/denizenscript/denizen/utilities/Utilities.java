@@ -17,10 +17,7 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -40,6 +37,16 @@ import java.util.List;
 public class Utilities {
 
     public static final TagContext noDebugContext = new BukkitTagContext(null, null, false, null, false, null);
+
+    public static NamespacedKey parseNamespacedKey(String input) {
+        int colonIndex = input.indexOf(':');
+        if (colonIndex != -1) {
+            return new NamespacedKey(input.substring(0, colonIndex), input.substring(colonIndex + 1));
+        }
+        else {
+            return NamespacedKey.minecraft(input);
+        }
+    }
 
     public static boolean canReadFile(File f) {
         if (Settings.allowStupids()) {
