@@ -175,6 +175,25 @@ public class StatisticCommand extends AbstractCommand {
                 }
                 break;
 
+            case UNTYPED:
+                switch (act) {
+                    case ADD:
+                        for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
+                            player.incrementStatistic(stat, amt);
+                        }
+                        break;
+                    case TAKE:
+                        for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
+                            player.decrementStatistic(stat, amt);
+                        }
+                        break;
+                    case SET:
+                        for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
+                            player.setStatistic(stat, amt);
+                        }
+                        break;
+                }
+                break;
         }
 
     }
