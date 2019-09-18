@@ -969,28 +969,22 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 String type = attribute.hasContext(1) ? CoreUtilities.toLowerCase(attribute.getContext(1)) : null;
                 ItemTag item = (ItemTag) object;
-                ListTag list;
-                if (item.isItemscript() && type == null) {
-                    list = new ListTag(ItemScriptHelper.getItemScriptContainer(item.getItemStack()).recipeIds);
-                }
-                else {
-                    list = new ListTag();
-                    for (Recipe recipe : Bukkit.getRecipesFor(item.getItemStack())) {
-                        if (type != null && (
-                                (type.equals("crafting") && !(recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe)) ||
-                                (type.equals("furnace") && !(recipe instanceof FurnaceRecipe)) ||
-                                        (type.equals("cooking") && !(recipe instanceof CookingRecipe)) ||
-                                        (type.equals("blasting") && !(recipe instanceof BlastingRecipe)) ||
-                                        (type.equals("shaped") && !(recipe instanceof ShapedRecipe)) ||
-                                        (type.equals("shapeless") && !(recipe instanceof ShapelessRecipe)) ||
-                                        (type.equals("smoking") && !(recipe instanceof SmokingRecipe)) ||
-                                        (type.equals("stonecutting") && !(recipe instanceof StonecuttingRecipe))
-                                )) {
-                            continue;
-                        }
-                        if (recipe instanceof Keyed) {
-                            list.add(((Keyed) recipe).getKey().toString());
-                        }
+                ListTag list = new ListTag();
+                for (Recipe recipe : Bukkit.getRecipesFor(item.getItemStack())) {
+                    if (type != null && (
+                            (type.equals("crafting") && !(recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe)) ||
+                            (type.equals("furnace") && !(recipe instanceof FurnaceRecipe)) ||
+                                    (type.equals("cooking") && !(recipe instanceof CookingRecipe)) ||
+                                    (type.equals("blasting") && !(recipe instanceof BlastingRecipe)) ||
+                                    (type.equals("shaped") && !(recipe instanceof ShapedRecipe)) ||
+                                    (type.equals("shapeless") && !(recipe instanceof ShapelessRecipe)) ||
+                                    (type.equals("smoking") && !(recipe instanceof SmokingRecipe)) ||
+                                    (type.equals("stonecutting") && !(recipe instanceof StonecuttingRecipe))
+                            )) {
+                        continue;
+                    }
+                    if (recipe instanceof Keyed) {
+                        list.add(((Keyed) recipe).getKey().toString());
                     }
                 }
                 return list.getObjectAttribute(attribute.fulfill(1));

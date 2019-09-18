@@ -81,7 +81,6 @@ public class ItemScriptHelper implements Listener {
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             String fullId = "shaped_recipe_" + CoreUtilities.toLowerCase(container.getName()) + "_" + id;
-            container.recipeIds.add("denizen:" + fullId);
             NamespacedKey key = new NamespacedKey("denizen", fullId);
             ShapedRecipe recipe = new ShapedRecipe(key, container.getCleanReference().getItemStack());
             String shape1 = "ABC".substring(0, width);
@@ -127,7 +126,6 @@ public class ItemScriptHelper implements Listener {
                 input[i] = ingredients.get(i).getItemStack().clone();
             }
             String fullId = "shapeless_recipe_" + CoreUtilities.toLowerCase(container.getName()) + "_" + id;
-            container.recipeIds.add("denizen:" + fullId);
             NMSHandler.getItemHelper().registerShapelessRecipe(fullId, result, input);
         }
         else {
@@ -145,7 +143,6 @@ public class ItemScriptHelper implements Listener {
             ItemStack result = container.getCleanReference().getItemStack().clone();
             ItemStack input = furnace_item.getItemStack().clone();
             String fullId = "furnace_recipe_" + CoreUtilities.toLowerCase(container.getName()) + "_" + id;
-            container.recipeIds.add("denizen:" + fullId);
             NMSHandler.getItemHelper().registerFurnaceRecipe(fullId, result, input, exp, time, type);
         }
         else {
@@ -167,7 +164,6 @@ public class ItemScriptHelper implements Listener {
         ItemStack result = container.getCleanReference().getItemStack().clone();
         ItemStack input = furnace_item.getItemStack().clone();
         String fullId = "stonecutting_recipe_" + CoreUtilities.toLowerCase(container.getName()) + "_" + id;
-        container.recipeIds.add("denizen:" + fullId);
         NMSHandler.getItemHelper().registerStonecuttingRecipe(fullId, result, input);
     }
 

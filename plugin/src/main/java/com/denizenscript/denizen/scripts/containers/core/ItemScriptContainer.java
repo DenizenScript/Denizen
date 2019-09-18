@@ -138,7 +138,6 @@ public class ItemScriptContainer extends ScriptContainer {
     public PlayerTag player = null;
     public boolean bound = false;
     String hash = "";
-    public List<String> recipeIds = new ArrayList<>();
 
     public ItemScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
