@@ -1700,8 +1700,8 @@ public class ServerTagBase {
             }
         }
 
-        // Deprecated in favor of SYSTEM.redirect_logging (Core)
         if (mechanism.matches("redirect_logging") && mechanism.hasValue()) {
+            Deprecations.serverRedirectLogging.warn();
             if (!Settings.allowConsoleRedirection()) {
                 Debug.echoError("Console redirection disabled by administrator.");
                 return;

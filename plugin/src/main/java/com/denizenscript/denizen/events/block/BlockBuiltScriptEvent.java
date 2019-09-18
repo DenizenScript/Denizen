@@ -1,8 +1,11 @@
 package com.denizenscript.denizen.events.block;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -30,7 +33,7 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
     // @Context
     // <context.location> returns the LocationTag of the block the player is trying to build on.
     // <context.old_material> returns the MaterialTag of the block the player is trying to build on.
-    // <context.new_material> Deprecated, returns the MaterialTag of the block the player is trying to build.
+    // <context.new_material> returns the MaterialTag of the block the player is trying to build.
     //
     // @Determine
     // "BUILDABLE" to allow the building.
@@ -106,7 +109,12 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
     public void onBlockBuilt(BlockCanBuildEvent event) {
         location = new LocationTag(event.getBlock().getLocation());
         old_material = new MaterialTag(event.getBlock());
-        new_material = new MaterialTag(event.getMaterial()); // Deprecated because it doesn't have proper data
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+            new_material = new MaterialTag(new ModernBlockData(event.getBlockData()));
+        }
+        else {
+            new_material = new MaterialTag(event.getMaterial());
+        }
         cancelled = !event.isBuildable();
         this.event = event;
         fire(event);

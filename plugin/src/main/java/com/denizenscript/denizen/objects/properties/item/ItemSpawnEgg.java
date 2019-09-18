@@ -55,28 +55,13 @@ public class ItemSpawnEgg implements Property {
         }
 
         // <--[tag]
-        // @attribute <ItemTag.spawn_id>
-        // @returns ElementTag(Number)
-        // @group properties
-        // @mechanism ItemTag.spawn_id
-        // @description
-        // NOTE: ID numbers are deprecated since 1.11
-        //  Use <ItemTag.spawn_type> instead!
-        // Returns the spawn egg number of the item.
-        // -->
-        if ((attribute.startsWith("spawn_id") || attribute.startsWith("spawn_egg_entity"))
-                && getEntityType() != null) {
-            return new ElementTag(getEntityType().getTypeId())
-                    .getObjectAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
         // @attribute <ItemTag.spawn_type>
         // @returns ElementTag
         // @group properties
         // @mechanism ItemTag.spawn_type
         // @description
         // Returns the spawn egg's entity type.
+        // NOTE: In 1.13+, spawn eggs are distinct materials.
         // -->
         if (attribute.startsWith("spawn_type") && getEntityType() != null) {
             return new ElementTag(getEntityType().name())
@@ -105,28 +90,11 @@ public class ItemSpawnEgg implements Property {
 
         // <--[mechanism]
         // @object ItemTag
-        // @name spawn_id
-        // @input Element(Number)
-        // @description
-        // NOTE: ID numbers are deprecated since 1.11
-        //  Use <@link mechanism ItemTag.spawn_type> instead!
-        // Sets what mob a spawn egg holds.
-        // @tags
-        // <ItemTag.spawn_id>
-        // -->
-        if ((mechanism.matches("spawn_id") || mechanism.matches("spawn_egg"))
-                && mechanism.requireInteger()) {
-            SpawnEggMeta sem = (SpawnEggMeta) item.getItemStack().getItemMeta();
-            sem.setSpawnedType(EntityType.fromId(mechanism.getValue().asInt()));
-            item.getItemStack().setItemMeta(sem);
-        }
-
-        // <--[mechanism]
-        // @object ItemTag
         // @name spawn_type
         // @input Element
         // @description
         // Sets what entity type a spawn egg holds.
+        // NOTE: In 1.13+, spawn eggs are distinct materials.
         // @tags
         // <ItemTag.spawn_type>
         // -->

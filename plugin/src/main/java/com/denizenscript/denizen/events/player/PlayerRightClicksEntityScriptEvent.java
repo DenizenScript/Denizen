@@ -7,6 +7,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
@@ -33,7 +34,6 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
     // @Context
     // <context.entity> returns the EntityTag the player is clicking on.
     // <context.item> returns the ItemTag the player is clicking with.
-    // <context.location> returns a LocationTag of the clicked entity. NOTE: DEPRECATED IN FAVOR OF <context.entity.location>
     // <context.click_position> returns a LocationTag of the click position (as a world-less vector, relative to the entity's center). This is only available when clicking armor stands.
     //
     // -->
@@ -42,7 +42,6 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
     PlayerInteractEntityEvent event;
     EntityTag entity;
     ItemTag item;
-    LocationTag location;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
@@ -89,7 +88,8 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
             return item;
         }
         else if (name.equals("location")) {
-            return location;
+            Deprecations.playerRightClicksEntityContext.warn();
+            return entity.getLocation();
         }
         else if (name.equals("click_position") && event instanceof PlayerInteractAtEntityEvent) {
             return new LocationTag(((PlayerInteractAtEntityEvent) event).getClickedPosition());
@@ -116,7 +116,6 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
         }
         entity = new EntityTag(event.getRightClicked());
         item = new ItemTag(event.getPlayer().getItemInHand());
-        location = new LocationTag(event.getRightClicked().getLocation());
         this.event = event;
         fire(event);
     }

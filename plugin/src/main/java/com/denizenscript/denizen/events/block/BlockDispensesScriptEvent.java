@@ -7,6 +7,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseEvent;
@@ -36,7 +37,6 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     // <context.velocity> returns a LocationTag vector of the velocity the item will be shot at.
     //
     // @Determine
-    // Element(Decimal) (DEPRECATED) to multiply the velocity by the given amount.
     // LocationTag to set the velocity the item will be shot at.
     // ItemTag to set the item being shot.
     //
@@ -77,6 +77,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         if (ArgumentHelper.matchesDouble(determination)) {
+            Deprecations.blockDispensesItemDetermination.warn();
             event.setVelocity(event.getVelocity().multiply(ArgumentHelper.getDoubleFrom(determination)));
             return true;
         }

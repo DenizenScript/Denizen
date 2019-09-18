@@ -128,17 +128,6 @@ public class ItemBook implements Property {
                         .getObjectAttribute(attribute.fulfill(1));
             }
 
-            // Deprecated in favor of pages.escape_contents
-            if (attribute.startsWith("pages.escaped")) {
-                StringBuilder output = new StringBuilder();
-                for (String page : bookInfo.getPages()) {
-                    output.append(EscapeTagBase.escape(page)).append("|");
-                }
-                return new ListTag(output.length() > 0 ?
-                        output.substring(0, output.length() - 1) : output.toString())
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-
             // <--[tag]
             // @attribute <ItemTag.book.pages>
             // @returns ListTag
