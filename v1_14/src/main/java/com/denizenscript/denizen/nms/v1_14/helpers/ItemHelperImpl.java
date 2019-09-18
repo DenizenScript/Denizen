@@ -39,7 +39,7 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public void registerFurnaceRecipe(String keyName, ItemStack result, ItemStack ingredient, float exp, int time, String type) {
-        MinecraftKey key = new MinecraftKey("denizen", "furnace_recipe_" + keyName);
+        MinecraftKey key = new MinecraftKey("denizen", keyName);
         RecipeItemStack itemRecipe = new RecipeItemStack(Arrays.asList(new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(ingredient))).stream());
         itemRecipe.exact = true;
         RecipeCooking recipe;
@@ -60,7 +60,7 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public void registerShapelessRecipe(String keyName, ItemStack result, ItemStack[] ingredients) {
-        MinecraftKey key = new MinecraftKey("denizen", "shapeless_recipe_" + keyName);
+        MinecraftKey key = new MinecraftKey("denizen", keyName);
         ArrayList<RecipeItemStack> ingredientList = new ArrayList<>();
         for (ItemStack ingredient : ingredients) {
             RecipeItemStack itemRecipe = new RecipeItemStack(Arrays.asList(new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(ingredient))).stream());

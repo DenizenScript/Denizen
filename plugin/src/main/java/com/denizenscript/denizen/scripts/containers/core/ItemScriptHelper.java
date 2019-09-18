@@ -80,7 +80,9 @@ public class ItemScriptHelper implements Listener {
             }
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            NamespacedKey key = new NamespacedKey("denizen", "shaped_recipe_" + CoreUtilities.toLowerCase(container.getName()) + "_" + id);
+            String fullId = "shaped_recipe_" + CoreUtilities.toLowerCase(container.getName()) + "_" + id;
+            container.recipeIds.add("denizen:" + fullId);
+            NamespacedKey key = new NamespacedKey("denizen", fullId);
             ShapedRecipe recipe = new ShapedRecipe(key, container.getCleanReference().getItemStack());
             String shape1 = "ABC".substring(0, width);
             String shape2 = "DEF".substring(0, width);
@@ -96,6 +98,7 @@ public class ItemScriptHelper implements Listener {
                 recipe = recipe.shape(shape1);
             }
             for (int i = 0; i < ingredients.size(); i++) {
+
                 recipe.setIngredient(itemChars.charAt(i), new RecipeChoice.ExactChoice(ingredients.get(i).getItemStack().clone()));
             }
             Bukkit.addRecipe(recipe);
@@ -123,7 +126,9 @@ public class ItemScriptHelper implements Listener {
             for (int i = 0; i < input.length; i++) {
                 input[i] = ingredients.get(i).getItemStack().clone();
             }
-            NMSHandler.getItemHelper().registerShapelessRecipe(CoreUtilities.toLowerCase(container.getName()) + "_" + id, result, input);
+            String fullId = "shapeless_recipe_" + CoreUtilities.toLowerCase(container.getName()) + "_" + id;
+            container.recipeIds.add("denizen:" + fullId);
+            NMSHandler.getItemHelper().registerShapelessRecipe(fullId, result, input);
         }
         else {
             shapelessRecipesMap.put(container, ingredients);
@@ -139,7 +144,9 @@ public class ItemScriptHelper implements Listener {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             ItemStack result = container.getCleanReference().getItemStack().clone();
             ItemStack input = furnace_item.getItemStack().clone();
-            NMSHandler.getItemHelper().registerFurnaceRecipe(CoreUtilities.toLowerCase(container.getName()) + "_" + id, result, input, exp, time, type);
+            String fullId = "furnace_recipe_" + CoreUtilities.toLowerCase(container.getName()) + "_" + id;
+            container.recipeIds.add("denizen:" + fullId);
+            NMSHandler.getItemHelper().registerFurnaceRecipe(fullId, result, input, exp, time, type);
         }
         else {
             FurnaceRecipe recipe = new FurnaceRecipe(container.getCleanReference().getItemStack(), furnace_item.getMaterial().getMaterial(), furnace_item.getItemStack().getDurability());

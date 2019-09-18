@@ -16,6 +16,7 @@ import com.denizenscript.denizen.nms.util.jnbt.StringTag;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.Note;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
@@ -27,11 +28,13 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debuggable;
 import org.bukkit.Bukkit;
+import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
@@ -949,6 +952,34 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
                 return new ElementTag(((ItemTag) object).identifySimple()).getObjectAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <ItemTag.recipe_ids>
+        // @returns ListTag
+        // @description
+        // If the item is a scripted item, returns a list of all recipe IDs created by the item script.
+        // Others, returns a list of all recipe IDs that the server lists as capable of crafting the item.
+        // Returns a list in the Namespace:Key format, for example "minecraft:gold_nugget".
+        // -->
+        registerTag("recipe_ids", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                ItemTag item = (ItemTag) object;
+                ListTag list;
+                if (item.isItemscript()) {
+                    list = new ListTag(ItemScriptHelper.getItemScriptContainer(item.getItemStack()).recipeIds);
+                }
+                else {
+                    list = new ListTag();
+                    for (Recipe recipe : Bukkit.getRecipesFor(item.getItemStack())) {
+                        if (recipe instanceof Keyed) {
+                            list.add(((Keyed) recipe).getKey().toString());
+                        }
+                    }
+                }
+                return list.getObjectAttribute(attribute.fulfill(1));
             }
         });
 
