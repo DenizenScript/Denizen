@@ -652,6 +652,20 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         return equipmentList;
     }
 
+    public ItemTag getFuel() {
+        if (inventory instanceof FurnaceInventory) {
+            return new ItemTag(((FurnaceInventory) inventory).getFuel());
+        }
+        return null;
+    }
+
+    public ItemTag getSmelting() {
+        if (inventory instanceof FurnaceInventory) {
+            return new ItemTag(((FurnaceInventory) inventory).getSmelting());
+        }
+        return null;
+    }
+
     public InventoryType getInventoryType() {
         return inventory.getType();
     }
@@ -2183,15 +2197,20 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @attribute <InventoryTag.result>
         // @returns ItemTag
         // @description
-        // Returns the item currently in the result section of a crafting inventory.
+        // Returns the item currently in the result section of a crafting inventory or furnace inventory.
         // -->
         registerTag("result", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                if (!(((InventoryTag) object).inventory instanceof CraftingInventory)) {
+                ItemStack result;
+                if ((((InventoryTag) object).inventory instanceof CraftingInventory)) {
+                    result = ((CraftingInventory) ((InventoryTag) object).inventory).getResult();
+                }
+                else if ((((InventoryTag) object).inventory instanceof FurnaceInventory)) {
+                    result = ((FurnaceInventory) ((InventoryTag) object).inventory).getResult();
+                } else {
                     return null;
                 }
-                ItemStack result = ((CraftingInventory) ((InventoryTag) object).inventory).getResult();
                 if (result == null) {
                     return null;
                 }
@@ -2246,6 +2265,42 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     return null;
                 }
                 return new ElementTag(((AnvilInventory) ((InventoryTag) object).inventory).getRenameText()).getObjectAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <InventoryTag.fuel>
+        // @returns ItemTag
+        // @mechanism fuel
+        // @description
+        // Returns the item currently in the fuel section of a furnace inventory.
+        // -->
+        registerTag("fuel", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                ItemTag fuel = ((InventoryTag) object).getFuel();
+                if (fuel == null) {
+                    return null;
+                }
+                return fuel.getObjectAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <InventoryTag.smelting>
+        // @returns ItemTag
+        // @mechanism smelting
+        // @description
+        // Returns the item currently in the smelting section of a furnace inventory.
+        // -->
+        registerTag("smelting", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                ItemTag smelting = ((InventoryTag) object).getSmelting();
+                if (smelting == null) {
+                    return null;
+                }
+                return smelting.getObjectAttribute(attribute.fulfill(1));
             }
         });
 
