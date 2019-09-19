@@ -2327,18 +2327,61 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @name result
         // @input ItemTag
         // @description
-        // Sets the item in the result slot of this crafting inventory.
+        // Sets the item in the result slot of this crafting inventory or furnace inventory.
         // @tags
         // <InventoryTag.result>
         // -->
         if (mechanism.matches("result") && mechanism.requireObject(ItemTag.class)) {
-            if (!(inventory instanceof CraftingInventory)) {
-                Debug.echoError("Inventory is not a crafting inventory, cannot set result.");
-                return;
+            if (inventory instanceof CraftingInventory) {
+                CraftingInventory craftingInventory = (CraftingInventory) inventory;
+                craftingInventory.setResult(mechanism.valueAsType(ItemTag.class).getItemStack());
+                ((Player) inventory.getHolder()).updateInventory();
             }
-            CraftingInventory craftingInventory = (CraftingInventory) inventory;
-            craftingInventory.setResult(mechanism.valueAsType(ItemTag.class).getItemStack());
-            ((Player) inventory.getHolder()).updateInventory();
+            else if (inventory instanceof FurnaceInventory) {
+                FurnaceInventory furnaceInventory = (FurnaceInventory) inventory;
+                furnaceInventory.setResult(mechanism.valueAsType(ItemTag.class).getItemStack());
+            }
+            else {
+                Debug.echoError("Inventory is not a crafting inventory or furnace inventory, cannot set result.");
+            }
+        }
+
+        // <--[mechanism]
+        // @object InventoryTag
+        // @name fuel
+        // @input ItemTag
+        // @description
+        // Sets the item in the fuel slot of this furnace inventory.
+        // @tags
+        // <InventoryTag.fuel>
+        // -->
+        if (mechanism.matches("fuel") && mechanism.requireObject(ItemTag.class)) {
+            if (inventory instanceof FurnaceInventory) {
+                FurnaceInventory furnaceInventory = (FurnaceInventory) inventory;
+                furnaceInventory.setFuel(mechanism.valueAsType(ItemTag.class).getItemStack());
+            }
+            else {
+                Debug.echoError("Inventory is not a furnace inventory, cannot set fuel.");
+            }
+        }
+
+        // <--[mechanism]
+        // @object InventoryTag
+        // @name smelting
+        // @input ItemTag
+        // @description
+        // Sets the item in the smelting slot of this furnace inventory.
+        // @tags
+        // <InventoryTag.smelting>
+        // -->
+        if (mechanism.matches("smelting") && mechanism.requireObject(ItemTag.class)) {
+            if (inventory instanceof FurnaceInventory) {
+                FurnaceInventory furnaceInventory = (FurnaceInventory) inventory;
+                furnaceInventory.setSmelting(mechanism.valueAsType(ItemTag.class).getItemStack());
+            }
+            else {
+                Debug.echoError("Inventory is not a furnace inventory, cannot set smelting.");
+            }
         }
 
         // <--[mechanism]
