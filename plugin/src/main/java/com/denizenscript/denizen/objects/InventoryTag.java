@@ -2208,7 +2208,8 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 }
                 else if ((((InventoryTag) object).inventory instanceof FurnaceInventory)) {
                     result = ((FurnaceInventory) ((InventoryTag) object).inventory).getResult();
-                } else {
+                }
+                else {
                     return null;
                 }
                 if (result == null) {
