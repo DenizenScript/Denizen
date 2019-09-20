@@ -69,55 +69,48 @@ public class ItemScriptContainer extends ScriptContainer {
     //   - enchantment_name:level
     //   - ...
     //
-    //   # You can specify the items required to craft your item. For an empty slot, use "air".
-    //   # You are allowed to have non-3x3 shapes (can be any value 1-3 x 1-3, so for example 1x3, 2x1, and 2x2 are fine).
-    //   # Recipe internal IDs will be of the form "denizen:shaped_recipe_<script.name>_<id>" where ID is the recipe list index (starting at 1, counting up).
+    //   # You can optionally add crafting recipes for your item script.
     //   recipes:
     //       1:
-    //       - ItemTag|ItemTag|ItemTag
-    //       - ItemTag|ItemTag|ItemTag
-    //       - ItemTag|ItemTag|ItemTag
-    //       # Format of a 2x2 recipe
-    //       2:
-    //       - ItemTag|ItemTag
-    //       - ItemTag|ItemTag
-    //       # Format of a 1x1 recipe
-    //       3:
-    //       - ItemTag
-    //       # Add more recipes if you want.
-    //       4:
-    //       - ...
-    //
-    //   # You can specify a list of materials that make up a shapeless recipe.
-    //   # Note: This can overwrite existing shapeless recipes.
-    //   # Recipe internal IDs will be of the form "denizen:shapeless_recipe_<script.name>_<id>" where ID is the recipe list index (starting at 1, counting up).
-    //   shapeless_recipes:
-    //      1: ItemTag|...
-    //      # Add more shapeless recipes if you want.
-    //      2: ...
-    //
-    //   # You can specify a list of materials that make up a stonecutting recipe.
-    //   # Recipe internal IDs will be of the form "denizen:stonecutting_recipe_<script.name>_<id>" where ID is the recipe list index (starting at 1, counting up).
-    //   stonecutting_recipes:
-    //      1: ItemTag|...
-    //      # Add more stonecutting recipes if you want.
-    //      2: ...
-    //
-    //   # You can specify a material that can be smelted into your item.
-    //   # Note: This can overwrite existing furnace recipes.
-    //   # Recipe internal IDs will be of the form "denizen:furnace_recipe_<script.name>_<id>" where ID is the recipe list index (starting at 1, counting up).
-    //   furnace_recipes:
-    //      1:
-    //          # The input item
+    //           # The type can be: shaped, shapeless, stonecutting, furnace, blast, smoker, or campfire.
+    //           type: shaped
+    //           # The recipe can optionally have a custom internal recipe ID (for recipe books).
+    //           # If not specified, will be of the form "<type>_<script.name>_<id>" where ID is the recipe list index (starting at 1, counting up).
+    //           # IDs will always have the namespace "denizen". So, for the below, the full ID is "denizen:my_custom_item_id"
+    //           # Note that most users should not set a custom ID. If you choose to set a custom one, be careful to avoid duplicates or invalid text.
+    //           recipe_id: my_custom_item_id
+    //           # You can optional add a group as well. The default is "custom".
+    //           group: custom
+    //           # You need to specify the input for the recipe. The below is a sample of a 3x3 shaped recipe. Other recipe types have a different format.
+    //           # You are allowed to have non-3x3 shapes (can be any value 1-3 x 1-3, so for example 1x3, 2x1, and 2x2 are fine).
+    //           # For an empty slot, use "air".
+    //           input:
+    //           - ItemTag|ItemTag|ItemTag
+    //           - ItemTag|ItemTag|ItemTag
+    //           - ItemTag|ItemTag|ItemTag
+    //      # You can add as many as you want.
+    //      2:
+    //           # Sample of the format for a 2x2 recipe
+    //           type: shaped
+    //           input:
+    //           - ItemTag|ItemTag
+    //           - ItemTag|ItemTag
+    //      3:
+    //          # Shapeless recipes take a list of input items.
+    //          type: shapeless
+    //          input: ItemTag|...
+    //      4:
+    //          # Stonecutting recipes take exactly one input item.
+    //          type: stonecutting
     //          input: ItemTag
-    //          # The furnace type. Can be: Furnace (default), Blast, Smoker, or Campfire.
+    //      5:
+    //          # Furnace, blast, smoker, and campfire recipes take one input and have additional options.
     //          type: furnace
-    //          # The cook time (as a duration)
+    //          # Optionally specify the cook time as a duration (default 2s).
     //          cook_time: 1s
-    //          # The experience reward amount (if any)
+    //          # Optionally specify experience reward amount (default 0).
     //          experience: 5
-    //      # Add more furnace recipes if you want.
-    //      2: ...
+    //          input: ItemTag
     //
     //   # Set to true to not store the scriptID on the item, treating it as an item dropped by any other plugin.
     //   # NOTE: THIS IS NOT RECOMMENDED UNLESS YOU HAVE A SPECIFIC REASON TO USE IT.

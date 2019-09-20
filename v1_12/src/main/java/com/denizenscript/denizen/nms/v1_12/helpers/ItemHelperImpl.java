@@ -27,12 +27,12 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public void registerFurnaceRecipe(String keyName, ItemStack result, ItemStack ingredient, float exp, int time, String type) {
+    public void registerFurnaceRecipe(String keyName, String group, ItemStack result, ItemStack ingredient, float exp, int time, String type) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void registerShapelessRecipe(String keyName, ItemStack result, ItemStack[] ingredients) {
+    public void registerShapelessRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredients) {
         throw new UnsupportedOperationException();
     }
 

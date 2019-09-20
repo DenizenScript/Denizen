@@ -38,37 +38,37 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public void registerFurnaceRecipe(String keyName, ItemStack result, ItemStack ingredient, float exp, int time, String type) {
+    public void registerFurnaceRecipe(String keyName, String group, ItemStack result, ItemStack ingredient, float exp, int time, String type) {
         MinecraftKey key = new MinecraftKey("denizen", keyName);
         RecipeItemStack itemRecipe = new RecipeItemStack(Arrays.asList(new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(ingredient))).stream());
         itemRecipe.exact = true;
         RecipeCooking recipe;
         if (type.equalsIgnoreCase("smoker")) {
-            recipe = new RecipeSmoking(key, "custom", itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+            recipe = new RecipeSmoking(key, group, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
         }
         else if (type.equalsIgnoreCase("blast")) {
-            recipe = new RecipeBlasting(key, "custom", itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+            recipe = new RecipeBlasting(key, group, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
         }
         else if (type.equalsIgnoreCase("campfire")) {
-            recipe = new RecipeCampfire(key, "custom", itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+            recipe = new RecipeCampfire(key, group, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
         }
         else {
-            recipe = new FurnaceRecipe(key, "custom", itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+            recipe = new FurnaceRecipe(key, group, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
         }
         ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().addRecipe(recipe);
     }
 
     @Override
-    public void registerStonecuttingRecipe(String keyName, ItemStack result, ItemStack ingredient) {
+    public void registerStonecuttingRecipe(String keyName, String group, ItemStack result, ItemStack ingredient) {
         MinecraftKey key = new MinecraftKey("denizen", keyName);
         RecipeItemStack itemRecipe = new RecipeItemStack(Arrays.asList(new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(ingredient))).stream());
         itemRecipe.exact = true;
-        RecipeStonecutting recipe = new RecipeStonecutting(key, "custom", itemRecipe, CraftItemStack.asNMSCopy(result));
+        RecipeStonecutting recipe = new RecipeStonecutting(key, group, itemRecipe, CraftItemStack.asNMSCopy(result));
         ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().addRecipe(recipe);
     }
 
     @Override
-    public void registerShapelessRecipe(String keyName, ItemStack result, ItemStack[] ingredients) {
+    public void registerShapelessRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredients) {
         MinecraftKey key = new MinecraftKey("denizen", keyName);
         ArrayList<RecipeItemStack> ingredientList = new ArrayList<>();
         for (ItemStack ingredient : ingredients) {
@@ -76,7 +76,7 @@ public class ItemHelperImpl extends ItemHelper {
             itemRecipe.exact = true;
             ingredientList.add(itemRecipe);
         }
-        ShapelessRecipes recipe = new ShapelessRecipes(key, "custom", CraftItemStack.asNMSCopy(result), NonNullList.a(null, ingredientList.toArray(new RecipeItemStack[ingredientList.size()])));
+        ShapelessRecipes recipe = new ShapelessRecipes(key, group, CraftItemStack.asNMSCopy(result), NonNullList.a(null, ingredientList.toArray(new RecipeItemStack[ingredientList.size()])));
         ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().addRecipe(recipe);
     }
 

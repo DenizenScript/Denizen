@@ -15,6 +15,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptBuilder;
 import com.denizenscript.denizencore.tags.TagManager;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.*;
@@ -71,7 +72,7 @@ public class ItemScriptHelper implements Listener {
         return newId;
     }
 
-    public void registerShapedRecipe(ItemScriptContainer container, List<String> recipeList, int id) {
+    public void registerShapedRecipe(ItemScriptContainer container, List<String> recipeList, String internalId, String group) {
         for (int n = 0; n < recipeList.size(); n++) {
             recipeList.set(n, TagManager.tag(ScriptBuilder.stripLinePrefix(recipeList.get(n)), new BukkitTagContext(container.player, container.npc, new ScriptTag(container))));
         }
@@ -97,9 +98,9 @@ public class ItemScriptHelper implements Listener {
             }
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            NamespacedKey key = new NamespacedKey("denizen", getIdFor(container, "shaped_recipe", id));
+            NamespacedKey key = new NamespacedKey("denizen", internalId);
             ShapedRecipe recipe = new ShapedRecipe(key, container.getCleanReference().getItemStack());
-            recipe.setGroup("custom");
+            recipe.setGroup(group);
             String shape1 = "ABC".substring(0, width);
             String shape2 = "DEF".substring(0, width);
             String shape3 = "GHI".substring(0, width);
@@ -124,7 +125,7 @@ public class ItemScriptHelper implements Listener {
         }
     }
 
-    public void registerShapelessRecipe(ItemScriptContainer container, String shapelessString, int id) {
+    public void registerShapelessRecipe(ItemScriptContainer container, String shapelessString, String internalId, String group) {
         String list = TagManager.tag(shapelessString, new BukkitTagContext(container.player, container.npc, new ScriptTag(container)));
         List<ItemTag> ingredients = new ArrayList<>();
         for (String element : ListTag.valueOf(list)) {
@@ -142,14 +143,14 @@ public class ItemScriptHelper implements Listener {
             for (int i = 0; i < input.length; i++) {
                 input[i] = ingredients.get(i).getItemStack().clone();
             }
-            NMSHandler.getItemHelper().registerShapelessRecipe(getIdFor(container, "shapeless_recipe", id), result, input);
+            NMSHandler.getItemHelper().registerShapelessRecipe(internalId, group, result, input);
         }
         else {
             shapelessRecipesMap.put(container, ingredients);
         }
     }
 
-    public void registerFurnaceRecipe(ItemScriptContainer container, String furnaceItemString, float exp, int time, int id, String type) {
+    public void registerFurnaceRecipe(ItemScriptContainer container, String furnaceItemString, float exp, int time, String type, String internalId, String group) {
         ItemTag furnace_item = ItemTag.valueOf(furnaceItemString, container);
         if (furnace_item == null) {
             Debug.echoError("Invalid item '" + furnaceItemString + "', furnace recipe will not be registered for item script '" + container.getName() + "'.");
@@ -158,7 +159,7 @@ public class ItemScriptHelper implements Listener {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             ItemStack result = container.getCleanReference().getItemStack().clone();
             ItemStack input = furnace_item.getItemStack().clone();
-            NMSHandler.getItemHelper().registerFurnaceRecipe(getIdFor(container, "furnace_recipe", id), result, input, exp, time, type);
+            NMSHandler.getItemHelper().registerFurnaceRecipe(internalId, group, result, input, exp, time, type);
         }
         else {
             FurnaceRecipe recipe = new FurnaceRecipe(container.getCleanReference().getItemStack(), furnace_item.getMaterial().getMaterial(), furnace_item.getItemStack().getDurability());
@@ -167,7 +168,7 @@ public class ItemScriptHelper implements Listener {
         }
     }
 
-    public void registerStonecuttingRecipe(ItemScriptContainer container, String inputItemString, int id) {
+    public void registerStonecuttingRecipe(ItemScriptContainer container, String inputItemString, String internalId, String group) {
         if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
 
         }
@@ -178,7 +179,7 @@ public class ItemScriptHelper implements Listener {
         }
         ItemStack result = container.getCleanReference().getItemStack().clone();
         ItemStack input = furnace_item.getItemStack().clone();
-        NMSHandler.getItemHelper().registerStonecuttingRecipe(getIdFor(container, "stonecutting_recipe", id), result, input);
+        NMSHandler.getItemHelper().registerStonecuttingRecipe(internalId, group, result, input);
     }
 
     @EventHandler
@@ -188,50 +189,44 @@ public class ItemScriptHelper implements Listener {
         for (ItemScriptContainer container : item_scripts.values()) {
             if (container.contains("recipes")) {
                 YamlConfiguration section = container.getConfigurationSection("recipes");
-                int id = 1;
+                int id = 0;
                 for (StringHolder key : section.getKeys(false)) {
-                    registerShapedRecipe(container, section.getStringList(key.str), id++);
-                }
-            }
-            if (container.contains("shapeless_recipes")) {
-                YamlConfiguration section = container.getConfigurationSection("shapeless_recipes");
-                int id = 1;
-                for (StringHolder key : section.getKeys(false)) {
-                    registerShapelessRecipe(container, section.getString(key.str), id++);
-                }
-            }
-            if (container.contains("stonecutting_recipes")) {
-                YamlConfiguration section = container.getConfigurationSection("stonecutting_recipes");
-                int id = 1;
-                for (StringHolder key : section.getKeys(false)) {
-                    registerStonecuttingRecipe(container, section.getString(key.str), id++);
-                }
-            }
-            if (container.contains("furnace_recipes")) {
-                YamlConfiguration section = container.getConfigurationSection("furnace_recipes");
-                int id = 1;
-                for (StringHolder key : section.getKeys(false)) {
+                    id++;
                     YamlConfiguration subSection = section.getConfigurationSection(key.str);
-                    float exp = 0;
-                    int cookTime = 40;
-                    if (subSection.contains("experience")) {
-                        exp = Float.valueOf(subSection.getString("experience"));
+                    String type = CoreUtilities.toLowerCase(subSection.getString("type"));
+                    String internalId = subSection.contains("recipe_id") ? subSection.getString("recipe_id") : getIdFor(container, type + "_recipe", id);
+                    String group = subSection.contains("group") ? subSection.getString("group") : "custom";
+                    if (type.equals("shaped")) {
+                        registerShapedRecipe(container, subSection.getStringList("input"), internalId, group);
                     }
-                    if (subSection.contains("cook_time")) {
-                        cookTime = DurationTag.valueOf(subSection.getString("cook_time")).getTicksAsInt();
+                    else if (type.equals("shapeless")) {
+                        registerShapelessRecipe(container, subSection.getString("input"), internalId, group);
                     }
-                    registerFurnaceRecipe(container, subSection.getString("input"), exp, cookTime, id++, subSection.getString("type", "furnace"));
+                    else if (type.equals("stonecutting")) {
+                        registerStonecuttingRecipe(container, subSection.getString("input"), internalId, group);
+                    }
+                    else if (type.equals("furnace") || type.equals("blast") || type.equals("smoker") || type.equals("campfire")) {
+                        float exp = 0;
+                        int cookTime = 40;
+                        if (subSection.contains("experience")) {
+                            exp = Float.valueOf(subSection.getString("experience"));
+                        }
+                        if (subSection.contains("cook_time")) {
+                            cookTime = DurationTag.valueOf(subSection.getString("cook_time")).getTicksAsInt();
+                        }
+                        registerFurnaceRecipe(container, subSection.getString("input"), exp, cookTime, type, internalId, group);
+                    }
                 }
             }
             // Old script style
             if (container.contains("RECIPE")) {
-                registerShapedRecipe(container, container.getStringList("RECIPE"), 0);
+                registerShapedRecipe(container, container.getStringList("RECIPE"), getIdFor(container, "old_recipe", 0), "custom");
             }
             if (container.contains("SHAPELESS_RECIPE")) {
-                registerShapelessRecipe(container, container.getString("SHAPELESS_RECIPE"), 0);
+                registerShapelessRecipe(container, container.getString("SHAPELESS_RECIPE"), getIdFor(container, "old_shapeless", 0), "custom");
             }
             if (container.contains("FURNACE_RECIPE")) {
-                registerFurnaceRecipe(container, container.getString("FURNACE_RECIPE"), 0, 40, 0, "furnace");
+                registerFurnaceRecipe(container, container.getString("FURNACE_RECIPE"), 0, 40, "furnace", getIdFor(container, "old_furnace", 0), "custom");
             }
         }
     }
