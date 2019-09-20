@@ -213,6 +213,27 @@ public class ServerTagBase {
         }
 
         // <--[tag]
+        // @attribute <server.list_recipe_ids[(<type>)]>
+        // @returns ListTag
+        // @description
+        // Returns a list of all recipe IDs on the server.
+        // Returns a list in the Namespace:Key format, for example "minecraft:gold_nugget".
+        // Optionally, specify a recipe type (CRAFTING, FURNACE, COOKING, BLASTING, SHAPED, SHAPELESS, SMOKING, STONECUTTING)
+        // to limit to just recipes of that type.
+        // -->
+        if (attribute.startsWith("list_recipe_ids")) {
+            String type = attribute.hasContext(1) ? CoreUtilities.toLowerCase(attribute.getContext(1)) : null;
+            ListTag list = new ListTag();
+            Bukkit.recipeIterator().forEachRemaining((recipe) -> {
+                if (Utilities.isRecipeOfType(recipe, type) && recipe instanceof Keyed) {
+                    list.add(((Keyed) recipe).getKey().toString());
+                }
+            });
+            event.setReplaced(list.getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
         // @attribute <server.list_advancements>
         // @returns ListTag
         // @description

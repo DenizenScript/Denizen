@@ -23,6 +23,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.*;
 import org.bukkit.util.Vector;
 
 import java.io.File;
@@ -56,6 +57,18 @@ public class Utilities {
             }
         }
         return output.toString();
+    }
+
+    public static boolean isRecipeOfType(Recipe recipe, String type) {
+        return type == null || (
+                (type.equals("crafting") && (recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe)) ||
+                        (type.equals("furnace") && recipe instanceof FurnaceRecipe) ||
+                        (type.equals("cooking") && recipe instanceof CookingRecipe) ||
+                        (type.equals("blasting") && recipe instanceof BlastingRecipe) ||
+                        (type.equals("shaped") && recipe instanceof ShapedRecipe) ||
+                        (type.equals("shapeless") && recipe instanceof ShapelessRecipe) ||
+                        (type.equals("smoking") && recipe instanceof SmokingRecipe) ||
+                        (type.equals("stonecutting") && recipe instanceof StonecuttingRecipe));
     }
 
     public static boolean canReadFile(File f) {
