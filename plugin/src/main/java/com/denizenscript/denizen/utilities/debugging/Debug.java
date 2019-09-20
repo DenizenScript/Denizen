@@ -193,6 +193,7 @@ public class Debug {
     // <context.message> returns the error message.
     // <context.queue> returns the queue that caused the error, if any.
     // <context.script> returns the script that caused the error, if any.
+    // <context.line> returns the line number within the script file that caused the error, if any.
     //
     // @Determine
     // "CANCELLED" to stop the error from showing in the console.
@@ -229,6 +230,9 @@ public class Debug {
             }
             if (sourceScript != null) {
                 context.put("script", sourceScript);
+            }
+            if (sourceEntry != null) {
+                context.put("line", new ElementTag(sourceEntry.internal.lineNumber));
             }
             List<String> events = new ArrayList<>();
             events.add("script generates error");
@@ -361,10 +365,6 @@ public class Debug {
                 }
                 ex = ex.getCause();
                 first = false;
-            }
-            ScriptTag script = null;
-            if (source != null && source.getEntries().size() > 0 && source.getEntries().get(0).getScript() != null) {
-                script = source.getEntries().get(0).getScript();
             }
             echoError(source, errorMesage.toString(), false);
         }
