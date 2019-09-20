@@ -2,7 +2,6 @@ package com.denizenscript.denizen.objects.notable;
 
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -148,7 +147,7 @@ public class NotableManager {
 
             for (String notableRaw : section.getKeys(false)) {
                 String notable = EscapeTagBase.unEscape(notableRaw.replace("DOT", "."));
-                Notable obj = (Notable) ObjectFetcher.getObjectFrom(clazz, section.getString(notableRaw), Utilities.noDebugContext);
+                Notable obj = (Notable) ObjectFetcher.getObjectFrom(clazz, section.getString(notableRaw), CoreUtilities.noDebugContext);
                 if (obj != null) {
                     obj.makeUnique(notable);
                 }

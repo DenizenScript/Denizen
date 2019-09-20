@@ -11,7 +11,6 @@ import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
-import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -35,8 +34,6 @@ import java.util.List;
  * This class has utility methods for various tasks.
  */
 public class Utilities {
-
-    public static final TagContext noDebugContext = new BukkitTagContext(null, null, false, null, false, null);
 
     public static NamespacedKey parseNamespacedKey(String input) {
         int colonIndex = input.indexOf(':');

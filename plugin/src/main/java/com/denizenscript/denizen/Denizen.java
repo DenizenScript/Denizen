@@ -13,6 +13,7 @@ import com.denizenscript.denizen.scripts.commands.BukkitCommandRegistry;
 import com.denizenscript.denizen.scripts.containers.ContainerRegistry;
 import com.denizenscript.denizen.scripts.containers.core.*;
 import com.denizenscript.denizen.scripts.triggers.TriggerRegistry;
+import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.tags.core.ServerTagBase;
 import com.denizenscript.denizen.utilities.*;
 import com.denizenscript.denizen.utilities.blocks.OldMaterialsHelper;
@@ -42,6 +43,7 @@ import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.core.AdjustCommand;
 import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
 import com.denizenscript.denizencore.tags.TagManager;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.SlowWarning;
 import com.denizenscript.denizencore.utilities.text.ConfigUpdater;
 import org.bukkit.Bukkit;
@@ -136,6 +138,8 @@ public class Denizen extends JavaPlugin {
     public void onEnable() {
         try {
             versionTag = this.getDescription().getVersion();
+
+            CoreUtilities.noDebugContext = new BukkitTagContext(null, null, false, null, false, null);
 
             // Load Denizen's core
             DenizenCore.init(coreImplementation);
