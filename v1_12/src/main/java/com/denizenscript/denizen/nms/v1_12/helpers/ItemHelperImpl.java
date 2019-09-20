@@ -12,6 +12,7 @@ import net.minecraft.server.v1_12_R1.NBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -20,6 +21,11 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.HashMap;
 
 public class ItemHelperImpl extends ItemHelper {
+
+    @Override
+    public void removeRecipe(NamespacedKey key) {
+        throw new UnsupportedOperationException();
+    }
 
     @Override
     public void clearDenizenRecipes() {

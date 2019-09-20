@@ -13,9 +13,11 @@ import net.minecraft.server.v1_13_R2.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import org.bukkit.craftbukkit.v1_13_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_13_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_13_R2.util.CraftNamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -25,6 +27,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class ItemHelperImpl extends ItemHelper {
+
+    @Override
+    public void removeRecipe(NamespacedKey key) {
+        MinecraftKey nmsKey = CraftNamespacedKey.toMinecraft(key);
+        Object2ObjectLinkedOpenHashMap<MinecraftKey, IRecipe> recipeMap = ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().recipes;
+        recipeMap.remove(nmsKey);
+    }
 
     @Override
     public void clearDenizenRecipes() {

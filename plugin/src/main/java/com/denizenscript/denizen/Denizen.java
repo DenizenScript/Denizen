@@ -125,7 +125,9 @@ public class Denizen extends JavaPlugin {
         return notableManager;
     }
 
-    private BukkitWorldScriptHelper ws_helper;
+    public BukkitWorldScriptHelper worldScriptHelper;
+
+    public ItemScriptHelper itemScriptHelper;
 
     public final static long startTime = System.currentTimeMillis();
 
@@ -313,8 +315,8 @@ public class Denizen extends JavaPlugin {
         }
 
         try {
-            ws_helper = new BukkitWorldScriptHelper();
-            ItemScriptHelper is_helper = new ItemScriptHelper();
+            worldScriptHelper = new BukkitWorldScriptHelper();
+            itemScriptHelper = new ItemScriptHelper();
             InventoryScriptHelper in_helper = new InventoryScriptHelper();
             EntityScriptHelper es_helper = new EntityScriptHelper();
             CommandScriptHelper cs_helper = new CommandScriptHelper();
@@ -432,7 +434,7 @@ public class Denizen extends JavaPlugin {
                     Debug.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
 
                     // Fire the 'on Server Start' world event
-                    ws_helper.serverStartEvent();
+                    worldScriptHelper.serverStartEvent();
 
                     if (Settings.allowStupidx()) {
                         Debug.echoError("Don't screw with bad config values.");

@@ -33,11 +33,10 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class ItemScriptHelper implements Listener {
 
-    public static final Map<String, ItemScriptContainer> item_scripts = new ConcurrentHashMap<>(8, 0.9f, 1);
+    public static final Map<String, ItemScriptContainer> item_scripts = new HashMap<>();
     public static final Map<String, ItemScriptContainer> item_scripts_by_hash_id = new HashMap<>();
     public static final Map<String, ItemScriptContainer> recipeIdToItemScript = new HashMap<>();
 
@@ -182,9 +181,7 @@ public class ItemScriptHelper implements Listener {
         NMSHandler.getItemHelper().registerStonecuttingRecipe(internalId, group, result, input);
     }
 
-    @EventHandler
-    public void scriptReload(ScriptReloadEvent event) {
-
+    public void rebuildRecipes() {
         currentFurnaceRecipes.clear();
         for (ItemScriptContainer container : item_scripts.values()) {
             if (container.contains("recipes")) {
@@ -229,6 +226,12 @@ public class ItemScriptHelper implements Listener {
                 registerFurnaceRecipe(container, container.getString("FURNACE_RECIPE"), 0, 40, "furnace", getIdFor(container, "old_furnace", 0), "custom");
             }
         }
+    }
+
+
+    @EventHandler
+    public void scriptReload(ScriptReloadEvent event) {
+        rebuildRecipes();
     }
 
     public static boolean isItemscript(ItemStack item) {

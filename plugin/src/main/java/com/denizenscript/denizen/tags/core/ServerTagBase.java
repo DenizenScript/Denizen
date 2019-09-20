@@ -1691,6 +1691,7 @@ public class ServerTagBase {
     }
 
     public static void adjustServer(Mechanism mechanism) {
+
         // <--[mechanism]
         // @object server
         // @name delete_file
@@ -1749,6 +1750,36 @@ public class ServerTagBase {
                 se.stats.fires = 0;
                 se.stats.scriptFires = 0;
                 se.stats.nanoTimes = 0;
+            }
+        }
+
+        // <--[mechanism]
+        // @object server
+        // @name reset_recipes
+        // @input None
+        // @description
+        // Resets the server's recipe list to the default vanilla recipe list + item script recipes.
+        // @tags
+        // <server.list_recipe_ids[(<type>)]>
+        // -->
+        if (mechanism.matches("reset_recipes")) {
+            Bukkit.resetRecipes();
+            DenizenAPI.getCurrentInstance().itemScriptHelper.rebuildRecipes();
+        }
+
+        // <--[mechanism]
+        // @object server
+        // @name remove_recipes
+        // @input ListTag
+        // @description
+        // Removes a recipe or list of recipes from the server, in Namespace:Key format.
+        // @tags
+        // <server.list_recipe_ids[(<type>)]>
+        // -->
+        if (mechanism.matches("remove_recipes")) {
+            ListTag list = mechanism.valueAsType(ListTag.class);
+            for (String str : list) {
+                NMSHandler.getItemHelper().removeRecipe(Utilities.parseNamespacedKey(str));
             }
         }
 

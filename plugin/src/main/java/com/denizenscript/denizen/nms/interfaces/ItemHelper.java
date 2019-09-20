@@ -5,12 +5,16 @@ import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public abstract class ItemHelper {
+
+
+    public abstract void removeRecipe(NamespacedKey key);
 
     public abstract void clearDenizenRecipes();
 
