@@ -99,6 +99,7 @@ public class ItemScriptHelper implements Listener {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             NamespacedKey key = new NamespacedKey("denizen", getIdFor(container, "shaped_recipe", id));
             ShapedRecipe recipe = new ShapedRecipe(key, container.getCleanReference().getItemStack());
+            recipe.setGroup("custom");
             String shape1 = "ABC".substring(0, width);
             String shape2 = "DEF".substring(0, width);
             String shape3 = "GHI".substring(0, width);
