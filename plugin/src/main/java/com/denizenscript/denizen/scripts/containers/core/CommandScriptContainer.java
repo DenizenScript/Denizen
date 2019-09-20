@@ -27,9 +27,8 @@ public class CommandScriptContainer extends ScriptContainer {
     // @name Command Script Containers
     // @group Script Container System
     // @description
-    // Command script containers allow you to register commands with CraftBukkit via magic.
-    // This, in turn, allows the command to show up in the '/help' command, with some info
-    // on the command.
+    // Command script containers allow you to register your own custom commands to the server.
+    // This also allows the command to show up in the '/help' command, with some info on the command.
     //
     // Note that existing names or aliases from other plugins will be overridden.
     // If you want to run a script at the same time as an existing command, see <@link event on command>.
@@ -86,22 +85,23 @@ public class CommandScriptContainer extends ScriptContainer {
     //   allowed help:
     //   - determine <player.is_op||<context.server>>
     //
-    //   # The procedure-based script that will run when a player uses tab completion to
-    //   # predict words. This should return a ListTag of words that the player can tab through,
-    //   # based on the arguments they have already typed. Leaving this node out will result
-    //   # in using Bukkit's built-in tab completion.
-    //   # Available context:  <context.args> returns a list of input arguments.
+    //   # The procedure-based script that will run when a player uses tab completion to predict words.
+    //   # This should return a ListTag of words that the player can tab through, based on the arguments they have already typed.
+    //   #Leaving this node out will result in using Bukkit's built-in tab completion.
+    //   # Available context:
+    //   # <context.args> returns a list of input arguments.
     //   # <context.raw_args> returns all the arguments as raw text.
     //   # <context.server> returns whether the server is using tab completion (a player if false).
     //   # <context.alias> returns the command alias being used.
     //   tab complete:
-    //   - if !<player.is_op||<context.server>> queue clear
+    //   - if !<player.is_op||<context.server>>:
+    //     - stop
     //   - determine <server.list_online_players.parse[name].include[pizza|potato|anchovy].filter[starts_with[<context.args.last>]]>
     //
     //   # The script that will run when the command is executed.
-    //   # No, you do not need '- determine fulfilled' or anything of the sort, since
-    //   # the command is fully registered.
-    //   # Available context: <context.args> returns a list of input arguments.
+    //   # No, you do not need '- determine fulfilled' or anything of the sort, since the command is fully registered.
+    //   # Available context:
+    //   # <context.args> returns a list of input arguments.
     //   # <context.raw_args> returns all the arguments as raw text.
     //   # <context.server> returns whether the server is running the command (a player if false).
     //   # <context.alias> returns the command alias being used.
@@ -110,10 +110,10 @@ public class CommandScriptContainer extends ScriptContainer {
     //   script:
     //   - if !<player.is_op||<context.server>>:
     //     - narrate "<red>You do not have permission for that command."
-    //     - queue clear
+    //     - stop
     //   - narrate "Yay!"
     //   - narrate "My command worked!"
-    //   - narrate "And I typed '<context.raw_args>'!"
+    //   - narrate "And I typed '/<context.alias> <context.raw_args>'!"
     // </code>
     //
     // -->
