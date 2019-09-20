@@ -79,8 +79,9 @@ public class ItemScriptContainer extends ScriptContainer {
     //           # IDs will always have the namespace "denizen". So, for the below, the full ID is "denizen:my_custom_item_id"
     //           # Note that most users should not set a custom ID. If you choose to set a custom one, be careful to avoid duplicates or invalid text.
     //           recipe_id: my_custom_item_id
-    //           # You can optional add a group as well. The default is "custom".
-    //           group: custom
+    //           # You can optional add a group as well. If unspecified, the item will have no group.
+    //           # Groups are used to merge together similar recipes (in particular, multiple recipes for one item).
+    //           group: my_custom_group
     //           # You need to specify the input for the recipe. The below is a sample of a 3x3 shaped recipe. Other recipe types have a different format.
     //           # You are allowed to have non-3x3 shapes (can be any value 1-3 x 1-3, so for example 1x3, 2x1, and 2x2 are fine).
     //           # For an empty slot, use "air".

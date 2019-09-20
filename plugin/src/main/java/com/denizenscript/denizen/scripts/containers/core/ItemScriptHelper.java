@@ -195,7 +195,7 @@ public class ItemScriptHelper implements Listener {
                     YamlConfiguration subSection = section.getConfigurationSection(key.str);
                     String type = CoreUtilities.toLowerCase(subSection.getString("type"));
                     String internalId = subSection.contains("recipe_id") ? subSection.getString("recipe_id") : getIdFor(container, type + "_recipe", id);
-                    String group = subSection.contains("group") ? subSection.getString("group") : "custom";
+                    String group = subSection.contains("group") ? subSection.getString("group") : "";
                     if (type.equals("shaped")) {
                         registerShapedRecipe(container, subSection.getStringList("input"), internalId, group);
                     }
