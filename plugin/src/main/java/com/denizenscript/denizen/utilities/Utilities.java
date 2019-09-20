@@ -80,6 +80,10 @@ public class Utilities {
                     !f.getCanonicalPath().startsWith(new File(".").getCanonicalPath())) {
                 return false;
             }
+            if (!CoreUtilities.toLowerCase(Settings.fileLimitPath()).equals("none")
+                    && !f.getCanonicalPath().startsWith(new File("./" + Settings.fileLimitPath()).getCanonicalPath())) {
+                return false;
+            }
             return true;
         }
         catch (Exception ex) {
@@ -125,6 +129,7 @@ public class Utilities {
             }
             if (!CoreUtilities.toLowerCase(Settings.fileLimitPath()).equals("none")
                     && !f.getCanonicalPath().startsWith(new File("./" + Settings.fileLimitPath()).getCanonicalPath())) {
+                return false;
             }
             return isFileCanonicalStringSafeToWrite(lown) && isFileCanonicalStringSafeToWrite(lown + "/");
         }
