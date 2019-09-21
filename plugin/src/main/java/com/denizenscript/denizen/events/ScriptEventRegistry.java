@@ -102,6 +102,7 @@ public class ScriptEventRegistry {
         // Player events
         ScriptEvent.registerScriptEvent(new BiomeEnterExitScriptEvent());
         ScriptEvent.registerScriptEvent(new ChatScriptEvent());
+        ScriptEvent.registerScriptEvent(new ExperienceBottleBreaksScriptEvent());
         ScriptEvent.registerScriptEvent(new ItemRecipeFormedScriptEvent());
         ScriptEvent.registerScriptEvent(new ItemScrollScriptEvent());
         ScriptEvent.registerScriptEvent(new ListPingScriptEvent());
