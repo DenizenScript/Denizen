@@ -214,8 +214,13 @@ public class InventoryCommand extends AbstractCommand {
         }
 
         int slotId = SlotHelper.nameToIndex(slot.asString());
-        if (slotId == -1) {
-            Debug.echoError(scriptEntry.getResidingQueue(), "The input '" + slot.asString() + "' is not a valid slot!");
+        if (slotId < 0) {
+            if (slotId == -1) {
+                Debug.echoError(scriptEntry.getResidingQueue(), "The input '" + slot.asString() + "' is not a valid slot (unrecognized)!");
+            }
+            else {
+                Debug.echoError(scriptEntry.getResidingQueue(), "The input '" + slot.asString() + "' is not a valid slot (negative values are invalid)!");
+            }
             return;
         }
 
