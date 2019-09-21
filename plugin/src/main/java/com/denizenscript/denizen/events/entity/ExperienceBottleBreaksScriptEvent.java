@@ -29,8 +29,6 @@ public class ExperienceBottleBreaksScriptEvent extends BukkitScriptEvent impleme
     // <context.show_effect> returns whether the effect should be shown.
     //
     // @Determine
-    // "NO_EXPERIENCE" to specify that no experience orbs should be dropped.
-    // "NO_EFFECT" to specify that particles should be shown.
     // "EXPERIENCE:" + ElementTag(Number) to specify the amount of experience to be created.
     // "EFFECT:" + ElementTag(Boolean) to specify if the particle effects will be shown.
     //
@@ -41,7 +39,7 @@ public class ExperienceBottleBreaksScriptEvent extends BukkitScriptEvent impleme
     }
 
     public static ExperienceBottleBreaksScriptEvent instance;
-    private ExpBottleEvent event;
+    public ExpBottleEvent event;
 
     @Override
     public boolean couldMatch(ScriptPath path) {
@@ -61,13 +59,7 @@ public class ExperienceBottleBreaksScriptEvent extends BukkitScriptEvent impleme
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String lower = determinationObj.toString().toLowerCase();
-        if (lower.equals("no_experience")) {
-            event.setExperience(0);
-        }
-        else if (lower.equals("no_effect")) {
-            event.setShowEffect(false);
-        }
-        else if (lower.startsWith("experience:")) {
+        if (lower.startsWith("experience:")) {
             int experience = Argument.valueOf(lower.substring(11)).asElement().asInt();
             event.setExperience(experience);
         }
