@@ -917,6 +917,23 @@ public class WorldTag implements ObjectTag, Adjustable {
             }
         });
 
+        // <--[tag]
+        // @attribute <WorldTag.gamerule[<gamerule>]>
+        // @returns ElementTag
+        // @description
+        // returns the current value of the specified gamerule in the world.
+        // Note that the name is case-sensitive... so "doFireTick" is correct, but "dofiretick" is not.
+        // -->
+        registerTag("gamerule", new TagRunnable.ObjectForm() {
+            @Override
+            public ObjectTag run(Attribute attribute, ObjectTag object) {
+                GameRule rule = GameRule.getByName(attribute.getContext(1));
+                Object result = ((WorldTag) object).getWorld().getGameRuleValue(rule);
+                return new ElementTag(result == null ? "null" : result.toString())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        });
+
     }
 
     public static ObjectTagProcessor tagProcessor = new ObjectTagProcessor();

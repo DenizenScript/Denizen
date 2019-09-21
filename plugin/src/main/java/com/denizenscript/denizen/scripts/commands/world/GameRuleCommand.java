@@ -23,7 +23,7 @@ public class GameRuleCommand extends AbstractCommand {
     // Note: Be careful, gamerules are CASE SENSITIVE.
     //
     // @Tags
-    // TODO: Add tags and then document them!
+    // <WorldTag.gamerule[<gamerule>]>
     //
     // @Usage
     // Use to disable fire spreading in world "Adventure".
