@@ -16,7 +16,6 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
-import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
@@ -275,7 +274,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
 
     @Override
     public int getTagTimeout() {
-        return Settings.tagTimeout();
+        return 0; // TODO: Settings.tagTimeout();
     }
 
     @Override
