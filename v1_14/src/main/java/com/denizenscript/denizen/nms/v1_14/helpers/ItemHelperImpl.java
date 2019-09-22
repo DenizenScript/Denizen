@@ -21,6 +21,8 @@ import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_14_R1.util.CraftNamespacedKey;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -45,6 +47,11 @@ public class ItemHelperImpl extends ItemHelper {
                 }
             }
         }
+    }
+
+    @Override
+    public void setShapedRecipeIngredient(ShapedRecipe recipe, char c, ItemStack item) {
+        recipe.setIngredient(c, new RecipeChoice.ExactChoice(item));
     }
 
     @Override

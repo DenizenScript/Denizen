@@ -114,8 +114,7 @@ public class ItemScriptHelper implements Listener {
                 recipe = recipe.shape(shape1);
             }
             for (int i = 0; i < ingredients.size(); i++) {
-
-                recipe.setIngredient(itemChars.charAt(i), new RecipeChoice.ExactChoice(ingredients.get(i).getItemStack().clone()));
+                NMSHandler.getItemHelper().setShapedRecipeIngredient(recipe, itemChars.charAt(i), ingredients.get(i).getItemStack().clone());
             }
             Bukkit.addRecipe(recipe);
         }

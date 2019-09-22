@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -25,6 +26,8 @@ public abstract class ItemHelper {
     public abstract void registerFurnaceRecipe(String keyName, String group, ItemStack result, ItemStack ingredient, float exp, int time, String type);
 
     public abstract void registerShapelessRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredients);
+
+    public abstract void setShapedRecipeIngredient(ShapedRecipe recipe, char c, ItemStack item);
 
     public abstract String getInternalNameFromMaterial(Material material);
 

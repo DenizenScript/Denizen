@@ -15,6 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -29,6 +30,11 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public void clearDenizenRecipes() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setShapedRecipeIngredient(ShapedRecipe recipe, char c, ItemStack item) {
         throw new UnsupportedOperationException();
     }
 
