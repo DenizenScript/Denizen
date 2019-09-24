@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -11,6 +10,7 @@ import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Sound;
 
 import java.util.List;
@@ -122,54 +122,56 @@ public class PlaySoundCommand extends AbstractCommand {
 
         List<LocationTag> locations = (List<LocationTag>) scriptEntry.getObject("locations");
         List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("entities");
-        ElementTag sound = scriptEntry.getElement("sound");
-        ElementTag volume = scriptEntry.getElement("volume");
-        ElementTag pitch = scriptEntry.getElement("pitch");
+        ElementTag soundElement = scriptEntry.getElement("sound");
+        ElementTag volumeElement = scriptEntry.getElement("volume");
+        ElementTag pitchElement = scriptEntry.getElement("pitch");
         ElementTag custom = scriptEntry.getElement("custom");
         ElementTag sound_category = scriptEntry.getElement("sound_category");
 
         if (scriptEntry.dbCallShouldDebug()) {
-
             Debug.report(scriptEntry, getName(),
                     (locations != null ? ArgumentHelper.debugObj("locations", locations.toString()) : "") +
                             (players != null ? ArgumentHelper.debugObj("entities", players.toString()) : "") +
-                            sound.debug() +
-                            volume.debug() +
-                            pitch.debug() +
+                            soundElement.debug() +
+                            volumeElement.debug() +
+                            pitchElement.debug() +
                             custom.debug());
-
         }
+
+        String sound = soundElement.asString();
+        float volume = volumeElement.asFloat();
+        float pitch = pitchElement.asFloat();
+        String category = sound_category.asString().toUpperCase();
 
         try {
             if (locations != null) {
                 if (custom.asBoolean()) {
                     for (LocationTag location : locations) {
-                        NMSHandler.getSoundHelper().playSound(null, location, sound.asString(), volume.asFloat(),
-                                pitch.asFloat(), sound_category.asString());
+                        NMSHandler.getSoundHelper().playSound(null, location, sound, volume, pitch, category);
                     }
                 }
                 else {
                     for (LocationTag location : locations) {
-                        NMSHandler.getSoundHelper().playSound(null, location, Sound.valueOf(sound.asString().toUpperCase()),
-                                volume.asFloat(), pitch.asFloat(), sound_category.asString());
+                        NMSHandler.getSoundHelper().playSound(null, location, Sound.valueOf(sound.toUpperCase()), volume, pitch, category);
                     }
                 }
             }
             else {
                 for (PlayerTag player : players) {
                     if (custom.asBoolean()) {
-                        NMSHandler.getSoundHelper().playSound(player.getPlayerEntity(), player.getLocation(), sound.asString(),
-                                volume.asFloat(), pitch.asFloat(), sound_category.asString());
+                        NMSHandler.getSoundHelper().playSound(player.getPlayerEntity(), player.getLocation(), sound, volume, pitch, category);
                     }
                     else {
-                        NMSHandler.getSoundHelper().playSound(player.getPlayerEntity(), player.getLocation(),
-                                Sound.valueOf(sound.asString().toUpperCase()), volume.asFloat(), pitch.asFloat(), sound_category.asString());
+                        NMSHandler.getSoundHelper().playSound(player.getPlayerEntity(), player.getLocation(), Sound.valueOf(sound.toUpperCase()), volume, pitch, category);
                     }
                 }
             }
         }
         catch (Exception e) {
             Debug.echoDebug(scriptEntry, "Unable to play sound.");
+            if (Debug.verbose) {
+                Debug.echoError(e);
+            }
         }
     }
 }
