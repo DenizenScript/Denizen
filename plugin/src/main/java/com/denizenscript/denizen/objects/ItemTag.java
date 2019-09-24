@@ -97,21 +97,15 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
     }
 
     public static ItemTag valueOf(String string, PlayerTag player, NPCTag npc) {
-        return valueOf(string, new BukkitTagContext(player, null, null));
+        return valueOf(string, new BukkitTagContext(player, npc, null));
     }
 
     public static ItemTag valueOf(String string, Debuggable debugMe) {
-        nope = debugMe != null && !debugMe.shouldDebug();
-        ItemTag tmp = valueOf(string, null, null);
-        nope = false;
-        return tmp;
+        return valueOf(string, new BukkitTagContext(null, null, false, null, debugMe == null || debugMe.shouldDebug(), null));
     }
 
     public static ItemTag valueOf(String string, boolean debugMe) {
-        nope = !debugMe;
-        ItemTag tmp = valueOf(string, null, null);
-        nope = false;
-        return tmp;
+        return valueOf(string, new BukkitTagContext(null, null, false, null, debugMe, null));
     }
 
     @Fetchable("i")
@@ -186,7 +180,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
                 String material = m.group(1).toUpperCase();
 
                 if (ArgumentHelper.matchesInteger(material)) {
-                    if (!nope) {
+                    if (context == null || context.debug) {
                         Deprecations.materialIds.warn();
                     }
                     stack = new ItemTag(Integer.valueOf(material));
@@ -209,23 +203,19 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
                 return stack;
             }
             catch (Exception e) {
-                if (!string.equalsIgnoreCase("none") && !nope) {
+                if (!string.equalsIgnoreCase("none") && (context == null || context.debug)) {
                     Debug.log("Does not match a valid item ID or material: " + string);
                 }
             }
         }
 
-        if (!nope) {
+        if (context == null || context.debug) {
             Debug.log("valueOf ItemTag returning null: " + string);
         }
 
         // No match! Return null.
         return null;
     }
-
-    // :( boolean for technicality, can be fixed
-    // by making matches() method better.
-    public static boolean nope = false;
 
 
     public static boolean matches(String arg) {
@@ -248,14 +238,9 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
             return true;
         }
 
-        // TODO: Make this better. Probably creating some unnecessary
-        // objects by doing this :(
-        nope = true;
-        if (valueOf(arg, null, null) != null) {
-            nope = false;
+        if (valueOf(arg, CoreUtilities.noDebugContext) != null) {
             return true;
         }
-        nope = false;
         return false;
     }
 
