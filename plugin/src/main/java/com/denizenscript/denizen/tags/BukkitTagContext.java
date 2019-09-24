@@ -13,7 +13,7 @@ public class BukkitTagContext extends TagContext {
     public final NPCTag npc;
 
     public BukkitTagContext(PlayerTag player, NPCTag npc, ScriptTag script) {
-        super(false, script.getContainer().shouldDebug(), null, script);
+        super(false, script == null || script.getContainer().shouldDebug(), null, script);
         this.player = player;
         this.npc = npc;
     }
