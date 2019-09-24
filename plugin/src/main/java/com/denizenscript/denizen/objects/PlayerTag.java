@@ -1131,7 +1131,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerTag("location", new TagRunnable.ObjectForm() {
             @Override
             public ObjectTag run(Attribute attribute, ObjectTag object) {
-                if (((PlayerTag) object).isOnline()) {
+                if (((PlayerTag) object).isOnline() && !((PlayerTag) object).getPlayerEntity().isDead()) {
                     return new EntityTag(((PlayerTag) object).getPlayerEntity()).getObjectAttribute(attribute);
                 }
                 return ((PlayerTag) object).getLocation().getObjectAttribute(attribute.fulfill(1));
