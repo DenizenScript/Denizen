@@ -50,7 +50,8 @@ public class MapCommand extends AbstractCommand {
     //
     // @Usage
     // Use to add an image with the top-left corner at the center of a new map
-    // - map new:WorldTag image:my_map_images/my_center_image.png x:64 y:64
+    // - map new:WorldTag image:my_map_images/my_center_image.png x:64 y:64 save:map
+    // - give filled_map[map=<entry[map].created_map>]
     //
     // @Usage
     // Reset map to have the center at the player's location
