@@ -93,20 +93,11 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
 
 
     public static ItemTag valueOf(String string) {
-        return valueOf(string, null, null);
+        return valueOf(string, null);
     }
 
-    @Fetchable("i")
-    public static ItemTag valueOf(String string, TagContext context) {
-        if (context == null) {
-            return valueOf(string, null, null);
-        }
-        else {
-            nope = !context.debug;
-            ItemTag tmp = valueOf(string, ((BukkitTagContext) context).player, ((BukkitTagContext) context).npc);
-            nope = false;
-            return tmp;
-        }
+    public static ItemTag valueOf(String string, PlayerTag player, NPCTag npc) {
+        return valueOf(string, new BukkitTagContext(player, null, null));
     }
 
     public static ItemTag valueOf(String string, Debuggable debugMe) {
@@ -123,17 +114,8 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         return tmp;
     }
 
-    /**
-     * Gets a Item Object from a string form.
-     *
-     * @param string The string or dScript argument String
-     * @param player The PlayerTag to be used for player contexts
-     *               where applicable.
-     * @param npc    The NPCTag to be used for NPC contexts
-     *               where applicable.
-     * @return an Item, or null if incorrectly formatted
-     */
-    public static ItemTag valueOf(String string, PlayerTag player, NPCTag npc) {
+    @Fetchable("i")
+    public static ItemTag valueOf(String string, TagContext context) {
         if (string == null || string.equals("")) {
             return null;
         }
@@ -145,7 +127,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         // Handle objects with properties through the object fetcher
         m = ObjectFetcher.DESCRIBED_PATTERN.matcher(string);
         if (m.matches()) {
-            return ObjectFetcher.getObjectFrom(ItemTag.class, string, new BukkitTagContext(player, npc, false, null, !nope, null));
+            return ObjectFetcher.getObjectFrom(ItemTag.class, string, context);
         }
 
         ////////
@@ -177,12 +159,11 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
                 if (ScriptRegistry.containsScript(m.group(1), ItemScriptContainer.class)) {
                     ItemScriptContainer isc = ScriptRegistry.getScriptContainerAs(m.group(1), ItemScriptContainer.class);
                     // TODO: If a script does not contain tags, get the clean reference here.
-                    stack = isc.getItemFrom(player, npc);
+                    stack = isc.getItemFrom(context == null ? null : (BukkitTagContext) context);
                 }
                 else if (ScriptRegistry.containsScript(m.group(1), BookScriptContainer.class)) {
                     // Get book from script
-                    stack = ScriptRegistry.getScriptContainerAs
-                            (m.group(1), BookScriptContainer.class).getBookFrom(player, npc);
+                    stack = ScriptRegistry.getScriptContainerAs (m.group(1), BookScriptContainer.class).getBookFrom(context == null ? null : (BukkitTagContext) context);
                 }
 
                 if (stack != null) {

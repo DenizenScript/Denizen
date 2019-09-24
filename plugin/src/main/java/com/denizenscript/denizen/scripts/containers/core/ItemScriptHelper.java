@@ -74,7 +74,7 @@ public class ItemScriptHelper implements Listener {
 
     public void registerShapedRecipe(ItemScriptContainer container, ItemStack item, List<String> recipeList, String internalId, String group) {
         for (int n = 0; n < recipeList.size(); n++) {
-            recipeList.set(n, TagManager.tag(ScriptBuilder.stripLinePrefix(recipeList.get(n)), new BukkitTagContext(container.player, container.npc, new ScriptTag(container))));
+            recipeList.set(n, TagManager.tag(ScriptBuilder.stripLinePrefix(recipeList.get(n)), new BukkitTagContext(null, null, new ScriptTag(container))));
         }
         List<ItemTag> ingredients = new ArrayList<>();
         int width = 1;
@@ -125,7 +125,7 @@ public class ItemScriptHelper implements Listener {
     }
 
     public void registerShapelessRecipe(ItemScriptContainer container, ItemStack item, String shapelessString, String internalId, String group) {
-        String list = TagManager.tag(shapelessString, new BukkitTagContext(container.player, container.npc, new ScriptTag(container)));
+        String list = TagManager.tag(shapelessString, new BukkitTagContext(null, null, new ScriptTag(container)));
         List<ItemTag> ingredients = new ArrayList<>();
         for (String element : ListTag.valueOf(list)) {
             ItemTag ingredient = ItemTag.valueOf(element.replaceAll("[iImM]@", ""), container);
@@ -649,7 +649,7 @@ public class ItemScriptHelper implements Listener {
     public ItemTag getSpecialRecipeResult(ItemStack[] matrix, Player player) {
         Map.Entry<ItemScriptContainer, List<ItemTag>> recipeEntry = getSpecialRecipeEntry(matrix);
         if (recipeEntry != null) {
-            return recipeEntry.getKey().getItemFrom(PlayerTag.mirrorBukkitPlayer(player), null);
+            return recipeEntry.getKey().getItemFrom(new BukkitTagContext(PlayerTag.mirrorBukkitPlayer(player), null, null));
         }
         return null;
     }
@@ -671,7 +671,7 @@ public class ItemScriptHelper implements Listener {
         // Proceed only if the result was not null
         if (recipeEntry != null) {
             List<ItemTag> recipe = recipeEntry.getValue();
-            ItemTag result = recipeEntry.getKey().getItemFrom(PlayerTag.mirrorBukkitPlayer(player), null);
+            ItemTag result = recipeEntry.getKey().getItemFrom(new BukkitTagContext(PlayerTag.mirrorBukkitPlayer(player), null, null));
 
             // In a shift click, the amount of the resulting ItemTag should
             // be based on the amount of the least numerous ingredient multiple,

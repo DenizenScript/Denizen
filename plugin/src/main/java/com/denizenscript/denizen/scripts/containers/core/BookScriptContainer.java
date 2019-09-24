@@ -1,8 +1,6 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.objects.NPCTag;
-import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.MaterialCompat;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
@@ -52,21 +50,24 @@ public class BookScriptContainer extends ScriptContainer {
     }
 
     public ItemTag getBookFrom() {
-        return getBookFrom(null, null);
+        return getBookFrom(null);
     }
 
-    public ItemTag getBookFrom(PlayerTag player, NPCTag npc) {
+    public ItemTag getBookFrom(BukkitTagContext context) {
         ItemTag stack = new ItemTag(Material.WRITTEN_BOOK);
-        return writeBookTo(stack, player, npc);
+        return writeBookTo(stack, context);
     }
 
-    public ItemTag writeBookTo(ItemTag book, PlayerTag player, NPCTag npc) {
+    public ItemTag writeBookTo(ItemTag book, BukkitTagContext context) {
+        if (context == null) {
+            context = new BukkitTagContext(null, null, new ScriptTag(this));
+        }
         // Get current ItemMeta from the book
         BookMeta bookInfo = (BookMeta) book.getItemStack().getItemMeta();
 
         if (contains("TITLE")) {
             String title = getString("TITLE");
-            title = TagManager.tag(title, new BukkitTagContext(player, npc, new ScriptTag(this)));
+            title = TagManager.tag(title, context);
             bookInfo.setTitle(title);
         }
 
@@ -78,7 +79,7 @@ public class BookScriptContainer extends ScriptContainer {
 
         if (contains("AUTHOR")) {
             String author = getString("AUTHOR");
-            author = TagManager.tag(author, new BukkitTagContext(player, npc, new ScriptTag(this)));
+            author = TagManager.tag(author, context);
             bookInfo.setAuthor(author);
         }
 
@@ -86,7 +87,7 @@ public class BookScriptContainer extends ScriptContainer {
             List<String> pages = getStringList("TEXT");
 
             for (String page : pages) {
-                page = TagManager.tag(page, new BukkitTagContext(player, npc, new ScriptTag(this)));
+                page = TagManager.tag(page, context);
                 bookInfo.addPage(page);
             }
         }

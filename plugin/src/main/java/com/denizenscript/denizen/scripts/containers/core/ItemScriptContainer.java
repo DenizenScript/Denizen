@@ -3,8 +3,6 @@ package com.denizenscript.denizen.scripts.containers.core;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.nbt.LeatherColorer;
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.objects.NPCTag;
-import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -130,8 +128,6 @@ public class ItemScriptContainer extends ScriptContainer {
     //
     // -->
 
-    public NPCTag npc = null;
-    public PlayerTag player = null;
     public boolean bound = false;
     String hash = "";
 
@@ -160,21 +156,23 @@ public class ItemScriptContainer extends ScriptContainer {
     }
 
     public ItemTag getItemFrom() {
-        return getItemFrom(null, null);
+        return getItemFrom(null);
     }
 
     boolean isProcessing = false;
 
-    public ItemTag getItemFrom(PlayerTag player, NPCTag npc) {
+    public ItemTag getItemFrom(BukkitTagContext context) {
         if (isProcessing) {
             Debug.echoError("Item script contains (or chains to) a reference to itself. Cannot process.");
             return null;
+        }
+        if (context == null) {
+            context = new BukkitTagContext(null, null, new ScriptTag(this));
         }
         // Try to use this script to make an item.
         ItemTag stack = null;
         isProcessing = true;
         try {
-            BukkitTagContext context = new BukkitTagContext(player, npc, new ScriptTag(this));
             // Check validity of material
             if (contains("MATERIAL")) {
                 String material = TagManager.tag(getString("MATERIAL"), context);
@@ -219,7 +217,7 @@ public class ItemScriptContainer extends ScriptContainer {
 
             // Set if the object is bound to the player
             if (contains("BOUND")) {
-                Deprecations.boundWarning.warn();
+                Deprecations.boundWarning.warn(context);
                 bound = Boolean.valueOf(TagManager.tag(getString("BOUND"), context));
             }
 
@@ -277,7 +275,7 @@ public class ItemScriptContainer extends ScriptContainer {
                         .getScriptContainer(TagManager.tag(getString("BOOK"),
                                 context).replace("s@", ""));
 
-                stack = book.writeBookTo(stack, player, npc);
+                stack = book.writeBookTo(stack, context);
             }
 
             stack.setItemScript(this);
@@ -292,13 +290,5 @@ public class ItemScriptContainer extends ScriptContainer {
         }
 
         return stack;
-    }
-
-    public void setNPC(NPCTag npc) {
-        this.npc = npc;
-    }
-
-    public void setPlayer(PlayerTag player) {
-        this.player = player;
     }
 }
