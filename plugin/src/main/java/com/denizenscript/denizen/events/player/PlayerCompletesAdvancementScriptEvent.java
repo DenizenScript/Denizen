@@ -18,7 +18,7 @@ public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent imp
     // @Events
     // player completes advancement
     //
-    // @Regex ^on player completes advancement?$
+    // @Regex ^on player completes advancement$
     //
     // @Triggers when a player has completed all criteria in an advancement.
     //
