@@ -63,6 +63,7 @@ public class MapImage extends MapObject {
         if (actualFile == null) {
             actualFile = DenizenMapManager.getActualFile(fileTag);
             if (actualFile == null) {
+                disabled = true;
                 return;
             }
             imageIcon = new ImageIcon(actualFile);
