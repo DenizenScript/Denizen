@@ -511,7 +511,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // @returns ElementTag(Boolean)
         // @group properties
         // @description
-        // Returns whether the material is a is_directional material.
+        // Returns whether the material is a directional material.
         // When this returns true, <@link tag MaterialTag.direction>, <@link tag MaterialTag.valid_directions>,
         // and <@link mechanism MaterialTag.direction> are accessible.
         // -->
