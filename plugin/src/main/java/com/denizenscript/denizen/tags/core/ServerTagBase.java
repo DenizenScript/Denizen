@@ -1723,7 +1723,7 @@ public class ServerTagBase {
         }
 
         if (mechanism.matches("redirect_logging") && mechanism.hasValue()) {
-            Deprecations.serverRedirectLogging.warn();
+            Deprecations.serverRedirectLogging.warn(mechanism.context);
             if (!Settings.allowConsoleRedirection()) {
                 Debug.echoError("Console redirection disabled by administrator.");
                 return;
