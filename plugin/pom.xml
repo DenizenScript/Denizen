@@ -29,13 +29,6 @@
             <version>${dcore.version}</version>
             <scope>compile</scope>
         </dependency>
-        <!-- NMS Modules -->
-        <dependency>
-            <groupId>com.denizenscript</groupId>
-            <artifactId>denizen-nmshandler</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
         <!-- Basic dependencies -->
         <dependency>
             <groupId>net.citizensnpcs</groupId>
