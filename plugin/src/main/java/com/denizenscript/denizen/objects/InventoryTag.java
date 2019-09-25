@@ -1325,7 +1325,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 if (!attribute.hasContext(1)) {
                     return null;
                 }
-                List<ItemTag> items = ListTag.valueOf(attribute.getContext(1)).filter(ItemTag.class, attribute.getScriptEntry());
+                List<ItemTag> items = ListTag.valueOf(attribute.getContext(1)).filter(ItemTag.class, attribute.context, !attribute.hasAlternative());
                 if (items == null || items.isEmpty()) {
                     return null;
                 }
@@ -1795,7 +1795,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     qty = attribute.getIntContext(2);
                     attribs = 2;
                 }
-                List<ItemTag> contains = list.filter(ItemTag.class, attribute.getScriptEntry());
+                List<ItemTag> contains = list.filter(ItemTag.class, attribute.context, !attribute.hasAlternative());
                 if (contains.size() == list.size()) {
                     for (ItemTag item : contains) {
                         if (!((InventoryTag) object).containsItem(item, qty)) {
@@ -1838,7 +1838,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     qty = attribute.getIntContext(2);
                     attribs = 2;
                 }
-                List<ItemTag> contains = list.filter(ItemTag.class, attribute.getScriptEntry());
+                List<ItemTag> contains = list.filter(ItemTag.class, attribute.context, !attribute.hasAlternative());
                 if (!contains.isEmpty()) {
                     for (ItemTag item : contains) {
                         if (((InventoryTag) object).containsItem(item, qty)) {

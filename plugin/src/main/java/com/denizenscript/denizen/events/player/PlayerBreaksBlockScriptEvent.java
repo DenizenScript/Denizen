@@ -103,7 +103,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         if (Argument.valueOf(determination).matchesArgumentList(ItemTag.class)) {
             cancelled = true;
             block.setType(Material.AIR);
-            for (ItemTag newItem : ListTag.valueOf(determination).filter(ItemTag.class, path.container)) {
+            for (ItemTag newItem : ListTag.valueOf(determination).filter(ItemTag.class, path.container, true)) {
                 block.getWorld().dropItemNaturally(block.getLocation(), newItem.getItemStack()); // Drop each item
             }
             return true;

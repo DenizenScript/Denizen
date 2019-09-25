@@ -69,6 +69,9 @@ public class TitleCommand extends AbstractCommand {
                     && arg.matchesArgumentList(PlayerTag.class)) {
                 scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
+            else {
+                arg.reportUnhandled();
+            }
 
         }
 

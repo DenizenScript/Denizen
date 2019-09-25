@@ -157,7 +157,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             drops.clear();
             dropItems = new ArrayList<>();
             ListTag drops_list = ListTag.valueOf(determination);
-            drops_list.filter(ItemTag.class, path.container);
+            drops_list.filter(ItemTag.class, path.container, true);
             for (String drop : drops_list) {
                 ItemTag item = ItemTag.valueOf(drop, path.container);
                 if (item != null) {

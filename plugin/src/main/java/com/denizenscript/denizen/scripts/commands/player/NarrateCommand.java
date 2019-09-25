@@ -22,14 +22,14 @@ public class NarrateCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Narrate
-    // @Syntax narrate [<text>] (targets:<player>|...) (format:<name>)
+    // @Syntax narrate [<text>] (targets:<player>|...) (format:<script>)
     // @Required 1
     // @Short Shows some text to the player.
     // @Group player
     //
     // @Description
     // Prints some text into the target's chat area. If no target is specified it will default to the attached player
-    // or the console. Accepts the 'format:<name>' argument, which will reformat the text according to the specified
+    // or the console. Accepts the 'format:<script>' argument, which will reformat the text according to the specified
     // format script.
     //
     // @Tags

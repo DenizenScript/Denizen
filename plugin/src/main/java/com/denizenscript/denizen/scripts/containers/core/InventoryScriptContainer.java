@@ -207,7 +207,6 @@ public class InventoryScriptContainer extends ScriptContainer {
                 inventory.setContents(finalItems);
             }
             if (contains("PROCEDURAL ITEMS")) {
-                // TODO: Document this feature!
                 if (inventory == null) {
                     size = InventoryType.CHEST.getDefaultSize();
                     inventory = new InventoryTag(size, contains("TITLE") ? TagManager.tag(getString("TITLE"), context) : "Chest");
@@ -228,7 +227,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                         ListTag list = ListTag.getListFor(queue.determinations.getObject(0));
                         if (list != null) {
                             int x = 0;
-                            for (ItemTag item : list.filter(ItemTag.class, this)) {
+                            for (ItemTag item : list.filter(ItemTag.class, this, true)) {
                                 while (x < filledSlots.length && filledSlots[x]) {
                                     x++;
                                 }

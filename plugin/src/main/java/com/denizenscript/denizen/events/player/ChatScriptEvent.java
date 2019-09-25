@@ -128,7 +128,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
             else if (lower.startsWith("recipients:")) {
                 String rec_new = determination.substring("recipients:".length());
                 ListTag recs = ListTag.valueOf(rec_new);
-                List<PlayerTag> players = recs.filter(PlayerTag.class, path.container);
+                List<PlayerTag> players = recs.filter(PlayerTag.class, path.container, true);
                 Set<Player> recipients;
                 if (pcEvent != null) {
                     recipients = pcEvent.getRecipients();
