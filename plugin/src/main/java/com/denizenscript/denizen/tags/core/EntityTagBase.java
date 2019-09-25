@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.tags.core;
 
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizencore.objects.TagRunnable;
+import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;

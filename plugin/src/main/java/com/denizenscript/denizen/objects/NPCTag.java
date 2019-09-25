@@ -7,6 +7,7 @@ import com.denizenscript.denizen.scripts.containers.core.InteractScriptHelper;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
+import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;

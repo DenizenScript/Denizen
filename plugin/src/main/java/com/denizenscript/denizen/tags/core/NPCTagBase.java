@@ -12,7 +12,7 @@ import com.denizenscript.denizen.npc.traits.AssignmentTrait;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.events.OldEventManager;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.TagRunnable;
+import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;

@@ -18,6 +18,7 @@ import com.denizenscript.denizencore.scripts.commands.Holdable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
+import com.denizenscript.denizencore.tags.TagRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
