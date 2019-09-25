@@ -1557,7 +1557,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                         return null;
                     }
 
-                    return new ElementTag(Depends.permissions.has((World) null, ((PlayerTag) object).getName(), permission)) // TODO: Vault UUID support?
+                    return new ElementTag(Depends.permissions.playerHas(null, ((PlayerTag) object).getOfflinePlayer(), permission))
                             .getObjectAttribute(attribute.fulfill(2));
                 }
 
@@ -1580,13 +1580,17 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                         return null;
                     }
 
-                    return new ElementTag(Depends.permissions.has(attribute.getContext(2), ((PlayerTag) object).getName(), permission)) // TODO: Vault UUID support?
+                    return new ElementTag(Depends.permissions.playerHas(attribute.getContext(2), ((PlayerTag) object).getOfflinePlayer(), permission))
                             .getObjectAttribute(attribute.fulfill(2));
                 }
 
                 // Permission in current world
                 else if (((PlayerTag) object).isOnline()) {
                     return new ElementTag(((PlayerTag) object).getPlayerEntity().hasPermission(permission))
+                            .getObjectAttribute(attribute.fulfill(1));
+                }
+                else if (Depends.permissions != null) {
+                    return new ElementTag(Depends.permissions.playerHas(null, ((PlayerTag) object).getOfflinePlayer(), permission))
                             .getObjectAttribute(attribute.fulfill(1));
                 }
                 return null;
