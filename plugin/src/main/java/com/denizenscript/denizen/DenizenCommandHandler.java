@@ -17,6 +17,7 @@ import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
+import com.denizenscript.denizencore.utilities.debugging.FutureWarning;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -141,6 +142,7 @@ public class DenizenCommandHandler {
     // '-n' enables/disables debug trimming. When enabled, messages longer than 512 characters will be 'snipped'.
     // '-i' enables/disables source information. When enabled, debug will show where it came from (when possible).
     // '-p' enables/disables packet debug logging. When enabled, all packets sent to players (from anywhere) will be logged to console.
+    // '-f' enables/disables showing of future warnings. When enabled, future warnings (such as upcoming deprecations) will be displayed in console logs.
     //
     // The debugger also allows the targeting of specific scripts by using the '--filter script_name' argument. For
     // example: /denizen debug --filter 'my script|my other script' will instruct the debugger to only debug the
@@ -156,7 +158,7 @@ public class DenizenCommandHandler {
     @Command(
             aliases = {"denizen"}, usage = "debug",
             desc = "Toggles debug mode for Denizen.", modifiers = {"debug", "de", "db", "dbug"},
-            min = 1, max = 5, permission = "denizen.debug", flags = "scebrxovnip")
+            min = 1, max = 5, permission = "denizen.debug", flags = "scebrxovnipf")
     public void debug(CommandContext args, CommandSender sender) throws CommandException {
         if (args.hasFlag('s')) {
             if (!Debug.showDebug) {
@@ -215,6 +217,14 @@ public class DenizenCommandHandler {
                     !com.denizenscript.denizencore.utilities.debugging.Debug.verbose;
             Messaging.sendInfo(sender, (com.denizenscript.denizencore.utilities.debugging.Debug.verbose ? "Denizen debugger is now verbose." :
                     "Denizen debugger verbosity disabled."));
+        }
+        if (args.hasFlag('f')) {
+            if (!Debug.showDebug) {
+                Debug.toggle();
+            }
+            FutureWarning.futureWarningsEnabled = !FutureWarning.futureWarningsEnabled;
+            Messaging.sendInfo(sender, (FutureWarning.futureWarningsEnabled ? "Denizen debugger is now showing future warnings." :
+                    "Denizen debugger future-warnings disabled."));
         }
         if (args.hasFlag('x')) {
             Debug.filter = new ArrayList<>();
