@@ -103,7 +103,7 @@ public class ItemAttributeNBT implements Property {
         // @name nbt_attributes
         // @input ListTag
         // @description
-        // Sets the Denizen NBT attributes for this item in the format li@attribute/slot/op/amount|...
+        // Sets the Denizen NBT attributes for this item in the format attribute/slot/op/amount|...
         // Attribute is text ( http://minecraft.gamepedia.com/Attribute ), slot is the name of the slot,
         // op is the number code for operation, and amount is a decimal.
         // @tags
