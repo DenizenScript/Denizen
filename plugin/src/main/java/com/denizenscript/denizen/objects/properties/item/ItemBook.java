@@ -1,16 +1,17 @@
 package com.denizenscript.denizen.objects.properties.item;
 
+import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.core.EscapeTagBase;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Material;
@@ -110,20 +111,13 @@ public class ItemBook implements Property {
             // @description
             // Returns the page specified from the book as an element.
             // -->
-            if ((attribute.startsWith("page") || attribute.startsWith("get_page")) && attribute.hasContext(1) && ArgumentHelper.matchesInteger(attribute.getContext(1))) {
-                return new ElementTag(bookInfo.getPage(attribute.getIntContext(1)))
+            if ((attribute.startsWith("page") || attribute.startsWith("get_page")) && attribute.hasContext(1)) {
+                return new ElementTag(FormattedTextHelper.stringify(bookInfo.spigot().getPage(attribute.getIntContext(1))))
                         .getObjectAttribute(attribute.fulfill(1));
             }
 
-            // <--[tag]
-            // @attribute <ItemTag.book.raw_page[<#>]>
-            // @returns ElementTag
-            // @mechanism ItemTag.book
-            // @group properties
-            // @description
-            // Returns the page specified from the book as an element containing raw JSON.
-            // -->
-            if ((attribute.startsWith("raw_page") || attribute.startsWith("get_raw_page")) && attribute.hasContext(1) && ArgumentHelper.matchesInteger(attribute.getContext(1))) {
+            if ((attribute.startsWith("raw_page") || attribute.startsWith("get_raw_page")) && attribute.hasContext(1)) {
+                Deprecations.bookItemRawTags.warn(attribute.context);
                 return new ElementTag(ComponentSerializer.toString(bookInfo.spigot().getPage(attribute.getIntContext(1))))
                         .getObjectAttribute(attribute.fulfill(1));
             }
@@ -137,19 +131,15 @@ public class ItemBook implements Property {
             // Returns the plain-text pages of the book as a ListTag.
             // -->
             if (attribute.startsWith("pages")) {
-                return new ListTag(bookInfo.getPages())
-                        .getObjectAttribute(attribute.fulfill(1));
+                ListTag output = new ListTag();
+                for (BaseComponent[] page : bookInfo.spigot().getPages()) {
+                    output.add(FormattedTextHelper.stringify(page));
+                }
+                return output.getObjectAttribute(attribute.fulfill(1));
             }
 
-            // <--[tag]
-            // @attribute <ItemTag.book.raw_pages>
-            // @returns ListTag
-            // @mechanism ItemTag.book
-            // @group properties
-            // @description
-            // Returns the pages of the book as a ListTag of raw JSON.
-            // -->
             if (attribute.startsWith("raw_pages")) {
+                Deprecations.bookItemRawTags.warn(attribute.context);
                 ListTag output = new ListTag();
                 for (BaseComponent[] page : bookInfo.spigot().getPages()) {
                     output.add(ComponentSerializer.toString(page));
@@ -197,10 +187,10 @@ public class ItemBook implements Property {
             output.append("author|").append(EscapeTagBase.escape(bookInfo.getAuthor()))
                     .append("|title|").append(EscapeTagBase.escape(bookInfo.getTitle())).append("|");
         }
-        output.append("raw_pages|");
+        output.append("pages|");
         if (bookInfo.hasPages()) {
             for (BaseComponent[] page : bookInfo.spigot().getPages()) {
-                output.append(EscapeTagBase.escape(ComponentSerializer.toString(page))).append("|");
+                output.append(EscapeTagBase.escape(FormattedTextHelper.stringify(page))).append("|");
             }
         }
         return output.substring(0, output.length() - 1);
@@ -214,20 +204,8 @@ public class ItemBook implements Property {
     @Override
     public void adjust(Mechanism mechanism) {
 
-        // <--[mechanism]
-        // @object ItemTag
-        // @name book_raw_pages
-        // @input ListTag
-        // @description
-        // Changes the raw JSON pages of a book item.
-        // See <@link language Property Escaping>
-        // @tags
-        // <ItemTag.book.page_count>
-        // <ItemTag.book.raw_page[<#>]>
-        // <ItemTag.book.raw_pages>
-        // -->
-
         if (mechanism.matches("book_raw_pages")) {
+            Deprecations.bookItemRawTags.warn(mechanism.context);
             BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
             ListTag data = mechanism.valueAsType(ListTag.class);
             ArrayList<BaseComponent[]> newPages = new ArrayList<>();
@@ -254,11 +232,11 @@ public class ItemBook implements Property {
         if (mechanism.matches("book_pages")) {
             BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
             ListTag data = mechanism.valueAsType(ListTag.class);
-            ArrayList<String> newPages = new ArrayList<>();
+            ArrayList<BaseComponent[]> newPages = new ArrayList<>();
             for (String str : data) {
-                newPages.add(EscapeTagBase.unEscape(str));
+                newPages.add(FormattedTextHelper.parse(EscapeTagBase.unEscape(str)));
             }
-            meta.setPages(newPages);
+            meta.spigot().setPages(newPages);
             item.getItemStack().setItemMeta(meta);
         }
 
@@ -318,8 +296,6 @@ public class ItemBook implements Property {
         // <ItemTag.book.page_count>
         // <ItemTag.book.page[<#>]>
         // <ItemTag.book.pages>
-        // <ItemTag.book.raw_page[<#>]>
-        // <ItemTag.book.raw_pages>
         // <ItemTag.book>
         // -->
 
@@ -351,11 +327,11 @@ public class ItemBook implements Property {
                     meta.spigot().setPages(newPages);
                 }
                 else if (data.get(0).equalsIgnoreCase("pages")) {
-                    ArrayList<String> newPages = new ArrayList<>();
+                    ArrayList<BaseComponent[]> newPages = new ArrayList<>();
                     for (int i = 1; i < data.size(); i++) {
-                        newPages.add(EscapeTagBase.unEscape(data.get(i)));
+                        newPages.add(FormattedTextHelper.parse(EscapeTagBase.unEscape(data.get(i))));
                     }
-                    meta.setPages(newPages);
+                    meta.spigot().setPages(newPages);
                 }
                 else {
                     Debug.echoError("Invalid book input!");

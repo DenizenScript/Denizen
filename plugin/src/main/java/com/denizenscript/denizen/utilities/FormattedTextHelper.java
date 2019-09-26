@@ -26,25 +26,29 @@ public class FormattedTextHelper {
         return builder.toString();
     }
 
+    public static boolean boolNotNull(Boolean bool) {
+        return bool != null && bool;
+    }
+
     public static String stringify(BaseComponent component) {
         StringBuilder builder = new StringBuilder(128);
         ChatColor color = component.getColorRaw();
         if (color != null) {
             builder.append(color.toString());
         }
-        if (component.isBoldRaw()) {
+        if (boolNotNull(component.isBoldRaw())) {
             builder.append(ChatColor.BOLD.toString());
         }
-        if (component.isItalicRaw()) {
+        if (boolNotNull(component.isItalicRaw())) {
             builder.append(ChatColor.ITALIC.toString());
         }
-        if (component.isStrikethroughRaw()) {
+        if (boolNotNull(component.isStrikethroughRaw())) {
             builder.append(ChatColor.STRIKETHROUGH.toString());
         }
-        if (component.isUnderlinedRaw()) {
+        if (boolNotNull(component.isUnderlinedRaw())) {
             builder.append(ChatColor.UNDERLINE.toString());
         }
-        if (component.isObfuscatedRaw()) {
+        if (boolNotNull(component.isObfuscatedRaw())) {
             builder.append(ChatColor.MAGIC.toString());
         }
         boolean hasInsertion = component.getInsertion() != null;
@@ -92,17 +96,23 @@ public class FormattedTextHelper {
             }
         }
         if (hasClick) {
-            builder.append("[/click]");
+            builder.append(ChatColor.COLOR_CHAR + "[/click]");
         }
         if (hasHover) {
-            builder.append("[/hover]");
+            builder.append(ChatColor.COLOR_CHAR + "[/hover]");
         }
         if (hasInsertion) {
-            builder.append("[/insertion]");
+            builder.append(ChatColor.COLOR_CHAR + "[/insertion]");
         }
-        builder.append(ChatColor.RESET.toString());
-        return builder.toString();
+        builder.append(RESET);
+        String output = builder.toString();
+        while (output.contains(RESET + RESET)) {
+            output = output.replace(RESET  + RESET, RESET);
+        }
+        return output;
     }
+
+    public static final String RESET = ChatColor.RESET.toString();
 
     public static BaseComponent[] parse(String str) {
         char[] chars = str.toCharArray();
