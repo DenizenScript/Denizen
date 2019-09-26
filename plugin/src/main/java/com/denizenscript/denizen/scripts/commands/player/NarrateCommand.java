@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
+import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -116,7 +117,7 @@ public class NarrateCommand extends AbstractCommand {
 
         for (PlayerTag player : targets) {
             if (player != null && player.isOnline()) {
-                player.getPlayerEntity().sendMessage(format != null ? format.getFormattedText(scriptEntry) : text);
+                player.getPlayerEntity().spigot().sendMessage(FormattedTextHelper.parse(format != null ? format.getFormattedText(scriptEntry) : text));
             }
             else {
                 Debug.echoError("Narrated to non-existent or offline player!");

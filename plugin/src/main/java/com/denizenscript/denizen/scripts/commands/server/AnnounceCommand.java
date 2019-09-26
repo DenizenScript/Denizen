@@ -2,6 +2,7 @@ package com.denizenscript.denizen.scripts.commands.server;
 
 import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
 import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -128,19 +129,19 @@ public class AnnounceCommand extends AbstractCommand {
 
         // Use Bukkit to broadcast the message to everybody in the server.
         if (type == AnnounceType.ALL) {
-            DenizenAPI.getCurrentInstance().getServer().broadcastMessage(message);
+            DenizenAPI.getCurrentInstance().getServer().spigot().broadcast(FormattedTextHelper.parse(message));
         }
         else if (type == AnnounceType.TO_OPS) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (player.isOp()) {
-                    player.sendMessage(message);
+                    player.spigot().sendMessage(FormattedTextHelper.parse(message));
                 }
             }
         }
         else if (type == AnnounceType.TO_FLAGGED) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (FlagManager.playerHasFlag(PlayerTag.mirrorBukkitPlayer(player), flag.asString())) {
-                    player.sendMessage(message);
+                    player.spigot().sendMessage(FormattedTextHelper.parse(message));
                 }
             }
         }
