@@ -2365,14 +2365,14 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
-        // @attribute <EntityTag.oxygen.max>
+        // @attribute <EntityTag.max_oxygen>
         // @returns DurationTag
         // @group attributes
         // @description
         // Returns the maximum duration of oxygen the entity can have.
         // Works with offline players.
         // -->
-        registerSpawnedOnlyTag("oxygen", new TagRunnable.ObjectForm<EntityTag>() {
+        registerSpawnedOnlyTag("max_oxygen", new TagRunnable.ObjectForm<EntityTag>() {
             @Override
             public ObjectTag run(Attribute attribute, EntityTag object) {
                 return new DurationTag((long) object.getLivingEntity().getMaximumAir());
