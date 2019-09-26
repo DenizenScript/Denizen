@@ -36,7 +36,7 @@ public class ItemBook implements Property {
     }
 
     public static final String[] handledTags = new String[] {
-            "book"
+            "book", "book_author", "book_title", "book_pages"
     };
 
     public static final String[] handledMechs = new String[] {
@@ -48,6 +48,10 @@ public class ItemBook implements Property {
         item = _item;
     }
 
+    public BookMeta getBookInfo() {
+        return (BookMeta) item.getItemStack().getItemMeta();
+    }
+
     ItemTag item;
 
     @Override
@@ -57,87 +61,87 @@ public class ItemBook implements Property {
             return null;
         }
 
+        // <--[tag]
+        // @attribute <ItemTag.book_author>
+        // @returns ElementTag
+        // @mechanism ItemTag.book
+        // @group properties
+        // @description
+        // Returns the author of the book.
+        // -->
+        if (attribute.startsWith("book_author") && item.getItemStack().getType() == Material.WRITTEN_BOOK) {
+            return new ElementTag(getBookInfo().getAuthor())
+                    .getObjectAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <ItemTag.book_title>
+        // @returns ElementTag
+        // @mechanism ItemTag.book
+        // @group properties
+        // @description
+        // Returns the title of the book.
+        // -->
+        if (attribute.startsWith("book_title") && item.getItemStack().getType() == Material.WRITTEN_BOOK) {
+            return new ElementTag(getBookInfo().getTitle())
+                    .getObjectAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <ItemTag.book_pages>
+        // @returns ListTag
+        // @mechanism ItemTag.book
+        // @group properties
+        // @description
+        // Returns the plain-text pages of the book as a ListTag.
+        // -->
+        if (attribute.startsWith("book_pages")) {
+            ListTag output = new ListTag();
+            for (BaseComponent[] page : getBookInfo().spigot().getPages()) {
+                output.add(FormattedTextHelper.stringify(page));
+            }
+            return output.getObjectAttribute(attribute.fulfill(1));
+        }
+
         if (attribute.startsWith("book")) {
             BookMeta bookInfo = (BookMeta) item.getItemStack().getItemMeta();
             attribute = attribute.fulfill(1);
 
             if (item.getItemStack().getType() == Material.WRITTEN_BOOK) {
-
-                // <--[tag]
-                // @attribute <ItemTag.book.author>
-                // @returns ElementTag
-                // @mechanism ItemTag.book
-                // @group properties
-                // @description
-                // Returns the author of the book.
-                // -->
                 if (attribute.startsWith("author")) {
+                    Deprecations.itemBookTags.warn(attribute.context);
                     return new ElementTag(bookInfo.getAuthor())
                             .getObjectAttribute(attribute.fulfill(1));
                 }
-
-                // <--[tag]
-                // @attribute <ItemTag.book.title>
-                // @returns ElementTag
-                // @mechanism ItemTag.book
-                // @group properties
-                // @description
-                // Returns the title of the book.
-                // -->
                 if (attribute.startsWith("title")) {
+                    Deprecations.itemBookTags.warn(attribute.context);
                     return new ElementTag(bookInfo.getTitle())
                             .getObjectAttribute(attribute.fulfill(1));
                 }
             }
-
-            // <--[tag]
-            // @attribute <ItemTag.book.page_count>
-            // @returns ElementTag(Number)
-            // @mechanism ItemTag.book
-            // @group properties
-            // @description
-            // Returns the number of pages in the book.
-            // -->
             if (attribute.startsWith("page_count")) {
+                Deprecations.itemBookTags.warn(attribute.context);
                 return new ElementTag(bookInfo.getPageCount())
                         .getObjectAttribute(attribute.fulfill(1));
             }
-
-            // <--[tag]
-            // @attribute <ItemTag.book.page[<#>]>
-            // @returns ElementTag
-            // @mechanism ItemTag.book
-            // @group properties
-            // @description
-            // Returns the page specified from the book as an element.
-            // -->
             if ((attribute.startsWith("page") || attribute.startsWith("get_page")) && attribute.hasContext(1)) {
+                Deprecations.itemBookTags.warn(attribute.context);
                 return new ElementTag(FormattedTextHelper.stringify(bookInfo.spigot().getPage(attribute.getIntContext(1))))
                         .getObjectAttribute(attribute.fulfill(1));
             }
-
             if ((attribute.startsWith("raw_page") || attribute.startsWith("get_raw_page")) && attribute.hasContext(1)) {
                 Deprecations.bookItemRawTags.warn(attribute.context);
                 return new ElementTag(ComponentSerializer.toString(bookInfo.spigot().getPage(attribute.getIntContext(1))))
                         .getObjectAttribute(attribute.fulfill(1));
             }
-
-            // <--[tag]
-            // @attribute <ItemTag.book.pages>
-            // @returns ListTag
-            // @mechanism ItemTag.book
-            // @group properties
-            // @description
-            // Returns the plain-text pages of the book as a ListTag.
-            // -->
             if (attribute.startsWith("pages")) {
+                Deprecations.itemBookTags.warn(attribute.context);
                 ListTag output = new ListTag();
                 for (BaseComponent[] page : bookInfo.spigot().getPages()) {
                     output.add(FormattedTextHelper.stringify(page));
                 }
                 return output.getObjectAttribute(attribute.fulfill(1));
             }
-
             if (attribute.startsWith("raw_pages")) {
                 Deprecations.bookItemRawTags.warn(attribute.context);
                 ListTag output = new ListTag();
