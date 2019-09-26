@@ -76,6 +76,7 @@ public class Settings {
         cache_chatHistoryMaxMessages = config.getInt("Tags.Chat history.Max messages", 10);
         cache_tagTimeout = config.getInt("Tags.Timeout", 10);
         cache_tagTimeoutSilent = config.getBoolean("Tags.Timeout when silent", false);
+        cache_tagTimeoutUnsafe = config.getBoolean("Tags.Timeout when unsafe", false);
         cache_warningRate = config.getLong("Tags.Warning rate", 10000);
         cache_packetInterception = config.getBoolean("Packets.Interception", true);
     }
@@ -88,7 +89,7 @@ public class Settings {
             cache_healthTraitBlockDrops, cache_chatAsynchronous, cache_chatMustSeeNPC, cache_chatMustLookAtNPC,
             cache_chatGloballyIfFailedChatTriggers, cache_chatGloballyIfNoChatTriggers,
             cache_chatGloballyIfUninteractable, cache_worldScriptChatEventAsynchronous,
-            cache_tagTimeoutSilent, cache_packetInterception;
+            cache_tagTimeoutSilent, cache_packetInterception, cache_tagTimeoutUnsafe;
 
     private static String cache_getAlternateScriptPath, cache_scriptQueueSpeed, cache_healthTraitRespawnDelay,
             cache_engageTimeoutInSeconds, cache_chatMultipleTargetsFormat, cache_chatNoTargetFormat,
@@ -421,6 +422,9 @@ public class Settings {
 
     public static boolean tagTimeoutSilent() {
         return cache_tagTimeoutSilent;
+    }
+    public static boolean tagTimeoutUnsafe() {
+        return cache_tagTimeoutUnsafe;
     }
 
     public static long warningRate() {

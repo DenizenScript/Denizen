@@ -274,7 +274,10 @@ public class DenizenCoreImplementation implements DenizenImplementation {
 
     @Override
     public int getTagTimeout() {
-        return 0; // TODO: Settings.tagTimeout();
+        if (!Settings.tagTimeoutUnsafe()) {
+            return 0;
+        }
+        return Settings.tagTimeout();
     }
 
     @Override
@@ -391,6 +394,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     public void postTagExecute() {
         try {
             NMSHandler.getInstance().undisableAsyncCatcher();
+            tagThread = null;
         }
         catch (Throwable e) {
             Debug.echoError("Running not-Spigot?!");

@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.nms.v1_14.helpers;
 
+import com.denizenscript.denizen.DenizenCoreImplementation;
 import com.denizenscript.denizen.nms.interfaces.ChunkHelper;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -30,6 +31,9 @@ public class ChunkHelperImpl implements ChunkHelper {
 
     @Override
     public void changeChunkServerThread(World world) {
+        if (DenizenCoreImplementation.tagThread == null) {
+            return;
+        }
         if (resetServerThread != null) {
             return;
         }
@@ -47,6 +51,9 @@ public class ChunkHelperImpl implements ChunkHelper {
 
     @Override
     public void restoreServerThread(World world) {
+        if (DenizenCoreImplementation.tagThread == null) {
+            return;
+        }
         if (resetServerThread == null) {
             return;
         }
