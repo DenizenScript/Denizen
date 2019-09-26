@@ -36,7 +36,6 @@ import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
-import com.denizenscript.denizencore.utilities.javaluator.DoubleEvaluator;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.command.CommandContext;
@@ -73,30 +72,9 @@ public class ServerTagBase {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
-                mathTag(event);
-            }
-        }, "math", "m");
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
                 serverTag(event);
             }
         }, "server", "svr", "global");
-    }
-
-    public void mathTag(ReplaceableTagEvent event) {
-        if (!event.matches("math", "m")) {
-            return;
-        }
-        Deprecations.mathTagBase.warn(event.getScriptEntry());
-        try {
-            Double evaluation = new DoubleEvaluator().evaluate(event.getValue());
-            event.setReplaced(new ElementTag(String.valueOf(evaluation)).getAttribute(event.getAttributes().fulfill(1)));
-        }
-        catch (Exception e) {
-            Debug.echoError("Invalid math tag!");
-            event.setReplaced("0.0");
-        }
     }
 
 
