@@ -24,6 +24,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagRunnable;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
@@ -2364,6 +2365,21 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
+        // @attribute <EntityTag.oxygen.max>
+        // @returns DurationTag
+        // @group attributes
+        // @description
+        // Returns the maximum duration of oxygen the entity can have.
+        // Works with offline players.
+        // -->
+        registerSpawnedOnlyTag("oxygen", new TagRunnable.ObjectForm<EntityTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, EntityTag object) {
+                return new DurationTag((long) object.getLivingEntity().getMaximumAir());
+            }
+        });
+
+        // <--[tag]
         // @attribute <EntityTag.oxygen>
         // @returns DurationTag
         // @group attributes
@@ -2374,16 +2390,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         registerSpawnedOnlyTag("oxygen", new TagRunnable.ObjectForm<EntityTag>() {
             @Override
             public ObjectTag run(Attribute attribute, EntityTag object) {
-
-                // <--[tag]
-                // @attribute <EntityTag.oxygen.max>
-                // @returns DurationTag
-                // @group attributes
-                // @description
-                // Returns the maximum duration of oxygen the entity can have.
-                // Works with offline players.
-                // -->
                 if (attribute.startsWith("max", 2)) {
+                    Deprecations.entityMaxOxygenTag.warn(attribute.context);
                     attribute.fulfill(1);
                     return new DurationTag((long) object.getLivingEntity().getMaximumAir());
                 }

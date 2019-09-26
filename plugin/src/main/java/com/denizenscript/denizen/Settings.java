@@ -62,8 +62,8 @@ public class Settings {
         cache_chatWithTargetToBystandersFormat = config.getString("Commands.Chat.Formats.With target to bystanders", "[<[talker].name>] -> <[target].name>: <[message]>");
         cache_chatWithTargetsToBystandersFormat = config.getString("Commands.Chat.Formats.With targets to bystanders", "[<[talker].name>] -> [<[targets]>]: <[message]>");
         cache_chatAsynchronous = config.getBoolean("Triggers.Chat.Use asynchronous event", false);
-        cache_chatToNpcFormat = config.getString("Triggers.Chat.Formats.Player to NPC", "You -> <npc.name.nickname>: <text>");
-        cache_chatToNpcOverheardFormat = config.getString("Triggers.Chat.Formats.Player to NPC overheard", "<player.name> -> <npc.name.nickname>: <text>");
+        cache_chatToNpcFormat = config.getString("Triggers.Chat.Formats.Player to NPC", "You -> <npc.nickname>: <text>");
+        cache_chatToNpcOverheardFormat = config.getString("Triggers.Chat.Formats.Player to NPC overheard", "<player.name> -> <npc.nickname>: <text>");
         cache_chatToNpcOverhearingRange = config.getDouble("Triggers.Chat.Overhearing range", 4);
         cache_chatMustSeeNPC = config.getBoolean("Triggers.Chat.Prerequisites.Must be able to see NPC", true);
         cache_chatMustLookAtNPC = config.getBoolean("Triggers.Chat.Prerequisites.Must be looking in direction of NPC", true);

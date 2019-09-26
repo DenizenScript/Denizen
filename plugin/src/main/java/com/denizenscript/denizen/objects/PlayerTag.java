@@ -660,8 +660,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @attribute <PlayerTag.chat_history_list>
         // @returns ListTag
         // @description
-        // Returns a list of the last 10 things the player has said, less
-        // if the player hasn't said all that much.
+        // Returns a list of the last 10 things the player has said, less if the player hasn't said all that much.
         // Works with offline players.
         // -->
         registerTag("chat_history_list", new TagRunnable.ObjectForm<PlayerTag>() {
@@ -819,6 +818,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerTag("current_step", new TagRunnable.ObjectForm<PlayerTag>() {
             @Override
             public ObjectTag run(Attribute attribute, PlayerTag object) {
+                Deprecations.playerStepTag.warn(attribute.context);
                 String outcome = "null";
                 if (attribute.hasContext(1)) {
                     try {
@@ -839,6 +839,26 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         /////////////////
 
         // <--[tag]
+        // @attribute <PlayerTag.formatted_money>
+        // @returns ElementTag
+        // @plugin Vault
+        // @description
+        // Returns the formatted form of the player's money balance in the registered Economy system.
+        // -->
+        registerTag("formatted_money", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                if (Depends.economy == null) {
+                    if (!attribute.hasAlternative()) {
+                        Debug.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
+                    }
+                    return null;
+                }
+                return new ElementTag(Depends.economy.format(Depends.economy.getBalance(object.getOfflinePlayer())));
+            }
+        });
+
+        // <--[tag]
         // @attribute <PlayerTag.money>
         // @returns ElementTag(Decimal)
         // @plugin Vault
@@ -847,7 +867,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // May work offline depending on economy provider.
         // @mechanism PlayerTag.money
         // -->
-
         registerTag("money", new TagRunnable.ObjectForm<PlayerTag>() {
             @Override
             public ObjectTag run(Attribute attribute, PlayerTag object) {
@@ -858,27 +877,21 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                     return null;
                 }
 
-                // <--[tag]
-                // @attribute <PlayerTag.money.formatted>
-                // @returns ElementTag
-                // @plugin Vault
-                // @description
-                // Returns the formatted form of the player's money balance in the registered Economy system.
-                // -->
                 if (attribute.startsWith("formatted", 2)) {
                     attribute.fulfill(1);
+                    Deprecations.playerMoneyFormatTag.warn(attribute.context);
                     return new ElementTag(Depends.economy.format(Depends.economy.getBalance(object.getOfflinePlayer())));
                 }
 
                 if (attribute.startsWith("currency_singular", 2)) {
                     attribute.fulfill(1);
-                    Deprecations.oldEconomyTags.warn(attribute.getScriptEntry());
+                    Deprecations.oldEconomyTags.warn(attribute.context);
                     return new ElementTag(Depends.economy.currencyNameSingular());
                 }
 
                 if (attribute.startsWith("currency", 2)) {
                     attribute.fulfill(1);
-                    Deprecations.oldEconomyTags.warn(attribute.getScriptEntry());
+                    Deprecations.oldEconomyTags.warn(attribute.context);
                     return new ElementTag(Depends.economy.currencyNamePlural());
                 }
 
@@ -1013,18 +1026,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                     NMSHandler.getChunkHelper().restoreServerThread(object.getWorld());
                 }
                 return null;
-            }
-        });
-
-        // workaround for <EntityTag.list_effects>
-        registerTag("list_effects", new TagRunnable.ObjectForm<PlayerTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, PlayerTag object) {
-                ListTag effects = new ListTag();
-                for (PotionEffect effect : object.getPlayerEntity().getActivePotionEffects()) {
-                    effects.add(effect.getType().getName() + "," + effect.getAmplifier() + "," + effect.getDuration() + "t");
-                }
-                return effects;
             }
         });
 
@@ -1187,10 +1188,18 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // Handle EntityTag oxygen tags here to allow getting them when the player is offline
+        registerTag("max_oxygen", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                return new DurationTag((long) object.getMaximumAir());
+            }
+        });
+
         registerTag("oxygen", new TagRunnable.ObjectForm<PlayerTag>() {
             @Override
             public ObjectTag run(Attribute attribute, PlayerTag object) {
                 if (attribute.startsWith("max", 2)) {
+                    Deprecations.entityMaxOxygenTag.warn(attribute.context);
                     attribute.fulfill(1);
                     return new DurationTag((long) object.getMaximumAir());
                 }
@@ -1198,38 +1207,82 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             }
         });
 
-        // Same with health tags
+        // <--[tag]
+        // @attribute <PlayerTag.health_is_scaled>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns whether the player's health bar is currently being scaled.
+        // -->
+        registerTag("health_is_scaled", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                return new ElementTag(object.getPlayerEntity().isHealthScaled());
+            }
+        });
+
+        // <--[tag]
+        // @attribute <PlayerTag.health_scale>
+        // @returns ElementTag(Decimal)
+        // @description
+        // Returns the current scale for the player's health bar
+        // -->
+        registerTag("health_scale", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                return new ElementTag(object.getPlayerEntity().getHealthScale());
+            }
+        });
+
+        // Handle EntityTag health tags here to allow getting them when the player is offline
+        registerTag("formatted_health", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                Double maxHealth = attribute.hasContext(1) ? attribute.getDoubleContext(1) : null;
+                return EntityHealth.getHealthFormatted(new EntityTag(object.getPlayerEntity()), maxHealth);
+            }
+        });
+
+        registerTag("health_percentage", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                double maxHealth = object.getPlayerEntity().getMaxHealth();
+                if (attribute.hasContext(1)) {
+                    maxHealth = attribute.getIntContext(1);
+                }
+                return new ElementTag((object.getPlayerEntity().getHealth() / maxHealth) * 100);
+            }
+        });
+
+        registerTag("health_max", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                return new ElementTag(object.getMaxHealth());
+            }
+        });
+
         registerTag("health", new TagRunnable.ObjectForm<PlayerTag>() {
             @Override
             public ObjectTag run(Attribute attribute, PlayerTag object) {
 
-                // <--[tag]
-                // @attribute <PlayerTag.health.is_scaled>
-                // @returns ElementTag(Boolean)
-                // @description
-                // Returns whether the player's health bar is currently being scaled.
-                // -->
                 if (attribute.startsWith("is_scaled", 2)) {
                     attribute.fulfill(1);
+                    Deprecations.entityHealthTags.warn(attribute.context);
                     return new ElementTag(object.getPlayerEntity().isHealthScaled());
                 }
 
-                // <--[tag]
-                // @attribute <PlayerTag.health.scale>
-                // @returns ElementTag(Decimal)
-                // @description
-                // Returns the current scale for the player's health bar
-                // -->
                 if (attribute.startsWith("scale", 2)) {
                     attribute.fulfill(1);
+                    Deprecations.entityHealthTags.warn(attribute.context);
                     return new ElementTag(object.getPlayerEntity().getHealthScale());
                 }
                 if (attribute.startsWith("formatted", 2)) {
+                    Deprecations.entityHealthTags.warn(attribute.context);
                     Double maxHealth = attribute.hasContext(2) ? attribute.getDoubleContext(2) : null;
                     attribute.fulfill(1);
                     return EntityHealth.getHealthFormatted(new EntityTag(object.getPlayerEntity()), maxHealth);
                 }
                 if (attribute.startsWith("percentage", 2)) {
+                    Deprecations.entityHealthTags.warn(attribute.context);
                     attribute.fulfill(1);
                     double maxHealth = object.getPlayerEntity().getMaxHealth();
                     if (attribute.hasContext(1)) {
@@ -1238,6 +1291,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                     return new ElementTag((object.getPlayerEntity().getHealth() / maxHealth) * 100);
                 }
                 if (attribute.startsWith("max", 2)) {
+                    Deprecations.entityHealthTags.warn(attribute.context);
                     attribute.fulfill(1);
                     return new ElementTag(object.getMaxHealth());
                 }
@@ -1345,7 +1399,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 ListTag list = new ListTag();
                 // TODO: optionally specify world
                 for (String group : Depends.permissions.getGroups()) {
-                    if (Depends.permissions.playerInGroup(null, object.offlinePlayer, group)) {
+                    if (Depends.permissions.playerInGroup(null, object.getOfflinePlayer(), group)) {
                         list.add(group);
                     }
                 }
@@ -1353,54 +1407,99 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             }
         });
 
-        registerTag("ban_info", new TagRunnable.ObjectForm<PlayerTag>() {
+        // <--[tag]
+        // @attribute <PlayerTag.ban_expiration>
+        // @returns DurationTag
+        // @description
+        // Returns the expiration of the player's ban, if they are banned.
+        // Potentially can be null.
+        // -->
+        registerTag("ban_expiration", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(object.getName());
+                if (ban == null || ban.getExpiration() == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
+                    return null;
+                }
+                return new DurationTag(ban.getExpiration().getTime() / 50);
+            }
+        });
+
+        // <--[tag]
+        // @attribute <PlayerTag.ban_reason>
+        // @returns ElementTag
+        // @description
+        // Returns the reason for the player's ban, if they are banned.
+        // -->
+        registerTag("ban_reason", new TagRunnable.ObjectForm<PlayerTag>() {
             @Override
             public ObjectTag run(Attribute attribute, PlayerTag object) {
                 BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(object.getName());
                 if (ban == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
                     return null;
                 }
+                return new ElementTag(ban.getReason());
+            }
+        });
 
-                // <--[tag]
-                // @attribute <PlayerTag.ban_info.expiration>
-                // @returns DurationTag
-                // @description
-                // Returns the expiration of the player's ban, if they are banned.
-                // Potentially can be null.
-                // -->
+        // <--[tag]
+        // @attribute <PlayerTag.ban_created>
+        // @returns DurationTag
+        // @description
+        // Returns when the player's ban was created as a Duration time tag, if they are banned.
+        // -->
+        registerTag("ban_created", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(object.getName());
+                if (ban == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
+                    return null;
+                }
+                return new DurationTag(ban.getCreated().getTime() / 50);
+            }
+        });
+
+        // <--[tag]
+        // @attribute <PlayerTag.ban_source>
+        // @returns ElementTag
+        // @description
+        // Returns the source of the player's ban, if they are banned.
+        // -->
+        registerTag("ban_source", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(object.getName());
+                if (ban == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
+                    return null;
+                }
+                return new ElementTag(ban.getSource());
+            }
+        });
+
+        registerTag("ban_info", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                Deprecations.playerBanInfoTags.warn(attribute.context);
+                BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(object.getName());
+                if (ban == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
+                    return null;
+                }
+
                 if (attribute.startsWith("expiration", 2) && ban.getExpiration() != null) {
                     attribute.fulfill(1);
                     return new DurationTag(ban.getExpiration().getTime() / 50);
                 }
 
-                // <--[tag]
-                // @attribute <PlayerTag.ban_info.reason>
-                // @returns ElementTag
-                // @description
-                // Returns the reason for the player's ban, if they are banned.
-                // -->
                 else if (attribute.startsWith("reason", 2)) {
                     attribute.fulfill(1);
                     return new ElementTag(ban.getReason());
                 }
 
-                // <--[tag]
-                // @attribute <PlayerTag.ban_info.created>
-                // @returns DurationTag
-                // @description
-                // Returns when the player's ban was created, if they are banned.
-                // -->
                 else if (attribute.startsWith("created", 2)) {
                     attribute.fulfill(1);
                     return new DurationTag(ban.getCreated().getTime() / 50);
                 }
 
-                // <--[tag]
-                // @attribute <PlayerTag.ban_info.source>
-                // @returns ElementTag
-                // @description
-                // Returns the source of the player's ban, if they are banned.
-                // -->
                 else if (attribute.startsWith("source", 2)) {
                     attribute.fulfill(1);
                     return new ElementTag(ban.getSource());
@@ -1557,6 +1656,33 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
+        // @attribute <PlayerTag.list_name>
+        // @returns ElementTag
+        // @description
+        // Returns the name of the player as shown in the player list.
+        // -->
+        registerTag("list_name", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                return new ElementTag(object.getPlayerEntity().getPlayerListName());
+            }
+        });
+
+        // <--[tag]
+        // @attribute <PlayerTag.display_name>
+        // @returns ElementTag
+        // @description
+        // Returns the display name of the player, which may contain
+        // prefixes and suffixes, colors, etc.
+        // -->
+        registerTag("display_name", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                return new ElementTag(object.getPlayerEntity().getDisplayName());
+            }
+        });
+
+        // <--[tag]
         // @attribute <PlayerTag.name>
         // @returns ElementTag
         // @description
@@ -1567,24 +1693,13 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             @Override
             public ObjectTag run(Attribute attribute, PlayerTag object) {
 
-                // <--[tag]
-                // @attribute <PlayerTag.name.list>
-                // @returns ElementTag
-                // @description
-                // Returns the name of the player as shown in the player list.
-                // -->
                 if (attribute.startsWith("list", 2) && object.isOnline()) {
+                    Deprecations.playerNameTags.warn(attribute.context);
                     attribute.fulfill(1);
                     return new ElementTag(object.getPlayerEntity().getPlayerListName());
                 }
-                // <--[tag]
-                // @attribute <PlayerTag.name.display>
-                // @returns ElementTag
-                // @description
-                // Returns the display name of the player, which may contain
-                // prefixes and suffixes, colors, etc.
-                // -->
                 if (attribute.startsWith("display", 2) && object.isOnline()) {
+                    Deprecations.playerNameTags.warn(attribute.context);
                     attribute.fulfill(1);
                     return new ElementTag(object.getPlayerEntity().getDisplayName());
                 }
@@ -1705,17 +1820,25 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             }
         });
 
+        // <--[tag]
+        // @attribute <PlayerTag.held_item_slot>
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the slot location of the player's selected item.
+        // -->
+        registerOnlineOnlyTag("held_item_slot", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                return new ElementTag(object.getPlayerEntity().getInventory().getHeldItemSlot() + 1);
+            }
+        });
+
         registerOnlineOnlyTag("item_in_hand", new TagRunnable.ObjectForm<PlayerTag>() {
             @Override
             public ObjectTag run(Attribute attribute, PlayerTag object) {
 
-                // <--[tag]
-                // @attribute <PlayerTag.item_in_hand.slot>
-                // @returns ElementTag(Number)
-                // @description
-                // Returns the slot location of the player's selected item.
-                // -->
                 if (attribute.startsWith("slot", 2)) {
+                    Deprecations.playerItemInHandSlotTag.warn(attribute.context);
                     attribute.fulfill(1);
                     return new ElementTag(object.getPlayerEntity().getInventory().getHeldItemSlot() + 1);
                 }
@@ -1723,15 +1846,66 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             }
         });
 
+        // <--[tag]
+        // @attribute <PlayerTag.sidebar_lines>
+        // @returns ListTag
+        // @description
+        // Returns the current lines set on the player's Sidebar via the Sidebar command.
+        // -->
+        registerOnlineOnlyTag("sidebar_lines", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                Sidebar sidebar = SidebarCommand.getSidebar(object);
+                if (sidebar == null) {
+                    return null;
+                }
+                return new ListTag(sidebar.getLinesText());
+            }
+        });
+
+        // <--[tag]
+        // @attribute <PlayerTag.sidebar_title>
+        // @returns ElementTag
+        // @description
+        // Returns the current title set on the player's Sidebar via the Sidebar command.
+        // -->
+        registerOnlineOnlyTag("sidebar_title", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                Sidebar sidebar = SidebarCommand.getSidebar(object);
+                if (sidebar == null) {
+                    return null;
+                }
+                return new ElementTag(sidebar.getTitle());
+            }
+        });
+
+        // <--[tag]
+        // @attribute <PlayerTag.sidebar_scores>
+        // @returns ListTag
+        // @description
+        // Returns the current scores set on the player's Sidebar via the Sidebar command,
+        // in the same order as <@link tag PlayerTag.sidebar.lines>.
+        // -->
+        registerOnlineOnlyTag("sidebar_scores", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                Sidebar sidebar = SidebarCommand.getSidebar(object);
+                if (sidebar == null) {
+                    return null;
+                }
+                ListTag scores = new ListTag();
+                for (int score : sidebar.getScores()) {
+                    scores.add(String.valueOf(score));
+                }
+                return scores;
+            }
+        });
+
         registerOnlineOnlyTag("sidebar", new TagRunnable.ObjectForm<PlayerTag>() {
             @Override
             public ObjectTag run(Attribute attribute, PlayerTag object) {
-                // <--[tag]
-                // @attribute <PlayerTag.sidebar.lines>
-                // @returns ListTag
-                // @description
-                // Returns the current lines set on the player's Sidebar via the Sidebar command.
-                // -->
+                Deprecations.playerSidebarTags.warn(attribute.context);
                 if (attribute.startsWith("lines", 2)) {
                     attribute.fulfill(1);
                     Sidebar sidebar = SidebarCommand.getSidebar(object);
@@ -1740,12 +1914,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                     }
                     return new ListTag(sidebar.getLinesText());
                 }
-                // <--[tag]
-                // @attribute <PlayerTag.sidebar.title>
-                // @returns ElementTag
-                // @description
-                // Returns the current title set on the player's Sidebar via the Sidebar command.
-                // -->
                 if (attribute.startsWith("title", 2)) {
                     attribute.fulfill(1);
                     Sidebar sidebar = SidebarCommand.getSidebar(object);
@@ -1754,13 +1922,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                     }
                     return new ElementTag(sidebar.getTitle());
                 }
-                // <--[tag]
-                // @attribute <PlayerTag.sidebar.scores>
-                // @returns ListTag
-                // @description
-                // Returns the current scores set on the player's Sidebar via the Sidebar command,
-                // in the same order as <@link tag PlayerTag.sidebar.lines>.
-                // -->
                 if (attribute.startsWith("scores", 2)) {
                     attribute.fulfill(1);
                     Sidebar sidebar = SidebarCommand.getSidebar(object);
@@ -1791,47 +1952,65 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             }
         });
 
+        // <--[tag]
+        // @attribute <PlayerTag.attack_cooldown_duration>
+        // @returns DurationTag
+        // @description
+        // Returns the amount of time that passed since the start of the attack cooldown.
+        // -->
+        registerOnlineOnlyTag("attack_cooldown_duration", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                return new DurationTag((long) NMSHandler.getPlayerHelper().ticksPassedDuringCooldown(object.getPlayerEntity()));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <PlayerTag.attack_cooldown_max_duration>
+        // @returns DurationTag
+        // @description
+        // Returns the maximum amount of time that can pass before the player's main hand has returned
+        // to its original place after the cooldown has ended.
+        // NOTE: This is slightly inaccurate and may not necessarily match with the actual attack
+        // cooldown progress.
+        // -->
+        registerOnlineOnlyTag("attack_cooldown_max_duration", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                return new DurationTag((long) NMSHandler.getPlayerHelper().getMaxAttackCooldownTicks(object.getPlayerEntity()));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <PlayerTag.attack_cooldown_percent>
+        // @returns ElementTag(Decimal)
+        // @description
+        // Returns the progress of the attack cooldown. 0 means that the attack cooldown has just
+        // started, while 100 means that the attack cooldown has finished.
+        // NOTE: This may not match exactly with the clientside attack cooldown indicator.
+        // -->
+        registerOnlineOnlyTag("attack_cooldown_percent", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                return new ElementTag(NMSHandler.getPlayerHelper().getAttackCooldownPercent(object.getPlayerEntity()) * 100);
+            }
+        });
+
         registerOnlineOnlyTag("attack_cooldown", new TagRunnable.ObjectForm<PlayerTag>() {
             @Override
             public ObjectTag run(Attribute attribute, PlayerTag object) {
-
-                // <--[tag]
-                // @attribute <PlayerTag.attack_cooldown.duration>
-                // @returns DurationTag
-                // @description
-                // Returns the amount of time that passed since the start of the attack cooldown.
-                // -->
+                Deprecations.playerAttackCooldownTags.warn(attribute.context);
                 if (attribute.startsWith("duration", 2)) {
                     attribute.fulfill(1);
                     return new DurationTag((long) NMSHandler.getPlayerHelper()
                             .ticksPassedDuringCooldown(object.getPlayerEntity()));
                 }
-
-
-                // <--[tag]
-                // @attribute <PlayerTag.attack_cooldown.max_duration>
-                // @returns DurationTag
-                // @description
-                // Returns the maximum amount of time that can pass before the player's main hand has returned
-                // to its original place after the cooldown has ended.
-                // NOTE: This is slightly inaccurate and may not necessarily match with the actual attack
-                // cooldown progress.
-                // -->
                 else if (attribute.startsWith("max_duration", 2)) {
                     attribute.fulfill(1);
                     return new DurationTag((long) NMSHandler.getPlayerHelper()
                             .getMaxAttackCooldownTicks(object.getPlayerEntity()));
                 }
 
-
-                // <--[tag]
-                // @attribute <PlayerTag.attack_cooldown.percent>
-                // @returns ElementTag(Decimal)
-                // @description
-                // Returns the progress of the attack cooldown. 0 means that the attack cooldown has just
-                // started, while 100 means that the attack cooldown has finished.
-                // NOTE: This may not match exactly with the clientside attack cooldown indicator.
-                // -->
                 else if (attribute.startsWith("percent", 2)) {
                     attribute.fulfill(1);
                     return new ElementTag(NMSHandler.getPlayerHelper()
@@ -2028,6 +2207,40 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
+        // @attribute <PlayerTag.formatted_food_level[(<max>)]>
+        // @returns ElementTag
+        // @description
+        // Returns a 'formatted' value of the player's current food level.
+        // May be 'starving', 'famished', 'parched, 'hungry', or 'healthy'.
+        // -->
+        registerOnlineOnlyTag("formatted_food_level", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                double maxHunger = object.getPlayerEntity().getMaxHealth();
+                if (attribute.hasContext(1)) {
+                    maxHunger = attribute.getIntContext(1);
+                }
+                attribute.fulfill(1);
+                int foodLevel = object.getFoodLevel();
+                if (foodLevel / maxHunger < .10) {
+                    return new ElementTag("starving");
+                }
+                else if (foodLevel / maxHunger < .40) {
+                    return new ElementTag("famished");
+                }
+                else if (foodLevel / maxHunger < .75) {
+                    return new ElementTag("parched");
+                }
+                else if (foodLevel / maxHunger < 1) {
+                    return new ElementTag("hungry");
+                }
+                else {
+                    return new ElementTag("healthy");
+                }
+            }
+        });
+
+        // <--[tag]
         // @attribute <PlayerTag.food_level>
         // @returns ElementTag(Number)
         // @description
@@ -2036,15 +2249,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("food_level", new TagRunnable.ObjectForm<PlayerTag>() {
             @Override
             public ObjectTag run(Attribute attribute, PlayerTag object) {
-
-                // <--[tag]
-                // @attribute <PlayerTag.food_level.formatted[(<max>)]>
-                // @returns ElementTag
-                // @description
-                // Returns a 'formatted' value of the player's current food level.
-                // May be 'starving', 'famished', 'parched, 'hungry', or 'healthy'.
-                // -->
                 if (attribute.startsWith("formatted", 2)) {
+                    Deprecations.playerFoodLevelFormatTag.warn(attribute.context);
                     double maxHunger = object.getPlayerEntity().getMaxHealth();
                     if (attribute.hasContext(2)) {
                         maxHunger = attribute.getIntContext(2);
@@ -2080,13 +2286,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         registerOnlineOnlyTag("gamemode", new TagRunnable.ObjectForm<PlayerTag>() {
             @Override
             public ObjectTag run(Attribute attribute, PlayerTag object) {
-                // <--[tag]
-                // @attribute <PlayerTag.gamemode.id>
-                // @returns ElementTag(Number)
-                // @description
-                // Returns the gamemode ID of the player. 0 = survival, 1 = creative, 2 = adventure, 3 = spectator
-                // -->
                 if (attribute.startsWith("id", 2)) {
+                    Deprecations.playerGamemodeTag.warn(attribute.context);
                     attribute.fulfill(1);
                     return new ElementTag(object.getPlayerEntity().getGameMode().getValue());
                 }
@@ -2334,6 +2535,44 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
+        // @attribute <PlayerTag.xp_level>
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the number of XP levels the player has.
+        // -->
+        registerOnlineOnlyTag("xp_level", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                return new ElementTag(object.getPlayerEntity().getLevel());
+            }
+        });
+        // <--[tag]
+        // @attribute <PlayerTag.xp_to_next_level>
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the amount of XP the player needs to get to the next level.
+        // -->
+        registerOnlineOnlyTag("xp_to_next_level", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                return new ElementTag(object.getPlayerEntity().getExpToLevel());
+            }
+        });
+
+        // <--[tag]
+        // @attribute <PlayerTag.xp_total>
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the total amount of experience points the player has.
+        // -->
+        registerOnlineOnlyTag("xp_total", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                return new ElementTag(object.getPlayerEntity().getTotalExperience());
+            }
+        });
+
+        // <--[tag]
         // @attribute <PlayerTag.xp>
         // @returns ElementTag(Decimal)
         // @description
@@ -2343,35 +2582,18 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             @Override
             public ObjectTag run(Attribute attribute, PlayerTag object) {
 
-                // <--[tag]
-                // @attribute <PlayerTag.xp.level>
-                // @returns ElementTag(Number)
-                // @description
-                // Returns the number of XP levels the player has.
-                // -->
                 if (attribute.startsWith("level", 2)) {
+                    Deprecations.playerXpTags.warn(attribute.context);
                     attribute.fulfill(1);
                     return new ElementTag(object.getPlayerEntity().getLevel());
                 }
-
-                // <--[tag]
-                // @attribute <PlayerTag.xp.to_next_level>
-                // @returns ElementTag(Number)
-                // @description
-                // Returns the amount of XP needed to get to the next level.
-                // -->
                 if (attribute.startsWith("to_next_level", 2)) {
+                    Deprecations.playerXpTags.warn(attribute.context);
                     attribute.fulfill(1);
                     return new ElementTag(object.getPlayerEntity().getExpToLevel());
                 }
-
-                // <--[tag]
-                // @attribute <PlayerTag.xp.total>
-                // @returns ElementTag(Number)
-                // @description
-                // Returns the total amount of experience points.
-                // -->
                 if (attribute.startsWith("total", 2)) {
+                    Deprecations.playerXpTags.warn(attribute.context);
                     attribute.fulfill(1);
                     return new ElementTag(object.getPlayerEntity().getTotalExperience());
                 }

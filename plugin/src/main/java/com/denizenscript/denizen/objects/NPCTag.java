@@ -463,14 +463,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             @Override
             public ObjectTag run(Attribute attribute, NPCTag object) {
 
-                // <--[tag]
-                // @attribute <NPCTag.location.previous_location>
-                // @returns LocationTag
-                // @description
-                // Returns the NPC's previous navigated location.
-                // -->
                 if (attribute.startsWith("previous_location", 2)) {
                     attribute.fulfill(1);
+                    Deprecations.npcPreviousLocationTag.warn(attribute.context);
                     return NPCTagBase.previousLocations.get(object.getId());
                 }
                 if (object.isSpawned()) {
@@ -480,6 +475,18 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             }
         });
 
+        // <--[tag]
+        // @attribute <NPCTag.previous_location>
+        // @returns LocationTag
+        // @description
+        // Returns the NPC's previous navigated location.
+        // -->
+        registerTag("previous_location", new TagRunnable.ObjectForm<NPCTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, NPCTag object) {
+                return NPCTagBase.previousLocations.get(object.getId());
+            }
+        });
 
         // Defined in EntityTag
         registerTag("eye_location", new TagRunnable.ObjectForm<NPCTag>() {
@@ -504,6 +511,20 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         });
 
         // <--[tag]
+        // @attribute <NPCTag.nickname>
+        // @returns ElementTag
+        // @description
+        // Returns the NPC's display name, as set by the Nickname trait (or the default NPC name).
+        // -->
+        registerTag("nickname", new TagRunnable.ObjectForm<NPCTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, NPCTag object) {
+                return new ElementTag(object.getCitizen().hasTrait(NicknameTrait.class) ? object.getCitizen().getTrait(NicknameTrait.class)
+                        .getNickname() : object.getName());
+            }
+        });
+
+        // <--[tag]
         // @attribute <NPCTag.name>
         // @returns ElementTag
         // @description
@@ -513,13 +534,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             @Override
             public ObjectTag run(Attribute attribute, NPCTag object) {
 
-                // <--[tag]
-                // @attribute <NPCTag.name.nickname>
-                // @returns ElementTag
-                // @description
-                // Returns the NPC's display name.
-                // -->
                 if (attribute.startsWith("nickname", 2)) {
+                    Deprecations.npcNicknameTag.warn(attribute.context);
                     attribute.fulfill(1);
                     return new ElementTag(object.getCitizen().hasTrait(NicknameTrait.class) ? object.getCitizen().getTrait(NicknameTrait.class)
                             .getNickname() : object.getName());
@@ -612,6 +628,24 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             }
         });
 
+
+        // <--[tag]
+        // @attribute <NPCTag.list_anchors>
+        // @returns ListTag
+        // @description
+        // Returns a list of anchor names currently assigned to the NPC.
+        // -->
+        registerTag("list_anchors", new TagRunnable.ObjectForm<NPCTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, NPCTag object) {
+                ListTag list = new ListTag();
+                for (Anchor anchor : object.getCitizen().getTrait(Anchors.class).getAnchors()) {
+                    list.add(anchor.getName());
+                }
+                return list;
+            }
+        });
+
         // <--[tag]
         // @attribute <NPCTag.anchor[<name>]>
         // @returns LocationTag
@@ -626,14 +660,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                     return new LocationTag(object.getCitizen().getTrait(Anchors.class)
                             .getAnchor(attribute.getContext(1)).getLocation());
                 }
-                // <--[tag]
-                // @attribute <NPCTag.anchor.list>
-                // @returns ListTag
-                // @description
-                // Returns a list of anchor names currently assigned to the NPC.
-                // -->
                 else if (attribute.startsWith("list", 2)) {
                     attribute.fulfill(1);
+                    Deprecations.npcAnchorListTag.warn(attribute.context);
                     ListTag list = new ListTag();
                     for (Anchor anchor : object.getCitizen().getTrait(Anchors.class).getAnchors()) {
                         list.add(anchor.getName());
@@ -1334,7 +1363,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Sets the NPC's nickname.
         // @tags
-        // <NPCTag.name.nickname>
+        // <NPCTag.nickname>
         // -->
         if (mechanism.matches("set_nickname")) {
             getNicknameTrait().setNickname(mechanism.getValue().asString());

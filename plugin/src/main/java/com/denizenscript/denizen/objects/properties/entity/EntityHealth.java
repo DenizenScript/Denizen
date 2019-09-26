@@ -9,6 +9,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.Deprecations;
 
 import java.util.List;
 
@@ -95,37 +96,55 @@ public class EntityHealth implements Property {
         }
 
         // <--[tag]
-        // @attribute <EntityTag.health.formatted>
+        // @attribute <EntityTag.formatted_health>
         // @returns ElementTag
         // @group attributes
         // @description
         // Returns a formatted value of the player's current health level.
         // May be 'dying', 'seriously wounded', 'injured', 'scraped', or 'healthy'.
         // -->
+        if (attribute.startsWith("formatted_health")) {
+            return getHealthFormatted(entity, attribute.hasContext(1) ? attribute.getDoubleContext(1) : null);
+        }
         if (attribute.startsWith("health.formatted")) {
+            Deprecations.entityHealthTags.warn(attribute.context);
             return getHealthFormatted(entity, attribute.hasContext(2) ? attribute.getDoubleContext(2) : null);
         }
 
         // <--[tag]
-        // @attribute <EntityTag.health.max>
+        // @attribute <EntityTag.health_max>
         // @returns ElementTag(Decimal)
         // @group attributes
         // @description
         // Returns the maximum health of the entity.
         // -->
+        if (attribute.startsWith("health_max")) {
+            return new ElementTag(entity.getLivingEntity().getMaxHealth())
+                    .getObjectAttribute(attribute.fulfill(2));
+        }
         if (attribute.startsWith("health.max")) {
+            Deprecations.entityHealthTags.warn(attribute.context);
             return new ElementTag(entity.getLivingEntity().getMaxHealth())
                     .getObjectAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
-        // @attribute <EntityTag.health.percentage>
+        // @attribute <EntityTag.health_percentage>
         // @returns ElementTag(Decimal)
         // @group attributes
         // @description
         // Returns the entity's current health as a percentage.
         // -->
+        if (attribute.startsWith("health_percentage")) {
+            double maxHealth = entity.getLivingEntity().getMaxHealth();
+            if (attribute.hasContext(2)) {
+                maxHealth = attribute.getIntContext(2);
+            }
+            return new ElementTag((entity.getLivingEntity().getHealth() / maxHealth) * 100)
+                    .getObjectAttribute(attribute.fulfill(2));
+        }
         if (attribute.startsWith("health.percentage")) {
+            Deprecations.entityHealthTags.warn(attribute.context);
             double maxHealth = entity.getLivingEntity().getMaxHealth();
             if (attribute.hasContext(2)) {
                 maxHealth = attribute.getIntContext(2);

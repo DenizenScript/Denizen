@@ -28,7 +28,7 @@ public class RenameCommand extends AbstractCommand {
     //
     // @Tags
     // <NPCTag.name>
-    // <NPCTag.name.nickname>
+    // <NPCTag.nickname>
     //
     // @Usage
     // Use to rename the linked NPC.

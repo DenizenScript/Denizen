@@ -77,8 +77,8 @@ Triggers:
       Must be looking in direction of NPC: true
       Must be able to see NPC: true
     Formats:
-      Player to NPC: "You -> <npc.name.nickname>: <text>"
-      Player to NPC overheard: "<player.name> -> <npc.name.nickname>: <text>"
+      Player to NPC: "You -> <npc.nickname>: <text>"
+      Player to NPC overheard: "<player.name> -> <npc.nickname>: <text>"
     Appears globally:
       If triggers missing: true
       If triggers failed: false

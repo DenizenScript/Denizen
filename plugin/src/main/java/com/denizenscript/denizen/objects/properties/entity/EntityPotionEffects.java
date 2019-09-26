@@ -11,7 +11,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import org.bukkit.entity.TippedArrow;
+import org.bukkit.entity.Arrow;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -24,7 +24,7 @@ public class EntityPotionEffects implements Property {
     public static boolean describes(ObjectTag object) {
         return object instanceof EntityTag &&
                 (((EntityTag) object).isLivingEntity()
-                        || ((EntityTag) object).getBukkitEntity() instanceof TippedArrow);
+                        || ((EntityTag) object).getBukkitEntity() instanceof Arrow);
     }
 
     public static EntityPotionEffects getFrom(ObjectTag object) {
@@ -59,8 +59,8 @@ public class EntityPotionEffects implements Property {
         if (entity.isLivingEntity()) {
             return entity.getLivingEntity().getActivePotionEffects();
         }
-        else if (entity.getBukkitEntity() instanceof TippedArrow) {
-            return ((TippedArrow) entity.getBukkitEntity()).getCustomEffects();
+        else if (entity.getBukkitEntity() instanceof Arrow) {
+            return ((Arrow) entity.getBukkitEntity()).getCustomEffects();
         }
         return new ArrayList<>();
     }
@@ -188,8 +188,8 @@ public class EntityPotionEffects implements Property {
                     if (entity.isLivingEntity()) {
                         entity.getLivingEntity().addPotionEffect(actualEffect);
                     }
-                    else if (entity.getBukkitEntity() instanceof TippedArrow) {
-                        ((TippedArrow) entity.getBukkitEntity()).addCustomEffect(actualEffect, true);
+                    else if (entity.getBukkitEntity() instanceof Arrow) {
+                        ((Arrow) entity.getBukkitEntity()).addCustomEffect(actualEffect, true);
                     }
                 }
                 catch (NumberFormatException ex) {
