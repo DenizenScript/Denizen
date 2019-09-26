@@ -24,6 +24,7 @@ import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -1368,6 +1369,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 // Returns whether the inventory can fit a certain quantity of an item.
                 // -->
                 if ((attribute.startsWith("quantity", 2) || attribute.startsWith("qty", 2)) && attribute.hasContext(2)) {
+                    if (attribute.startsWith("qty", 2)) {
+                        Deprecations.qtyTags.warn(attribute.context);
+                    }
                     int qty = attribute.getIntContext(2);
                     items.get(0).setAmount(qty);
                     attribute.fulfill(1);
@@ -1415,6 +1419,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 // Returns the InventoryTag with a certain quantity of an item added.
                 // -->
                 if ((attribute.startsWith("quantity", 2) || attribute.startsWith("qty", 2)) && attribute.hasContext(2)) {
+                    if (attribute.startsWith("qty", 2)) {
+                        Deprecations.qtyTags.warn(attribute.context);
+                    }
                     qty = attribute.getIntContext(2);
                     attribute.fulfill(1);
                 }
@@ -1508,6 +1515,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     // otherwise the searching will only check if the search element is contained in the display name.
                     // -->
                     if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
+                        if (attribute.startsWith("qty", 3)) {
+                            Deprecations.qtyTags.warn(attribute.context);
+                        }
                         qty = attribute.getIntContext(3);
                         attribute.fulfill(1);
                     }
@@ -1589,6 +1599,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     // otherwise the searching will only check if the search elements are contained in the lore.
                     // -->
                     if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
+                        if (attribute.startsWith("qty", 3)) {
+                            Deprecations.qtyTags.warn(attribute.context);
+                        }
                         qty = attribute.getIntContext(3);
                         attribute.fulfill(1);
                     }
@@ -1666,6 +1679,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     // Returns whether the inventory contains a certain quantity of an item with the specified scriptname.
                     // -->
                     if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
+                        if (attribute.startsWith("qty", 3)) {
+                            Deprecations.qtyTags.warn(attribute.context);
+                        }
                         qty = attribute.getIntContext(3);
                         attribute.fulfill(1);
                     }
@@ -1704,6 +1720,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     // Returns whether the inventory contains a certain quantity of an item with the specified key.
                     // -->
                     if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
+                        if (attribute.startsWith("qty", 3)) {
+                            Deprecations.qtyTags.warn(attribute.context);
+                        }
                         qty = attribute.getIntContext(3);
                         attribute.fulfill(1);
                     }
@@ -1742,6 +1761,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     // Returns whether the inventory contains a certain quantity of an item with the specified material.
                     // -->
                     if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
+                        if (attribute.startsWith("qty", 3)) {
+                            Deprecations.qtyTags.warn(attribute.context);
+                        }
                         qty = attribute.getIntContext(3);
                         attribute.fulfill(1);
                     }
@@ -1776,6 +1798,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 // Returns whether the inventory contains a certain quantity of all of the specified items.
                 // -->
                 if ((attribute.startsWith("quantity", 2) || attribute.startsWith("qty", 2)) && attribute.hasContext(2)) {
+                    if (attribute.startsWith("qty", 2)) {
+                        Deprecations.qtyTags.warn(attribute.context);
+                    }
                     qty = attribute.getIntContext(2);
                     attribute.fulfill(1);
                 }
@@ -1817,6 +1842,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 // Returns whether the inventory contains a certain quantity of any of the specified items.
                 // -->
                 if ((attribute.startsWith("quantity", 2) || attribute.startsWith("qty", 2)) && attribute.hasContext(2)) {
+                    if (attribute.startsWith("qty", 2)) {
+                        Deprecations.qtyTags.warn(attribute.context);
+                    }
                     qty = attribute.getIntContext(2);
                     attribute.fulfill(1);
                 }
