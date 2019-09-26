@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.server;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.DenizenCommandSender;
+import com.denizenscript.denizen.utilities.command.DenizenCommandSender;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;

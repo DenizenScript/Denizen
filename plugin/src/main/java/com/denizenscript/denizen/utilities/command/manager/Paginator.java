@@ -1,6 +1,6 @@
-package com.denizenscript.denizen.utilities.command;
+package com.denizenscript.denizen.utilities.command.manager;
 
-import com.denizenscript.denizen.utilities.command.messaging.Messaging;
+import com.denizenscript.denizen.utilities.command.manager.messaging.Messaging;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;

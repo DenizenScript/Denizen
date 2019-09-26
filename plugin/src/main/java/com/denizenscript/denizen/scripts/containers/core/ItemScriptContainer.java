@@ -196,7 +196,7 @@ public class ItemScriptContainer extends ScriptContainer {
                         ListTag list = new ListTag();
                         for (String listVal : mechs.getStringList(key.str)) {
                             list.add(ScriptBuilder.stripLinePrefix(TagManager.tag(listVal, context)));
-                        };
+                        }
                         val = list.identify();
                     }
                     else {

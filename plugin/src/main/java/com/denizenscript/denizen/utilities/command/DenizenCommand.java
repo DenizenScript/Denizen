@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.utilities;
+package com.denizenscript.denizen.utilities.command;
 
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.objects.*;

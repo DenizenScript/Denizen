@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.utilities;
+package com.denizenscript.denizen.utilities.entity;
 
 import org.bukkit.Location;
 import org.bukkit.util.Vector;

@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.commands.entity;
 import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.Velocity;
+import com.denizenscript.denizen.utilities.entity.Velocity;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.Position;
 import com.denizenscript.denizen.nms.NMSHandler;

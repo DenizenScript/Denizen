@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.utilities;
+package com.denizenscript.denizen.utilities.debugging;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;

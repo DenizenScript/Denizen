@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.utilities.command;
+package com.denizenscript.denizen.utilities.command.manager;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
 

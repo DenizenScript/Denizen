@@ -1,7 +1,8 @@
-package com.denizenscript.denizen.utilities.command;
+package com.denizenscript.denizen.utilities.command.manager;
 
 import com.denizenscript.denizen.utilities.command.exceptions.*;
-import com.denizenscript.denizen.utilities.command.messaging.Messaging;
+import com.denizenscript.denizen.utilities.command.manager.exceptions.*;
+import com.denizenscript.denizen.utilities.command.manager.messaging.Messaging;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;

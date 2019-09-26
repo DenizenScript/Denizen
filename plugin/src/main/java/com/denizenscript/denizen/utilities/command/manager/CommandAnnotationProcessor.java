@@ -1,6 +1,6 @@
-package com.denizenscript.denizen.utilities.command;
+package com.denizenscript.denizen.utilities.command.manager;
 
-import com.denizenscript.denizen.utilities.command.exceptions.CommandException;
+import com.denizenscript.denizen.utilities.command.manager.exceptions.CommandException;
 import org.bukkit.command.CommandSender;
 
 import java.lang.annotation.Annotation;

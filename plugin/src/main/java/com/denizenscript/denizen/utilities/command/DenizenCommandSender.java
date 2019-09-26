@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.utilities;
+package com.denizenscript.denizen.utilities.command;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Server;

@@ -4,7 +4,7 @@ import com.denizenscript.denizen.objects.properties.item.*;
 import com.denizenscript.denizen.scripts.containers.core.BookScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
-import com.denizenscript.denizen.utilities.MaterialCompat;
+import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.OldMaterialsHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;

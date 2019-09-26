@@ -1,6 +1,5 @@
-package com.denizenscript.denizen.utilities;
+package com.denizenscript.denizen.utilities.blocks;
 
-import com.denizenscript.denizen.utilities.blocks.OldMaterialsHelper;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import org.bukkit.Bukkit;

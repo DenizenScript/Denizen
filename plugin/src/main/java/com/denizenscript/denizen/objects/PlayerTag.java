@@ -41,7 +41,6 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.map.MapView;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.BlockIterator;
 
 import java.util.ArrayList;

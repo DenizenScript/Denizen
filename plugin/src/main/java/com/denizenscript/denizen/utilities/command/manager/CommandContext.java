@@ -1,6 +1,6 @@
-package com.denizenscript.denizen.utilities.command;
+package com.denizenscript.denizen.utilities.command.manager;
 
-import com.denizenscript.denizen.utilities.command.exceptions.CommandException;
+import com.denizenscript.denizen.utilities.command.manager.exceptions.CommandException;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.utilities;
+package com.denizenscript.denizen.utilities.world;
 
 import com.denizenscript.denizen.objects.LocationTag;
 import net.citizensnpcs.api.astar.AStarMachine;

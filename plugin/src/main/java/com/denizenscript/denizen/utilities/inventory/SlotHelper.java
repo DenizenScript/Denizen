@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.utilities.inventory;
 
-import com.denizenscript.denizen.utilities.MaterialCompat;
+import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import org.bukkit.Material;
 import org.bukkit.inventory.EquipmentSlot;

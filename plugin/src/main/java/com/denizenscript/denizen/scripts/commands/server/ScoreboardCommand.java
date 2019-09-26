@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.server;
 
-import com.denizenscript.denizen.utilities.FakeOfflinePlayer;
+import com.denizenscript.denizen.utilities.entity.FakeOfflinePlayer;
 import com.denizenscript.denizen.utilities.ScoreboardHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.PlayerTag;

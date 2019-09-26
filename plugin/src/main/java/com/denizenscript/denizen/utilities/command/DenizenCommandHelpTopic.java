@@ -1,5 +1,6 @@
-package com.denizenscript.denizen.utilities;
+package com.denizenscript.denizen.utilities.command;
 
+import com.denizenscript.denizen.utilities.command.DenizenCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.help.GenericCommandHelpTopic;
 

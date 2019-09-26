@@ -4,7 +4,7 @@ import com.denizenscript.denizen.npc.traits.*;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.command.messaging.Messaging;
+import com.denizenscript.denizen.utilities.command.manager.messaging.Messaging;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.command.Command;

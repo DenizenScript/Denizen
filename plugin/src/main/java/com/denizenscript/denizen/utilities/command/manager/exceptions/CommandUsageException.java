@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.utilities.command.exceptions;
+package com.denizenscript.denizen.utilities.command.manager.exceptions;
 
 public class CommandUsageException extends CommandException {
 

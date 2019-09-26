@@ -2,7 +2,7 @@ package com.denizenscript.denizen.events.block;
 
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizen.utilities.MaterialCompat;
+import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import org.bukkit.Material;

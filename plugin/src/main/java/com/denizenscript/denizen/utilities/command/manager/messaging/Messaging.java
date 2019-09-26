@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.utilities.command.messaging;
+package com.denizenscript.denizen.utilities.command.manager.messaging;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

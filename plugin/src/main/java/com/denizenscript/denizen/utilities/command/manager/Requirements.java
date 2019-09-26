@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.utilities.command;
+package com.denizenscript.denizen.utilities.command.manager;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
