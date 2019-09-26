@@ -163,11 +163,10 @@ public class BiomeTag implements ObjectTag, Adjustable {
         // Returns this biome's downfall type for when a world has weather.
         // This can be RAIN, SNOW, or NONE.
         // -->
-        registerTag("downfall_type", new TagRunnable.ObjectForm() {
+        registerTag("downfall_type", new TagRunnable.ObjectForm<BiomeTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(CoreUtilities.toLowerCase(((BiomeTag) object).biome.getDownfallType().name()))
-                        .getObjectAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, BiomeTag object) {
+                return new ElementTag(CoreUtilities.toLowerCase(object.biome.getDownfallType().name()));
             }
         });
 
@@ -177,11 +176,10 @@ public class BiomeTag implements ObjectTag, Adjustable {
         // @description
         // Returns the humidity of this biome.
         // -->
-        registerTag("humidity", new TagRunnable.ObjectForm() {
+        registerTag("humidity", new TagRunnable.ObjectForm<BiomeTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((BiomeTag) object).biome.getHumidity())
-                        .getObjectAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, BiomeTag object) {
+                return new ElementTag(object.biome.getHumidity());
             }
         });
         // <--[tag]
@@ -190,11 +188,10 @@ public class BiomeTag implements ObjectTag, Adjustable {
         // @description
         // Returns the temperature of this biome.
         // -->
-        registerTag("temperature", new TagRunnable.ObjectForm() {
+        registerTag("temperature", new TagRunnable.ObjectForm<BiomeTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((BiomeTag) object).biome.getTemperature())
-                        .getObjectAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, BiomeTag object) {
+                return new ElementTag(object.biome.getTemperature());
             }
         });
         // <--[tag]
@@ -203,14 +200,12 @@ public class BiomeTag implements ObjectTag, Adjustable {
         // @description
         // Returns all entities that spawn naturally in this biome.
         // -->
-        registerTag("spawnable_entities", new TagRunnable.ObjectForm() {
+        registerTag("spawnable_entities", new TagRunnable.ObjectForm<BiomeTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                attribute = attribute.fulfill(1);
-                BiomeNMS biome = ((BiomeTag) object).biome;
+            public ObjectTag run(Attribute attribute, BiomeTag object) {
+                BiomeNMS biome = object.biome;
 
                 List<EntityType> entityTypes;
-                boolean hasAttribute = true;
 
                 // <--[tag]
                 // @attribute <BiomeTag.spawnable_entities.ambient>
@@ -219,7 +214,8 @@ public class BiomeTag implements ObjectTag, Adjustable {
                 // Returns the entities that spawn naturally in ambient locations.
                 // Default examples: BAT
                 // -->
-                if (attribute.startsWith("ambient")) {
+                if (attribute.startsWith("ambient", 2)) {
+                    attribute.fulfill(1);
                     entityTypes = biome.getAmbientEntities();
                 }
 
@@ -230,7 +226,8 @@ public class BiomeTag implements ObjectTag, Adjustable {
                 // Returns the entities that spawn naturally in creature locations.
                 // Default examples: PIG, COW, CHICKEN...
                 // -->
-                else if (attribute.startsWith("creatures")) {
+                else if (attribute.startsWith("creatures", 2)) {
+                    attribute.fulfill(1);
                     entityTypes = biome.getCreatureEntities();
                 }
 
@@ -241,7 +238,8 @@ public class BiomeTag implements ObjectTag, Adjustable {
                 // Returns the entities that spawn naturally in monster locations.
                 // Default examples: CREEPER, ZOMBIE, SKELETON...
                 // -->
-                else if (attribute.startsWith("monsters")) {
+                else if (attribute.startsWith("monsters", 2)) {
+                    attribute.fulfill(1);
                     entityTypes = biome.getMonsterEntities();
                 }
 
@@ -252,19 +250,19 @@ public class BiomeTag implements ObjectTag, Adjustable {
                 // Returns the entities that spawn naturally in underwater locations.
                 // Default examples: SQUID
                 // -->
-                else if (attribute.startsWith("water")) {
+                else if (attribute.startsWith("water", 2)) {
+                    attribute.fulfill(1);
                     entityTypes = biome.getWaterEntities();
                 }
                 else {
                     entityTypes = biome.getAllEntities();
-                    hasAttribute = false;
                 }
 
                 ListTag list = new ListTag();
                 for (EntityType entityType : entityTypes) {
                     list.add(entityType.name());
                 }
-                return list.getObjectAttribute(hasAttribute ? attribute.fulfill(1) : attribute);
+                return list;
             }
         });
 
@@ -275,17 +273,17 @@ public class BiomeTag implements ObjectTag, Adjustable {
         // Always returns 'Biome' for BiomeTag objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
-        registerTag("type", new TagRunnable.ObjectForm() {
+        registerTag("type", new TagRunnable.ObjectForm<BiomeTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag("Biome").getObjectAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, BiomeTag object) {
+                return new ElementTag("Biome");
             }
         });
     }
 
-    public static ObjectTagProcessor tagProcessor = new ObjectTagProcessor();
+    public static ObjectTagProcessor<BiomeTag> tagProcessor = new ObjectTagProcessor<>();
 
-    public static void registerTag(String name, TagRunnable.ObjectForm runnable) {
+    public static void registerTag(String name, TagRunnable.ObjectForm<BiomeTag> runnable) {
         tagProcessor.registerTag(name, runnable);
     }
 

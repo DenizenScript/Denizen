@@ -61,25 +61,24 @@ public class EntityHealth implements Property {
         return "health_data";
     }
 
-    public static ObjectTag getHealthFormatted(EntityTag entity, Attribute attribute) {
-        double maxHealth = entity.getLivingEntity().getMaxHealth();
-        if (attribute.hasContext(2)) {
-            maxHealth = attribute.getIntContext(2);
+    public static ElementTag getHealthFormatted(EntityTag entity, Double maxHealth) {
+        if (maxHealth == null) {
+            maxHealth = entity.getLivingEntity().getMaxHealth();
         }
         if ((float) entity.getLivingEntity().getHealth() / maxHealth < .10) {
-            return new ElementTag("dying").getObjectAttribute(attribute.fulfill(2));
+            return new ElementTag("dying");
         }
         else if ((float) entity.getLivingEntity().getHealth() / maxHealth < .40) {
-            return new ElementTag("seriously wounded").getObjectAttribute(attribute.fulfill(2));
+            return new ElementTag("seriously wounded");
         }
         else if ((float) entity.getLivingEntity().getHealth() / maxHealth < .75) {
-            return new ElementTag("injured").getObjectAttribute(attribute.fulfill(2));
+            return new ElementTag("injured");
         }
         else if ((float) entity.getLivingEntity().getHealth() / maxHealth < 1) {
-            return new ElementTag("scraped").getObjectAttribute(attribute.fulfill(2));
+            return new ElementTag("scraped");
         }
         else {
-            return new ElementTag("healthy").getObjectAttribute(attribute.fulfill(2));
+            return new ElementTag("healthy");
         }
     }
 
@@ -104,7 +103,7 @@ public class EntityHealth implements Property {
         // May be 'dying', 'seriously wounded', 'injured', 'scraped', or 'healthy'.
         // -->
         if (attribute.startsWith("health.formatted")) {
-            return getHealthFormatted(entity, attribute);
+            return getHealthFormatted(entity, attribute.hasContext(2) ? attribute.getDoubleContext(2) : null);
         }
 
         // <--[tag]

@@ -253,9 +253,9 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // @description
         // Returns the chunk with the specified coordinates added to it.
         // -->
-        registerTag("add", new TagRunnable.ObjectForm() {
+        registerTag("add", new TagRunnable.ObjectForm<ChunkTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ChunkTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag ChunkTag.add[<#>,<#>] must have a value.");
                     return null;
@@ -267,10 +267,9 @@ public class ChunkTag implements ObjectTag, Adjustable {
                 }
                 int x = ArgumentHelper.getIntegerFrom(coords.get(0));
                 int z = ArgumentHelper.getIntegerFrom(coords.get(1));
-                ChunkTag chunk = (ChunkTag) object;
+                ChunkTag chunk = object;
 
-                return new ChunkTag(chunk.world, chunk.chunkX + x, chunk.chunkZ + z)
-                        .getObjectAttribute(attribute.fulfill(1));
+                return new ChunkTag(chunk.world, chunk.chunkX + x, chunk.chunkZ + z);
 
             }
         });
@@ -281,9 +280,9 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // @description
         // Returns the chunk with the specified coordinates subtracted from it.
         // -->
-        registerTag("sub", new TagRunnable.ObjectForm() {
+        registerTag("sub", new TagRunnable.ObjectForm<ChunkTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ChunkTag object) {
                 if (!attribute.hasContext(1)) {
                     Debug.echoError("The tag ChunkTag.add[<#>,<#>] must have a value.");
                     return null;
@@ -295,10 +294,9 @@ public class ChunkTag implements ObjectTag, Adjustable {
                 }
                 int x = ArgumentHelper.getIntegerFrom(coords.get(0));
                 int z = ArgumentHelper.getIntegerFrom(coords.get(1));
-                ChunkTag chunk = (ChunkTag) object;
+                ChunkTag chunk = object;
 
-                return new ChunkTag(chunk.world, chunk.chunkX - x, chunk.chunkZ - z)
-                        .getObjectAttribute(attribute.fulfill(1));
+                return new ChunkTag(chunk.world, chunk.chunkX - x, chunk.chunkZ - z);
 
             }
         });
@@ -309,11 +307,10 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // @description
         // Returns true if the chunk is currently loaded into memory.
         // -->
-        registerTag("is_loaded", new TagRunnable.ObjectForm() {
+        registerTag("is_loaded", new TagRunnable.ObjectForm<ChunkTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((ChunkTag) object).isLoadedSafe())
-                        .getObjectAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, ChunkTag object) {
+                return new ElementTag(object.isLoadedSafe());
             }
         });
 
@@ -323,10 +320,10 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // @description
         // Returns the x coordinate of the chunk.
         // -->
-        registerTag("x", new TagRunnable.ObjectForm() {
+        registerTag("x", new TagRunnable.ObjectForm<ChunkTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((ChunkTag) object).chunkX).getObjectAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, ChunkTag object) {
+                return new ElementTag(object.chunkX);
             }
         });
 
@@ -336,10 +333,10 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // @description
         // Returns the z coordinate of the chunk.
         // -->
-        registerTag("z", new TagRunnable.ObjectForm() {
+        registerTag("z", new TagRunnable.ObjectForm<ChunkTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((ChunkTag) object).chunkZ).getObjectAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, ChunkTag object) {
+                return new ElementTag(object.chunkZ);
             }
         });
 
@@ -349,10 +346,10 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // @description
         // Returns the world associated with the chunk.
         // -->
-        registerTag("world", new TagRunnable.ObjectForm() {
+        registerTag("world", new TagRunnable.ObjectForm<ChunkTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return ((ChunkTag) object).world.getObjectAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, ChunkTag object) {
+                return object.world;
             }
         });
 
@@ -362,13 +359,12 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // @description
         // Returns a cuboid of this chunk.
         // -->
-        registerTag("cuboid", new TagRunnable.ObjectForm() {
+        registerTag("cuboid", new TagRunnable.ObjectForm<ChunkTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                ChunkTag chunk = (ChunkTag) object;
+            public ObjectTag run(Attribute attribute, ChunkTag object) {
+                ChunkTag chunk = object;
                 return new CuboidTag(new Location(chunk.getWorld(), chunk.getX() * 16, 0, chunk.getZ() * 16),
-                        new Location(chunk.getWorld(), chunk.getX() * 16 + 15, 255, chunk.getZ() * 16 + 15))
-                        .getObjectAttribute(attribute.fulfill(1));
+                        new Location(chunk.getWorld(), chunk.getX() * 16 + 15, 255, chunk.getZ() * 16 + 15));
             }
         });
 
@@ -378,18 +374,18 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // @description
         // Returns a list of entities in the chunk.
         // -->
-        registerTag("entities", new TagRunnable.ObjectForm() {
+        registerTag("entities", new TagRunnable.ObjectForm<ChunkTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ChunkTag object) {
                 ListTag entities = new ListTag();
-                Chunk chunk = ((ChunkTag) object).getChunkForTag(attribute);
+                Chunk chunk = object.getChunkForTag(attribute);
                 if (chunk == null) {
                     return null;
                 }
                 for (Entity ent : chunk.getEntities()) {
                     entities.addObject(new EntityTag(ent).getDenizenObject());
                 }
-                return entities.getObjectAttribute(attribute.fulfill(1));
+                return entities;
             }
         });
 
@@ -400,11 +396,11 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // Returns a list of living entities in the chunk. This includes Players, mobs, NPCs, etc., but excludes
         // dropped items, experience orbs, etc.
         // -->
-        registerTag("living_entities", new TagRunnable.ObjectForm() {
+        registerTag("living_entities", new TagRunnable.ObjectForm<ChunkTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ChunkTag object) {
                 ListTag entities = new ListTag();
-                Chunk chunk = ((ChunkTag) object).getChunkForTag(attribute);
+                Chunk chunk = object.getChunkForTag(attribute);
                 if (chunk == null) {
                     return null;
                 }
@@ -413,7 +409,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
                         entities.addObject(new EntityTag(ent).getDenizenObject());
                     }
                 }
-                return entities.getObjectAttribute(attribute.fulfill(1));
+                return entities;
             }
         });
 
@@ -423,11 +419,11 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // @description
         // Returns a list of players in the chunk.
         // -->
-        registerTag("players", new TagRunnable.ObjectForm() {
+        registerTag("players", new TagRunnable.ObjectForm<ChunkTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ChunkTag object) {
                 ListTag entities = new ListTag();
-                Chunk chunk = ((ChunkTag) object).getChunkForTag(attribute);
+                Chunk chunk = object.getChunkForTag(attribute);
                 if (chunk == null) {
                     return null;
                 }
@@ -436,7 +432,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
                         entities.addObject(new PlayerTag((Player) ent));
                     }
                 }
-                return entities.getObjectAttribute(attribute.fulfill(1));
+                return entities;
             }
         });
 
@@ -446,10 +442,10 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // @description
         // Returns a list of the height of each block in the chunk.
         // -->
-        registerTag("height_map", new TagRunnable.ObjectForm() {
+        registerTag("height_map", new TagRunnable.ObjectForm<ChunkTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                Chunk chunk = ((ChunkTag) object).getChunkForTag(attribute);
+            public ObjectTag run(Attribute attribute, ChunkTag object) {
+                Chunk chunk = object.getChunkForTag(attribute);
                 if (chunk == null) {
                     return null;
                 }
@@ -458,7 +454,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
                 for (int i : heightMap) {
                     height_map.add(String.valueOf(i));
                 }
-                return new ListTag(height_map).getObjectAttribute(attribute.fulfill(1));
+                return new ListTag(height_map);
             }
         });
 
@@ -468,10 +464,10 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // @description
         // Returns the average height of the blocks in the chunk.
         // -->
-        registerTag("average_height", new TagRunnable.ObjectForm() {
+        registerTag("average_height", new TagRunnable.ObjectForm<ChunkTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                Chunk chunk = ((ChunkTag) object).getChunkForTag(attribute);
+            public ObjectTag run(Attribute attribute, ChunkTag object) {
+                Chunk chunk = object.getChunkForTag(attribute);
                 if (chunk == null) {
                     return null;
                 }
@@ -480,7 +476,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
                 for (int i : heightMap) {
                     sum += i;
                 }
-                return new ElementTag(((double) sum) / heightMap.length).getObjectAttribute(attribute.fulfill(1));
+                return new ElementTag(((double) sum) / heightMap.length);
             }
         });
 
@@ -492,10 +488,10 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // true if all the blocks are less than 2 blocks apart in height. Specifying a number will modify the number
         // criteria for determining if it is flat.
         // -->
-        registerTag("is_flat", new TagRunnable.ObjectForm() {
+        registerTag("is_flat", new TagRunnable.ObjectForm<ChunkTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                Chunk chunk = ((ChunkTag) object).getChunkForTag(attribute);
+            public ObjectTag run(Attribute attribute, ChunkTag object) {
+                Chunk chunk = object.getChunkForTag(attribute);
                 if (chunk == null) {
                     return null;
                 }
@@ -504,11 +500,11 @@ public class ChunkTag implements ObjectTag, Adjustable {
                 int x = heightMap[0];
                 for (int i : heightMap) {
                     if (Math.abs(x - i) > tolerance) {
-                        return new ElementTag(false).getObjectAttribute(attribute.fulfill(1));
+                        return new ElementTag(false);
                     }
                 }
 
-                return new ElementTag(true).getObjectAttribute(attribute.fulfill(1));
+                return new ElementTag(true);
             }
         });
 
@@ -518,11 +514,11 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // @description
         // Returns a list of the highest non-air surface blocks in the chunk.
         // -->
-        registerTag("surface_blocks", new TagRunnable.ObjectForm() {
+        registerTag("surface_blocks", new TagRunnable.ObjectForm<ChunkTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
+            public ObjectTag run(Attribute attribute, ChunkTag object) {
                 ListTag surface_blocks = new ListTag();
-                Chunk chunk = ((ChunkTag) object).getChunkForTag(attribute);
+                Chunk chunk = object.getChunkForTag(attribute);
                 if (chunk == null) {
                     return null;
                 }
@@ -533,7 +529,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
                     }
                 }
 
-                return surface_blocks.getObjectAttribute(attribute.fulfill(1));
+                return surface_blocks;
             }
         });
 
@@ -543,14 +539,14 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // @description
         // Returns whether the chunk is a specially located 'slime spawner' chunk.
         // -->
-        registerTag("spawn_slimes", new TagRunnable.ObjectForm() {
+        registerTag("spawn_slimes", new TagRunnable.ObjectForm<ChunkTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                Chunk chunk = ((ChunkTag) object).getChunkForTag(attribute);
+            public ObjectTag run(Attribute attribute, ChunkTag object) {
+                Chunk chunk = object.getChunkForTag(attribute);
                 if (chunk == null) {
                     return null;
                 }
-                return new ElementTag(chunk.isSlimeChunk()).getObjectAttribute(attribute.fulfill(1));
+                return new ElementTag(chunk.isSlimeChunk());
             }
         });
 
@@ -561,18 +557,18 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // Always returns 'Chunk' for ChunkTag objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
-        registerTag("type", new TagRunnable.ObjectForm() {
+        registerTag("type", new TagRunnable.ObjectForm<ChunkTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag("Chunk").getObjectAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, ChunkTag object) {
+                return new ElementTag("Chunk");
             }
         });
 
     }
 
-    public static ObjectTagProcessor tagProcessor = new ObjectTagProcessor();
+    public static ObjectTagProcessor<ChunkTag> tagProcessor = new ObjectTagProcessor<>();
 
-    public static void registerTag(String name, TagRunnable.ObjectForm runnable) {
+    public static void registerTag(String name, TagRunnable.ObjectForm<ChunkTag> runnable) {
         tagProcessor.registerTag(name, runnable);
     }
 

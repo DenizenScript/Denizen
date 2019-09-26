@@ -160,11 +160,10 @@ public class PluginTag implements ObjectTag {
         // @description
         // Gets the name of this plugin.
         // -->
-        registerTag("name", new TagRunnable.ObjectForm() {
+        registerTag("name", new TagRunnable.ObjectForm<PluginTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((PluginTag) object).plugin.getName())
-                        .getObjectAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, PluginTag object) {
+                return new ElementTag(object.plugin.getName());
             }
         });
 
@@ -174,11 +173,10 @@ public class PluginTag implements ObjectTag {
         // @description
         // Gets the version for the plugin specified.
         // -->
-        registerTag("version", new TagRunnable.ObjectForm() {
+        registerTag("version", new TagRunnable.ObjectForm<PluginTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((PluginTag) object).plugin.getDescription().getVersion())
-                        .getObjectAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, PluginTag object) {
+                return new ElementTag(object.plugin.getDescription().getVersion());
             }
         });
 
@@ -188,11 +186,10 @@ public class PluginTag implements ObjectTag {
         // @description
         // Gets the description for the plugin specified.
         // -->
-        registerTag("description", new TagRunnable.ObjectForm() {
+        registerTag("description", new TagRunnable.ObjectForm<PluginTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag(((PluginTag) object).plugin.getDescription().getDescription())
-                        .getObjectAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, PluginTag object) {
+                return new ElementTag(object.plugin.getDescription().getDescription());
             }
         });
 
@@ -202,11 +199,10 @@ public class PluginTag implements ObjectTag {
         // @description
         // Gets the list of authors for the plugin specified.
         // -->
-        registerTag("authors", new TagRunnable.ObjectForm() {
+        registerTag("authors", new TagRunnable.ObjectForm<PluginTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ListTag(((PluginTag) object).plugin.getDescription().getAuthors())
-                        .getObjectAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, PluginTag object) {
+                return new ListTag(object.plugin.getDescription().getAuthors());
             }
         });
 
@@ -217,17 +213,17 @@ public class PluginTag implements ObjectTag {
         // Always returns 'Plugin' for PluginTag objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
-        registerTag("type", new TagRunnable.ObjectForm() {
+        registerTag("type", new TagRunnable.ObjectForm<PluginTag>() {
             @Override
-            public ObjectTag run(Attribute attribute, ObjectTag object) {
-                return new ElementTag("Plugin").getObjectAttribute(attribute.fulfill(1));
+            public ObjectTag run(Attribute attribute, PluginTag object) {
+                return new ElementTag("Plugin");
             }
         });
     }
 
-    public static ObjectTagProcessor tagProcessor = new ObjectTagProcessor();
+    public static ObjectTagProcessor<PluginTag> tagProcessor = new ObjectTagProcessor<>();
 
-    public static void registerTag(String name, TagRunnable.ObjectForm runnable) {
+    public static void registerTag(String name, TagRunnable.ObjectForm<PluginTag> runnable) {
         tagProcessor.registerTag(name, runnable);
     }
 
