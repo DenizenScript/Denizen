@@ -85,6 +85,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //           # You must specify the input for the recipe. The below is a sample of a 3x3 shaped recipe. Other recipe types have a different format.
     //           # You are allowed to have non-3x3 shapes (can be any value 1-3 x 1-3, so for example 1x3, 2x1, and 2x2 are fine).
     //           # For an empty slot, use "air".
+    //           # By default, items require an exact match. For a material-based match, use the format "material:MaterialNameHere" like "material:stick".
     //           input:
     //           - ItemTag|ItemTag|ItemTag
     //           - ItemTag|ItemTag|ItemTag

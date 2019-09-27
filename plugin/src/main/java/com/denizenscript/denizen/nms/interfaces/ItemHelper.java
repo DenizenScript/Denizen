@@ -19,15 +19,15 @@ public abstract class ItemHelper {
 
     public abstract void clearDenizenRecipes();
 
-    public void registerStonecuttingRecipe(String keyName, String group, ItemStack result, ItemStack ingredient) {
+    public void registerStonecuttingRecipe(String keyName, String group, ItemStack result, ItemStack ingredient, boolean exact) {
         throw new UnsupportedOperationException();
     }
 
-    public abstract void registerFurnaceRecipe(String keyName, String group, ItemStack result, ItemStack ingredient, float exp, int time, String type);
+    public abstract void registerFurnaceRecipe(String keyName, String group, ItemStack result, ItemStack ingredient, float exp, int time, String type, boolean exact);
 
-    public abstract void registerShapelessRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredients);
+    public abstract void registerShapelessRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredients, boolean[] exact);
 
-    public abstract void setShapedRecipeIngredient(ShapedRecipe recipe, char c, ItemStack item);
+    public abstract void setShapedRecipeIngredient(ShapedRecipe recipe, char c, ItemStack item, boolean exact);
 
     public abstract String getInternalNameFromMaterial(Material material);
 

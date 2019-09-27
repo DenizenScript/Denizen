@@ -48,26 +48,31 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public void setShapedRecipeIngredient(ShapedRecipe recipe, char c, ItemStack item) {
-        recipe.setIngredient(c, new RecipeChoice.ExactChoice(item));
+    public void setShapedRecipeIngredient(ShapedRecipe recipe, char c, ItemStack item, boolean exact) {
+        if (exact) {
+            recipe.setIngredient(c, new RecipeChoice.ExactChoice(item));
+        }
+        else {
+            recipe.setIngredient(c, item.getType());
+        }
     }
 
     @Override
-    public void registerFurnaceRecipe(String keyName, String group, ItemStack result, ItemStack ingredient, float exp, int time, String type) {
+    public void registerFurnaceRecipe(String keyName, String group, ItemStack result, ItemStack ingredient, float exp, int time, String type, boolean exact) {
         MinecraftKey key = new MinecraftKey("denizen", keyName);
         RecipeItemStack itemRecipe = new RecipeItemStack(Arrays.asList(new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(ingredient))).stream());
-        itemRecipe.exact = true;
+        itemRecipe.exact = exact;
         FurnaceRecipe recipe = new FurnaceRecipe(key, group, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
         ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().a(recipe);
     }
 
     @Override
-    public void registerShapelessRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredients) {
+    public void registerShapelessRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredients, boolean[] exact) {
         MinecraftKey key = new MinecraftKey("denizen", keyName);
         ArrayList<RecipeItemStack> ingredientList = new ArrayList<>();
-        for (ItemStack ingredient : ingredients) {
-            RecipeItemStack itemRecipe = new RecipeItemStack(Arrays.asList(new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(ingredient))).stream());
-            itemRecipe.exact = true;
+        for (int i = 0; i < ingredients.length; i++) {
+            RecipeItemStack itemRecipe = new RecipeItemStack(Arrays.asList(new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(ingredients[i]))).stream());
+            itemRecipe.exact = exact[i];
             ingredientList.add(itemRecipe);
         }
         ShapelessRecipes recipe = new ShapelessRecipes(key, group, CraftItemStack.asNMSCopy(result), NonNullList.a(null, ingredientList.toArray(new RecipeItemStack[ingredientList.size()])));

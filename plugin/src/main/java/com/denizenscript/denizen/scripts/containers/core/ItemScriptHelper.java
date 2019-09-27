@@ -77,6 +77,7 @@ public class ItemScriptHelper implements Listener {
             recipeList.set(n, TagManager.tag(ScriptBuilder.stripLinePrefix(recipeList.get(n)), new BukkitTagContext(null, null, new ScriptTag(container))));
         }
         List<ItemTag> ingredients = new ArrayList<>();
+        List<Boolean> exacts = new ArrayList<>();
         int width = 1;
         for (String recipeRow : recipeList) {
             String[] elements = recipeRow.split("\\|", 3);
@@ -88,7 +89,15 @@ public class ItemScriptHelper implements Listener {
             }
 
             for (String element : elements) {
-                ItemTag ingredient = ItemTag.valueOf(element.replaceAll("[iImM]@", ""), container);
+                String itemText = element.replaceAll("[iImM]@", "");
+                if (itemText.startsWith("material:")) {
+                    exacts.add(false);
+                    itemText = itemText.substring("material:".length());
+                }
+                else {
+                    exacts.add(true);
+                }
+                ItemTag ingredient = ItemTag.valueOf(itemText, container);
                 if (ingredient == null) {
                     Debug.echoError("Invalid ItemTag ingredient, recipe will not be registered for item script '"
                             + container.getName() + "': " + element);
@@ -115,7 +124,7 @@ public class ItemScriptHelper implements Listener {
                 recipe = recipe.shape(shape1);
             }
             for (int i = 0; i < ingredients.size(); i++) {
-                NMSHandler.getItemHelper().setShapedRecipeIngredient(recipe, itemChars.charAt(i), ingredients.get(i).getItemStack().clone());
+                NMSHandler.getItemHelper().setShapedRecipeIngredient(recipe, itemChars.charAt(i), ingredients.get(i).getItemStack().clone(), exacts.get(i));
             }
             Bukkit.addRecipe(recipe);
         }
@@ -127,8 +136,17 @@ public class ItemScriptHelper implements Listener {
     public void registerShapelessRecipe(ItemScriptContainer container, ItemStack item, String shapelessString, String internalId, String group) {
         String list = TagManager.tag(shapelessString, new BukkitTagContext(null, null, new ScriptTag(container)));
         List<ItemTag> ingredients = new ArrayList<>();
+        List<Boolean> exacts = new ArrayList<>();
         for (String element : ListTag.valueOf(list)) {
-            ItemTag ingredient = ItemTag.valueOf(element.replaceAll("[iImM]@", ""), container);
+            String itemText = element.replaceAll("[iImM]@", "");
+            if (itemText.startsWith("material:")) {
+                exacts.add(false);
+                itemText = itemText.substring("material:".length());
+            }
+            else {
+                exacts.add(true);
+            }
+            ItemTag ingredient = ItemTag.valueOf(itemText, container);
             if (ingredient == null) {
                 Debug.echoError("Invalid ItemTag ingredient, shapeless recipe will not be registered for item script '"
                         + container.getName() + "': " + element);
@@ -141,7 +159,11 @@ public class ItemScriptHelper implements Listener {
             for (int i = 0; i < input.length; i++) {
                 input[i] = ingredients.get(i).getItemStack().clone();
             }
-            NMSHandler.getItemHelper().registerShapelessRecipe(internalId, group, item, input);
+            boolean[] bools = new boolean[exacts.size()];
+            for (int i = 0; i < exacts.size(); i++) {
+                bools[i] = exacts.get(i);
+            }
+            NMSHandler.getItemHelper().registerShapelessRecipe(internalId, group, item, input, bools);
         }
         else {
             shapelessRecipesMap.put(container, ingredients);
@@ -149,6 +171,11 @@ public class ItemScriptHelper implements Listener {
     }
 
     public void registerFurnaceRecipe(ItemScriptContainer container, ItemStack item, String furnaceItemString, float exp, int time, String type, String internalId, String group) {
+        boolean exact = true;
+        if (furnaceItemString.startsWith("material:")) {
+            exact = false;
+            furnaceItemString = furnaceItemString.substring("material:".length());
+        }
         ItemTag furnace_item = ItemTag.valueOf(furnaceItemString, container);
         if (furnace_item == null) {
             Debug.echoError("Invalid item '" + furnaceItemString + "', furnace recipe will not be registered for item script '" + container.getName() + "'.");
@@ -156,7 +183,7 @@ public class ItemScriptHelper implements Listener {
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             ItemStack input = furnace_item.getItemStack().clone();
-            NMSHandler.getItemHelper().registerFurnaceRecipe(internalId, group, item, input, exp, time, type);
+            NMSHandler.getItemHelper().registerFurnaceRecipe(internalId, group, item, input, exp, time, type, exact);
         }
         else {
             FurnaceRecipe recipe = new FurnaceRecipe(item, furnace_item.getMaterial().getMaterial(), furnace_item.getItemStack().getDurability());
@@ -167,15 +194,20 @@ public class ItemScriptHelper implements Listener {
 
     public void registerStonecuttingRecipe(ItemScriptContainer container, ItemStack item, String inputItemString, String internalId, String group) {
         if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
-
+            return;
         }
-        ItemTag furnace_item = ItemTag.valueOf(inputItemString, container);
-        if (furnace_item == null) {
+        boolean exact = true;
+        if (inputItemString.startsWith("material:")) {
+            exact = false;
+            inputItemString = inputItemString.substring("material:".length());
+        }
+        ItemTag stonecutting_item = ItemTag.valueOf(inputItemString, container);
+        if (stonecutting_item == null) {
             Debug.echoError("Invalid item '" + inputItemString + "', stonecutting recipe will not be registered for item script '" + container.getName() + "'.");
             return;
         }
-        ItemStack input = furnace_item.getItemStack().clone();
-        NMSHandler.getItemHelper().registerStonecuttingRecipe(internalId, group, item, input);
+        ItemStack input = stonecutting_item.getItemStack().clone();
+        NMSHandler.getItemHelper().registerStonecuttingRecipe(internalId, group, item, input, exact);
     }
 
     public void rebuildRecipes() {
