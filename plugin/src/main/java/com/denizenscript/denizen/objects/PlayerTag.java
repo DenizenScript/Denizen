@@ -744,7 +744,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
 
                     return new ListTag(flag.toString(), true, flag.values());
                 }
-                return new ElementTag(object.identify());
+                return null;
             }
         });
 

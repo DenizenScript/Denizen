@@ -739,7 +739,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
 
                     return new ListTag(flag.toString(), true, flag.values());
                 }
-                return new ElementTag(object.identify());
+                return null;
             }
         });
 
