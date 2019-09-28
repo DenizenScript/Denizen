@@ -8,8 +8,6 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
@@ -24,6 +22,7 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
     // <entity> breeds
     //
     // @Regex ^on [^\s]+ breeds$
+    //
     // @Switch in <area>
     //
     // @Cancellable true
@@ -57,8 +56,8 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
     public EntityBreedEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.getXthArg(1, CoreUtilities.toLowerCase(s)).equals("breeds");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventArgLowerAt(1).equals("breeds");
     }
 
     @Override

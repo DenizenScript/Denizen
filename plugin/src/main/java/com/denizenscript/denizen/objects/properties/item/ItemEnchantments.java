@@ -77,14 +77,11 @@ public class ItemEnchantments implements Property {
         // -->
         if (attribute.startsWith("enchantments.with_levels")) {
             Set<Map.Entry<Enchantment, Integer>> enchantments = getEnchantments();
-            if (enchantments.size() > 0) {
-                List<String> enchants = new ArrayList<>();
-                for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
-                    enchants.add(enchantment.getKey().getName() + "," + enchantment.getValue());
-                }
-                return new ListTag(enchants)
-                        .getObjectAttribute(attribute.fulfill(2));
+            ListTag enchants = new ListTag();
+            for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
+                enchants.add(enchantment.getKey().getName() + "," + enchantment.getValue());
             }
+            return enchants.getObjectAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
@@ -97,14 +94,11 @@ public class ItemEnchantments implements Property {
         // -->
         if (attribute.startsWith("enchantments.levels")) {
             Set<Map.Entry<Enchantment, Integer>> enchantments = getEnchantments();
-            if (enchantments.size() > 0) {
-                List<String> enchants = new ArrayList<>();
-                for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
-                    enchants.add(String.valueOf(enchantment.getValue()));
-                }
-                return new ListTag(enchants)
-                        .getObjectAttribute(attribute.fulfill(2));
+            ListTag enchants = new ListTag();
+            for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
+                enchants.add(String.valueOf(enchantment.getValue()));
             }
+            return enchants.getObjectAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
@@ -140,14 +134,11 @@ public class ItemEnchantments implements Property {
         // -->
         if (attribute.startsWith("enchantments")) {
             Set<Map.Entry<Enchantment, Integer>> enchantments = getEnchantments();
-            if (enchantments.size() > 0) {
-                List<String> enchants = new ArrayList<>();
-                for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
-                    enchants.add(enchantment.getKey().getName());
-                }
-                return new ListTag(enchants)
-                        .getObjectAttribute(attribute.fulfill(1));
+            ListTag enchants = new ListTag();
+            for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
+                enchants.add(enchantment.getKey().getName());
             }
+            return enchants.getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;
