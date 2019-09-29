@@ -21,13 +21,13 @@ public class CopyBlockCommand extends AbstractCommand {
 
     // <--[command]
     // @Name CopyBlock
-    // @Syntax copyblock [<location>/<cuboid>] [to:<location>] (remove_original)
+    // @Syntax copyblock [<location>] [to:<location>] (remove_original)
     // @Required 1
-    // @Short Copies a block or cuboid to another location, keeping metadata when possible.
+    // @Short Copies a block to another location, keeping metadata when possible.
     // @Group world
     //
     // @Description
-    // Copies a block or cuboid to another location.
+    // Copies a block to another location.
     // You may also use the 'remove_original' argument to delete the original block.
     // This effectively moves the block to the target location.
     //
@@ -66,8 +66,8 @@ public class CopyBlockCommand extends AbstractCommand {
         }
 
         // Check required arguments
-        if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("cuboid")) {
-            throw new InvalidArgumentsException("Must specify a source location or cuboid.");
+        if (!scriptEntry.hasObject("location")) {
+            throw new InvalidArgumentsException("Must specify a source location.");
         }
 
         if (!scriptEntry.hasObject("destination")) {
