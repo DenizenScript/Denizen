@@ -13,6 +13,24 @@ import com.denizenscript.denizencore.utilities.YamlConfiguration;
 
 public class FormatScriptContainer extends ScriptContainer {
 
+    // <--[language]
+    // @name Format Script Containers
+    // @group Script Container System
+    // @description
+    // Format script containers are very simple script containers used for formatting messages, usually with the 'narrate' command.
+    //
+    // <code>
+    // Format_Script_Name:
+    //
+    //   type: format
+    //
+    //   # The only key is the format. The format can use '<text>' as a special tag to contain the message being sent.
+    //   # '<name>' is available as a special tag as well for use with the 'on player chats' event to fill the player's name properly.
+    //   format: <name> says <text>
+    // </code>
+    //
+    // -->
+
     public FormatScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
     }
