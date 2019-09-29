@@ -254,7 +254,28 @@ public class FormattedTextHelper {
                 }
                 i++;
                 started = i + 1;
-             }
+            }
+            else if (i + "https://a.".length() < chars.length && chars[i] == 'h' && chars[i + 1] == 't' && chars[i + 2] == 't' && chars[i  + 3] == 'p') {
+                String subStr = str.substring(i, i + "https://a.".length());
+                if (subStr.startsWith("https://") || subStr.startsWith("http://")) {
+                    int nextSpace = str.indexOf(' ', i);
+                    if (nextSpace == -1) {
+                        nextSpace = str.length();
+                    }
+                    String url = str.substring(i, nextSpace);
+                    nextText.setText(nextText.getText() + str.substring(started, i));
+                    outputList.add(nextText);
+                    TextComponent lastText = nextText;
+                    nextText = new TextComponent(lastText);
+                    nextText.setText("");
+                    TextComponent clickableText = new TextComponent(url);
+                    clickableText.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
+                    lastText.addExtra(clickableText);
+                    i = nextSpace;
+                    started = nextSpace;
+                    continue;
+                }
+            }
         }
         nextText.setText(nextText.getText() + str.substring(started));
         if (!nextText.getText().isEmpty()) {
