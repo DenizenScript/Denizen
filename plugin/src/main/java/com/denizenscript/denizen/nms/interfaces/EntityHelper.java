@@ -22,6 +22,8 @@ import java.util.*;
 
 public abstract class EntityHelper {
 
+    public abstract String getRawHoverText(Entity entity);
+
     public List<String> getDiscoveredRecipes(Player player) {
         throw new UnsupportedOperationException();
     }

@@ -97,6 +97,11 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
+    public String getRawHoverText(ItemStack itemStack) {
+        return CraftItemStack.asNMSCopy(itemStack).A().getChatModifier().i().b().getText();
+    }
+
+    @Override
     public PlayerProfile getSkullSkin(ItemStack is) {
         net.minecraft.server.v1_13_R2.ItemStack itemStack = CraftItemStack.asNMSCopy(is);
         if (itemStack.hasTag()) {

@@ -35,6 +35,8 @@ public abstract class ItemHelper {
 
     public abstract String getJsonString(ItemStack itemStack);
 
+    public abstract String getRawHoverText(ItemStack itemStack);
+
     public abstract PlayerProfile getSkullSkin(ItemStack itemStack);
 
     public abstract ItemStack setSkullSkin(ItemStack itemStack, PlayerProfile playerProfile);

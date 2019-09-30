@@ -1,6 +1,8 @@
 package com.denizenscript.denizen.utilities;
 
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
@@ -190,7 +192,29 @@ public class FormattedTextHelper {
                                 continue;
                             }
                             TextComponent hoverableText = new TextComponent();
-                            hoverableText.setHoverEvent(new HoverEvent(HoverEvent.Action.valueOf(innardBase.get(1).toUpperCase()), parse(unescape(innardParts.get(0)))));
+                            HoverEvent.Action action = HoverEvent.Action.valueOf(innardBase.get(1).toUpperCase());
+                            BaseComponent[] hoverValue;
+                            if (action == HoverEvent.Action.SHOW_ITEM) {
+                                ItemTag item = ItemTag.valueOf(unescape(innardParts.get(0)));
+                                if (item == null) {
+                                    continue;
+                                }
+                                // no ItemComponent?
+                                hoverValue = new BaseComponent[] { new TextComponent(NMSHandler.getItemHelper().getRawHoverText(item.getItemStack())) };
+                            }
+                            else if (action == HoverEvent.Action.SHOW_ENTITY) {
+                                EntityTag entity = EntityTag.valueOf(unescape(innardParts.get(0)));
+                                if (entity == null) {
+                                    continue;
+                                }
+                                // no EntityComponent?
+                                // Also, entity hover doesn't seem to work in the first place...
+                                hoverValue = new BaseComponent[] { new TextComponent(NMSHandler.getEntityHelper().getRawHoverText(entity.getBukkitEntity())) };
+                            }
+                            else {
+                                hoverValue = parse(unescape(innardParts.get(0)));
+                            }
+                            hoverableText.setHoverEvent(new HoverEvent(action, hoverValue));
                             for (BaseComponent subComponent : parse(str.substring(endBracket + 1, endIndex))) {
                                 hoverableText.addExtra(subComponent);
                             }

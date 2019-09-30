@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.nms.v1_12.helpers;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.util.ReflectionHelper;
 import com.denizenscript.denizen.nms.v1_12.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.nms.util.BoundingBox;
@@ -25,15 +26,26 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
+import java.lang.invoke.MethodHandle;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class EntityHelperImpl extends EntityHelper {
 
-    /*
-        General Entity Methods
-     */
+    public static final MethodHandle ENTITY_HOVER_TEXT_GETTER = ReflectionHelper.getMethodHandle(net.minecraft.server.v1_12_R1.Entity.class, "bv");
+
+    @Override
+    public String getRawHoverText(Entity entity) {
+        try {
+            ChatHoverable hoverable = (ChatHoverable) ENTITY_HOVER_TEXT_GETTER.invoke(((CraftEntity) entity).getHandle());
+            return hoverable.b().getText();
+        }
+        catch (Throwable ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
 
     @Override
     public String getArrowPickupStatus(Entity entity) {

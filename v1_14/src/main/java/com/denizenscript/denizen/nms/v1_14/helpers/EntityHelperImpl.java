@@ -28,12 +28,27 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.util.*;
 
 public class EntityHelperImpl extends EntityHelper {
 
     public static final Field RECIPE_BOOK_DISCOVERED_SET = ReflectionHelper.getFields(RecipeBook.class).get("a");
+
+    public static final MethodHandle ENTITY_HOVER_TEXT_GETTER = ReflectionHelper.getMethodHandle(net.minecraft.server.v1_14_R1.Entity.class, "bK");
+
+    @Override
+    public String getRawHoverText(Entity entity) {
+        try {
+            ChatHoverable hoverable = (ChatHoverable) ENTITY_HOVER_TEXT_GETTER.invoke(((CraftEntity) entity).getHandle());
+            return hoverable.b().getText();
+        }
+        catch (Throwable ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
 
     public List<String> getDiscoveredRecipes(Player player) {
         try {

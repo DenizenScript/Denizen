@@ -400,6 +400,7 @@ public class BukkitElementProperties implements Property {
             // @description
             // Adds a hover message to the element, which makes the element display the input hover text when the mouse is left over it.
             // Optionally specify the hover type as one of: SHOW_TEXT, SHOW_ACHIEVEMENT, SHOW_ITEM, or SHOW_ENTITY.
+            // Note: for "SHOW_ITEM", replace the text with a valid ItemTag. For "SHOW_ENTITY", replace the text with a valid spawned EntityTag.
             // -->
             if (attribute.startsWith("type", 2)) {
                 type = attribute.getContext(2);
