@@ -331,7 +331,6 @@ public class ServerTagBase {
                 flag_name = attribute.getContext(1);
             }
             else {
-                event.setReplaced("null");
                 return;
             }
             event.setReplaced(new ElementTag(FlagManager.serverHasFlag(flag_name)).getAttribute(attribute.fulfill(1)));

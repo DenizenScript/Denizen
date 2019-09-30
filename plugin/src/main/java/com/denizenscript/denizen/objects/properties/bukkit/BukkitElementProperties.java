@@ -3,6 +3,7 @@ package com.denizenscript.denizen.objects.properties.bukkit;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
+import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.BukkitScriptEntryData;
 import com.denizenscript.denizen.tags.BukkitTagContext;
@@ -12,6 +13,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.tags.Attribute;
+import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.ChatColor;
 
 import javax.xml.bind.DatatypeConverter;
@@ -42,7 +44,7 @@ public class BukkitElementProperties implements Property {
             "asinventory", "as_inventory", "asitem", "as_item", "aslocation", "as_location", "asmaterial",
             "as_material", "asnpc", "as_npc", "asplayer", "as_player", "asworld", "as_world", "asplugin",
             "as_plugin", "last_color", "format", "strip_color", "parse_color", "to_itemscript_hash",
-            "to_secret_colors", "from_secret_colors"
+            "to_secret_colors", "from_secret_colors", "to_raw_json", "from_raw_json"
     };
 
     public static final String[] handledMechs = new String[] {
@@ -351,6 +353,32 @@ public class BukkitElementProperties implements Property {
             String text = element.asString().replace(String.valueOf(ChatColor.COLOR_CHAR), "");
             byte[] bytes = DatatypeConverter.parseHexBinary(text);
             return new ElementTag(new String(bytes, StandardCharsets.UTF_8))
+                    .getObjectAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <ElementTag.to_raw_json>
+        // @returns ElementTag
+        // @group conversion
+        // @description
+        // Converts normal colored text to Minecraft-style "raw JSON" format.
+        // Inverts <@link tag ElementTag.from_raw_json>.
+        // -->
+        if (attribute.startsWith("to_raw_json")) {
+            return new ElementTag(ComponentSerializer.toString(FormattedTextHelper.parse(element.asString())))
+                    .getObjectAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <ElementTag.from_raw_json>
+        // @returns ElementTag
+        // @group conversion
+        // @description
+        // Un-hides the element's text from invisible color codes back to normal text.
+        // Inverts <@link tag ElementTag.to_raw_json>.
+        // -->
+        if (attribute.startsWith("from_raw_json")) {
+            return new ElementTag(FormattedTextHelper.stringify(ComponentSerializer.parse(element.asString())))
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
