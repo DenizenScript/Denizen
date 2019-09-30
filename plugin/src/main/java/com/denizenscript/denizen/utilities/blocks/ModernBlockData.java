@@ -65,10 +65,10 @@ public class ModernBlockData implements Cloneable {
             ((Openable) data).setOpen(state);
         }
         else if (data instanceof Powerable) {
-            ((Powerable) data).setPowered(true);
+            ((Powerable) data).setPowered(state);
         }
         else if (data instanceof Dispenser) {
-            ((Dispenser) data).setTriggered(true);
+            ((Dispenser) data).setTriggered(state);
         }
         else {
             return false;
