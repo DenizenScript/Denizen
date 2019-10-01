@@ -98,6 +98,9 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public String getRawHoverText(ItemStack itemStack) {
+        if (itemStack == null || itemStack.getType() == Material.AIR) {
+            return "";
+        }
         return CraftItemStack.asNMSCopy(itemStack).A().getChatModifier().i().b().getText();
     }
 

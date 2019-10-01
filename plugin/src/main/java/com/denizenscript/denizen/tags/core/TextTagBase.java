@@ -57,7 +57,7 @@ public class TextTagBase {
                   // This tag must be followed by an <&end_hover> tag.
                   // Optionally specify the hover type as one of: SHOW_TEXT, SHOW_ACHIEVEMENT, SHOW_ITEM, or SHOW_ENTITY.
                   // For example: - narrate "There is a <&hover[you found it!].type[SHOW_TEXT]>secret<&end_hover> in this message!"
-                  // Note: for "SHOW_ITEM", replace the text with a valid ItemTag. For "SHOW_ENTITY", replace the text with a valid spawned EntityTag.
+                  // Note: for "SHOW_ITEM", replace the text with a valid ItemTag. For "SHOW_ENTITY", replace the text with a valid spawned EntityTag (requires F3+H to see entities).
                   // -->
                   String type = "SHOW_TEXT";
                   if (attribute.startsWith("type", 2)) {

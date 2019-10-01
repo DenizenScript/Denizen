@@ -208,7 +208,6 @@ public class FormattedTextHelper {
                                     continue;
                                 }
                                 // no EntityComponent?
-                                // Also, entity hover doesn't seem to work in the first place...
                                 hoverValue = new BaseComponent[] { new TextComponent(NMSHandler.getEntityHelper().getRawHoverText(entity.getBukkitEntity())) };
                             }
                             else {
