@@ -18,7 +18,6 @@ public class ResourcePackStatusScriptEvent extends BukkitScriptEvent {
     // @Triggers when a player accepts, denies, successfully loads, or fails to download a resource pack.
     //
     // @Context
-    // <context.hash> returns an ElementTag of the resource pack's hash, or null if one was not specified.
     // <context.status> returns an ElementTag of the status. Can be: SUCCESSFULLY_LOADED, DECLINED, FAILED_DOWNLOAD, ACCEPTED.
     //
     // -->
@@ -29,7 +28,6 @@ public class ResourcePackStatusScriptEvent extends BukkitScriptEvent {
 
     public static ResourcePackStatusScriptEvent instance;
 
-    public ElementTag hash;
     public ElementTag status;
     public PlayerTag player;
 
@@ -50,10 +48,7 @@ public class ResourcePackStatusScriptEvent extends BukkitScriptEvent {
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("hash")) {
-            return hash;
-        }
-        else if (name.equals("status")) {
+        if (name.equals("status")) {
             return status;
         }
         return super.getContext(name);

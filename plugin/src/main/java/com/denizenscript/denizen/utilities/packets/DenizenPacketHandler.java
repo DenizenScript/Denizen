@@ -37,7 +37,6 @@ public class DenizenPacketHandler implements PacketHandler {
             @Override
             public void run() {
                 ResourcePackStatusScriptEvent event = ResourcePackStatusScriptEvent.instance;
-                // TODO: get hash on server?... last sent hash? event.hash = new Element(hash);
                 event.status = new ElementTag(resourcePackStatus.getStatus());
                 event.player = PlayerTag.mirrorBukkitPlayer(player);
                 event.fire();
