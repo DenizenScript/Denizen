@@ -14,6 +14,7 @@ import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_14_R1.block.CraftBlock;
@@ -33,6 +34,22 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 public class EntityHelperImpl extends EntityHelper {
+
+    @Override
+    public double getDamageTo(LivingEntity attacker, Entity target) {
+        EnumMonsterType monsterType;
+        if (target instanceof LivingEntity) {
+            monsterType = ((CraftLivingEntity) target).getHandle().getMonsterType();
+        }
+        else {
+            monsterType = EnumMonsterType.UNDEFINED;
+        }
+        double damage = attacker.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue();
+        if (attacker.getEquipment() != null && attacker.getEquipment().getItemInMainHand() != null) {
+            damage += EnchantmentManager.a(CraftItemStack.asNMSCopy(attacker.getEquipment().getItemInMainHand()), monsterType);
+        }
+        return damage;
+    }
 
     public static final Field RECIPE_BOOK_DISCOVERED_SET = ReflectionHelper.getFields(RecipeBook.class).get("a");
 

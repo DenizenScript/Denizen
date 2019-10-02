@@ -2755,6 +2755,25 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
+        // @attribute <EntityTag.weapon_damage[(<entity>)]>
+        // @returns ElementTag(Number)
+        // @group properties
+        // @description
+        // Returns the amount of damage the entity will do based on its held item.
+        // Optionally, specify a target entity to test how much damage will be done to that specific target (modified based on enchantments).
+        // -->
+        registerSpawnedOnlyTag("weapon_damage", new TagRunnable.ObjectForm<EntityTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, EntityTag object) {
+                Entity target = null;
+                if (attribute.hasContext(1)) {
+                    target = valueOf(attribute.getContext(1)).getBukkitEntity();
+                }
+                return new ElementTag(NMSHandler.getEntityHelper().getDamageTo(object.getLivingEntity(), target));
+            }
+        });
+
+        // <--[tag]
         // @attribute <EntityTag.describe>
         // @returns ElementTag(Boolean)
         // @group properties

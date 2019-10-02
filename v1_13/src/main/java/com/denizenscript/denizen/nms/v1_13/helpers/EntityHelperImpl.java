@@ -13,6 +13,7 @@ import net.minecraft.server.v1_13_R2.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_13_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_13_R2.block.CraftBlock;
@@ -33,6 +34,22 @@ import java.util.Map;
 import java.util.UUID;
 
 public class EntityHelperImpl extends EntityHelper {
+
+    @Override
+    public double getDamageTo(LivingEntity attacker, Entity target) {
+        EnumMonsterType monsterType;
+        if (target instanceof LivingEntity) {
+            monsterType = ((CraftLivingEntity) target).getHandle().getMonsterType();
+        }
+        else {
+            monsterType = EnumMonsterType.UNDEFINED;
+        }
+        double damage = attacker.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue();
+        if (attacker.getEquipment() != null && attacker.getEquipment().getItemInMainHand() != null) {
+            damage += EnchantmentManager.a(CraftItemStack.asNMSCopy(attacker.getEquipment().getItemInMainHand()), monsterType);
+        }
+        return damage;
+    }
 
     public static final MethodHandle ENTITY_HOVER_TEXT_GETTER = ReflectionHelper.getMethodHandle(net.minecraft.server.v1_13_R2.Entity.class, "bC");
 

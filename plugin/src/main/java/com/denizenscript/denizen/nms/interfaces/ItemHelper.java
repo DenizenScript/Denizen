@@ -14,7 +14,6 @@ import org.bukkit.potion.PotionEffectType;
 
 public abstract class ItemHelper {
 
-
     public abstract void removeRecipe(NamespacedKey key);
 
     public abstract void clearDenizenRecipes();
