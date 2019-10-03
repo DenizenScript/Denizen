@@ -15,6 +15,7 @@ import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.event.Listener;
 
 public class FlagCommand extends AbstractCommand implements Listener {
@@ -118,13 +119,17 @@ public class FlagCommand extends AbstractCommand implements Listener {
                     && arg.matches("npc", "denizen")) {
                 specified_target = true;
                 scriptEntry.addObject("flag_target", Utilities.getEntryNPC(scriptEntry));
-
             }
             else if (!scriptEntry.hasObject("flag_target")
-                    && arg.matches("global", "server")) {
+                    && arg.matches("server")) {
                 specified_target = true;
                 scriptEntry.addObject("flag_target", new ElementTag("server"));
-
+            }
+            else if (!scriptEntry.hasObject("flag_target")
+                    && arg.matches("global")) {
+                Deprecations.globalTagName.warn(scriptEntry);
+                specified_target = true;
+                scriptEntry.addObject("flag_target", new ElementTag("server"));
             }
             else if (!scriptEntry.hasObject("flag_target")
                     && arg.matches("player")) {
