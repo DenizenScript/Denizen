@@ -259,10 +259,18 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
         else if (CuboidTag.matches(it)) {
             CuboidTag cuboid = CuboidTag.valueOf(it);
+            if (cuboid == null || !cuboid.isUnique()) {
+                Debug.echoError("Invalid event 'in:<area>' switch [" + getName() + "] (invalid cuboid): '" + path.event + "' for " + path.container.getName());
+                return false;
+            }
             return cuboid.isInsideCuboid(location);
         }
         else if (EllipsoidTag.matches(it)) {
             EllipsoidTag ellipsoid = EllipsoidTag.valueOf(it);
+            if (ellipsoid == null || !ellipsoid.isUnique()) {
+                Debug.echoError("Invalid event 'in:<area>' switch [" + getName() + "] (invalid ellipsoid): '" + path.event + "' for " + path.container.getName());
+                return false;
+            }
             return ellipsoid.contains(location);
         }
         else {
