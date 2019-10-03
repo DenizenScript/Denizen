@@ -16,6 +16,7 @@ import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -369,6 +370,33 @@ public class ChunkTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <ChunkTag.tile_entities>
+        // @returns ListTag(LocationTag)
+        // @description
+        // Returns a list of tile entity locations in the chunk.
+        // -->
+        registerTag("tile_entities", new TagRunnable.ObjectForm<ChunkTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, ChunkTag object) {
+                ListTag tiles = new ListTag();
+                Chunk chunk = object.getChunkForTag(attribute);
+                if (chunk == null) {
+                    return null;
+                }
+                try {
+                    NMSHandler.getChunkHelper().changeChunkServerThread(object.getWorld());
+                    for (BlockState block : chunk.getTileEntities()) {
+                        tiles.addObject(new LocationTag(block.getLocation()));
+                    }
+                }
+                finally {
+                    NMSHandler.getChunkHelper().restoreServerThread(object.getWorld());
+                }
+                return tiles;
+            }
+        });
+
+        // <--[tag]
         // @attribute <ChunkTag.entities>
         // @returns ListTag(EntityTag)
         // @description
@@ -382,8 +410,14 @@ public class ChunkTag implements ObjectTag, Adjustable {
                 if (chunk == null) {
                     return null;
                 }
-                for (Entity ent : chunk.getEntities()) {
-                    entities.addObject(new EntityTag(ent).getDenizenObject());
+                try {
+                    NMSHandler.getChunkHelper().changeChunkServerThread(object.getWorld());
+                    for (Entity ent : chunk.getEntities()) {
+                        entities.addObject(new EntityTag(ent).getDenizenObject());
+                    }
+                }
+                finally {
+                    NMSHandler.getChunkHelper().restoreServerThread(object.getWorld());
                 }
                 return entities;
             }
@@ -404,10 +438,16 @@ public class ChunkTag implements ObjectTag, Adjustable {
                 if (chunk == null) {
                     return null;
                 }
-                for (Entity ent : chunk.getEntities()) {
-                    if (ent instanceof LivingEntity) {
-                        entities.addObject(new EntityTag(ent).getDenizenObject());
+                try {
+                    NMSHandler.getChunkHelper().changeChunkServerThread(object.getWorld());
+                    for (Entity ent : chunk.getEntities()) {
+                        if (ent instanceof LivingEntity) {
+                            entities.addObject(new EntityTag(ent).getDenizenObject());
+                        }
                     }
+                }
+                finally {
+                    NMSHandler.getChunkHelper().restoreServerThread(object.getWorld());
                 }
                 return entities;
             }

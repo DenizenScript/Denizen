@@ -1591,6 +1591,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                     // not the other way around
                     LocationTag target = LocationTag.valueOf(attribute.getContext(1));
                     EntityHelper entityHelper = NMSHandler.getEntityHelper();
+
                     // <--[tag]
                     // @attribute <LocationTag.direction[<location>].yaw>
                     // @returns ElementTag(Decimal)
