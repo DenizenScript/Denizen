@@ -35,7 +35,7 @@ public class SignCommand extends AbstractCommand {
     // If there is not already a sign there, defaults to a sign_post.
     //
     // @Tags
-    // <LocationTag.block.sign_contents>
+    // <LocationTag.sign_contents>
     //
     // @Usage
     // Use to edit some text on a sign
