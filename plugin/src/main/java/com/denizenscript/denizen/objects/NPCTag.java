@@ -469,7 +469,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                     return NPCTagBase.previousLocations.get(object.getId());
                 }
                 if (object.isSpawned()) {
-                    return new EntityTag((object));
+                    return new EntityTag(object).getObjectAttribute(attribute);
                 }
                 return object.getLocation();
             }
