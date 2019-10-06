@@ -22,7 +22,7 @@ public class TextTagBase {
             }
         }, "&auml", "&Auml", "&ouml", "&Ouml", "&uuml", "&Uuml", "&nl", "&amp", "&cm", "&ss", "&sq", "&sp", "&nbsp",
                 "&dq", "&co", "&sc", "&rb", "&lb", "&rc", "&lc", "&ns", "&pc", "&pipe",
-                "&ds", "&lt", "&gt", "&bs", "&at", "&dot", "&hrt", "&chr", "p", "n");
+                "&ds", "&lt", "&gt", "&bs", "&at", "&dot", "&hrt", "&chr");
         for (ChatColor color : ChatColor.values()) {
             final String nameVal = CoreUtilities.toLowerCase(color.name());
             final String codeVal = "&" + String.valueOf(color.getChar());
@@ -34,6 +34,32 @@ public class TextTagBase {
                 }
             }, nameVal, codeVal);
         }
+
+        // <--[tag]
+        // @attribute <n>
+        // @returns ElementTag
+        // @description
+        // Returns a newline symbol, for use in books.
+        // -->
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                event.setReplaced(new ElementTag("\n").getAttribute(event.getAttributes().fulfill(1)));
+            }
+        }, "n");
+
+        // <--[tag]
+        // @attribute <p>
+        // @returns ElementTag
+        // @description
+        // Returns a paragraph, for use in books.
+        // -->
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                event.setReplaced(new ElementTag("\n " + ChatColor.RESET + " \n").getAttribute(event.getAttributes().fulfill(1)));
+            }
+        }, "p");
 
         // <--[tag]
         // @attribute <&hover[<hover text>]>
@@ -792,26 +818,6 @@ public class TextTagBase {
         // -->
         else if (attribute.startsWith("&chr") && attribute.hasContext(1)) {
             event.setReplaced(new ElementTag(String.valueOf((char) Integer.parseInt(attribute.getContext(1), 16))).getAttribute(attribute.fulfill(1)));
-        }
-
-        // <--[tag]
-        // @attribute <p>
-        // @returns ElementTag
-        // @description
-        // Returns a paragraph, for use in books.
-        // -->
-        else if (attribute.startsWith("p")) {
-            event.setReplaced(new ElementTag("\n " + ChatColor.RESET + " \n").getAttribute(attribute.fulfill(1)));
-        }
-
-        // <--[tag]
-        // @attribute <n>
-        // @returns ElementTag
-        // @description
-        // Returns a newline symbol, for use in books.
-        // -->
-        else if (attribute.startsWith("n")) {
-            event.setReplaced(new ElementTag("\n").getAttribute(attribute.fulfill(1)));
         }
     }
 }

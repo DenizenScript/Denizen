@@ -86,7 +86,6 @@ public class InteractScriptContainer extends ScriptContainer {
             Set<StringHolder> keys;
             keys = getConfigurationSection("STEPS").getKeys(false);
 
-            // TODO: Throw a warning if 'requirements' section exists
             if (contains("REQUIREMENTS")) {
                 Debug.echoError("Interact script '" + getName() + "' is outdated: 'requirements' do not exist in modern Denizen!");
             }
