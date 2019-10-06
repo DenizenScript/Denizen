@@ -61,7 +61,7 @@ public class ScoreboardCommand extends AbstractCommand {
     //
     // @Tags
     // <server.scoreboard[(<board>)].exists>
-    // <server.scoreboard[(<board>)].team_members[<team>]>
+    // <server.scoreboard[(<board>)].team[<team>].members>
     //
     // @Usage
     // Add a score for the player "mythan" to the default scoreboard under the objective "cookies" and let him see it

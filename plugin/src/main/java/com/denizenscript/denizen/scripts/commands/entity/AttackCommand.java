@@ -34,9 +34,9 @@ public class AttackCommand extends AbstractCommand {
     // To cancel an attack, use the 'cancel' argument instead of specifying a target.
     //
     // @Tags
-    // <NPCTag.navigator.is_fighting>
-    // <NPCTag.navigator.attack_strategy>
-    // <NPCTag.navigator.target_entity>
+    // <NPCTag.is_fighting>
+    // <NPCTag.attack_strategy>
+    // <NPCTag.target_entity>
     //
     // @Usage
     // Use to make an NPC attack a player in an interact script.

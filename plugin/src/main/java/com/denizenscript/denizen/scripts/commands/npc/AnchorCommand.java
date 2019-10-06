@@ -36,7 +36,7 @@ public class AnchorCommand extends AbstractCommand {
     //
     // @Tags
     // <NPCTag.anchor[anchor_name]>
-    // <NPCTag.anchor.list>
+    // <NPCTag.list_anchors>
     // <NPCTag.has_anchors>
     //
     // @Usage

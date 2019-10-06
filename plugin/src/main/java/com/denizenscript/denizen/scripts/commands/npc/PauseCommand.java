@@ -28,7 +28,7 @@ public class PauseCommand extends AbstractCommand {
     // TODO: Document Command Details
     //
     // @Tags
-    // <NPCTag.navigator.is_navigating>
+    // <NPCTag.is_navigating>
     //
     // @Usage
     // Use to pause an NPC's waypoint navigation indefinitely.
@@ -56,7 +56,7 @@ public class PauseCommand extends AbstractCommand {
     // TODO: Document Command Details
     //
     // @Tags
-    // <NPCTag.navigator.is_navigating>
+    // <NPCTag.is_navigating>
     //
     // @Usage
     // Use to pause an NPC's waypoint navigation indefinitely.

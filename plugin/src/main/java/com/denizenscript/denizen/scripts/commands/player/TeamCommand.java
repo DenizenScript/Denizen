@@ -27,7 +27,7 @@ public class TeamCommand extends AbstractCommand {
     // NOTE: Prefixes and suffixes cannot be longer than 16 characters!
     //
     // @Tags
-    // <server.scoreboard[(<board>)].team_members[<team>]>
+    // <server.scoreboard[(<board>)].team[<team>].members>
     //
     // @Usage
     // Use to add a player to a team.

@@ -37,8 +37,8 @@ public class BreakCommand extends AbstractCommand implements Holdable {
     // breaking the block from within. To specify the radius, prefix the radius with 'radius:'.
     //
     // @Tags
-    // <NPCTag.navigator.is_navigating>
-    // <NPCTag.navigator.target_location>
+    // <NPCTag.is_navigating>
+    // <NPCTag.target_location>
     //
     // @Usage
     // Use to make the npc break a block at 17,64,-87 in world.

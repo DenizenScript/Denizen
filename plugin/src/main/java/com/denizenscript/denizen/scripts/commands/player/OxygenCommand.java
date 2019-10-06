@@ -25,7 +25,7 @@ public class OxygenCommand extends AbstractCommand {
     //
     // @Tags
     // <PlayerTag.oxygen>
-    // <PlayerTag.oxygen.max>
+    // <PlayerTag.max_oxygen>
     //
     // @Usage
     // Use to set the player's current oxygen level to 5 bubbles.

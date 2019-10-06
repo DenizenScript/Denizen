@@ -28,9 +28,9 @@ public class ExperienceCommand extends AbstractCommand {
     //
     // @Tags
     // <PlayerTag.xp>
-    // <PlayerTag.xp.to_next_level>
-    // <PlayerTag.xp.total>
-    // <PlayerTag.xp.level>
+    // <PlayerTag.xp_to_next_level>
+    // <PlayerTag.xp_total>
+    // <PlayerTag.xp_level>
     //
     // @Usage
     // Use to set a player's experience bar to 0.

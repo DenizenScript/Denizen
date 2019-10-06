@@ -31,7 +31,7 @@ public class MountCommand extends AbstractCommand {
     //
     // @Tags
     // <EntityTag.vehicle>
-    // <EntityTag.inside_vehicle>
+    // <EntityTag.is_inside_vehicle>
     // <entry[saveName].mounted_entities> returns a list of entities that were mounted.
     //
     // @Usage

@@ -52,10 +52,10 @@ public class WalkCommand extends AbstractCommand implements Holdable {
     // ('Radius' does not apply to non-NPC entities).
     //
     // @Tags
-    // <NPCTag.navigator.is_navigating>
-    // <NPCTag.navigator.speed>
-    // <NPCTag.navigator.range>
-    // <NPCTag.navigator.target_location>
+    // <NPCTag.is_navigating>
+    // <NPCTag.speed>
+    // <NPCTag.range>
+    // <NPCTag.target_location>
     //
     // @Usage
     // Use to make the NPC walk to an anchored position.

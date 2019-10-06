@@ -33,11 +33,9 @@ public class ScribeCommand extends AbstractCommand {
     // Read more about book-scripts here: <@link language book script containers>
     //
     // @Tags
-    // <ItemTag.book.author>
-    // <ItemTag.book.title>
-    // <ItemTag.book.page_count>
-    // <ItemTag.book.page[<#>]>
-    // <ItemTag.book.pages>
+    // <ItemTag.book_author>
+    // <ItemTag.book_title>
+    // <ItemTag.book_pages>
     //
     // @Usage
     // Gives the book "Cosmos Book" to the player

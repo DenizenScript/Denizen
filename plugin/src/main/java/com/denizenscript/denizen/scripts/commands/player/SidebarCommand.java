@@ -60,9 +60,9 @@ public class SidebarCommand extends AbstractCommand {
     // lines and it will show each player specified their name on that line.
     //
     // @Tags
-    // <PlayerTag.sidebar.lines>
-    // <PlayerTag.sidebar.title>
-    // <PlayerTag.sidebar.scores>
+    // <PlayerTag.sidebar_lines>
+    // <PlayerTag.sidebar_title>
+    // <PlayerTag.sidebar_scores>
     //
     // @Usage
     // Show all online players a sidebar.

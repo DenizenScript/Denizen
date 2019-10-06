@@ -39,8 +39,7 @@ public class RotateCommand extends AbstractCommand implements Holdable {
     // You can use "cancel" to prematurely stop the ongoing rotation (useful when set to infinite)
     //
     // @Tags
-    // <EntityTag.location.yaw>
-    // <EntityTag.location.pitch>
+    // <EntityTag.location>
     //
     // @Usage
     // Use to rotate the player's yaw by 10 every tick for 3 seconds total

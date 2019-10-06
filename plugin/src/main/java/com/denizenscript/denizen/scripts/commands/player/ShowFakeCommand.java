@@ -39,7 +39,7 @@ public class ShowFakeCommand extends AbstractCommand {
     // If no duration is specefied, then it assumes the default duration of 10 seconds.
     //
     // @Tags
-    // <LocationTag.block.material>
+    // <LocationTag.material>
     //
     // @Usage
     // Use to place a fake gold block at where the player is looking
