@@ -90,13 +90,11 @@ public class InventoryCommand extends AbstractCommand {
     // - inventory open d:<p@calico-kid.inventory>
     //
     // @Usage
-    // Use to remove all items from a chest, except any items in
-    // the specified list.
+    // Use to remove all items from a chest, except any items in the specified list.
     // - inventory keep d:in@location[holder=l@123,123,123,world] o:li@snow_ball|ItemScript
     //
     // @Usage
-    // Use to remove items specified in a chest from the current
-    // player's inventory, regardless of the item count.
+    // Use to remove items specified in a chest from the current player's inventory, regardless of the item count.
     // - inventory exclude origin:l@123,123,123,world
     //
     // @Usage

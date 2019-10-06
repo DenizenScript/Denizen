@@ -36,12 +36,12 @@ public class InvisibleCommand extends AbstractCommand {
     // None
     //
     // @Usage
+    // Use to makes the player invisible.
     // - invisible <player> state:true
-    // Makes the player invisible
     //
     // @Usage
+    // Use to make the attached NPC visible if previously invisible, and invisible if not
     // - invisible <npc> state:toggle
-    // Makes the attached NPC visible if previously invisible, and invisible if not
     // -->
 
     enum Action {TRUE, FALSE, TOGGLE}
