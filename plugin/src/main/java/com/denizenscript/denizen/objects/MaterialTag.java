@@ -888,6 +888,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // @mechanism block_strength
         // @description
         // Returns the material's strength level. (Only for block materials).
+        // This is a representation of how much time mining is needed to break a block.
         // -->
         registerTag("block_strength", new TagRunnable.ObjectForm<MaterialTag>() {
             @Override
@@ -981,6 +982,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // @input Element(Decimal)
         // @description
         // Sets the strength for all blocks of this material type.
+        // This does not work for specifically obsidian (as it is a hardcoded special case in the Minecraft internals).
         // @tags
         // <MaterialTag.block_strength>
         // -->
