@@ -16,7 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import org.bukkit.craftbukkit.v1_14_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftInventoryPlayer;
 import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_14_R1.util.CraftNamespacedKey;
 import org.bukkit.inventory.Inventory;
@@ -196,8 +196,8 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public void setInventoryItem(Inventory inventory, ItemStack item, int slot) {
-        if (inventory instanceof CraftInventory) {
-            ((CraftInventory) inventory).getInventory().setItem(slot, CraftItemStack.asNMSCopy(item));
+        if (inventory instanceof CraftInventoryPlayer && ((CraftInventoryPlayer) inventory).getInventory().player == null) {
+            ((CraftInventoryPlayer) inventory).getInventory().setItem(slot, CraftItemStack.asNMSCopy(item));
         }
         else {
             inventory.setItem(slot, item);
