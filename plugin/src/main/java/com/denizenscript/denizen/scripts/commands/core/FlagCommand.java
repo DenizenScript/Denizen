@@ -26,6 +26,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
     // @Required 1
     // @Short Sets or modifies a flag on the player, NPC, entity, or server.
     // @Group core
+    // @Guide https://guide.denizenscript.com/guides/basics/flags.html
     //
     // @Description
     // The flag command sets or modifies custom value storage database entries connected to

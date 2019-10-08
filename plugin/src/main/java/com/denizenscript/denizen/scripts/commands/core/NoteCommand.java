@@ -19,6 +19,7 @@ public class NoteCommand extends AbstractCommand {
     // @Required 2
     // @Short Adds or removes a notable object.
     // @Group core
+    // @Guide https://guide.denizenscript.com/guides/advanced/notables.html
     //
     // @Description
     // Add or remove a notable object that can be referenced in events or scripts.

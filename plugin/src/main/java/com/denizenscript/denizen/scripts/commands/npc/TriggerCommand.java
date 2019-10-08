@@ -20,6 +20,7 @@ public class TriggerCommand extends AbstractCommand {
     // @Required 1
     // @Short Enables or disables a trigger.
     // @Group npc
+    // @Guide https://guide.denizenscript.com/guides/npcs/interact-scripts.html
     //
     // @Description
     // TODO: Document Command Details

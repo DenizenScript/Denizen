@@ -19,6 +19,7 @@ public class AssignmentCommand extends AbstractCommand {
     // @Plugin Citizens
     // @Short Changes an NPC's assignment.
     // @Group npc
+    // @Guide https://guide.denizenscript.com/guides/npcs/assignment-scripts.html
     //
     // @Description
     // Changes an NPC's assignment as though you used the '/npc assignment' command.
