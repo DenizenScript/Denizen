@@ -4,6 +4,7 @@ import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.tags.BukkitTagContext;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -232,6 +233,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 // No 'in ...' specified
                 return true;
             }
+            Deprecations.inAreaSwitchFormat.warn();
             it = path.eventArgLowerAt(index + 1);
             if (it.equals("notable")) {
                 String subit = path.eventArgLowerAt(index + 2);
