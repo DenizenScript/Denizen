@@ -626,6 +626,9 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
     }
 
     public String getFullString() {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+            return identify();
+        }
         return "i@" + getMaterial().realName() + "," + item.getDurability() + PropertyParser.getPropertiesString(this);
     }
 

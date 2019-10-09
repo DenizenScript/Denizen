@@ -423,6 +423,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         if (item == null) {
             return false;
         }
+        item = new ItemTag(item.getItemStack().clone());
         item.setAmount(1);
         String myItem = CoreUtilities.toLowerCase(item.getFullString());
         for (int i = 0; i < inventory.getSize(); i++) {
@@ -443,7 +444,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                         return true;
                     }
                 }
-                else if (count > amount) {
+                else {
                     is.setAmount(count - amount);
                     NMSHandler.getItemHelper().setInventoryItem(inventory, is, i);
                     return true;
