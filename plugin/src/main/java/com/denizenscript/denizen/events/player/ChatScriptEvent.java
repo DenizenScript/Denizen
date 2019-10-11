@@ -39,6 +39,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
     // @Context
     // <context.message> returns the player's message as an Element.
     // <context.format> returns the chat message's raw format.
+    // <context.full_text> returns the full text of the chat message (ie, the written message with the format applied to it).
     // <context.recipients> returns a list of all players that will receive the chat.
     //
     // @Determine
@@ -160,13 +161,24 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
         return new BukkitScriptEntryData(player, null);
     }
 
+    public String getMessage() {
+        return pcEvent != null ? pcEvent.getMessage() : apcEvent.getMessage();
+    }
+
+    public String getFormat() {
+        return pcEvent != null ? pcEvent.getFormat() : apcEvent.getFormat();
+    }
+
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("message")) {
-            return new ElementTag(pcEvent != null ? pcEvent.getMessage() : apcEvent.getMessage());
+            return new ElementTag(getMessage());
         }
         else if (name.equals("format")) {
-            return new ElementTag(pcEvent != null ? pcEvent.getFormat() : apcEvent.getFormat());
+            return new ElementTag(getFormat());
+        }
+        else if (name.equals("full_text")) {
+            return new ElementTag(String.format(getFormat(), player.getPlayerEntity().getDisplayName(), getMessage()));
         }
         if (name.equals("recipients")) {
             ListTag list = new ListTag();
