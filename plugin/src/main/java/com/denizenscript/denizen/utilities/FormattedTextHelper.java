@@ -120,8 +120,6 @@ public class FormattedTextHelper {
         char[] chars = str.toCharArray();
         List<BaseComponent> outputList = new ArrayList<>();
         int started = 0;
-        //TextComponent lastText = new TextComponent();
-        //outputList.add(lastText);
         TextComponent nextText = new TextComponent();
         for (int i = 0; i < chars.length; i++) {
             if (chars[i] == ChatColor.COLOR_CHAR && i + 1 < chars.length) {
@@ -245,11 +243,13 @@ public class FormattedTextHelper {
                 else if ((code >= '0' && code <= '9') || (code >= 'a' && code <= 'f') || (code >= 'A' && code <= 'F')) {
                     nextText.setText(nextText.getText() + str.substring(started, i));
                     outputList.add(nextText);
-                    //lastText = nextText;
                     nextText = new TextComponent();
                     nextText.setColor(ChatColor.getByChar(code));
                 }
                 else if ((code >= 'k' && code <= 'o') || (code >= 'K' && code <= 'O')) {
+                    nextText.setText(nextText.getText() + str.substring(started, i));
+                    outputList.add(nextText);
+                    nextText = new TextComponent();
                     if (code == 'k' || code == 'K') {
                         nextText.setObfuscated(true);
                     }
@@ -269,7 +269,6 @@ public class FormattedTextHelper {
                 else if (code == 'r' || code == 'R') {
                     nextText.setText(nextText.getText() + str.substring(started, i));
                     outputList.add(nextText);
-                    //lastText = nextText;
                     nextText = new TextComponent();
                 }
                 else {
