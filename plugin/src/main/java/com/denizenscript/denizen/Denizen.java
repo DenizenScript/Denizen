@@ -697,7 +697,10 @@ public class Denizen extends JavaPlugin {
 
             queue.addEntries(scriptEntries);
             if (!quiet && sender instanceof Player) {
-                queue.debugOutput = sender::sendMessage;
+                final Player player = (Player) sender;
+                queue.debugOutput = (s) -> {
+                    player.spigot().sendMessage(FormattedTextHelper.parse(s));
+                };
             }
             queue.start();
             return true;
