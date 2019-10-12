@@ -262,19 +262,19 @@ public class FormattedTextHelper {
                     outputList.add(nextText);
                     nextText = copyFormatToNewText(nextText);
                     if (code == 'k' || code == 'K') {
-                        nextText.setObfuscated(!nextText.isObfuscated());
+                        nextText.setObfuscated(true);
                     }
                     else if (code == 'l' || code == 'L') {
-                        nextText.setBold(!nextText.isBold());
+                        nextText.setBold(true);
                     }
                     else if (code == 'm' || code == 'M') {
-                        nextText.setStrikethrough(!nextText.isStrikethrough());
+                        nextText.setStrikethrough(true);
                     }
                     else if (code == 'n' || code == 'N') {
-                        nextText.setUnderlined(!nextText.isUnderlined());
+                        nextText.setUnderlined(true);
                     }
                     else if (code == 'o' || code == 'O') {
-                        nextText.setItalic(!nextText.isItalic());
+                        nextText.setItalic(true);
                     }
                 }
                 else if (code == 'r' || code == 'R') {
