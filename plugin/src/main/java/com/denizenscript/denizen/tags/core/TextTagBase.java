@@ -25,14 +25,13 @@ public class TextTagBase {
                 "&ds", "&lt", "&gt", "&bs", "&at", "&dot", "&hrt", "&chr");
         for (ChatColor color : ChatColor.values()) {
             final String nameVal = CoreUtilities.toLowerCase(color.name());
-            final String codeVal = "&" + String.valueOf(color.getChar());
             final String retVal = color.toString();
             TagManager.registerTagHandler(new TagRunnable.RootForm() {
                 @Override
                 public void run(ReplaceableTagEvent event) {
                     event.setReplacedObject(new ElementTag(retVal).getObjectAttribute(event.getAttributes().fulfill(1)));
                 }
-            }, nameVal, codeVal);
+            }, nameVal, "&" + color.getChar());
         }
 
         // <--[tag]
