@@ -116,6 +116,17 @@ public class FormattedTextHelper {
 
     public static final String RESET = ChatColor.RESET.toString();
 
+    public static TextComponent copyFormatToNewText(TextComponent last) {
+        TextComponent toRet = new TextComponent();
+        toRet.setObfuscated(last.isObfuscatedRaw());
+        toRet.setBold(last.isBoldRaw());
+        toRet.setStrikethrough(last.isStrikethroughRaw());
+        toRet.setUnderlined(last.isUnderlinedRaw());
+        toRet.setItalic(last.isItalicRaw());
+        toRet.setColor(last.getColorRaw());
+        return toRet;
+    }
+
     public static BaseComponent[] parse(String str) {
         char[] chars = str.toCharArray();
         List<BaseComponent> outputList = new ArrayList<>();
@@ -138,7 +149,7 @@ public class FormattedTextHelper {
                         nextText.setText(nextText.getText() + str.substring(started, i));
                         outputList.add(nextText);
                         TextComponent lastText = nextText;
-                        nextText = new TextComponent(lastText);
+                        nextText = copyFormatToNewText(lastText);
                         nextText.setText("");
                         if (innardType.equals("score") && innardParts.size() == 2) {
                             ScoreComponent component = new ScoreComponent(unescape(innardBase.get(1)), unescape(innardParts.get(0)), unescape(innardParts.get(1)));
@@ -249,21 +260,21 @@ public class FormattedTextHelper {
                 else if ((code >= 'k' && code <= 'o') || (code >= 'K' && code <= 'O')) {
                     nextText.setText(nextText.getText() + str.substring(started, i));
                     outputList.add(nextText);
-                    nextText = new TextComponent();
+                    nextText = copyFormatToNewText(nextText);
                     if (code == 'k' || code == 'K') {
-                        nextText.setObfuscated(true);
+                        nextText.setObfuscated(!nextText.isObfuscated());
                     }
                     else if (code == 'l' || code == 'L') {
-                        nextText.setBold(true);
+                        nextText.setBold(!nextText.isBold());
                     }
                     else if (code == 'm' || code == 'M') {
-                        nextText.setStrikethrough(true);
+                        nextText.setStrikethrough(!nextText.isStrikethrough());
                     }
                     else if (code == 'n' || code == 'N') {
-                        nextText.setUnderlined(true);
+                        nextText.setUnderlined(!nextText.isUnderlined());
                     }
                     else if (code == 'o' || code == 'O') {
-                        nextText.setItalic(true);
+                        nextText.setItalic(!nextText.isItalic());
                     }
                 }
                 else if (code == 'r' || code == 'R') {
