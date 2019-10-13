@@ -3,6 +3,7 @@ package com.denizenscript.denizen.scripts.commands.world;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.CuboidBlockSet;
+import com.denizenscript.denizen.utilities.blocks.MCEditSchematicHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.objects.CuboidTag;
@@ -209,7 +210,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     return;
                 }
                 try {
-                    // TODO: Make me waitable!
+                    // TODO: Make this waitable!
                     set = new CuboidBlockSet(cuboid, location);
                     schematics.put(name.asString().toUpperCase(), set);
                 }
@@ -236,8 +237,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                         return;
                     }
                     InputStream fs = new FileInputStream(f);
-                    // TODO: Make me waitable!
-                    set = CuboidBlockSet.fromMCEditStream(fs);
+                    // TODO: Make this waitable!
+                    set = MCEditSchematicHelper.fromMCEditStream(fs);
                     fs.close();
                     schematics.put(name.asString().toUpperCase(), set);
                 }
@@ -263,7 +264,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     Debug.echoError(scriptEntry.getResidingQueue(), "Missing angle argument!");
                     return;
                 }
-                // TODO: Make me waitable!
+                // TODO: Make this waitable!
                 int ang = angle.asInt();
                 while (ang < 0) {
                     ang = 360 + ang;
@@ -340,9 +341,9 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                         return;
                     }
                     f.getParentFile().mkdirs();
-                    // TODO: Make me waitable!
+                    // TODO: Make this waitable!
                     FileOutputStream fs = new FileOutputStream(f);
-                    set.saveMCEditFormatToStream(fs);
+                    MCEditSchematicHelper.saveMCEditFormatToStream(set, fs);
                     fs.flush();
                     fs.close();
                 }
