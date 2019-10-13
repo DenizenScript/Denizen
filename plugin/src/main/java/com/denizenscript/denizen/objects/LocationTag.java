@@ -2935,12 +2935,26 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @returns ElementTag(Number)
         // @mechanism LocationTag.furnace_cook_time
         // @description
-        // Returns the cook time a furnace has left.
+        // Returns the cook time a furnace has been cooking its current item for.
         // -->
         registerTag("furnace_cook_time", new TagRunnable.ObjectForm<LocationTag>() {
             @Override
             public ObjectTag run(Attribute attribute, LocationTag object) {
                 return new ElementTag(((Furnace) object.getBlockStateForTag(attribute)).getCookTime());
+            }
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.furnace_cook_time_total>
+        // @returns ElementTag(Number)
+        // @mechanism LocationTag.furnace_cook_time_total
+        // @description
+        // Returns the total cook time a furnace has left.
+        // -->
+        registerTag("furnace_cook_time_total", new TagRunnable.ObjectForm<LocationTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, LocationTag object) {
+                return new ElementTag(((Furnace) object.getBlockStateForTag(attribute)).getCookTimeTotal());
             }
         });
 
@@ -3342,7 +3356,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @name furnace_cook_time
         // @input Element(Number)
         // @description
-        // Sets the cook time for a furnace in ticks. Maximum is 32767.
+        // Sets the current cook time for a furnace in ticks. Maximum is 32767.
         // @tags
         // <LocationTag.furnace_cook_time>
         // -->
@@ -3350,6 +3364,23 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (MaterialCompat.isFurnace(getBlock().getType())) {
                 Furnace furnace = (Furnace) getBlockState();
                 furnace.setCookTime((short) mechanism.getValue().asInt());
+                furnace.update();
+            }
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name furnace_cook_time_total
+        // @input Element(Number)
+        // @description
+        // Sets the total cook time for a furnace in ticks. Maximum is 32767.
+        // @tags
+        // <LocationTag.furnace_cook_time_total>
+        // -->
+        if (mechanism.matches("furnace_cook_time_total")) {
+            if (MaterialCompat.isFurnace(getBlock().getType())) {
+                Furnace furnace = (Furnace) getBlockState();
+                furnace.setCookTimeTotal((short) mechanism.getValue().asInt());
                 furnace.update();
             }
         }
