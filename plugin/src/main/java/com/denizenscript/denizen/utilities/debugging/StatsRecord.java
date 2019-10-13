@@ -1,8 +1,6 @@
 package com.denizenscript.denizen.utilities.debugging;
 
-import com.denizenscript.denizen.scripts.containers.core.VersionScriptContainer;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizencore.tags.core.EscapeTagBase;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
@@ -26,15 +24,9 @@ public class StatsRecord extends Thread {
             uc.setConnectTimeout(10000);
             uc.connect();
             // Safely connected at this point
-            // Get some general info
-            StringBuilder sb = new StringBuilder();
-            for (VersionScriptContainer cont : VersionScriptContainer.scripts) {
-                sb.append(EscapeTagBase.escape(cont.getString("ID"))).append("|");
-            }
             // Create the final message pack and upload it
             uc.getOutputStream().write(("postid=pluginstats&plugin_st_players=" + Bukkit.getOnlinePlayers().size()
-                    + "&plugin_st_motd=" + URLEncoder.encode(Bukkit.getServer().getMotd().replace(ChatColor.COLOR_CHAR, (char) 0x01))
-                    + "&plugin_st_known_scripts=" + sb.toString())
+                    + "&plugin_st_motd=" + URLEncoder.encode(Bukkit.getServer().getMotd().replace(ChatColor.COLOR_CHAR, (char) 0x01)))
                     .getBytes(StandardCharsets.UTF_8));
             // Wait for a response from the server
             in = new BufferedReader(new InputStreamReader(uc.getInputStream()));

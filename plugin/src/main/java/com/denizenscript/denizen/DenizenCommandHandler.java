@@ -3,9 +3,7 @@ package com.denizenscript.denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.notable.NotableManager;
-import com.denizenscript.denizen.scripts.containers.core.VersionScriptContainer;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.ScriptVersionChecker;
 import com.denizenscript.denizen.utilities.command.manager.Command;
 import com.denizenscript.denizen.utilities.command.manager.CommandContext;
 import com.denizenscript.denizen.utilities.command.manager.Paginator;
@@ -18,7 +16,6 @@ import com.denizenscript.denizencore.scripts.ScriptHelper;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.debugging.FutureWarning;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -297,22 +294,6 @@ public class DenizenCommandHandler {
         Messaging.send(sender, "<7>chat with us at: <f> https://discord.gg/Q6pZGSR");
         Messaging.send(sender, "<7>or learn more at: <f> https://denizenscript.com");
         Messaging.send(sender, "<7>version: <f>" + Denizen.versionTag + "<7>, core version: <f>" + DenizenCore.VERSION);
-    }
-
-
-    /*
-     * DENIZEN SCRIPTVERSIONS
-     */
-    @Command(
-            aliases = {"denizen"}, usage = "scriptversions",
-            desc = "Shows the currently loaded version of your scripts and checks them against the script repo.", modifiers = {"scriptversions"},
-            min = 1, max = 3, permission = "denizen.basic")
-    public void scriptcheck(CommandContext args, CommandSender sender) throws CommandException {
-        sender.sendMessage(ChatColor.GREEN + "Checking " + VersionScriptContainer.scripts.size() + " script(s)!");
-        for (VersionScriptContainer cont : VersionScriptContainer.scripts) {
-            ScriptVersionChecker svc = new ScriptVersionChecker(cont);
-            svc.runme(sender);
-        }
     }
 
 

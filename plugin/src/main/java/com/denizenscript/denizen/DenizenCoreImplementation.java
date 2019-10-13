@@ -214,7 +214,6 @@ public class DenizenCoreImplementation implements DenizenImplementation {
 
     @Override
     public void refreshScriptContainers() {
-        VersionScriptContainer.scripts.clear();
         ItemScriptHelper.item_scripts.clear();
         ItemScriptHelper.item_scripts_by_hash_id.clear();
         InventoryScriptHelper.inventory_scripts.clear();
