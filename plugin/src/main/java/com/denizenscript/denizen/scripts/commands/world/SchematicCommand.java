@@ -48,9 +48,12 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     //
     // Denizen offers a number of tools to manipulate and work with schematics.
     // Schematics can be rotated, flipped, pasted with no air, or pasted with a delay.
-    // The "noair" option skips air blocks in the pasted schematics- this means those air blocks will not replace
-    // any blocks in the target location.
-    // The "delayed" option delays how many blocks can be pasted at once. This is recommended for large schematics.
+    //
+    // The "noair" option skips air blocks in the pasted schematics- this means those air blocks will not replace any blocks in the target location.
+    //
+    // The "delayed" option makes the command non-instant. This is recommended for large schematics.
+    // For 'save', 'load', and 'rotate', this processes async to prevent server lockup.
+    // For 'paste' and 'create', this delays how many blocks can be processed at once, spread over many ticks.
     //
     // @Tags
     // <schematic[<name>].height>
@@ -190,13 +193,9 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
         CuboidBlockSet set;
         Type ttype = Type.valueOf(type.asString());
-        if (scriptEntry.shouldWaitFor() && ttype != Type.PASTE) {
-            Debug.echoError("Tried to wait for a non-paste schematic command.");
-            scriptEntry.setFinished(true);
-        }
         String fname = filename != null ? filename.asString() : name.asString();
         switch (ttype) {
-            case CREATE:
+            case CREATE: {
                 if (schematics.containsKey(name.asString().toUpperCase())) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is already loaded.");
                     return;
@@ -210,52 +209,79 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     return;
                 }
                 try {
-                    // TODO: Make this waitable!
-                    set = new CuboidBlockSet(cuboid, location);
-                    schematics.put(name.asString().toUpperCase(), set);
+                    if (delayed != null && delayed.asBoolean()) {
+                        set = new CuboidBlockSet();
+                        set.buildDelayed(cuboid, location, () -> {
+                            schematics.put(name.asString().toUpperCase(), set);
+                            scriptEntry.setFinished(true);
+                        });
+                    }
+                    else {
+                        scriptEntry.setFinished(true);
+                        set = new CuboidBlockSet(cuboid, location);
+                        schematics.put(name.asString().toUpperCase(), set);
+                    }
                 }
                 catch (Exception ex) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Error creating schematic object " + name.asString() + ".");
                     Debug.echoError(scriptEntry.getResidingQueue(), ex);
                     return;
                 }
+                scriptEntry.setFinished(true);
                 break;
-            case LOAD:
+            }
+            case LOAD: {
                 if (schematics.containsKey(name.asString().toUpperCase())) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is already loaded.");
                     return;
                 }
-                try {
-                    String directory = URLDecoder.decode(System.getProperty("user.dir"));
-                    File f = new File(directory + "/plugins/Denizen/schematics/" + fname + ".schematic");
-                    if (!Utilities.canReadFile(f)) {
-                        Debug.echoError("Server config denies reading files in that location.");
-                        return;
-                    }
-                    if (!f.exists()) {
-                        Debug.echoError("Schematic file " + fname + " does not exist. Are you sure it's in " + directory + "/plugins/Denizen/schematics/?");
-                        return;
-                    }
-                    InputStream fs = new FileInputStream(f);
-                    // TODO: Make this waitable!
-                    set = MCEditSchematicHelper.fromMCEditStream(fs);
-                    fs.close();
-                    schematics.put(name.asString().toUpperCase(), set);
-                }
-                catch (Exception ex) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Error loading schematic file " + name.asString() + ".");
-                    Debug.echoError(scriptEntry.getResidingQueue(), ex);
+                String directory = URLDecoder.decode(System.getProperty("user.dir"));
+                File f = new File(directory + "/plugins/Denizen/schematics/" + fname + ".schematic");
+                if (!Utilities.canReadFile(f)) {
+                    Debug.echoError("Server config denies reading files in that location.");
                     return;
                 }
+                if (!f.exists()) {
+                    Debug.echoError("Schematic file " + fname + " does not exist. Are you sure it's in " + directory + "/plugins/Denizen/schematics/?");
+                    return;
+                }
+                Runnable loadRunnable = () -> {
+                    try {
+                        InputStream fs = new FileInputStream(f);
+                        CuboidBlockSet newSet = MCEditSchematicHelper.fromMCEditStream(fs);
+                        fs.close();
+                        Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), () -> {
+                            schematics.put(name.asString().toUpperCase(), newSet);
+                            scriptEntry.setFinished(true);
+                        });
+                    }
+                    catch (Exception ex) {
+                        Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), () -> {
+                            Debug.echoError(scriptEntry.getResidingQueue(), "Error loading schematic file " + name.asString() + ".");
+                            Debug.echoError(scriptEntry.getResidingQueue(), ex);
+                        });
+                        return;
+                    }
+                };
+                if (delayed != null && delayed.asBoolean()) {
+                    Bukkit.getScheduler().runTaskAsynchronously(DenizenAPI.getCurrentInstance(), loadRunnable);
+                }
+                else {
+                    scriptEntry.setFinished(true);
+                    loadRunnable.run();
+                }
                 break;
-            case UNLOAD:
+            }
+            case UNLOAD: {
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
                     return;
                 }
                 schematics.remove(name.asString().toUpperCase());
+                scriptEntry.setFinished(true);
                 break;
-            case ROTATE:
+            }
+            case ROTATE: {
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
                     return;
@@ -264,41 +290,57 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     Debug.echoError(scriptEntry.getResidingQueue(), "Missing angle argument!");
                     return;
                 }
-                // TODO: Make this waitable!
-                int ang = angle.asInt();
-                while (ang < 0) {
-                    ang = 360 + ang;
+                Runnable rotateRunnable = () -> {
+                    int ang = angle.asInt();
+                    while (ang < 0) {
+                        ang = 360 + ang;
+                    }
+                    while (ang > 360) {
+                        ang -= 360;
+                    }
+                    while (ang > 0) {
+                        ang -= 90;
+                        schematics.get(name.asString().toUpperCase()).rotateOne();
+                    }
+                    Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), () -> scriptEntry.setFinished(true));
+                };
+                if (delayed != null && delayed.asBoolean()) {
+                    Bukkit.getScheduler().runTaskAsynchronously(DenizenAPI.getCurrentInstance(), rotateRunnable);
                 }
-                while (ang > 360) {
-                    ang -= 360;
-                }
-                while (ang > 0) {
-                    ang -= 90;
-                    schematics.get(name.asString().toUpperCase()).rotateOne();
+                else {
+                    scriptEntry.setFinished(true);
+                    rotateRunnable.run();
                 }
                 break;
-            case FLIP_X:
+            }
+            case FLIP_X: {
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
                     return;
                 }
                 schematics.get(name.asString().toUpperCase()).flipX();
+                scriptEntry.setFinished(true);
                 break;
-            case FLIP_Y:
+            }
+            case FLIP_Y: {
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
                     return;
                 }
                 schematics.get(name.asString().toUpperCase()).flipY();
+                scriptEntry.setFinished(true);
                 break;
-            case FLIP_Z:
+            }
+            case FLIP_Z: {
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
                     return;
                 }
                 schematics.get(name.asString().toUpperCase()).flipZ();
+                scriptEntry.setFinished(true);
                 break;
-            case PASTE:
+            }
+            case PASTE: {
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
                     return;
@@ -327,32 +369,45 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     return;
                 }
                 break;
-            case SAVE:
+            }
+            case SAVE: {
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
                     return;
                 }
-                try {
-                    set = schematics.get(name.asString().toUpperCase());
-                    String directory = URLDecoder.decode(System.getProperty("user.dir"));
-                    File f = new File(directory + "/plugins/Denizen/schematics/" + fname + ".schematic");
-                    if (!Utilities.canWriteToFile(f)) {
-                        Debug.echoError(scriptEntry.getResidingQueue(), "Cannot edit that file!");
-                        return;
-                    }
-                    f.getParentFile().mkdirs();
-                    // TODO: Make this waitable!
-                    FileOutputStream fs = new FileOutputStream(f);
-                    MCEditSchematicHelper.saveMCEditFormatToStream(set, fs);
-                    fs.flush();
-                    fs.close();
-                }
-                catch (Exception ex) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Error saving schematic file " + fname + ".");
-                    Debug.echoError(scriptEntry.getResidingQueue(), ex);
+                set = schematics.get(name.asString().toUpperCase());
+                String directory = URLDecoder.decode(System.getProperty("user.dir"));
+                File f = new File(directory + "/plugins/Denizen/schematics/" + fname + ".schematic");
+                if (!Utilities.canWriteToFile(f)) {
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Cannot edit that file!");
                     return;
                 }
+                Runnable saveRunnable = () -> {
+                    try {
+                        f.getParentFile().mkdirs();
+                        FileOutputStream fs = new FileOutputStream(f);
+                        MCEditSchematicHelper.saveMCEditFormatToStream(set, fs);
+                        fs.flush();
+                        fs.close();
+                        Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), () -> scriptEntry.setFinished(true));
+                    }
+                    catch (Exception ex) {
+                        Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), () -> {
+                            Debug.echoError(scriptEntry.getResidingQueue(), "Error saving schematic file " + fname + ".");
+                            Debug.echoError(scriptEntry.getResidingQueue(), ex);
+                        });
+                        return;
+                    }
+                };
+                if (delayed != null && delayed.asBoolean()) {
+                    Bukkit.getScheduler().runTaskAsynchronously(DenizenAPI.getCurrentInstance(), saveRunnable);
+                }
+                else {
+                    scriptEntry.setFinished(true);
+                    saveRunnable.run();
+                }
                 break;
+            }
         }
     }
 

@@ -35,6 +35,41 @@ public class CuboidBlockSet implements BlockSet {
         }
     }
 
+    public void buildDelayed(CuboidTag cuboid, Location center, Runnable runme) {
+        Location low = cuboid.pairs.get(0).low;
+        Location high = cuboid.pairs.get(0).high;
+        x_width = (high.getX() - low.getX()) + 1;
+        y_length = (high.getY() - low.getY()) + 1;
+        z_height = (high.getZ() - low.getZ()) + 1;
+        center_x = center.getX() - low.getX();
+        center_y = center.getY() - low.getY();
+        center_z = center.getZ() - low.getZ();
+        final long goal = (long) (x_width * y_length * z_height);
+        new BukkitRunnable() {
+            int index;
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                while (index < goal) {
+                    long z = index % ((long) (z_height));
+                    long y = ((index - z) % ((long) (y_length * z_height))) / ((long) z_height);
+                    long x = (index - y - z) / ((long) (y_length * z_height));
+                    blocks.add(NMSHandler.getBlockHelper().getBlockData(low.clone().add(x, y, z).getBlock()));
+                    index++;
+                    if (System.currentTimeMillis() - start > 50) {
+                        SchematicCommand.noPhys = false;
+                        return;
+                    }
+                }
+                if (runme != null) {
+                    runme.run();
+                }
+                cancel();
+
+            }
+        }.runTaskTimer(DenizenAPI.getCurrentInstance(), 1, 1);
+    }
+
     public List<BlockData> blocks = new ArrayList<>();
 
     public double x_width;
@@ -60,27 +95,23 @@ public class CuboidBlockSet implements BlockSet {
         return new CuboidTag(low, high);
     }
 
-    public class IntHolder {
-        public long theInt = 0;
-    }
-
     @Override
     public void setBlocksDelayed(final Location loc, final Runnable runme, final boolean noAir) {
-        final IntHolder index = new IntHolder();
         final long goal = (long) (x_width * y_length * z_height);
         new BukkitRunnable() {
+            int index = 0;
             @Override
             public void run() {
                 SchematicCommand.noPhys = true;
                 long start = System.currentTimeMillis();
-                while (index.theInt < goal) {
-                    long z = index.theInt % ((long) (z_height));
-                    long y = ((index.theInt - z) % ((long) (y_length * z_height))) / ((long) z_height);
-                    long x = (index.theInt - y - z) / ((long) (y_length * z_height));
-                    if (!noAir || blocks.get((int) index.theInt).getMaterial() != Material.AIR) {
-                        blocks.get((int) index.theInt).setBlock(loc.clone().add(x - center_x, y - center_y, z - center_z).getBlock(), false);
+                while (index < goal) {
+                    long z = index % ((long) (z_height));
+                    long y = ((index - z) % ((long) (y_length * z_height))) / ((long) z_height);
+                    long x = (index - y - z) / ((long) (y_length * z_height));
+                    if (!noAir || blocks.get(index).getMaterial() != Material.AIR) {
+                        blocks.get(index).setBlock(loc.clone().add(x - center_x, y - center_y, z - center_z).getBlock(), false);
                     }
-                    index.theInt++;
+                    index++;
                     if (System.currentTimeMillis() - start > 50) {
                         SchematicCommand.noPhys = false;
                         return;
