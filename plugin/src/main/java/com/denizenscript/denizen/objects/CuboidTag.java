@@ -1626,15 +1626,14 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
             @Override
             public ObjectTag run(Attribute attribute, CuboidTag object) {
                 ListTag chunks = new ListTag();
-                CuboidTag obj = object;
-                for (LocationPair pair : obj.pairs) {
+                for (LocationPair pair : object.pairs) {
                     int minY = pair.low.getBlockY();
                     ChunkTag minChunk = new ChunkTag(pair.low);
-                    if (obj.isInsideCuboid(new Location(obj.getWorld(), minChunk.getX() * 16, minY, minChunk.getZ() * 16))) {
+                    if (object.isInsideCuboid(new Location(object.getWorld(), minChunk.getX() * 16, minY, minChunk.getZ() * 16))) {
                         chunks.addObject(minChunk);
                     }
                     ChunkTag maxChunk = new ChunkTag(pair.high);
-                    if (obj.isInsideCuboid(new Location(obj.getWorld(), maxChunk.getX() * 16 + 15, minY, maxChunk.getZ() * 16 + 15))) {
+                    if (object.isInsideCuboid(new Location(object.getWorld(), maxChunk.getX() * 16 + 15, minY, maxChunk.getZ() * 16 + 15))) {
                         chunks.addObject(maxChunk);
                     }
                     for (int x = minChunk.getX() + 1; x < maxChunk.getX(); x++) {
@@ -1643,7 +1642,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                         }
                     }
                 }
-                return chunks;
+                return chunks.deduplicate();
             }
         });
 
