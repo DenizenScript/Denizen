@@ -20,6 +20,7 @@ import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_13_R2.block.CraftBlockEntityState;
 import org.bukkit.craftbukkit.v1_13_R2.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_13_R2.block.CraftSkull;
+import org.bukkit.craftbukkit.v1_13_R2.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_13_R2.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_13_R2.util.CraftLegacy;
 import org.bukkit.event.world.PortalCreateEvent;
@@ -39,6 +40,12 @@ public class BlockHelperImpl implements BlockHelper {
             blocks.add(block.getLocation());
         }
         return blocks;
+    }
+
+    @Override
+    public ModernBlockData parseBlockData(Material material, String otherData) {
+        CraftBlockData data = CraftBlockData.newData(material, otherData);
+        return new ModernBlockData(data);
     }
 
     public <T extends TileEntity> T getTE(CraftBlockEntityState<T> cbs) {

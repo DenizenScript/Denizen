@@ -68,4 +68,22 @@ public interface BlockHelper {
     default void setBlockStrength(Material mat, float strength) {
         throw new UnsupportedOperationException();
     }
+
+    default ModernBlockData parseBlockData(String text) {
+        int openBracket = text.indexOf('[');
+        String material = text;
+        String otherData = null;
+        if (openBracket > 0) {
+            material = text.substring(0, openBracket);
+            otherData = text.substring(openBracket);
+        }
+        if (material.startsWith("minecraft:")) {
+            material = material.substring("minecraft:".length());
+        }
+        return parseBlockData(Material.getMaterial(material.toUpperCase()), otherData);
+    }
+
+    default ModernBlockData parseBlockData(Material material, String otherData) {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -9,9 +9,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class CuboidBlockSet implements BlockSet {
 
     public CuboidBlockSet() {
@@ -20,16 +17,18 @@ public class CuboidBlockSet implements BlockSet {
     public CuboidBlockSet(CuboidTag cuboid, Location center) {
         Location low = cuboid.pairs.get(0).low;
         Location high = cuboid.pairs.get(0).high;
-        x_width = (high.getX() - low.getX()) + 1;
-        y_length = (high.getY() - low.getY()) + 1;
-        z_height = (high.getZ() - low.getZ()) + 1;
+        x_width = (int) ((high.getX() - low.getX()) + 1);
+        y_length = (int) ((high.getY() - low.getY()) + 1);
+        z_height = (int) ((high.getZ() - low.getZ()) + 1);
         center_x = center.getX() - low.getX();
         center_y = center.getY() - low.getY();
         center_z = center.getZ() - low.getZ();
+        blocks = new BlockData[(int) (x_width * y_length * z_height)];
+        int index = 0;
         for (int x = 0; x < x_width; x++) {
             for (int y = 0; y < y_length; y++) {
                 for (int z = 0; z < z_height; z++) {
-                    blocks.add(NMSHandler.getBlockHelper().getBlockData(low.clone().add(x, y, z).getBlock()));
+                    blocks[index++] = NMSHandler.getBlockHelper().getBlockData(low.clone().add(x, y, z).getBlock());
                 }
             }
         }
@@ -38,15 +37,15 @@ public class CuboidBlockSet implements BlockSet {
     public void buildDelayed(CuboidTag cuboid, Location center, Runnable runme) {
         Location low = cuboid.pairs.get(0).low;
         Location high = cuboid.pairs.get(0).high;
-        x_width = (high.getX() - low.getX()) + 1;
-        y_length = (high.getY() - low.getY()) + 1;
-        z_height = (high.getZ() - low.getZ()) + 1;
+        x_width = (int) ((high.getX() - low.getX()) + 1);
+        y_length = (int) ((high.getY() - low.getY()) + 1);
+        z_height = (int) ((high.getZ() - low.getZ()) + 1);
         center_x = center.getX() - low.getX();
         center_y = center.getY() - low.getY();
         center_z = center.getZ() - low.getZ();
         final long goal = (long) (x_width * y_length * z_height);
         new BukkitRunnable() {
-            int index;
+            int index = 0;
             @Override
             public void run() {
                 long start = System.currentTimeMillis();
@@ -54,7 +53,7 @@ public class CuboidBlockSet implements BlockSet {
                     long z = index % ((long) (z_height));
                     long y = ((index - z) % ((long) (y_length * z_height))) / ((long) z_height);
                     long x = (index - y - z) / ((long) (y_length * z_height));
-                    blocks.add(NMSHandler.getBlockHelper().getBlockData(low.clone().add(x, y, z).getBlock()));
+                    blocks[index] = NMSHandler.getBlockHelper().getBlockData(low.clone().add(x, y, z).getBlock());
                     index++;
                     if (System.currentTimeMillis() - start > 50) {
                         SchematicCommand.noPhys = false;
@@ -70,13 +69,13 @@ public class CuboidBlockSet implements BlockSet {
         }.runTaskTimer(DenizenAPI.getCurrentInstance(), 1, 1);
     }
 
-    public List<BlockData> blocks = new ArrayList<>();
+    public BlockData[] blocks = null;
 
-    public double x_width;
+    public int x_width;
 
-    public double y_length;
+    public int y_length;
 
-    public double z_height;
+    public int z_height;
 
     public double center_x;
 
@@ -85,7 +84,7 @@ public class CuboidBlockSet implements BlockSet {
     public double center_z;
 
     @Override
-    public List<BlockData> getBlocks() {
+    public BlockData[] getBlocks() {
         return blocks;
     }
 
@@ -108,8 +107,8 @@ public class CuboidBlockSet implements BlockSet {
                     long z = index % ((long) (z_height));
                     long y = ((index - z) % ((long) (y_length * z_height))) / ((long) z_height);
                     long x = (index - y - z) / ((long) (y_length * z_height));
-                    if (!noAir || blocks.get(index).getMaterial() != Material.AIR) {
-                        blocks.get(index).setBlock(loc.clone().add(x - center_x, y - center_y, z - center_z).getBlock(), false);
+                    if (!noAir || blocks[index].getMaterial() != Material.AIR) {
+                        blocks[index].setBlock(loc.clone().add(x - center_x, y - center_y, z - center_z).getBlock(), false);
                     }
                     index++;
                     if (System.currentTimeMillis() - start > 50) {
@@ -134,8 +133,8 @@ public class CuboidBlockSet implements BlockSet {
         for (int x = 0; x < x_width; x++) {
             for (int y = 0; y < y_length; y++) {
                 for (int z = 0; z < z_height; z++) {
-                    if (!noAir || blocks.get(index).getMaterial() != Material.AIR) {
-                        blocks.get(index).setBlock(loc.clone().add(x - center_x, y - center_y, z - center_z).getBlock(), false);
+                    if (!noAir || blocks[index].getMaterial() != Material.AIR) {
+                        blocks[index].setBlock(loc.clone().add(x - center_x, y - center_y, z - center_z).getBlock(), false);
                     }
                     index++;
                 }
@@ -145,30 +144,32 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     public void rotateOne() {
-        List<BlockData> bd = new ArrayList<>();
+        BlockData[] bd = new BlockData[blocks.length];
+        int index = 0;
         double cx = center_x;
         center_x = center_z;
         center_z = cx;
         for (int x = 0; x < z_height; x++) {
             for (int y = 0; y < y_length; y++) {
                 for (int z = (int) x_width - 1; z >= 0; z--) {
-                    bd.add(blockAt(z, y, x));
+                    bd[index++] = blockAt(z, y, x);
                 }
             }
         }
-        double xw = x_width;
+        int xw = x_width;
         x_width = z_height;
         z_height = xw;
         blocks = bd;
     }
 
     public void flipX() {
-        List<BlockData> bd = new ArrayList<>();
+        BlockData[] bd = new BlockData[blocks.length];
+        int index = 0;
         center_x = x_width - center_x;
         for (int x = (int) x_width - 1; x >= 0; x--) {
             for (int y = 0; y < y_length; y++) {
                 for (int z = 0; z < z_height; z++) {
-                    bd.add(blockAt(x, y, z));
+                    bd[index++] = blockAt(x, y, z);
                 }
             }
         }
@@ -176,12 +177,13 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     public void flipY() {
-        List<BlockData> bd = new ArrayList<>();
+        BlockData[] bd = new BlockData[blocks.length];
+        int index = 0;
         center_x = x_width - center_x;
         for (int x = 0; x < x_width; x++) {
             for (int y = (int) y_length - 1; y >= 0; y--) {
                 for (int z = 0; z < z_height; z++) {
-                    bd.add(blockAt(x, y, z));
+                    bd[index++] = blockAt(x, y, z);
                 }
             }
         }
@@ -189,12 +191,13 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     public void flipZ() {
-        List<BlockData> bd = new ArrayList<>();
+        BlockData[] bd = new BlockData[blocks.length];
+        int index = 0;
         center_x = x_width - center_x;
         for (int x = 0; x < x_width; x++) {
             for (int y = 0; y < y_length; y++) {
                 for (int z = (int) z_height - 1; z >= 0; z--) {
-                    bd.add(blockAt(x, y, z));
+                    bd[index++] = blockAt(x, y, z);
                 }
             }
         }
@@ -202,7 +205,7 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     public BlockData blockAt(double X, double Y, double Z) {
-        return blocks.get((int) (Z + Y * z_height + X * z_height * y_length));
+        return blocks[(int) (Z + Y * z_height + X * z_height * y_length)];
         // This calculation should produce the same result as the below nonsense:
         /*
         int index = 0;

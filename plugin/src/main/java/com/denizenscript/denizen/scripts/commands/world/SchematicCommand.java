@@ -4,6 +4,7 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.CuboidBlockSet;
 import com.denizenscript.denizen.utilities.blocks.MCEditSchematicHelper;
+import com.denizenscript.denizen.utilities.blocks.SpongeSchematicHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.objects.CuboidTag;
@@ -54,6 +55,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     // The "delayed" option makes the command non-instant. This is recommended for large schematics.
     // For 'save', 'load', and 'rotate', this processes async to prevent server lockup.
     // For 'paste' and 'create', this delays how many blocks can be processed at once, spread over many ticks.
+    //
+    // The "load" option by default will load '.schem' files. If no '.schem' file is available, will attempt to load a legacy '.schematic' file instead.
     //
     // @Tags
     // <schematic[<name>].height>
@@ -236,19 +239,29 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     return;
                 }
                 String directory = URLDecoder.decode(System.getProperty("user.dir"));
-                File f = new File(directory + "/plugins/Denizen/schematics/" + fname + ".schematic");
+                File f = new File(directory + "/plugins/Denizen/schematics/" + fname + ".schem");
                 if (!Utilities.canReadFile(f)) {
                     Debug.echoError("Server config denies reading files in that location.");
                     return;
                 }
                 if (!f.exists()) {
-                    Debug.echoError("Schematic file " + fname + " does not exist. Are you sure it's in " + directory + "/plugins/Denizen/schematics/?");
-                    return;
+                    f = new File(directory + "/plugins/Denizen/schematics/" + fname + ".schematic");
+                    if (!f.exists()) {
+                        Debug.echoError("Schematic file " + fname + " does not exist. Are you sure it's in " + directory + "/plugins/Denizen/schematics/?");
+                        return;
+                    }
                 }
+                File schemFile = f;
                 Runnable loadRunnable = () -> {
                     try {
-                        InputStream fs = new FileInputStream(f);
-                        CuboidBlockSet newSet = MCEditSchematicHelper.fromMCEditStream(fs);
+                        InputStream fs = new FileInputStream(schemFile);
+                        CuboidBlockSet newSet;
+                        if (schemFile.getName().endsWith(".schem")) {
+                            newSet = SpongeSchematicHelper.fromSpongeStream(fs);
+                        }
+                        else {
+                            newSet = MCEditSchematicHelper.fromMCEditStream(fs);
+                        }
                         fs.close();
                         Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), () -> {
                             schematics.put(name.asString().toUpperCase(), newSet);
@@ -536,7 +549,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         // Returns the number of blocks in the schematic.
         // -->
         if (attribute.startsWith("blocks")) {
-            event.setReplaced(new ElementTag(set.blocks.size())
+            event.setReplaced(new ElementTag(set.blocks.length)
                     .getAttribute(attribute.fulfill(1)));
             return;
         }

@@ -50,6 +50,12 @@ public class BlockHelperImpl implements BlockHelper {
     }
 
     @Override
+    public ModernBlockData parseBlockData(Material material, String otherData) {
+        CraftBlockData data = CraftBlockData.newData(material, otherData);
+        return new ModernBlockData(data);
+    }
+
+    @Override
     public List<Location> getBlocksList(PortalCreateEvent event) {
         List<Location> blocks = new ArrayList<>();
         for (org.bukkit.block.BlockState block : event.getBlocks()) {

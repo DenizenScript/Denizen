@@ -6,7 +6,6 @@ import com.denizenscript.denizen.nms.util.jnbt.*;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import org.bukkit.util.BlockVector;
-import org.bukkit.util.Vector;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -107,20 +106,19 @@ public class MCEditSchematicHelper {
                 BlockVector vec = new BlockVector(x, y, z);
                 tileEntitiesMap.put(vec, values);
             }
-            org.bukkit.util.Vector vec = new Vector(width, height, length);
+            int finalIndex = 0;
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
                     for (int z = 0; z < length; z++) {
                         int index = y * width * length + z * width + x;
                         BlockVector pt = new BlockVector(x, y, z);
-                        // TODO: 1.13 - move away from legacy IDs somehow?
                         MaterialTag dMat = OldMaterialsHelper.getMaterialFrom(OldMaterialsHelper.getLegacyMaterial(blocks[index]), blockData[index]);
                         BlockData block = dMat.getNmsBlockData();
                         if (tileEntitiesMap.containsKey(pt)) {
                             CompoundTag otag = NMSHandler.getInstance().createCompoundTag(tileEntitiesMap.get(pt));
                             block.setCompoundTag(otag);
                         }
-                        cbs.blocks.add(block);
+                        cbs.blocks[finalIndex++] = block;
                     }
                 }
             }
@@ -131,8 +129,7 @@ public class MCEditSchematicHelper {
         return cbs;
     }
 
-    private static <T extends Tag> T getChildTag(Map<String, Tag> items, String key,
-                                                 Class<T> expected) throws Exception {
+    private static <T extends Tag> T getChildTag(Map<String, Tag> items, String key, Class<T> expected) throws Exception {
         if (!items.containsKey(key)) {
             throw new Exception("Schematic file is missing a '" + key + "' tag");
         }
@@ -169,7 +166,7 @@ public class MCEditSchematicHelper {
                 for (int y = 0; y < blockSet.y_length; y++) {
                     for (int z = 0; z < blockSet.z_height; z++) {
                         int index = (int) (y * (blockSet.x_width) * (blockSet.z_height) + z * (blockSet.x_width) + x);
-                        BlockData bd = blockSet.blocks.get(indexer);//blockAt(x, y, z);
+                        BlockData bd = blockSet.blocks[indexer];//blockAt(x, y, z);
                         indexer++;
                         int matId = NMSHandler.getBlockHelper().idFor(bd.getMaterial());
                         if (matId > 255) {
@@ -189,7 +186,6 @@ public class MCEditSchematicHelper {
                             for (Map.Entry<String, Tag> entry : rawTag.getValue().entrySet()) {
                                 values.put(entry.getKey(), entry.getValue());
                             }
-                            // TODO: ??? -> values.put("id", new StringTag(null)); // block.getNbtId()
                             values.put("x", new IntTag(x));
                             values.put("y", new IntTag(y));
                             values.put("z", new IntTag(z));
