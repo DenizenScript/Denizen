@@ -697,9 +697,9 @@ public class ChunkTag implements ObjectTag, Adjustable {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    for (Map<LocationTag, FakeBlock> blocks : FakeBlock.getBlocks().values()) {
-                        for (Map.Entry<LocationTag, FakeBlock> locBlock : blocks.entrySet()) {
-                            LocationTag location = locBlock.getKey();
+                    for (Map<Location, FakeBlock> blocks : FakeBlock.getBlocks().values()) {
+                        for (Map.Entry<Location, FakeBlock> locBlock : blocks.entrySet()) {
+                            Location location = locBlock.getKey();
                             if (Math.floor(location.getX() / 16) == chunkX
                                     && Math.floor(location.getZ() / 16) == chunkZ) {
                                 locBlock.getValue().updateBlock();

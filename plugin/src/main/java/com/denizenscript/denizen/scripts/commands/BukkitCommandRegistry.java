@@ -178,7 +178,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         }
         registerCoreMember(ResetCommand.class, "RESET", "reset (<player>|...) [cooldown/saves/global_cooldown] (<script>)", 1);
         registerCoreMember(RotateCommand.class, "ROTATE", "rotate (cancel) (<entity>|...) (yaw:<#.#>) (pitch:<#.#>) (infinite/duration:<duration>) (frequency:<duration>)", 0);
-        registerCoreMember(SchematicCommand.class, "SCHEMATIC", "schematic [create/load/unload/rotate/paste/save/flip_x/flip_y/flip_z] [name:<name>] (filename:<name>) (angle:<#>) (<location>) (<cuboid>) (delayed) (noair) (mask:<material>|...)", 2);
+        registerCoreMember(SchematicCommand.class, "SCHEMATIC", "schematic [create/load/unload/rotate/paste/save/flip_x/flip_y/flip_z] [name:<name>] (filename:<name>) (angle:<#>) (<location>) (<cuboid>) (delayed) (noair) (mask:<material>|...) (fake_to:<player>|...)", 2);
         registerCoreMember(ScoreboardCommand.class, "SCOREBOARD", "scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar}/none)", 1);
         registerCoreMember(ScribeCommand.class, "SCRIBE", "scribe [<script>] (<item>/give/equip/{drop <location>})", 1);
         registerCoreMember(ShootCommand.class, "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (speed:<#.#>) (script:<name>) (def:<element>|...) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)", 1);

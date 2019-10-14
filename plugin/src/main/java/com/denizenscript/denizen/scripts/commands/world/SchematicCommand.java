@@ -2,6 +2,7 @@ package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.BlockSet;
@@ -15,6 +16,7 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
+import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
@@ -44,7 +46,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
     // <--[command]
     // @Name Schematic
-    // @Syntax schematic [create/load/unload/rotate/paste/save/flip_x/flip_y/flip_z] [name:<name>] (filename:<name>) (angle:<#>) (<location>) (<cuboid>) (delayed) (noair) (mask:<material>|...)
+    // @Syntax schematic [create/load/unload/rotate/paste/save/flip_x/flip_y/flip_z] [name:<name>] (filename:<name>) (angle:<#>) (<location>) (<cuboid>) (delayed) (noair) (mask:<material>|...) (fake_to:<player>|... fake_duration:<duration>)
     // @Group World
     // @Required 2
     // @Short Creates, loads, pastes, and saves schematics (Sets of blocks).
@@ -56,16 +58,19 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     // Denizen offers a number of tools to manipulate and work with schematics.
     // Schematics can be rotated, flipped, pasted with no air, or pasted with a delay.
     //
-    // The "noair" option skips air blocks in the pasted schematics- this means those air blocks will not replace any blocks in the target location.
-    //
-    // The "mask" option can be specified to limit what block types the schematic will be pasted over.
-    //
     // The "delayed" option makes the command non-instant. This is recommended for large schematics.
     // For 'save', 'load', and 'rotate', this processes async to prevent server lockup.
     // For 'paste' and 'create', this delays how many blocks can be processed at once, spread over many ticks.
     //
     // The "load" option by default will load '.schem' files. If no '.schem' file is available, will attempt to load a legacy '.schematic' file instead.
     // The "save" option will save to '.schem' files, unless you are on MC 1.12.2 (in which case it will save legacy '.schematic' files).
+    //
+    // The "noair" option skips air blocks in the pasted schematics- this means those air blocks will not replace any blocks in the target location.
+    //
+    // The "mask" option can be specified to limit what block types the schematic will be pasted over.
+    //
+    // The "fake_to" option can be specified to cause the schematic paste to be a fake (packet-based, see <@link command showfake>)
+    // block set, instead of actually modifying the blocks in the world. This takes an optional duration for how long the fake blocks should remain.
     //
     // @Tags
     // <schematic[<name>].height>
@@ -161,6 +166,16 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     && arg.matchesArgumentList(MaterialTag.class)) {
                 scriptEntry.addObject("mask", arg.asType(ListTag.class).filter(MaterialTag.class, scriptEntry));
             }
+            else if (!scriptEntry.hasObject("fake_to")
+                    && arg.matchesPrefix("fake_to")
+                    && arg.matchesArgumentList(PlayerTag.class)) {
+                scriptEntry.addObject("fake_to", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
+            }
+            else if (!scriptEntry.hasObject("fake_duration")
+                    && arg.matchesPrefix("fake_duration")
+                    && arg.matchesArgumentType(DurationTag.class)) {
+                scriptEntry.addObject("fake_duration", arg.asType(DurationTag.class));
+            }
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(LocationTag.class)) {
                 scriptEntry.addObject("location", arg.asType(LocationTag.class));
@@ -195,6 +210,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         ElementTag delayed = scriptEntry.getElement("delayed");
         LocationTag location = scriptEntry.getObjectTag("location");
         List<MaterialTag> mask = (List<MaterialTag>) scriptEntry.getObject("mask");
+        List<PlayerTag> fakeTo = (List<PlayerTag>) scriptEntry.getObject("fake_to");
+        DurationTag fakeDuration = scriptEntry.getObjectTag("fake_duration");
         CuboidTag cuboid = scriptEntry.getObjectTag("cuboid");
 
         if (scriptEntry.dbCallShouldDebug()) {
@@ -207,7 +224,9 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     + (angle != null ? angle.debug() : "")
                     + (noair != null ? noair.debug() : "")
                     + (delayed != null ? delayed.debug() : "")
-                    + (mask != null ? ArgumentHelper.debugList("mask", mask) : ""));
+                    + (mask != null ? ArgumentHelper.debugList("mask", mask) : "")
+                    + (fakeTo != null ? ArgumentHelper.debugList("fake_to", fakeTo) : "")
+                    + (fakeDuration != null ? fakeDuration.debug() : ""));
 
         }
 
@@ -383,6 +402,11 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     BlockSet.InputParams input = new BlockSet.InputParams();
                     input.centerLocation = location;
                     input.noAir = noair != null && noair.asBoolean();
+                    input.fakeTo = fakeTo;
+                    if (fakeDuration == null) {
+                        fakeDuration = new DurationTag(0);
+                    }
+                    input.fakeDuration = fakeDuration;
                     if (mask != null) {
                         input.mask = new HashSet<>();
                         for (MaterialTag material : mask) {

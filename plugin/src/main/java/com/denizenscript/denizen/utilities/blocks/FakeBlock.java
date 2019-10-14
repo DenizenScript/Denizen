@@ -5,6 +5,7 @@ import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizencore.objects.core.DurationTag;
+import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -18,21 +19,20 @@ import java.util.*;
  */
 public class FakeBlock {
 
-    private final static Map<UUID, Map<LocationTag, FakeBlock>> blocks = new HashMap<>();
-    private final static Map<LocationTag, FakeBlock> blocksByLocation = new HashMap<>();
+    private final static Map<UUID, Map<Location, FakeBlock>> blocks = new HashMap<>();
 
     private final PlayerTag player;
-    private final LocationTag location;
+    private final Location location;
     private MaterialTag material;
     private long cancelTime = -1;
     private BukkitTask currentTask = null;
 
-    private FakeBlock(PlayerTag player, LocationTag location) {
+    private FakeBlock(PlayerTag player, Location location) {
         this.player = player;
         this.location = location;
     }
 
-    public static void showFakeBlockTo(List<PlayerTag> players, LocationTag location, MaterialTag material, DurationTag duration) {
+    public static void showFakeBlockTo(List<PlayerTag> players, Location location, MaterialTag material, DurationTag duration) {
         for (PlayerTag player : players) {
             if (!player.isOnline() || !player.isValid()) {
                 continue;
@@ -41,7 +41,7 @@ public class FakeBlock {
             if (!blocks.containsKey(uuid)) {
                 blocks.put(uuid, new HashMap<>());
             }
-            Map<LocationTag, FakeBlock> playerBlocks = blocks.get(uuid);
+            Map<Location, FakeBlock> playerBlocks = blocks.get(uuid);
             if (!playerBlocks.containsKey(location)) {
                 playerBlocks.put(location, new FakeBlock(player, location));
             }
@@ -58,7 +58,7 @@ public class FakeBlock {
             UUID uuid = player.getPlayerEntity().getUniqueId();
             uuids.add(uuid);
             if (blocks.containsKey(uuid)) {
-                Map<LocationTag, FakeBlock> playerBlocks = blocks.get(uuid);
+                Map<Location, FakeBlock> playerBlocks = blocks.get(uuid);
                 if (playerBlocks.containsKey(location)) {
                     playerBlocks.get(location).cancelBlock();
                 }
@@ -71,7 +71,7 @@ public class FakeBlock {
                     if (uuids.contains(uuid)) {
                         continue;
                     }
-                    Map<LocationTag, FakeBlock> playerBlocks = blocks.get(uuid);
+                    Map<Location, FakeBlock> playerBlocks = blocks.get(uuid);
                     if (playerBlocks.containsKey(location)) {
                         playerBlocks.get(location).updateBlock();
                     }
@@ -80,7 +80,7 @@ public class FakeBlock {
         }.runTaskLater(DenizenAPI.getCurrentInstance(), 2);
     }
 
-    public static Map<UUID, Map<LocationTag, FakeBlock>> getBlocks() {
+    public static Map<UUID, Map<Location, FakeBlock>> getBlocks() {
         return blocks;
     }
 
@@ -91,7 +91,7 @@ public class FakeBlock {
         }
         cancelTime = -1;
         material = null;
-        location.getBlockState().update();
+        location.getBlock().getState().update();
         blocks.get(player.getOfflinePlayer().getUniqueId()).remove(location);
     }
 

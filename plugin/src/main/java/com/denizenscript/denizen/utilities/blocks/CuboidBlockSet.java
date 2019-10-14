@@ -3,6 +3,8 @@ package com.denizenscript.denizen.utilities.blocks;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.objects.CuboidTag;
+import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.world.SchematicCommand;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import org.bukkit.Location;
@@ -107,7 +109,12 @@ public class CuboidBlockSet implements BlockSet {
         if (input.mask != null && !input.mask.contains(destBlock.getType())) {
             return;
         }
-        block.setBlock(destBlock, false);
+        if (input.fakeTo == null) {
+            block.setBlock(destBlock, false);
+        }
+        else {
+            FakeBlock.showFakeBlockTo(input.fakeTo, destBlock.getLocation(), new MaterialTag(block.modern()), input.fakeDuration);
+        }
     }
 
     @Override
