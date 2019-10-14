@@ -58,8 +58,8 @@ public class SpongeSchematicHelper {
                 palette.put(id, data);
             }
             Map<BlockVector, Map<String, Tag>> tileEntitiesMap = new HashMap<>();
-            if (schematic.containsKey("TileEntities")) {
-                List<Tag> tileEntities = getChildTag(schematic, "TileEntities", ListTag.class).getValue();
+            if (schematic.containsKey("BlockEntities")) {
+                List<Tag> tileEntities = getChildTag(schematic, "BlockEntities", ListTag.class).getValue();
                 for (Tag tag : tileEntities) {
                     if (!(tag instanceof CompoundTag)) {
                         continue;
