@@ -7,6 +7,7 @@ import com.denizenscript.denizen.scripts.commands.world.SchematicCommand;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class CuboidBlockSet implements BlockSet {
@@ -95,9 +96,18 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     public void setBlockSingle(BlockData block, int x, int y, int z, InputParams input) {
-        if (!input.noAir || block.getMaterial() != Material.AIR) {
-            block.setBlock(input.centerLocation.clone().add(x - center_x, y - center_y, z - center_z).getBlock(), false);
+        if (input.noAir && block.getMaterial() == Material.AIR) {
+            return;
         }
+        int finalY = input.centerLocation.getBlockY() + y - center_y;
+        if (finalY < 0 || finalY > 255) {
+            return;
+        }
+        Block destBlock = input.centerLocation.clone().add(x - center_x, y - center_y, z - center_z).getBlock();
+        if (input.mask != null && !input.mask.contains(destBlock.getType())) {
+            return;
+        }
+        block.setBlock(destBlock, false);
     }
 
     @Override

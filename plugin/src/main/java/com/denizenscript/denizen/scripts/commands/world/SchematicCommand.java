@@ -35,13 +35,15 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 public class SchematicCommand extends AbstractCommand implements Holdable, Listener {
 
     // <--[command]
     // @Name Schematic
-    // @Syntax schematic [create/load/unload/rotate/paste/save/flip_x/flip_y/flip_z] [name:<name>] (filename:<name>) (angle:<#>) (<location>) (<cuboid>) (delayed) (noair)
+    // @Syntax schematic [create/load/unload/rotate/paste/save/flip_x/flip_y/flip_z] [name:<name>] (filename:<name>) (angle:<#>) (<location>) (<cuboid>) (delayed) (noair) (mask:<material>|...)
     // @Group World
     // @Required 2
     // @Short Creates, loads, pastes, and saves schematics (Sets of blocks).
@@ -54,6 +56,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     // Schematics can be rotated, flipped, pasted with no air, or pasted with a delay.
     //
     // The "noair" option skips air blocks in the pasted schematics- this means those air blocks will not replace any blocks in the target location.
+    //
+    // The "mask" option can be specified to limit what block types the schematic will be pasted over.
     //
     // The "delayed" option makes the command non-instant. This is recommended for large schematics.
     // For 'save', 'load', and 'rotate', this processes async to prevent server lockup.
@@ -139,16 +143,9 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                 scriptEntry.addObject("filename", arg.asElement());
             }
             else if (!scriptEntry.hasObject("angle")
+                    && arg.matchesPrefix("angle")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
                 scriptEntry.addObject("angle", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(LocationTag.class)) {
-                scriptEntry.addObject("location", arg.asType(LocationTag.class));
-            }
-            else if (!scriptEntry.hasObject("cuboid")
-                    && arg.matchesArgumentType(CuboidTag.class)) {
-                scriptEntry.addObject("cuboid", arg.asType(CuboidTag.class));
             }
             else if (!scriptEntry.hasObject("delayed")
                     && arg.matches("delayed")) {
@@ -157,6 +154,19 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             else if (!scriptEntry.hasObject("noair")
                     && arg.matches("noair")) {
                 scriptEntry.addObject("noair", new ElementTag("true"));
+            }
+            else if (!scriptEntry.hasObject("mask")
+                    && arg.matchesPrefix("mask")
+                    && arg.matchesArgumentList(MaterialTag.class)) {
+                scriptEntry.addObject("mask", arg.asType(ListTag.class).filter(MaterialTag.class, scriptEntry));
+            }
+            else if (!scriptEntry.hasObject("location")
+                    && arg.matchesArgumentType(LocationTag.class)) {
+                scriptEntry.addObject("location", arg.asType(LocationTag.class));
+            }
+            else if (!scriptEntry.hasObject("cuboid")
+                    && arg.matchesArgumentType(CuboidTag.class)) {
+                scriptEntry.addObject("cuboid", arg.asType(CuboidTag.class));
             }
             else {
                 arg.reportUnhandled();
@@ -183,6 +193,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         ElementTag noair = scriptEntry.getElement("noair");
         ElementTag delayed = scriptEntry.getElement("delayed");
         LocationTag location = scriptEntry.getObjectTag("location");
+        List<MaterialTag> mask = (List<MaterialTag>) scriptEntry.getObject("mask");
         CuboidTag cuboid = scriptEntry.getObjectTag("cuboid");
 
         if (scriptEntry.dbCallShouldDebug()) {
@@ -194,7 +205,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     + (cuboid != null ? cuboid.debug() : "")
                     + (angle != null ? angle.debug() : "")
                     + (noair != null ? noair.debug() : "")
-                    + (delayed != null ? delayed.debug() : ""));
+                    + (delayed != null ? delayed.debug() : "")
+                    + (mask != null ? ArgumentHelper.debugList("mask", mask) : ""));
 
         }
 
@@ -370,6 +382,12 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     BlockSet.InputParams input = new BlockSet.InputParams();
                     input.centerLocation = location;
                     input.noAir = noair != null && noair.asBoolean();
+                    if (mask != null) {
+                        input.mask = new HashSet<>();
+                        for (MaterialTag material : mask) {
+                            input.mask.add(material.getMaterial());
+                        }
+                    }
                     if (delayed != null && delayed.asBoolean()) {
                         schematics.get(name.asString().toUpperCase()).setBlocksDelayed(new Runnable() {
                             @Override
