@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.blocks.BlockSet;
 import com.denizenscript.denizen.utilities.blocks.CuboidBlockSet;
 import com.denizenscript.denizen.utilities.blocks.MCEditSchematicHelper;
 import com.denizenscript.denizen.utilities.blocks.SpongeSchematicHelper;
@@ -366,17 +367,20 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     return;
                 }
                 try {
+                    BlockSet.InputParams input = new BlockSet.InputParams();
+                    input.centerLocation = location;
+                    input.noAir = noair != null && noair.asBoolean();
                     if (delayed != null && delayed.asBoolean()) {
-                        schematics.get(name.asString().toUpperCase()).setBlocksDelayed(location, new Runnable() {
+                        schematics.get(name.asString().toUpperCase()).setBlocksDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 scriptEntry.setFinished(true);
                             }
-                        }, noair != null && noair.asBoolean());
+                        }, input);
                     }
                     else {
                         scriptEntry.setFinished(true);
-                        schematics.get(name.asString().toUpperCase()).setBlocks(location, noair != null && noair.asBoolean());
+                        schematics.get(name.asString().toUpperCase()).setBlocks(input);
                     }
                 }
                 catch (Exception ex) {

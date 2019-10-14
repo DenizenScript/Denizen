@@ -94,8 +94,14 @@ public class CuboidBlockSet implements BlockSet {
         return new CuboidTag(low, high);
     }
 
+    public void setBlockSingle(BlockData block, int x, int y, int z, InputParams input) {
+        if (!input.noAir || block.getMaterial() != Material.AIR) {
+            block.setBlock(input.centerLocation.clone().add(x - center_x, y - center_y, z - center_z).getBlock(), false);
+        }
+    }
+
     @Override
-    public void setBlocksDelayed(final Location loc, final Runnable runme, final boolean noAir) {
+    public void setBlocksDelayed(final Runnable runme, final InputParams input) {
         final long goal = (long) (x_width * y_length * z_height);
         new BukkitRunnable() {
             int index = 0;
@@ -104,12 +110,10 @@ public class CuboidBlockSet implements BlockSet {
                 SchematicCommand.noPhys = true;
                 long start = System.currentTimeMillis();
                 while (index < goal) {
-                    long z = index % ((long) (z_height));
-                    long y = ((index - z) % ((long) (y_length * z_height))) / ((long) z_height);
-                    long x = (index - y - z) / ((long) (y_length * z_height));
-                    if (!noAir || blocks[index].getMaterial() != Material.AIR) {
-                        blocks[index].setBlock(loc.clone().add(x - center_x, y - center_y, z - center_z).getBlock(), false);
-                    }
+                    int z = index % (z_height);
+                    int y = ((index - z) % (y_length * z_height)) / z_height;
+                    int x = (index - y - z) / (y_length * z_height);
+                    setBlockSingle(blocks[index], x, y, z, input);
                     index++;
                     if (System.currentTimeMillis() - start > 50) {
                         SchematicCommand.noPhys = false;
@@ -127,15 +131,13 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     @Override
-    public void setBlocks(Location loc, boolean noAir) {
+    public void setBlocks(InputParams input) {
         SchematicCommand.noPhys = true;
         int index = 0;
         for (int x = 0; x < x_width; x++) {
             for (int y = 0; y < y_length; y++) {
                 for (int z = 0; z < z_height; z++) {
-                    if (!noAir || blocks[index].getMaterial() != Material.AIR) {
-                        blocks[index].setBlock(loc.clone().add(x - center_x, y - center_y, z - center_z).getBlock(), false);
-                    }
+                    setBlockSingle(blocks[index], x, y, z, input);
                     index++;
                 }
             }

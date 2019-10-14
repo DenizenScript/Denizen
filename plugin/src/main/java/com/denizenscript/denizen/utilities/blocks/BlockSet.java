@@ -5,9 +5,16 @@ import org.bukkit.Location;
 
 public interface BlockSet {
 
+    class InputParams {
+
+        public Location centerLocation;
+
+        public boolean noAir;
+    }
+
     BlockData[] getBlocks();
 
-    void setBlocksDelayed(Location loc, Runnable runme, boolean noAir);
+    void setBlocksDelayed(final Runnable runme, final InputParams input);
 
-    void setBlocks(Location loc, boolean noAir);
+    void setBlocks(InputParams input);
 }
