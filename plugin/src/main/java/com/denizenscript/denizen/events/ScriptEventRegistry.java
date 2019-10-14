@@ -180,7 +180,6 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new ItemMoveScriptEvent());
         ScriptEvent.registerScriptEvent(new LightningStrikesScriptEvent());
         ScriptEvent.registerScriptEvent(new LingeringPotionSplashScriptEvent());
-        ScriptEvent.registerScriptEvent(new PortalCreatedScriptEvent());
         ScriptEvent.registerScriptEvent(new PortalCreateScriptEvent());
         ScriptEvent.registerScriptEvent(new PotionSplashScriptEvent());
         ScriptEvent.registerScriptEvent(new SpawnChangeScriptEvent());
