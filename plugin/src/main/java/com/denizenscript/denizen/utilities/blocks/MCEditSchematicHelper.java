@@ -49,6 +49,7 @@ public class MCEditSchematicHelper {
             cbs.center_x = originX;
             cbs.center_y = originY;
             cbs.center_z = originZ;
+            cbs.blocks = new BlockData[width * length * height];
             // Disregard Offset
             String materials = getChildTag(schematic, "Materials", StringTag.class).getValue();
             if (!materials.equals("Alpha")) {
