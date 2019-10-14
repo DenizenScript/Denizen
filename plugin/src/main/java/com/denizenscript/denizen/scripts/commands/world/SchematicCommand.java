@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.CuboidBlockSet;
@@ -57,6 +59,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     // For 'paste' and 'create', this delays how many blocks can be processed at once, spread over many ticks.
     //
     // The "load" option by default will load '.schem' files. If no '.schem' file is available, will attempt to load a legacy '.schematic' file instead.
+    // The "save" option will save to '.schem' files, unless you are on MC 1.12.2 (in which case it will save legacy '.schematic' files).
     //
     // @Tags
     // <schematic[<name>].height>
@@ -390,7 +393,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                 }
                 set = schematics.get(name.asString().toUpperCase());
                 String directory = URLDecoder.decode(System.getProperty("user.dir"));
-                File f = new File(directory + "/plugins/Denizen/schematics/" + fname + ".schematic");
+                String extension = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) ? ".schem" : ".schematic";
+                File f = new File(directory + "/plugins/Denizen/schematics/" + fname + extension);
                 if (!Utilities.canWriteToFile(f)) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Cannot edit that file!");
                     return;
@@ -399,7 +403,12 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     try {
                         f.getParentFile().mkdirs();
                         FileOutputStream fs = new FileOutputStream(f);
-                        MCEditSchematicHelper.saveMCEditFormatToStream(set, fs);
+                        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+                            SpongeSchematicHelper.saveToSpongeStream(set, fs);
+                        }
+                        else {
+                            MCEditSchematicHelper.saveMCEditFormatToStream(set, fs);
+                        }
                         fs.flush();
                         fs.close();
                         Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), () -> scriptEntry.setFinished(true));

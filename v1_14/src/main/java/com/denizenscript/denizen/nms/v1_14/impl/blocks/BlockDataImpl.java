@@ -56,7 +56,6 @@ public class BlockDataImpl implements BlockData {
             builder.putInt("y", block.getY());
             builder.putInt("z", block.getZ());
             ctag = (CompoundTagImpl) builder.build();
-            // TODO: make this work!
             BlockPosition blockPos = new BlockPosition(block.getX(), block.getY(), block.getZ());
             TileEntity te = ((CraftWorld) block.getWorld()).getHandle().getTileEntity(blockPos);
             te.load(ctag.toNMSTag());

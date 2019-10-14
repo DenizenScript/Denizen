@@ -149,16 +149,16 @@ public class MCEditSchematicHelper {
             schematic.put("Length", new ShortTag((short) (blockSet.z_height)));
             schematic.put("Height", new ShortTag((short) (blockSet.y_length)));
             schematic.put("Materials", new StringTag("Alpha"));
-            schematic.put("DenizenOriginX", new IntTag((int) blockSet.center_x));
-            schematic.put("DenizenOriginY", new IntTag((int) blockSet.center_y));
-            schematic.put("DenizenOriginZ", new IntTag((int) blockSet.center_z));
-            schematic.put("WEOriginX", new IntTag((int) blockSet.center_x));
-            schematic.put("WEOriginY", new IntTag((int) blockSet.center_y));
-            schematic.put("WEOriginZ", new IntTag((int) blockSet.center_z));
+            schematic.put("DenizenOriginX", new IntTag(blockSet.center_x));
+            schematic.put("DenizenOriginY", new IntTag(blockSet.center_y));
+            schematic.put("DenizenOriginZ", new IntTag(blockSet.center_z));
+            schematic.put("WEOriginX", new IntTag(blockSet.center_x));
+            schematic.put("WEOriginY", new IntTag(blockSet.center_y));
+            schematic.put("WEOriginZ", new IntTag(blockSet.center_z));
             schematic.put("WEOffsetX", new IntTag(0));
             schematic.put("WEOffsetY", new IntTag(0));
             schematic.put("WEOffsetZ", new IntTag(0));
-            byte[] blocks = new byte[(int) ((blockSet.x_width) * (blockSet.y_length) * (blockSet.z_height))];
+            byte[] blocks = new byte[((blockSet.x_width) * (blockSet.y_length) * (blockSet.z_height))];
             byte[] addBlocks = null;
             byte[] blockData = new byte[blocks.length];
             ArrayList<Tag> tileEntities = new ArrayList<>();
@@ -166,7 +166,7 @@ public class MCEditSchematicHelper {
             for (int x = 0; x < blockSet.x_width; x++) {
                 for (int y = 0; y < blockSet.y_length; y++) {
                     for (int z = 0; z < blockSet.z_height; z++) {
-                        int index = (int) (y * (blockSet.x_width) * (blockSet.z_height) + z * (blockSet.x_width) + x);
+                        int index = (y * (blockSet.x_width) * (blockSet.z_height) + z * (blockSet.x_width) + x);
                         BlockData bd = blockSet.blocks[indexer];//blockAt(x, y, z);
                         indexer++;
                         int matId = NMSHandler.getBlockHelper().idFor(bd.getMaterial());

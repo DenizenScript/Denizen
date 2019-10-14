@@ -6,12 +6,15 @@ import com.denizenscript.denizen.nms.util.jnbt.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import org.bukkit.util.BlockVector;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class SpongeSchematicHelper {
 
@@ -122,6 +125,58 @@ public class SpongeSchematicHelper {
     }
 
     public static void saveToSpongeStream(CuboidBlockSet blockSet, OutputStream os) {
-        // TODO
+        try {
+            HashMap<String, Tag> schematic = new HashMap<>();
+            schematic.put("Width", new ShortTag((short) (blockSet.x_width)));
+            schematic.put("Length", new ShortTag((short) (blockSet.z_height)));
+            schematic.put("Height", new ShortTag((short) (blockSet.y_length)));
+            schematic.put("DenizenOffset", new IntArrayTag(new int[] {blockSet.center_x, blockSet.center_y, blockSet.center_z}));
+            Map<String, Tag> palette = new HashMap<>();
+            ByteArrayOutputStream blocksBuffer = new ByteArrayOutputStream((blockSet.x_width) * (blockSet.y_length) * (blockSet.z_height));
+            ArrayList<Tag> tileEntities = new ArrayList<>();
+            int paletteMax = 0;
+            for (int y = 0; y < blockSet.y_length; y++) {
+                for (int z = 0; z < blockSet.z_height; z++) {
+                    for (int x = 0; x < blockSet.x_width; x++) {
+                        int cbsIndex = z + y * blockSet.z_height + x * blockSet.z_height * blockSet.y_length;
+                        BlockData bd = blockSet.blocks[cbsIndex];
+                        String dataStr = bd.modern().data.getAsString();
+                        Tag blockIdTag = palette.get(dataStr);
+                        if (blockIdTag == null) {
+                            blockIdTag = new IntTag(paletteMax++);
+                            palette.put(dataStr, blockIdTag);
+                        }
+                        int blockId = ((IntTag) blockIdTag).getValue();
+                        while ((blockId & -128) != 0) {
+                            blocksBuffer.write(blockId & 127 | 128);
+                            blockId >>>= 7;
+                        }
+                        blocksBuffer.write(blockId);
+                        CompoundTag rawTag = bd.getCompoundTag();
+                        if (rawTag != null) {
+                            HashMap<String, Tag> values = new HashMap<>();
+                            for (Map.Entry<String, Tag> entry : rawTag.getValue().entrySet()) {
+                                values.put(entry.getKey(), entry.getValue());
+                            }
+                            values.put("Pos", new IntArrayTag(new int[] { x, y, z }));
+                            CompoundTag tileEntityTag = NMSHandler.getInstance().createCompoundTag(values);
+                            tileEntities.add(tileEntityTag);
+                        }
+                    }
+                }
+            }
+            schematic.put("PaletteMax", new IntTag(paletteMax));
+            schematic.put("Palette", NMSHandler.getInstance().createCompoundTag(palette));
+            schematic.put("BlockData", new ByteArrayTag(blocksBuffer.toByteArray()));
+            schematic.put("BlockEntities", new ListTag(CompoundTag.class, tileEntities));
+            CompoundTag schematicTag = NMSHandler.getInstance().createCompoundTag(schematic);
+            NBTOutputStream stream = new NBTOutputStream(new GZIPOutputStream(os));
+            stream.writeNamedTag("Schematic", schematicTag);
+            os.flush();
+            stream.close();
+        }
+        catch (Exception ex) {
+            Debug.echoError(ex);
+        }
     }
 }

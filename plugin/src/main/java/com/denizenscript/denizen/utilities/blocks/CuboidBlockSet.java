@@ -20,9 +20,9 @@ public class CuboidBlockSet implements BlockSet {
         x_width = (int) ((high.getX() - low.getX()) + 1);
         y_length = (int) ((high.getY() - low.getY()) + 1);
         z_height = (int) ((high.getZ() - low.getZ()) + 1);
-        center_x = center.getX() - low.getX();
-        center_y = center.getY() - low.getY();
-        center_z = center.getZ() - low.getZ();
+        center_x = (int) (center.getX() - low.getX());
+        center_y = (int) (center.getY() - low.getY());
+        center_z = (int) (center.getZ() - low.getZ());
         blocks = new BlockData[(int) (x_width * y_length * z_height)];
         int index = 0;
         for (int x = 0; x < x_width; x++) {
@@ -40,9 +40,9 @@ public class CuboidBlockSet implements BlockSet {
         x_width = (int) ((high.getX() - low.getX()) + 1);
         y_length = (int) ((high.getY() - low.getY()) + 1);
         z_height = (int) ((high.getZ() - low.getZ()) + 1);
-        center_x = center.getX() - low.getX();
-        center_y = center.getY() - low.getY();
-        center_z = center.getZ() - low.getZ();
+        center_x = (int) (center.getX() - low.getX());
+        center_y = (int) (center.getY() - low.getY());
+        center_z = (int) (center.getZ() - low.getZ());
         final long goal = (long) (x_width * y_length * z_height);
         new BukkitRunnable() {
             int index = 0;
@@ -77,11 +77,11 @@ public class CuboidBlockSet implements BlockSet {
 
     public int z_height;
 
-    public double center_x;
+    public int center_x;
 
-    public double center_y;
+    public int center_y;
 
-    public double center_z;
+    public int center_z;
 
     @Override
     public BlockData[] getBlocks() {
@@ -146,7 +146,7 @@ public class CuboidBlockSet implements BlockSet {
     public void rotateOne() {
         BlockData[] bd = new BlockData[blocks.length];
         int index = 0;
-        double cx = center_x;
+        int cx = center_x;
         center_x = center_z;
         center_z = cx;
         for (int x = 0; x < z_height; x++) {
