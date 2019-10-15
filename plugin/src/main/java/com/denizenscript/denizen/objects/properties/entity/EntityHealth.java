@@ -30,7 +30,7 @@ public class EntityHealth implements Property {
     }
 
     public static final String[] handledTags = new String[] {
-            "health"
+            "health", "formatted_health", "health_max", "health_percentage"
     };
 
     public static final String[] handledMechs = new String[] {
