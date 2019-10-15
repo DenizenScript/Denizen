@@ -26,66 +26,53 @@ public class ShowFakeCommand extends AbstractCommand {
     // @Group player
     //
     // @Description
-    // Shows a fake block for a player which is not affected on server-side.
-    // You can show a block for a player without anyone else can see it.
+    // Makes the player see a block change that didn't actually happen.
+    // This means that the server will still register the block being what it was before the command,
+    // and players not included in the command will still see the original block.
     //
-    // If a player stands on a showfake block which is originally and air block,
-    // then the server will treat this as the player is flying/falling.
+    // You must specify a location (or list of locations), and a material (or list of materials).
+    // The material list does not have to be of the same size as the location list (materials will be repeated automatically).
     //
-    // If a player tries to interact with the block (usually by right-clicking or left-click),
-    // the server will then update the block for the player with the original block and the
-    // effect of showfake is lost.
+    // Optionally, specify a list of players to show the change to.
+    // If unspecified, will default to the linked player.
     //
-    // If no duration is specefied, then it assumes the default duration of 10 seconds.
+    // Optionally, specify how long the fake block should remain for.
+    // If unspecified, will default to 10 seconds.
+    // After the duration is up, the block will revert back to whatever it really is (on the server-side).
+    // Be aware that this system is not perfect, and will not prevent blocks from reverting on their own.
+    // This can happen if a player clicks on the block, or blocks change near it, or the player leaves the area and comes back.
+    //
+    // Note that while the player will see the block as though it were real, the server will have no knowledge of this.
+    // This means that if the player, for example, stands atop a fake block that the server sees as air, that player will be seen as flying.
+    // The reverse applies as well: if a player walks through fake air (that is actually solid), the server will see a player walking through walls.
+    // This can easily lead to players getting kicked by anti-cheat systems or similar results.
+    // Note as well that some clientside block effects may occur (eg fake fire may appear momentarily to actually ignite things, but won't actually damage them).
     //
     // @Tags
-    // <LocationTag.material>
+    // None
     //
     // @Usage
     // Use to place a fake gold block at where the player is looking
-    // - showfake GOLD_BLOCK <player.location.cursor_on> players:<player> duration:1m
+    // - showfake gold_block <player.location.cursor_on>
     //
     // @Usage
-    // Use to place a stone block right on player's face
-    // - showfake STONE <player.location.add[0,1,0]> players:<player> duration:5s
+    // Use to place a stone block right on player's head, that only stays for a second.
+    // - showfake stone <player.location.add[0,1,0]> duration:1s
     //
     // @Usage
-    // Use to place fake lava (shows visual fire if standing in it)
-    // - showfake LAVA <player.location> players:<server.list_online_players> duration:5s
+    // Use to place fake lava that the player is standing in, for all the server to see
+    // - showfake lava <player.location> players:<server.list_online_players>
     // -->
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        ListTag locations = new ListTag();
-        ListTag entities = new ListTag();
-        boolean added_entities = false;
-
         // Iterate through arguments
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
-            if (arg.matchesPrefix("to", "players")) {
-                for (String entity : ListTag.valueOf(arg.getValue())) {
-                    if (PlayerTag.matches(entity)) {
-                        entities.add(entity);
-                    }
-                }
-                added_entities = true; // TODO: handle lists properly
-            }
-            else if (arg.matchesArgumentList(MaterialTag.class)) {
-                scriptEntry.addObject("materials", arg.asType(ListTag.class));
-            }
-            else if (locations.isEmpty()
-                    && arg.matchesArgumentType(ListTag.class)) {
-                for (String item : ListTag.valueOf(arg.getValue())) {
-                    if (LocationTag.matches(item)) {
-                        locations.add(item);
-                    }
-                }
-            }
-            else if (locations.isEmpty()
-                    && arg.matchesArgumentType(LocationTag.class)) {
-                locations.add(arg.getValue());
+            if (!scriptEntry.hasObject("players")
+                    && arg.matchesPrefix("to", "players")) {
+                scriptEntry.addObject("players", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
             else if (arg.matchesPrefix("d", "duration")
                     && arg.matchesArgumentType(DurationTag.class)) {
@@ -94,37 +81,39 @@ public class ShowFakeCommand extends AbstractCommand {
             else if (arg.matches("cancel")) {
                 scriptEntry.addObject("cancel", new ElementTag(true));
             }
+            else if (!scriptEntry.hasObject("materials")
+                && arg.matchesArgumentList(MaterialTag.class)) {
+                scriptEntry.addObject("materials", arg.asType(ListTag.class).filter(MaterialTag.class, scriptEntry));
+            }
+            else if (!scriptEntry.hasObject("locations")
+                    && arg.matchesArgumentList(LocationTag.class)) {
+                scriptEntry.addObject("locations", arg.asType(ListTag.class).filter(LocationTag.class, scriptEntry));
+            }
             else {
                 arg.reportUnhandled();
             }
-
         }
 
-        if (entities.isEmpty() && Utilities.entryHasPlayer(scriptEntry)) {
-            entities.add(Utilities.getEntryPlayer(scriptEntry).identify());
+        if (!scriptEntry.hasObject("players") && Utilities.entryHasPlayer(scriptEntry)) {
+            ListTag players = new ListTag();
+            players.addObject(Utilities.getEntryPlayer(scriptEntry));
+            scriptEntry.defaultObject("players", players);
         }
 
-        if (locations.isEmpty()) {
+        if (!scriptEntry.hasObject("locations")) {
             throw new InvalidArgumentsException("Must specify at least one valid location!");
         }
 
-        if (!added_entities && (!Utilities.entryHasPlayer(scriptEntry)
-                || !Utilities.getEntryPlayer(scriptEntry).isOnline())) {
+        if (!scriptEntry.hasObject("players")) {
             throw new InvalidArgumentsException("Must have a valid, online player attached!");
-        }
-
-        if (entities.isEmpty() && added_entities) {
-            throw new InvalidArgumentsException("Must specify valid targets!");
         }
 
         if (!scriptEntry.hasObject("materials") && !scriptEntry.hasObject("cancel")) {
             throw new InvalidArgumentsException("Must specify valid material(s)!");
         }
 
-        scriptEntry.addObject("entities", entities);
-        scriptEntry.addObject("locations", locations);
-
-        scriptEntry.defaultObject("duration", new DurationTag(10)).defaultObject("cancel", new ElementTag(false));
+        scriptEntry.defaultObject("duration", new DurationTag(10));
+        scriptEntry.defaultObject("cancel", new ElementTag(false));
     }
 
 
@@ -132,33 +121,28 @@ public class ShowFakeCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         DurationTag duration = scriptEntry.getObjectTag("duration");
-        ListTag material_list = scriptEntry.getObjectTag("materials");
-        ListTag list = scriptEntry.getObjectTag("locations");
-        ListTag players = scriptEntry.getObjectTag("entities");
         ElementTag cancel = scriptEntry.getElement("cancel");
+        List<MaterialTag> materials = (List<MaterialTag>) scriptEntry.getObject("materials");
+        List<LocationTag> locations = (List<LocationTag>) scriptEntry.getObject("locations");
+        List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
 
         if (scriptEntry.dbCallShouldDebug()) {
-
-            Debug.report(scriptEntry, getName(), (material_list != null ? material_list.debug() : "")
-                    + list.debug() + players.debug() + duration.debug() + cancel.debug());
-
+            Debug.report(scriptEntry, getName(), duration.debug() + cancel.debug()
+                    + (materials != null ? ArgumentHelper.debugList("materials", materials) : "")
+                    + ArgumentHelper.debugList("locations", locations)
+                    + ArgumentHelper.debugList("players", players));
         }
 
 
         boolean shouldCancel = cancel.asBoolean();
 
-        List<MaterialTag> mats = null;
-        if (!shouldCancel) {
-            mats = material_list.filter(MaterialTag.class, scriptEntry);
-        }
-
         int i = 0;
-        for (LocationTag loc : list.filter(LocationTag.class, scriptEntry)) {
+        for (LocationTag loc : locations) {
             if (!shouldCancel) {
-                FakeBlock.showFakeBlockTo(players.filter(PlayerTag.class, scriptEntry), loc, mats.get(i % mats.size()), duration);
+                FakeBlock.showFakeBlockTo(players, loc, materials.get(i % materials.size()), duration);
             }
             else {
-                FakeBlock.stopShowingTo(players.filter(PlayerTag.class, scriptEntry), loc);
+                FakeBlock.stopShowingTo(players, loc);
             }
             i++;
         }
