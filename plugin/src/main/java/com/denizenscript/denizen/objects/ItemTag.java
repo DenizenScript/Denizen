@@ -7,7 +7,7 @@ import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.OldMaterialsHelper;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -44,8 +44,6 @@ import org.bukkit.material.MaterialData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ItemTag implements ObjectTag, Notable, Adjustable {
 
@@ -80,12 +78,6 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
     //
     // -->
 
-    final static Pattern ITEM_PATTERN =
-            Pattern.compile("(?:item:)?([\\w ]+)[:,]?(\\d+)?\\[?(\\d+)?\\]?", // TODO: Wot.
-                    Pattern.CASE_INSENSITIVE);
-
-    final static Pattern item_by_saved = Pattern.compile("(i@)?(.+)\\[?(\\d+)?\\]?"); // TODO: Wot.
-
     final public static String itemscriptIdentifier = "§0id:";
 
     //////////////////
@@ -115,98 +107,84 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
             return null;
         }
 
-        Matcher m;
         ItemTag stack = null;
 
-        ///////
-        // Handle objects with properties through the object fetcher
-        m = ObjectFetcher.DESCRIBED_PATTERN.matcher(string);
-        if (m.matches()) {
+        if (ObjectFetcher.DESCRIBED_PATTERN.matcher(string).matches()) {
             return ObjectFetcher.getObjectFrom(ItemTag.class, string, context);
         }
 
-        ////////
-        // Match @object format for saved ItemTags
+        if (NotableManager.isSaved(string) && NotableManager.isType(string, ItemTag.class)) {
+            return (ItemTag) NotableManager.getSavedObject(string);
+        }
+        if (string.startsWith("i@")) {
+            string = string.substring("i@".length());
+        }
+        string = CoreUtilities.toLowerCase(string);
+        int commaIndex = string.indexOf(',');
+        if (commaIndex == -1) {
+            commaIndex = string.indexOf(':');
+        }
+        String dataValue = null;
+        if (commaIndex != -1) {
+            dataValue = string.substring(commaIndex + 1);
+            string = string.substring(0, commaIndex);
+        }
 
-        m = item_by_saved.matcher(string);
+        try {
 
-        if (m.matches() && NotableManager.isSaved(m.group(2)) && NotableManager.isType(m.group(2), ItemTag.class)) {
-            stack = (ItemTag) NotableManager.getSavedObject(m.group(2));
+            if (ScriptRegistry.containsScript(string, ItemScriptContainer.class)) {
+                ItemScriptContainer isc = ScriptRegistry.getScriptContainerAs(string, ItemScriptContainer.class);
+                // TODO: If a script does not contain tags, get the clean reference here.
+                stack = isc.getItemFrom(context == null ? null : (BukkitTagContext) context);
+                if (stack == null && (context == null || context.debug)) {
+                    Debug.echoError("Item script '" + isc.getName() + "' returned a null item.");
+                }
+            }
+            else if (ScriptRegistry.containsScript(string, BookScriptContainer.class)) {
+                BookScriptContainer book = ScriptRegistry.getScriptContainerAs(string, BookScriptContainer.class);
+                stack = book.getBookFrom(context == null ? null : (BukkitTagContext) context);
+                if (stack == null && (context == null || context.debug)) {
+                    Debug.echoError("Book script '" + book.getName() + "' returned a null item.");
+                }
+            }
 
-            if (m.group(3) != null) {
-                stack.setAmount(Integer.valueOf(m.group(3)));
+            if (stack != null) {
+                return stack;
+            }
+        }
+        catch (Exception ex) {
+            if (Debug.verbose) {
+                Debug.echoError(ex);
+            }
+        }
+
+        try {
+            if (ArgumentHelper.matchesInteger(string)) {
+                if (context == null || context.debug) {
+                    Deprecations.materialIds.warn();
+                }
+                stack = new ItemTag(Integer.valueOf(string));
+            }
+            else {
+                MaterialTag mat = MaterialTag.valueOf(string.toUpperCase());
+                stack = new ItemTag(mat.getMaterial());
+                if (mat.hasData() && NMSHandler.getVersion().isAtMost(NMSVersion.v1_12)) {
+                    stack.setDurability(mat.getData());
+                }
+            }
+
+            if (dataValue != null) {
+                stack.setDurability(Short.valueOf(dataValue));
             }
 
             return stack;
         }
-
-        string = string.replace("i@", "");
-
-        m = ITEM_PATTERN.matcher(string);
-
-        if (m.matches()) {
-
-            try {
-
-                ///////
-                // Match item and book script custom items
-
-                if (ScriptRegistry.containsScript(m.group(1), ItemScriptContainer.class)) {
-                    ItemScriptContainer isc = ScriptRegistry.getScriptContainerAs(m.group(1), ItemScriptContainer.class);
-                    // TODO: If a script does not contain tags, get the clean reference here.
-                    stack = isc.getItemFrom(context == null ? null : (BukkitTagContext) context);
-                }
-                else if (ScriptRegistry.containsScript(m.group(1), BookScriptContainer.class)) {
-                    // Get book from script
-                    stack = ScriptRegistry.getScriptContainerAs (m.group(1), BookScriptContainer.class).getBookFrom(context == null ? null : (BukkitTagContext) context);
-                }
-
-                if (stack != null) {
-
-                    if (m.group(3) != null) {
-                        stack.setAmount(Integer.valueOf(m.group(3)));
-                    }
-                    return stack;
-                }
+        catch (Exception ex) {
+            if (!string.equalsIgnoreCase("none") && (context == null || context.debug)) {
+                Debug.log("Does not match a valid item ID or material: " + string);
             }
-            catch (Exception e) {
-                // Just a catch, might be a regular item...
-            }
-
-
-            ///////
-            // Match Bukkit/Minecraft standard items format
-
-            try {
-                String material = m.group(1).toUpperCase();
-
-                if (ArgumentHelper.matchesInteger(material)) {
-                    if (context == null || context.debug) {
-                        Deprecations.materialIds.warn();
-                    }
-                    stack = new ItemTag(Integer.valueOf(material));
-                }
-                else {
-                    MaterialTag mat = MaterialTag.valueOf(material);
-                    stack = new ItemTag(mat.getMaterial());
-                    if (mat.hasData() && NMSHandler.getVersion().isAtMost(NMSVersion.v1_12)) {
-                        stack.setDurability(mat.getData());
-                    }
-                }
-
-                if (m.group(2) != null) {
-                    stack.setDurability(Short.valueOf(m.group(2)));
-                }
-                if (m.group(3) != null) {
-                    stack.setAmount(Integer.valueOf(m.group(3)));
-                }
-
-                return stack;
-            }
-            catch (Exception e) {
-                if (!string.equalsIgnoreCase("none") && (context == null || context.debug)) {
-                    Debug.log("Does not match a valid item ID or material: " + string);
-                }
+            if (Debug.verbose) {
+                Debug.echoError(ex);
             }
         }
 
