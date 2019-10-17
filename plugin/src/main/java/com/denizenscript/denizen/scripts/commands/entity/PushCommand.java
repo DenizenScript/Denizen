@@ -30,7 +30,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
     // <--[command]
     // @Name Push
-    // @Syntax push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (script:<name>) (def:<element>|...) (force_along) (precision:<#>) (no_rotate) (no_damage)
+    // @Syntax push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (script:<name>) (def:<element>|...) (force_along) (precision:<#>) (no_rotate) (no_damage) (ignore_collision)
     // @Required 1
     // @Short Pushes entities through the air in a straight line.
     // @Group entity
@@ -41,6 +41,8 @@ public class PushCommand extends AbstractCommand implements Holdable {
     // with the (script:<name>) argument, and optionally specify definitions to be available in this script
     // with the (def:<element>|...) argument. Using the 'no_damage' argument causes the entity to receive no damage
     // when they stop moving.
+    //
+    // Optionally use the "ignore_collision" argument to ignore block collisions.
     //
     // @Tags
     // <EntityTag.velocity>
@@ -116,6 +118,10 @@ public class PushCommand extends AbstractCommand implements Holdable {
                     && arg.matches("no_damage")) {
                 scriptEntry.addObject("no_damage", new ElementTag(true));
             }
+            else if (!scriptEntry.hasObject("ignore_collision")
+                    && arg.matches("ignore_collision")) {
+                scriptEntry.addObject("ignore_collision", new ElementTag(true));
+            }
             else if (arg.matchesPrefix("def", "define", "context")) {
                 scriptEntry.addObject("definitions", arg.asType(ListTag.class));
             }
@@ -189,6 +195,8 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
         ElementTag force_along = scriptEntry.getElement("force_along");
         ElementTag precision = scriptEntry.getElement("precision");
+        ElementTag ignore_collision = scriptEntry.getElement("ignore_collision");
+        final boolean ignoreCollision = ignore_collision != null && ignore_collision.asBoolean();
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
@@ -202,6 +210,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
                     precision.debug() +
                     (no_rotate ? ArgumentHelper.debugObj("no_rotate", "true") : "") +
                     (no_damage ? ArgumentHelper.debugObj("no_damage", "true") : "") +
+                    (ignore_collision != null ? ignore_collision.debug() : "") +
                     (definitions != null ? definitions.debug() : ""));
         }
 
@@ -280,8 +289,8 @@ public class PushCommand extends AbstractCommand implements Holdable {
                     // Check if the entity has collided with something
                     // using the most basic possible calculation
                     BlockHelper blockHelper = NMSHandler.getBlockHelper();
-                    if (!blockHelper.isSafeBlock(lastEntity.getLocation().add(v3).getBlock().getType())
-                            || !blockHelper.isSafeBlock(lastEntity.getLocation().add(newVel).getBlock().getType())) {
+                    if (!ignoreCollision && (!blockHelper.isSafeBlock(lastEntity.getLocation().add(v3).getBlock().getType())
+                            || !blockHelper.isSafeBlock(lastEntity.getLocation().add(newVel).getBlock().getType()))) {
                         runs = maxTicks;
                     }
 
