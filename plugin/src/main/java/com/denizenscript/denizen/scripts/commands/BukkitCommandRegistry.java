@@ -167,7 +167,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         else {
             AutoNoCitizensCommand.registerFor("POSE");
         }
-        registerCoreMember(PushCommand.class, "PUSH", "push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (script:<name>) (def:<element>|...) (force_along) (precision:<#>) (no_rotate) (no_damage) (ignore_collision)", 1);
+        registerCoreMember(PushCommand.class, "PUSH", "push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (duration:<duration>) (script:<name>) (def:<element>|...) (force_along) (precision:<#>) (no_rotate) (no_damage) (ignore_collision)", 1);
         registerCoreMember(PushableCommand.class, "PUSHABLE", "pushable (state:true/false/{toggle}) (delay:<duration>) (returnable:true/false)", 0);
         registerCoreMember(RemoveCommand.class, "REMOVE", "remove [<entity>|...] (<world>)", 1);
         if (Depends.citizens != null) {

@@ -30,7 +30,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
     // <--[command]
     // @Name Push
-    // @Syntax push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (script:<name>) (def:<element>|...) (force_along) (precision:<#>) (no_rotate) (no_damage) (ignore_collision)
+    // @Syntax push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (duration:<duration>) (script:<name>) (def:<element>|...) (force_along) (precision:<#>) (no_rotate) (no_damage) (ignore_collision)
     // @Required 1
     // @Short Pushes entities through the air in a straight line.
     // @Group entity
