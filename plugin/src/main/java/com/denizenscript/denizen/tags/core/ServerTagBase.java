@@ -641,6 +641,48 @@ public class ServerTagBase {
         }
 
         // <--[tag]
+        // @attribute <server.disk_free>
+        // @returns ElementTag(Number)
+        // @description
+        // How much remaining disk space is available to this server.
+        // This counts only the drive the server folder is on, not any other drives.
+        // This may be limited below the actual drive capacity by operating system settings.
+        // -->
+        if (attribute.startsWith("disk_free")) {
+            File folder = DenizenAPI.getCurrentInstance().getDataFolder();
+            event.setReplaced(new ElementTag(folder.getUsableSpace())
+                    .getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.disk_total>
+        // @returns ElementTag(Number)
+        // @description
+        // How much total disk space is on the drive containing this server.
+        // This counts only the drive the server folder is on, not any other drives.
+        // -->
+        if (attribute.startsWith("disk_total")) {
+            File folder = DenizenAPI.getCurrentInstance().getDataFolder();
+            event.setReplaced(new ElementTag(folder.getTotalSpace())
+                    .getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.disk_usage>
+        // @returns ElementTag(Number)
+        // @description
+        // How much space on the drive is already in use.
+        // This counts only the drive the server folder is on, not any other drives.
+        // This is approximately equivalent to "disk_total" minus "disk_free", but is not always exactly the same,
+        // as this tag will not include space "used" by operating system settings that simply deny the server write access.
+        // -->
+        if (attribute.startsWith("disk_usage")) {
+            File folder = DenizenAPI.getCurrentInstance().getDataFolder();
+            event.setReplaced(new ElementTag(folder.getTotalSpace() - folder.getFreeSpace())
+                    .getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
         // @attribute <server.ram_allocated>
         // @returns ElementTag(Number)
         // @description
