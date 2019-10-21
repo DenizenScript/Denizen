@@ -1583,7 +1583,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     boolean strict = false;
                     if (CoreUtilities.toLowerCase(search_string).startsWith("strict:")) {
                         strict = true;
-                        search_string = search_string.substring(7);
+                        search_string = search_string.substring("strict:".length());
                     }
                     if (search_string.length() == 0) {
                         return null;
@@ -1618,17 +1618,13 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                                     continue;
                                 }
                                 for (int i = 0; i < item_lore.size(); i++) {
-                                    if (lore.get(i).equalsIgnoreCase(item_lore.get(i))) {
-                                        if (i == lore.size()) {
-                                            found_items += item.getAmount();
-                                            if (found_items >= qty) {
-                                                break strict_items;
-                                            }
-                                        }
-                                    }
-                                    else {
+                                    if (!lore.get(i).equalsIgnoreCase(item_lore.get(i))) {
                                         continue strict_items;
                                     }
+                                }
+                                found_items += item.getAmount();
+                                if (found_items >= qty) {
+                                    break;
                                 }
                             }
                         }
