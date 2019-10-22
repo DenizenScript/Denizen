@@ -22,6 +22,10 @@ import java.util.*;
 
 public abstract class EntityHelper {
 
+    public void setSneaking(Player player, boolean sneak) {
+        player.setSneaking(sneak);
+    }
+
     public abstract double getDamageTo(LivingEntity attacker, Entity target);
 
     public abstract String getRawHoverText(Entity entity);

@@ -35,6 +35,25 @@ import java.util.*;
 
 public class EntityHelperImpl extends EntityHelper {
 
+    public static final Field RECIPE_BOOK_DISCOVERED_SET = ReflectionHelper.getFields(RecipeBook.class).get("a");
+
+    public static final MethodHandle ENTITY_HOVER_TEXT_GETTER = ReflectionHelper.getMethodHandle(net.minecraft.server.v1_14_R1.Entity.class, "bK");
+
+    public static final MethodHandle ENTITY_SETPOSE = ReflectionHelper.getMethodHandle(net.minecraft.server.v1_14_R1.Entity.class, "setPose", EntityPose.class);
+
+    @Override
+    public void setSneaking(Player player, boolean sneak) {
+        player.setSneaking(sneak);
+        EntityPose pose = sneak ? EntityPose.SNEAKING : EntityPose.STANDING;
+        try {
+            ENTITY_SETPOSE.invoke(((CraftPlayer) player).getHandle(), pose);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+
+    }
+
     @Override
     public double getDamageTo(LivingEntity attacker, Entity target) {
         EnumMonsterType monsterType;
@@ -50,10 +69,6 @@ public class EntityHelperImpl extends EntityHelper {
         }
         return damage;
     }
-
-    public static final Field RECIPE_BOOK_DISCOVERED_SET = ReflectionHelper.getFields(RecipeBook.class).get("a");
-
-    public static final MethodHandle ENTITY_HOVER_TEXT_GETTER = ReflectionHelper.getMethodHandle(net.minecraft.server.v1_14_R1.Entity.class, "bK");
 
     @Override
     public String getRawHoverText(Entity entity) {
