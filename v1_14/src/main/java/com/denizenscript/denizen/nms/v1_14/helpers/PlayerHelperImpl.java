@@ -28,8 +28,6 @@ public class PlayerHelperImpl extends PlayerHelper {
     public static final Field FLY_TICKS = PLAYER_CONNECTION_FIELDS.get("C");
     public static final Field VEHICLE_FLY_TICKS = PLAYER_CONNECTION_FIELDS.get("E");
 
-    public static final Field PLAYER_MAP = ReflectionHelper.getFields(PlayerChunkMap.class).get("y");
-
     @Override
     public int getFlyKickCooldown(Player player) {
         PlayerConnection conn = ((CraftPlayer) player).getHandle().playerConnection;

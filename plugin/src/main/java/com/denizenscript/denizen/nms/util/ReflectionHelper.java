@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.nms.util;
 
-import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -15,6 +16,15 @@ public class ReflectionHelper {
     private static final Map<Class, Map<String, Field>> cachedFields = new HashMap<>();
 
     private static final Map<Class, Map<String, MethodHandle>> cachedFieldSetters = new HashMap<>();
+
+    public static void setFieldValue(Class clazz, String fieldName, Object object, Object value) {
+        try {
+            getFields(clazz).get(fieldName).set(object, value);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+    }
 
     public static <T> T getFieldValue(Class clazz, String fieldName, Object object) {
         Map<String, Field> cache = getFields(clazz);
@@ -32,7 +42,28 @@ public class ReflectionHelper {
         }
     }
 
-    public static void setFieldValue(Class clazz, String fieldName, Object object, Object value) {
+    public static class CheckingFieldMap extends HashMap<String, Field> {
+
+        public Class<?> clazz;
+
+        public CheckingFieldMap(Class<?> clazz) {
+            this.clazz = clazz;
+        }
+
+        @Override
+        public Field get(Object name) {
+            Field f = super.get(name);
+            if (f == null) {
+                String err = "Reflection field missing - Tried to read field '" + name + "' of class '" + clazz.getCanonicalName() + "'.";
+                DenizenAPI.getCurrentInstance().getLogger().warning(err);
+                Debug.echoError(err);
+            }
+            return f;
+        }
+
+        public Field getNoCheck(String name) {
+            return super.get(name);
+        }
     }
 
     public static Map<String, Field> getFields(Class clazz) {
@@ -40,7 +71,7 @@ public class ReflectionHelper {
         if (fields != null) {
             return fields;
         }
-        fields = new HashMap<>();
+        fields = new CheckingFieldMap(clazz);
         for (Field field : clazz.getDeclaredFields()) {
             field.setAccessible(true);
             fields.put(field.getName(), field);
@@ -127,7 +158,7 @@ public class ReflectionHelper {
     }
 
     private static MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
-    private static Field MODIFIERS_FIELD = getFields(Field.class).get("modifiers");
+    private static Field MODIFIERS_FIELD = ((CheckingFieldMap) getFields(Field.class)).getNoCheck("modifiers");
     private static Object UNSAFE;
     private static MethodHandle UNSAFE_FIELD_OFFSET;
     private static MethodHandle UNSAFE_PUT_OBJECT;
