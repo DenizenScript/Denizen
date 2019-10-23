@@ -17,9 +17,9 @@ public class FakeBlock {
 
     public static class FakeBlockMap {
 
-        Map<LocationTag, FakeBlock> byLocation = new HashMap<>();
+        public Map<LocationTag, FakeBlock> byLocation = new HashMap<>();
 
-        Map<ChunkCoordinate, List<FakeBlock>> byChunk = new HashMap<>();
+        public Map<ChunkCoordinate, List<FakeBlock>> byChunk = new HashMap<>();
 
         public FakeBlock getOrAdd(PlayerTag player, LocationTag location) {
             FakeBlock block = byLocation.get(location);
