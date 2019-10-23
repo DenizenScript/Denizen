@@ -91,6 +91,7 @@ public class FakeBlock {
             FakeBlock block = playerBlocks.getOrAdd(player, location);
             block.updateBlock(material, duration);
         }
+        lastChunkRefresh.clear();
     }
 
     public static void stopShowingTo(List<PlayerTag> players, final LocationTag location) {
@@ -105,6 +106,8 @@ public class FakeBlock {
         }
     }
 
+    public static HashMap<ChunkCoordinate, Long> lastChunkRefresh = new HashMap<>();
+
     public void cancelBlock() {
         if (currentTask != null) {
             currentTask.cancel();
@@ -113,6 +116,11 @@ public class FakeBlock {
         material = null;
         if (player.isOnline()) {
             location.getBlock().getState().update();
+            Long l = lastChunkRefresh.get(chunkCoord);
+            if (l == null || l < location.getWorld().getFullTime()) {
+                lastChunkRefresh.put(chunkCoord, location.getWorld().getFullTime());
+                location.getWorld().refreshChunk(chunkCoord.x, chunkCoord.z);
+            }
         }
         FakeBlockMap mapping = blocks.get(player.getOfflinePlayer().getUniqueId());
         mapping.remove(this);
