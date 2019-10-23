@@ -8,6 +8,7 @@ import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.craftbukkit.v1_14_R1.block.data.CraftBlockData;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
 
 public class FakeBlockHelper {
@@ -33,6 +34,16 @@ public class FakeBlockHelper {
         return false;
     }
 
+    public static void pushByteArrayToLongArrayBE(byte[] bits, long[] longs) {
+        for (int i = 0; i < bits.length; i++) {
+            int longIndex = i >> 3;
+            int startBit = longIndex * 8;
+            if (longIndex >= longs.length) {
+                break;
+            }
+            longs[longIndex] |= ((long) bits[i]) << (7 - (i - startBit));
+        }
+    }
     public static IBlockData blockInPalette(int paletteId) {
         return ChunkSection.GLOBAL_PALETTE.a(paletteId);
     }
@@ -68,29 +79,18 @@ public class FakeBlockHelper {
         }
     }
 
-    public static int getWidthFor(int value) {
-        if (value < 256) {
-            return 1;
-        }
-        if (value < 256 * 256) {
-            return 2;
-        }
-        if (value < 256 * 256 * 256) {
-            return 3;
-        }
-        return 4;
-    }
-
     public static void handleMapChunkPacket(PacketPlayOutMapChunk packet, List<FakeBlock> blocks) {
         try {
-            // TODO: properly update HeightMap and BlockEntities?
+            // TODO: properly update HeightMap?
             int bitmask = BITMASK_MAPCHUNK.getInt(packet);
             byte[] data = (byte[]) DATA_MAPCHUNK.get(packet);
             PacketDataSerializer serial = new PacketDataSerializer(Unpooled.wrappedBuffer(data));
             PacketDataSerializer outputSerial = new PacketDataSerializer(Unpooled.buffer(data.length));
-            byte[] blockDataHelper = new byte[4 * 16 * 16 * 16]; // 16,384
-            int[] blockListHelper = new int[16 * 16 * 16];
-
+            boolean isFull = packet.f();
+            // TODO: Handle blockEntities?
+            //List<NBTTagCompound> blockEntities = (List<NBTTagCompound>) BLOCKENTITIES_MAPCHUNK.get(packet);
+            //NBTTagList blockEntitiesList = new NBTTagList();
+            //blockEntitiesList.addAll(blockEntities);
             for (int y = 0; y < 16; y++) {
                 if ((bitmask & (1 << y)) != 0) {
                     int blockCount = serial.readShort();
@@ -101,21 +101,23 @@ public class FakeBlockHelper {
                         palette[p] = serial.i();
                     }
                     int dataLen = serial.i();
-                    serial.readBytes(blockDataHelper, 0, dataLen * width);
+                    Debug.log("y: " + y + " count: " + blockCount + ", width: " + width + ", paletteLen: " + paletteLen + ", palette: " + Arrays.toString(palette) + ", dataLen: " + dataLen);
+                    long[] blockListHelper = new long[dataLen];
+                    for (int i = 0; i < blockListHelper.length; i++) {
+                        blockListHelper[i] = serial.readLong();
+                    }
+                    Debug.log("Data: " + Arrays.toString(blockListHelper));
+                    outputSerial.writeShort(blockCount);
                     if (!anyBlocksInSection(blocks, y)) {
-                        outputSerial.writeShort(blockCount);
                         outputSerial.writeByte(width);
                         outputSerial.d(paletteLen); // writeVarInt
                         for (int p = 0; p < paletteLen; p++) {
                             outputSerial.d(palette[p]);
                         }
-                        outputSerial.d(dataLen);
-                        outputSerial.writeBytes(blockDataHelper, 0, dataLen * width);
+                        outputSerial.a(blockListHelper); // writeLongs
                         continue;
                     }
-                    for (int i = 0; i < blockListHelper.length; i++) {
-                        blockListHelper[i] = getWideIntAt(blockDataHelper, i * width, width);
-                    }
+                    DataBits bits = new DataBits(width, 4096, blockListHelper);
                     int minY = y << 4;
                     int maxY = (y << 4) + 16;
                     for (FakeBlock block : blocks) {
@@ -139,15 +141,36 @@ public class FakeBlockHelper {
                                 subPaletteId = paletteLen;
                                 paletteLen++;
                                 palette = newPalette;
+                                int newWdith = MathHelper.d(paletteLen);
+                                if (newWdith > width) {
+                                    DataBits newBits = new DataBits(newWdith, 4096);
+                                    for (int i = 0; i < bits.b(); i++) {
+                                        newBits.a(i, bits.a(i));
+                                    }
+                                    bits = newBits;
+                                    width = newWdith;
+                                }
                             }
-                            blockListHelper[blockIndex] = subPaletteId;
+                            bits.a(blockIndex, subPaletteId);
                         }
                     }
-                    width = getWidthFor(paletteLen);
-                    for (int i = 0; i < blockListHelper.length; i++) {
-                        writeWideInt(outputSerial, blockListHelper[i], width);
+                    int[] testOut = new int[bits.b()];
+                    for (int i = 0; i < testOut.length; i++) {
+                        testOut[i] = bits.a(i);
                     }
+                    Debug.log("Blocks: " + Arrays.toString(testOut));
+                    outputSerial.writeByte(width);
+                    outputSerial.d(paletteLen);
+                    Debug.log("Palette: " + Arrays.toString(palette) + ", endWidth: " + width);
+                    for (int p = 0; p < palette.length; p++) {
+                        outputSerial.d(palette[p]);
+                    }
+                    outputSerial.a(bits.a());
                 }
+            }
+            if (isFull) {
+                // biomes
+                outputSerial.writeBytes(serial, 256 * 4);
             }
             byte[] outputBytes = outputSerial.array();
             DATA_MAPCHUNK.set(packet, outputBytes);

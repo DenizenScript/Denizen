@@ -14,6 +14,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ShowFakeCommand extends AbstractCommand {
@@ -95,8 +96,8 @@ public class ShowFakeCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("players") && Utilities.entryHasPlayer(scriptEntry)) {
-            ListTag players = new ListTag();
-            players.addObject(Utilities.getEntryPlayer(scriptEntry));
+            List<PlayerTag> players = new ArrayList<>();
+            players.add(Utilities.getEntryPlayer(scriptEntry));
             scriptEntry.defaultObject("players", players);
         }
 
