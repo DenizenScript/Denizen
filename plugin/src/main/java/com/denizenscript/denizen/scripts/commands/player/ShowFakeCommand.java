@@ -40,8 +40,6 @@ public class ShowFakeCommand extends AbstractCommand {
     // Optionally, specify how long the fake block should remain for.
     // If unspecified, will default to 10 seconds.
     // After the duration is up, the block will revert back to whatever it really is (on the server-side).
-    // Be aware that this system is not perfect, and will not prevent blocks from reverting on their own.
-    // This can happen if a player clicks on the block, or blocks change near it, or the player leaves the area and comes back.
     //
     // Note that while the player will see the block as though it were real, the server will have no knowledge of this.
     // This means that if the player, for example, stands atop a fake block that the server sees as air, that player will be seen as flying.
