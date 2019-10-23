@@ -90,7 +90,7 @@ public class TradeTag implements ObjectTag, Adjustable {
     }
 
     public static boolean matches(String str) {
-        return str.startsWith("trade@trade");
+        return valueOf(str, CoreUtilities.noDebugContext) != null;
     }
 
     ///////////////
