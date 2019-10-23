@@ -199,7 +199,7 @@ public class EconomyScriptContainer extends ScriptContainer {
         }
 
         public OfflinePlayer playerForName(String name) {
-            UUID id = PlayerTag.getAllPlayers().get(name);
+            UUID id = PlayerTag.getAllPlayers().get(CoreUtilities.toLowerCase(name));
             if (id == null) {
                 Debug.echoError("Economy attempted access to unknown player '" + name + "'");
                 return null;
