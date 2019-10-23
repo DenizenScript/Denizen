@@ -8,7 +8,7 @@ import com.denizenscript.denizen.nms.v1_14.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_14.impl.SidebarImpl;
 import com.denizenscript.denizen.nms.v1_14.impl.blocks.BlockLightImpl;
 import com.denizenscript.denizen.nms.v1_14.impl.jnbt.CompoundTagImpl;
-import com.denizenscript.denizen.nms.v1_14.impl.packets.handlers.DenizenPacketListenerImpl;
+import com.denizenscript.denizen.nms.v1_14.impl.network.handlers.DenizenPacketListenerImpl;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketHandler;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.google.common.collect.Iterables;

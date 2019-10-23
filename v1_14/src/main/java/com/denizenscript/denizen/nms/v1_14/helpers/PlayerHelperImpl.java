@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.nms.v1_14.helpers;
 
 import com.denizenscript.denizen.nms.v1_14.impl.ImprovedOfflinePlayerImpl;
-import com.denizenscript.denizen.nms.v1_14.impl.packets.handlers.AbstractListenerPlayInImpl;
+import com.denizenscript.denizen.nms.v1_14.impl.network.handlers.AbstractListenerPlayInImpl;
 import com.mojang.authlib.GameProfile;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import com.denizenscript.denizen.nms.interfaces.PlayerHelper;

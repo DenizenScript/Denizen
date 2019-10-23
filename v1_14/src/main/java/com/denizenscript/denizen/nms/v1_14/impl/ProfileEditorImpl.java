@@ -2,7 +2,7 @@ package com.denizenscript.denizen.nms.v1_14.impl;
 
 import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.nms.v1_14.helpers.PacketHelperImpl;
-import com.denizenscript.denizen.nms.v1_14.impl.packets.handlers.DenizenNetworkManagerImpl;
+import com.denizenscript.denizen.nms.v1_14.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.denizenscript.denizen.nms.NMSHandler;

@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.nms.v1_14.impl.packets.handlers;
+package com.denizenscript.denizen.nms.v1_14.impl.network.handlers;
 
 import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Location;

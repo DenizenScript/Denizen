@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.nms.v1_14.impl.packets;
+package com.denizenscript.denizen.nms.v1_14.impl.network.packets;
 
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutTradeList;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;

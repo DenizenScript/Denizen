@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.nms.v1_14.impl.entities;
 
 import com.denizenscript.denizen.nms.v1_14.Handler;
-import com.denizenscript.denizen.nms.v1_14.impl.network.FakeNetworkManagerImpl;
-import com.denizenscript.denizen.nms.v1_14.impl.network.FakePlayerConnectionImpl;
+import com.denizenscript.denizen.nms.v1_14.impl.network.fakes.FakeNetworkManagerImpl;
+import com.denizenscript.denizen.nms.v1_14.impl.network.fakes.FakePlayerConnectionImpl;
 import com.mojang.authlib.GameProfile;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_14_R1.*;

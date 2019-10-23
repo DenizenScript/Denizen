@@ -1,7 +1,7 @@
-package com.denizenscript.denizen.nms.v1_14.impl.packets.handlers;
+package com.denizenscript.denizen.nms.v1_14.impl.network.handlers;
 
 import com.denizenscript.denizen.nms.v1_14.impl.ProfileEditorImpl;
-import com.denizenscript.denizen.nms.v1_14.impl.packets.*;
+import com.denizenscript.denizen.nms.v1_14.impl.network.packets.*;
 import com.denizenscript.denizen.nms.v1_14.impl.blocks.BlockLightImpl;
 import com.denizenscript.denizen.nms.v1_14.impl.entities.EntityFakePlayerImpl;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketHandler;

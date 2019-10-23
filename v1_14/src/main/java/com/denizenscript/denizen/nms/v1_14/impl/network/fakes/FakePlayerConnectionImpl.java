@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.nms.v1_14.impl.network;
+package com.denizenscript.denizen.nms.v1_14.impl.network.fakes;
 
 import net.minecraft.server.v1_14_R1.*;
 

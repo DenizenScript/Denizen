@@ -1,7 +1,7 @@
-package com.denizenscript.denizen.nms.v1_14.impl.packets.handlers;
+package com.denizenscript.denizen.nms.v1_14.impl.network.handlers;
 
-import com.denizenscript.denizen.nms.v1_14.impl.packets.PacketInResourcePackStatusImpl;
-import com.denizenscript.denizen.nms.v1_14.impl.packets.PacketInSteerVehicleImpl;
+import com.denizenscript.denizen.nms.v1_14.impl.network.packets.PacketInResourcePackStatusImpl;
+import com.denizenscript.denizen.nms.v1_14.impl.network.packets.PacketInSteerVehicleImpl;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketHandler;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
