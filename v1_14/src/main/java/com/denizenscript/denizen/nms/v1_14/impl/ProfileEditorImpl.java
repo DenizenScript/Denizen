@@ -5,8 +5,6 @@ import com.denizenscript.denizen.nms.v1_14.helpers.PacketHelperImpl;
 import com.denizenscript.denizen.nms.v1_14.impl.packets.handlers.DenizenNetworkManagerImpl;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
@@ -61,8 +59,7 @@ public class ProfileEditorImpl extends ProfileEditor {
         }.runTaskLater(NMSHandler.getJavaPlugin(), 5);
     }
 
-    public static boolean handleMirrorProfiles(PacketPlayOutPlayerInfo packet, DenizenNetworkManagerImpl manager,
-                                               GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
+    public static boolean handleMirrorProfiles(PacketPlayOutPlayerInfo packet, DenizenNetworkManagerImpl manager) {
         if (ProfileEditor.mirrorUUIDs.isEmpty()) {
             return true;
         }
@@ -92,7 +89,7 @@ public class ProfileEditorImpl extends ProfileEditor {
                     PacketPlayOutPlayerInfo newPacket = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER);
                     List newPacketDataList = ReflectionHelper.getFieldValue(PacketPlayOutPlayerInfo.class, "b", newPacket);
                     newPacketDataList.add(data);
-                    manager.oldManager.sendPacket(newPacket, genericfuturelistener);
+                    manager.oldManager.sendPacket(newPacket);
                 }
                 else {
                     PacketPlayOutPlayerInfo newPacket = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER);
@@ -102,7 +99,7 @@ public class ProfileEditorImpl extends ProfileEditor {
                     Object newData = playerInfoData_construct.newInstance(newPacket, patchedProfile,
                             playerInfoData_latency.getInt(data), playerInfoData_gamemode.get(data), playerInfoData_displayName.get(data));
                     newPacketDataList.add(newData);
-                    manager.oldManager.sendPacket(newPacket, genericfuturelistener);
+                    manager.oldManager.sendPacket(newPacket);
                 }
             }
             return false;

@@ -129,68 +129,75 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         if (NMSHandler.debugPackets) {
             Debug.log("Packet: " + packet.getClass().getCanonicalName() + " sent to " + player.getName());
         }
-        // If the packet sending isn't cancelled, allow normal sending
-        if (packet instanceof PacketPlayOutChat) {
-            if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutChatImpl((PacketPlayOutChat) packet))) {
-                oldManager.sendPacket(packet, genericfuturelistener);
-            }
+        if (processAttachToForPacket(packet)
+            || processHiddenEntitiesForPacket(packet)
+            || processPacketHandlerForPacket(packet)) {
+            return;
         }
-        else if (packet instanceof PacketPlayOutEntity) {
+        processMirrorForPacket(packet);
+        processShowFakeForPacket(packet);
+        processBlockLightForPacket(packet);
+        oldManager.sendPacket(packet, genericfuturelistener);
+    }
+
+    public boolean isAttached(Entity e) {
+        UUID attached = NMSHandler.getInstance().attachmentsA.get(e.getUniqueID());
+        return attached != null && attached.equals(player.getUniqueID());
+    }
+
+    public boolean processAttachToForPacket(Packet<?> packet) {
+        if (packet instanceof PacketPlayOutEntity) {
             try {
                 int ider = ENTITY_ID_PACKENT.getInt(packet);
                 Entity e = player.getWorld().getEntity(ider);
                 if (e == null) {
-                    oldManager.sendPacket(packet, genericfuturelistener);
+                    return false;
                 }
-                else {
-                    if (!NMSHandler.getInstance().attachmentsA.containsKey(e.getUniqueID())
-                            || NMSHandler.getInstance().attachmentsA.get(e.getUniqueID()).equals(player.getUniqueID())) {
-                        oldManager.sendPacket(packet, genericfuturelistener);
-                    }
-                    UUID att = NMSHandler.getInstance().attachments2.get(e.getUniqueID());
-                    if (att != null) {
-                        org.bukkit.entity.Entity target = Bukkit.getEntity(att);
-                        if (target != null) {
-                            Packet pNew = (Packet) duplo(packet);
-                            ENTITY_ID_PACKENT.setInt(pNew, target.getEntityId());
-                            Vector offset = NMSHandler.getInstance().attachmentOffsets.get(att);
-                            if (offset != null && (packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMove || packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook)) {
-                                boolean rotationBasis = NMSHandler.getInstance().attachmentRotations.contains(att);
-                                Vector goalPosition;
-                                if (!rotationBasis) {
-                                    goalPosition = new Vector(e.locX, e.locY, e.locZ).add(offset);
-                                }
-                                else {
-                                    goalPosition = new Vector(e.locX, e.locY, e.locZ).add(NMSHandler.fixOffset(offset, -e.yaw, e.pitch));
-                                }
-                                Vector oldPos = NMSHandler.getInstance().visiblePositions.get(target.getUniqueId());
-                                if (oldPos == null) {
-                                    oldPos = target.getLocation().toVector();
-                                }
-                                Vector moveNeeded = goalPosition.clone().subtract(oldPos);
-                                NMSHandler.getInstance().visiblePositions.put(target.getUniqueId(), goalPosition.clone());
-                                int offX = (int) (moveNeeded.getX() * (32 * 128));
-                                int offY = (int) (moveNeeded.getY() * (32 * 128));
-                                int offZ = (int) (moveNeeded.getZ() * (32 * 128));
-                                if (offX < Short.MIN_VALUE || offX > Short.MAX_VALUE
-                                        || offY < Short.MIN_VALUE || offY > Short.MAX_VALUE
-                                        || offZ < Short.MIN_VALUE || offZ > Short.MAX_VALUE) {
-                                    PacketPlayOutEntityTeleport newTeleportPacket = new PacketPlayOutEntityTeleport(e);
-                                    ENTITY_ID_PACKTELENT.setInt(newTeleportPacket, target.getEntityId());
-                                    POS_X_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getX());
-                                    POS_Y_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getY());
-                                    POS_Z_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getZ());
-                                    oldManager.sendPacket(newTeleportPacket);
-                                    return;
-                                }
-                                POS_X_PACKENT.setInt(pNew, MathHelper.clamp(offX, Short.MIN_VALUE, Short.MAX_VALUE));
-                                POS_Y_PACKENT.setInt(pNew, MathHelper.clamp(offY, Short.MIN_VALUE, Short.MAX_VALUE));
-                                POS_Z_PACKENT.setInt(pNew, MathHelper.clamp(offZ, Short.MIN_VALUE, Short.MAX_VALUE));
+                UUID att = NMSHandler.getInstance().attachments2.get(e.getUniqueID());
+                if (att != null) {
+                    org.bukkit.entity.Entity target = Bukkit.getEntity(att);
+                    if (target != null) {
+                        Packet pNew = (Packet) duplo(packet);
+                        ENTITY_ID_PACKENT.setInt(pNew, target.getEntityId());
+                        Vector offset = NMSHandler.getInstance().attachmentOffsets.get(att);
+                        if (offset != null && (packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMove || packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook)) {
+                            boolean rotationBasis = NMSHandler.getInstance().attachmentRotations.contains(att);
+                            Vector goalPosition;
+                            if (!rotationBasis) {
+                                goalPosition = new Vector(e.locX, e.locY, e.locZ).add(offset);
                             }
-                            oldManager.sendPacket(pNew);
+                            else {
+                                goalPosition = new Vector(e.locX, e.locY, e.locZ).add(NMSHandler.fixOffset(offset, -e.yaw, e.pitch));
+                            }
+                            Vector oldPos = NMSHandler.getInstance().visiblePositions.get(target.getUniqueId());
+                            if (oldPos == null) {
+                                oldPos = target.getLocation().toVector();
+                            }
+                            Vector moveNeeded = goalPosition.clone().subtract(oldPos);
+                            NMSHandler.getInstance().visiblePositions.put(target.getUniqueId(), goalPosition.clone());
+                            int offX = (int) (moveNeeded.getX() * (32 * 128));
+                            int offY = (int) (moveNeeded.getY() * (32 * 128));
+                            int offZ = (int) (moveNeeded.getZ() * (32 * 128));
+                            if (offX < Short.MIN_VALUE || offX > Short.MAX_VALUE
+                                    || offY < Short.MIN_VALUE || offY > Short.MAX_VALUE
+                                    || offZ < Short.MIN_VALUE || offZ > Short.MAX_VALUE) {
+                                PacketPlayOutEntityTeleport newTeleportPacket = new PacketPlayOutEntityTeleport(e);
+                                ENTITY_ID_PACKTELENT.setInt(newTeleportPacket, target.getEntityId());
+                                POS_X_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getX());
+                                POS_Y_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getY());
+                                POS_Z_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getZ());
+                                oldManager.sendPacket(newTeleportPacket);
+                                return true;
+                            }
+                            POS_X_PACKENT.setInt(pNew, MathHelper.clamp(offX, Short.MIN_VALUE, Short.MAX_VALUE));
+                            POS_Y_PACKENT.setInt(pNew, MathHelper.clamp(offY, Short.MIN_VALUE, Short.MAX_VALUE));
+                            POS_Z_PACKENT.setInt(pNew, MathHelper.clamp(offZ, Short.MIN_VALUE, Short.MAX_VALUE));
                         }
+                        oldManager.sendPacket(pNew);
+                        return true;
                     }
                 }
+                return isAttached(e);
             }
             catch (Exception e) {
                 Debug.echoError(e);
@@ -201,23 +208,19 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 int ider = ENTITY_ID_PACKVELENT.getInt(packet);
                 Entity e = player.getWorld().getEntity(ider);
                 if (e == null) {
-                    oldManager.sendPacket(packet, genericfuturelistener);
+                    return false;
                 }
-                else {
-                    if (!NMSHandler.getInstance().attachmentsA.containsKey(e.getUniqueID())
-                            || NMSHandler.getInstance().attachmentsA.get(e.getUniqueID()).equals(player.getUniqueID())) {
-                        oldManager.sendPacket(packet, genericfuturelistener);
-                    }
-                    UUID att = NMSHandler.getInstance().attachments2.get(e.getUniqueID());
-                    if (att != null) {
-                        org.bukkit.entity.Entity target = Bukkit.getEntity(att);
-                        if (target != null) {
-                            Packet pNew = (Packet) duplo(packet);
-                            ENTITY_ID_PACKVELENT.setInt(pNew, target.getEntityId());
-                            oldManager.sendPacket(pNew);
-                        }
+                UUID att = NMSHandler.getInstance().attachments2.get(e.getUniqueID());
+                if (att != null) {
+                    org.bukkit.entity.Entity target = Bukkit.getEntity(att);
+                    if (target != null) {
+                        Packet pNew = (Packet) duplo(packet);
+                        ENTITY_ID_PACKVELENT.setInt(pNew, target.getEntityId());
+                        oldManager.sendPacket(pNew);
+                        return true;
                     }
                 }
+                return isAttached(e);
             }
             catch (Exception e) {
                 Debug.echoError(e);
@@ -228,111 +231,146 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 int ider = ENTITY_ID_PACKTELENT.getInt(packet);
                 Entity e = player.getWorld().getEntity(ider);
                 if (e == null) {
-                    oldManager.sendPacket(packet, genericfuturelistener);
+                    return false;
                 }
-                else {
-                    if (!NMSHandler.getInstance().attachmentsA.containsKey(e.getUniqueID())
-                            || NMSHandler.getInstance().attachmentsA.get(e.getUniqueID()).equals(player.getUniqueID())) {
-                        oldManager.sendPacket(packet, genericfuturelistener);
-                    }
-                    UUID att = NMSHandler.getInstance().attachments2.get(e.getUniqueID());
-                    if (att != null) {
-                        org.bukkit.entity.Entity target = Bukkit.getEntity(att);
-                        if (target != null) {
-                            Packet pNew = (Packet) duplo(packet);
-                            ENTITY_ID_PACKTELENT.setInt(pNew, target.getEntityId());
-                            Vector offset = NMSHandler.getInstance().attachmentOffsets.get(att);
-                            Vector resultPos = new Vector(POS_X_PACKTELENT.getDouble(pNew), POS_Y_PACKTELENT.getDouble(pNew), POS_Z_PACKTELENT.getDouble(pNew));
-                            if (offset != null) {
-                                boolean rotationBasis = NMSHandler.getInstance().attachmentRotations.contains(att);
-                                Vector goalOffset;
-                                if (!rotationBasis) {
-                                    goalOffset = offset;
-                                }
-                                else {
-                                    goalOffset = NMSHandler.fixOffset(offset, -e.yaw, e.pitch);
-                                }
-                                POS_X_PACKTELENT.setDouble(pNew, POS_X_PACKTELENT.getDouble(pNew) + goalOffset.getX());
-                                POS_Y_PACKTELENT.setDouble(pNew, POS_Y_PACKTELENT.getDouble(pNew) + goalOffset.getY());
-                                POS_Z_PACKTELENT.setDouble(pNew, POS_Z_PACKTELENT.getDouble(pNew) + goalOffset.getZ());
-                                resultPos.add(goalOffset);
+                UUID att = NMSHandler.getInstance().attachments2.get(e.getUniqueID());
+                if (att != null) {
+                    org.bukkit.entity.Entity target = Bukkit.getEntity(att);
+                    if (target != null) {
+                        Packet pNew = (Packet) duplo(packet);
+                        ENTITY_ID_PACKTELENT.setInt(pNew, target.getEntityId());
+                        Vector offset = NMSHandler.getInstance().attachmentOffsets.get(att);
+                        Vector resultPos = new Vector(POS_X_PACKTELENT.getDouble(pNew), POS_Y_PACKTELENT.getDouble(pNew), POS_Z_PACKTELENT.getDouble(pNew));
+                        if (offset != null) {
+                            boolean rotationBasis = NMSHandler.getInstance().attachmentRotations.contains(att);
+                            Vector goalOffset;
+                            if (!rotationBasis) {
+                                goalOffset = offset;
                             }
-                            NMSHandler.getInstance().visiblePositions.put(target.getUniqueId(), resultPos);
-                            oldManager.sendPacket(pNew);
+                            else {
+                                goalOffset = NMSHandler.fixOffset(offset, -e.yaw, e.pitch);
+                            }
+                            POS_X_PACKTELENT.setDouble(pNew, POS_X_PACKTELENT.getDouble(pNew) + goalOffset.getX());
+                            POS_Y_PACKTELENT.setDouble(pNew, POS_Y_PACKTELENT.getDouble(pNew) + goalOffset.getY());
+                            POS_Z_PACKTELENT.setDouble(pNew, POS_Z_PACKTELENT.getDouble(pNew) + goalOffset.getZ());
+                            resultPos.add(goalOffset);
                         }
+                        NMSHandler.getInstance().visiblePositions.put(target.getUniqueId(), resultPos);
+                        oldManager.sendPacket(pNew);
+                        return true;
                     }
                 }
+                return isAttached(e);
             }
             catch (Exception e) {
                 Debug.echoError(e);
             }
         }
-        else if (packet instanceof PacketPlayOutNamedEntitySpawn
-                || packet instanceof PacketPlayOutSpawnEntity
-                || packet instanceof PacketPlayOutSpawnEntityLiving
-                || packet instanceof PacketPlayOutSpawnEntityPainting
-                || packet instanceof PacketPlayOutSpawnEntityExperienceOrb) {
-            PacketOutSpawnEntity spawnEntity = new PacketOutSpawnEntityImpl(player, packet);
-            final Entity entity = player.getWorld().getEntity(spawnEntity.getEntityId());
-            if (entity == null) {
-                oldManager.sendPacket(packet, genericfuturelistener);
-            }
-            else if (!NMSHandler.getEntityHelper().isHidden(player.getBukkitEntity(), entity.getBukkitEntity())) {
-                if (entity instanceof EntityFakePlayerImpl) {
-                    final EntityFakePlayerImpl fakePlayer = (EntityFakePlayerImpl) entity;
-                    sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, fakePlayer));
-                    Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(),
-                            () -> sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, fakePlayer)), 5);
+        return false;
+    }
+
+    public boolean isHidden(Entity entity) {
+        return e != null && NMSHandler.getEntityHelper().isHidden(player.getBukkitEntity(), entity.getBukkitEntity());
+    }
+
+    public boolean processHiddenEntitiesForPacket(Packet<?> packet) {
+        try {
+            if (packet instanceof PacketPlayOutNamedEntitySpawn
+                    || packet instanceof PacketPlayOutSpawnEntity
+                    || packet instanceof PacketPlayOutSpawnEntityLiving
+                    || packet instanceof PacketPlayOutSpawnEntityPainting
+                    || packet instanceof PacketPlayOutSpawnEntityExperienceOrb) {
+                PacketOutSpawnEntity spawnEntity = new PacketOutSpawnEntityImpl(player, packet);
+                Entity entity = player.getWorld().getEntity(spawnEntity.getEntityId());
+                if (isHidden(entity)) {
+                    return true;
                 }
-                oldManager.sendPacket(packet, genericfuturelistener);
+                processFakePlayerSpawn(entity);
+            }
+            if (packet instanceof PacketPlayOutEntity) {
+                int ider = ENTITY_ID_PACKENT.getInt(packet);
+                Entity e = player.getWorld().getEntity(ider);
+                if (isHidden(e)) {
+                    return true;
+                }
+            }
+            else if (packet instanceof PacketPlayOutEntityVelocity) {
+                int ider = ENTITY_ID_PACKVELENT.getInt(packet);
+                Entity e = player.getWorld().getEntity(ider);
+                if (isHidden(e)) {
+                    return true;
+                }
+            }
+            else if (packet instanceof PacketPlayOutEntityTeleport) {
+                int ider = ENTITY_ID_PACKTELENT.getInt(packet);
+                Entity e = player.getWorld().getEntity(ider);
+                if (isHidden(e)) {
+                    return true;
+                }
             }
         }
-        else if (packet instanceof PacketPlayOutPlayerInfo) {
+        catch (Exception e) {
+            Debug.echoError(e);
+        }
+        return false;
+    }
+
+    public void processFakePlayerSpawn(Entity entity) {
+        if (entity instanceof EntityFakePlayerImpl) {
+            final EntityFakePlayerImpl fakePlayer = (EntityFakePlayerImpl) entity;
+            sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, fakePlayer));
+            Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(),
+                    () -> sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, fakePlayer)), 5);
+        }
+    }
+
+    public void processMirrorForPacket(Packet<?> packet) {
+        if (packet instanceof PacketPlayOutPlayerInfo) {
             PacketPlayOutPlayerInfo playerInfo = (PacketPlayOutPlayerInfo) packet;
-            if (ProfileEditorImpl.handleMirrorProfiles(playerInfo, this, genericfuturelistener)) {
+            if (ProfileEditorImpl.handleMirrorProfiles(playerInfo, this)) {
                 ProfileEditorImpl.updatePlayerProfiles(playerInfo);
                 oldManager.sendPacket(playerInfo);
             }
         }
+    }
+
+    public boolean processPacketHandlerForPacket(Packet<?> packet) {
+        if (packet instanceof PacketPlayOutChat) {
+            return packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutChatImpl((PacketPlayOutChat) packet));
+        }
         else if (packet instanceof PacketPlayOutEntityMetadata) {
-            if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadataImpl((PacketPlayOutEntityMetadata) packet))) {
-                oldManager.sendPacket(packet, genericfuturelistener);
-            }
+            return packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadataImpl((PacketPlayOutEntityMetadata) packet));
         }
         else if (packet instanceof PacketPlayOutSetSlot) {
-            if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutSetSlotImpl((PacketPlayOutSetSlot) packet))) {
-                oldManager.sendPacket(packet, genericfuturelistener);
-            }
+            return packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutSetSlotImpl((PacketPlayOutSetSlot) packet));
         }
         else if (packet instanceof PacketPlayOutWindowItems) {
-            if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutWindowItemsImpl((PacketPlayOutWindowItems) packet))) {
-                oldManager.sendPacket(packet, genericfuturelistener);
-            }
+            return packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutWindowItemsImpl((PacketPlayOutWindowItems) packet));
         }
         else if (packet instanceof PacketPlayOutOpenWindowMerchant) {
-            if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutTradeListImpl((PacketPlayOutOpenWindowMerchant) packet))) {
-                oldManager.sendPacket(packet, genericfuturelistener);
-            }
+            return packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutTradeListImpl((PacketPlayOutOpenWindowMerchant) packet));
         }
-        else if (packet instanceof PacketPlayOutLightUpdate) {
-            BlockLightImpl.checkIfLightsBrokenByPacket((PacketPlayOutLightUpdate) packet, player.world);
-            oldManager.sendPacket(packet, genericfuturelistener);
-        }
-        else if (packet instanceof PacketPlayOutMapChunk) {
+        return false;
+    }
+
+    public void processShowFakeForPacket(Packet<?> packet) {
+        if (packet instanceof PacketPlayOutMapChunk) {
             // TODO: Showfake logic
-            oldManager.sendPacket(packet, genericfuturelistener);
         }
         else if (packet instanceof PacketPlayOutMultiBlockChange) {
             // TODO: Showfake logic
-            oldManager.sendPacket(packet, genericfuturelistener);
         }
         else if (packet instanceof PacketPlayOutBlockChange) {
             // TODO: Showfake logic
-            BlockLightImpl.checkIfLightsBrokenByPacket((PacketPlayOutBlockChange) packet, player.world);
-            oldManager.sendPacket(packet, genericfuturelistener);
         }
-        else {
-            oldManager.sendPacket(packet, genericfuturelistener);
+    }
+
+    public void processBlockLightForPacket(Packet<?> packet) {
+        if (packet instanceof PacketPlayOutLightUpdate) {
+            BlockLightImpl.checkIfLightsBrokenByPacket((PacketPlayOutLightUpdate) packet, player.world);
+        }
+        else if (packet instanceof PacketPlayOutBlockChange) {
+            BlockLightImpl.checkIfLightsBrokenByPacket((PacketPlayOutBlockChange) packet, player.world);
         }
     }
 
