@@ -17,7 +17,6 @@ import com.denizenscript.denizen.nms.util.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_14_R1.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -26,6 +25,7 @@ import javax.crypto.SecretKey;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.net.SocketAddress;
+import java.util.List;
 import java.util.UUID;
 
 public class DenizenNetworkManagerImpl extends NetworkManager {
@@ -101,6 +101,8 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     public static Field BLOCKPOS_BLOCKCHANGE = ReflectionHelper.getFields(PacketPlayOutBlockChange.class).get("a");
     public static Field CHUNKCOORD_MULTIBLOCKCHANGE = ReflectionHelper.getFields(PacketPlayOutMultiBlockChange.class).get("a");
     public static Field INFOARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(PacketPlayOutMultiBlockChange.class).get("b");
+    public static Field CHUNKX_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("a");
+    public static Field CHUNKZ_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("b");
 
     public static Object duplo(Object a) {
         try {
@@ -350,13 +352,21 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         return false;
     }
 
-    public IBlockData getNMSState(FakeBlock block) {
-        return ((CraftBlockData) block.material.getModernData().data).getState();
-    }
-
     public void processShowFakeForPacket(Packet<?> packet) {
         try {
             if (packet instanceof PacketPlayOutMapChunk) {
+                FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(player.getUniqueID());
+                if (map == null) {
+                    return;
+                }
+                int chunkX = CHUNKX_MAPCHUNK.getInt(packet);
+                int chunkZ = CHUNKZ_MAPCHUNK.getInt(packet);
+                ChunkCoordinate chunkCoord = new ChunkCoordinate(chunkX, chunkZ, player.getWorld().getWorld().getName());
+                List<FakeBlock> blocks = FakeBlock.getFakeBlocksFor(player.getUniqueID(), chunkCoord);
+                if (blocks == null) {
+                    return;
+                }
+                FakeBlockHelper.handleMapChunkPacket((PacketPlayOutMapChunk) packet, blocks);
             }
             else if (packet instanceof PacketPlayOutMultiBlockChange) {
                 FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(player.getUniqueID());
@@ -380,7 +390,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                     location.setZ((coord.z << 4) + z);
                     FakeBlock block = map.byLocation.get(location);
                     if (block != null) {
-                        changeArr[i] = ((PacketPlayOutMultiBlockChange) packet).new MultiBlockChangeInfo(blockInd, getNMSState(block));
+                        changeArr[i] = ((PacketPlayOutMultiBlockChange) packet).new MultiBlockChangeInfo(blockInd, FakeBlockHelper.getNMSState(block));
                     }
                 }
             }
@@ -389,7 +399,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 LocationTag loc = new LocationTag(player.getWorld().getWorld(), pos.getX(), pos.getY(), pos.getZ());
                 FakeBlock block = FakeBlock.getFakeBlockFor(player.getUniqueID(), loc);
                 if (block != null) {
-                    ((PacketPlayOutBlockChange) packet).block = getNMSState(block);
+                    ((PacketPlayOutBlockChange) packet).block = FakeBlockHelper.getNMSState(block);
                 }
             }
         }
