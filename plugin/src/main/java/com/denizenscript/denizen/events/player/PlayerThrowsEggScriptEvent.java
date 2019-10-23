@@ -103,7 +103,6 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
         if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        Debug.log("Is this even firing?");
         is_hatching = event.isHatching();
         Entity eggEntity = event.getEgg();
         EntityTag.rememberEntity(eggEntity);
