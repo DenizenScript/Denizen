@@ -83,6 +83,7 @@ public class FakeBlockHelper {
 
     public static void handleMapChunkPacket(PacketPlayOutMapChunk packet, List<FakeBlock> blocks) {
         try {
+            // TODO: properly update HeightMap and BlockEntities?
             int bitmask = BITMASK_MAPCHUNK.getInt(packet);
             byte[] data = (byte[]) DATA_MAPCHUNK.get(packet);
             PacketDataSerializer serial = new PacketDataSerializer(Unpooled.wrappedBuffer(data));

@@ -2,8 +2,10 @@ package com.denizenscript.denizen.nms.v1_13.impl.blocks;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BlockLight;
+import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_13_R2.*;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -48,9 +50,13 @@ public class BlockLightImpl extends BlockLight {
         bukkitTask = new BukkitRunnable() {
             @Override
             public void run() {
-                for (Map.Entry<org.bukkit.Chunk, List<BlockLight>> entry : lightsByChunk.entrySet()) {
-                    org.bukkit.Chunk chunk = entry.getKey();
-                    if (chunk.isLoaded()) {
+                for (Map.Entry<ChunkCoordinate, List<BlockLight>> entry : lightsByChunk.entrySet()) {
+                    ChunkCoordinate coord = entry.getKey();
+                    World world = Bukkit.getWorld(coord.worldName);
+                    if (world == null) {
+                        continue;
+                    }
+                    if (world.isChunkLoaded(coord.x, coord.z)) {
                         List<BlockLight> blockLights = entry.getValue();
                         if (blockLights.isEmpty()) {
                             continue;
@@ -59,6 +65,7 @@ public class BlockLightImpl extends BlockLight {
                         for (BlockLight light : blockLights) {
                             light.reset(false);
                         }
+                        org.bukkit.Chunk chunk = world.getChunkAt(coord.x, coord.z);
                         updateChunk(chunk, playerChunkMap);
                         for (BlockLight light : blockLights) {
                             light.update(light.cachedLight, false);
@@ -101,10 +108,10 @@ public class BlockLightImpl extends BlockLight {
         else {
             blockLight = new BlockLightImpl(location, ticks);
             lightsByLocation.put(location, blockLight);
-            if (!lightsByChunk.containsKey(blockLight.chunk)) {
-                lightsByChunk.put(blockLight.chunk, new ArrayList<>());
+            if (!lightsByChunk.containsKey(blockLight.chunkCoord)) {
+                lightsByChunk.put(blockLight.chunkCoord, new ArrayList<>());
             }
-            lightsByChunk.get(blockLight.chunk).add(blockLight);
+            lightsByChunk.get(blockLight.chunkCoord).add(blockLight);
         }
         blockLight.update(lightLevel, true);
         return blockLight;
