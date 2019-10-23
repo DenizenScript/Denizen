@@ -48,7 +48,8 @@ public class ShowFakeCommand extends AbstractCommand {
     // Note as well that some clientside block effects may occur (eg fake fire may appear momentarily to actually ignite things, but won't actually damage them).
     //
     // @Tags
-    // None
+    // <PlayerTag.fake_block_locations>
+    // <PlayerTag.fake_block[<location>]>
     //
     // @Usage
     // Use to place a fake gold block at where the player is looking

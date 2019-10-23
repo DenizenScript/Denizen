@@ -5,6 +5,7 @@ import com.denizenscript.denizen.objects.properties.entity.EntityHealth;
 import com.denizenscript.denizen.scripts.commands.player.SidebarCommand;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.BossBarHelper;
@@ -2651,6 +2652,52 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                     return null;
                 }
                 return new ElementTag(suffix);
+            }
+        });
+
+        // <--[tag]
+        // @attribute <PlayerTag.fake_block_locations>
+        // @returns ListTag(LocationTag)
+        // @description
+        // Returns a list of locations that the player will see a fake block at, as set by <@link command showfake> or connected commands.
+        // -->
+        registerTag("fake_block_locations", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                ListTag list = new ListTag();
+                FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(object.getOfflinePlayer().getUniqueId());
+                if (map != null) {
+                    for (LocationTag loc : map.byLocation.keySet()) {
+                        list.addObject(loc.clone());
+                    }
+                }
+                return list;
+            }
+        });
+
+        // <--[tag]
+        // @attribute <PlayerTag.fake_block[<location>]>
+        // @returns MaterialTag
+        // @description
+        // Returns the fake material that the player will see at the input location, as set by <@link command showfake> or connected commands.
+        // Works best alongside <@link tag PlayerTag.fake_block_locations>.
+        // Returns null if the player doesn't have a fake block at the location.
+        // -->
+        registerTag("fake_block", new TagRunnable.ObjectForm<PlayerTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, PlayerTag object) {
+                if (!attribute.hasContext(1)) {
+                    return null;
+                }
+                LocationTag input = LocationTag.valueOf(attribute.getContext(1));
+                FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(object.getOfflinePlayer().getUniqueId());
+                if (map != null) {
+                    FakeBlock block = map.byLocation.get(input);
+                    if (block != null) {
+                        return block.material;
+                    }
+                }
+                return null;
             }
         });
     }
