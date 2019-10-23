@@ -1,6 +1,8 @@
 package com.denizenscript.denizen.nms.abstracts;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -15,13 +17,14 @@ import java.util.Map;
 public abstract class BlockLight {
 
     protected static final Map<Location, BlockLight> lightsByLocation = new HashMap<>();
-    protected static final Map<Chunk, List<BlockLight>> lightsByChunk = new HashMap<>();
+    protected static final Map<ChunkCoordinate, List<BlockLight>> lightsByChunk = new HashMap<>();
     protected static final BlockFace[] adjacentFaces = new BlockFace[] {
             BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN
     };
 
     public final Block block;
-    public final Chunk chunk;
+    public final ChunkCoordinate chunkCoord;
+    public Chunk chunk;
     public final int originalLight;
     public int currentLight;
     public int cachedLight;
@@ -29,9 +32,15 @@ public abstract class BlockLight {
     public BukkitTask removeTask;
     public BukkitTask updateTask;
 
+    public Chunk getChunk() {
+        chunk = Bukkit.getWorld(chunkCoord.worldName).getChunkAt(chunkCoord.x, chunkCoord.z);
+        return chunk;
+    }
+
     protected BlockLight(Location location, long ticks) {
         this.block = location.getBlock();
         this.chunk = location.getChunk();
+        this.chunkCoord = new ChunkCoordinate(chunk);
         this.originalLight = block.getLightFromBlocks();
         this.currentLight = originalLight;
         this.cachedLight = originalLight;
@@ -65,10 +74,10 @@ public abstract class BlockLight {
                 blockLight.removeTask = null;
             }
             lightsByLocation.remove(location);
-            List<BlockLight> lights = lightsByChunk.get(blockLight.chunk);
+            List<BlockLight> lights = lightsByChunk.get(blockLight.chunkCoord);
             lights.remove(blockLight);
             if (lights.isEmpty()) {
-                lightsByChunk.remove(blockLight.chunk);
+                lightsByChunk.remove(blockLight.chunkCoord);
             }
         }
     }

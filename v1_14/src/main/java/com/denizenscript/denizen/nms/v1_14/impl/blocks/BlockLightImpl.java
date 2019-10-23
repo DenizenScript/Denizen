@@ -79,10 +79,10 @@ public class BlockLightImpl extends BlockLight {
         else {
             blockLight = new BlockLightImpl(location, ticks);
             lightsByLocation.put(location, blockLight);
-            if (!lightsByChunk.containsKey(blockLight.chunk)) {
-                lightsByChunk.put(blockLight.chunk, new ArrayList<>());
+            if (!lightsByChunk.containsKey(blockLight.chunkCoord)) {
+                lightsByChunk.put(blockLight.chunkCoord, new ArrayList<>());
             }
-            lightsByChunk.get(blockLight.chunk).add(blockLight);
+            lightsByChunk.get(blockLight.chunkCoord).add(blockLight);
         }
         blockLight.intendedLevel = lightLevel;
         blockLight.update(lightLevel, true);
@@ -168,9 +168,9 @@ public class BlockLightImpl extends BlockLight {
                 if (i == layer) {
                     byte[] blocks = data.get(found);
                     NibbleArray arr = new NibbleArray(blocks);
-                    int x = blockLoc.getBlockX() - (chunk.getX() << 4);
+                    int x = blockLoc.getBlockX() - (chunkCoord.x << 4);
                     int y = blockLoc.getBlockY() % 16;
-                    int z = blockLoc.getBlockZ() - (chunk.getZ() << 4);
+                    int z = blockLoc.getBlockZ() - (chunkCoord.z << 4);
                     int level = arr.a(x, y, z);
                     return intendedLevel != level;
                 }
@@ -206,7 +206,7 @@ public class BlockLightImpl extends BlockLight {
 
     @Override
     public void reset(boolean updateChunk) {
-        runResetFor(((CraftChunk) chunk).getHandle(), ((CraftBlock) block).getPosition());
+        runResetFor(((CraftChunk) getChunk()).getHandle(), ((CraftBlock) block).getPosition());
         if (updateChunk) {
             updateTask = Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), (Runnable) this::sendNearbyChunkUpdates, 1);
         }
@@ -214,7 +214,7 @@ public class BlockLightImpl extends BlockLight {
 
     @Override
     public void update(int lightLevel, boolean updateChunk) {
-        runResetFor(((CraftChunk) chunk).getHandle(), ((CraftBlock) block).getPosition());
+        runResetFor(((CraftChunk) getChunk()).getHandle(), ((CraftBlock) block).getPosition());
         updateTask = Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), () -> {
             updateTask = null;
             runSetFor(((CraftChunk) chunk).getHandle(), ((CraftBlock) block).getPosition(), lightLevel);
@@ -230,8 +230,8 @@ public class BlockLightImpl extends BlockLight {
             new Vector(-1, 0, -1), new Vector(-1, 0, 1), new Vector(1, 0, -1), new Vector(1, 0, 1)
     };
 
-    public  void sendNearbyChunkUpdates() {
-        sendNearbyChunkUpdates(((CraftChunk) chunk).getHandle());
+    public void sendNearbyChunkUpdates() {
+        sendNearbyChunkUpdates(((CraftChunk) getChunk()).getHandle());
     }
 
     public static void sendNearbyChunkUpdates(Chunk chunk) {

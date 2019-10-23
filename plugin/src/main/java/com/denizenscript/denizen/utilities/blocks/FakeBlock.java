@@ -5,10 +5,6 @@ import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizencore.objects.core.DurationTag;
-import org.bukkit.Location;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -19,90 +15,110 @@ import java.util.*;
  */
 public class FakeBlock {
 
-    private final static Map<UUID, Map<Location, FakeBlock>> blocks = new HashMap<>();
+    public static class FakeBlockMap {
 
-    private final PlayerTag player;
-    private final Location location;
-    private MaterialTag material;
-    private long cancelTime = -1;
-    private BukkitTask currentTask = null;
+        Map<LocationTag, FakeBlock> byLocation = new HashMap<>();
 
-    private FakeBlock(PlayerTag player, Location location) {
-        this.player = player;
-        this.location = location;
+        Map<ChunkCoordinate, List<FakeBlock>> byChunk = new HashMap<>();
+
+        public FakeBlock getOrAdd(PlayerTag player, LocationTag location) {
+            FakeBlock block = byLocation.get(location);
+            if (block != null) {
+                return block;
+            }
+            block = new FakeBlock(player, location);
+            byLocation.put(location, block);
+            List<FakeBlock> chunkBlocks = byChunk.get(block.chunkCoord);
+            if (chunkBlocks == null) {
+                chunkBlocks = new ArrayList<>();
+                byChunk.put(block.chunkCoord, chunkBlocks);
+            }
+            chunkBlocks.add(block);
+            return block;
+        }
+
+        public void remove(FakeBlock block) {
+            if (byLocation.remove(block.location) != null) {
+                List<FakeBlock> chunkBlocks = byChunk.get(block.chunkCoord);
+                if (chunkBlocks != null) {
+                    chunkBlocks.remove(block);
+                }
+            }
+        }
     }
 
-    public static void showFakeBlockTo(List<PlayerTag> players, Location location, MaterialTag material, DurationTag duration) {
+    public final static Map<UUID, FakeBlockMap> blocks = new HashMap<>();
+
+    public static FakeBlock getFakeBlockFor(UUID id, LocationTag location) {
+        FakeBlockMap map = blocks.get(id);
+        if (map == null) {
+            return null;
+        }
+        return map.byLocation.get(location);
+    }
+
+    public static List<FakeBlock> getFakeBlocksFor(UUID id, ChunkCoordinate chunkCoord) {
+        FakeBlockMap map = blocks.get(id);
+        if (map == null) {
+            return null;
+        }
+        return map.byChunk.get(chunkCoord);
+    }
+
+    public final PlayerTag player;
+    public final LocationTag location;
+    public final ChunkCoordinate chunkCoord;
+    public MaterialTag material;
+    public BukkitTask currentTask = null;
+
+    private FakeBlock(PlayerTag player, LocationTag location) {
+        this.player = player;
+        this.location = location;
+        this.chunkCoord = new ChunkCoordinate(location);
+    }
+
+    public static void showFakeBlockTo(List<PlayerTag> players, LocationTag location, MaterialTag material, DurationTag duration) {
         for (PlayerTag player : players) {
             if (!player.isOnline() || !player.isValid()) {
                 continue;
             }
             UUID uuid = player.getPlayerEntity().getUniqueId();
-            if (!blocks.containsKey(uuid)) {
-                blocks.put(uuid, new HashMap<>());
+            FakeBlockMap playerBlocks = blocks.get(uuid);
+            if (playerBlocks == null) {
+                playerBlocks = new FakeBlockMap();
+                blocks.put(uuid, playerBlocks);
             }
-            Map<Location, FakeBlock> playerBlocks = blocks.get(uuid);
-            if (!playerBlocks.containsKey(location)) {
-                playerBlocks.put(location, new FakeBlock(player, location));
-            }
-            playerBlocks.get(location).updateBlock(material, duration.getTicks());
+            FakeBlock block = playerBlocks.getOrAdd(player, location);
+            block.updateBlock(material, duration);
         }
     }
 
     public static void stopShowingTo(List<PlayerTag> players, final LocationTag location) {
-        final List<UUID> uuids = new ArrayList<>();
         for (PlayerTag player : players) {
-            if (!player.isOnline() || !player.isValid()) {
-                continue;
-            }
-            UUID uuid = player.getPlayerEntity().getUniqueId();
-            uuids.add(uuid);
-            if (blocks.containsKey(uuid)) {
-                Map<Location, FakeBlock> playerBlocks = blocks.get(uuid);
-                if (playerBlocks.containsKey(location)) {
-                    playerBlocks.get(location).cancelBlock();
+            FakeBlockMap playerBlocks = blocks.get(player.getPlayerEntity().getUniqueId());
+            if (playerBlocks != null) {
+                FakeBlock block = playerBlocks.byLocation.get(location);
+                if (block != null) {
+                    block.cancelBlock();
                 }
             }
         }
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (UUID uuid : blocks.keySet()) {
-                    if (uuids.contains(uuid)) {
-                        continue;
-                    }
-                    Map<Location, FakeBlock> playerBlocks = blocks.get(uuid);
-                    if (playerBlocks.containsKey(location)) {
-                        playerBlocks.get(location).updateBlock();
-                    }
-                }
-            }
-        }.runTaskLater(DenizenAPI.getCurrentInstance(), 2);
     }
 
-    public static Map<UUID, Map<Location, FakeBlock>> getBlocks() {
-        return blocks;
-    }
-
-    private void cancelBlock() {
+    public void cancelBlock() {
         if (currentTask != null) {
             currentTask.cancel();
             currentTask = null;
         }
-        cancelTime = -1;
         material = null;
-        location.getBlock().getState().update();
-        blocks.get(player.getOfflinePlayer().getUniqueId()).remove(location);
-    }
-
-
-    public void updateBlock() {
-        if (material != null) {
-            updateBlock(material, cancelTime == -1 ? 0 : cancelTime - location.getWorld().getFullTime());
+        if (player.isOnline()) {
+            location.getBlock().getState().update();
         }
+        FakeBlockMap mapping = blocks.get(player.getOfflinePlayer().getUniqueId());
+        mapping.remove(this);
     }
 
-    private void updateBlock(MaterialTag material, long ticks) {
+    private void updateBlock(MaterialTag material, DurationTag duration) {
         if (currentTask != null) {
             currentTask.cancel();
         }
@@ -114,39 +130,16 @@ public class FakeBlock {
             material.getModernData().sendFakeChangeTo(player.getPlayerEntity(), location);
         }
         else {
-            player.getPlayerEntity().sendBlockChange(location, material.getMaterial(),
-                    material.getMaterialData().getData());
+            player.getPlayerEntity().sendBlockChange(location, material.getMaterial(), material.getMaterialData().getData());
         }
-        if (ticks > 0) {
-            cancelTime = location.getWorld().getFullTime() + ticks;
+        if (duration != null && duration.getTicks() > 0) {
             currentTask = new BukkitRunnable() {
                 @Override
                 public void run() {
                     currentTask = null;
-                    if (player.isValid() && player.isOnline()) {
-                        cancelBlock();
-                    }
+                    cancelBlock();
                 }
-            }.runTaskLater(DenizenAPI.getCurrentInstance(), ticks);
-        }
-    }
-
-    static {
-        final FakeBlockListeners listeners = new FakeBlockListeners();
-    }
-
-    public static class FakeBlockListeners implements Listener {
-        public FakeBlockListeners() {
-            DenizenAPI.getCurrentInstance().getServer().getPluginManager()
-                    .registerEvents(this, DenizenAPI.getCurrentInstance());
-        }
-
-        @EventHandler
-        public void playerQuit(PlayerQuitEvent event) {
-            UUID uuid = event.getPlayer().getUniqueId();
-            if (blocks.containsKey(uuid)) {
-                blocks.remove(uuid);
-            }
+            }.runTaskLater(DenizenAPI.getCurrentInstance(), duration.getTicks());
         }
     }
 }

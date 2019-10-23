@@ -318,7 +318,16 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
             BlockLightImpl.checkIfLightsBrokenByPacket((PacketPlayOutLightUpdate) packet, player.world);
             oldManager.sendPacket(packet, genericfuturelistener);
         }
+        else if (packet instanceof PacketPlayOutMapChunk) {
+            // TODO: Showfake logic
+            oldManager.sendPacket(packet, genericfuturelistener);
+        }
+        else if (packet instanceof PacketPlayOutMultiBlockChange) {
+            // TODO: Showfake logic
+            oldManager.sendPacket(packet, genericfuturelistener);
+        }
         else if (packet instanceof PacketPlayOutBlockChange) {
+            // TODO: Showfake logic
             BlockLightImpl.checkIfLightsBrokenByPacket((PacketPlayOutBlockChange) packet, player.world);
             oldManager.sendPacket(packet, genericfuturelistener);
         }
