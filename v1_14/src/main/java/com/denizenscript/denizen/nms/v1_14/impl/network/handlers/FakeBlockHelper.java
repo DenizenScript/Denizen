@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.nms.v1_14.impl.network.handlers;
 
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import io.netty.buffer.Unpooled;
@@ -8,8 +9,8 @@ import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.craftbukkit.v1_14_R1.block.data.CraftBlockData;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.List;
+import java.util.ListIterator;
 
 public class FakeBlockHelper {
 
@@ -34,34 +35,12 @@ public class FakeBlockHelper {
         return false;
     }
 
-    public static void pushByteArrayToLongArrayBE(byte[] bits, long[] longs) {
-        for (int i = 0; i < bits.length; i++) {
-            int longIndex = i >> 3;
-            int startBit = longIndex * 8;
-            if (longIndex >= longs.length) {
-                break;
-            }
-            longs[longIndex] |= ((long) bits[i]) << (7 - (i - startBit));
-        }
-    }
-    public static IBlockData blockInPalette(int paletteId) {
-        return ChunkSection.GLOBAL_PALETTE.a(paletteId);
-    }
-
     public static int indexInPalette(IBlockData data) {
         return ChunkSection.GLOBAL_PALETTE.a(data);
     }
 
     public static int blockArrayIndex(int x, int y, int z) {
         return y * (16 * 16) + z * 16 + x;
-    }
-
-    public static int getWideIntAt(byte[] data, int index, int width) {
-        int result = 0;
-        for (int i = 0; i < width; i++) {
-            result |= data[index + i] << i;
-        }
-        return result;
     }
 
     public static int getPaletteSubId(int[] palette, int id) {
@@ -73,12 +52,6 @@ public class FakeBlockHelper {
         return -1;
     }
 
-    public static void writeWideInt(PacketDataSerializer serial, int value, int width) {
-        for (int i = 0; i < width; i++) {
-            serial.writeByte((value >> i) & 0xFF);
-        }
-    }
-
     public static void handleMapChunkPacket(PacketPlayOutMapChunk packet, List<FakeBlock> blocks) {
         try {
             // TODO: properly update HeightMap?
@@ -87,10 +60,30 @@ public class FakeBlockHelper {
             PacketDataSerializer serial = new PacketDataSerializer(Unpooled.wrappedBuffer(data));
             PacketDataSerializer outputSerial = new PacketDataSerializer(Unpooled.buffer(data.length));
             boolean isFull = packet.f();
-            // TODO: Handle blockEntities?
-            //List<NBTTagCompound> blockEntities = (List<NBTTagCompound>) BLOCKENTITIES_MAPCHUNK.get(packet);
-            //NBTTagList blockEntitiesList = new NBTTagList();
-            //blockEntitiesList.addAll(blockEntities);
+            List<NBTTagCompound> blockEntities = (List<NBTTagCompound>) BLOCKENTITIES_MAPCHUNK.get(packet);
+            ListIterator<NBTTagCompound> iterator = blockEntities.listIterator();
+            while (iterator.hasNext()) {
+                NBTTagCompound blockEnt = iterator.next();
+                int x = blockEnt.getInt("x");
+                int y = blockEnt.getInt("y");
+                int z = blockEnt.getInt("z");
+                for (FakeBlock block : blocks) {
+                    LocationTag loc = block.location;
+                    if (loc.getBlockX() == x && loc.getBlockY() == y && loc.getBlockZ() == z) {
+                        iterator.remove();
+                        break;
+                    }
+                }
+            }
+            for (FakeBlock block : blocks) {
+                LocationTag loc = block.location;
+                NBTTagCompound newCompound = new NBTTagCompound();
+                newCompound.setInt("x", loc.getBlockX());
+                newCompound.setInt("y", loc.getBlockY());
+                newCompound.setInt("z", loc.getBlockZ());
+                newCompound.setString("id", block.material.getMaterial().getKey().toString());
+                blockEntities.add(newCompound);
+            }
             for (int y = 0; y < 16; y++) {
                 if ((bitmask & (1 << y)) != 0) {
                     int blockCount = serial.readShort();
@@ -101,12 +94,10 @@ public class FakeBlockHelper {
                         palette[p] = serial.i();
                     }
                     int dataLen = serial.i();
-                    Debug.log("y: " + y + " count: " + blockCount + ", width: " + width + ", paletteLen: " + paletteLen + ", palette: " + Arrays.toString(palette) + ", dataLen: " + dataLen);
                     long[] blockListHelper = new long[dataLen];
                     for (int i = 0; i < blockListHelper.length; i++) {
                         blockListHelper[i] = serial.readLong();
                     }
-                    Debug.log("Data: " + Arrays.toString(blockListHelper));
                     outputSerial.writeShort(blockCount);
                     if (!anyBlocksInSection(blocks, y)) {
                         outputSerial.writeByte(width);
@@ -158,10 +149,8 @@ public class FakeBlockHelper {
                     for (int i = 0; i < testOut.length; i++) {
                         testOut[i] = bits.a(i);
                     }
-                    Debug.log("Blocks: " + Arrays.toString(testOut));
                     outputSerial.writeByte(width);
                     outputSerial.d(paletteLen);
-                    Debug.log("Palette: " + Arrays.toString(palette) + ", endWidth: " + width);
                     for (int p = 0; p < palette.length; p++) {
                         outputSerial.d(palette[p]);
                     }
