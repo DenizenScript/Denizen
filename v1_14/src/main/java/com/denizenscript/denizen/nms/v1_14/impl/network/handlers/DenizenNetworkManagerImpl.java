@@ -103,6 +103,8 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     public static Field INFOARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(PacketPlayOutMultiBlockChange.class).get("b");
     public static Field CHUNKX_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("a");
     public static Field CHUNKZ_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("b");
+    public static Field BLOCKPOS_BLOCKBREAK = ReflectionHelper.getFields(PacketPlayOutBlockBreak.class).get("c");
+    public static Field BLOCKDATA_BLOCKBREAK = ReflectionHelper.getFields(PacketPlayOutBlockBreak.class).get("d");
 
     public static Object duplo(Object a) {
         try {
@@ -400,6 +402,14 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 FakeBlock block = FakeBlock.getFakeBlockFor(player.getUniqueID(), loc);
                 if (block != null) {
                     ((PacketPlayOutBlockChange) packet).block = FakeBlockHelper.getNMSState(block);
+                }
+            }
+            else if (packet instanceof PacketPlayOutBlockBreak) {
+                BlockPosition pos = (BlockPosition) BLOCKPOS_BLOCKBREAK.get(packet);
+                LocationTag loc = new LocationTag(player.getWorld().getWorld(), pos.getX(), pos.getY(), pos.getZ());
+                FakeBlock block = FakeBlock.getFakeBlockFor(player.getUniqueID(), loc);
+                if (block != null) {
+                    BLOCKDATA_BLOCKBREAK.set(packet, FakeBlockHelper.getNMSState(block));
                 }
             }
         }
