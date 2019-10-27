@@ -51,12 +51,12 @@ public class MaterialDirectional implements Property {
 
         // <--[tag]
         // @attribute <MaterialTag.valid_directions>
-        // @returns ElementTag
+        // @returns ListTag
         // @mechanism MaterialTag.direction
         // @group properties
         // @description
         // Returns a list of directions that are valid for a directional material.
-        // See also <@link tag m@matereial.direction>
+        // See also <@link tag MaterialTag.direction>
         // -->
         if (attribute.startsWith("valid_directions")) {
             ListTag toReturn = new ListTag();
@@ -106,7 +106,7 @@ public class MaterialDirectional implements Property {
         // <--[mechanism]
         // @object MaterialTag
         // @name direction
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the current facing direction for a directional material (like a door or a bed).
         // @tags

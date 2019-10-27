@@ -520,6 +520,22 @@ public class MaterialTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <MaterialTag.has_multiple_faces>
+        // @returns ElementTag(Boolean)
+        // @group properties
+        // @description
+        // Returns whether the material is a material that has multiple faces.
+        // When this returns true, <@link tag MaterialTag.faces>, <@link tag MaterialTag.valid_faces>,
+        // and <@link mechanism MaterialTag.faces> are accessible.
+        // -->
+        registerTag("has_multiple_faces", new TagRunnable.ObjectForm<MaterialTag>() {
+            @Override
+            public ObjectTag run(Attribute attribute, MaterialTag object) {
+                return new ElementTag(MaterialFaces.describes(object));
+            }
+        });
+
+        // <--[tag]
         // @attribute <MaterialTag.is_bisected>
         // @returns ElementTag(Boolean)
         // @group properties
