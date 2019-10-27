@@ -17,7 +17,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
 
 public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -120,7 +120,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         return true;
     }
 
-    private static final List<String> matchHelpList = Arrays.asList("at", "entity", "npc", "player", "vehicle", "projectile", "hanging");
+    private static final HashSet<String> matchHelpList = new HashSet<>(Arrays.asList("at", "entity", "npc", "player", "vehicle", "projectile", "hanging"));
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
@@ -133,7 +133,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
                 && couldMatchIn(lower);  // Avoid matching "clicks in inventory"
     }
 
-    private static final List<String> withHelpList = Arrays.asList("with", "using", "in");
+    private static final HashSet<String> withHelpList = new HashSet<>(Arrays.asList("with", "using", "in"));
 
     @Override
     public boolean matches(ScriptPath path) {
