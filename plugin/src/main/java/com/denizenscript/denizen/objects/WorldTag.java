@@ -610,7 +610,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @attribute <WorldTag.ticks_per_animal_spawn>
         // @returns DurationTag
         // @description
-        // Returns the world's ticks per animal spawn mechanism.getValue().
+        // Returns the world's ticks per animal spawn value.
         // -->
         registerTag("ticks_per_animal_spawn", new TagRunnable.ObjectForm<WorldTag>() {
             @Override
@@ -623,7 +623,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @attribute <WorldTag.ticks_per_monster_spawn>
         // @returns DurationTag
         // @description
-        // Returns the world's ticks per monster spawn mechanism.getValue().
+        // Returns the world's ticks per monster spawn value.
         // -->
         registerTag("ticks_per_monster_spawn", new TagRunnable.ObjectForm<WorldTag>() {
             @Override

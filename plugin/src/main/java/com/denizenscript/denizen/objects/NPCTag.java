@@ -1022,7 +1022,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @attribute <NPCTag.lookclose>
         // @returns ElementTag(Boolean)
         // @description
-        // Returns the NPC's "lookclose" mechanism.getValue().
+        // Returns the NPC's "lookclose" value.
         // -->
         registerTag("lookclose", new TagRunnable.ObjectForm<NPCTag>() {
             @Override
@@ -1427,7 +1427,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @input Element
         // @description
         // Sets the skin blob of an NPC, in the form of "texture;signature;name".
-        // Call with no value to clear the mechanism.getValue().
+        // Call with no value to clear the custom skin value.
         // @tags
         // <NPCTag.skin>
         // -->
@@ -1462,7 +1462,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @input Element
         // @description
         // Sets the skin of an NPC by name.
-        // Call with no value to clear the mechanism.getValue().
+        // Call with no value to clear the custom skin value.
         // @tags
         // <NPCTag.skin>
         // -->
@@ -1625,7 +1625,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @name lookclose
         // @input Element(Boolean)
         // @description
-        // Sets the NPC's lookclose mechanism.getValue().
+        // Sets the NPC's lookclose value.
         // @tags
         // <NPCTag.lookclose>
         // -->

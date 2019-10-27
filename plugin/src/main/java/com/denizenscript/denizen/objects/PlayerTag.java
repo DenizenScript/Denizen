@@ -2917,7 +2917,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @name scale_health
         // @input Element(Boolean)
         // @description
-        // Enables or disables the health scale mechanism.getValue(). Disabling will result in the standard
+        // Enables or disables the health scale value. Disabling will result in the standard
         // amount of hearts being shown.
         // @tags
         // <PlayerTag.health.is_scaled>
