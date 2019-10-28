@@ -18,6 +18,7 @@ import com.denizenscript.denizen.tags.core.ServerTagBase;
 import com.denizenscript.denizen.utilities.*;
 import com.denizenscript.denizen.utilities.blocks.OldMaterialsHelper;
 import com.denizenscript.denizen.utilities.command.DenizenCommandHandler;
+import com.denizenscript.denizen.utilities.command.ExCommandHandler;
 import com.denizenscript.denizen.utilities.command.NPCCommandHandler;
 import com.denizenscript.denizen.utilities.command.manager.CommandManager;
 import com.denizenscript.denizen.utilities.command.manager.Injector;
@@ -41,12 +42,9 @@ import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.OldEventManager;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.scripts.ScriptBuilder;
-import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.core.AdjustCommand;
-import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.SlowWarning;
@@ -59,17 +57,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.*;
 import java.net.URLDecoder;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -412,6 +407,7 @@ public class Denizen extends JavaPlugin {
             supportsPaper = false;
             Debug.echoError(ex);
         }
+        new ExCommandHandler().enableFor(getCommand("ex"));
 
         // Load script files without processing.
         DenizenCore.preloadScripts();
@@ -637,79 +633,6 @@ public class Denizen extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String cmdName, String[] args) {
-
-        // <--[language]
-        // @name /ex command
-        // @group Console Commands
-        // @description
-        // The '/ex' command is an easy way to run a single denizen script command in-game. Its syntax,
-        // aside from '/ex' is exactly the same as any other command. When running a command, some context
-        // is also supplied, such as '<player>' if being run by a player (versus the console), as well as
-        // '<npc>' if a NPC is selected by using the '/npc sel' command.
-        //
-        // By default, ex command debug output is sent to the player that ran the ex command (if the command was ran by a player).
-        // To avoid this, use '-q' at the start of the ex command.
-        // Like: /ex -q narrate "wow no output"
-        //
-        // Examples:
-        // /ex flag <player> test_flag:!
-        // /ex run 's@npc walk script' as:<npc>
-        //
-        // Need to '/ex' a command as a different player or NPC? No problem. Just use the 'npc' and 'player'
-        // value arguments, or utilize the object fetcher.
-        //
-        // Examples:
-        // /ex narrate player:p@NLBlackEagle 'Your health is <player.health.formatted>.'
-        // /ex walk npc:n@fred <player.location.cursor_on>
-
-        // -->
-
-        if (cmdName.equalsIgnoreCase("ex")) {
-            List<Object> entries = new ArrayList<>();
-            String entry = String.join(" ", args);
-            boolean quiet = false;
-            if (entry.length() > 3 && entry.startsWith("-q ")) {
-                quiet = true;
-                entry = entry.substring("-q ".length());
-            }
-            if (!Settings.showExDebug()) {
-                quiet = !quiet;
-            }
-
-            if (entry.length() < 2) {
-                sender.sendMessage("/ex (-q) <denizen script command> (arguments)");
-                return true;
-            }
-
-            if (Settings.showExHelp()) {
-                if (Debug.showDebug) {
-                    sender.sendMessage(ChatColor.YELLOW + "Executing Denizen script command... check the console for full debug output!");
-                }
-                else {
-                    sender.sendMessage(ChatColor.YELLOW + "Executing Denizen script command... to see debug, use /denizen debug");
-                }
-            }
-
-            entries.add(entry);
-            InstantQueue queue = new InstantQueue("EXCOMMAND");
-            NPCTag npc = null;
-            if (Depends.citizens != null && Depends.citizens.getNPCSelector().getSelected(sender) != null) {
-                npc = new NPCTag(Depends.citizens.getNPCSelector().getSelected(sender));
-            }
-            List<ScriptEntry> scriptEntries = ScriptBuilder.buildScriptEntries(entries, null,
-                    new BukkitScriptEntryData(sender instanceof Player ? new PlayerTag((Player) sender) : null, npc));
-
-            queue.addEntries(scriptEntries);
-            if (!quiet && sender instanceof Player) {
-                final Player player = (Player) sender;
-                queue.debugOutput = (s) -> {
-                    player.spigot().sendMessage(FormattedTextHelper.parse(s));
-                };
-            }
-            queue.start();
-            return true;
-        }
-
         String modifier = args.length > 0 ? args[0] : "";
         if (!commandManager.hasCommand(cmd, modifier) && !modifier.isEmpty()) {
             return suggestClosestModifier(sender, cmd.getName(), modifier);
