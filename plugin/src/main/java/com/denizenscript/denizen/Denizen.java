@@ -17,6 +17,8 @@ import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.tags.core.ServerTagBase;
 import com.denizenscript.denizen.utilities.*;
 import com.denizenscript.denizen.utilities.blocks.OldMaterialsHelper;
+import com.denizenscript.denizen.utilities.command.DenizenCommandHandler;
+import com.denizenscript.denizen.utilities.command.NPCCommandHandler;
 import com.denizenscript.denizen.utilities.command.manager.CommandManager;
 import com.denizenscript.denizen.utilities.command.manager.Injector;
 import com.denizenscript.denizen.utilities.command.manager.messaging.Messaging;

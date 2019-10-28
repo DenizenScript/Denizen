@@ -1,5 +1,6 @@
-package com.denizenscript.denizen;
+package com.denizenscript.denizen.utilities.command;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.notable.NotableManager;

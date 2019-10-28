@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.command.DenizenAliasHelpTopic;
-import com.denizenscript.denizen.utilities.command.DenizenCommand;
-import com.denizenscript.denizen.utilities.command.DenizenCommandHelpTopic;
+import com.denizenscript.denizen.utilities.command.scripted.DenizenAliasHelpTopic;
+import com.denizenscript.denizen.utilities.command.scripted.DenizenCommand;
+import com.denizenscript.denizen.utilities.command.scripted.DenizenCommandHelpTopic;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.google.common.base.Predicate;
 import com.denizenscript.denizen.Settings;

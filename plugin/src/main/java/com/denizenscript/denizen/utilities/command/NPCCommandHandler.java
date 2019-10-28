@@ -1,4 +1,4 @@
-package com.denizenscript.denizen;
+package com.denizenscript.denizen.utilities.command;
 
 import com.denizenscript.denizen.npc.traits.*;
 import com.denizenscript.denizen.objects.LocationTag;

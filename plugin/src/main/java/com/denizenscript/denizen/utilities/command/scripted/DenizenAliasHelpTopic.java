@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.utilities.command;
+package com.denizenscript.denizen.utilities.command.scripted;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
