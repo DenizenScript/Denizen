@@ -203,36 +203,22 @@ public class CommonRegistries {
     }
 
     public static void registerMainObjects() {
-        ObjectFetcher.registerWithObjectFetcher(BiomeTag.class);     // b@
-        BiomeTag.registerTags(); // TODO: Automate this once all classes have tag registries
-        ObjectFetcher.registerWithObjectFetcher(ChunkTag.class);     // ch@
-        ChunkTag.registerTags(); // TODO: Automate this once all classes have tag registries
-        ObjectFetcher.registerWithObjectFetcher(ColorTag.class);     // co@
-        ColorTag.registerTags(); // TODO: Automate this once all classes have tag registries
-        ObjectFetcher.registerWithObjectFetcher(CuboidTag.class);    // cu@
-        CuboidTag.registerTags(); // TODO: Automate this once all classes have tag registries
-        ObjectFetcher.registerWithObjectFetcher(EllipsoidTag.class); // ellipsoid@
-        EllipsoidTag.registerTags(); // TODO: Automate this once all classes have tag registries
-        ObjectFetcher.registerWithObjectFetcher(EntityTag.class);    // e@
-        EntityTag.registerTags(); // TODO: Automate this once all classes have tag registries
-        ObjectFetcher.registerWithObjectFetcher(InventoryTag.class); // in@
-        InventoryTag.registerTags(); // TODO: Automate this once all classes have tag registries
-        ObjectFetcher.registerWithObjectFetcher(ItemTag.class);      // i@
-        ItemTag.registerTags(); // TODO: Automate this once all classes have tag registries
-        ObjectFetcher.registerWithObjectFetcher(LocationTag.class);  // l@
-        LocationTag.registerTags(); // TODO: Automate this once all classes have tag registries
-        ObjectFetcher.registerWithObjectFetcher(MaterialTag.class);  // m@
-        MaterialTag.registerTags(); // TODO: Automate this once all classes have tag registries
+        ObjectFetcher.registerWithObjectFetcher(BiomeTag.class, BiomeTag.tagProcessor);     // b@
+        ObjectFetcher.registerWithObjectFetcher(ChunkTag.class, ChunkTag.tagProcessor);     // ch@
+        ObjectFetcher.registerWithObjectFetcher(ColorTag.class, ColorTag.tagProcessor);     // co@
+        ObjectFetcher.registerWithObjectFetcher(CuboidTag.class, CuboidTag.tagProcessor);    // cu@
+        ObjectFetcher.registerWithObjectFetcher(EllipsoidTag.class, EllipsoidTag.tagProcessor); // ellipsoid@
+        ObjectFetcher.registerWithObjectFetcher(EntityTag.class, EntityTag.tagProcessor);    // e@
+        ObjectFetcher.registerWithObjectFetcher(InventoryTag.class, InventoryTag.tagProcessor); // in@
+        ObjectFetcher.registerWithObjectFetcher(ItemTag.class, ItemTag.tagProcessor);      // i@
+        ObjectFetcher.registerWithObjectFetcher(LocationTag.class, LocationTag.tagProcessor);  // l@
+        ObjectFetcher.registerWithObjectFetcher(MaterialTag.class, MaterialTag.tagProcessor);  // m@
         if (Depends.citizens != null) {
-            ObjectFetcher.registerWithObjectFetcher(NPCTag.class);   // n@
-            NPCTag.registerTags(); // TODO: Automate this once all classes have tag registries
+            ObjectFetcher.registerWithObjectFetcher(NPCTag.class, NPCTag.tagProcessor);   // n@
         }
-        ObjectFetcher.registerWithObjectFetcher(PlayerTag.class);    // p@
-        PlayerTag.registerTags(); // TODO: Automate this once all classes have tag registries
-        ObjectFetcher.registerWithObjectFetcher(PluginTag.class);    // pl@
-        PluginTag.registerTags(); // TODO: Automate this once all classes have tag registries
-        ObjectFetcher.registerWithObjectFetcher(TradeTag.class);     // trade@
-        ObjectFetcher.registerWithObjectFetcher(WorldTag.class);     // w@
-        WorldTag.registerTags(); // TODO: Automate this once all classes have tag registries
+        ObjectFetcher.registerWithObjectFetcher(PlayerTag.class, PlayerTag.tagProcessor);    // p@
+        ObjectFetcher.registerWithObjectFetcher(PluginTag.class, PluginTag.tagProcessor);    // pl@
+        ObjectFetcher.registerWithObjectFetcher(TradeTag.class, TradeTag.tagProcessor);     // trade@
+        ObjectFetcher.registerWithObjectFetcher(WorldTag.class, WorldTag.tagProcessor);     // w@
     }
 }

@@ -367,7 +367,7 @@ public class Denizen extends JavaPlugin {
             CommonRegistries.registerMainObjects();
 
             // Register Core ObjectTags with the ObjectFetcher
-            ObjectFetcher._registerCoreObjects();
+            ObjectFetcher.registerCoreObjects();
         }
         catch (Exception e) {
             Debug.echoError(e);

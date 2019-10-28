@@ -2,9 +2,9 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
@@ -147,17 +147,10 @@ public class TradeTag implements ObjectTag, Adjustable {
         return identify();
     }
 
+    public static ObjectTagProcessor<TradeTag> tagProcessor = new ObjectTagProcessor<>();
+
     public ObjectTag getObjectAttribute(Attribute attribute) {
-        if (attribute == null) {
-            return null;
-        }
-
-        ObjectTag returned = CoreUtilities.autoPropertyTagObject(this, attribute);
-        if (returned != null) {
-            return returned;
-        }
-
-        return new ElementTag(identify()).getObjectAttribute(attribute);
+        return tagProcessor.getObjectAttribute(this, attribute);
     }
 
     public void applyProperty(Mechanism mechanism) {
