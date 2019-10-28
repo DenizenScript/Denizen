@@ -451,28 +451,21 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
     public static void registerTags() {
 
         // Defined in EntityTag
-        registerTag("is_npc", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return new ElementTag(true);
-            }
+        registerTag("is_npc", (attribute, object) -> {
+            return new ElementTag(true);
         });
 
         // Defined in EntityTag
-        registerTag("location", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-
-                if (attribute.startsWith("previous_location", 2)) {
-                    attribute.fulfill(1);
-                    Deprecations.npcPreviousLocationTag.warn(attribute.context);
-                    return NPCTagBase.previousLocations.get(object.getId());
-                }
-                if (object.isSpawned()) {
-                    return new EntityTag(object).getObjectAttribute(attribute);
-                }
-                return object.getLocation();
+        registerTag("location", (attribute, object) -> {
+            if (attribute.startsWith("previous_location", 2)) {
+                attribute.fulfill(1);
+                Deprecations.npcPreviousLocationTag.warn(attribute.context);
+                return NPCTagBase.previousLocations.get(object.getId());
             }
+            if (object.isSpawned()) {
+                return new EntityTag(object).getObjectAttribute(attribute);
+            }
+            return object.getLocation();
         });
 
         // <--[tag]
@@ -481,19 +474,13 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's previous navigated location.
         // -->
-        registerTag("previous_location", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return NPCTagBase.previousLocations.get(object.getId());
-            }
+        registerTag("previous_location", (attribute, object) -> {
+            return NPCTagBase.previousLocations.get(object.getId());
         });
 
         // Defined in EntityTag
-        registerTag("eye_location", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return object.getEyeLocation();
-            }
+        registerTag("eye_location", (attribute, object) -> {
+            return object.getEyeLocation();
         });
 
         // <--[tag]
@@ -502,12 +489,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns true if the NPC has a nickname.
         // -->
-        registerTag("has_nickname", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                NPC citizen = object.getCitizen();
-                return new ElementTag(citizen.hasTrait(NicknameTrait.class) && citizen.getTrait(NicknameTrait.class).hasNickname());
-            }
+        registerTag("has_nickname", (attribute, object) -> {
+            NPC citizen = object.getCitizen();
+            return new ElementTag(citizen.hasTrait(NicknameTrait.class) && citizen.getTrait(NicknameTrait.class).hasNickname());
         });
 
         // <--[tag]
@@ -516,12 +500,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's display name, as set by the Nickname trait (or the default NPC name).
         // -->
-        registerTag("nickname", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return new ElementTag(object.getCitizen().hasTrait(NicknameTrait.class) ? object.getCitizen().getTrait(NicknameTrait.class)
-                        .getNickname() : object.getName());
-            }
+        registerTag("nickname", (attribute, object) -> {
+            return new ElementTag(object.getCitizen().hasTrait(NicknameTrait.class) ? object.getCitizen().getTrait(NicknameTrait.class)
+                    .getNickname() : object.getName());
         });
 
         // <--[tag]
@@ -530,18 +511,14 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the name of the NPC.
         // -->
-        registerTag("name", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-
-                if (attribute.startsWith("nickname", 2)) {
-                    Deprecations.npcNicknameTag.warn(attribute.context);
-                    attribute.fulfill(1);
-                    return new ElementTag(object.getCitizen().hasTrait(NicknameTrait.class) ? object.getCitizen().getTrait(NicknameTrait.class)
-                            .getNickname() : object.getName());
-                }
-                return new ElementTag(object.getName());
+        registerTag("name", (attribute, object) -> {
+            if (attribute.startsWith("nickname", 2)) {
+                Deprecations.npcNicknameTag.warn(attribute.context);
+                attribute.fulfill(1);
+                return new ElementTag(object.getCitizen().hasTrait(NicknameTrait.class) ? object.getCitizen().getTrait(NicknameTrait.class)
+                        .getNickname() : object.getName());
             }
+            return new ElementTag(object.getName());
         });
 
         // <--[tag]
@@ -550,15 +527,12 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns a list of all of the NPC's traits.
         // -->
-        registerTag("list_traits", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                List<String> list = new ArrayList<>();
-                for (Trait trait : object.getCitizen().getTraits()) {
-                    list.add(trait.getName());
-                }
-                return new ListTag(list);
+        registerTag("list_traits", (attribute, object) -> {
+            List<String> list = new ArrayList<>();
+            for (Trait trait : object.getCitizen().getTraits()) {
+                list.add(trait.getName());
             }
+            return new ListTag(list);
         });
 
         // <--[tag]
@@ -567,17 +541,14 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC has a specified trait.
         // -->
-        registerTag("has_trait", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                if (attribute.hasContext(1)) {
-                    Class<? extends Trait> trait = CitizensAPI.getTraitFactory().getTraitClass(attribute.getContext(1));
-                    if (trait != null) {
-                        return new ElementTag(object.getCitizen().hasTrait(trait));
-                    }
+        registerTag("has_trait", (attribute, object) -> {
+            if (attribute.hasContext(1)) {
+                Class<? extends Trait> trait = CitizensAPI.getTraitFactory().getTraitClass(attribute.getContext(1));
+                if (trait != null) {
+                    return new ElementTag(object.getCitizen().hasTrait(trait));
                 }
-                return null;
             }
+            return null;
         });
 
         // <--[tag]
@@ -586,13 +557,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC is pushable.
         // -->
-        registerTag("pushable", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return new ElementTag(object.getPushableTrait().isPushable());
-            }
-        });
-        registerTag("is_pushable", tagProcessor.registeredObjectTags.get("pushable"));
+        registerTag("pushable", (attribute, object) -> {
+            return new ElementTag(object.getPushableTrait().isPushable());
+        }, "is_pushable");
 
         // <--[tag]
         // @attribute <NPCTag.has_trigger[<trigger>]>
@@ -600,18 +567,15 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC has a specified trigger.
         // -->
-        registerTag("has_trigger", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                if (!attribute.hasContext(1)) {
-                    return null;
-                }
-                if (!object.getCitizen().hasTrait(TriggerTrait.class)) {
-                    return new ElementTag(false);
-                }
-                TriggerTrait trait = object.getCitizen().getTrait(TriggerTrait.class);
-                return new ElementTag(trait.hasTrigger(attribute.getContext(1)));
+        registerTag("has_trigger", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                return null;
             }
+            if (!object.getCitizen().hasTrait(TriggerTrait.class)) {
+                return new ElementTag(false);
+            }
+            TriggerTrait trait = object.getCitizen().getTrait(TriggerTrait.class);
+            return new ElementTag(trait.hasTrigger(attribute.getContext(1)));
         });
 
 
@@ -621,11 +585,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC has anchors assigned.
         // -->
-        registerTag("has_anchors", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return (new ElementTag(object.getCitizen().getTrait(Anchors.class).getAnchors().size() > 0));
-            }
+        registerTag("has_anchors", (attribute, object) -> {
+            return (new ElementTag(object.getCitizen().getTrait(Anchors.class).getAnchors().size() > 0));
         });
 
 
@@ -635,15 +596,12 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns a list of anchor names currently assigned to the NPC.
         // -->
-        registerTag("list_anchors", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                ListTag list = new ListTag();
-                for (Anchor anchor : object.getCitizen().getTrait(Anchors.class).getAnchors()) {
-                    list.add(anchor.getName());
-                }
-                return list;
+        registerTag("list_anchors", (attribute, object) -> {
+            ListTag list = new ListTag();
+            for (Anchor anchor : object.getCitizen().getTrait(Anchors.class).getAnchors()) {
+                list.add(anchor.getName());
             }
+            return list;
         });
 
         // <--[tag]
@@ -652,27 +610,23 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the location associated with the specified anchor, or null if it doesn't exist.
         // -->
-        registerTag("anchor", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                if (attribute.hasContext(1)
-                        && object.getCitizen().getTrait(Anchors.class).getAnchor(attribute.getContext(1)) != null) {
-                    return new LocationTag(object.getCitizen().getTrait(Anchors.class)
-                            .getAnchor(attribute.getContext(1)).getLocation());
-                }
-                else if (attribute.startsWith("list", 2)) {
-                    attribute.fulfill(1);
-                    Deprecations.npcAnchorListTag.warn(attribute.context);
-                    ListTag list = new ListTag();
-                    for (Anchor anchor : object.getCitizen().getTrait(Anchors.class).getAnchors()) {
-                        list.add(anchor.getName());
-                    }
-                    return list;
-                }
-                return null;
+        registerTag("anchor", (attribute, object) -> {
+            if (attribute.hasContext(1)
+                    && object.getCitizen().getTrait(Anchors.class).getAnchor(attribute.getContext(1)) != null) {
+                return new LocationTag(object.getCitizen().getTrait(Anchors.class)
+                        .getAnchor(attribute.getContext(1)).getLocation());
             }
-        });
-        registerTag("anchors", tagProcessor.registeredObjectTags.get("anchor"));
+            else if (attribute.startsWith("list", 2)) {
+                attribute.fulfill(1);
+                Deprecations.npcAnchorListTag.warn(attribute.context);
+                ListTag list = new ListTag();
+                for (Anchor anchor : object.getCitizen().getTrait(Anchors.class).getAnchors()) {
+                    list.add(anchor.getName());
+                }
+                return list;
+            }
+            return null;
+        }, "anchors");
 
         // <--[tag]
         // @attribute <NPCTag.has_flag[<flag_name>]>
@@ -680,18 +634,15 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns true if the NPC has the specified flag, otherwise returns false.
         // -->
-        registerTag("has_flag", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                String flag_name;
-                if (attribute.hasContext(1)) {
-                    flag_name = attribute.getContext(1);
-                }
-                else {
-                    return null;
-                }
-                return new ElementTag(FlagManager.npcHasFlag(object, flag_name));
+        registerTag("has_flag", (attribute, object) -> {
+            String flag_name;
+            if (attribute.hasContext(1)) {
+                flag_name = attribute.getContext(1);
             }
+            else {
+                return null;
+            }
+            return new ElementTag(FlagManager.npcHasFlag(object, flag_name));
         });
 
         // <--[tag]
@@ -700,47 +651,44 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the specified flag from the NPC.
         // -->
-        registerTag("flag", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                if (!attribute.hasContext(1)) {
-                    return null;
-                }
-                String flag_name = attribute.getContext(1);
-
-                // <--[tag]
-                // @attribute <NPCTag.flag[<flag_name>].is_expired>
-                // @returns ElementTag(Boolean)
-                // @description
-                // returns true if the flag is expired or does not exist, false if it is not yet expired or has no expiration.
-                // -->
-                if (attribute.startsWith("is_expired", 2) || attribute.startsWith("isexpired", 22)) {
-                    attribute.fulfill(1);
-                    return new ElementTag(!FlagManager.npcHasFlag(object, flag_name));
-                }
-                if (attribute.startsWith("size", 2) && !FlagManager.npcHasFlag(object, flag_name)) {
-                    attribute.fulfill(1);
-                    return new ElementTag(0);
-                }
-                if (FlagManager.npcHasFlag(object, flag_name)) {
-                    FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager()
-                            .getNPCFlag(object.getId(), flag_name);
-
-                    // <--[tag]
-                    // @attribute <NPCTag.flag[<flag_name>].expiration>
-                    // @returns DurationTag
-                    // @description
-                    // Returns a DurationTag of the time remaining on the flag, if it has an expiration.
-                    // -->
-                    if (attribute.startsWith("expiration", 2)) {
-                        attribute.fulfill(1);
-                        return flag.expiration();
-                    }
-
-                    return new ListTag(flag.toString(), true, flag.values());
-                }
+        registerTag("flag", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
                 return null;
             }
+            String flag_name = attribute.getContext(1);
+
+            // <--[tag]
+            // @attribute <NPCTag.flag[<flag_name>].is_expired>
+            // @returns ElementTag(Boolean)
+            // @description
+            // returns true if the flag is expired or does not exist, false if it is not yet expired or has no expiration.
+            // -->
+            if (attribute.startsWith("is_expired", 2) || attribute.startsWith("isexpired", 22)) {
+                attribute.fulfill(1);
+                return new ElementTag(!FlagManager.npcHasFlag(object, flag_name));
+            }
+            if (attribute.startsWith("size", 2) && !FlagManager.npcHasFlag(object, flag_name)) {
+                attribute.fulfill(1);
+                return new ElementTag(0);
+            }
+            if (FlagManager.npcHasFlag(object, flag_name)) {
+                FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager()
+                        .getNPCFlag(object.getId(), flag_name);
+
+                // <--[tag]
+                // @attribute <NPCTag.flag[<flag_name>].expiration>
+                // @returns DurationTag
+                // @description
+                // Returns a DurationTag of the time remaining on the flag, if it has an expiration.
+                // -->
+                if (attribute.startsWith("expiration", 2)) {
+                    attribute.fulfill(1);
+                    return flag.expiration();
+                }
+
+                return new ListTag(flag.toString(), true, flag.values());
+            }
+            return null;
         });
 
         // <--[tag]
@@ -750,39 +698,36 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns a list of an NPC's flag names, with an optional search for
         // names containing a certain pattern.
         // -->
-        registerTag("list_flags", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                ListTag allFlags = new ListTag(DenizenAPI.getCurrentInstance().flagManager().listNPCFlags(object.getId()));
-                ListTag searchFlags = null;
-                if (!allFlags.isEmpty() && attribute.hasContext(1)) {
-                    searchFlags = new ListTag();
-                    String search = attribute.getContext(1);
-                    if (search.startsWith("regex:")) {
-                        try {
-                            Pattern pattern = Pattern.compile(search.substring(6), Pattern.CASE_INSENSITIVE);
-                            for (String flag : allFlags) {
-                                if (pattern.matcher(flag).matches()) {
-                                    searchFlags.add(flag);
-                                }
-                            }
-                        }
-                        catch (Exception e) {
-                            Debug.echoError(e);
-                        }
-                    }
-                    else {
-                        search = CoreUtilities.toLowerCase(search);
+        registerTag("list_flags", (attribute, object) -> {
+            ListTag allFlags = new ListTag(DenizenAPI.getCurrentInstance().flagManager().listNPCFlags(object.getId()));
+            ListTag searchFlags = null;
+            if (!allFlags.isEmpty() && attribute.hasContext(1)) {
+                searchFlags = new ListTag();
+                String search = attribute.getContext(1);
+                if (search.startsWith("regex:")) {
+                    try {
+                        Pattern pattern = Pattern.compile(search.substring(6), Pattern.CASE_INSENSITIVE);
                         for (String flag : allFlags) {
-                            if (CoreUtilities.toLowerCase(flag).contains(search)) {
+                            if (pattern.matcher(flag).matches()) {
                                 searchFlags.add(flag);
                             }
                         }
                     }
+                    catch (Exception e) {
+                        Debug.echoError(e);
+                    }
                 }
-                return searchFlags == null ? allFlags
-                        : searchFlags;
+                else {
+                    search = CoreUtilities.toLowerCase(search);
+                    for (String flag : allFlags) {
+                        if (CoreUtilities.toLowerCase(flag).contains(search)) {
+                            searchFlags.add(flag);
+                        }
+                    }
+                }
             }
+            return searchFlags == null ? allFlags
+                    : searchFlags;
         });
 
         // <--[tag]
@@ -791,21 +736,18 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the specified constant from the NPC.
         // -->
-        registerTag("constant", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                if (attribute.hasContext(1)) {
-                    if (object.getCitizen().hasTrait(ConstantsTrait.class)
-                            && object.getCitizen().getTrait(ConstantsTrait.class).getConstant(attribute.getContext(1)) != null) {
-                        return new ElementTag(object.getCitizen().getTrait(ConstantsTrait.class)
-                                .getConstant(attribute.getContext(1)));
-                    }
-                    else {
-                        return null;
-                    }
+        registerTag("constant", (attribute, object) -> {
+            if (attribute.hasContext(1)) {
+                if (object.getCitizen().hasTrait(ConstantsTrait.class)
+                        && object.getCitizen().getTrait(ConstantsTrait.class).getConstant(attribute.getContext(1)) != null) {
+                    return new ElementTag(object.getCitizen().getTrait(ConstantsTrait.class)
+                            .getConstant(attribute.getContext(1)));
                 }
-                return null;
+                else {
+                    return null;
+                }
             }
+            return null;
         });
 
         // <--[tag]
@@ -814,15 +756,12 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns true if the NPC has the specified pose, otherwise returns false.
         // -->
-        registerTag("has_pose", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                if (attribute.hasContext(1)) {
-                    return new ElementTag(object.getCitizen().getTrait(Poses.class).hasPose(attribute.getContext(1)));
-                }
-                else {
-                    return null;
-                }
+        registerTag("has_pose", (attribute, object) -> {
+            if (attribute.hasContext(1)) {
+                return new ElementTag(object.getCitizen().getTrait(Poses.class).hasPose(attribute.getContext(1)));
+            }
+            else {
+                return null;
             }
         });
 
@@ -833,19 +772,15 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns the pose as a LocationTag with x, y, and z set to 0, and the world set to the first
         // possible available world Bukkit knows about.
         // -->
-        registerTag("pose", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                if (attribute.hasContext(1)) {
-                    Pose pose = object.getCitizen().getTrait(Poses.class).getPose(attribute.getContext(1));
-                    return new LocationTag(org.bukkit.Bukkit.getWorlds().get(0), 0, 0, 0, pose.getYaw(), pose.getPitch());
-                }
-                else {
-                    return null;
-                }
+        registerTag("pose", (attribute, object) -> {
+            if (attribute.hasContext(1)) {
+                Pose pose = object.getCitizen().getTrait(Poses.class).getPose(attribute.getContext(1));
+                return new LocationTag(org.bukkit.Bukkit.getWorlds().get(0), 0, 0, 0, pose.getYaw(), pose.getPitch());
             }
-        });
-        registerTag("get_pose", tagProcessor.registeredObjectTags.get("pose"));
+            else {
+                return null;
+            }
+        }, "get_pose");
 
         // <--[tag]
         // @attribute <NPCTag.is_sneaking>
@@ -853,14 +788,11 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC is currently sneaking. Only works for player-type NPCs.
         // -->
-        registerTag("is_sneaking", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                if (!object.isSpawned() && object.getEntity() instanceof Player) {
-                    return null;
-                }
-                return new ElementTag(((Player) object.getEntity()).isSneaking());
+        registerTag("is_sneaking", (attribute, object) -> {
+            if (!object.isSpawned() && object.getEntity() instanceof Player) {
+                return null;
             }
+            return new ElementTag(((Player) object.getEntity()).isSneaking());
         });
 
         // <--[tag]
@@ -870,13 +802,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns whether the NPC is currently engaged.
         // See <@link command engage>
         // -->
-        registerTag("engaged", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return new ElementTag(object.isEngaged());
-            }
-        });
-        registerTag("is_engaged", tagProcessor.registeredObjectTags.get("engaged"));
+        registerTag("engaged", (attribute, object) -> {
+            return new ElementTag(object.isEngaged());
+        }, "is_engaged");
 
         // <--[tag]
         // @attribute <NPCTag.invulnerable>
@@ -885,13 +813,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns whether the NPC is currently invulnerable.
         // See <@link command vulnerable>
         // -->
-        registerTag("invulnerable", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return new ElementTag(object.getCitizen().data().get(NPC.DEFAULT_PROTECTED_METADATA, true));
-            }
-        });
-        registerTag("vulnerable", tagProcessor.registeredObjectTags.get("invulnerable"));
+        registerTag("invulnerable", (attribute, object) -> {
+            return new ElementTag(object.getCitizen().data().get(NPC.DEFAULT_PROTECTED_METADATA, true));
+        }, "vulnerable");
 
         // <--[tag]
         // @attribute <NPCTag.id>
@@ -899,11 +823,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's ID number.
         // -->
-        registerTag("id", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return new ElementTag(object.getId());
-            }
+        registerTag("id", (attribute, object) -> {
+            return new ElementTag(object.getId());
         });
 
         // <--[tag]
@@ -912,20 +833,17 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the owner of the NPC as a PlayerTag if it's a player, otherwise as just the name.
         // -->
-        registerTag("owner", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                String owner = object.getOwner();
-                PlayerTag player = null;
-                if (!owner.equalsIgnoreCase("server")) {
-                    player = PlayerTag.valueOfInternal(owner, false);
-                }
-                if (player != null) {
-                    return player;
-                }
-                else {
-                    return new ElementTag(owner);
-                }
+        registerTag("owner", (attribute, object) -> {
+            String owner = object.getOwner();
+            PlayerTag player = null;
+            if (!owner.equalsIgnoreCase("server")) {
+                player = PlayerTag.valueOfInternal(owner, false);
+            }
+            if (player != null) {
+                return player;
+            }
+            else {
+                return new ElementTag(owner);
             }
         });
 
@@ -935,11 +853,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC has a custom skinskin.
         // -->
-        registerTag("has_skin", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return new ElementTag(object.getCitizen().data().has(NPC.PLAYER_SKIN_UUID_METADATA));
-            }
+        registerTag("has_skin", (attribute, object) -> {
+            return new ElementTag(object.getCitizen().data().has(NPC.PLAYER_SKIN_UUID_METADATA));
         });
 
         // <--[tag]
@@ -948,19 +863,16 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's custom skin blob, if any.
         // -->
-        registerTag("skin_blob", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                if (object.getCitizen().data().has(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA)) {
-                    String tex = object.getCitizen().data().get(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA).toString();
-                    String sign = "";
-                    if (object.getCitizen().data().has(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA)) {
-                        sign = ";" + object.getCitizen().data().get(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA).toString();
-                    }
-                    return new ElementTag(tex + sign);
+        registerTag("skin_blob", (attribute, object) -> {
+            if (object.getCitizen().data().has(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA)) {
+                String tex = object.getCitizen().data().get(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA).toString();
+                String sign = "";
+                if (object.getCitizen().data().has(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA)) {
+                    sign = ";" + object.getCitizen().data().get(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA).toString();
                 }
-                return null;
+                return new ElementTag(tex + sign);
             }
+            return null;
         });
 
         // <--[tag]
@@ -969,14 +881,11 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's custom skin, if any.
         // -->
-        registerTag("skin", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                if (object.getCitizen().data().has(NPC.PLAYER_SKIN_UUID_METADATA)) {
-                    return new ElementTag(object.getCitizen().data().get(NPC.PLAYER_SKIN_UUID_METADATA).toString());
-                }
-                return null;
+        registerTag("skin", (attribute, object) -> {
+            if (object.getCitizen().data().has(NPC.PLAYER_SKIN_UUID_METADATA)) {
+                return new ElementTag(object.getCitizen().data().get(NPC.PLAYER_SKIN_UUID_METADATA).toString());
             }
+            return null;
         });
 
         // <--[tag]
@@ -985,11 +894,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the InventoryTag of the NPC.
         // -->
-        registerTag("inventory", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return object.getDenizenInventory();
-            }
+        registerTag("inventory", (attribute, object) -> {
+            return object.getDenizenInventory();
         });
 
         // <--[tag]
@@ -998,11 +904,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC is spawned.
         // -->
-        registerTag("is_spawned", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return new ElementTag(object.isSpawned());
-            }
+        registerTag("is_spawned", (attribute, object) -> {
+            return new ElementTag(object.isSpawned());
         });
 
         // <--[tag]
@@ -1011,11 +914,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC is protected.
         // -->
-        registerTag("is_protected", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return new ElementTag(object.getCitizen().isProtected());
-            }
+        registerTag("is_protected", (attribute, object) -> {
+            return new ElementTag(object.getCitizen().isProtected());
         });
 
         // <--[tag]
@@ -1024,19 +924,16 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's "lookclose" value.
         // -->
-        registerTag("lookclose", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                NPC citizen = object.getCitizen();
-                if (citizen.hasTrait(LookClose.class)) {
-                    // There is no method to check if the NPC has LookClose enabled...
-                    // LookClose.toString() returns "LookClose{" + enabled + "}"
-                    String lookclose = citizen.getTrait(LookClose.class).toString();
-                    lookclose = lookclose.substring(10, lookclose.length() - 1);
-                    return new ElementTag(Boolean.valueOf(lookclose));
-                }
-                return new ElementTag(false);
+        registerTag("lookclose", (attribute, object) -> {
+            NPC citizen = object.getCitizen();
+            if (citizen.hasTrait(LookClose.class)) {
+                // There is no method to check if the NPC has LookClose enabled...
+                // LookClose.toString() returns "LookClose{" + enabled + "}"
+                String lookclose = citizen.getTrait(LookClose.class).toString();
+                lookclose = lookclose.substring(10, lookclose.length() - 1);
+                return new ElementTag(Boolean.valueOf(lookclose));
             }
+            return new ElementTag(false);
         });
 
         // <--[tag]
@@ -1046,11 +943,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC teleports when it is stuck.
         // -->
-        registerTag("teleport_on_stuck", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return new ElementTag(object.getNavigator().getDefaultParameters().stuckAction() == TeleportStuckAction.INSTANCE);
-            }
+        registerTag("teleport_on_stuck", (attribute, object) -> {
+            return new ElementTag(object.getNavigator().getDefaultParameters().stuckAction() == TeleportStuckAction.INSTANCE);
         });
 
         // <--[tag]
@@ -1059,12 +953,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns true if the NPC has an assignment script.
         // -->
-        registerTag("has_script", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                NPC citizen = object.getCitizen();
-                return new ElementTag(citizen.hasTrait(AssignmentTrait.class) && citizen.getTrait(AssignmentTrait.class).hasAssignment());
-            }
+        registerTag("has_script", (attribute, object) -> {
+            NPC citizen = object.getCitizen();
+            return new ElementTag(citizen.hasTrait(AssignmentTrait.class) && citizen.getTrait(AssignmentTrait.class).hasAssignment());
         });
 
         // <--[tag]
@@ -1073,16 +964,13 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's assigned script.
         // -->
-        registerTag("script", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                NPC citizen = object.getCitizen();
-                if (!citizen.hasTrait(AssignmentTrait.class) || !citizen.getTrait(AssignmentTrait.class).hasAssignment()) {
-                    return null;
-                }
-                else {
-                    return new ScriptTag(citizen.getTrait(AssignmentTrait.class).getAssignment().getName());
-                }
+        registerTag("script", (attribute, object) -> {
+            NPC citizen = object.getCitizen();
+            if (!citizen.hasTrait(AssignmentTrait.class) || !citizen.getTrait(AssignmentTrait.class).hasAssignment()) {
+                return null;
+            }
+            else {
+                return new ScriptTag(citizen.getTrait(AssignmentTrait.class).getAssignment().getName());
             }
         });
 
@@ -1093,11 +981,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's current pathfinding distance margin. That is, how close it needs to get to its destination (in block-lengths).
         // -->
-        registerTag("distance_margin", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return new ElementTag(object.getNavigator().getDefaultParameters().distanceMargin());
-            }
+        registerTag("distance_margin", (attribute, object) -> {
+            return new ElementTag(object.getNavigator().getDefaultParameters().distanceMargin());
         });
 
         // <--[tag]
@@ -1107,11 +992,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's current pathfinding distance margin. That is, how close it needs to get to individual points along its path.
         // -->
-        registerTag("path_distance_margin", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return new ElementTag(object.getNavigator().getDefaultParameters().pathDistanceMargin());
-            }
+        registerTag("path_distance_margin", (attribute, object) -> {
+            return new ElementTag(object.getNavigator().getDefaultParameters().pathDistanceMargin());
         });
 
         // <--[tag]
@@ -1120,11 +1002,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC is currently navigating.
         // -->
-        registerTag("is_navigating", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return new ElementTag(object.getNavigator().isNavigating());
-            }
+        registerTag("is_navigating", (attribute, object) -> {
+            return new ElementTag(object.getNavigator().isNavigating());
         });
 
         // <--[tag]
@@ -1133,11 +1012,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the current speed of the NPC.
         // -->
-        registerTag("speed", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return new ElementTag(object.getNavigator().getLocalParameters().speed());
-            }
+        registerTag("speed", (attribute, object) -> {
+            return new ElementTag(object.getNavigator().getLocalParameters().speed());
         });
 
         // <--[tag]
@@ -1146,11 +1022,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's current maximum pathfinding range.
         // -->
-        registerTag("range", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return new ElementTag(object.getNavigator().getLocalParameters().range());
-            }
+        registerTag("range", (attribute, object) -> {
+            return new ElementTag(object.getNavigator().getLocalParameters().range());
         });
 
         // <--[tag]
@@ -1159,11 +1032,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's current navigator attack range limit.
         // -->
-        registerTag("attack_range", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return new ElementTag(object.getNavigator().getLocalParameters().attackRange());
-            }
+        registerTag("attack_range", (attribute, object) -> {
+            return new ElementTag(object.getNavigator().getLocalParameters().attackRange());
         });
 
         // <--[tag]
@@ -1172,11 +1042,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's current navigator attack strategy.
         // -->
-        registerTag("attack_strategy", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return new ElementTag(object.getNavigator().getLocalParameters().attackStrategy().toString());
-            }
+        registerTag("attack_strategy", (attribute, object) -> {
+            return new ElementTag(object.getNavigator().getLocalParameters().attackStrategy().toString());
         });
 
         // <--[tag]
@@ -1185,11 +1052,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's current movement speed modifier (a multiplier applied over their base speed).
         // -->
-        registerTag("speed_modifier", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return new ElementTag(object.getNavigator().getLocalParameters().speedModifier());
-            }
+        registerTag("speed_modifier", (attribute, object) -> {
+            return new ElementTag(object.getNavigator().getLocalParameters().speedModifier());
         });
 
         // <--[tag]
@@ -1198,11 +1062,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's base navigation speed.
         // -->
-        registerTag("base_speed", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return new ElementTag(object.getNavigator().getLocalParameters().baseSpeed());
-            }
+        registerTag("base_speed", (attribute, object) -> {
+            return new ElementTag(object.getNavigator().getLocalParameters().baseSpeed());
         });
 
         // <--[tag]
@@ -1211,11 +1072,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC will avoid water.
         // -->
-        registerTag("avoid_water", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return new ElementTag(object.getNavigator().getLocalParameters().avoidWater());
-            }
+        registerTag("avoid_water", (attribute, object) -> {
+            return new ElementTag(object.getNavigator().getLocalParameters().avoidWater());
         });
 
         // <--[tag]
@@ -1224,14 +1082,11 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the location the NPC is currently navigating towards (if any).
         // -->
-        registerTag("target_location", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                if (object.getNavigator().getTargetAsLocation() == null) {
-                    return null;
-                }
-                return new LocationTag(object.getNavigator().getTargetAsLocation());
+        registerTag("target_location", (attribute, object) -> {
+            if (object.getNavigator().getTargetAsLocation() == null) {
+                return null;
             }
+            return new LocationTag(object.getNavigator().getTargetAsLocation());
         });
 
         // <--[tag]
@@ -1240,11 +1095,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC is in combat.
         // -->
-        registerTag("is_fighting", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return new ElementTag(object.getNavigator().getEntityTarget() != null && object.getNavigator().getEntityTarget().isAggressive());
-            }
+        registerTag("is_fighting", (attribute, object) -> {
+            return new ElementTag(object.getNavigator().getEntityTarget() != null && object.getNavigator().getEntityTarget().isAggressive());
         });
 
         // <--[tag]
@@ -1253,14 +1105,11 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the entity type of the NPC's current navigation target (if any).
         // -->
-        registerTag("target_type", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                if (object.getNavigator().getTargetType() == null) {
-                    return null;
-                }
-                return new ElementTag(object.getNavigator().getTargetType().toString());
+        registerTag("target_type", (attribute, object) -> {
+            if (object.getNavigator().getTargetType() == null) {
+                return null;
             }
+            return new ElementTag(object.getNavigator().getTargetType().toString());
         });
 
         // <--[tag]
@@ -1269,22 +1118,16 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the entity being targeted by the NPC's current navigation (if any).
         // -->
-        registerTag("target_entity", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                if (object.getNavigator().getEntityTarget() == null || object.getNavigator().getEntityTarget().getTarget() == null) {
-                    return null;
-                }
-                return new EntityTag(object.getNavigator().getEntityTarget().getTarget());
+        registerTag("target_entity", (attribute, object) -> {
+            if (object.getNavigator().getEntityTarget() == null || object.getNavigator().getEntityTarget().getTarget() == null) {
+                return null;
             }
+            return new EntityTag(object.getNavigator().getEntityTarget().getTarget());
         });
 
-        registerTag("navigator", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                Deprecations.oldNPCNavigator.warn(attribute.context);
-                return object;
-            }
+        registerTag("navigator", (attribute, object) -> {
+            Deprecations.oldNPCNavigator.warn(attribute.context);
+            return object;
         });
 
         // <--[tag]
@@ -1294,18 +1137,15 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Always returns 'NPC' for NPCTag objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
-        registerTag("type", new TagRunnable.ObjectForm<NPCTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, NPCTag object) {
-                return new ElementTag("NPC");
-            }
+        registerTag("type", (attribute, object) -> {
+            return new ElementTag("NPC");
         });
     }
 
     public static ObjectTagProcessor<NPCTag> tagProcessor = new ObjectTagProcessor<>();
 
-    public static void registerTag(String name, TagRunnable.ObjectForm<NPCTag> runnable) {
-        tagProcessor.registerTag(name, runnable);
+    public static void registerTag(String name, TagRunnable.ObjectInterface<NPCTag> runnable, String... variants) {
+        tagProcessor.registerTag(name, runnable, variants);
     }
 
     @Override

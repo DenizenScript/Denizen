@@ -1295,25 +1295,22 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Returns the number of empty slots in an inventory.
         // -->
-        registerTag("empty_slots", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-                InventoryTag dummyInv;
-                if (object.inventory.getType() == InventoryType.PLAYER) {
-                    dummyInv = new InventoryTag(Bukkit.createInventory(null, InventoryType.CHEST));
-                    ItemStack[] contents = object.getStorageContents();
-                    dummyInv.setSize(contents.length);
-                    if (contents.length != dummyInv.getSize()) {
-                        contents = Arrays.copyOf(contents, dummyInv.getSize());
-                    }
-                    dummyInv.setContents(contents);
+        registerTag("empty_slots", (attribute, object) -> {
+            InventoryTag dummyInv;
+            if (object.inventory.getType() == InventoryType.PLAYER) {
+                dummyInv = new InventoryTag(Bukkit.createInventory(null, InventoryType.CHEST));
+                ItemStack[] contents = object.getStorageContents();
+                dummyInv.setSize(contents.length);
+                if (contents.length != dummyInv.getSize()) {
+                    contents = Arrays.copyOf(contents, dummyInv.getSize());
                 }
-                else {
-                    dummyInv = new InventoryTag(object.inventory);
-                }
-                int full = dummyInv.count(null, true);
-                return new ElementTag(dummyInv.getSize() - full);
+                dummyInv.setContents(contents);
             }
+            else {
+                dummyInv = new InventoryTag(object.inventory);
+            }
+            int full = dummyInv.count(null, true);
+            return new ElementTag(dummyInv.getSize() - full);
         });
 
         // <--[tag]
@@ -1322,71 +1319,68 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Returns whether the inventory can fit an item.
         // -->
-        registerTag("can_fit", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-                if (!attribute.hasContext(1)) {
-                    return null;
-                }
-                List<ItemTag> items = ListTag.valueOf(attribute.getContext(1)).filter(ItemTag.class, attribute.context, !attribute.hasAlternative());
-                if (items == null || items.isEmpty()) {
-                    return null;
-                }
-
-                InventoryType type = object.inventory.getType();
-                InventoryTag dummyInv = new InventoryTag(Bukkit.createInventory(null, type == InventoryType.PLAYER ? InventoryType.CHEST : type, NMSHandler.getInstance().getTitle(object.inventory)));
-                ItemStack[] contents = object.getStorageContents();
-                if (dummyInv.getInventoryType() == InventoryType.CHEST) {
-                    dummyInv.setSize(contents.length);
-                }
-                if (contents.length != dummyInv.getSize()) {
-                    contents = Arrays.copyOf(contents, dummyInv.getSize());
-                }
-                dummyInv.setContents(contents);
-
-                // <--[tag]
-                // @attribute <InventoryTag.can_fit[<item>].count>
-                // @returns ElementTag(Number)
-                // @description
-                // Returns the total count of how many times an item can fit into an inventory.
-                // -->
-                if (attribute.startsWith("count", 2)) {
-                    ItemStack toAdd = items.get(0).getItemStack().clone();
-                    int totalCount = 64 * 64 * 4; // Technically nothing stops us from ridiculous numbers in an ItemStack amount.
-                    toAdd.setAmount(totalCount);
-                    List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, true, toAdd);
-                    int result = 0;
-                    if (leftovers.size() > 0) {
-                        result += leftovers.get(0).getAmount();
-                    }
-                    attribute.fulfill(1);
-                    return new ElementTag(totalCount - result);
-                }
-
-                // <--[tag]
-                // @attribute <InventoryTag.can_fit[<item>].quantity[<#>]>
-                // @returns ElementTag(Boolean)
-                // @description
-                // Returns whether the inventory can fit a certain quantity of an item.
-                // -->
-                if ((attribute.startsWith("quantity", 2) || attribute.startsWith("qty", 2)) && attribute.hasContext(2)) {
-                    if (attribute.startsWith("qty", 2)) {
-                        Deprecations.qtyTags.warn(attribute.context);
-                    }
-                    int qty = attribute.getIntContext(2);
-                    items.get(0).setAmount(qty);
-                    attribute.fulfill(1);
-                }
-
-                // NOTE: Could just also convert items to an array and pass it all in at once...
-                for (ItemTag itm : items) {
-                    List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, true, itm.getItemStack());
-                    if (!leftovers.isEmpty()) {
-                        return new ElementTag(false);
-                    }
-                }
-                return new ElementTag(true);
+        registerTag("can_fit", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                return null;
             }
+            List<ItemTag> items = ListTag.valueOf(attribute.getContext(1)).filter(ItemTag.class, attribute.context, !attribute.hasAlternative());
+            if (items == null || items.isEmpty()) {
+                return null;
+            }
+
+            InventoryType type = object.inventory.getType();
+            InventoryTag dummyInv = new InventoryTag(Bukkit.createInventory(null, type == InventoryType.PLAYER ? InventoryType.CHEST : type, NMSHandler.getInstance().getTitle(object.inventory)));
+            ItemStack[] contents = object.getStorageContents();
+            if (dummyInv.getInventoryType() == InventoryType.CHEST) {
+                dummyInv.setSize(contents.length);
+            }
+            if (contents.length != dummyInv.getSize()) {
+                contents = Arrays.copyOf(contents, dummyInv.getSize());
+            }
+            dummyInv.setContents(contents);
+
+            // <--[tag]
+            // @attribute <InventoryTag.can_fit[<item>].count>
+            // @returns ElementTag(Number)
+            // @description
+            // Returns the total count of how many times an item can fit into an inventory.
+            // -->
+            if (attribute.startsWith("count", 2)) {
+                ItemStack toAdd = items.get(0).getItemStack().clone();
+                int totalCount = 64 * 64 * 4; // Technically nothing stops us from ridiculous numbers in an ItemStack amount.
+                toAdd.setAmount(totalCount);
+                List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, true, toAdd);
+                int result = 0;
+                if (leftovers.size() > 0) {
+                    result += leftovers.get(0).getAmount();
+                }
+                attribute.fulfill(1);
+                return new ElementTag(totalCount - result);
+            }
+
+            // <--[tag]
+            // @attribute <InventoryTag.can_fit[<item>].quantity[<#>]>
+            // @returns ElementTag(Boolean)
+            // @description
+            // Returns whether the inventory can fit a certain quantity of an item.
+            // -->
+            if ((attribute.startsWith("quantity", 2) || attribute.startsWith("qty", 2)) && attribute.hasContext(2)) {
+                if (attribute.startsWith("qty", 2)) {
+                    Deprecations.qtyTags.warn(attribute.context);
+                }
+                int qty = attribute.getIntContext(2);
+                items.get(0).setAmount(qty);
+                attribute.fulfill(1);
+            }
+
+            // NOTE: Could just also convert items to an array and pass it all in at once...
+            for (ItemTag itm : items) {
+                List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, true, itm.getItemStack());
+                if (!leftovers.isEmpty()) {
+                    return new ElementTag(false);
+                }
+            }
+            return new ElementTag(true);
         });
 
         // <--[tag]
@@ -1395,41 +1389,38 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Returns a copy of the InventoryTag with an item added.
         // -->
-        registerTag("include", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-                if (!attribute.hasContext(1) || !ItemTag.matches(attribute.getContext(1))) {
-                    return null;
-                }
-                ItemTag item = ItemTag.valueOf(attribute.getContext(1), attribute.context);
-                if (item == null) {
-                    return null;
-                }
-                int qty = 1;
-
-                InventoryTag dummyInv = new InventoryTag(Bukkit.createInventory(null, object.inventory.getType(), NMSHandler.getInstance().getTitle(object.inventory)));
-                if (object.inventory.getType() == InventoryType.CHEST) {
-                    dummyInv.setSize(object.inventory.getSize());
-                }
-                dummyInv.setContents(object.getContents());
-
-                // <--[tag]
-                // @attribute <InventoryTag.include[<item>].quantity[<#>]>
-                // @returns InventoryTag
-                // @description
-                // Returns the InventoryTag with a certain quantity of an item added.
-                // -->
-                if ((attribute.startsWith("quantity", 2) || attribute.startsWith("qty", 2)) && attribute.hasContext(2)) {
-                    if (attribute.startsWith("qty", 2)) {
-                        Deprecations.qtyTags.warn(attribute.context);
-                    }
-                    qty = attribute.getIntContext(2);
-                    attribute.fulfill(1);
-                }
-                item.setAmount(qty);
-                dummyInv.add(0, item.getItemStack());
-                return dummyInv;
+        registerTag("include", (attribute, object) -> {
+            if (!attribute.hasContext(1) || !ItemTag.matches(attribute.getContext(1))) {
+                return null;
             }
+            ItemTag item = ItemTag.valueOf(attribute.getContext(1), attribute.context);
+            if (item == null) {
+                return null;
+            }
+            int qty = 1;
+
+            InventoryTag dummyInv = new InventoryTag(Bukkit.createInventory(null, object.inventory.getType(), NMSHandler.getInstance().getTitle(object.inventory)));
+            if (object.inventory.getType() == InventoryType.CHEST) {
+                dummyInv.setSize(object.inventory.getSize());
+            }
+            dummyInv.setContents(object.getContents());
+
+            // <--[tag]
+            // @attribute <InventoryTag.include[<item>].quantity[<#>]>
+            // @returns InventoryTag
+            // @description
+            // Returns the InventoryTag with a certain quantity of an item added.
+            // -->
+            if ((attribute.startsWith("quantity", 2) || attribute.startsWith("qty", 2)) && attribute.hasContext(2)) {
+                if (attribute.startsWith("qty", 2)) {
+                    Deprecations.qtyTags.warn(attribute.context);
+                }
+                qty = attribute.getIntContext(2);
+                attribute.fulfill(1);
+            }
+            item.setAmount(qty);
+            dummyInv.add(0, item.getItemStack());
+            return dummyInv;
         });
 
         // <--[tag]
@@ -1438,18 +1429,15 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Returns whether the inventory is empty.
         // -->
-        registerTag("is_empty", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-                boolean empty = true;
-                for (ItemStack item : object.getStorageContents()) {
-                    if (item != null && item.getType() != Material.AIR) {
-                        empty = false;
-                        break;
-                    }
+        registerTag("is_empty", (attribute, object) -> {
+            boolean empty = true;
+            for (ItemStack item : object.getStorageContents()) {
+                if (item != null && item.getType() != Material.AIR) {
+                    empty = false;
+                    break;
                 }
-                return new ElementTag(empty);
             }
+            return new ElementTag(empty);
         });
 
         // <--[tag]
@@ -1458,21 +1446,18 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Returns whether the inventory is completely full.
         // -->
-        registerTag("is_full", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-                boolean full = true;
+        registerTag("is_full", (attribute, object) -> {
+            boolean full = true;
 
-                for (ItemStack item : object.getStorageContents()) {
-                    if ((item == null) ||
-                            (item.getType() == Material.AIR) ||
-                            (item.getAmount() < item.getMaxStackSize())) {
-                        full = false;
-                        break;
-                    }
+            for (ItemStack item : object.getStorageContents()) {
+                if ((item == null) ||
+                        (item.getType() == Material.AIR) ||
+                        (item.getAmount() < item.getMaxStackSize())) {
+                    full = false;
+                    break;
                 }
-                return new ElementTag(full);
             }
+            return new ElementTag(full);
         });
 
         // <--[tag]
@@ -1481,337 +1466,334 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Returns whether the inventory contains all of the specified items.
         // -->
-        registerTag("contains", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-                // <--[tag]
-                // @attribute <InventoryTag.contains.display[(strict:)<element>]>
-                // @returns ElementTag(Boolean)
-                // @description
-                // Returns whether the inventory contains an item with the specified display name.
-                // Use 'strict:' in front of the search element to ensure the display name is EXACTLY the search element,
-                // otherwise the searching will only check if the search element is contained in the display name.
-                // -->
-                if (attribute.startsWith("display", 2)) {
-                    if (!attribute.hasContext(2)) {
-                        return null;
-                    }
-                    String search_string = attribute.getContext(2);
-                    boolean strict = false;
-                    if (CoreUtilities.toLowerCase(search_string).startsWith("strict:") && search_string.length() > 7) {
-                        strict = true;
-                        search_string = search_string.substring(7);
-                    }
-                    if (search_string.length() == 0) {
-                        return null;
-                    }
-                    int qty = 1;
-
-                    // <--[tag]
-                    // @attribute <InventoryTag.contains.display[(strict:)<element>].quantity[<#>]>
-                    // @returns ElementTag(Boolean)
-                    // @description
-                    // Returns whether the inventory contains a certain quantity of an item with the specified display name.
-                    // Use 'strict:' in front of the search element to ensure the display name is EXACTLY the search element,
-                    // otherwise the searching will only check if the search element is contained in the display name.
-                    // -->
-                    if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
-                        if (attribute.startsWith("qty", 3)) {
-                            Deprecations.qtyTags.warn(attribute.context);
-                        }
-                        qty = attribute.getIntContext(3);
-                        attribute.fulfill(1);
-                    }
-
-                    int found_items = 0;
-
-                    if (strict) {
-                        for (ItemStack item : object.getContents()) {
-                            if (item != null && item.getType() == Material.WRITTEN_BOOK
-                                    && ((BookMeta) item.getItemMeta()).getTitle().equalsIgnoreCase(search_string)) {
-                                found_items += item.getAmount();
-                                if (found_items >= qty) {
-                                    break;
-                                }
-                            }
-                            else if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
-                                    item.getItemMeta().getDisplayName().equalsIgnoreCase(search_string)) {
-                                found_items += item.getAmount();
-                                if (found_items >= qty) {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    else {
-                        for (ItemStack item : object.getContents()) {
-                            if (item != null && item.getType() == Material.WRITTEN_BOOK
-                                    && CoreUtilities.toLowerCase(((BookMeta) item.getItemMeta()).getTitle())
-                                    .contains(CoreUtilities.toLowerCase(search_string))) {
-                                found_items += item.getAmount();
-                                if (found_items >= qty) {
-                                    break;
-                                }
-                            }
-                            else if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
-                                    CoreUtilities.toLowerCase(item.getItemMeta().getDisplayName())
-                                            .contains(CoreUtilities.toLowerCase(search_string))) {
-                                found_items += item.getAmount();
-                                if (found_items >= qty) {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    attribute.fulfill(1);
-                    return new ElementTag(found_items >= qty);
-                }
-                // <--[tag]
-                // @attribute <InventoryTag.contains.lore[(strict:)<element>|...]>
-                // @returns ElementTag(Boolean)
-                // @description
-                // Returns whether the inventory contains an item with the specified lore.
-                // Use 'strict:' in front of the search elements to ensure all lore lines are EXACTLY the search elements,
-                // otherwise the searching will only check if the search elements are contained in the lore.
-                // -->
-                if (attribute.startsWith("lore", 2)) {
-                    if (!attribute.hasContext(2)) {
-                        return null;
-                    }
-                    String search_string = attribute.getContext(2);
-                    boolean strict = false;
-                    if (CoreUtilities.toLowerCase(search_string).startsWith("strict:")) {
-                        strict = true;
-                        search_string = search_string.substring("strict:".length());
-                    }
-                    if (search_string.length() == 0) {
-                        return null;
-                    }
-                    ListTag lore = ListTag.valueOf(search_string);
-                    int qty = 1;
-
-                    // <--[tag]
-                    // @attribute <InventoryTag.contains.lore[(strict:)<element>|...].quantity[<#>]>
-                    // @returns ElementTag(Boolean)
-                    // @description
-                    // Returns whether the inventory contains a certain quantity of an item with the specified lore.
-                    // Use 'strict:' in front of the search elements to ensure all lore lines are EXACTLY the search elements,
-                    // otherwise the searching will only check if the search elements are contained in the lore.
-                    // -->
-                    if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
-                        if (attribute.startsWith("qty", 3)) {
-                            Deprecations.qtyTags.warn(attribute.context);
-                        }
-                        qty = attribute.getIntContext(3);
-                        attribute.fulfill(1);
-                    }
-
-                    int found_items = 0;
-
-                    if (strict) {
-                        strict_items:
-                        for (ItemStack item : object.getContents()) {
-                            if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
-                                List<String> item_lore = item.getItemMeta().getLore();
-                                if (lore.size() != item_lore.size()) {
-                                    continue;
-                                }
-                                for (int i = 0; i < item_lore.size(); i++) {
-                                    if (!lore.get(i).equalsIgnoreCase(item_lore.get(i))) {
-                                        continue strict_items;
-                                    }
-                                }
-                                found_items += item.getAmount();
-                                if (found_items >= qty) {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    else {
-                        for (ItemStack item : object.getContents()) {
-                            if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
-                                List<String> item_lore = item.getItemMeta().getLore();
-                                int loreCount = 0;
-                                lines:
-                                for (String line : lore) {
-                                    for (String item_line : item_lore) {
-                                        if (CoreUtilities.toLowerCase(item_line).contains(CoreUtilities.toLowerCase(line))) {
-                                            loreCount++;
-                                            continue lines;
-                                        }
-                                    }
-                                }
-                                if (loreCount == lore.size()) {
-                                    found_items += item.getAmount();
-                                    if (found_items >= qty) {
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    attribute.fulfill(1);
-
-                    return new ElementTag(found_items >= qty);
-                }
-                // <--[tag]
-                // @attribute <InventoryTag.contains.scriptname[<scriptname>]>
-                // @returns ElementTag(Boolean)
-                // @description
-                // Returns whether the inventory contains an item with the specified scriptname.
-                // -->
-                if (attribute.startsWith("scriptname", 2)) {
-                    if (!attribute.hasContext(2)) {
-                        return null;
-                    }
-                    String scrName = attribute.getContext(2);
-                    int qty = 1;
-
-                    // <--[tag]
-                    // @attribute <InventoryTag.contains.scriptname[<scriptname>].quantity[<#>]>
-                    // @returns ElementTag(Boolean)
-                    // @description
-                    // Returns whether the inventory contains a certain quantity of an item with the specified scriptname.
-                    // -->
-                    if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
-                        if (attribute.startsWith("qty", 3)) {
-                            Deprecations.qtyTags.warn(attribute.context);
-                        }
-                        qty = attribute.getIntContext(3);
-                        attribute.fulfill(1);
-                    }
-
-                    int found_items = 0;
-
-                    for (ItemStack item : object.getContents()) {
-                        if (item != null && scrName.equalsIgnoreCase(new ItemTag(item).getScriptName())) {
-                            found_items += item.getAmount();
-                            if (found_items >= qty) {
-                                break;
-                            }
-                        }
-                    }
-                    attribute.fulfill(1);
-
-                    return new ElementTag(found_items >= qty);
-                }
-                // <--[tag]
-                // @attribute <InventoryTag.contains.nbt[<key>]>
-                // @returns ElementTag(Boolean)
-                // @description
-                // Returns whether the inventory contains an item with the specified key.
-                // -->
-                if (attribute.startsWith("nbt", 2)) {
-                    if (!attribute.hasContext(2)) {
-                        return null;
-                    }
-                    String keyName = attribute.getContext(2);
-                    int qty = 1;
-
-                    // <--[tag]
-                    // @attribute <InventoryTag.contains.nbt[<key>].quantity[<#>]>
-                    // @returns ElementTag(Boolean)
-                    // @description
-                    // Returns whether the inventory contains a certain quantity of an item with the specified key.
-                    // -->
-                    if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
-                        if (attribute.startsWith("qty", 3)) {
-                            Deprecations.qtyTags.warn(attribute.context);
-                        }
-                        qty = attribute.getIntContext(3);
-                        attribute.fulfill(1);
-                    }
-
-                    int found_items = 0;
-
-                    for (ItemStack item : object.getContents()) {
-                        if (CustomNBT.hasCustomNBT(item, keyName, CustomNBT.KEY_DENIZEN)) {
-                            found_items += item.getAmount();
-                            if (found_items >= qty) {
-                                break;
-                            }
-                        }
-                    }
-                    attribute.fulfill(1);
-
-                    return new ElementTag(found_items >= qty);
-                }
-                // <--[tag]
-                // @attribute <InventoryTag.contains.material[<material>]>
-                // @returns ElementTag(Boolean)
-                // @description
-                // Returns whether the inventory contains an item with the specified material.
-                // -->
-                if (attribute.startsWith("material", 2)) {
-                    if (!attribute.hasContext(2) || !MaterialTag.matches(attribute.getContext(2))) {
-                        return null;
-                    }
-                    MaterialTag material = MaterialTag.valueOf(attribute.getContext(2));
-                    int qty = 1;
-
-                    // <--[tag]
-                    // @attribute <InventoryTag.contains.material[<material>].quantity[<#>]>
-                    // @returns ElementTag(Boolean)
-                    // @description
-                    // Returns whether the inventory contains a certain quantity of an item with the specified material.
-                    // -->
-                    if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
-                        if (attribute.startsWith("qty", 3)) {
-                            Deprecations.qtyTags.warn(attribute.context);
-                        }
-                        qty = attribute.getIntContext(3);
-                        attribute.fulfill(1);
-                    }
-
-                    int found_items = 0;
-
-                    for (ItemStack item : object.getContents()) {
-                        if (item != null && item.getType() == material.getMaterial()) {
-                            found_items += item.getAmount();
-                            if (found_items >= qty) {
-                                break;
-                            }
-                        }
-                    }
-                    attribute.fulfill(1);
-
-                    return new ElementTag(found_items >= qty);
-                }
-                if (!attribute.hasContext(1)) {
+        registerTag("contains", (attribute, object) -> {
+            // <--[tag]
+            // @attribute <InventoryTag.contains.display[(strict:)<element>]>
+            // @returns ElementTag(Boolean)
+            // @description
+            // Returns whether the inventory contains an item with the specified display name.
+            // Use 'strict:' in front of the search element to ensure the display name is EXACTLY the search element,
+            // otherwise the searching will only check if the search element is contained in the display name.
+            // -->
+            if (attribute.startsWith("display", 2)) {
+                if (!attribute.hasContext(2)) {
                     return null;
                 }
-                ListTag list = ListTag.valueOf(attribute.getContext(1));
-                if (list.isEmpty()) {
+                String search_string = attribute.getContext(2);
+                boolean strict = false;
+                if (CoreUtilities.toLowerCase(search_string).startsWith("strict:") && search_string.length() > 7) {
+                    strict = true;
+                    search_string = search_string.substring(7);
+                }
+                if (search_string.length() == 0) {
                     return null;
                 }
                 int qty = 1;
 
                 // <--[tag]
-                // @attribute <InventoryTag.contains[<item>|...].quantity[<#>]>
+                // @attribute <InventoryTag.contains.display[(strict:)<element>].quantity[<#>]>
                 // @returns ElementTag(Boolean)
                 // @description
-                // Returns whether the inventory contains a certain quantity of all of the specified items.
+                // Returns whether the inventory contains a certain quantity of an item with the specified display name.
+                // Use 'strict:' in front of the search element to ensure the display name is EXACTLY the search element,
+                // otherwise the searching will only check if the search element is contained in the display name.
                 // -->
-                if ((attribute.startsWith("quantity", 2) || attribute.startsWith("qty", 2)) && attribute.hasContext(2)) {
-                    if (attribute.startsWith("qty", 2)) {
+                if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
+                    if (attribute.startsWith("qty", 3)) {
                         Deprecations.qtyTags.warn(attribute.context);
                     }
-                    qty = attribute.getIntContext(2);
+                    qty = attribute.getIntContext(3);
                     attribute.fulfill(1);
                 }
-                List<ItemTag> contains = list.filter(ItemTag.class, attribute.context, !attribute.hasAlternative());
-                if (contains.size() == list.size()) {
-                    for (ItemTag item : contains) {
-                        if (!object.containsItem(item, qty)) {
-                            return new ElementTag(false);
+
+                int found_items = 0;
+
+                if (strict) {
+                    for (ItemStack item : object.getContents()) {
+                        if (item != null && item.getType() == Material.WRITTEN_BOOK
+                                && ((BookMeta) item.getItemMeta()).getTitle().equalsIgnoreCase(search_string)) {
+                            found_items += item.getAmount();
+                            if (found_items >= qty) {
+                                break;
+                            }
+                        }
+                        else if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
+                                item.getItemMeta().getDisplayName().equalsIgnoreCase(search_string)) {
+                            found_items += item.getAmount();
+                            if (found_items >= qty) {
+                                break;
+                            }
                         }
                     }
-                    return new ElementTag(true);
                 }
-                return new ElementTag(false);
+                else {
+                    for (ItemStack item : object.getContents()) {
+                        if (item != null && item.getType() == Material.WRITTEN_BOOK
+                                && CoreUtilities.toLowerCase(((BookMeta) item.getItemMeta()).getTitle())
+                                .contains(CoreUtilities.toLowerCase(search_string))) {
+                            found_items += item.getAmount();
+                            if (found_items >= qty) {
+                                break;
+                            }
+                        }
+                        else if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
+                                CoreUtilities.toLowerCase(item.getItemMeta().getDisplayName())
+                                        .contains(CoreUtilities.toLowerCase(search_string))) {
+                            found_items += item.getAmount();
+                            if (found_items >= qty) {
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                attribute.fulfill(1);
+                return new ElementTag(found_items >= qty);
             }
+            // <--[tag]
+            // @attribute <InventoryTag.contains.lore[(strict:)<element>|...]>
+            // @returns ElementTag(Boolean)
+            // @description
+            // Returns whether the inventory contains an item with the specified lore.
+            // Use 'strict:' in front of the search elements to ensure all lore lines are EXACTLY the search elements,
+            // otherwise the searching will only check if the search elements are contained in the lore.
+            // -->
+            if (attribute.startsWith("lore", 2)) {
+                if (!attribute.hasContext(2)) {
+                    return null;
+                }
+                String search_string = attribute.getContext(2);
+                boolean strict = false;
+                if (CoreUtilities.toLowerCase(search_string).startsWith("strict:")) {
+                    strict = true;
+                    search_string = search_string.substring("strict:".length());
+                }
+                if (search_string.length() == 0) {
+                    return null;
+                }
+                ListTag lore = ListTag.valueOf(search_string);
+                int qty = 1;
+
+                // <--[tag]
+                // @attribute <InventoryTag.contains.lore[(strict:)<element>|...].quantity[<#>]>
+                // @returns ElementTag(Boolean)
+                // @description
+                // Returns whether the inventory contains a certain quantity of an item with the specified lore.
+                // Use 'strict:' in front of the search elements to ensure all lore lines are EXACTLY the search elements,
+                // otherwise the searching will only check if the search elements are contained in the lore.
+                // -->
+                if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
+                    if (attribute.startsWith("qty", 3)) {
+                        Deprecations.qtyTags.warn(attribute.context);
+                    }
+                    qty = attribute.getIntContext(3);
+                    attribute.fulfill(1);
+                }
+
+                int found_items = 0;
+
+                if (strict) {
+                    strict_items:
+                    for (ItemStack item : object.getContents()) {
+                        if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
+                            List<String> item_lore = item.getItemMeta().getLore();
+                            if (lore.size() != item_lore.size()) {
+                                continue;
+                            }
+                            for (int i = 0; i < item_lore.size(); i++) {
+                                if (!lore.get(i).equalsIgnoreCase(item_lore.get(i))) {
+                                    continue strict_items;
+                                }
+                            }
+                            found_items += item.getAmount();
+                            if (found_items >= qty) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                else {
+                    for (ItemStack item : object.getContents()) {
+                        if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
+                            List<String> item_lore = item.getItemMeta().getLore();
+                            int loreCount = 0;
+                            lines:
+                            for (String line : lore) {
+                                for (String item_line : item_lore) {
+                                    if (CoreUtilities.toLowerCase(item_line).contains(CoreUtilities.toLowerCase(line))) {
+                                        loreCount++;
+                                        continue lines;
+                                    }
+                                }
+                            }
+                            if (loreCount == lore.size()) {
+                                found_items += item.getAmount();
+                                if (found_items >= qty) {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                attribute.fulfill(1);
+
+                return new ElementTag(found_items >= qty);
+            }
+            // <--[tag]
+            // @attribute <InventoryTag.contains.scriptname[<scriptname>]>
+            // @returns ElementTag(Boolean)
+            // @description
+            // Returns whether the inventory contains an item with the specified scriptname.
+            // -->
+            if (attribute.startsWith("scriptname", 2)) {
+                if (!attribute.hasContext(2)) {
+                    return null;
+                }
+                String scrName = attribute.getContext(2);
+                int qty = 1;
+
+                // <--[tag]
+                // @attribute <InventoryTag.contains.scriptname[<scriptname>].quantity[<#>]>
+                // @returns ElementTag(Boolean)
+                // @description
+                // Returns whether the inventory contains a certain quantity of an item with the specified scriptname.
+                // -->
+                if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
+                    if (attribute.startsWith("qty", 3)) {
+                        Deprecations.qtyTags.warn(attribute.context);
+                    }
+                    qty = attribute.getIntContext(3);
+                    attribute.fulfill(1);
+                }
+
+                int found_items = 0;
+
+                for (ItemStack item : object.getContents()) {
+                    if (item != null && scrName.equalsIgnoreCase(new ItemTag(item).getScriptName())) {
+                        found_items += item.getAmount();
+                        if (found_items >= qty) {
+                            break;
+                        }
+                    }
+                }
+                attribute.fulfill(1);
+
+                return new ElementTag(found_items >= qty);
+            }
+            // <--[tag]
+            // @attribute <InventoryTag.contains.nbt[<key>]>
+            // @returns ElementTag(Boolean)
+            // @description
+            // Returns whether the inventory contains an item with the specified key.
+            // -->
+            if (attribute.startsWith("nbt", 2)) {
+                if (!attribute.hasContext(2)) {
+                    return null;
+                }
+                String keyName = attribute.getContext(2);
+                int qty = 1;
+
+                // <--[tag]
+                // @attribute <InventoryTag.contains.nbt[<key>].quantity[<#>]>
+                // @returns ElementTag(Boolean)
+                // @description
+                // Returns whether the inventory contains a certain quantity of an item with the specified key.
+                // -->
+                if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
+                    if (attribute.startsWith("qty", 3)) {
+                        Deprecations.qtyTags.warn(attribute.context);
+                    }
+                    qty = attribute.getIntContext(3);
+                    attribute.fulfill(1);
+                }
+
+                int found_items = 0;
+
+                for (ItemStack item : object.getContents()) {
+                    if (CustomNBT.hasCustomNBT(item, keyName, CustomNBT.KEY_DENIZEN)) {
+                        found_items += item.getAmount();
+                        if (found_items >= qty) {
+                            break;
+                        }
+                    }
+                }
+                attribute.fulfill(1);
+
+                return new ElementTag(found_items >= qty);
+            }
+            // <--[tag]
+            // @attribute <InventoryTag.contains.material[<material>]>
+            // @returns ElementTag(Boolean)
+            // @description
+            // Returns whether the inventory contains an item with the specified material.
+            // -->
+            if (attribute.startsWith("material", 2)) {
+                if (!attribute.hasContext(2) || !MaterialTag.matches(attribute.getContext(2))) {
+                    return null;
+                }
+                MaterialTag material = MaterialTag.valueOf(attribute.getContext(2));
+                int qty = 1;
+
+                // <--[tag]
+                // @attribute <InventoryTag.contains.material[<material>].quantity[<#>]>
+                // @returns ElementTag(Boolean)
+                // @description
+                // Returns whether the inventory contains a certain quantity of an item with the specified material.
+                // -->
+                if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
+                    if (attribute.startsWith("qty", 3)) {
+                        Deprecations.qtyTags.warn(attribute.context);
+                    }
+                    qty = attribute.getIntContext(3);
+                    attribute.fulfill(1);
+                }
+
+                int found_items = 0;
+
+                for (ItemStack item : object.getContents()) {
+                    if (item != null && item.getType() == material.getMaterial()) {
+                        found_items += item.getAmount();
+                        if (found_items >= qty) {
+                            break;
+                        }
+                    }
+                }
+                attribute.fulfill(1);
+
+                return new ElementTag(found_items >= qty);
+            }
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
+            ListTag list = ListTag.valueOf(attribute.getContext(1));
+            if (list.isEmpty()) {
+                return null;
+            }
+            int qty = 1;
+
+            // <--[tag]
+            // @attribute <InventoryTag.contains[<item>|...].quantity[<#>]>
+            // @returns ElementTag(Boolean)
+            // @description
+            // Returns whether the inventory contains a certain quantity of all of the specified items.
+            // -->
+            if ((attribute.startsWith("quantity", 2) || attribute.startsWith("qty", 2)) && attribute.hasContext(2)) {
+                if (attribute.startsWith("qty", 2)) {
+                    Deprecations.qtyTags.warn(attribute.context);
+                }
+                qty = attribute.getIntContext(2);
+                attribute.fulfill(1);
+            }
+            List<ItemTag> contains = list.filter(ItemTag.class, attribute.context, !attribute.hasAlternative());
+            if (contains.size() == list.size()) {
+                for (ItemTag item : contains) {
+                    if (!object.containsItem(item, qty)) {
+                        return new ElementTag(false);
+                    }
+                }
+                return new ElementTag(true);
+            }
+            return new ElementTag(false);
         });
 
         // <--[tag]
@@ -1820,41 +1802,38 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Returns whether the inventory contains any of the specified items.
         // -->
-        registerTag("contains_any", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-                if (!attribute.hasContext(1)) {
-                    return null;
-                }
-                ListTag list = ListTag.valueOf(attribute.getContext(1));
-                if (list.isEmpty()) {
-                    return null;
-                }
-                int qty = 1;
-
-                // <--[tag]
-                // @attribute <InventoryTag.contains_any[<item>|...].quantity[<#>]>
-                // @returns ElementTag(Boolean)
-                // @description
-                // Returns whether the inventory contains a certain quantity of any of the specified items.
-                // -->
-                if ((attribute.startsWith("quantity", 2) || attribute.startsWith("qty", 2)) && attribute.hasContext(2)) {
-                    if (attribute.startsWith("qty", 2)) {
-                        Deprecations.qtyTags.warn(attribute.context);
-                    }
-                    qty = attribute.getIntContext(2);
-                    attribute.fulfill(1);
-                }
-                List<ItemTag> contains = list.filter(ItemTag.class, attribute.context, !attribute.hasAlternative());
-                if (!contains.isEmpty()) {
-                    for (ItemTag item : contains) {
-                        if (object.containsItem(item, qty)) {
-                            return new ElementTag(true);
-                        }
-                    }
-                }
-                return new ElementTag(false);
+        registerTag("contains_any", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                return null;
             }
+            ListTag list = ListTag.valueOf(attribute.getContext(1));
+            if (list.isEmpty()) {
+                return null;
+            }
+            int qty = 1;
+
+            // <--[tag]
+            // @attribute <InventoryTag.contains_any[<item>|...].quantity[<#>]>
+            // @returns ElementTag(Boolean)
+            // @description
+            // Returns whether the inventory contains a certain quantity of any of the specified items.
+            // -->
+            if ((attribute.startsWith("quantity", 2) || attribute.startsWith("qty", 2)) && attribute.hasContext(2)) {
+                if (attribute.startsWith("qty", 2)) {
+                    Deprecations.qtyTags.warn(attribute.context);
+                }
+                qty = attribute.getIntContext(2);
+                attribute.fulfill(1);
+            }
+            List<ItemTag> contains = list.filter(ItemTag.class, attribute.context, !attribute.hasAlternative());
+            if (!contains.isEmpty()) {
+                for (ItemTag item : contains) {
+                    if (object.containsItem(item, qty)) {
+                        return new ElementTag(true);
+                    }
+                }
+            }
+            return new ElementTag(false);
         });
 
         // <--[tag]
@@ -1864,12 +1843,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // Returns the location of the first empty slot.
         // Returns -1 if the inventory is full.
         // -->
-        registerTag("first_empty", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-                int val = object.firstEmpty(0);
-                return new ElementTag(val >= 0 ? (val + 1) : -1);
-            }
+        registerTag("first_empty", (attribute, object) -> {
+            int val = object.firstEmpty(0);
+            return new ElementTag(val >= 0 ? (val + 1) : -1);
         });
 
 
@@ -1880,74 +1856,70 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // Returns the location of the first slot that contains the item.
         // Returns -1 if there's no match.
         // -->
-        registerTag("find", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-
-                // <--[tag]
-                // @attribute <InventoryTag.find.material[<material>]>
-                // @returns ElementTag(Number)
-                // @description
-                // Returns the location of the first slot that contains the material.
-                // Returns -1 if there's no match.
-                // -->
-                if (attribute.startsWith("material", 2)) {
-                    MaterialTag material = MaterialTag.valueOf(attribute.getContext(2));
-                    if (material == null) {
-                        return null;
-                    }
-                    int slot = -1;
-                    for (int i = 0; i < object.inventory.getSize(); i++) {
-                        if (object.inventory.getItem(i) != null && object.inventory.getItem(i).getType() == material.getMaterial()) {
-                            slot = i + 1;
-                            break;
-                        }
-                    }
-                    attribute.fulfill(1);
-                    return new ElementTag(slot);
-                }
-
-                // <--[tag]
-                // @attribute <InventoryTag.find.scriptname[<item>]>
-                // @returns ElementTag(Number)
-                // @description
-                // Returns the location of the first slot that contains the item with the specified script name.
-                // Returns -1 if there's no match.
-                // -->
-                if (attribute.startsWith("scriptname", 2)) {
-                    String scrname = ItemTag.valueOf(attribute.getContext(2), attribute.context).getScriptName();
-                    if (scrname == null) {
-                        return null;
-                    }
-                    int slot = -1;
-                    for (int i = 0; i < object.inventory.getSize(); i++) {
-                        if (object.inventory.getItem(i) != null
-                                && scrname.equalsIgnoreCase(new ItemTag(object.inventory.getItem(i)).getScriptName())) {
-                            slot = i + 1;
-                            break;
-                        }
-                    }
-                    attribute.fulfill(1);
-                    return new ElementTag(slot);
-                }
-                if (!attribute.hasContext(1) || !ItemTag.matches(attribute.getContext(1))) {
+        registerTag("find", (attribute, object) -> {
+            // <--[tag]
+            // @attribute <InventoryTag.find.material[<material>]>
+            // @returns ElementTag(Number)
+            // @description
+            // Returns the location of the first slot that contains the material.
+            // Returns -1 if there's no match.
+            // -->
+            if (attribute.startsWith("material", 2)) {
+                MaterialTag material = MaterialTag.valueOf(attribute.getContext(2));
+                if (material == null) {
                     return null;
                 }
-                ItemTag item = ItemTag.valueOf(attribute.getContext(1), attribute.context);
-                item.setAmount(1);
                 int slot = -1;
                 for (int i = 0; i < object.inventory.getSize(); i++) {
-                    if (object.inventory.getItem(i) != null) {
-                        ItemTag compare_to = new ItemTag(object.inventory.getItem(i).clone());
-                        compare_to.setAmount(1);
-                        if (item.getFullString().equalsIgnoreCase(compare_to.getFullString())) {
-                            slot = i + 1;
-                            break;
-                        }
+                    if (object.inventory.getItem(i) != null && object.inventory.getItem(i).getType() == material.getMaterial()) {
+                        slot = i + 1;
+                        break;
                     }
                 }
+                attribute.fulfill(1);
                 return new ElementTag(slot);
             }
+
+            // <--[tag]
+            // @attribute <InventoryTag.find.scriptname[<item>]>
+            // @returns ElementTag(Number)
+            // @description
+            // Returns the location of the first slot that contains the item with the specified script name.
+            // Returns -1 if there's no match.
+            // -->
+            if (attribute.startsWith("scriptname", 2)) {
+                String scrname = ItemTag.valueOf(attribute.getContext(2), attribute.context).getScriptName();
+                if (scrname == null) {
+                    return null;
+                }
+                int slot = -1;
+                for (int i = 0; i < object.inventory.getSize(); i++) {
+                    if (object.inventory.getItem(i) != null
+                            && scrname.equalsIgnoreCase(new ItemTag(object.inventory.getItem(i)).getScriptName())) {
+                        slot = i + 1;
+                        break;
+                    }
+                }
+                attribute.fulfill(1);
+                return new ElementTag(slot);
+            }
+            if (!attribute.hasContext(1) || !ItemTag.matches(attribute.getContext(1))) {
+                return null;
+            }
+            ItemTag item = ItemTag.valueOf(attribute.getContext(1), attribute.context);
+            item.setAmount(1);
+            int slot = -1;
+            for (int i = 0; i < object.inventory.getSize(); i++) {
+                if (object.inventory.getItem(i) != null) {
+                    ItemTag compare_to = new ItemTag(object.inventory.getItem(i).clone());
+                    compare_to.setAmount(1);
+                    if (item.getFullString().equalsIgnoreCase(compare_to.getFullString())) {
+                        slot = i + 1;
+                        break;
+                    }
+                }
+            }
+            return new ElementTag(slot);
         });
 
         // <--[tag]
@@ -1958,28 +1930,25 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // Returns -1 if there's no match.
         // Will match item script to item script, even if one is edited.
         // -->
-        registerTag("find_imperfect", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-                if (!attribute.hasContext(1) || !ItemTag.matches(attribute.getContext(1))) {
-                    return null;
-                }
-                ItemTag item = ItemTag.valueOf(attribute.getContext(1), attribute.context);
-                item.setAmount(1);
-                int slot = -1;
-                for (int i = 0; i < object.inventory.getSize(); i++) {
-                    if (object.inventory.getItem(i) != null) {
-                        ItemTag compare_to = new ItemTag(object.inventory.getItem(i).clone());
-                        compare_to.setAmount(1);
-                        if (item.identify().equalsIgnoreCase(compare_to.identify())
-                                || item.getScriptName().equalsIgnoreCase(compare_to.getScriptName())) {
-                            slot = i + 1;
-                            break;
-                        }
+        registerTag("find_imperfect", (attribute, object) -> {
+            if (!attribute.hasContext(1) || !ItemTag.matches(attribute.getContext(1))) {
+                return null;
+            }
+            ItemTag item = ItemTag.valueOf(attribute.getContext(1), attribute.context);
+            item.setAmount(1);
+            int slot = -1;
+            for (int i = 0; i < object.inventory.getSize(); i++) {
+                if (object.inventory.getItem(i) != null) {
+                    ItemTag compare_to = new ItemTag(object.inventory.getItem(i).clone());
+                    compare_to.setAmount(1);
+                    if (item.identify().equalsIgnoreCase(compare_to.identify())
+                            || item.getScriptName().equalsIgnoreCase(compare_to.getScriptName())) {
+                        slot = i + 1;
+                        break;
                     }
                 }
-                return new ElementTag(slot);
             }
+            return new ElementTag(slot);
         });
 
         // <--[tag]
@@ -1988,11 +1957,8 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Returns Denizen's type ID for this inventory (player, location, etc.).
         // -->
-        registerTag("id_type", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-                return new ElementTag(object.idType);
-            }
+        registerTag("id_type", (attribute, object) -> {
+            return new ElementTag(object.idType);
         });
 
         // <--[tag]
@@ -2001,15 +1967,12 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Gets the name of a Notable InventoryTag. If the inventory isn't noted, this is null.
         // -->
-        registerTag("notable_name", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-                String notname = NotableManager.getSavedId(object);
-                if (notname == null) {
-                    return null;
-                }
-                return new ElementTag(notname);
+        registerTag("notable_name", (attribute, object) -> {
+            String notname = NotableManager.getSavedId(object);
+            if (notname == null) {
+                return null;
             }
+            return new ElementTag(notname);
         });
 
         // <--[tag]
@@ -2018,15 +1981,12 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Returns the location of this inventory's holder.
         // -->
-        registerTag("location", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-                LocationTag location = object.getLocation();
-                if (location == null) {
-                    return null;
-                }
-                return location;
+        registerTag("location", (attribute, object) -> {
+            LocationTag location = object.getLocation();
+            if (location == null) {
+                return null;
             }
+            return location;
         });
 
         // <--[tag]
@@ -2036,49 +1996,44 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // Returns the combined quantity of itemstacks that match an item if one is specified,
         // or the combined quantity of all itemstacks if one is not.
         // -->
-        registerTag("quantity", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-
-                // <--[tag]
-                // @attribute <InventoryTag.quantity.scriptname[<script>]>
-                // @returns ElementTag(Number)
-                // @description
-                // Returns the combined quantity of itemstacks that have the specified script name.
-                // -->
-                if (attribute.startsWith("scriptname", 2)) {
-                    if (!attribute.hasContext(2)) {
-                        return null;
-                    }
-                    String scriptName = attribute.getContext(2);
-                    attribute.fulfill(1);
-                    return new ElementTag(object.countByScriptName(scriptName));
+        registerTag("quantity", (attribute, object) -> {
+            // <--[tag]
+            // @attribute <InventoryTag.quantity.scriptname[<script>]>
+            // @returns ElementTag(Number)
+            // @description
+            // Returns the combined quantity of itemstacks that have the specified script name.
+            // -->
+            if (attribute.startsWith("scriptname", 2)) {
+                if (!attribute.hasContext(2)) {
+                    return null;
                 }
-
-                // <--[tag]
-                // @attribute <InventoryTag.quantity.material[<material>]>
-                // @returns ElementTag(Number)
-                // @description
-                // Returns the combined quantity of itemstacks that have the specified material.
-                // -->
-                if (attribute.startsWith("material", 2)) {
-                    if (!attribute.hasContext(2) || !MaterialTag.matches(attribute.getContext(2))) {
-                        return null;
-                    }
-                    MaterialTag material = MaterialTag.valueOf(attribute.getContext(2));
-                    attribute.fulfill(1);
-                    return new ElementTag(object.countByMaterial(material.getMaterial()));
-                }
-                if (attribute.hasContext(1) && ItemTag.matches(attribute.getContext(1))) {
-                    return new ElementTag(object.count
-                            (ItemTag.valueOf(attribute.getContext(1), attribute.context).getItemStack(), false));
-                }
-                else {
-                    return new ElementTag(object.count(null, false));
-                }
+                String scriptName = attribute.getContext(2);
+                attribute.fulfill(1);
+                return new ElementTag(object.countByScriptName(scriptName));
             }
-        });
-        registerTag("qty", tagProcessor.registeredObjectTags.get("quantity"));
+
+            // <--[tag]
+            // @attribute <InventoryTag.quantity.material[<material>]>
+            // @returns ElementTag(Number)
+            // @description
+            // Returns the combined quantity of itemstacks that have the specified material.
+            // -->
+            if (attribute.startsWith("material", 2)) {
+                if (!attribute.hasContext(2) || !MaterialTag.matches(attribute.getContext(2))) {
+                    return null;
+                }
+                MaterialTag material = MaterialTag.valueOf(attribute.getContext(2));
+                attribute.fulfill(1);
+                return new ElementTag(object.countByMaterial(material.getMaterial()));
+            }
+            if (attribute.hasContext(1) && ItemTag.matches(attribute.getContext(1))) {
+                return new ElementTag(object.count
+                        (ItemTag.valueOf(attribute.getContext(1), attribute.context).getItemStack(), false));
+            }
+            else {
+                return new ElementTag(object.count(null, false));
+            }
+        }, "qty");
 
         // <--[tag]
         // @attribute <InventoryTag.stacks[(<item>)]>
@@ -2086,16 +2041,13 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Returns the number of itemstacks that match an item if one is specified, or the number of all itemstacks if one is not.
         // -->
-        registerTag("stacks", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-                if (attribute.hasContext(1) && ItemTag.matches(attribute.getContext(1))) {
-                    return new ElementTag(object.count
-                            (ItemTag.valueOf(attribute.getContext(1), attribute.context).getItemStack(), true));
-                }
-                else {
-                    return new ElementTag(object.count(null, true));
-                }
+        registerTag("stacks", (attribute, object) -> {
+            if (attribute.hasContext(1) && ItemTag.matches(attribute.getContext(1))) {
+                return new ElementTag(object.count
+                        (ItemTag.valueOf(attribute.getContext(1), attribute.context).getItemStack(), true));
+            }
+            else {
+                return new ElementTag(object.count(null, true));
             }
         });
 
@@ -2106,43 +2058,40 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // If one slot is specified, returns the item in the specified slot.
         // If more than what slot is specified, returns a list of the item in each given slot.
         // -->
-        registerTag("slot", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-                if (!attribute.hasContext(1)) {
-                    return null;
+        registerTag("slot", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
+            ListTag slots = ListTag.getListFor(attribute.getContextObject(1));
+            if (slots.size() == 0) {
+                if (!attribute.hasAlternative()) {
+                    Debug.echoError("Cannot get a list of zero slots.");
                 }
-                ListTag slots = ListTag.getListFor(attribute.getContextObject(1));
-                if (slots.size() == 0) {
-                    if (!attribute.hasAlternative()) {
-                        Debug.echoError("Cannot get a list of zero slots.");
-                    }
-                    return null;
+                return null;
+            }
+            else if (slots.size() == 1) {
+                int slot = SlotHelper.nameToIndex(attribute.getContext(1));
+                if (slot < 0) {
+                    slot = 0;
                 }
-                else if (slots.size() == 1) {
-                    int slot = SlotHelper.nameToIndex(attribute.getContext(1));
+                else if (slot > object.getInventory().getSize() - 1) {
+                    slot = object.getInventory().getSize() - 1;
+                }
+                return new ItemTag(object.getInventory().getItem(slot));
+            }
+            else {
+                ListTag result = new ListTag();
+                for (String slotText : slots) {
+                    int slot = SlotHelper.nameToIndex(slotText);
                     if (slot < 0) {
                         slot = 0;
                     }
                     else if (slot > object.getInventory().getSize() - 1) {
                         slot = object.getInventory().getSize() - 1;
                     }
-                    return new ItemTag(object.getInventory().getItem(slot));
+                    result.addObject(new ItemTag(object.getInventory().getItem(slot)));
                 }
-                else {
-                    ListTag result = new ListTag();
-                    for (String slotText : slots) {
-                        int slot = SlotHelper.nameToIndex(slotText);
-                        if (slot < 0) {
-                            slot = 0;
-                        }
-                        else if (slot > object.getInventory().getSize() - 1) {
-                            slot = object.getInventory().getSize() - 1;
-                        }
-                        result.addObject(new ItemTag(object.getInventory().getItem(slot)));
-                    }
-                    return result;
-                }
+                return result;
             }
         });
 
@@ -2152,11 +2101,8 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Returns the type of the inventory (e.g. "PLAYER", "CRAFTING", "HORSE").
         // -->
-        registerTag("inventory_type", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-                return new ElementTag(object.inventory instanceof HorseInventory ? "HORSE" : object.getInventory().getType().name());
-            }
+        registerTag("inventory_type", (attribute, object) -> {
+            return new ElementTag(object.inventory instanceof HorseInventory ? "HORSE" : object.getInventory().getType().name());
         });
 
         // <--[tag]
@@ -2167,15 +2113,12 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // For players, the order is boots|leggings|chestplate|helmet.
         // For horses, the order is saddle|armor.
         // -->
-        registerTag("equipment", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-                ListTag equipment = object.getEquipment();
-                if (equipment == null) {
-                    return null;
-                }
-                return equipment;
+        registerTag("equipment", (attribute, object) -> {
+            ListTag equipment = object.getEquipment();
+            if (equipment == null) {
+                return null;
             }
+            return equipment;
         });
 
         // <--[tag]
@@ -2184,23 +2127,20 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Returns the items currently in a crafting inventory's matrix.
         // -->
-        registerTag("matrix", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-                if (!(object.inventory instanceof CraftingInventory)) {
-                    return null;
-                }
-                ListTag recipeList = new ListTag();
-                for (ItemStack item : ((CraftingInventory) object.inventory).getMatrix()) {
-                    if (item != null) {
-                        recipeList.add(new ItemTag(item).identify());
-                    }
-                    else {
-                        recipeList.add(new ItemTag(Material.AIR).identify());
-                    }
-                }
-                return recipeList;
+        registerTag("matrix", (attribute, object) -> {
+            if (!(object.inventory instanceof CraftingInventory)) {
+                return null;
             }
+            ListTag recipeList = new ListTag();
+            for (ItemStack item : ((CraftingInventory) object.inventory).getMatrix()) {
+                if (item != null) {
+                    recipeList.add(new ItemTag(item).identify());
+                }
+                else {
+                    recipeList.add(new ItemTag(Material.AIR).identify());
+                }
+            }
+            return recipeList;
         });
 
         // <--[tag]
@@ -2209,24 +2149,21 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Returns the item currently in the result section of a crafting inventory or furnace inventory.
         // -->
-        registerTag("result", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-                ItemStack result;
-                if ((object.inventory instanceof CraftingInventory)) {
-                    result = ((CraftingInventory) object.inventory).getResult();
-                }
-                else if ((object.inventory instanceof FurnaceInventory)) {
-                    result = ((FurnaceInventory) object.inventory).getResult();
-                }
-                else {
-                    return null;
-                }
-                if (result == null) {
-                    return null;
-                }
-                return new ItemTag(result);
+        registerTag("result", (attribute, object) -> {
+            ItemStack result;
+            if ((object.inventory instanceof CraftingInventory)) {
+                result = ((CraftingInventory) object.inventory).getResult();
             }
+            else if ((object.inventory instanceof FurnaceInventory)) {
+                result = ((FurnaceInventory) object.inventory).getResult();
+            }
+            else {
+                return null;
+            }
+            if (result == null) {
+                return null;
+            }
+            return new ItemTag(result);
         });
 
         // <--[tag]
@@ -2236,14 +2173,11 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Returns the current repair cost on an anvil.
         // -->
-        registerTag("anvil_repair_cost", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-                if (!(object.inventory instanceof AnvilInventory)) {
-                    return null;
-                }
-                return new ElementTag(((AnvilInventory) object.inventory).getRepairCost());
+        registerTag("anvil_repair_cost", (attribute, object) -> {
+            if (!(object.inventory instanceof AnvilInventory)) {
+                return null;
             }
+            return new ElementTag(((AnvilInventory) object.inventory).getRepairCost());
         });
 
         // <--[tag]
@@ -2253,14 +2187,11 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Returns the maximum repair cost on an anvil.
         // -->
-        registerTag("anvil_max_repair_cost", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-                if (!(object.inventory instanceof AnvilInventory)) {
-                    return null;
-                }
-                return new ElementTag(((AnvilInventory) object.inventory).getMaximumRepairCost());
+        registerTag("anvil_max_repair_cost", (attribute, object) -> {
+            if (!(object.inventory instanceof AnvilInventory)) {
+                return null;
             }
+            return new ElementTag(((AnvilInventory) object.inventory).getMaximumRepairCost());
         });
 
         // <--[tag]
@@ -2269,14 +2200,11 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Returns the current entered renaming text on an anvil.
         // -->
-        registerTag("anvil_rename_text", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-                if (!(object.inventory instanceof AnvilInventory)) {
-                    return null;
-                }
-                return new ElementTag(((AnvilInventory) object.inventory).getRenameText());
+        registerTag("anvil_rename_text", (attribute, object) -> {
+            if (!(object.inventory instanceof AnvilInventory)) {
+                return null;
             }
+            return new ElementTag(((AnvilInventory) object.inventory).getRenameText());
         });
 
         // <--[tag]
@@ -2286,15 +2214,12 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Returns the item currently in the fuel section of a furnace inventory.
         // -->
-        registerTag("fuel", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-                ItemTag fuel = object.getFuel();
-                if (fuel == null) {
-                    return null;
-                }
-                return fuel;
+        registerTag("fuel", (attribute, object) -> {
+            ItemTag fuel = object.getFuel();
+            if (fuel == null) {
+                return null;
             }
+            return fuel;
         });
 
         // <--[tag]
@@ -2304,15 +2229,12 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Returns the item currently in the smelting section of a furnace inventory.
         // -->
-        registerTag("smelting", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-                ItemTag smelting = object.getSmelting();
-                if (smelting == null) {
-                    return null;
-                }
-                return smelting;
+        registerTag("smelting", (attribute, object) -> {
+            ItemTag smelting = object.getSmelting();
+            if (smelting == null) {
+                return null;
             }
+            return smelting;
         });
 
         // <--[tag]
@@ -2322,18 +2244,15 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // Always returns 'Inventory' for InventoryTag objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
-        registerTag("type", new TagRunnable.ObjectForm<InventoryTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, InventoryTag object) {
-                return new ElementTag("Inventory");
-            }
+        registerTag("type", (attribute, object) -> {
+            return new ElementTag("Inventory");
         });
     }
 
     public static ObjectTagProcessor<InventoryTag> tagProcessor = new ObjectTagProcessor<>();
 
-    public static void registerTag(String name, TagRunnable.ObjectForm<InventoryTag> runnable) {
-        tagProcessor.registerTag(name, runnable);
+    public static void registerTag(String name, TagRunnable.ObjectInterface<InventoryTag> runnable, String... variants) {
+        tagProcessor.registerTag(name, runnable, variants);
     }
 
     @Override

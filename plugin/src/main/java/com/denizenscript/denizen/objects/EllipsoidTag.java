@@ -274,18 +274,14 @@ public class EllipsoidTag implements ObjectTag, Notable {
         // Optionally, specify a list of materials to only return locations
         // with that block type.
         // -->
-        registerTag("blocks", new TagRunnable.ObjectForm<EllipsoidTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, EllipsoidTag object) {
-                if (attribute.hasContext(1)) {
-                    return new ListTag(object.getBlocks(ListTag.valueOf(attribute.getContext(1)).filter(MaterialTag.class, attribute.context), attribute));
-                }
-                else {
-                    return new ListTag(object.getBlocks(attribute));
-                }
+        registerTag("blocks", (attribute, object) -> {
+            if (attribute.hasContext(1)) {
+                return new ListTag(object.getBlocks(ListTag.valueOf(attribute.getContext(1)).filter(MaterialTag.class, attribute.context), attribute));
             }
-        });
-        registerTag("get_blocks", tagProcessor.registeredObjectTags.get("blocks"));
+            else {
+                return new ListTag(object.getBlocks(attribute));
+            }
+        }, "get_blocks");
 
         // <--[tag]
         // @attribute <EllipsoidTag.location>
@@ -293,11 +289,8 @@ public class EllipsoidTag implements ObjectTag, Notable {
         // @description
         // Returns the location of the ellipsoid.
         // -->
-        registerTag("location", new TagRunnable.ObjectForm<EllipsoidTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, EllipsoidTag object) {
-                return object.loc;
-            }
+        registerTag("location", (attribute, object) -> {
+            return object.loc;
         });
 
         // <--[tag]
@@ -306,11 +299,8 @@ public class EllipsoidTag implements ObjectTag, Notable {
         // @description
         // Returns the size of the ellipsoid.
         // -->
-        registerTag("size", new TagRunnable.ObjectForm<EllipsoidTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, EllipsoidTag object) {
-                return object.size;
-            }
+        registerTag("size", (attribute, object) -> {
+            return object.size;
         });
 
         // <--[tag]
@@ -320,18 +310,15 @@ public class EllipsoidTag implements ObjectTag, Notable {
         // Always returns 'Ellipsoid' for EllipsoidTag objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
-        registerTag("type", new TagRunnable.ObjectForm<EllipsoidTag>() {
-            @Override
-            public ObjectTag run(Attribute attribute, EllipsoidTag object) {
-                return new ElementTag("Ellipsoid");
-            }
+        registerTag("type", (attribute, object) -> {
+            return new ElementTag("Ellipsoid");
         });
     }
 
     public static ObjectTagProcessor<EllipsoidTag> tagProcessor = new ObjectTagProcessor<>();
 
-    public static void registerTag(String name, TagRunnable.ObjectForm<EllipsoidTag> runnable) {
-        tagProcessor.registerTag(name, runnable);
+    public static void registerTag(String name, TagRunnable.ObjectInterface<EllipsoidTag> runnable, String... variants) {
+        tagProcessor.registerTag(name, runnable, variants);
     }
 
     @Override
