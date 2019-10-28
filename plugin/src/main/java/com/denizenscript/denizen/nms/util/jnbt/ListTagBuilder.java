@@ -77,8 +77,8 @@ public class ListTagBuilder {
      *
      * @return the new list tag
      */
-    public ListTag build() {
-        return new ListTag(type, new ArrayList<>(entries));
+    public JNBTListTag build() {
+        return new JNBTListTag(type, new ArrayList<>(entries));
     }
 
     /**

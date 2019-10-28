@@ -113,7 +113,7 @@ public final class NBTOutputStream implements Closeable {
                 writeStringTagPayload((StringTag) tag);
                 break;
             case NBTConstants.TYPE_LIST:
-                writeListTagPayload((ListTag) tag);
+                writeListTagPayload((JNBTListTag) tag);
                 break;
             case NBTConstants.TYPE_COMPOUND:
                 writeCompoundTagPayload((CompoundTag) tag);
@@ -167,7 +167,7 @@ public final class NBTOutputStream implements Closeable {
      * @param tag The tag.
      * @throws IOException if an I/O error occurs.
      */
-    private void writeListTagPayload(ListTag tag) throws IOException {
+    private void writeListTagPayload(JNBTListTag tag) throws IOException {
         Class<? extends Tag> clazz = tag.getType();
         List<Tag> tags = tag.getValue();
         int size = tags.size();

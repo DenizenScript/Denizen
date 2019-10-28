@@ -141,7 +141,7 @@ public final class NBTInputStream implements Closeable {
                     tagList.add(tag);
                 }
 
-                return new ListTag(NBTUtils.getTypeClass(childType), tagList);
+                return new JNBTListTag(NBTUtils.getTypeClass(childType), tagList);
             case NBTConstants.TYPE_COMPOUND:
                 Map<String, Tag> tagMap = new HashMap<>();
                 while (true) {

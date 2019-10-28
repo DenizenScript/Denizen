@@ -31,7 +31,7 @@ package com.denizenscript.denizen.nms.abstracts;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.DoubleTag;
 import com.denizenscript.denizen.nms.util.jnbt.FloatTag;
-import com.denizenscript.denizen.nms.util.jnbt.ListTag;
+import com.denizenscript.denizen.nms.util.jnbt.JNBTListTag;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -70,8 +70,8 @@ public abstract class ImprovedOfflinePlayer {
     public abstract void setEnderChest(Inventory inventory);
 
     public Location getLocation() {
-        ListTag position = this.compound.getListTag("Pos");
-        ListTag rotation = this.compound.getListTag("Rotation");
+        JNBTListTag position = this.compound.getListTag("Pos");
+        JNBTListTag rotation = this.compound.getListTag("Rotation");
         return new Location(
                 Bukkit.getWorld(new UUID(this.compound.getLong("WorldUUIDMost"),
                         this.compound.getLong("WorldUUIDLeast"))),
@@ -97,8 +97,8 @@ public abstract class ImprovedOfflinePlayer {
                 .putLong("WorldUUIDMost", uuid.getMostSignificantBits())
                 .putLong("WorldUUIDLeast", uuid.getLeastSignificantBits())
                 .putInt("Dimension", w.getEnvironment().ordinal())
-                .put("Pos", new ListTag(DoubleTag.class, position))
-                .put("Rotation", new ListTag(FloatTag.class, rotation)).build();
+                .put("Pos", new JNBTListTag(DoubleTag.class, position))
+                .put("Rotation", new JNBTListTag(FloatTag.class, rotation)).build();
         if (this.autosave) {
             savePlayerData();
         }
@@ -432,7 +432,7 @@ public abstract class ImprovedOfflinePlayer {
     }
 
     public Vector getVelocity() {
-        ListTag list = this.compound.getListTag("Motion");
+        JNBTListTag list = this.compound.getListTag("Motion");
         return new Vector(list.getDouble(0), list.getDouble(1), list.getDouble(2));
     }
 
@@ -441,7 +441,7 @@ public abstract class ImprovedOfflinePlayer {
         motion.add(new DoubleTag(vector.getX()));
         motion.add(new DoubleTag(vector.getY()));
         motion.add(new DoubleTag(vector.getZ()));
-        this.compound = compound.createBuilder().put("Motion", new ListTag(DoubleTag.class, motion)).build();
+        this.compound = compound.createBuilder().put("Motion", new JNBTListTag(DoubleTag.class, motion)).build();
         if (this.autosave) {
             savePlayerData();
         }

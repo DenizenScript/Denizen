@@ -153,7 +153,7 @@ public class CustomNBT {
 
         CompoundTag ct = NMSHandler.getInstance().createCompoundTag(tmap);
         attribs.add(ct);
-        ListTag lt = new ListTag(CompoundTag.class, attribs);
+        JNBTListTag lt = new JNBTListTag(CompoundTag.class, attribs);
         compoundTag = compoundTag.createBuilder().put(KEY_ATTRIBUTES, lt).build();
 
         return NMSHandler.getItemHelper().setNbtData(itemStack, compoundTag);
@@ -194,7 +194,7 @@ public class CustomNBT {
             internalMaterials.add(new StringTag(NMSHandler.getItemHelper().getInternalNameFromMaterial(material)));
         }
 
-        ListTag lt = new ListTag(StringTag.class, internalMaterials);
+        JNBTListTag lt = new JNBTListTag(StringTag.class, internalMaterials);
         compoundTag = compoundTag.createBuilder().put(key, lt).build();
 
         return NMSHandler.getItemHelper().setNbtData(itemStack, compoundTag);

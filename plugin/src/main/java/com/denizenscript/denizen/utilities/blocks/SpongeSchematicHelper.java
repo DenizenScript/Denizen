@@ -62,7 +62,7 @@ public class SpongeSchematicHelper {
             }
             Map<BlockVector, Map<String, Tag>> tileEntitiesMap = new HashMap<>();
             if (schematic.containsKey("BlockEntities")) {
-                List<Tag> tileEntities = getChildTag(schematic, "BlockEntities", ListTag.class).getValue();
+                List<Tag> tileEntities = getChildTag(schematic, "BlockEntities", JNBTListTag.class).getValue();
                 for (Tag tag : tileEntities) {
                     if (!(tag instanceof CompoundTag)) {
                         continue;
@@ -168,7 +168,7 @@ public class SpongeSchematicHelper {
             schematic.put("PaletteMax", new IntTag(paletteMax));
             schematic.put("Palette", NMSHandler.getInstance().createCompoundTag(palette));
             schematic.put("BlockData", new ByteArrayTag(blocksBuffer.toByteArray()));
-            schematic.put("BlockEntities", new ListTag(CompoundTag.class, tileEntities));
+            schematic.put("BlockEntities", new JNBTListTag(CompoundTag.class, tileEntities));
             CompoundTag schematicTag = NMSHandler.getInstance().createCompoundTag(schematic);
             NBTOutputStream stream = new NBTOutputStream(new GZIPOutputStream(os));
             stream.writeNamedTag("Schematic", schematicTag);

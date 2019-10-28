@@ -26,7 +26,7 @@ import java.util.NoSuchElementException;
 /**
  * The {@code TAG_List} tag.
  */
-public final class ListTag extends Tag {
+public final class JNBTListTag extends Tag {
 
     private final Class<? extends Tag> type;
     private final List<Tag> value;
@@ -37,7 +37,7 @@ public final class ListTag extends Tag {
      * @param type  the type of tag
      * @param value the value of the tag
      */
-    public ListTag(Class<? extends Tag> type, List<? extends Tag> value) {
+    public JNBTListTag(Class<? extends Tag> type, List<? extends Tag> value) {
         super();
         checkNotNull(value);
         this.type = type;
@@ -64,8 +64,8 @@ public final class ListTag extends Tag {
      * @param list the new list
      * @return a new list tag
      */
-    public ListTag setValue(List<Tag> list) {
-        return new ListTag(getType(), list);
+    public JNBTListTag setValue(List<Tag> list) {
+        return new JNBTListTag(getType(), list);
     }
 
     /**
@@ -290,8 +290,8 @@ public final class ListTag extends Tag {
      */
     public List<Tag> getList(int index) {
         Tag tag = getIfExists(index);
-        if (tag instanceof ListTag) {
-            return ((ListTag) tag).getValue();
+        if (tag instanceof JNBTListTag) {
+            return ((JNBTListTag) tag).getValue();
         }
         else {
             return Collections.emptyList();
@@ -307,13 +307,13 @@ public final class ListTag extends Tag {
      * @param index the index
      * @return a tag list instance
      */
-    public ListTag getListTag(int index) {
+    public JNBTListTag getListTag(int index) {
         Tag tag = getIfExists(index);
-        if (tag instanceof ListTag) {
-            return (ListTag) tag;
+        if (tag instanceof JNBTListTag) {
+            return (JNBTListTag) tag;
         }
         else {
-            return new ListTag(StringTag.class, Collections.<Tag>emptyList());
+            return new JNBTListTag(StringTag.class, Collections.<Tag>emptyList());
         }
     }
 
@@ -333,8 +333,8 @@ public final class ListTag extends Tag {
     @SuppressWarnings("unchecked")
     public <T extends Tag> List<T> getList(int index, Class<T> listType) {
         Tag tag = getIfExists(index);
-        if (tag instanceof ListTag) {
-            ListTag listTag = (ListTag) tag;
+        if (tag instanceof JNBTListTag) {
+            JNBTListTag listTag = (JNBTListTag) tag;
             if (listTag.getType().equals(listType)) {
                 return (List<T>) listTag.getValue();
             }

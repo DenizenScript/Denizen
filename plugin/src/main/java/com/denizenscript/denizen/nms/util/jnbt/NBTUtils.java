@@ -58,7 +58,7 @@ public final class NBTUtils {
         else if (clazz.equals(IntTag.class)) {
             return "TAG_Int";
         }
-        else if (clazz.equals(ListTag.class)) {
+        else if (clazz.equals(JNBTListTag.class)) {
             return "TAG_List";
         }
         else if (clazz.equals(LongTag.class)) {
@@ -108,7 +108,7 @@ public final class NBTUtils {
         else if (clazz.equals(IntTag.class)) {
             return NBTConstants.TYPE_INT;
         }
-        else if (clazz.equals(ListTag.class)) {
+        else if (clazz.equals(JNBTListTag.class)) {
             return NBTConstants.TYPE_LIST;
         }
         else if (clazz.equals(LongTag.class)) {
@@ -157,7 +157,7 @@ public final class NBTUtils {
             case NBTConstants.TYPE_STRING:
                 return StringTag.class;
             case NBTConstants.TYPE_LIST:
-                return ListTag.class;
+                return JNBTListTag.class;
             case NBTConstants.TYPE_COMPOUND:
                 return CompoundTag.class;
             case NBTConstants.TYPE_INT_ARRAY:

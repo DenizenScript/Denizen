@@ -68,7 +68,7 @@ public final class NBTConstants {
             case TYPE_STRING:
                 return StringTag.class;
             case TYPE_LIST:
-                return ListTag.class;
+                return JNBTListTag.class;
             case TYPE_COMPOUND:
                 return CompoundTag.class;
             case TYPE_INT_ARRAY:

@@ -42,9 +42,9 @@ public class CompoundTagImpl extends CompoundTag {
             else if (entry.getValue() instanceof IntArrayTag) {
                 tag.setIntArray(entry.getKey(), ((IntArrayTag) entry.getValue()).getValue());
             }
-            else if (entry.getValue() instanceof ListTag) {
+            else if (entry.getValue() instanceof JNBTListTag) {
                 NBTTagList list = new NBTTagList();
-                List<Tag> tags = ((ListTag) entry.getValue()).getValue();
+                List<Tag> tags = ((JNBTListTag) entry.getValue()).getValue();
                 for (Tag btag : tags) {
                     HashMap<String, Tag> btags = new HashMap<>();
                     btags.put("test", btag);

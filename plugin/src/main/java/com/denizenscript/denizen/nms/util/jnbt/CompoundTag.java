@@ -288,8 +288,8 @@ public abstract class CompoundTag extends Tag {
      */
     public List<Tag> getList(String key) {
         Tag tag = value.get(key);
-        if (tag instanceof ListTag) {
-            return ((ListTag) tag).getValue();
+        if (tag instanceof JNBTListTag) {
+            return ((JNBTListTag) tag).getValue();
         }
         else {
             return Collections.emptyList();
@@ -305,13 +305,13 @@ public abstract class CompoundTag extends Tag {
      * @param key the key
      * @return a tag list instance
      */
-    public ListTag getListTag(String key) {
+    public JNBTListTag getListTag(String key) {
         Tag tag = value.get(key);
-        if (tag instanceof ListTag) {
-            return (ListTag) tag;
+        if (tag instanceof JNBTListTag) {
+            return (JNBTListTag) tag;
         }
         else {
-            return new ListTag(StringTag.class, Collections.<Tag>emptyList());
+            return new JNBTListTag(StringTag.class, Collections.<Tag>emptyList());
         }
     }
 
@@ -331,8 +331,8 @@ public abstract class CompoundTag extends Tag {
     @SuppressWarnings("unchecked")
     public <T extends Tag> List<T> getList(String key, Class<T> listType) {
         Tag tag = value.get(key);
-        if (tag instanceof ListTag) {
-            ListTag listTag = (ListTag) tag;
+        if (tag instanceof JNBTListTag) {
+            JNBTListTag listTag = (JNBTListTag) tag;
             if (listTag.getType().equals(listType)) {
                 return (List<T>) listTag.getValue();
             }

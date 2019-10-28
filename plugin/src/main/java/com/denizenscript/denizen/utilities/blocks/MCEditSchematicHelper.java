@@ -75,7 +75,7 @@ public class MCEditSchematicHelper {
                     }
                 }
             }
-            List<Tag> tileEntities = getChildTag(schematic, "TileEntities", ListTag.class).getValue();
+            List<Tag> tileEntities = getChildTag(schematic, "TileEntities", JNBTListTag.class).getValue();
             Map<BlockVector, Map<String, Tag>> tileEntitiesMap = new HashMap<>();
             for (Tag tag : tileEntities) {
                 if (!(tag instanceof CompoundTag)) {
@@ -198,8 +198,8 @@ public class MCEditSchematicHelper {
             }
             schematic.put("Blocks", new ByteArrayTag(blocks));
             schematic.put("Data", new ByteArrayTag(blockData));
-            schematic.put("Entities", new ListTag(CompoundTag.class, new ArrayList<>()));
-            schematic.put("TileEntities", new ListTag(CompoundTag.class, tileEntities));
+            schematic.put("Entities", new JNBTListTag(CompoundTag.class, new ArrayList<>()));
+            schematic.put("TileEntities", new JNBTListTag(CompoundTag.class, tileEntities));
             if (addBlocks != null) {
                 schematic.put("AddBlocks", new ByteArrayTag(addBlocks));
             }

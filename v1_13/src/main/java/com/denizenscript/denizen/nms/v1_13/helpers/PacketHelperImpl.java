@@ -3,7 +3,7 @@ package com.denizenscript.denizen.nms.v1_13.helpers;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.PacketHelper;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
-import com.denizenscript.denizen.nms.util.jnbt.ListTag;
+import com.denizenscript.denizen.nms.util.jnbt.JNBTListTag;
 import com.denizenscript.denizen.nms.v1_13.impl.jnbt.CompoundTagImpl;
 import io.netty.buffer.Unpooled;
 import net.md_5.bungee.api.ChatMessageType;
@@ -148,7 +148,7 @@ public class PacketHelperImpl implements PacketHelper {
         CompoundTag compoundTag = NMSHandler.getBlockHelper().getNbtData(location.getBlock())
                 .createBuilder()
                 .putInt("Base", base.getDyeData())
-                .put("Patterns", new ListTag(CompoundTag.class, nbtPatterns))
+                .put("Patterns", new JNBTListTag(CompoundTag.class, nbtPatterns))
                 .build();
         showTileEntityData(player, location, 3, compoundTag);
     }
