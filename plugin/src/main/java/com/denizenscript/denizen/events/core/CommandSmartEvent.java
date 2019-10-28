@@ -207,14 +207,18 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
         context.put("parsed_args", new ListTag(parsed_args));
         context.put("command", new ElementTag(command));
         context.put("raw_args", new ElementTag((message.split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : "")));
-        context.put("server", new ElementTag(true));
 
         CommandSender sender = event.getSender();
         if (sender instanceof BlockCommandSender) {
             context.put("command_block_location", new LocationTag(((BlockCommandSender) sender).getBlock().getLocation()));
+            context.put("server", new ElementTag(false));
         }
         else if (sender instanceof CommandMinecart) {
             context.put("command_minecart", new EntityTag((CommandMinecart) sender));
+            context.put("server", new ElementTag(false));
+        }
+        else {
+            context.put("server", new ElementTag(true));
         }
 
         String determination = BukkitWorldScriptHelper.doEvents(events, null, null, context);
