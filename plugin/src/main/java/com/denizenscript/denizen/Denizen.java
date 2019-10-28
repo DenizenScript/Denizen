@@ -407,7 +407,8 @@ public class Denizen extends JavaPlugin {
             supportsPaper = false;
             Debug.echoError(ex);
         }
-        new ExCommandHandler().enableFor(getCommand("ex"));
+        ExCommandHandler exCommand = new ExCommandHandler();
+        exCommand.enableFor(getCommand("ex"));
 
         // Load script files without processing.
         DenizenCore.preloadScripts();
@@ -419,10 +420,12 @@ public class Denizen extends JavaPlugin {
         ServerPrestartScriptEvent.instance.specialHackRunEvent();
 
         // Run everything else on the first server tick
-        getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
             @Override
             public void run() {
                 try {
+                    exCommand.processTagList();
+
                     // Process script files (events, etc).
                     DenizenCore.postLoadScripts();
 
@@ -441,20 +444,20 @@ public class Denizen extends JavaPlugin {
                         Debug.echoError("Don't screw with bad config values.");
                         Bukkit.shutdown();
                     }
+
+                    Bukkit.getScheduler().scheduleSyncRepeatingTask(Denizen.this, new Runnable() {
+                        @Override
+                        public void run() {
+                            Debug.outputThisTick = 0;
+                            DenizenCore.tick(50); // Sadly, minecraft has no delta timing, so a tick is always 50ms.
+                        }
+                    }, 1, 1);
                 }
                 catch (Exception e) {
                     Debug.echoError(e);
                 }
             }
         }, 1);
-
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-            @Override
-            public void run() {
-                Debug.outputThisTick = 0;
-                DenizenCore.tick(50); // Sadly, minecraft has no delta timing, so a tick is always 50ms.
-            }
-        }, 1, 1);
 
         new BukkitRunnable() {
             @Override
