@@ -18,21 +18,288 @@ public class TextTagBase {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
-                specialCharacterTags(event);
-            }
-        }, "&auml", "&Auml", "&ouml", "&Ouml", "&uuml", "&Uuml", "&nl", "&amp", "&cm", "&ss", "&sq", "&sp", "&nbsp",
-                "&dq", "&co", "&sc", "&rb", "&lb", "&rc", "&lc", "&ns", "&pc", "&pipe",
-                "&ds", "&lt", "&gt", "&bs", "&at", "&dot", "&hrt", "&chr");
-        for (ChatColor color : ChatColor.values()) {
-            final String nameVal = CoreUtilities.toLowerCase(color.name());
-            final String retVal = color.toString();
-            TagManager.registerTagHandler(new TagRunnable.RootForm() {
-                @Override
-                public void run(ReplaceableTagEvent event) {
-                    event.setReplacedObject(new ElementTag(retVal).getObjectAttribute(event.getAttributes().fulfill(1)));
+                String lower = CoreUtilities.toLowerCase(event.getName());
+                Attribute attribute = event.getAttributes();
+                if (event.getName().equals("&auml")) {
+                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    event.setReplaced(new ElementTag("ä").getAttribute(attribute.fulfill(1)));
                 }
-            }, nameVal, "&" + color.getChar());
-        }
+                else if (event.getName().equals("&Auml")) {
+                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    event.setReplaced(new ElementTag("Ä").getAttribute(attribute.fulfill(1)));
+                }
+                else if (event.getName().equals("&ouml")) {
+                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    event.setReplaced(new ElementTag("ö").getAttribute(attribute.fulfill(1)));
+                }
+                else if (event.getName().equals("&Ouml")) {
+                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    event.setReplaced(new ElementTag("Ö").getAttribute(attribute.fulfill(1)));
+                }
+                else if (event.getName().equals("&uuml")) {
+                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    event.setReplaced(new ElementTag("ü").getAttribute(attribute.fulfill(1)));
+                }
+                else if (event.getName().equals("&Uuml")) {
+                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    event.setReplaced(new ElementTag("Ü").getAttribute(attribute.fulfill(1)));
+                }
+                else if (lower.equals("&amp")) {
+                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    event.setReplaced(new ElementTag("&").getAttribute(attribute.fulfill(1)));
+                }
+                else if (lower.equals("&cm")) {
+                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    event.setReplaced(new ElementTag(",").getAttribute(attribute.fulfill(1)));
+                }
+                else if (lower.equals("&sc")) {
+                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    event.setReplaced(new ElementTag(String.valueOf((char) 0x2011)).getAttribute(attribute.fulfill(1)));
+                }
+                else if (lower.equals("&pipe")) {
+                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    event.setReplaced(new ElementTag("|").getAttribute(attribute.fulfill(1)));
+                }
+                else if (lower.equals("&ds")) {
+                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    event.setReplaced(new ElementTag("$").getAttribute(attribute.fulfill(1)));
+                }
+                else if (lower.equals("&at")) {
+                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    event.setReplaced(new ElementTag("@").getAttribute(attribute.fulfill(1)));
+                }
+                else if (lower.equals("&dot")) {
+                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    event.setReplaced(new ElementTag(".").getAttribute(attribute.fulfill(1)));
+                }
+                else if (lower.equals("&hrt")) {
+                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    event.setReplaced(new ElementTag("\u2665").getAttribute(attribute.fulfill(1)));
+                }
+            }
+        }, "&auml", "&Auml", "&ouml", "&Ouml", "&uuml", "&Uuml", "&amp", "&cm", "&sc", "&pipe", "&ds", "&at", "&dot", "&hrt");
+
+        // <--[tag]
+        // @attribute <&pc>
+        // @returns ElementTag
+        // @description
+        // Returns a percent symbol: %
+        // -->
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                event.setReplaced(new ElementTag("%").getAttribute(event.getAttributes().fulfill(1)));
+            }
+        }, "&pc");
+
+        // <--[tag]
+        // @attribute <&nl>
+        // @returns ElementTag
+        // @description
+        // Returns a newline symbol.
+        // -->
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                event.setReplaced(new ElementTag("\n").getAttribute(event.getAttributes().fulfill(1)));
+            }
+        }, "&nl");
+
+        // <--[tag]
+        // @attribute <&ss>
+        // @returns ElementTag
+        // @description
+        // Returns an internal coloring symbol: §
+        // -->
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                event.setReplaced(new ElementTag("§").getAttribute(event.getAttributes().fulfill(1)));
+            }
+        }, "&ss");
+
+        // <--[tag]
+        // @attribute <&sq>
+        // @returns ElementTag
+        // @description
+        // Returns a single-quote symbol: '
+        // -->
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                event.setReplaced(new ElementTag("'").getAttribute(event.getAttributes().fulfill(1)));
+            }
+        }, "&sq");
+
+        // <--[tag]
+        // @attribute <&sp>
+        // @returns ElementTag
+        // @description
+        // Returns a space symbol.
+        // -->
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                event.setReplaced(new ElementTag(String.valueOf(' ')).getAttribute(event.getAttributes().fulfill(1)));
+            }
+        }, "&sp");
+
+        // <--[tag]
+        // @attribute <&nbsp>
+        // @returns ElementTag
+        // @description
+        // Returns a non-breaking space symbol.
+        // -->
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                event.setReplaced(new ElementTag(String.valueOf((char) 0x00A0)).getAttribute(event.getAttributes().fulfill(1)));
+            }
+        }, "&nbsp");
+
+        // <--[tag]
+        // @attribute <&dq>
+        // @returns ElementTag
+        // @description
+        // Returns a double-quote symbol: "
+        // -->
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                event.setReplaced(new ElementTag("\"").getAttribute(event.getAttributes().fulfill(1)));
+            }
+        }, "&dq");
+
+        // <--[tag]
+        // @attribute <&co>
+        // @returns ElementTag
+        // @description
+        // Returns a colon symbol: :
+        // -->
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                event.setReplaced(new ElementTag(":").getAttribute(event.getAttributes().fulfill(1)));
+            }
+        }, "&co");
+
+        // <--[tag]
+        // @attribute <&rb>
+        // @returns ElementTag
+        // @description
+        // Returns a right-bracket symbol: ]
+        // -->
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                event.setReplaced(new ElementTag("]").getAttribute(event.getAttributes().fulfill(1)));
+            }
+        }, "&rb");
+
+        // <--[tag]
+        // @attribute <&lb>
+        // @returns ElementTag
+        // @description
+        // Returns a left-bracket symbol: [
+        // -->
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                event.setReplaced(new ElementTag("[").getAttribute(event.getAttributes().fulfill(1)));
+            }
+        }, "&lb");
+
+        // <--[tag]
+        // @attribute <&rc>
+        // @returns ElementTag
+        // @description
+        // Returns a right-brace symbol: }
+        // -->
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                event.setReplaced(new ElementTag("}").getAttribute(event.getAttributes().fulfill(1)));
+            }
+        }, "&rc");
+
+        // <--[tag]
+        // @attribute <&lc>
+        // @returns ElementTag
+        // @description
+        // Returns a left-brace symbol: {
+        // -->
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                event.setReplaced(new ElementTag("{").getAttribute(event.getAttributes().fulfill(1)));
+            }
+        }, "&lc");
+
+        // <--[tag]
+        // @attribute <&ns>
+        // @returns ElementTag
+        // @description
+        // Returns a number sign / hash / pound symbol: #
+        // -->
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                event.setReplaced(new ElementTag("#").getAttribute(event.getAttributes().fulfill(1)));
+            }
+        }, "&ns");
+
+        // <--[tag]
+        // @attribute <&lt>
+        // @returns ElementTag
+        // @description
+        // Returns a less than symbol: <
+        // -->
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                event.setReplaced(new ElementTag(String.valueOf((char) 0x01)).getAttribute(event.getAttributes().fulfill(1)));
+            }
+        }, "&lt");
+
+        // <--[tag]
+        // @attribute <&gt>
+        // @returns ElementTag
+        // @description
+        // Returns a greater than symbol: >
+        // -->
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                event.setReplaced(new ElementTag(String.valueOf((char) 0x02)).getAttribute(event.getAttributes().fulfill(1)));
+            }
+        }, "&gt");
+
+        // <--[tag]
+        // @attribute <&bs>
+        // @returns ElementTag
+        // @description
+        // Returns a backslash symbol: \
+        // -->
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                event.setReplaced(new ElementTag("\\").getAttribute(event.getAttributes().fulfill(1)));
+            }
+        }, "&bs");
+
+        // <--[tag]
+        // @attribute <&chr[<character>]>
+        // @returns ElementTag
+        // @description
+        // Returns the Unicode character specified. e.g. <&chr[2665]> returns a heart.
+        // -->
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                String chr = String.valueOf((char) Integer.parseInt(event.getAttributes().getContext(1), 16));
+                event.setReplaced(new ElementTag(chr).getAttribute(event.getAttributes().fulfill(1)));
+            }
+        }, "&chr");
 
         // <--[tag]
         // @attribute <n>
@@ -273,550 +540,326 @@ public class TextTagBase {
                 event.setReplacedObject(new ElementTag(ChatColor.COLOR_CHAR + "[score=" + name + ";" + objective + ";" + value + "]").getObjectAttribute(attribute.fulfill(1)));
             }
         }, "&score");
-    }
-
-    // <--[tag]
-    // @attribute <&0>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Black.
-    // -->
-
-    // <--[tag]
-    // @attribute <&1>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Dark Blue.
-    // -->
-
-    // <--[tag]
-    // @attribute <&2>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Dark Green.
-    // -->
-
-    // <--[tag]
-    // @attribute <&3>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Dark Cyan.
-    // -->
-
-    // <--[tag]
-    // @attribute <&4>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Dark Red.
-    // -->
-
-    // <--[tag]
-    // @attribute <&5>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Dark Magenta.
-    // -->
-
-    // <--[tag]
-    // @attribute <&6>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Gold.
-    // -->
-
-    // <--[tag]
-    // @attribute <&7>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Light Gray.
-    // -->
-
-    // <--[tag]
-    // @attribute <&8>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Dark Gray.
-    // -->
-
-    // <--[tag]
-    // @attribute <&9>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Light Blue.
-    // -->
-
-    // <--[tag]
-    // @attribute <&a>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Light Green.
-    // -->
-
-    // <--[tag]
-    // @attribute <&b>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Cyan.
-    // -->
-
-    // <--[tag]
-    // @attribute <&c>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Light Red.
-    // -->
-
-    // <--[tag]
-    // @attribute <&d>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Magenta.
-    // -->
-
-    // <--[tag]
-    // @attribute <&e>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Yellow.
-    // -->
-
-    // <--[tag]
-    // @attribute <&f>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters White.
-    // -->
-
-    // <--[tag]
-    // @attribute <&k>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters obfuscated.
-    // -->
-
-    // <--[tag]
-    // @attribute <&l>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters bold.
-    // -->
-
-    // <--[tag]
-    // @attribute <&m>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters have a strike-through.
-    // -->
-
-    // <--[tag]
-    // @attribute <&n>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters have an underline.
-    // -->
-
-    // <--[tag]
-    // @attribute <&o>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters italicized.
-    // -->
-
-    // <--[tag]
-    // @attribute <&r>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that resets the following characters to normal.
-    // -->
-
-    // <--[tag]
-    // @attribute <black>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Black.
-    // -->
-
-    // <--[tag]
-    // @attribute <dark_blue>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Dark Blue.
-    // -->
-
-    // <--[tag]
-    // @attribute <dark_green>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Dark Green.
-    // -->
-
-    // <--[tag]
-    // @attribute <dark_aqua>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Dark Cyan.
-    // -->
-
-    // <--[tag]
-    // @attribute <dark_red>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Dark Red.
-    // -->
-
-    // <--[tag]
-    // @attribute <dark_purple>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Dark Magenta.
-    // -->
-
-    // <--[tag]
-    // @attribute <gold>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Gold.
-    // -->
-
-    // <--[tag]
-    // @attribute <gray>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Light Gray.
-    // -->
-
-    // <--[tag]
-    // @attribute <dark_gray>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Dark Gray.
-    // -->
-
-    // <--[tag]
-    // @attribute <blue>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Light Blue.
-    // -->
-
-    // <--[tag]
-    // @attribute <green>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Light Green.
-    // -->
-
-    // <--[tag]
-    // @attribute <aqua>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Cyan.
-    // -->
-
-    // <--[tag]
-    // @attribute <red>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Light Red.
-    // -->
-
-    // <--[tag]
-    // @attribute <light_purple>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Magenta.
-    // -->
-
-    // <--[tag]
-    // @attribute <yellow>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters Yellow.
-    // -->
-
-    // <--[tag]
-    // @attribute <white>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters White.
-    // -->
-
-    // <--[tag]
-    // @attribute <magic>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters obfuscated.
-    // -->
-
-    // <--[tag]
-    // @attribute <bold>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters bold.
-    // -->
-
-    // <--[tag]
-    // @attribute <strikethrough>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters have a strike-through.
-    // -->
-
-    // <--[tag]
-    // @attribute <underline>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters have an underline.
-    // -->
-
-    // <--[tag]
-    // @attribute <italic>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that makes the following characters italicized.
-    // -->
-
-    // <--[tag]
-    // @attribute <reset>
-    // @returns ElementTag
-    // @description
-    // Returns the ChatColor that resets the following characters to normal.
-    // -->
-
-
-    @TagManager.TagEvents
-    public void specialCharacterTags(ReplaceableTagEvent event) {
-        if (!event.getName().startsWith("&")) {
-            return;
-        }
-        String lower = CoreUtilities.toLowerCase(event.getName());
-        Attribute attribute = event.getAttributes();
-
-        if (event.getName().equals("&auml")) {
-            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-            event.setReplaced(new ElementTag("ä").getAttribute(attribute.fulfill(1)));
-        }
-        else if (event.getName().equals("&Auml")) {
-            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-            event.setReplaced(new ElementTag("Ä").getAttribute(attribute.fulfill(1)));
-        }
-        else if (event.getName().equals("&ouml")) {
-            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-            event.setReplaced(new ElementTag("ö").getAttribute(attribute.fulfill(1)));
-        }
-        else if (event.getName().equals("&Ouml")) {
-            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-            event.setReplaced(new ElementTag("Ö").getAttribute(attribute.fulfill(1)));
-        }
-        else if (event.getName().equals("&uuml")) {
-            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-            event.setReplaced(new ElementTag("ü").getAttribute(attribute.fulfill(1)));
-        }
-        else if (event.getName().equals("&Uuml")) {
-            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-            event.setReplaced(new ElementTag("Ü").getAttribute(attribute.fulfill(1)));
-        }
-        else if (lower.equals("&amp")) {
-            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-            event.setReplaced(new ElementTag("&").getAttribute(attribute.fulfill(1)));
-        }
-        else if (lower.equals("&cm")) {
-            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-            event.setReplaced(new ElementTag(",").getAttribute(attribute.fulfill(1)));
-        }
-        else if (lower.equals("&sc")) {
-            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-            event.setReplaced(new ElementTag(String.valueOf((char) 0x2011)).getAttribute(attribute.fulfill(1)));
-        }
-        else if (lower.equals("&pipe")) {
-            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-            event.setReplaced(new ElementTag("|").getAttribute(attribute.fulfill(1)));
-        }
-        else if (lower.equals("&ds")) {
-            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-            event.setReplaced(new ElementTag("$").getAttribute(attribute.fulfill(1)));
-        }
-        else if (lower.equals("&at")) {
-            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-            event.setReplaced(new ElementTag("@").getAttribute(attribute.fulfill(1)));
-        }
-        else if (lower.equals("&dot")) {
-            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-            event.setReplaced(new ElementTag(".").getAttribute(attribute.fulfill(1)));
-        }
-        else if (lower.equals("&hrt")) {
-            Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-            event.setReplaced(new ElementTag("\u2665").getAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
-        // @attribute <&pc>
+        // @attribute <&0>
         // @returns ElementTag
         // @description
-        // Returns a percent symbol: %
+        // Returns the ChatColor that makes the following characters Black.
         // -->
-        else if (lower.equals("&pc")) {
-            event.setReplaced(new ElementTag("%").getAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
-        // @attribute <&nl>
+        // @attribute <&1>
         // @returns ElementTag
         // @description
-        // Returns a newline symbol.
+        // Returns the ChatColor that makes the following characters Dark Blue.
         // -->
-        if (lower.equals("&nl")) {
-            event.setReplaced(new ElementTag("\n").getAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
-        // @attribute <&ss>
+        // @attribute <&2>
         // @returns ElementTag
         // @description
-        // Returns an internal coloring symbol: §
+        // Returns the ChatColor that makes the following characters Dark Green.
         // -->
-        else if (lower.equals("&ss")) {
-            event.setReplaced(new ElementTag("§").getAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
-        // @attribute <&sq>
+        // @attribute <&3>
         // @returns ElementTag
         // @description
-        // Returns a single-quote symbol: '
+        // Returns the ChatColor that makes the following characters Dark Cyan.
         // -->
-        else if (lower.equals("&sq")) {
-            event.setReplaced(new ElementTag("'").getAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
-        // @attribute <&sp>
+        // @attribute <&4>
         // @returns ElementTag
         // @description
-        // Returns a space symbol.
+        // Returns the ChatColor that makes the following characters Dark Red.
         // -->
-        else if (lower.equals("&sp")) {
-            event.setReplaced(new ElementTag(String.valueOf(' ')).getAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
-        // @attribute <&nbsp>
+        // @attribute <&5>
         // @returns ElementTag
         // @description
-        // Returns a non-breaking space symbol.
+        // Returns the ChatColor that makes the following characters Dark Magenta.
         // -->
-        else if (lower.equals("&nbsp")) {
-            event.setReplaced(new ElementTag(String.valueOf((char) 0x00A0)).getAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
-        // @attribute <&dq>
+        // @attribute <&6>
         // @returns ElementTag
         // @description
-        // Returns a double-quote symbol: "
+        // Returns the ChatColor that makes the following characters Gold.
         // -->
-        else if (lower.equals("&dq")) {
-            event.setReplaced(new ElementTag("\"").getAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
-        // @attribute <&co>
+        // @attribute <&7>
         // @returns ElementTag
         // @description
-        // Returns a colon symbol: :
+        // Returns the ChatColor that makes the following characters Light Gray.
         // -->
-        else if (lower.equals("&co")) {
-            event.setReplaced(new ElementTag(":").getAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
-        // @attribute <&rb>
+        // @attribute <&8>
         // @returns ElementTag
         // @description
-        // Returns a right-bracket symbol: ]
+        // Returns the ChatColor that makes the following characters Dark Gray.
         // -->
-        else if (lower.equals("&rb")) {
-            event.setReplaced(new ElementTag("]").getAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
-        // @attribute <&lb>
+        // @attribute <&9>
         // @returns ElementTag
         // @description
-        // Returns a left-bracket symbol: [
+        // Returns the ChatColor that makes the following characters Light Blue.
         // -->
-        else if (lower.equals("&lb")) {
-            event.setReplaced(new ElementTag("[").getAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
-        // @attribute <&rc>
+        // @attribute <&a>
         // @returns ElementTag
         // @description
-        // Returns a right-brace symbol: }
+        // Returns the ChatColor that makes the following characters Light Green.
         // -->
-        else if (lower.equals("&rc")) {
-            event.setReplaced(new ElementTag("}").getAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
-        // @attribute <&lc>
+        // @attribute <&b>
         // @returns ElementTag
         // @description
-        // Returns a left-brace symbol: {
+        // Returns the ChatColor that makes the following characters Cyan.
         // -->
-        else if (lower.equals("&lc")) {
-            event.setReplaced(new ElementTag("{").getAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
-        // @attribute <&ns>
+        // @attribute <&c>
         // @returns ElementTag
         // @description
-        // Returns a hash symbol: #
+        // Returns the ChatColor that makes the following characters Light Red.
         // -->
-        else if (lower.equals("&ns")) {
-            event.setReplaced(new ElementTag("#").getAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
-        // @attribute <&lt>
+        // @attribute <&d>
         // @returns ElementTag
         // @description
-        // Returns a less than symbol: <
+        // Returns the ChatColor that makes the following characters Magenta.
         // -->
-        else if (lower.equals("&lt")) {
-            event.setReplaced(new ElementTag(String.valueOf((char) 0x01)).getAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
-        // @attribute <&gt>
+        // @attribute <&e>
         // @returns ElementTag
         // @description
-        // Returns a greater than symbol: >
+        // Returns the ChatColor that makes the following characters Yellow.
         // -->
-        else if (lower.equals("&gt")) {
-            event.setReplaced(new ElementTag(String.valueOf((char) 0x02)).getAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
-        // @attribute <&bs>
+        // @attribute <&f>
         // @returns ElementTag
         // @description
-        // Returns a backslash symbol: \
+        // Returns the ChatColor that makes the following characters White.
         // -->
-        else if (lower.equals("&bs")) {
-            event.setReplaced(new ElementTag("\\").getAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
-        // @attribute <&chr[<character>]>
+        // @attribute <&k>
         // @returns ElementTag
         // @description
-        // Returns the Unicode character specified. e.g. <&chr[2665]> returns a heart.
+        // Returns the ChatColor that makes the following characters obfuscated.
         // -->
-        else if (attribute.startsWith("&chr") && attribute.hasContext(1)) {
-            event.setReplaced(new ElementTag(String.valueOf((char) Integer.parseInt(attribute.getContext(1), 16))).getAttribute(attribute.fulfill(1)));
+
+        // <--[tag]
+        // @attribute <&l>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters bold.
+        // -->
+
+        // <--[tag]
+        // @attribute <&m>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters have a strike-through.
+        // -->
+
+        // <--[tag]
+        // @attribute <&n>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters have an underline.
+        // -->
+
+        // <--[tag]
+        // @attribute <&o>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters italicized.
+        // -->
+
+        // <--[tag]
+        // @attribute <&r>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that resets the following characters to normal.
+        // -->
+
+        // <--[tag]
+        // @attribute <black>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters Black.
+        // -->
+
+        // <--[tag]
+        // @attribute <dark_blue>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters Dark Blue.
+        // -->
+
+        // <--[tag]
+        // @attribute <dark_green>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters Dark Green.
+        // -->
+
+        // <--[tag]
+        // @attribute <dark_aqua>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters Dark Cyan.
+        // -->
+
+        // <--[tag]
+        // @attribute <dark_red>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters Dark Red.
+        // -->
+
+        // <--[tag]
+        // @attribute <dark_purple>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters Dark Magenta.
+        // -->
+
+        // <--[tag]
+        // @attribute <gold>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters Gold.
+        // -->
+
+        // <--[tag]
+        // @attribute <gray>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters Light Gray.
+        // -->
+
+        // <--[tag]
+        // @attribute <dark_gray>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters Dark Gray.
+        // -->
+
+        // <--[tag]
+        // @attribute <blue>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters Light Blue.
+        // -->
+
+        // <--[tag]
+        // @attribute <green>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters Light Green.
+        // -->
+
+        // <--[tag]
+        // @attribute <aqua>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters Cyan.
+        // -->
+
+        // <--[tag]
+        // @attribute <red>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters Light Red.
+        // -->
+
+        // <--[tag]
+        // @attribute <light_purple>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters Magenta.
+        // -->
+
+        // <--[tag]
+        // @attribute <yellow>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters Yellow.
+        // -->
+
+        // <--[tag]
+        // @attribute <white>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters White.
+        // -->
+
+        // <--[tag]
+        // @attribute <magic>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters obfuscated.
+        // -->
+
+        // <--[tag]
+        // @attribute <bold>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters bold.
+        // -->
+
+        // <--[tag]
+        // @attribute <strikethrough>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters have a strike-through.
+        // -->
+
+        // <--[tag]
+        // @attribute <underline>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters have an underline.
+        // -->
+
+        // <--[tag]
+        // @attribute <italic>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that makes the following characters italicized.
+        // -->
+
+        // <--[tag]
+        // @attribute <reset>
+        // @returns ElementTag
+        // @description
+        // Returns the ChatColor that resets the following characters to normal.
+        // -->
+
+        for (ChatColor color : ChatColor.values()) {
+            final String nameVal = CoreUtilities.toLowerCase(color.name());
+            final String retVal = color.toString();
+            TagRunnable.RootForm form = new TagRunnable.RootForm() {
+                @Override
+                public void run(ReplaceableTagEvent event) {
+                    event.setReplacedObject(new ElementTag(retVal).getObjectAttribute(event.getAttributes().fulfill(1)));
+                }
+            };
+            TagManager.registerTagHandler(form, "&" + color.getChar());
+            TagManager.registerTagHandler(form, nameVal);
         }
     }
 }
