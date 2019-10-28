@@ -3,7 +3,7 @@ package com.denizenscript.denizen.npc.speech;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.Settings;
+import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 import com.denizenscript.denizencore.tags.TagManager;

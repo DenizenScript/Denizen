@@ -2,7 +2,7 @@ package com.denizenscript.denizen.utilities.debugging;
 
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.utilities.implementation.DenizenCoreImplementation;
-import com.denizenscript.denizen.Settings;
+import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.events.OldEventManager;

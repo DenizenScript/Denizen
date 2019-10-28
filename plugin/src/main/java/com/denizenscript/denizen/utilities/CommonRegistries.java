@@ -1,4 +1,4 @@
-package com.denizenscript.denizen;
+package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.tags.core.*;

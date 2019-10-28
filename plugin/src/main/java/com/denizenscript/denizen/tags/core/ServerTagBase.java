@@ -15,7 +15,7 @@ import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.Settings;
+import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.npc.traits.AssignmentTrait;
 import com.denizenscript.denizencore.objects.core.DurationTag;

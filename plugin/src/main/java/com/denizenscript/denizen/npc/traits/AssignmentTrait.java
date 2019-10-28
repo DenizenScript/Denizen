@@ -5,7 +5,7 @@ import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.Settings;
+import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.npc.DenizenNPCHelper;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;

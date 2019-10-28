@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.triggers;
 
-import com.denizenscript.denizen.Settings;
+import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;

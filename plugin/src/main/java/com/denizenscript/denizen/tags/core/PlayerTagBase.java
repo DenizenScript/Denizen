@@ -3,7 +3,7 @@ package com.denizenscript.denizen.tags.core;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.Settings;
+import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;

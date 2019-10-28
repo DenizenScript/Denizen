@@ -5,7 +5,7 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.ScoreboardHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
-import com.denizenscript.denizen.Settings;
+import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizencore.events.OldEventManager;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;

@@ -1,4 +1,4 @@
-package com.denizenscript.denizen;
+package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;

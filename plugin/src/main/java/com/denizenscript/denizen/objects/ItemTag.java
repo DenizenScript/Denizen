@@ -9,7 +9,7 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.OldMaterialsHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
-import com.denizenscript.denizen.Settings;
+import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.blocks.ModernBlockData;

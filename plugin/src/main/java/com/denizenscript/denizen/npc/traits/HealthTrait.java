@@ -3,7 +3,7 @@ package com.denizenscript.denizen.npc.traits;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.Settings;
+import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.tags.TagManager;

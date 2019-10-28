@@ -4,7 +4,7 @@ import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
-import com.denizenscript.denizen.Settings;
+import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;

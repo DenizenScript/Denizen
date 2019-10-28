@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.Settings;
+import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.npc.speech.DenizenSpeechContext;
 import com.denizenscript.denizen.npc.speech.DenizenSpeechController;
 import com.denizenscript.denizen.objects.EntityTag;

@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
-import com.denizenscript.denizen.Settings;
+import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;

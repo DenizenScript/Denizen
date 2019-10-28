@@ -5,7 +5,7 @@ import com.denizenscript.denizen.scripts.containers.core.InteractScriptHelper;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.Settings;
+import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.npc.traits.TriggerTrait;
 import com.denizenscript.denizen.objects.NPCTag;
