@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.bukkit;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.BukkitScriptEntryData;
+import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.Mechanism;

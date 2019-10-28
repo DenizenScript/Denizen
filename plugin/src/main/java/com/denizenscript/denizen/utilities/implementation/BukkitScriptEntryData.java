@@ -1,4 +1,4 @@
-package com.denizenscript.denizen;
+package com.denizenscript.denizen.utilities.implementation;
 
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;

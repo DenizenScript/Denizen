@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.nms.v1_14.helpers;
 
-import com.denizenscript.denizen.DenizenCoreImplementation;
+import com.denizenscript.denizen.utilities.implementation.DenizenCoreImplementation;
 import com.denizenscript.denizen.nms.interfaces.ChunkHelper;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;

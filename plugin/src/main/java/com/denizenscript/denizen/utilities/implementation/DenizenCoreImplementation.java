@@ -1,5 +1,7 @@
-package com.denizenscript.denizen;
+package com.denizenscript.denizen.utilities.implementation;
 
+import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
 import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.objects.*;
@@ -10,6 +12,7 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.DenizenImplementation;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ListTag;

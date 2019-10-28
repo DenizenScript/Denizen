@@ -2,7 +2,7 @@ package com.denizenscript.denizen.objects.properties.bukkit;
 
 import com.denizenscript.denizen.scripts.commands.core.CooldownCommand;
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptHelper;
-import com.denizenscript.denizen.BukkitScriptEntryData;
+import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;

@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.utilities.packets;
 
-import com.denizenscript.denizen.DenizenCoreImplementation;
+import com.denizenscript.denizen.utilities.implementation.DenizenCoreImplementation;
 import com.denizenscript.denizen.nms.interfaces.packets.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.player.PlayerReceivesMessageScriptEvent;

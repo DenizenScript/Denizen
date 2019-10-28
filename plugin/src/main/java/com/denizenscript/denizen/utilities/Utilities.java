@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.utilities.blocks.DirectionalBlocksHelper;
-import com.denizenscript.denizen.BukkitScriptEntryData;
+import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.Settings;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
