@@ -5,7 +5,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
 public class TradeHasXp implements Property {
 
@@ -19,10 +19,6 @@ public class TradeHasXp implements Property {
         }
         return new TradeHasXp((TradeTag) recipe);
     }
-
-    public static final String[] handledTags = new String[] {
-            "has_xp"
-    };
 
     public static final String[] handledMechs = new String[] {
             "has_xp"
@@ -45,10 +41,7 @@ public class TradeHasXp implements Property {
         return "has_xp";
     }
 
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <TradeTag.has_xp>
@@ -57,11 +50,9 @@ public class TradeHasXp implements Property {
         // @description
         // Returns whether the trade has an experience reward.
         // -->
-        if (attribute.startsWith("has_xp")) {
-            return new ElementTag(recipe.getRecipe().hasExperienceReward()).getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        PropertyParser.<TradeTag>registerTag("has_xp", (attribute, recipe) -> {
+            return new ElementTag(recipe.getRecipe().hasExperienceReward());
+        });
     }
 
     public void adjust(Mechanism mechanism) {

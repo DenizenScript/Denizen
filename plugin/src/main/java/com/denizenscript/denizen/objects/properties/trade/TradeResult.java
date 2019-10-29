@@ -5,7 +5,7 @@ import com.denizenscript.denizen.objects.TradeTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 
@@ -21,10 +21,6 @@ public class TradeResult implements Property {
         }
         return new TradeResult((TradeTag) recipe);
     }
-
-    public static final String[] handledTags = new String[] {
-            "result"
-    };
 
     public static final String[] handledMechs = new String[] {
             "result"
@@ -47,10 +43,7 @@ public class TradeResult implements Property {
         return "result";
     }
 
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <TradeTag.result>
@@ -59,11 +52,9 @@ public class TradeResult implements Property {
         // @description
         // Returns what the trade will give the player.
         // -->
-        if (attribute.startsWith("result")) {
-            return new ItemTag(recipe.getRecipe().getResult()).getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        PropertyParser.<TradeTag>registerTag("result", (attribute, recipe) -> {
+            return new ItemTag(recipe.getRecipe().getResult());
+        });
     }
 
     public void adjust(Mechanism mechanism) {

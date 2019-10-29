@@ -7,7 +7,7 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -25,10 +25,6 @@ public class TradeInputs implements Property {
         }
         return new TradeInputs((TradeTag) recipe);
     }
-
-    public static final String[] handledTags = new String[] {
-            "inputs"
-    };
 
     public static final String[] handledMechs = new String[] {
             "inputs"
@@ -55,10 +51,7 @@ public class TradeInputs implements Property {
         return "inputs";
     }
 
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <TradeTag.inputs>
@@ -67,15 +60,13 @@ public class TradeInputs implements Property {
         // @description
         // Returns the list of items required to make the trade.
         // -->
-        if (attribute.startsWith("inputs")) {
-            ArrayList<ItemTag> itemList = new ArrayList<>();
+        PropertyParser.<TradeTag>registerTag("inputs", (attribute, recipe) -> {
+            ListTag result = new ListTag();
             for (ItemStack item : recipe.getRecipe().getIngredients()) {
-                itemList.add(new ItemTag(item));
+                result.addObject(new ItemTag(item));
             }
-            return new ListTag(itemList).getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+            return result;
+        });
     }
 
     public void adjust(Mechanism mechanism) {

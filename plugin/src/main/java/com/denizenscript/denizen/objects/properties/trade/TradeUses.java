@@ -5,7 +5,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
 public class TradeUses implements Property {
 
@@ -19,10 +19,6 @@ public class TradeUses implements Property {
         }
         return new TradeUses((TradeTag) recipe);
     }
-
-    public static final String[] handledTags = new String[] {
-            "uses"
-    };
 
     public static final String[] handledMechs = new String[] {
             "uses"
@@ -45,10 +41,7 @@ public class TradeUses implements Property {
         return "uses";
     }
 
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <TradeTag.uses>
@@ -57,11 +50,9 @@ public class TradeUses implements Property {
         // @description
         // Returns how many times the trade has been used.
         // -->
-        if (attribute.startsWith("uses")) {
-            return new ElementTag(recipe.getRecipe().getUses()).getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        PropertyParser.<TradeTag>registerTag("uses", (attribute, recipe) -> {
+            return new ElementTag(recipe.getRecipe().getUses());
+        });
     }
 
     public void adjust(Mechanism mechanism) {
