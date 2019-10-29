@@ -10,6 +10,13 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 public class MaterialTagBase {
 
     public MaterialTagBase() {
+
+        // <--[tag]
+        // @attribute <material[<material>]>
+        // @returns MaterialTag
+        // @description
+        // Returns a material object constructed from the input value.
+        // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {

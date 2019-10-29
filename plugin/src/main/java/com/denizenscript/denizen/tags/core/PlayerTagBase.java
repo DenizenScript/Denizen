@@ -26,6 +26,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PlayerTagBase implements Listener {
 
     public PlayerTagBase() {
+
+        // <--[tag]
+        // @attribute <player[(<player>)]>
+        // @returns PlayerTag
+        // @description
+        // Returns a player object constructed from the input value.
+        // If no input value is specified, returns the linked player.
+        // -->
         Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override

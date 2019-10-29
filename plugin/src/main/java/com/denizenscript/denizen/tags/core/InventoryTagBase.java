@@ -10,6 +10,13 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 public class InventoryTagBase {
 
     public InventoryTagBase() {
+
+        // <--[tag]
+        // @attribute <inventory[<inventory>]>
+        // @returns InventoryTag
+        // @description
+        // Returns a inventory object constructed from the input value.
+        // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {

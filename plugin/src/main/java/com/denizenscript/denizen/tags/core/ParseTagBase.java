@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.utilities.Deprecations;
 public class ParseTagBase {
 
     public ParseTagBase() {
+        // Intentionally no docs due to deprecation
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {

@@ -10,6 +10,13 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 public class TradeTagBase {
 
     public TradeTagBase() {
+
+        // <--[tag]
+        // @attribute <trade[<trade>]>
+        // @returns TradeTag
+        // @description
+        // Returns a trade object constructed from the input value.
+        // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {

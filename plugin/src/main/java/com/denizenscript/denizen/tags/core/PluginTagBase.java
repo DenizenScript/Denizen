@@ -10,6 +10,13 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 public class PluginTagBase {
 
     public PluginTagBase() {
+
+        // <--[tag]
+        // @attribute <plugin[<plugin>]>
+        // @returns PluginTag
+        // @description
+        // Returns a plugin object constructed from the input value.
+        // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {

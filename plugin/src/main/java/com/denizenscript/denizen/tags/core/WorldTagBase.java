@@ -10,6 +10,13 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 public class WorldTagBase {
 
     public WorldTagBase() {
+
+        // <--[tag]
+        // @attribute <world[<world>]>
+        // @returns WorldTag
+        // @description
+        // Returns a world object constructed from the input value.
+        // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {

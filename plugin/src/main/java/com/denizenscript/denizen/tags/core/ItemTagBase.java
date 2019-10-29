@@ -10,6 +10,13 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 public class ItemTagBase {
 
     public ItemTagBase() {
+
+        // <--[tag]
+        // @attribute <item[<item>]>
+        // @returns ItemTag
+        // @description
+        // Returns a item object constructed from the input value.
+        // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {

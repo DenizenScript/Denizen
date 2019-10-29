@@ -10,6 +10,13 @@ import com.denizenscript.denizencore.utilities.Deprecations;
 public class LocationTagBase {
 
     public LocationTagBase() {
+
+        // <--[tag]
+        // @attribute <location[<location>]>
+        // @returns LocationTag
+        // @description
+        // Returns a location object constructed from the input value.
+        // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {

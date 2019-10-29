@@ -38,6 +38,14 @@ import java.util.Map;
 public class NPCTagBase implements Listener {
 
     public NPCTagBase() {
+
+        // <--[tag]
+        // @attribute <npc[(<npc>)]>
+        // @returns NPCTag
+        // @description
+        // Returns a npc object constructed from the input value.
+        // If no input value is specified, returns the linked NPC.
+        // -->
         if (Depends.citizens != null) {
             Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
             TagManager.registerTagHandler(new TagRunnable.RootForm() {
