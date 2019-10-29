@@ -89,6 +89,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
             else {
                 event.setVelocity(vel.toVector());
             }
+            return true;
         }
         else if (ItemTag.matches(determination)) {
             ItemTag it = ItemTag.valueOf(determination, path.container);
@@ -99,6 +100,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
                 item = it;
                 event.setItem(item.getItemStack());
             }
+            return true;
         }
         return super.applyDetermination(path, determinationObj);
     }

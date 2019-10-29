@@ -203,24 +203,11 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
     }
 
-    @Deprecated
-    public boolean runInCheck(ScriptContainer scriptContainer, String s, String lower, Location location) {
-        return runInCheck(scriptContainer, s, lower, location, "in");
-    }
-
-    @Deprecated
-    public boolean runInCheck(ScriptContainer scriptContainer, String s, String lower, Location location, String innote) {
-        return runInCheck(new ScriptPath(scriptContainer, s), location, innote);
-    }
-
     public boolean runInCheck(ScriptPath path, Location location) {
         return runInCheck(path, location, "in");
     }
 
     public boolean runInCheck(ScriptPath path, Location location, String innote) {
-        if (location == null) {
-            return false;
-        }
         String it = path.switches.get(innote);
         if (it == null) {
             int index;
@@ -232,6 +219,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             if (index >= path.eventArgsLower.length) {
                 // No 'in ...' specified
                 return true;
+            }
+            if (location == null) {
+                return false;
             }
             Deprecations.inAreaSwitchFormat.warn();
             it = path.eventArgLowerAt(index + 1);
@@ -248,6 +238,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                     return false;
                 }
             }
+        }
+        if (location == null) {
+            return false;
         }
         String lower = CoreUtilities.toLowerCase(it);
         if (lower.equals("cuboid")) {
@@ -303,13 +296,11 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return runWithCheck(new ScriptPath(scriptContainer, s), held);
     }
 
-    public static TagContext noDebugTagContext = new BukkitTagContext(null, null, false, null, false, null);
-
     public boolean runGenericCheck(String inputValue, String trueValue) {
         if (inputValue != null) {
             trueValue = CoreUtilities.toLowerCase(trueValue);
             inputValue = CoreUtilities.toLowerCase(inputValue);
-            if (inputValue.equalsIgnoreCase(trueValue)) {
+            if (inputValue.equals(trueValue)) {
                 return true;
             }
             Pattern regexd = regexHandle(inputValue);
@@ -325,7 +316,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (with != null) {
             value = CoreUtilities.toLowerCase(value);
             with = CoreUtilities.toLowerCase(with);
-            if (with.equalsIgnoreCase(value)) {
+            if (with.equals(value)) {
                 return true;
             }
             Pattern regexd = regexHandle(with);

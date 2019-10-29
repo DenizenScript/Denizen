@@ -87,6 +87,7 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
             if (lower.equals("buildable")) {
                 cancelled = false;
             }
+            return true;
         }
         return super.applyDetermination(path, determinationObj);
     }

@@ -176,6 +176,7 @@ public class ScriptEventRegistry {
         // World events
         ScriptEvent.registerScriptEvent(new ChunkLoadScriptEvent());
         ScriptEvent.registerScriptEvent(new ChunkUnloadScriptEvent());
+        ScriptEvent.registerScriptEvent(new CommandScriptEvent());
         ScriptEvent.registerScriptEvent(new InventoryPicksUpItemScriptEvent());
         ScriptEvent.registerScriptEvent(new ItemMoveScriptEvent());
         ScriptEvent.registerScriptEvent(new LightningStrikesScriptEvent());
