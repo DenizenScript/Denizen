@@ -17,22 +17,39 @@ public class FollowCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Follow
-    // @Syntax follow (followers:<entity>|...) (stop) (lead:<#.#>) (max:<#.#>) (speed:<#.#>) (target:<entity>) (allow_wander)
+    // @Syntax follow (followers:<entity>|...) (stop/target:<entity>) (lead:<#.#>) (max:<#.#>) (speed:<#.#>) (allow_wander)
     // @Required 0
     // @Short Causes a list of entities to follow a target.
     // @Group entity
     //
     // @Description
-    // TODO: Document Command Details
+    // Causes a list of entities to follow a target.
+    //
+    // Specify the list of followers or just one. If no follower is specified, will use the linked NPC.
+    //
+    // Specify either the target to follow, or 'stop'. If no target is specified, will use the linked player.
+    //
+    // Use 'speed' to set the movement speed multiplier.
+    // Use 'lead' to set how far away the follower will remain from the target (ie, it won't try to get closer than the 'lead' distance).
+    // Use 'max' to set the maximum distance between the follower and the target before the follower will automatically start teleporting to keep up.
+    // Use 'allow_wander' to allow the entity to wander randomly.
+    //
     // The 'max' and 'allow_wander' arguments can only be used on non-NPC entities.
     //
     // @Tags
     // <NPCTag.navigator.target_entity> returns the entity the npc is following.
     //
     // @Usage
-    // To make an NPC follow the player in an interact script
+    // To make an NPC follow the player in an interact script.
+    // - follow
+    //
+    // @Usage
+    // To explicitly make an NPC follow the player.
     // - follow followers:<npc> target:<player>
-    // TODO: Document Command Details
+    //
+    // @Usage
+    // To make an NPC follow the player, slowly and at distance.
+    // - follow speed:0.7 lead:10
     // -->
 
     @Override
@@ -80,7 +97,7 @@ public class FollowCommand extends AbstractCommand {
             if (Utilities.entryHasPlayer(scriptEntry)) {
                 scriptEntry.addObject("target", Utilities.getEntryPlayer(scriptEntry).getDenizenEntity());
             }
-            else {
+            else if (!scriptEntry.hasObject("stop")) {
                 throw new InvalidArgumentsException("This command requires a linked player!");
             }
         }

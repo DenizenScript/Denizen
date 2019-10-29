@@ -118,7 +118,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCoreMember(FishCommand.class, "FISH", "fish [<location>] (catch:{none}/default/junk/treasure/fish) (stop) (chance:<#>)", 1);
         registerCoreMember(FlagCommand.class, "FLAG", "flag ({player}/npc/server/<entity>) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)", 1);
         registerCoreMember(FlyCommand.class, "FLY", "fly (cancel) [<entity>|...] (controller:<player>) (origin:<location>) (destinations:<location>|...) (speed:<#.#>) (rotationthreshold:<#.#>)", 1);
-        registerCoreMember(FollowCommand.class, "FOLLOW", "follow (followers:<entity>|...) (stop) (lead:<#.#>) (max:<#.#>) (speed:<#.#>) (target:<entity>) (allow_wander)", 0);
+        registerCoreMember(FollowCommand.class, "FOLLOW", "follow (followers:<entity>|...) (stop/target:<entity>) (lead:<#.#>) (max:<#.#>) (speed:<#.#>) (allow_wander)", 0);
         registerCoreMember(GameRuleCommand.class, "GAMERULE", "gamerule [<world>] [<rule>] [<value>]", 3);
         registerCoreMember(GiveCommand.class, "GIVE", "give [money/xp/<item>|...] (quantity:<#>) (unlimit_stack_size) (to:<inventory>) (slot:<slot>)", 1);
         registerCoreMember(GlowCommand.class, "GLOW", "glow [<entity>|...] (<should glow>)", 1);
