@@ -7,7 +7,7 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
 public class BukkitListProperties implements Property {
     public static boolean describes(ObjectTag list) {
@@ -28,16 +28,12 @@ public class BukkitListProperties implements Property {
         this.list = list;
     }
 
-    public static final String[] handledTags = new String[] {
-            "expiration", "formatted"
-    };
-
     public static final String[] handledMechs = new String[] {
     }; // None
+
     ListTag list;
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <ListTag.formatted>
@@ -46,9 +42,9 @@ public class BukkitListProperties implements Property {
         // Returns the list in a human-readable format.
         // EG, a list of "n@3|p@bob|potato" will return "GuardNPC, bob, and potato".
         // -->
-        if (attribute.startsWith("formatted")) {
+        PropertyParser.<ListTag>registerTag("formatted", (attribute, list) -> {
             if (list.isEmpty()) {
-                return new ElementTag("").getObjectAttribute(attribute.fulfill(1));
+                return new ElementTag("");
             }
             StringBuilder dScriptArg = new StringBuilder();
 
@@ -83,11 +79,8 @@ public class BukkitListProperties implements Property {
                 }
             }
 
-            return new ElementTag(dScriptArg.toString().substring(0, dScriptArg.length() - 2))
-                    .getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+            return new ElementTag(dScriptArg.toString().substring(0, dScriptArg.length() - 2));
+        });
     }
 
     @Override

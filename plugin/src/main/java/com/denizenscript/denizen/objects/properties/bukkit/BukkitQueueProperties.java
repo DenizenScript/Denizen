@@ -8,9 +8,9 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.QueueTag;
 import com.denizenscript.denizencore.objects.properties.Property;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
-import com.denizenscript.denizencore.tags.Attribute;
 
 public class BukkitQueueProperties implements Property {
 
@@ -27,10 +27,6 @@ public class BukkitQueueProperties implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[] {
-            "player", "npc"
-    };
-
     public static final String[] handledMechs = new String[] {
             "linked_player", "linked_npc"
     };
@@ -41,8 +37,7 @@ public class BukkitQueueProperties implements Property {
 
     ScriptQueue queue;
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <QueueTag.npc>
@@ -51,24 +46,24 @@ public class BukkitQueueProperties implements Property {
         // @description
         // Returns the NPCTag linked to a queue.
         // -->
-        if (attribute.startsWith("npc")) {
+        PropertyParser.<QueueTag>registerTag("npc", (attribute, object) -> {
             NPCTag npc = null;
-            if (queue.getLastEntryExecuted() != null) {
-                npc = ((BukkitScriptEntryData) queue.getLastEntryExecuted().entryData).getNPC();
+            if (object.queue.getLastEntryExecuted() != null) {
+                npc = ((BukkitScriptEntryData) object.queue.getLastEntryExecuted().entryData).getNPC();
             }
-            else if (queue.getEntries().size() > 0) {
-                npc = ((BukkitScriptEntryData) queue.getEntries().get(0).entryData).getNPC();
+            else if (object.queue.getEntries().size() > 0) {
+                npc = ((BukkitScriptEntryData) object.queue.getEntries().get(0).entryData).getNPC();
             }
-            else {
-                Debug.echoError(queue, "Can't determine a linked NPC.");
+            else if (!attribute.hasAlternative()) {
+                Debug.echoError(object.queue, "Can't determine a linked NPC.");
             }
             if (npc == null) {
                 return null;
             }
             else {
-                return npc.getObjectAttribute(attribute.fulfill(1));
+                return npc;
             }
-        }
+        });
 
         // <--[tag]
         // @attribute <QueueTag.player>
@@ -77,25 +72,24 @@ public class BukkitQueueProperties implements Property {
         // @description
         // Returns the PlayerTag linked to a queue.
         // -->
-        if (attribute.startsWith("player")) {
+        PropertyParser.<QueueTag>registerTag("player", (attribute, object) -> {
             PlayerTag player = null;
-            if (queue.getLastEntryExecuted() != null) {
-                player = ((BukkitScriptEntryData) queue.getLastEntryExecuted().entryData).getPlayer();
+            if (object.queue.getLastEntryExecuted() != null) {
+                player = ((BukkitScriptEntryData) object.queue.getLastEntryExecuted().entryData).getPlayer();
             }
-            else if (queue.getEntries().size() > 0) {
-                player = ((BukkitScriptEntryData) queue.getEntries().get(0).entryData).getPlayer();
+            else if (object.queue.getEntries().size() > 0) {
+                player = ((BukkitScriptEntryData) object.queue.getEntries().get(0).entryData).getPlayer();
             }
             else {
-                Debug.echoError(queue, "Can't determine a linked player.");
+                Debug.echoError(object.queue, "Can't determine a linked player.");
             }
             if (player == null) {
                 return null;
             }
             else {
-                return player.getObjectAttribute(attribute.fulfill(1));
+                return player;
             }
-        }
-        return null;
+        });
     }
 
     @Override

@@ -5,7 +5,6 @@ import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
-import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.tags.BukkitTagContext;
@@ -39,9 +38,6 @@ public class BukkitElementProperties implements Property {
     private BukkitElementProperties(ElementTag element) {
         this.element = element;
     }
-
-    public static final String[] handledTags = new String[] {
-    }; // Modernized.
 
     public static final String[] handledMechs = new String[] {
     }; // None
@@ -429,11 +425,6 @@ public class BukkitElementProperties implements Property {
             }
             return null;
         });
-    }
-
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-        throw new UnsupportedOperationException("Invalid property getObjectAttribute call (old-style).");
     }
 
     @Override

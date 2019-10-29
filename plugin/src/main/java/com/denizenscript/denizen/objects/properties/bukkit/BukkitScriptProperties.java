@@ -9,7 +9,7 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
 public class BukkitScriptProperties implements Property {
 
@@ -26,10 +26,6 @@ public class BukkitScriptProperties implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[] {
-            "cooled_down", "cooldown", "step"
-    };
-
     public static final String[] handledMechs = new String[] {
     }; // None
 
@@ -39,12 +35,7 @@ public class BukkitScriptProperties implements Property {
 
     ScriptTag script;
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <ScriptTag.cooled_down[<player>]>
@@ -54,17 +45,16 @@ public class BukkitScriptProperties implements Property {
         // cooldown present on the script will also be taken into account. Not specifying a player will result in
         // using the attached player available in the script entry. Not having a valid player will result in 'null'.
         // -->
-        if (attribute.startsWith("cooled_down")) {
+        PropertyParser.<ScriptTag>registerTag("cooled_down", (attribute, script) -> {
             PlayerTag player = (attribute.hasContext(1) ? PlayerTag.valueOf(attribute.getContext(1))
                     : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
             if (player != null && player.isValid()) {
-                return new ElementTag(CooldownCommand.checkCooldown(player, script.getContainer().getName()))
-                        .getObjectAttribute(attribute.fulfill(1));
+                return new ElementTag(CooldownCommand.checkCooldown(player, script.getContainer().getName()));
             }
             else {
                 return null;
             }
-        }
+        });
 
         // <--[tag]
         // @attribute <ScriptTag.cooldown[<player>]>
@@ -72,14 +62,11 @@ public class BukkitScriptProperties implements Property {
         // @description
         // Returns the time left for the player to cooldown for the script.
         // -->
-        if (attribute.startsWith("cooldown")) {
+        PropertyParser.<ScriptTag>registerTag("cooldown", (attribute, script) -> {
             PlayerTag player = (attribute.hasContext(1) ? PlayerTag.valueOf(attribute.getContext(1))
                     : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
-            return CooldownCommand.getCooldownDuration(player, script.getName())
-                    .getObjectAttribute(attribute.fulfill(1));
-
-        }
-
+            return CooldownCommand.getCooldownDuration(player, script.getName());
+        });
 
         // <--[tag]
         // @attribute <ScriptTag.step[<player>]>
@@ -88,16 +75,16 @@ public class BukkitScriptProperties implements Property {
         // Returns the name of a script step that the player is currently on.
         // Must be an INTERACT script.
         // -->
-        if (attribute.startsWith("step")) {
+        PropertyParser.<ScriptTag>registerTag("step", (attribute, script) -> {
             PlayerTag player = (attribute.hasContext(1) ? PlayerTag.valueOf(attribute.getContext(1))
                     : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
-
             if (player != null && player.isValid()) {
-                return new ElementTag(InteractScriptHelper.getCurrentStep(player, script.getContainer().getName()))
-                        .getObjectAttribute(attribute.fulfill(1));
+                return new ElementTag(InteractScriptHelper.getCurrentStep(player, script.getContainer().getName()));
             }
-        }
-        return null;
+            else {
+                return null;
+            }
+        });
     }
 
 
