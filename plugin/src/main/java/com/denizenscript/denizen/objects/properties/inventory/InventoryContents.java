@@ -6,7 +6,7 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -24,10 +24,6 @@ public class InventoryContents implements Property {
         }
         return new InventoryContents((InventoryTag) inventory);
     }
-
-    public static final String[] handledTags = new String[] {
-            "list_contents"
-    };
 
     public static final String[] handledMechs = new String[] {
             "contents"
@@ -127,12 +123,8 @@ public class InventoryContents implements Property {
         return "contents";
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
 
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <InventoryTag.list_contents>
@@ -142,8 +134,9 @@ public class InventoryContents implements Property {
         // @description
         // Returns a list of all items in the inventory.
         // -->
-        if (attribute.startsWith("list_contents")) {
-            attribute.fulfill(1);
+        PropertyParser.<InventoryTag>registerTag("list_contents", (attribute, object) -> {
+
+            InventoryContents contents = getFrom(object);
 
             // <--[tag]
             // @attribute <InventoryTag.list_contents.simple>
@@ -153,8 +146,9 @@ public class InventoryContents implements Property {
             // @description
             // Returns a list of all items in the inventory, without item properties.
             // -->
-            if (attribute.startsWith("simple")) {
-                return getContents(1).getObjectAttribute(attribute.fulfill(1));
+            if (attribute.startsWith("simple", 2)) {
+                attribute.fulfill(1);
+                return contents.getContents(1);
             }
 
             // <--[tag]
@@ -166,8 +160,9 @@ public class InventoryContents implements Property {
             // Returns a list of all items in the inventory, with the tag item.full used.
             // Irrelevant on modern (1.13+) servers.
             // -->
-            if (attribute.startsWith("full")) {
-                return getContents(2).getObjectAttribute(attribute.fulfill(1));
+            if (attribute.startsWith("full", 2)) {
+                attribute.fulfill(1);
+                return contents.getContents(2);
             }
 
             // <--[tag]
@@ -179,13 +174,15 @@ public class InventoryContents implements Property {
             // Returns a list of all items in the inventory with the specified
             // lore. Color codes are ignored.
             // -->
-            if (attribute.startsWith("with_lore")) {
+            if (attribute.startsWith("with_lore", 2)) {
+                attribute.fulfill(1);
                 // Must specify lore to check
                 if (!attribute.hasContext(1)) {
                     return null;
                 }
                 String lore = attribute.getContext(1);
                 attribute.fulfill(1);
+
                 // <--[tag]
                 // @attribute <InventoryTag.list_contents.with_lore[<element>].simple>
                 // @returns ListTag(ItemTag)
@@ -195,20 +192,16 @@ public class InventoryContents implements Property {
                 // Returns a list of all items in the inventory with the specified
                 // lore, without item properties. Color codes are ignored.
                 // -->
-                if (attribute.startsWith("simple")) {
-                    return getContentsWithLore(lore, true)
-                            .getObjectAttribute(attribute.fulfill(1));
+                if (attribute.startsWith("simple", 2)) {
+                    attribute.fulfill(1);
+                    return contents.getContentsWithLore(lore, true);
                 }
 
-                return getContentsWithLore(lore, false)
-                        .getObjectAttribute(attribute);
+                return contents.getContentsWithLore(lore, false);
             }
 
-            return getContents(0).getObjectAttribute(attribute);
-        }
-
-        return null;
-
+            return contents.getContents(0);
+        });
     }
 
     @Override

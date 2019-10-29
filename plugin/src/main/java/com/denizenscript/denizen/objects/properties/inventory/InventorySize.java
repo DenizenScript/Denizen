@@ -5,7 +5,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
 public class InventorySize implements Property {
 
@@ -20,10 +20,6 @@ public class InventorySize implements Property {
         }
         return new InventorySize((InventoryTag) inventory);
     }
-
-    public static final String[] handledTags = new String[] {
-            "size"
-    };
 
     public static final String[] handledMechs = new String[] {
             "size"
@@ -76,12 +72,7 @@ public class InventorySize implements Property {
     // ObjectTag Attributes
     ////////
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <InventoryTag.size>
@@ -91,13 +82,9 @@ public class InventorySize implements Property {
         // @description
         // Return the number of slots in the inventory.
         // -->
-        if (attribute.startsWith("size")) {
-            return new ElementTag(getSize())
-                    .getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
-
+        PropertyParser.<InventoryTag>registerTag("script_name", (attribute, inventory) -> {
+            return new ElementTag(getFrom(inventory).getSize());
+        });
     }
 
     @Override

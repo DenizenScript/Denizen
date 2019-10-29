@@ -5,7 +5,7 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
 public class InventoryScriptName implements Property {
 
@@ -20,10 +20,6 @@ public class InventoryScriptName implements Property {
         }
         return new InventoryScriptName((InventoryTag) inventory);
     }
-
-    public static final String[] handledTags = new String[] {
-            "script_name"
-    };
 
     public static final String[] handledMechs = new String[] {
             "script_name"
@@ -53,12 +49,7 @@ public class InventoryScriptName implements Property {
         return "contents";
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <InventoryTag.script_name>
@@ -67,12 +58,9 @@ public class InventoryScriptName implements Property {
         // @description
         // Returns the name of the script that this inventory came from (if any).
         // -->
-        if (attribute.startsWith("script_name")) {
-            return new ElementTag(inventory.scriptName)
-                    .getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        PropertyParser.<InventoryTag>registerTag("script_name", (attribute, inventory) -> {
+            return new ElementTag(inventory.scriptName);
+        });
     }
 
     @Override

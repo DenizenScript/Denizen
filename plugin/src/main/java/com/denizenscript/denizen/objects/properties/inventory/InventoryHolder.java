@@ -7,7 +7,7 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.block.BlockState;
@@ -31,10 +31,6 @@ public class InventoryHolder implements Property {
         }
         return new InventoryHolder((InventoryTag) inventory);
     }
-
-    public static final String[] handledTags = new String[] {
-            "id_holder"
-    };
 
     public static final String[] handledMechs = new String[] {
             "holder"
@@ -163,12 +159,7 @@ public class InventoryHolder implements Property {
     // ObjectTag Attributes
     ////////
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <InventoryTag.id_holder>
@@ -178,15 +169,13 @@ public class InventoryHolder implements Property {
         // @description
         // Returns Denizen's holder ID for this inventory. (p@aufdemrand, l@123,321,123, etc.)
         // -->
-        if (attribute.startsWith("id_holder")) {
+        PropertyParser.<InventoryTag>registerTag("id_holder", (attribute, object) -> {
+            ObjectTag holder = getFrom(object).holder;
             if (holder == null) {
                 return null;
             }
-            return holder.getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
-
+            return holder;
+        });
     }
 
     @Override
