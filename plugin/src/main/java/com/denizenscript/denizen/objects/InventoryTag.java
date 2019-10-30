@@ -69,6 +69,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
     // -->
 
     public static InventoryTag mirrorBukkitInventory(Inventory inventory) {
+        if (inventory == null) {
+            return null;
+        }
         // Scripts have priority over notables
         if (InventoryScriptHelper.tempInventoryScripts.containsKey(inventory)) {
             return new InventoryTag(inventory).setIdentifiers("script",

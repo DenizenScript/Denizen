@@ -185,7 +185,7 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
         else if (name.equals("is_shift_click")) {
             return new ElementTag(event.isShiftClick());
         }
-        else if (name.equals("clicked_inventory")) {
+        else if (name.equals("clicked_inventory") && event.getClickedInventory() != null) {
             return InventoryTag.mirrorBukkitInventory(event.getClickedInventory());
         }
         else if (name.equals("slot")) {

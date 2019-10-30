@@ -1764,6 +1764,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @group location
         // @description
         // Returns the location of the entity.
+        // For living entities, this is at the center of their feet.
+        // For eye location, use <@link tag EntityTag.eye_location>
         // Works with offline players.
         // -->
         registerSpawnedOnlyTag("location", (attribute, object) -> {
