@@ -8,7 +8,6 @@ import com.denizenscript.denizencore.objects.properties.Property;
 public class InventoryUniquifier implements Property {
 
     public static boolean describes(ObjectTag inventory) {
-        // All inventories can potentially have a uniquifier
         return inventory instanceof InventoryTag
                 && (((InventoryTag) inventory).getIdType() != null
                 && (((InventoryTag) inventory).getIdType().equals("generic")

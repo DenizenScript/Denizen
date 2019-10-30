@@ -134,14 +134,22 @@ public class DenizenCommand extends Command {
                 player = PlayerTag.mirrorBukkitPlayer(pl);
             }
             context.put("server", new ElementTag(false));
+            context.put("source_type", new ElementTag("player"));
         }
         else {
-            context.put("server", new ElementTag(true));
             if (commandSender instanceof BlockCommandSender) {
                 context.put("command_block_location", new LocationTag(((BlockCommandSender) commandSender).getBlock().getLocation()));
+                context.put("server", new ElementTag(false));
+                context.put("source_type", new ElementTag("command_block"));
             }
             else if (commandSender instanceof CommandMinecart) {
                 context.put("command_minecart", new EntityTag((CommandMinecart) commandSender));
+                context.put("server", new ElementTag(false));
+                context.put("source_type", new ElementTag("command_minecart"));
+            }
+            else {
+                context.put("server", new ElementTag(true));
+                context.put("source_type", new ElementTag("server"));
             }
         }
         if (Depends.citizens != null && npc == null) {

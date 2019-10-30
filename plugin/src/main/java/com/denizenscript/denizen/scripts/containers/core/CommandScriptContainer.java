@@ -103,7 +103,7 @@ public class CommandScriptContainer extends ScriptContainer {
     //   # Available context:
     //   # <context.args> returns a list of input arguments.
     //   # <context.raw_args> returns all the arguments as raw text.
-    //   # <context.server> returns whether the server is running the command (a player if false).
+    //   # <context.source_type> returns the source of the command. Can be: PLAYER, SERVER, COMMAND_BLOCK, or COMMAND_MINECART.
     //   # <context.alias> returns the command alias being used.
     //   # <context.command_block_location> returns the command block's location (if the command was run from one).
     //   # <context.command_minecart> returns the EntityTag of the command minecart (if the command was run from one).
