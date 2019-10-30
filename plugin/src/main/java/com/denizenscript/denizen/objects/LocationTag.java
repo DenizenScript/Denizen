@@ -348,6 +348,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         super(null, vector.getX(), vector.getY(), vector.getZ());
     }
 
+    public LocationTag(World world, Vector vector) {
+        super(world, vector.getX(), vector.getY(), vector.getZ());
+    }
+
     public LocationTag(World world, double x, double y) {
         this(world, x, y, 0);
         this.is2D = true;
@@ -1299,17 +1303,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (range < 1) {
                 range = 200;
             }
-            double xzLen = Math.cos((object.getPitch() % 360) * (Math.PI / 180));
-            double nx = xzLen * Math.sin(-object.getYaw() * (Math.PI / 180));
-            double ny = Math.sin(object.getPitch() * (Math.PI / 180));
-            double nz = xzLen * Math.cos(object.getYaw() * (Math.PI / 180));
-            Location location = NMSHandler.getEntityHelper().getImpactNormal(object, new Vector(nx, -ny, nz), range);
+            Location location = NMSHandler.getEntityHelper().getImpactNormal(object, object.getDirection(), range);
             if (location != null) {
                 return new LocationTag(location);
             }
-            else {
-                return null;
-            }
+            return null;
         });
 
         // <--[tag]
@@ -1324,17 +1322,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (range < 1) {
                 range = 200;
             }
-            double xzLen = Math.cos((object.getPitch() % 360) * (Math.PI / 180));
-            double nx = xzLen * Math.sin(-object.getYaw() * (Math.PI / 180));
-            double ny = Math.sin(object.getPitch() * (Math.PI / 180));
-            double nz = xzLen * Math.cos(object.getYaw() * (Math.PI / 180));
-            Location location = NMSHandler.getEntityHelper().rayTraceBlock(object, new Vector(nx, -ny, nz), range);
+            Location location = NMSHandler.getEntityHelper().rayTraceBlock(object, object.getDirection(), range);
             if (location != null) {
                 return new LocationTag(location).getBlockLocation();
             }
-            else {
-                return null;
-            }
+            return null;
         });
 
         // <--[tag]
@@ -1349,17 +1341,30 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (range < 1) {
                 range = 200;
             }
-            double xzLen = Math.cos((object.getPitch() % 360) * (Math.PI / 180));
-            double nx = xzLen * Math.sin(-object.getYaw() * (Math.PI / 180));
-            double ny = Math.sin(object.getPitch() * (Math.PI / 180));
-            double nz = xzLen * Math.cos(object.getYaw() * (Math.PI / 180));
-            Location location = NMSHandler.getEntityHelper().rayTrace(object, new Vector(nx, -ny, nz), range);
+            Location location = NMSHandler.getEntityHelper().rayTrace(object, object.getDirection(), range);
             if (location != null) {
                 return new LocationTag(location);
             }
-            else {
-                return null;
+            return null;
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.precise_target[<range>]>
+        // @returns EntityTag
+        // @description
+        // Returns the entity this location is pointing at, using precise ray trace logic.
+        // Optionally, specify a maximum range to find the entity from (defaults to 200).
+        // -->
+        registerTag("precise_target", (attribute, object) -> {
+            int range = attribute.getIntContext(1);
+            if (range < 1) {
+                range = 200;
             }
+            Entity entity = NMSHandler.getEntityHelper().rayTraceEntity(object, null, object.getDirection(), range);
+            if (entity != null) {
+                return new EntityTag(entity);
+            }
+            return null;
         });
 
         // <--[tag]
@@ -1463,12 +1468,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             // Returns the location's direction as a one-length vector.
             // -->
             if (attribute.startsWith("vector", 2)) {
-                double xzLen = Math.cos((object.getPitch() % 360) * (Math.PI / 180));
-                double nx = xzLen * Math.sin(-object.getYaw() * (Math.PI / 180));
-                double ny = Math.sin(object.getPitch() * (Math.PI / 180));
-                double nz = xzLen * Math.cos(object.getYaw() * (Math.PI / 180));
                 attribute.fulfill(1);
-                return new LocationTag(object.getWorld(), nx, -ny, nz);
+                return new LocationTag(object.getWorld(), object.getDirection());
             }
             // Get the cardinal direction from this location to another
             if (attribute.hasContext(1) && LocationTag.matches(attribute.getContext(1))) {

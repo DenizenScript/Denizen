@@ -2259,6 +2259,25 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
+        // @attribute <EntityTag.precise_target[<range>]>
+        // @returns EntityTag
+        // @description
+        // Returns the entity this entity is looking at, using precise ray trace logic.
+        // Optionally, specify a maximum range to find the entity from (defaults to 200).
+        // -->
+        registerTag("precise_target", (attribute, object) -> {
+            int range = attribute.getIntContext(1);
+            if (range < 1) {
+                range = 200;
+            }
+            Entity entity = NMSHandler.getEntityHelper().rayTraceEntity(object.getEyeLocation(), object.getBukkitEntity(), object.getEyeLocation().getDirection(), range);
+            if (entity != null) {
+                return new EntityTag(entity);
+            }
+            return null;
+        });
+
+        // <--[tag]
         // @attribute <EntityTag.time_lived>
         // @returns DurationTag
         // @group attributes
