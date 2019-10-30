@@ -95,13 +95,20 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             return retainedInventoryLinks.get(inventory);
         }
 
+        public static boolean isGenericTrackable(InventoryTag tagForm) {
+            if (tagForm == null || tagForm.getIdType() == null) {
+                return false;
+            }
+            return tagForm.getIdType().equals("generic") || tagForm.getIdType().equals("script");
+        }
+
         @EventHandler(priority = EventPriority.MONITOR)
         public void onPlayerOpensInventory(InventoryOpenEvent event) {
             if (event.isCancelled()) {
                 return;
             }
             InventoryTag tagForm = getTagFormFor(event.getInventory());
-            if (tagForm != null && tagForm.getIdType() != null && tagForm.getIdType().equalsIgnoreCase("generic")) {
+            if (isGenericTrackable(tagForm)) {
                 retainedInventoryLinks.put(event.getInventory(), tagForm);
             }
         }
@@ -127,17 +134,18 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             if (inventory == null || tagForm == null) {
                 return;
             }
+            if (!isGenericTrackable(tagForm)) {
+                return;
+            }
             String title = NMSHandler.getInstance().getTitle(inventory);
             if (InventoryScriptHelper.notableInventories.containsKey(title)) {
                 return;
             }
-            if (tagForm.getIdType() != null && tagForm.getIdType().equalsIgnoreCase("generic")) {
-                if (tagForm.uniquifier == null) {
-                    tagForm.uniquifier = temporaryInventoryIdCounter++;
-                }
-                if (!idTrackedInventories.containsKey(tagForm.uniquifier)) {
-                    idTrackedInventories.put(tagForm.uniquifier, tagForm);
-                }
+            if (tagForm.uniquifier == null) {
+                tagForm.uniquifier = temporaryInventoryIdCounter++;
+            }
+            if (!idTrackedInventories.containsKey(tagForm.uniquifier)) {
+                idTrackedInventories.put(tagForm.uniquifier, tagForm);
             }
             temporaryInventoryLinks.put(inventory, tagForm);
         }
@@ -1361,6 +1369,13 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             return "in@" + NotableManager.getSavedId(this);
         }
         else {
+            trackTemporaryInventory(this);
+            if (getIdType().equals("script")) {
+                if (uniquifier != null) {
+                    return "in@" + idHolder + "[uniquifier=" + uniquifier + "]";
+                }
+                return "in@" + idHolder;
+            }
             return "in@" + (getIdType().equals("script") ? idHolder
                     : (idType + PropertyParser.getPropertiesString(this)));
         }
@@ -2383,7 +2398,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         if (idType == null) {
             mechanisms.add(mechanism);
         }
-        else if (idType.equals("generic") || mechanism.matches("holder")) {
+        else if (idType.equals("generic") || mechanism.matches("holder") || mechanism.getName().equals("uniquifier")) {
             adjust(mechanism);
         }
         else if (!(idType.equals("location") && mechanism.matches("title"))) {

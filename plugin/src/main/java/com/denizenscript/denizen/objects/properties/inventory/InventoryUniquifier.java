@@ -9,7 +9,10 @@ public class InventoryUniquifier implements Property {
 
     public static boolean describes(ObjectTag inventory) {
         // All inventories can potentially have a uniquifier
-        return inventory instanceof InventoryTag;
+        return inventory instanceof InventoryTag
+                && (((InventoryTag) inventory).getIdType() != null
+                && (((InventoryTag) inventory).getIdType().equals("generic")
+                || ((InventoryTag) inventory).getIdType().equals("script")));
     }
 
     public static InventoryUniquifier getFrom(ObjectTag inventory) {
