@@ -5,6 +5,7 @@ import com.denizenscript.denizen.events.bukkit.SavesReloadEvent;
 import com.denizenscript.denizen.events.core.*;
 import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.objects.notable.NotableManager;
@@ -451,6 +452,7 @@ public class Denizen extends JavaPlugin {
                             DenizenCore.tick(50); // Sadly, minecraft has no delta timing, so a tick is always 50ms.
                         }
                     }, 1, 1);
+                    InventoryTag.setupInventoryTracker();
                 }
                 catch (Exception e) {
                     Debug.echoError(e);

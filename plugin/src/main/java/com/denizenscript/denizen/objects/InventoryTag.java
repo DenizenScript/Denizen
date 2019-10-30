@@ -2,6 +2,7 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.scripts.containers.core.InventoryScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
+import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
@@ -32,6 +33,11 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.BookMeta;
@@ -68,19 +74,111 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
     //
     // -->
 
+    public static class InventoryTrackerSystem implements Listener {
+
+        public static HashMap<Long, InventoryTag> idTrackedInventories = new HashMap<>(512);
+
+        public static long temporaryInventoryIdCounter = 0;
+
+        public static HashMap<Inventory, InventoryTag> temporaryInventoryLinks = new HashMap<>(512);
+
+        public static HashMap<Inventory, InventoryTag> retainedInventoryLinks = new HashMap<>(512);
+
+        public static InventoryTag getTagFormFor(Inventory inventory) {
+            if (inventory == null) {
+                return null;
+            }
+            InventoryTag result = temporaryInventoryLinks.get(inventory);
+            if (result != null) {
+                return result;
+            }
+            return retainedInventoryLinks.get(inventory);
+        }
+
+        @EventHandler(priority = EventPriority.MONITOR)
+        public void onPlayerOpensInventory(InventoryOpenEvent event) {
+            if (event.isCancelled()) {
+                return;
+            }
+            InventoryTag tagForm = getTagFormFor(event.getInventory());
+            if (tagForm != null && tagForm.getIdType() != null && tagForm.getIdType().equalsIgnoreCase("generic")) {
+                retainedInventoryLinks.put(event.getInventory(), tagForm);
+            }
+        }
+
+        @EventHandler(priority = EventPriority.MONITOR)
+        public void onPlayerCloseInventory(InventoryCloseEvent event) {
+            Inventory inv = event.getInventory();
+            Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+                @Override
+                public void run() {
+                    if (inv.getViewers().isEmpty()) {
+                        InventoryTag removed = retainedInventoryLinks.remove(inv);
+                        if (removed != null && removed.uniquifier != null) {
+                            idTrackedInventories.remove(removed.uniquifier);
+                            temporaryInventoryLinks.put(inv, removed);
+                        }
+                    }
+                }
+            }, 1);
+        }
+
+        public static void trackTemporaryInventory(Inventory inventory, InventoryTag tagForm) {
+            if (inventory == null || tagForm == null) {
+                return;
+            }
+            String title = NMSHandler.getInstance().getTitle(inventory);
+            if (InventoryScriptHelper.notableInventories.containsKey(title)) {
+                return;
+            }
+            if (tagForm.getIdType() != null && tagForm.getIdType().equalsIgnoreCase("generic")) {
+                if (tagForm.uniquifier == null) {
+                    tagForm.uniquifier = temporaryInventoryIdCounter++;
+                }
+                if (!idTrackedInventories.containsKey(tagForm.uniquifier)) {
+                    idTrackedInventories.put(tagForm.uniquifier, tagForm);
+                }
+            }
+            temporaryInventoryLinks.put(inventory, tagForm);
+        }
+
+        public static void setup() {
+            Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+                @Override
+                public void run() {
+                    InventoryTrackerSystem.temporaryInventoryLinks.clear();
+                }
+            }, 20, 20);
+            Bukkit.getPluginManager().registerEvents(new InventoryTrackerSystem(), DenizenAPI.getCurrentInstance());
+        }
+    }
+
+    public static void trackTemporaryInventory(InventoryTag tagForm) {
+        InventoryTrackerSystem.trackTemporaryInventory(tagForm.inventory, tagForm);
+    }
+
+    public static void setupInventoryTracker() {
+        InventoryTrackerSystem.setup();
+    }
+
     public static InventoryTag mirrorBukkitInventory(Inventory inventory) {
         if (inventory == null) {
             return null;
         }
+        InventoryTag result = InventoryTrackerSystem.getTagFormFor(inventory);
+        if (result != null) {
+            return result;
+        }
         // Scripts have priority over notables
-        if (InventoryScriptHelper.tempInventoryScripts.containsKey(inventory)) {
-            return new InventoryTag(inventory).setIdentifiers("script",
-                    InventoryScriptHelper.tempInventoryScripts.get(inventory));
+        String scriptResult = InventoryScriptHelper.tempInventoryScripts.get(inventory);
+        if (scriptResult != null) {
+            return new InventoryTag(inventory).setIdentifiers("script", scriptResult);
         }
         // Use the map to get notable inventories
         String title = NMSHandler.getInstance().getTitle(inventory);
-        if (InventoryScriptHelper.notableInventories.containsKey(title)) {
-            return InventoryScriptHelper.notableInventories.get(title);
+        result = InventoryScriptHelper.notableInventories.get(title);
+        if (result != null) {
+            return result;
         }
         // Iterate through offline player inventories
         for (Map.Entry<UUID, PlayerInventory> inv : ImprovedOfflinePlayer.offlineInventories.entrySet()) {
@@ -205,8 +303,17 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // Handle objects with properties through the object fetcher
         Matcher describedMatcher = ObjectFetcher.DESCRIBED_PATTERN.matcher(string);
         if (describedMatcher.matches()) {
-            return ObjectFetcher.getObjectFrom(InventoryTag.class, string,
+            InventoryTag result = ObjectFetcher.getObjectFrom(InventoryTag.class, string,
                     new BukkitTagContext(player, npc, false, null, false, null));
+            if (result != null && result.uniquifier != null) {
+                InventoryTag fixedResult = InventoryTrackerSystem.idTrackedInventories.get(result.uniquifier);
+                if (fixedResult != null) {
+                    trackTemporaryInventory(fixedResult);
+                    return fixedResult;
+                }
+            }
+            trackTemporaryInventory(result);
+            return result;
         }
 
         if (string.startsWith("in@")) {
@@ -278,6 +385,8 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
 
     String idType = null;
     String idHolder = null;
+
+    public Long uniquifier = null;
 
     public String scriptName = null;
 
@@ -495,6 +604,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         if (inventory == null) {
             return;
         }
+        trackTemporaryInventory(this);
 
         if (holder != null) {
             if (holder instanceof NPCTag) {
