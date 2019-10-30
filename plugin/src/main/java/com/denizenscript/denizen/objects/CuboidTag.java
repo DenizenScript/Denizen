@@ -1108,48 +1108,75 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @description
         // Returns a modified copy of this cuboid, with the input cuboid added at the end.
         // -->
-        registerTag("add", (attribute, object) -> {
+        registerTag("add_member", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
-                Debug.echoError("The tag CuboidTag.add[...] must have a value.");
+                Debug.echoError("The tag CuboidTag.add_member[...] must have a value.");
                 return null;
             }
-            else {
-                CuboidTag cuboid;
+            CuboidTag cuboid;
+            try {
+                cuboid = object.clone();
+            }
+            catch (CloneNotSupportedException ex) {
+                Debug.echoError(ex); // This should never happen
+                return null;
+            }
+            CuboidTag subCuboid = CuboidTag.valueOf(attribute.getContext(1));
+            int member = cuboid.pairs.size() + 1;
 
-                try {
-                    cuboid = object.clone();
-                }
-                catch (CloneNotSupportedException ex) {
-                    Debug.echoError(ex); // This should never happen
+            // <--[tag]
+            // @attribute <CuboidTag.add_member[<cuboid>].at[<index>]>
+            // @returns CuboidTag
+            // @description
+            // Returns a modified copy of this cuboid, with the input cuboid added at the specified index.
+            // -->
+            if (attribute.startsWith("at", 2)) {
+                if (!attribute.hasContext(2)) {
+                    Debug.echoError("The tag CuboidTag.add_member[...].at[...] must have an 'at' value.");
                     return null;
                 }
-                CuboidTag subCuboid = CuboidTag.valueOf(attribute.getContext(1));
-                int member = cuboid.pairs.size() + 1;
-
-                // <--[tag]
-                // @attribute <CuboidTag.add_member[<cuboid>].at[<index>]>
-                // @returns CuboidTag
-                // @description
-                // Returns a modified copy of this cuboid, with the input cuboid added at the specified index.
-                // -->
-                if (attribute.startsWith("at", 2)) {
-                    if (!attribute.hasContext(2)) {
-                        Debug.echoError("The tag CuboidTag.add[...].at[...] must have an 'at' value.");
-                        return null;
-                    }
-                    member = attribute.getIntContext(2);
-                    attribute.fulfill(1);
-                }
-                if (member < 1) {
-                    member = 1;
-                }
-                if (member > cuboid.pairs.size() + 1) {
-                    member = cuboid.pairs.size() + 1;
-                }
-                LocationPair pair = subCuboid.pairs.get(0);
-                cuboid.pairs.add(member - 1, new LocationPair(pair.point_1, pair.point_2));
-                return cuboid;
+                member = attribute.getIntContext(2);
+                attribute.fulfill(1);
             }
+            if (member < 1) {
+                member = 1;
+            }
+            if (member > cuboid.pairs.size() + 1) {
+                member = cuboid.pairs.size() + 1;
+            }
+            LocationPair pair = subCuboid.pairs.get(0);
+            cuboid.pairs.add(member - 1, new LocationPair(pair.point_1, pair.point_2));
+            return cuboid;
+        });
+
+        // <--[tag]
+        // @attribute <CuboidTag.remove_member[<#>]>
+        // @returns CuboidTag
+        // @description
+        // Returns a modified copy of this cuboid, with member at the input index removed.
+        // -->
+        registerTag("remove_member", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                Debug.echoError("The tag CuboidTag.remove_member[...] must have a value.");
+                return null;
+            }
+            CuboidTag cuboid;
+            try {
+                cuboid = object.clone();
+            }
+            catch (CloneNotSupportedException ex) {
+                Debug.echoError(ex); // This should never happen
+                return null;
+            }
+            int member = attribute.getIntContext(1);
+            if (member < 1) {
+                member = 1;
+            }
+            if (member > cuboid.pairs.size() + 1) {
+                member = cuboid.pairs.size() + 1;
+            }
+            cuboid.pairs.remove(member - 1);
+            return cuboid;
         });
 
         // <--[tag]
@@ -1676,6 +1703,26 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
             }
             LocationPair pair = subCuboid.pairs.get(0);
             pairs.add(member - 1, new LocationPair(pair.point_1, pair.point_2));
+        }
+
+        // <--[mechanism]
+        // @object CuboidTag
+        // @name remove_member
+        // @input ElementTag(Number)
+        // @description
+        // Remove a sub-member from the cuboid at the specified index.
+        // @tags
+        // <CuboidTag.remove_member[<#>]>
+        // -->
+        if (mechanism.matches("remove_member") && mechanism.requireInteger()) {
+            int member = mechanism.getValue().asInt();
+            if (member < 1) {
+                member = 1;
+            }
+            if (member > pairs.size()) {
+                member = pairs.size();
+            }
+            pairs.remove(member - 1);
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);
