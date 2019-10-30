@@ -366,6 +366,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         super(world, x, y, z);
     }
 
+    public LocationTag(double x, double y, double z, String worldName) {
+        super(worldName == null ? null : Bukkit.getWorld(worldName), x, y, z);
+        backupWorld = worldName;
+    }
+
     public LocationTag(World world, double x, double y, double z, float pitch, float yaw) {
         super(world, x, y, z, yaw, pitch);
     }

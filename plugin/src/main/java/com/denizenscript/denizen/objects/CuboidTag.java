@@ -28,8 +28,6 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
 
@@ -54,8 +52,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
     // @group Object Fetcher System
     // @description
     // cu@ refers to the 'object identifier' of a CuboidTag. The 'cu@' is notation for Denizen's Object
-    // Fetcher. The constructor for a CuboidTag is <x>,<y>,<z>,<world>|...
-    // For example, 'cu@1,2,3,space|4,5,6,space'.
+    // Fetcher. The constructor for a CuboidTag is <world>,<x1>,<y1>,<z1>,<x2>,<y2>,<z2>
+    // Multi-member cuboids can simply continue listing x,y,z pairs.
+    // For example, 'cu@space,1,2,3,4,5,6'.
     //
     // For general info, see <@link language CuboidTag>
     //
@@ -97,102 +96,94 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         return valueOf(string, null);
     }
 
-    final static Pattern cuboid_by_saved = Pattern.compile("(cu@)?(.+)");
-
     @Fetchable("cu")
     public static CuboidTag valueOf(String string, TagContext context) {
         if (string == null) {
             return null;
         }
-
-        ////////
-        // Match location formats
-
-        // Split values
-        ListTag positions = ListTag.valueOf(string.replace("cu@", ""));
-
-        // If there's a | and the first two points look like locations, assume it's a valid location-list constructor.
-        if (positions.size() > 1
-                && LocationTag.matches(positions.get(0))
-                && LocationTag.matches(positions.get(1))) {
-            if (positions.size() % 2 != 0) {
+        if (CoreUtilities.toLowerCase(string).startsWith("cu@")) {
+            string = string.substring("cu@".length());
+        }
+        if (string.contains("|")) {
+            ListTag positions = ListTag.valueOf(string);
+            if (positions.size() > 1
+                    && LocationTag.matches(positions.get(0))
+                    && LocationTag.matches(positions.get(1))) {
+                if (positions.size() % 2 != 0) {
+                    if (context == null || context.debug) {
+                        Debug.echoError("valueOf CuboidTag returning null (Uneven number of locations): '" + string + "'.");
+                    }
+                    return null;
+                }
+                CuboidTag toReturn = new CuboidTag();
+                for (int i = 0; i < positions.size(); i += 2) {
+                    LocationTag pos_1 = LocationTag.valueOf(positions.get(i));
+                    LocationTag pos_2 = LocationTag.valueOf(positions.get(i + 1));
+                    if (pos_1 == null || pos_2 == null) {
+                        if (context == null || context.debug) {
+                            Debug.echoError("valueOf in CuboidTag returning null (null locations): '" + string + "'.");
+                        }
+                        return null;
+                    }
+                    if (pos_1.getWorldName() == null || pos_2.getWorldName() == null) {
+                        if (context == null || context.debug) {
+                            Debug.echoError("valueOf in CuboidTag returning null (null worlds): '" + string + "'.");
+                        }
+                        return null;
+                    }
+                    toReturn.addPair(pos_1, pos_2);
+                }
+                if (toReturn.pairs.size() > 0) {
+                    return toReturn;
+                }
+            }
+        }
+        else if (string.contains(",")) {
+            List<String> subStrs = CoreUtilities.split(string, ',');
+            if (subStrs.size() < 7 || (subStrs.size() - 1) % 6 != 0) {
                 if (context == null || context.debug) {
-                    Debug.echoError("valueOf CuboidTag returning null (Uneven number of locations): '" + string + "'.");
+                    Debug.echoError("valueOf CuboidTag returning null (Improper number of commas): '" + string + "'.");
                 }
                 return null;
             }
-
-            // Form a cuboid to add to
             CuboidTag toReturn = new CuboidTag();
-
-            // Add to the cuboid
-            for (int i = 0; i < positions.size(); i += 2) {
-                LocationTag pos_1 = LocationTag.valueOf(positions.get(i));
-                LocationTag pos_2 = LocationTag.valueOf(positions.get(i + 1));
-
-                // Must be valid locations
-                if (pos_1 == null || pos_2 == null) {
-                    if (context == null || context.debug) {
-                        Debug.echoError("valueOf in CuboidTag returning null (null locations): '" + string + "'.");
-                    }
-                    return null;
+            String worldName = subStrs.get(0);
+            try {
+                for (int i = 0; i < subStrs.size() - 1; i += 6) {
+                    LocationTag locationOne = new LocationTag(Integer.parseInt(subStrs.get(i + 1)),
+                            Integer.parseInt(subStrs.get(i + 2)), Integer.parseInt(subStrs.get(i + 3)), worldName);
+                    LocationTag locationTwo = new LocationTag(Integer.parseInt(subStrs.get(i + 4)),
+                            Integer.parseInt(subStrs.get(i + 5)), Integer.parseInt(subStrs.get(i + 6)), worldName);
+                    toReturn.addPair(locationOne, locationTwo);
                 }
-                // Must have worlds
-                if (pos_1.getWorldName() == null || pos_2.getWorldName() == null) {
-                    if (context == null || context.debug) {
-                        Debug.echoError("valueOf in CuboidTag returning null (null worlds): '" + string + "'.");
-                    }
-                    return null;
-                }
-                toReturn.addPair(pos_1, pos_2);
             }
-
-            // Ensure validity and return the created cuboid
+            catch (NumberFormatException ex) {
+                if (context == null || context.debug) {
+                    Debug.echoError("valueOf CuboidTag returning null (Improper number value inputs): '" + ex.getMessage() + "'.");
+                }
+                return null;
+            }
             if (toReturn.pairs.size() > 0) {
                 return toReturn;
             }
         }
 
-        ////////
-        // Match @object format for Notable CuboidTags
-        Matcher m;
-
-        m = cuboid_by_saved.matcher(string);
-
-        if (m.matches() && NotableManager.isType(m.group(2), CuboidTag.class)) {
-            return (CuboidTag) NotableManager.getSavedObject(m.group(2));
+        if (NotableManager.isType(string, CuboidTag.class)) {
+            return (CuboidTag) NotableManager.getSavedObject(string);
         }
 
         if (context == null || context.debug) {
             Debug.echoError("valueOf CuboidTag returning null: " + string);
         }
-
         return null;
     }
 
-    // The regex below: optional-"|" + "<#.#>," x3 + <text> + "|" + "<#.#>," x3 + <text> -- repeating
-    final static Pattern cuboidLocations =
-            Pattern.compile("(\\|?([-\\d\\.]+,){3}[\\w\\s]+\\|([-\\d\\.]+,){3}[\\w\\s]+)+",
-                    Pattern.CASE_INSENSITIVE);
-
 
     public static boolean matches(String string) {
-        // Starts with cu@? Assume match.
-        if (CoreUtilities.toLowerCase(string).startsWith("cu@")) {
+        if (valueOf(string, CoreUtilities.noDebugContext) != null) {
             return true;
         }
-
-        Matcher m;
-
-        // Check for named cuboid: cu@notable_cuboid
-        m = cuboid_by_saved.matcher(string);
-        if (m.matches() && NotableManager.isType(m.group(2), CuboidTag.class)) {
-            return true;
-        }
-
-        // Check for standard cuboid format: cu@x,y,z,world|x,y,z,world|...
-        m = cuboidLocations.matcher(string.replace("cu@", ""));
-        return m.matches();
+        return false;
     }
 
 
@@ -839,20 +830,12 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
 
     public String identifyFull() {
         StringBuilder sb = new StringBuilder();
-        sb.append("cu@");
-
+        sb.append("cu@").append(pairs.get(0).low.getWorldName());
         for (LocationPair pair : pairs) {
-            if (pair.low.getWorld() == null || pair.high.getWorld() == null) {
-                Debug.echoError("Null world for cuboid, returning invalid identity!");
-                return "cu@null";
-            }
-            sb.append(pair.low.getBlockX()).append(',').append(pair.low.getBlockY())
-                    .append(',').append(pair.low.getBlockZ()).append(',').append(pair.low.getWorld().getName())
-                    .append('|').append(pair.high.getBlockX()).append(',').append(pair.high.getBlockY())
-                    .append(',').append(pair.high.getBlockZ()).append(',').append(pair.high.getWorld().getName()).append('|');
+            sb.append(',').append(pair.low.getBlockX()).append(',').append(pair.low.getBlockY()).append(',').append(pair.low.getBlockZ())
+                    .append(',').append(pair.high.getBlockX()).append(',').append(pair.high.getBlockY()).append(',').append(pair.high.getBlockZ());
         }
-
-        return sb.toString().substring(0, sb.toString().length() - 1);
+        return sb.toString();
     }
 
 
