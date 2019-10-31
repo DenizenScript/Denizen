@@ -7,8 +7,6 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRiptideEvent;
@@ -41,8 +39,8 @@ public class PlayerRiptideScriptEvent extends BukkitScriptEvent implements Liste
     private ItemTag item;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.toLowerCase(s).startsWith("player activates riptide");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.startsWith("player activates riptide");
     }
 
     @Override

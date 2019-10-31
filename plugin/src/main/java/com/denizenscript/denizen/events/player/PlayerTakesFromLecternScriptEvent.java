@@ -9,8 +9,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTakeLecternBookEvent;
@@ -48,10 +46,9 @@ public class PlayerTakesFromLecternScriptEvent extends BukkitScriptEvent impleme
     public PlayerTakeLecternBookEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("player takes")
-                && (CoreUtilities.getXthArg(4, lower).equals("lectern"));
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.startsWith("player takes")
+                && (path.eventArgLowerAt(4).equals("lectern"));
     }
 
     @Override

@@ -8,8 +8,6 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
@@ -56,8 +54,8 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     public PlayerFishEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.toLowerCase(s).startsWith("player fishes");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.startsWith("player fishes");
     }
 
     @Override

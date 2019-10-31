@@ -7,8 +7,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
@@ -45,9 +43,9 @@ public class PlayerFlyingScriptEvent extends BukkitScriptEvent implements Listen
     public PlayerToggleFlightEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.getXthArg(2, CoreUtilities.toLowerCase(s)).equals("flying")
-                || CoreUtilities.getXthArg(2, CoreUtilities.toLowerCase(s)).equals("flight");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventArgLowerAt(2).equals("flying")
+                || path.eventArgLowerAt(2).equals("flight");
     }
 
     @Override

@@ -9,7 +9,6 @@ import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -56,8 +55,8 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.toLowerCase(s).startsWith("player kicked");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.startsWith("player kicked");
     }
 
     @Override
@@ -77,16 +76,16 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag) {
             String lower = CoreUtilities.toLowerCase(determinationObj.toString());
-            if (lower.startsWith("message:")) {
-                message = new ElementTag(lower.substring("message:".length()));
+            if (path.eventLower.startsWith("message:")) {
+                message = new ElementTag(path.eventLower.substring("message:".length()));
                 return true;
             }
-            else if (lower.startsWith("reason:")) {
-                reason = new ElementTag(lower.substring("reason:".length()));
+            else if (path.eventLower.startsWith("reason:")) {
+                reason = new ElementTag(path.eventLower.substring("reason:".length()));
                 return true;
             }
-            else if (lower.startsWith("fly_cooldown:")) {
-                DurationTag duration = DurationTag.valueOf(lower.substring("fly_cooldown:".length()));
+            else if (path.eventLower.startsWith("fly_cooldown:")) {
+                DurationTag duration = DurationTag.valueOf(path.eventLower.substring("fly_cooldown:".length()));
                 if (duration != null) {
                     NMSHandler.getPlayerHelper().setFlyKickCooldown(player.getPlayerEntity(), (int) duration.getTicks());
                     cancelled = true;

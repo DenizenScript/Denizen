@@ -9,8 +9,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceExtractEvent;
@@ -50,10 +48,9 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
     public FurnaceExtractEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("player takes")
-                && (CoreUtilities.getXthArg(4, lower).equals("furnace"));
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.startsWith("player takes")
+                && (path.eventArgLowerAt(4).equals("furnace"));
     }
 
     @Override

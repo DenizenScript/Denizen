@@ -7,7 +7,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
@@ -125,14 +124,13 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     private static final HashSet<String> matchHelpList = new HashSet<>(Arrays.asList("at", "entity", "npc", "player", "vehicle", "projectile", "hanging"));
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return (lower.startsWith("player clicks")
-                || lower.startsWith("player left clicks")
-                || (lower.startsWith("player right clicks")
-                && !matchHelpList.contains(CoreUtilities.getXthArg(3, lower))
-                && !EntityTag.matches(CoreUtilities.getXthArg(3, lower))))
-                && couldMatchIn(lower);  // Avoid matching "clicks in inventory"
+    public boolean couldMatch(ScriptPath path) {
+        return (path.eventLower.startsWith("player clicks")
+                || path.eventLower.startsWith("player left clicks")
+                || (path.eventLower.startsWith("player right clicks")
+                && !matchHelpList.contains(path.eventArgLowerAt(3))
+                && !EntityTag.matches(path.eventArgLowerAt(3))))
+                && couldMatchIn(path.eventLower);  // Avoid matching "clicks in inventory"
     }
 
     private static final HashSet<String> withHelpList = new HashSet<>(Arrays.asList("with", "using", "in"));

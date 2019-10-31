@@ -10,8 +10,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -57,11 +55,10 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return (lower.startsWith("players") || lower.startsWith("player")) &&
-                CoreUtilities.getXthArg(2, lower).equals("takes") &&
-                CoreUtilities.getXthArg(3, lower).equals("damage");
+    public boolean couldMatch(ScriptPath path) {
+        return (path.eventLower.startsWith("players") || path.eventLower.startsWith("player")) &&
+                path.eventArgLowerAt(2).equals("takes") &&
+                path.eventArgLowerAt(3).equals("damage");
     }
 
     @Override

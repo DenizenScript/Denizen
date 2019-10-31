@@ -12,8 +12,6 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerEditBookEvent;
@@ -53,9 +51,8 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
     BookMeta bookMeta;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("player edits book") || lower.startsWith("player signs book");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.startsWith("player edits book") || path.eventLower.startsWith("player signs book");
     }
 
     @Override

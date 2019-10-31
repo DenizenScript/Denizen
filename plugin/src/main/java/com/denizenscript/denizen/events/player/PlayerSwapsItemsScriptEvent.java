@@ -7,7 +7,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -48,8 +47,8 @@ public class PlayerSwapsItemsScriptEvent extends BukkitScriptEvent implements Li
     public PlayerSwapHandItemsEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.toLowerCase(s).startsWith("player swaps items");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.startsWith("player swaps items");
     }
 
     @Override
@@ -67,11 +66,11 @@ public class PlayerSwapsItemsScriptEvent extends BukkitScriptEvent implements Li
         if (determinationObj instanceof ElementTag) {
             String determination = determinationObj.toString();
             String lower = CoreUtilities.toLowerCase(determination);
-            if (lower.startsWith("main:")) {
+            if (path.eventLower.startsWith("main:")) {
                 event.setMainHandItem(ItemTag.valueOf(determination.substring("main:".length()), path.container).getItemStack());
                 return true;
             }
-            else if (lower.startsWith("offhand:")) {
+            else if (path.eventLower.startsWith("offhand:")) {
                 event.setOffHandItem(ItemTag.valueOf(determination.substring("offhand:".length()), path.container).getItemStack());
                 return true;
             }

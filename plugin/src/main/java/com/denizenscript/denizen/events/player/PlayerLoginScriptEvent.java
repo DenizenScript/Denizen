@@ -7,7 +7,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -45,14 +44,13 @@ public class PlayerLoginScriptEvent extends BukkitScriptEvent implements Listene
     public PlayerLoginEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("player") && (lower.contains("logs in") || lower.contains("login"));
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.startsWith("player") && (path.eventLower.contains("logs in") || path.eventLower.contains("login"));
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        if (CoreUtilities.toLowerCase(s).contains("first") && PlayerTag.isNoted(event.getPlayer())) {
+    public boolean matches(ScriptPath path) {
+        if (path.eventLower.contains("first") && PlayerTag.isNoted(event.getPlayer())) {
             return false;
         }
         return true;

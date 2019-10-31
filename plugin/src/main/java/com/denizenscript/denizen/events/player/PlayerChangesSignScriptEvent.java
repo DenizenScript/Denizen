@@ -6,9 +6,7 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.tags.core.EscapeTagBase;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
@@ -58,11 +56,12 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     public SignChangeEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String sign = CoreUtilities.getXthArg(2, lower);
-        return lower.startsWith("player changes")
-                && (sign.equals("sign") || MaterialTag.matches(sign));
+    public boolean couldMatch(ScriptPath path) {
+        if (!path.eventLower.startsWith("player changes")) {
+            return false;
+        }
+        String sign = path.eventArgAt(2);
+        return (sign.equals("sign") || MaterialTag.matches(sign));
     }
 
     @Override

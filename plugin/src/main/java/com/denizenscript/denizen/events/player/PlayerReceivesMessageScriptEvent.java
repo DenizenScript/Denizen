@@ -6,7 +6,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 
 public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
@@ -52,8 +51,8 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
     public boolean loaded;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.toLowerCase(s).startsWith("player receives message");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.startsWith("player receives message");
     }
 
     @Override
@@ -81,12 +80,12 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
         if (determinationObj instanceof ElementTag && !isDefaultDetermination(determinationObj)) {
             String determination = determinationObj.toString();
             String lower = CoreUtilities.toLowerCase(determination);
-            if (lower.startsWith("message:")) {
+            if (path.eventLower.startsWith("message:")) {
                 message = new ElementTag(determination.substring("message:".length()));
                 messageModified = true;
                 return true;
             }
-            if (lower.startsWith("raw_json:")) {
+            if (path.eventLower.startsWith("raw_json:")) {
                 rawJson = new ElementTag(determination.substring("raw_json:".length()));
                 rawJsonModified = true;
                 return true;

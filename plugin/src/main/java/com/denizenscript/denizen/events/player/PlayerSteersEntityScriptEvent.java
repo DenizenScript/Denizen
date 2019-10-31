@@ -7,8 +7,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 
 public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
 
@@ -50,8 +48,8 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
     public ElementTag dismount;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.getXthArg(1, CoreUtilities.toLowerCase(s)).startsWith("steers");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventArgLowerAt(1).startsWith("steers");
     }
 
     @Override

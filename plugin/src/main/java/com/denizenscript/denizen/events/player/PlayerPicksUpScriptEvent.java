@@ -8,7 +8,6 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
@@ -62,12 +61,11 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
     private static final Set<UUID> editedItems = new HashSet<>();
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        if (CoreUtilities.xthArgEquals(3, lower, "from")) {
+    public boolean couldMatch(ScriptPath path) {
+        if (path.eventArgLowerAt(3).equals("from")) {
             return false;
         }
-        return lower.startsWith("player picks up") || lower.startsWith("player takes");
+        return path.eventLower.startsWith("player picks up") || path.eventLower.startsWith("player takes");
     }
 
     @Override
@@ -89,7 +87,7 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         String lower = CoreUtilities.toLowerCase(determination);
-        if (lower.startsWith("item:")) {
+        if (path.eventLower.startsWith("item:")) {
             item = ItemTag.valueOf(determination.substring("item:".length()), path.container);
             itemChanged = true;
             return true;
