@@ -53,8 +53,6 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
 
     public static PlayerPicksUpScriptEvent instance;
     public ItemTag item;
-    public boolean itemChanged;
-    public EntityTag entity;
     public LocationTag location;
     public PlayerPickupItemEvent event;
 
@@ -87,9 +85,11 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         String lower = CoreUtilities.toLowerCase(determination);
-        if (path.eventLower.startsWith("item:")) {
+        if (lower.startsWith("item:")) {
             item = ItemTag.valueOf(determination.substring("item:".length()), path.container);
-            itemChanged = true;
+            editedItems.add(event.getItem().getUniqueId());
+            event.getItem().setItemStack(item.getItemStack());
+            event.setCancelled(true);
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -106,7 +106,7 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
             return item;
         }
         else if (name.equals("entity")) {
-            return entity;
+            return new EntityTag(event.getItem());
         }
         else if (name.equals("location")) {
             return location;
@@ -127,14 +127,7 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
         }
         location = new LocationTag(itemEntity.getLocation());
         item = new ItemTag(itemEntity.getItemStack());
-        entity = new EntityTag(itemEntity);
-        itemChanged = false;
         this.event = event;
         fire(event);
-        if (itemChanged) {
-            itemEntity.setItemStack(item.getItemStack());
-            editedItems.add(itemUUID);
-            event.setCancelled(true);
-        }
     }
 }

@@ -46,8 +46,6 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
 
     public static PlayerKickedScriptEvent instance;
     public PlayerTag player;
-    public ElementTag message;
-    public ElementTag reason;
     public PlayerKickEvent event;
 
     public boolean isFlying() {
@@ -76,16 +74,16 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag) {
             String lower = CoreUtilities.toLowerCase(determinationObj.toString());
-            if (path.eventLower.startsWith("message:")) {
-                message = new ElementTag(path.eventLower.substring("message:".length()));
+            if (lower.startsWith("message:")) {
+                event.setLeaveMessage(lower.substring("message:".length()));
                 return true;
             }
-            else if (path.eventLower.startsWith("reason:")) {
-                reason = new ElementTag(path.eventLower.substring("reason:".length()));
+            else if (lower.startsWith("reason:")) {
+                event.setReason(lower.substring("reason:".length()));
                 return true;
             }
-            else if (path.eventLower.startsWith("fly_cooldown:")) {
-                DurationTag duration = DurationTag.valueOf(path.eventLower.substring("fly_cooldown:".length()));
+            else if (lower.startsWith("fly_cooldown:")) {
+                DurationTag duration = DurationTag.valueOf(lower.substring("fly_cooldown:".length()));
                 if (duration != null) {
                     NMSHandler.getPlayerHelper().setFlyKickCooldown(player.getPlayerEntity(), (int) duration.getTicks());
                     cancelled = true;
@@ -104,10 +102,10 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("message")) {
-            return message;
+            return new ElementTag(event.getLeaveMessage());
         }
         else if (name.equals("reason")) {
-            return reason;
+            return new ElementTag(event.getReason());
         }
         else if (name.equals("flying")) {
             return new ElementTag(isFlying());
@@ -121,11 +119,7 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
             return;
         }
         player = PlayerTag.mirrorBukkitPlayer(event.getPlayer());
-        message = new ElementTag(event.getLeaveMessage());
-        reason = new ElementTag(event.getReason());
         this.event = event;
         fire(event);
-        event.setLeaveMessage(message.asString());
-        event.setReason(reason.asString());
     }
 }

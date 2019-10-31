@@ -44,10 +44,6 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
 
     public static PlayerStatisticIncrementsScriptEvent instance;
     public Statistic statistic;
-    public Integer previous_value;
-    public Integer new_value;
-    public MaterialTag material;
-    public EntityTag entity;
     public PlayerStatisticIncrementEvent event;
 
     @Override
@@ -82,17 +78,17 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
             return new ElementTag(statistic.toString());
         }
         else if (name.equals("previous_value")) {
-            return new ElementTag(previous_value);
+            return new ElementTag(event.getPreviousValue());
         }
         else if (name.equals("new_value")) {
-            return new ElementTag(new_value);
+            return new ElementTag(event.getNewValue());
         }
         else if (name.equals("qualifier")) {
             if (statistic.getType() == Statistic.Type.BLOCK || statistic.getType() == Statistic.Type.ITEM) {
-                return material;
+                return new MaterialTag(event.getMaterial());
             }
             else if (statistic.getType() == Statistic.Type.ENTITY) {
-                return entity;
+                return new EntityTag(DenizenEntityType.getByName(event.getEntityType().name()));
             }
         }
         return super.getContext(name);
@@ -103,18 +99,6 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
         if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        material = null;
-        entity = null;
-        previous_value = null;
-        statistic = event.getStatistic();
-        if (statistic.getType() == Statistic.Type.BLOCK || statistic.getType() == Statistic.Type.ITEM) {
-            material = new MaterialTag(event.getMaterial());
-        }
-        else if (statistic.getType() == Statistic.Type.ENTITY) {
-            entity = new EntityTag(DenizenEntityType.getByName(event.getEntityType().name()));
-        }
-        previous_value = event.getPreviousValue();
-        new_value = event.getNewValue();
         this.event = event;
         fire(event);
     }

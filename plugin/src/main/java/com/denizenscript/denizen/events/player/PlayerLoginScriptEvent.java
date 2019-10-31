@@ -39,8 +39,6 @@ public class PlayerLoginScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     public static PlayerLoginScriptEvent instance;
-    private String message;
-    private Boolean kicked;
     public PlayerLoginEvent event;
 
     @Override
@@ -66,8 +64,8 @@ public class PlayerLoginScriptEvent extends BukkitScriptEvent implements Listene
         if (determinationObj instanceof ElementTag) {
             String determination = determinationObj.toString();
             if (CoreUtilities.toLowerCase(determination).startsWith("kicked")) {
-                message = determination.length() > 7 ? determination.substring(7) : determination;
-                kicked = true;
+                String message = determination.length() > 7 ? determination.substring(7) : determination;
+                event.disallow(PlayerLoginEvent.Result.KICK_OTHER, message);
                 return true;
             }
         }
@@ -92,11 +90,7 @@ public class PlayerLoginScriptEvent extends BukkitScriptEvent implements Listene
         if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        kicked = false;
         this.event = event;
         fire(event);
-        if (kicked) {
-            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, message);
-        }
     }
 }

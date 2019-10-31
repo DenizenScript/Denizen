@@ -13,7 +13,6 @@ import org.bukkit.event.player.PlayerExpChangeEvent;
 
 public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Listener {
 
-    // TODO: in area
     // <--[event]
     // @Events
     // player changes xp
@@ -42,7 +41,6 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
 
     public static PlayerChangesXPScriptEvent instance;
     public PlayerExpChangeEvent event;
-    public int amount;
     public PlayerTag player;
 
     @Override
@@ -67,7 +65,7 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
-            amount = ((ElementTag) determinationObj).asInt();
+            event.setAmount(((ElementTag) determinationObj).asInt());
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -81,7 +79,7 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("amount")) {
-            return new ElementTag(amount);
+            return new ElementTag(event.getAmount());
         }
         return super.getContext(name);
     }
@@ -91,14 +89,12 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
         if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        amount = event.getAmount();
         player = PlayerTag.mirrorBukkitPlayer(event.getPlayer());
         this.event = event;
         cancelled = false;
         fire(event);
         if (cancelled) {
-            amount = 0;
+            event.setAmount(0);
         }
-        event.setAmount(amount);
     }
 }

@@ -92,7 +92,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         Block block = event.getBlock();
         if (determinationObj instanceof ElementTag) {
             String lower = CoreUtilities.toLowerCase(determination);
-            if (path.eventLower.equals("nothing")) {
+            if (lower.equals("nothing")) {
                 cancelled = true;
                 block.setType(Material.AIR);
                 return true;

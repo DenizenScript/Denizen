@@ -63,6 +63,7 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
         String determination = determinationObj.toString();
         if (LocationTag.matches(determination)) {
             to = LocationTag.valueOf(determination);
+            event.setTo(to);
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -97,6 +98,5 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
         from = new LocationTag(event.getFrom());
         this.event = event;
         fire(event);
-        event.setTo(to);
     }
 }

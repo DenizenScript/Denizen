@@ -39,7 +39,6 @@ public class PlayerJoinsScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     public static PlayerJoinsScriptEvent instance;
-    public String message;
     public PlayerJoinEvent event;
 
     @Override
@@ -62,10 +61,10 @@ public class PlayerJoinsScriptEvent extends BukkitScriptEvent implements Listene
         if (determinationObj instanceof ElementTag) {
             String determination = determinationObj.toString();
             if (CoreUtilities.toLowerCase(determination).equals("none")) {
-                message = null;
+                event.setJoinMessage(null);
                 return true;
             }
-            message = determination;
+            event.setJoinMessage(determination);
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -79,7 +78,7 @@ public class PlayerJoinsScriptEvent extends BukkitScriptEvent implements Listene
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("message")) {
-            return new ElementTag(message);
+            return new ElementTag(event.getJoinMessage());
         }
         return super.getContext(name);
     }
@@ -89,9 +88,7 @@ public class PlayerJoinsScriptEvent extends BukkitScriptEvent implements Listene
         if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        message = event.getJoinMessage();
         this.event = event;
         fire(event);
-        event.setJoinMessage(message);
     }
 }

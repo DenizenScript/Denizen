@@ -98,7 +98,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
         if (determinationObj instanceof ElementTag) {
             String determination = determinationObj.toString();
             String lower = CoreUtilities.toLowerCase(determination);
-            if (path.eventLower.startsWith("format:")) {
+            if (lower.startsWith("format:")) {
                 String name = determination.substring("format:".length());
                 FormatScriptContainer formatscr = ScriptRegistry.getScriptContainer(name);
                 if (formatscr == null) {
@@ -118,7 +118,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
                 }
                 return true;
             }
-            else if (path.eventLower.startsWith("raw_format:")) {
+            else if (lower.startsWith("raw_format:")) {
                 String form = determination.substring("raw_format:".length());
                 if (pcEvent != null) {
                     pcEvent.setFormat(form);
@@ -128,7 +128,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
                 }
                 return true;
             }
-            else if (path.eventLower.startsWith("recipients:")) {
+            else if (lower.startsWith("recipients:")) {
                 String rec_new = determination.substring("recipients:".length());
                 ListTag recs = ListTag.valueOf(rec_new);
                 List<PlayerTag> players = recs.filter(PlayerTag.class, path.container, true);

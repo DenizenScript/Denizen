@@ -46,8 +46,6 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
 
     public static PlayerMendsItemScriptEvent instance;
     public ItemTag item;
-    public EntityTag experienceOrb;
-    public ElementTag repairAmount;
     public PlayerItemMendEvent event;
     public LocationTag location;
 
@@ -77,7 +75,7 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
-            repairAmount = (ElementTag) determinationObj;
+            event.setRepairAmount(((ElementTag) determinationObj).asInt());
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -94,10 +92,10 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
             return item;
         }
         else if (name.equals("repair_amount")) {
-            return repairAmount;
+            return new ElementTag(event.getRepairAmount());
         }
         else if (name.equals("xp_orb")) {
-            return experienceOrb;
+            return new EntityTag(event.getExperienceOrb());
         }
         return super.getContext(name);
     }
@@ -108,12 +106,9 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
             return;
         }
         item = new ItemTag(event.getItem());
-        experienceOrb = new EntityTag(event.getExperienceOrb());
         location = new LocationTag(event.getPlayer().getLocation());
-        repairAmount = new ElementTag(event.getRepairAmount());
         this.event = event;
         fire(event);
-        event.setRepairAmount(repairAmount.asInt());
     }
 
 }

@@ -44,8 +44,6 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
 
     public static PlayerThrowsEggScriptEvent instance;
     public EntityTag egg;
-    public Boolean is_hatching;
-    private EntityType type;
     public PlayerEggThrowEvent event;
 
     @Override
@@ -55,10 +53,10 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (path.eventArgLowerAt(2).equals("hatching") && !is_hatching) {
+        if (path.eventArgLowerAt(2).equals("hatching") && !event.isHatching()) {
             return false;
         }
-        if (path.eventArgLowerAt(2).equals("non-hatching") && is_hatching) {
+        if (path.eventArgLowerAt(2).equals("non-hatching") && event.isHatching()) {
             return false;
         }
 
@@ -74,8 +72,9 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         if (EntityTag.matches(determination)) {
-            is_hatching = true;
-            type = EntityTag.valueOf(determination).getBukkitEntityType();
+            event.setHatching(true);
+            EntityType type = EntityTag.valueOf(determination).getBukkitEntityType();
+            event.setHatchingType(type);
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -89,7 +88,7 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("is_hatching")) {
-            return new ElementTag(is_hatching);
+            return new ElementTag(event.isHatching());
         }
         else if (name.equals("egg")) {
             return egg;
@@ -102,19 +101,12 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
         if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        is_hatching = event.isHatching();
         Entity eggEntity = event.getEgg();
         EntityTag.rememberEntity(eggEntity);
         egg = new EntityTag(event.getEgg());
-        type = event.getHatchingType();
         this.event = event;
         cancelled = false;
         fire(event);
-        if (cancelled) {
-            is_hatching = false;
-        }
         EntityTag.forgetEntity(eggEntity);
-        event.setHatching(is_hatching);
-        event.setHatchingType(type);
     }
 }

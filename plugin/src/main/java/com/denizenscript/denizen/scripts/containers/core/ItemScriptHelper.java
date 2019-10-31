@@ -5,7 +5,6 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
-import com.denizenscript.denizen.events.player.PlayerCraftsItemScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -399,31 +398,6 @@ public class ItemScriptHelper implements Listener {
                 recipeEntry = getSpecialRecipeEntry(inventory.getMatrix());
                 if (recipeEntry == null) {
                     return;
-                }
-
-                PlayerCraftsItemScriptEvent scriptEvent = PlayerCraftsItemScriptEvent.instance;
-                scriptEvent.inventory = inventory;
-                scriptEvent.result = new ItemTag(inventory.getResult());
-                ListTag recipeList = new ListTag();
-                for (ItemStack item : inventory.getMatrix()) {
-                    if (item != null) {
-                        recipeList.add(new ItemTag(item.clone()).identify());
-                    }
-                    else {
-                        recipeList.add(new ItemTag(Material.AIR).identify());
-                    }
-                }
-                scriptEvent.recipe = recipeList;
-                scriptEvent.player = PlayerTag.mirrorBukkitPlayer(player);
-                scriptEvent.resultChanged = false;
-                scriptEvent.cancelled = false;
-                scriptEvent.fire();
-                if (scriptEvent.cancelled) {
-                    event.setCancelled(true);
-                    return;
-                }
-                else if (scriptEvent.resultChanged) {
-                    event.setCurrentItem(scriptEvent.result.getItemStack());
                 }
             }
 

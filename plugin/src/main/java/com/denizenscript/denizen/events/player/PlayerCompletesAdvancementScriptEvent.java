@@ -32,7 +32,6 @@ public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent imp
     }
 
     public static PlayerCompletesAdvancementScriptEvent instance;
-    public ListTag criteria;
     public PlayerAdvancementDoneEvent event;
 
     @Override
@@ -58,6 +57,8 @@ public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent imp
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("criteria")) {
+            ListTag criteria = new ListTag();
+            criteria.addAll(event.getAdvancement().getCriteria());
             return criteria;
         }
         return super.getContext(name);
@@ -65,9 +66,7 @@ public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent imp
 
     @EventHandler
     public void onPlayerCompletesAdvancement(PlayerAdvancementDoneEvent event) {
-        // Should this not fire if it's a 'fake' advancement created by Denizen?
-        criteria = new ListTag();
-        criteria.addAll(event.getAdvancement().getCriteria());
+        // TODO: Should this not fire if it's a 'fake' advancement created by Denizen?
         this.event = event;
         fire(event);
     }

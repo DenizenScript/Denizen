@@ -42,8 +42,6 @@ public class PlayerSwapsItemsScriptEvent extends BukkitScriptEvent implements Li
 
     public static PlayerSwapsItemsScriptEvent instance;
     public PlayerTag player;
-    public ItemTag mainhand;
-    public ItemTag offhand;
     public PlayerSwapHandItemsEvent event;
 
     @Override
@@ -66,11 +64,11 @@ public class PlayerSwapsItemsScriptEvent extends BukkitScriptEvent implements Li
         if (determinationObj instanceof ElementTag) {
             String determination = determinationObj.toString();
             String lower = CoreUtilities.toLowerCase(determination);
-            if (path.eventLower.startsWith("main:")) {
+            if (lower.startsWith("main:")) {
                 event.setMainHandItem(ItemTag.valueOf(determination.substring("main:".length()), path.container).getItemStack());
                 return true;
             }
-            else if (path.eventLower.startsWith("offhand:")) {
+            else if (lower.startsWith("offhand:")) {
                 event.setOffHandItem(ItemTag.valueOf(determination.substring("offhand:".length()), path.container).getItemStack());
                 return true;
             }
@@ -86,10 +84,10 @@ public class PlayerSwapsItemsScriptEvent extends BukkitScriptEvent implements Li
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("main")) {
-            return mainhand;
+            return new ItemTag(event.getMainHandItem());
         }
         else if (name.equals("offhand")) {
-            return offhand;
+            return new ItemTag(event.getOffHandItem());
         }
         return super.getContext(name);
     }
@@ -97,8 +95,6 @@ public class PlayerSwapsItemsScriptEvent extends BukkitScriptEvent implements Li
     @EventHandler
     public void playerSwapsItems(PlayerSwapHandItemsEvent event) {
         player = PlayerTag.mirrorBukkitPlayer(event.getPlayer());
-        mainhand = new ItemTag(event.getMainHandItem());
-        offhand = new ItemTag(event.getOffHandItem());
         this.event = event;
         fire(event);
     }

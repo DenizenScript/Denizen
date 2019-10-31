@@ -39,7 +39,6 @@ public class PlayerQuitsScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     public static PlayerQuitsScriptEvent instance;
-    public String message;
     public PlayerQuitEvent event;
 
     @Override
@@ -62,10 +61,10 @@ public class PlayerQuitsScriptEvent extends BukkitScriptEvent implements Listene
         if (determinationObj instanceof ElementTag) {
             String determination = determinationObj.toString();
             if (CoreUtilities.toLowerCase(determination).equals("none")) {
-                message = null;
+                event.setQuitMessage(null);
                 return true;
             }
-            message = determination;
+            event.setQuitMessage(determination);
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -79,7 +78,7 @@ public class PlayerQuitsScriptEvent extends BukkitScriptEvent implements Listene
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("message")) {
-            return new ElementTag(message);
+            return new ElementTag(event.getQuitMessage());
         }
         return super.getContext(name);
     }
@@ -89,10 +88,8 @@ public class PlayerQuitsScriptEvent extends BukkitScriptEvent implements Listene
         if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        message = event.getQuitMessage();
         this.event = event;
         fire(event);
-        event.setQuitMessage(message);
 
     }
 }

@@ -49,10 +49,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
 
     public static PlayerChangesSignScriptEvent instance;
     public LocationTag location;
-    public ListTag new_sign;
-    public ListTag old_sign;
     public MaterialTag material;
-    public ListTag new_text;
     public SignChangeEvent event;
 
     @Override
@@ -90,7 +87,10 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         if (determination.length() > 0 && !isDefaultDetermination(determinationObj)) {
-            new_text = ListTag.valueOf(determination);
+            ListTag new_text = ListTag.valueOf(determination);
+            for (int i = 0; i < 4 && i < new_text.size(); i++) {
+                event.setLine(i, EscapeTagBase.unEscape(new_text.get(i)));
+            }
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -110,10 +110,10 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
             return material;
         }
         else if (name.equals("new")) {
-            return new_sign;
+            return new ListTag(Arrays.asList(event.getLines()));
         }
         else if (name.equals("old")) {
-            return old_sign;
+            return new ListTag(Arrays.asList(((Sign) event.getBlock().getState()).getLines()));
         }
         return super.getContext(name);
     }
@@ -127,19 +127,10 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
         if (!(state instanceof Sign)) {
             return;
         }
-        Sign sign = (Sign) state;
         material = new MaterialTag(event.getBlock());
         location = new LocationTag(event.getBlock().getLocation());
-        old_sign = new ListTag(Arrays.asList(sign.getLines()));
-        new_sign = new ListTag(Arrays.asList(event.getLines()));
-        new_text = null;
         this.event = event;
         fire(event);
-        if (new_text != null) {
-            for (int i = 0; i < 4 && i < new_text.size(); i++) {
-                event.setLine(i, EscapeTagBase.unEscape(new_text.get(i)));
-            }
-        }
     }
 
 }

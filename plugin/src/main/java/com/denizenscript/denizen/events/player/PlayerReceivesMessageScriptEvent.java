@@ -80,12 +80,12 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
         if (determinationObj instanceof ElementTag && !isDefaultDetermination(determinationObj)) {
             String determination = determinationObj.toString();
             String lower = CoreUtilities.toLowerCase(determination);
-            if (path.eventLower.startsWith("message:")) {
+            if (lower.startsWith("message:")) {
                 message = new ElementTag(determination.substring("message:".length()));
                 messageModified = true;
                 return true;
             }
-            if (path.eventLower.startsWith("raw_json:")) {
+            if (lower.startsWith("raw_json:")) {
                 rawJson = new ElementTag(determination.substring("raw_json:".length()));
                 rawJsonModified = true;
                 return true;

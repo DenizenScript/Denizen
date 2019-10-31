@@ -43,7 +43,6 @@ public class PlayerDropsItemScriptEvent extends BukkitScriptEvent implements Lis
 
     public static PlayerDropsItemScriptEvent instance;
     public ItemTag item;
-    public EntityTag entity;
     public LocationTag location;
     public PlayerDropItemEvent event;
 
@@ -81,7 +80,7 @@ public class PlayerDropsItemScriptEvent extends BukkitScriptEvent implements Lis
             return item;
         }
         else if (name.equals("entity")) {
-            return entity;
+            return new EntityTag(event.getItemDrop());
         }
         else if (name.equals("location")) {
             return location;
@@ -98,7 +97,6 @@ public class PlayerDropsItemScriptEvent extends BukkitScriptEvent implements Lis
         Item itemDrop = event.getItemDrop();
         EntityTag.rememberEntity(itemDrop);
         item = new ItemTag(itemDrop.getItemStack());
-        entity = new EntityTag(itemDrop);
         this.event = event;
         fire(event);
     }

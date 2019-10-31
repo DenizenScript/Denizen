@@ -38,7 +38,6 @@ public class PlayerReceivesCommandsScriptEvent extends BukkitScriptEvent impleme
     }
 
     public static PlayerReceivesCommandsScriptEvent instance;
-    private Collection<String> commands;
     public PlayerCommandSendEvent event;
 
     @Override
@@ -60,8 +59,8 @@ public class PlayerReceivesCommandsScriptEvent extends BukkitScriptEvent impleme
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         if (determination.length() > 0 && !isDefaultDetermination(determinationObj)) {
-            commands.clear();
-            commands.addAll(ListTag.getListFor(determinationObj));
+            event.getCommands().clear();
+            event.getCommands().addAll(ListTag.getListFor(determinationObj));
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -76,7 +75,7 @@ public class PlayerReceivesCommandsScriptEvent extends BukkitScriptEvent impleme
     public ObjectTag getContext(String name) {
         if (name.equals("commands")) {
             ListTag list = new ListTag();
-            list.addAll(commands);
+            list.addAll(event.getCommands());
             return list;
         }
         return super.getContext(name);
@@ -87,7 +86,6 @@ public class PlayerReceivesCommandsScriptEvent extends BukkitScriptEvent impleme
         if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        commands = event.getCommands();
         this.event = event;
         fire(event);
     }

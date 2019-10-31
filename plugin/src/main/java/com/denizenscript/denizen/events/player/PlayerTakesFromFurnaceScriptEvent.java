@@ -44,7 +44,6 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
     public static PlayerTakesFromFurnaceScriptEvent instance;
     public LocationTag location;
     public ItemTag item;
-    private int xp;
     public FurnaceExtractEvent event;
 
     @Override
@@ -68,7 +67,8 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
-            xp = ((ElementTag) determinationObj).asInt();
+            int xp = ((ElementTag) determinationObj).asInt();
+            event.setExpToDrop(xp);
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -97,10 +97,8 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
         }
         item = new ItemTag(event.getItemType(), event.getItemAmount());
         location = new LocationTag(event.getBlock().getLocation());
-        xp = event.getExpToDrop();
         this.event = event;
         fire(event);
-        event.setExpToDrop(xp);
     }
 
 }

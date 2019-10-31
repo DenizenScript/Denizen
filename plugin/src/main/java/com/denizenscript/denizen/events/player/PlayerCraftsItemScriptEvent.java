@@ -14,7 +14,6 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
@@ -47,10 +46,8 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
     }
 
     public static PlayerCraftsItemScriptEvent instance;
-    public boolean resultChanged;
+    public CraftItemEvent event;
     public ItemTag result;
-    public ListTag recipe;
-    public CraftingInventory inventory;
     public PlayerTag player;
 
     @Override
@@ -78,8 +75,7 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         if (ItemTag.matches(determination)) {
-            result = ItemTag.valueOf(determination, path.container);
-            resultChanged = true;
+            event.setCurrentItem(ItemTag.valueOf(determination, path.container).getItemStack());
             return true;
         }
 
@@ -97,9 +93,18 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
             return result;
         }
         else if (name.equals("inventory")) {
-            return InventoryTag.mirrorBukkitInventory(inventory);
+            return InventoryTag.mirrorBukkitInventory(event.getInventory());
         }
         else if (name.equals("recipe")) {
+            ListTag recipe = new ListTag();
+            for (ItemStack itemStack : event.getInventory().getMatrix()) {
+                if (itemStack != null) {
+                    recipe.add(new ItemTag(itemStack).identify());
+                }
+                else {
+                    recipe.add(new ItemTag(Material.AIR).identify());
+                }
+            }
             return recipe;
         }
         return super.getContext(name);
@@ -115,26 +120,13 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
         if (eRecipe == null || eRecipe.getResult() == null) {
             return;
         }
-        inventory = event.getInventory();
+        this.event = event;
         result = new ItemTag(eRecipe.getResult());
-        recipe = new ListTag();
-        for (ItemStack itemStack : inventory.getMatrix()) {
-            if (itemStack != null) {
-                recipe.add(new ItemTag(itemStack).identify());
-            }
-            else {
-                recipe.add(new ItemTag(Material.AIR).identify());
-            }
-        }
         this.player = EntityTag.getPlayerFrom(humanEntity);
-        this.resultChanged = false;
         this.cancelled = false;
         fire(event);
         if (cancelled) { // This event has a weird cancellation handler
             event.setCancelled(true);
-        }
-        else if (resultChanged) {
-            event.setCurrentItem(result.getItemStack());
         }
     }
 }

@@ -45,7 +45,6 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
 
     public static PlayerItemTakesDamageScriptEvent instance;
     PlayerItemDamageEvent event;
-    ElementTag damage;
     ItemTag item;
     LocationTag location;
 
@@ -82,7 +81,7 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
-            damage = (ElementTag) determinationObj;
+            event.setDamage(((ElementTag) determinationObj).asInt());
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -99,7 +98,7 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
             return item;
         }
         else if (name.equals("damage")) {
-            return damage;
+            return new ElementTag(event.getDamage());
         }
         else if (name.equals("slot")) {
             return new ElementTag(SlotHelper.slotForItem(event.getPlayer().getInventory(), item.getItemStack()));
@@ -113,12 +112,10 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
             return;
         }
         item = new ItemTag(event.getItem());
-        damage = new ElementTag(event.getDamage());
         location = new LocationTag(event.getPlayer().getLocation());
         boolean wasCancelled = event.isCancelled();
         this.event = event;
         fire(event);
-        event.setDamage(damage.asInt());
         final Player p = event.getPlayer();
         if (cancelled && !wasCancelled) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {

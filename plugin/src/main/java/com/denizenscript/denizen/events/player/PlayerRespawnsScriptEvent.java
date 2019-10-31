@@ -37,7 +37,6 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
     }
 
     public static PlayerRespawnsScriptEvent instance;
-    public LocationTag location;
     public PlayerRespawnEvent event;
 
     @Override
@@ -68,7 +67,7 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
         if (!CoreUtilities.toLowerCase(determination).equals("none")) {
             LocationTag loc = LocationTag.valueOf(determination);
             if (loc != null) {
-                location = loc;
+                event.setRespawnLocation(loc);
                 return true;
             }
         }
@@ -83,7 +82,7 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("location")) {
-            return location;
+            return new LocationTag(event.getRespawnLocation());
         }
         return super.getContext(name);
     }
@@ -93,9 +92,7 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
         if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        location = new LocationTag(event.getRespawnLocation());
         this.event = event;
         fire(event);
-        event.setRespawnLocation(location);
     }
 }

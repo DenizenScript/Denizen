@@ -55,7 +55,6 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     LocationTag location;
     ElementTag click_type;
     ElementTag hand;
-    LocationTag relative;
     MaterialTag blockMaterial;
 
     private boolean couldMatchIn(String lower) {
@@ -200,7 +199,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
             return hand;
         }
         else if (name.equals("relative")) {
-            return relative;
+            return event.hasBlock() ? new LocationTag(event.getClickedBlock().getRelative(event.getBlockFace()).getLocation()) : null;
         }
         return super.getContext(name);
     }
@@ -214,7 +213,6 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         hand = new ElementTag(event.getHand().name());
         item = new ItemTag(event.getItem());
         location = event.hasBlock() ? new LocationTag(event.getClickedBlock().getLocation()) : null;
-        relative = event.hasBlock() ? new LocationTag(event.getClickedBlock().getRelative(event.getBlockFace()).getLocation()) : null;
         click_type = new ElementTag(event.getAction().name());
         cancelled = event.isCancelled() && event.useItemInHand() == Event.Result.DENY; // Spigot is dumb!
         this.event = event;

@@ -43,12 +43,7 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
 
     PlayerEditsBookScriptEvent instance;
     PlayerEditBookEvent event;
-    ElementTag signing;
-    ElementTag title;
-    ElementTag pages;
-    ItemTag book;
     PlayerTag player;
-    BookMeta bookMeta;
 
     @Override
     public boolean couldMatch(ScriptPath path) {
@@ -61,7 +56,7 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
         if (action.equals("edits")) {
             return true;
         }
-        if (action.equals("signs") && signing.asBoolean()) {
+        if (action.equals("signs") && event.isSigning()) {
             return true;
         }
         return false;
@@ -76,16 +71,17 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         if (determination.toUpperCase().equals("NOT_SIGNING")) {
-            signing = new ElementTag(false);
+            event.setSigning(false);
         }
         else if (ScriptTag.matches(determination)) {
             ScriptTag script = ScriptTag.valueOf(determination);
             if (script.getContainer() instanceof BookScriptContainer) {
                 ItemTag dBook = ((BookScriptContainer) script.getContainer()).getBookFrom((BukkitTagContext) getScriptEntryData().getTagContext());
-                bookMeta = (BookMeta) dBook.getItemStack().getItemMeta();
+                BookMeta bookMeta = (BookMeta) dBook.getItemStack().getItemMeta();
                 if (dBook.getMaterial().getMaterial() == MaterialCompat.WRITABLE_BOOK) {
-                    signing = new ElementTag(false);
+                    event.setSigning(false);
                 }
+                event.setNewBookMeta(bookMeta);
             }
             else {
                 Debug.echoError("Script '" + determination + "' is valid, but not of type 'book'!");
@@ -102,13 +98,13 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("signing")) {
-            return signing;
+            return new ElementTag(event.isSigning());
         }
         if (name.equals("title")) {
-            return title;
+            return event.isSigning() ? new ElementTag(event.getNewBookMeta().getTitle()) : null;
         }
         else if (name.equals("book")) {
-            return book;
+            return new ItemTag(event.getPlayer().getInventory().getItem(event.getSlot()));
         }
         return super.getContext(name);
     }
@@ -116,14 +112,7 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
     @EventHandler
     public void onPlayerEditsBook(PlayerEditBookEvent event) {
         player = PlayerTag.mirrorBukkitPlayer(event.getPlayer());
-        signing = new ElementTag(event.isSigning());
-        bookMeta = event.getNewBookMeta();
-        pages = new ElementTag(bookMeta.getPageCount());
-        title = event.isSigning() ? new ElementTag(bookMeta.getTitle()) : null;
-        book = new ItemTag(event.getPlayer().getInventory().getItem(event.getSlot()));
         this.event = event;
         fire(event);
-        event.setNewBookMeta(bookMeta);
-        event.setSigning(signing.asBoolean());
     }
 }

@@ -13,7 +13,6 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
-import org.bukkit.inventory.AnvilInventory;
 
 public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -47,12 +46,9 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
     }
 
     public static PlayerPreparesAnvilCraftScriptEvent instance;
-    public boolean resultChanged;
+    public PrepareAnvilEvent event;
     public ItemTag result;
-    public AnvilInventory inventory;
     public PlayerTag player;
-    public ElementTag repairCost;
-    public ElementTag newName;
 
     @Override
     public boolean couldMatch(ScriptPath path) {
@@ -78,13 +74,13 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
-            repairCost = (ElementTag) determinationObj;
+            event.getInventory().setRepairCost(((ElementTag) determinationObj).asInt());
             return true;
         }
         String determination = determinationObj.toString();
         if (ItemTag.matches(determination)) {
             result = ItemTag.valueOf(determination, path.container);
-            resultChanged = true;
+            event.setResult(result.getItemStack());
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -101,13 +97,13 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
             return result;
         }
         else if (name.equals("repair_cost")) {
-            return repairCost;
+            return new ElementTag(event.getInventory().getRepairCost());
         }
         else if (name.equals("new_name")) {
-            return newName;
+            return new ElementTag(event.getInventory().getRenameText());
         }
         else if (name.equals("inventory")) {
-            return InventoryTag.mirrorBukkitInventory(inventory);
+            return InventoryTag.mirrorBukkitInventory(event.getInventory());
         }
         return super.getContext(name);
     }
@@ -121,17 +117,10 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
         if (EntityTag.isNPC(humanEntity)) {
             return;
         }
-        inventory = event.getInventory();
-        repairCost = new ElementTag(inventory.getRepairCost());
-        newName = new ElementTag(inventory.getRenameText());
+        this.event = event;
         result = new ItemTag(event.getResult());
         this.player = EntityTag.getPlayerFrom(humanEntity);
-        this.resultChanged = false;
         this.cancelled = false;
         fire(event);
-        inventory.setRepairCost(repairCost.asInt());
-        if (resultChanged) {
-            event.setResult(result.getItemStack());
-        }
     }
 }

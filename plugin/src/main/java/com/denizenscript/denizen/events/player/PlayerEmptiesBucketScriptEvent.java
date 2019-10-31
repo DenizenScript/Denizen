@@ -43,11 +43,9 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
 
     public static PlayerEmptiesBucketScriptEvent instance;
 
-    public EntityTag entity;
     public ItemTag item;
     public MaterialTag material;
     public LocationTag location;
-    public LocationTag relative;
     public PlayerBucketEmptyEvent event;
 
 
@@ -79,7 +77,7 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
             return location;
         }
         else if (name.equals("relative")) {
-            return relative;
+            return new LocationTag(event.getBlockClicked().getRelative(event.getBlockFace()).getLocation());
         }
         else if (name.equals("item")) {
             return item;
@@ -89,9 +87,7 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
 
     @EventHandler
     public void onBucketEmpty(PlayerBucketEmptyEvent event) {
-        entity = new EntityTag(event.getPlayer());
         location = new LocationTag(event.getBlockClicked().getLocation());
-        relative = new LocationTag(event.getBlockClicked().getRelative(event.getBlockFace()).getLocation());
         item = new ItemTag(event.getBucket());
         this.event = event;
         fire(event);
