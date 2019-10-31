@@ -22,6 +22,7 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
     // player tames <entity>
     //
     // @Regex ^on [^\s]+ (tames [^\s]+|tamed)$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

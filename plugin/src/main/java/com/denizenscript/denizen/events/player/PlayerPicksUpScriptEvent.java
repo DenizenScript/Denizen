@@ -29,6 +29,7 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
     // player takes <item>
     //
     // @Regex ^on player (picks up|takes) [^\s]+$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

@@ -24,6 +24,7 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     // <entity> spawns (because <cause>)
     //
     // @Regex ^on [^\s]+ spawns( because [^\s]+)?$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

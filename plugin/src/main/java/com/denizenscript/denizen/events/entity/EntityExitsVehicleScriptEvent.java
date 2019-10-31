@@ -21,6 +21,7 @@ public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements 
     // <entity> exits <vehicle>
     //
     // @Regex ^on [^\s]+ exits [^\s]+$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

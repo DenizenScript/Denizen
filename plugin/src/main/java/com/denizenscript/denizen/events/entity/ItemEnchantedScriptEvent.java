@@ -25,6 +25,7 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
     // <item> enchanted
     //
     // @Regex ^on [^\s]+ enchanted$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

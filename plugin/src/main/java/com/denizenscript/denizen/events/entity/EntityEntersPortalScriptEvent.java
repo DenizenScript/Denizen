@@ -20,6 +20,7 @@ public class EntityEntersPortalScriptEvent extends BukkitScriptEvent implements 
     // <entity> enters portal
     //
     // @Regex ^on [^\s]+ enters portal$
+    //
     // @Switch in <area>
     //
     // @Triggers when an entity enters a portal.

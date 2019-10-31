@@ -18,6 +18,7 @@ public class VehicleCreatedScriptEvent extends BukkitScriptEvent implements List
     // <vehicle> created
     //
     // @Regex ^on [^\s]+ created$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

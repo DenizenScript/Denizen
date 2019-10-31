@@ -19,6 +19,7 @@ public class EntityResurrectScriptEvent extends BukkitScriptEvent implements Lis
     // <entity> resurrected
     //
     // @Regex ^on [^\s]+ resurrected$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

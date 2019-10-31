@@ -23,6 +23,7 @@ public class PlayerDropsItemScriptEvent extends BukkitScriptEvent implements Lis
     // player drops <item>
     //
     // @Regex ^on player drops [^\s]+$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

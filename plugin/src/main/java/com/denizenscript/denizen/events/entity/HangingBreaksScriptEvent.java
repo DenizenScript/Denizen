@@ -22,6 +22,7 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
     // <hanging> breaks (because <cause>)
     //
     // @Regex ^on [^\s]+ breaks( because [^\s]+)$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

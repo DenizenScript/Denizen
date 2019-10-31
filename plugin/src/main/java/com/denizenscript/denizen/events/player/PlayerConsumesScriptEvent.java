@@ -23,6 +23,7 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
     // player consumes <item>
     //
     // @Regex ^on player consumes [^\s]+$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

@@ -20,6 +20,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     // player steps on <material>
     //
     // @Regex ^on player steps on [^\s]+$
+    //
     // @Switch in <area>
     //
     // @Warning This event may fire very rapidly.

@@ -22,6 +22,7 @@ public class PlayerFlyingScriptEvent extends BukkitScriptEvent implements Listen
     // player stops flying
     //
     // @Regex ^on player (toggles|starts|stops) flying$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

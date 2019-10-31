@@ -19,6 +19,7 @@ public class NPCSpawnScriptEvent extends BukkitScriptEvent implements Listener {
     // npc spawns
     //
     // @Regex ^on npc spawns$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

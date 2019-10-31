@@ -20,6 +20,7 @@ public class PlayerEntersBedScriptEvent extends BukkitScriptEvent implements Lis
     // player enters bed
     //
     // @Regex ^on player enters bed$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

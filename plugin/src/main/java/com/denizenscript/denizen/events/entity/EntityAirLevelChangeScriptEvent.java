@@ -20,6 +20,7 @@ public class EntityAirLevelChangeScriptEvent extends BukkitScriptEvent implement
     // <entity> changes air level
     //
     // @Regex ^on [^\s]+ changes air level$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

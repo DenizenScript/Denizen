@@ -22,6 +22,7 @@ public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listen
     // player stops sprinting
     //
     // @Regex ^on player (toggles|starts\stops) sprinting$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

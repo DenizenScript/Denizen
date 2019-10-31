@@ -21,6 +21,7 @@ public class PlayerLevelsUpScriptEvent extends BukkitScriptEvent implements List
     // player levels up (from <level>) (to <level>)
     //
     // @Regex ^on player levels up( from [^\s]+)?( to [^\s]+)?$
+    //
     // @Switch in <area>
     //
     // @Triggers when a player levels up.

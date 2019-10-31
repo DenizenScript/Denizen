@@ -24,6 +24,7 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
     // <entity> breaks <hanging> (because <cause>)
     //
     // @Regex ^on [^\s]+ breaks [^\s]+( because [^\s]+)?$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

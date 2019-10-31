@@ -20,6 +20,7 @@ public class EntityExitsPortalScriptEvent extends BukkitScriptEvent implements L
     // <entity> exits portal
     //
     // @Regex ^on [^\s]+ exits portal$
+    //
     // @Switch in <area>
     //
     // @Triggers when an entity exits a portal.

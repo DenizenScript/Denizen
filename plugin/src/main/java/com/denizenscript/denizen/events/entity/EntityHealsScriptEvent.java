@@ -20,6 +20,7 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
     // <entity> heals (because <cause>)
     //
     // @Regex ^on [^\s]+ heals( because [^\s]+)?$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

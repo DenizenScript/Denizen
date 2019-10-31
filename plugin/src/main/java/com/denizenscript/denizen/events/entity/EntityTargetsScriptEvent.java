@@ -21,6 +21,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     // <entity> targets (<entity>) (because <cause>)
     //
     // @Regex ^on [^\s]+ targets( [^\s]+)?( because [^\s]+)?$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

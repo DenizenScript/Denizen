@@ -18,6 +18,7 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
     // <vehicle> moves
     //
     // @Regex ^on [^\s]+ moves$
+    //
     // @Switch in <area>
     //
     // @Warning This event fires very very rapidly!

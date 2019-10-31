@@ -20,6 +20,7 @@ public class PlayerRiptideScriptEvent extends BukkitScriptEvent implements Liste
     // player activates riptide
     //
     // @Regex ^on player activates riptide$
+    //
     // @Switch in <area>
     //
     // @Triggers when a player activates the riptide effect.

@@ -21,6 +21,7 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
     // <material> merges
     //
     // @Regex ^on [^\s]+ merges$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

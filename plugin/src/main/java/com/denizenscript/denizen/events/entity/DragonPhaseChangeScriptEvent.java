@@ -21,6 +21,7 @@ public class DragonPhaseChangeScriptEvent extends BukkitScriptEvent implements L
     // <entity> changes phase
     //
     // @Regex ^on [^\s]+ changes phase$
+    //
     // @Switch in <area>
     // @Switch from <phase>
     // @Switch to <phase>

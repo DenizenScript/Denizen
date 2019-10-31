@@ -23,6 +23,7 @@ public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Li
     // <entity> forms <block>
     //
     // @Regex ^on [^\s]+ forms [^\s]+$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

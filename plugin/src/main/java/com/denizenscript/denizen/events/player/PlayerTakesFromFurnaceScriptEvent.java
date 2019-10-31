@@ -24,6 +24,7 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
     // player takes <material> from furnace
     //
     // @Regex ^on player takes [^\s]+ from furnace$
+    //
     // @Switch in <area>
     //
     // @Triggers when a player takes an item from a furnace.

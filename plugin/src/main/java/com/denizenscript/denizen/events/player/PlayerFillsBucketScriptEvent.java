@@ -22,6 +22,7 @@ public class PlayerFillsBucketScriptEvent extends BukkitScriptEvent implements L
     // player fills <bucket>
     //
     // @Regex ^on player fills [^\s]+$
+    //
     // @Switch in <area>
     //
     // @Triggers when a player fills a bucket.

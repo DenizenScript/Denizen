@@ -19,6 +19,7 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     // (<color>) (<type>) jumps
     //
     // @Regex ^on [^\s]+( [^\s]+)? jumps$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

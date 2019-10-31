@@ -23,6 +23,7 @@ public class EntityPotionEffectScriptEvent extends BukkitScriptEvent implements 
     // <entity> potion effects <change action>
     //
     // @Regex ^on [^\s]+ potion effects [^\s]+$
+    //
     // @Switch in <area>
     // @Switch cause <cause>
     // @Switch effect <effect type>

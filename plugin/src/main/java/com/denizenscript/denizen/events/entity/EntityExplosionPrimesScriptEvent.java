@@ -20,6 +20,7 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
     // <entity> explosion primes
     //
     // @Regex ^on [^\s]+ explosion primes$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

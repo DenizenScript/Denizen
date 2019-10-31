@@ -20,6 +20,7 @@ public class PlayerLeashesEntityScriptEvent extends BukkitScriptEvent implements
     // player leashes <entity>
     //
     // @Regex ^on player leashes [^\s]+$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

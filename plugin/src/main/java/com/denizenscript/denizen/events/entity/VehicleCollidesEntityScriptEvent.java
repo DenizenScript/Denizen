@@ -23,6 +23,7 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
     // <vehicle> collides with <entity>
     //
     // @Regex ^on [^\s]+ collides with [^\s]+$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

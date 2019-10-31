@@ -25,6 +25,7 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
     // <entity> explodes
     //
     // @Regex ^on [^\s]+ explodes$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

@@ -29,6 +29,7 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
     // <entity> shoots <item>
     //
     // @Regex ^on [^\s]+ shoots [^\s]+$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

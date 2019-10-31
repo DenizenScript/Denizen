@@ -23,6 +23,7 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
     // player places <hanging>
     //
     // @Regex ^on player places [^\s]+$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

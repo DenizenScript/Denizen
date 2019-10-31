@@ -21,6 +21,7 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
     // player changes xp
     //
     // @Regex ^on player changes xp$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

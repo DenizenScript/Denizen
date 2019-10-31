@@ -20,6 +20,7 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
     // firework bursts
     //
     // @Regex ^on firework bursts$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

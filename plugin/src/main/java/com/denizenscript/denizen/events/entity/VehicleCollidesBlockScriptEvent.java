@@ -22,6 +22,7 @@ public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implement
     // <vehicle> collides with <material>
     //
     // @Regex ^on [^\s]+ collides with [^\s]+$
+    //
     // @Switch in <area>
     //
     // @Triggers when a vehicle collides with a block.

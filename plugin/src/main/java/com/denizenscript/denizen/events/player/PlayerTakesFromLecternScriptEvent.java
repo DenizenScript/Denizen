@@ -23,6 +23,7 @@ public class PlayerTakesFromLecternScriptEvent extends BukkitScriptEvent impleme
     // player takes <item> from lectern
     //
     // @Regex ^on player takes [^\s]+ from lectern$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

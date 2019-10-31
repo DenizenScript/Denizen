@@ -19,6 +19,7 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
     // <entity> launched
     //
     // @Regex ^on [^\s]+ launched$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

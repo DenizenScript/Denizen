@@ -23,6 +23,7 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
     // <entity> destroys <vehicle>
     //
     // @Regex ^on [^\s]+ destroys [^\s]+$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

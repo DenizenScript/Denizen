@@ -25,6 +25,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     // player changes <material>
     //
     // @Regex ^on player changes [^\s]+$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

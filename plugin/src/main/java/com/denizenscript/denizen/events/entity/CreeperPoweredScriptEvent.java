@@ -17,6 +17,7 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
     // creeper powered (because <cause>)
     //
     // @Regex ^on creeper powered( because [^\s]+)?$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

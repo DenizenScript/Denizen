@@ -17,6 +17,7 @@ public class SheepRegrowsScriptEvent extends BukkitScriptEvent implements Listen
     // sheep regrows wool
     //
     // @Regex ^on sheep regrows wool$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

@@ -18,6 +18,7 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
     // player steers <entity>
     //
     // @Regex ^on player steers [^\s]+$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

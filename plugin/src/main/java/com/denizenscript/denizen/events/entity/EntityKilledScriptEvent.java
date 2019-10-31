@@ -34,6 +34,7 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
     // <entity> kills <entity>
     //
     // @Regex ^on [^\s]+ ((kills [^\s]+)|killed( by [^\s]+)?)$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

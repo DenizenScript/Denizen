@@ -22,6 +22,7 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
     // player shears <color> sheep
     //
     // @Regex ^on player shears [^\s]+( sheep)?$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

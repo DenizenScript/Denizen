@@ -23,6 +23,7 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
     // player mends <item>
     //
     // @Regex ^on player mends [^\s]+$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

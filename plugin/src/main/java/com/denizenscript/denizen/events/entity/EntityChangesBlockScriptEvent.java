@@ -25,6 +25,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     // <entity> changes <material> (into <material>)
     //
     // @Regex ^on [^\s]+ changes [^\s]+( into [^\s]+)?$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

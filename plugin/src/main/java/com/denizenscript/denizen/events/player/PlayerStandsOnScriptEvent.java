@@ -22,6 +22,7 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
     // player stands on (<material>)
     //
     // @Regex ^on player stands on [^\s]+$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

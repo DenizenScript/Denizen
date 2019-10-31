@@ -21,6 +21,7 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
     // <material> spawns
     //
     // @Regex ^on [^\s]+ spawns$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

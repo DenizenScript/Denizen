@@ -22,6 +22,7 @@ public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listene
     // player stops sneaking
     //
     // @Regex ^on player (toggles|starts|stops) sneaking$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

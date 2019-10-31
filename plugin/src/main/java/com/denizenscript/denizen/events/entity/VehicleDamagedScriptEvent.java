@@ -26,6 +26,7 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
     // <entity> damages <vehicle>
     //
     // @Regex ^on [^\s]+ damages [^\s]+$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

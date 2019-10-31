@@ -21,6 +21,7 @@ public class EntitySpawnerSpawnScriptEvent extends BukkitScriptEvent implements 
     // spawner spawns <entity>
     //
     // @Regex ^on spawner spawns [^\s]+$
+    //
     // @Switch in <area>
     //
     // @Cancellable true

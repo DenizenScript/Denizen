@@ -23,6 +23,7 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
     // entity interacts with block
     //
     // @Regex ^on [^\s]+ interacts with [^\s]+$
+    //
     // @Switch in <area>
     //
     // @Cancellable true
