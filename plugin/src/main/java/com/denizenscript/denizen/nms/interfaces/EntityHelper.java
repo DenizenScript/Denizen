@@ -22,10 +22,6 @@ import java.util.*;
 
 public abstract class EntityHelper {
 
-    public Entity rayTraceEntity(Location start, Entity entity, Vector direction, double range) {
-        throw new UnsupportedOperationException();
-    }
-
     public void setSneaking(Player player, boolean sneak) {
         player.setSneaking(sneak);
     }

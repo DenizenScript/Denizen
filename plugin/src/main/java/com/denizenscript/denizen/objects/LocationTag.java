@@ -45,6 +45,7 @@ import org.bukkit.material.Attachable;
 import org.bukkit.material.Door;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.BlockIterator;
+import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -1303,6 +1304,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (range < 1) {
                 range = 200;
             }
+            // TODO: after 1.12 support is dropped, World#rayTraceBlocks should be used.
             Location location = NMSHandler.getEntityHelper().getImpactNormal(object, object.getDirection(), range);
             if (location != null) {
                 return new LocationTag(location);
@@ -1322,6 +1324,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (range < 1) {
                 range = 200;
             }
+            // TODO: after 1.12 support is dropped, World#rayTraceBlocks should be used.
             Location location = NMSHandler.getEntityHelper().rayTraceBlock(object, object.getDirection(), range);
             if (location != null) {
                 return new LocationTag(location).getBlockLocation();
@@ -1341,6 +1344,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (range < 1) {
                 range = 200;
             }
+            // TODO: after 1.12 support is dropped, World#rayTraceBlocks should be used.
             Location location = NMSHandler.getEntityHelper().rayTrace(object, object.getDirection(), range);
             if (location != null) {
                 return new LocationTag(location);
@@ -1360,9 +1364,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (range < 1) {
                 range = 200;
             }
-            Entity entity = NMSHandler.getEntityHelper().rayTraceEntity(object, null, object.getDirection(), range);
-            if (entity != null) {
-                return new EntityTag(entity);
+            RayTraceResult result = object.getWorld().rayTraceEntities(object, object.getDirection(), range);
+            if (result != null && result.getHitEntity() != null) {
+                return new EntityTag(result.getHitEntity());
             }
             return null;
         });

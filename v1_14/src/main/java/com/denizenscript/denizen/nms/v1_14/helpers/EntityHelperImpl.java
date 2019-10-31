@@ -559,21 +559,6 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public Entity rayTraceEntity(Location start, Entity entity, Vector direction, double range) {
-        Location end = start.clone().add(direction.multiply(range));
-        Vec3D startVec = new Vec3D(start.getX(), start.getY(), start.getZ());
-        Vec3D endVec = new Vec3D(end.getX(), end.getY(), end.getZ());
-        net.minecraft.server.v1_14_R1.World nmsWorld = ((CraftWorld) start.getWorld()).getHandle();
-        net.minecraft.server.v1_14_R1.Entity nmsEntity = entity == null ? null : ((CraftEntity) entity).getHandle();
-        AxisAlignedBB aabb = new AxisAlignedBB(startVec, endVec);
-        MovingObjectPositionEntity pos = ProjectileHelper.a(nmsWorld, nmsEntity, startVec, endVec, aabb, null);
-        if (pos != null && pos.getEntity() != null) {
-            return pos.getEntity().getBukkitEntity();
-        }
-        return null;
-    }
-
-    @Override
     public Location rayTrace(Location start, Vector direction, double range) {
         Vector startVec = start.toVector();
         MovingObjectPosition l = rayTrace(start.getWorld(), startVec, startVec.clone().add(direction.multiply(range)));

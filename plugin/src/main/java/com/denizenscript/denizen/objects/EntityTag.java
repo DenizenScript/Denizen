@@ -40,6 +40,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.*;
 import org.bukkit.potion.*;
+import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -2270,9 +2271,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             if (range < 1) {
                 range = 200;
             }
-            Entity entity = NMSHandler.getEntityHelper().rayTraceEntity(object.getEyeLocation(), object.getBukkitEntity(), object.getEyeLocation().getDirection(), range);
-            if (entity != null) {
-                return new EntityTag(entity);
+            RayTraceResult result = object.getWorld().rayTraceEntities(object.getEyeLocation(), object.getEyeLocation().getDirection(), range, (e) -> !e.equals(object.getBukkitEntity()));
+            if (result != null && result.getHitEntity() != null) {
+                return new EntityTag(result.getHitEntity());
             }
             return null;
         });
