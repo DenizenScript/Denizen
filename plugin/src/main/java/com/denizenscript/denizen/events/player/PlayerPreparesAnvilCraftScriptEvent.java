@@ -40,6 +40,8 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
     // Element(Number) to set the repair cost.
     // ItemTag to change the item that is crafted.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerPreparesAnvilCraftScriptEvent() {

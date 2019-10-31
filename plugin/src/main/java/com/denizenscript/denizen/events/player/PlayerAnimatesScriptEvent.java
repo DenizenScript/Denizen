@@ -28,6 +28,8 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
     // @Context
     // <context.animation> returns the name of the animation.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerAnimatesScriptEvent() {

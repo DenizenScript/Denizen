@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.events.player;
+package com.denizenscript.denizen.events.core;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;

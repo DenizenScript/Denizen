@@ -29,7 +29,9 @@ public class PlayerLoginScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Determine
     // "KICKED" to kick the player from the server.
-    // "KICKED "+Element to kick the player and specify a message to show.
+    // "KICKED " + ElementTag to kick the player and specify a message to show.
+    //
+    // @Player Always.
     //
     // -->
 

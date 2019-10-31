@@ -31,6 +31,8 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
     // @Context
     // <context.entity> returns the EntityTag of the sheep.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerShearsScriptEvent() {

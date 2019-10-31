@@ -31,6 +31,8 @@ public class PlayerJoinsScriptEvent extends BukkitScriptEvent implements Listene
     // ElementTag to change the join message.
     // "NONE" to cancel the join message.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerJoinsScriptEvent() {

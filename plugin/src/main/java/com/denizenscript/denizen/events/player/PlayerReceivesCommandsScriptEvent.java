@@ -31,6 +31,8 @@ public class PlayerReceivesCommandsScriptEvent extends BukkitScriptEvent impleme
     // @Determine
     // ListTag to set the player's available commands. NOTE: It is not possible to add entries to the command list, only remove them.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerReceivesCommandsScriptEvent() {

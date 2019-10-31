@@ -34,6 +34,8 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
     // @Determine
     // "INSTABREAK" to make the block get broken instantly.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerDamagesBlockScriptEvent() {

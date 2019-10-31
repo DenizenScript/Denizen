@@ -48,6 +48,8 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
     // "RAW_FORMAT:" + ElementTag to set the format directly (without a format script). (Use with caution, avoid if possible).
     // "RECIPIENTS:" + ListTag(PlayerTag) to set the list of players that will receive the message.
     //
+    // @Player Always.
+    //
     // -->
 
     public ChatScriptEvent() {

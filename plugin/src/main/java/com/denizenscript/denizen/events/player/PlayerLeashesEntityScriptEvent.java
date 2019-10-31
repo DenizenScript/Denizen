@@ -30,6 +30,8 @@ public class PlayerLeashesEntityScriptEvent extends BukkitScriptEvent implements
     // <context.entity> returns the EntityTag of the leashed entity.
     // <context.holder> returns the EntityTag that is holding the leash.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerLeashesEntityScriptEvent() {

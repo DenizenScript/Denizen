@@ -33,7 +33,9 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
     // <context.statistic> returns the statistic that incremented. Statistic names: <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Statistic.html>
     // <context.previous_value> returns the old value of the statistic.
     // <context.new_value> returns the new value of the statistic.
-    // <context.qualifier> returns the qualifier (dEntity/dMaterial) if any.
+    // <context.qualifier> returns the qualifier (EntityTag/MaterialTag) if any.
+    //
+    // @Player Always.
     //
     // -->
 

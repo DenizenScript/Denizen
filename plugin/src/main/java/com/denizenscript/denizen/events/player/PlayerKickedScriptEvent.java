@@ -37,6 +37,8 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
     // "REASON:" + ElementTag to change the kick reason.
     // "FLY_COOLDOWN:" + DurationTag to cancel the automatic fly kick and set its next cooldown.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerKickedScriptEvent() {

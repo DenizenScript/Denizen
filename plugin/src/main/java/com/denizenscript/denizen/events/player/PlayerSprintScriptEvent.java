@@ -31,6 +31,8 @@ public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listen
     // @Context
     // <context.state> returns an Element(Boolean) with a value of "true" if the player is now sprinting and "false" otherwise.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerSprintScriptEvent() {

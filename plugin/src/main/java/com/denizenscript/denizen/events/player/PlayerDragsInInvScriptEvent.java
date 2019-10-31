@@ -41,6 +41,8 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
     // <context.slots> returns a ListTag of the slot numbers dragged through.
     // <context.raw_slots> returns a ListTag of the raw slot numbers dragged through.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerDragsInInvScriptEvent() {

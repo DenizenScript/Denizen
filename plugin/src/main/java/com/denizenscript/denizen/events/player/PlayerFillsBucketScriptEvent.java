@@ -33,6 +33,8 @@ public class PlayerFillsBucketScriptEvent extends BukkitScriptEvent implements L
     // <context.location> returns the LocationTag of the block clicked with the bucket.
     // <context.material> returns the MaterialTag of the LocationTag.
     //
+    // @Player Always.
+    //
     // -->
 
 

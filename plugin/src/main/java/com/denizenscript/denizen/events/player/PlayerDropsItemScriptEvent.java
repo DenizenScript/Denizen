@@ -34,6 +34,8 @@ public class PlayerDropsItemScriptEvent extends BukkitScriptEvent implements Lis
     // <context.entity> returns a EntityTag of the item.
     // <context.location> returns a LocationTag of the item's location.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerDropsItemScriptEvent() {

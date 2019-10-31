@@ -43,6 +43,8 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
     // @Determine
     // "ITEM:" + ItemTag to changed the item being picked up.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerPicksUpScriptEvent() {

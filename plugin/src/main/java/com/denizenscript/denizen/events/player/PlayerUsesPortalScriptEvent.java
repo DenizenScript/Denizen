@@ -29,6 +29,9 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Determine
     // LocationTag to change the destination.
+    //
+    // @Player Always.
+    //
     // -->
 
     public PlayerUsesPortalScriptEvent() {

@@ -34,6 +34,8 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
     // @Determine
     // Element(Number) to set the amount of experience the player will get.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerTakesFromFurnaceScriptEvent() {

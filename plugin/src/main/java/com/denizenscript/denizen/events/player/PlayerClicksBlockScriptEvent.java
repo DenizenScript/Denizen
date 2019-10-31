@@ -42,6 +42,8 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     // <context.click_type> returns an ElementTag of the Spigot API click type <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/block/Action.html>.
     // <context.hand> returns an ElementTag of the used hand.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerClicksBlockScriptEvent() {

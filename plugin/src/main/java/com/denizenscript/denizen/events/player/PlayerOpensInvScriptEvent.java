@@ -28,6 +28,8 @@ public class PlayerOpensInvScriptEvent extends BukkitScriptEvent implements List
     // @Context
     // <context.inventory> returns the InventoryTag.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerOpensInvScriptEvent() {

@@ -27,6 +27,8 @@ public class PlayerRiptideScriptEvent extends BukkitScriptEvent implements Liste
     // @Context
     // <context.item> returns the ItemTag of the trident.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerRiptideScriptEvent() {

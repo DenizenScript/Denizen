@@ -31,7 +31,7 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
     // <context.location> returns the LocationTag the player is interacting with.
     // <context.material> returns the MaterialTag the player is interacting with.
     //
-    // @Determine
+    // @Player Always.
     //
     // -->
 

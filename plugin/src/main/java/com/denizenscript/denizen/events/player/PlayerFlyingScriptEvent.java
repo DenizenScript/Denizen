@@ -31,6 +31,8 @@ public class PlayerFlyingScriptEvent extends BukkitScriptEvent implements Listen
     // @Context
     // <context.state> returns an Element(Boolean) with a value of "true" if the player is now flying and "false" otherwise.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerFlyingScriptEvent() {

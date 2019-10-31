@@ -94,6 +94,8 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
     // "CANCELLED" to stop the player from clicking.
     // ItemTag to set the current item for the event.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerClicksInInventoryScriptEvent() {

@@ -37,7 +37,9 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     // <context.item> returns a ItemTag of the item gotten, if any.
     //
     // @Determine
-    // "caught:" + ItemTag to change the the item that was caught (only if an item was already being caught).
+    // "CAUGHT:" + ItemTag to change the the item that was caught (only if an item was already being caught).
+    //
+    // @Player Always.
     //
     // -->
 

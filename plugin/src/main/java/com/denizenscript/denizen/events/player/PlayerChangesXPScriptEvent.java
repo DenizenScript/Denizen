@@ -33,6 +33,8 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
     // @Determine
     // Element(Number) to set the amount of changed experience.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerChangesXPScriptEvent() {

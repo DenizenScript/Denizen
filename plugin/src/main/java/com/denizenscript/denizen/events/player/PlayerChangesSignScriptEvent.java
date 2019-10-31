@@ -40,6 +40,8 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     // @Determine
     // ListTag to change the lines (Uses escaping, see <@link language Property Escaping>)
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerChangesSignScriptEvent() {

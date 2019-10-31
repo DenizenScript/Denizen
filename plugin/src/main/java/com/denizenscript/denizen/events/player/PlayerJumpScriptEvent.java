@@ -30,6 +30,8 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
     // @Context
     // <context.location> returns the location the player jumped from.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerJumpScriptEvent() {

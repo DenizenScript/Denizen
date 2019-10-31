@@ -31,6 +31,8 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
     // <context.jump> returns an Element(Boolean) that signifies whether the player is attempting to jump with the entity.
     // <context.dismount> returns an Element(Boolean) that signifies whether the player is attempting to dismount.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerSteersEntityScriptEvent() {

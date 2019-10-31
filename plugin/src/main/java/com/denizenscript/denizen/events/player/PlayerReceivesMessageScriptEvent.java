@@ -32,6 +32,8 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
     // "MESSAGE:" + ElementTag to change the message.
     // "RAW_JSON:" + ElementTag to change the JSON used for the message.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerReceivesMessageScriptEvent() {

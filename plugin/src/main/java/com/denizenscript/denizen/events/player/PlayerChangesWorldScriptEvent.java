@@ -28,6 +28,8 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
     // <context.origin_world> returns the WorldTag that the player was previously on.
     // <context.destination_world> returns the WorldTag that the player is now in.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerChangesWorldScriptEvent() {

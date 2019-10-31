@@ -29,6 +29,8 @@ public class PlayerLevelsUpScriptEvent extends BukkitScriptEvent implements List
     // <context.new_level> returns an ElementTag of the player's new level.
     // <context.old_level> returns an ElementTag of the player's old level.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerLevelsUpScriptEvent() {

@@ -37,6 +37,8 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
     // <context.old_biome> returns the biome being left.
     // <context.new_biome> returns the biome being entered.
     //
+    // @Player Always.
+    //
     // -->
 
     public BiomeEnterExitScriptEvent() {

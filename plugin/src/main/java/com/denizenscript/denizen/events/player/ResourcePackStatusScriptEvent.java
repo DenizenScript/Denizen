@@ -20,6 +20,8 @@ public class ResourcePackStatusScriptEvent extends BukkitScriptEvent {
     // @Context
     // <context.status> returns an ElementTag of the status. Can be: SUCCESSFULLY_LOADED, DECLINED, FAILED_DOWNLOAD, ACCEPTED.
     //
+    // @Player Always.
+    //
     // -->
 
     public ResourcePackStatusScriptEvent() {

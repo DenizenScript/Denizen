@@ -40,6 +40,8 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
     // @Determine
     // ItemTag to change the item that is crafted.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerCraftsItemScriptEvent() {

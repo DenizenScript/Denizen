@@ -19,27 +19,29 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerEditBookEvent;
 import org.bukkit.inventory.meta.BookMeta;
 
-// <--[event]
-// @Events
-// player edits book
-// player signs book
-//
-// @Regex ^on player (edits|signs) book$
-//
-// @Triggers when a player edits or signs a book.
-// @Context
-// <context.title> returns the name of the book, if any.
-// <context.pages> returns the number of pages in the book.
-// <context.book> returns the book item being edited.
-// <context.signing> returns whether the book is about to be signed.
-//
-// @Determine
-// "NOT_SIGNING" to prevent the book from being signed.
-// dScript to set the book information to set it to instead.
-//
-// -->
-
 public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Listener {
+
+    // <--[event]
+    // @Events
+    // player edits book
+    // player signs book
+    //
+    // @Regex ^on player (edits|signs) book$
+    //
+    // @Triggers when a player edits or signs a book.
+    // @Context
+    // <context.title> returns the name of the book, if any.
+    // <context.pages> returns the number of pages in the book.
+    // <context.book> returns the book item being edited.
+    // <context.signing> returns whether the book is about to be signed.
+    //
+    // @Determine
+    // "NOT_SIGNING" to prevent the book from being signed.
+    // ScriptTag to set the book information to set it to instead.
+    //
+    // @Player Always.
+    //
+    // -->
 
     PlayerEditsBookScriptEvent instance;
     PlayerEditBookEvent event;

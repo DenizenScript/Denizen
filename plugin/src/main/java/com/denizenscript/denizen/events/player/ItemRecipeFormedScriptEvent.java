@@ -36,6 +36,8 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
     // @Determine
     // ItemTag to change the item that is formed in the result slot.
     //
+    // @Player Always.
+    //
     // -->
 
     public ItemRecipeFormedScriptEvent() {

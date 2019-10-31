@@ -35,6 +35,8 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
     // @Determine
     // ItemTag to change the item being consumed.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerConsumesScriptEvent() {

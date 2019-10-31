@@ -32,6 +32,8 @@ public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Lis
     // @Context
     // <context.notable> returns an ElementTag of the notable location's name.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerWalksOverScriptEvent() {

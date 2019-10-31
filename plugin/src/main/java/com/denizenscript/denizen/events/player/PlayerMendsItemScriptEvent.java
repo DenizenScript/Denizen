@@ -37,6 +37,8 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
     // @Determine
     // Element(Number) to set the amount of durability the item recovers.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerMendsItemScriptEvent() {

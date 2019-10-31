@@ -25,6 +25,8 @@ public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent imp
     // @Context
     // <context.criteria> returns all the criteria present in this advancement.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerCompletesAdvancementScriptEvent() {

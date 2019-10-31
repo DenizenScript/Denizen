@@ -35,6 +35,8 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     // <context.item_in_hand> returns the ItemTag of the item in hand.
     // <context.hand> returns the name of the hand that the block was in (HAND or OFF_HAND).
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerPlacesBlockScriptEvent() {

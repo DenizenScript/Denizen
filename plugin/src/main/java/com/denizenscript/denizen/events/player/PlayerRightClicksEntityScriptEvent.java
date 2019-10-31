@@ -36,6 +36,8 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
     // <context.item> returns the ItemTag the player is clicking with.
     // <context.click_position> returns a LocationTag of the click position (as a world-less vector, relative to the entity's center). This is only available when clicking armor stands.
     //
+    // @Player Always.
+    //
     // -->
 
     public static PlayerRightClicksEntityScriptEvent instance;

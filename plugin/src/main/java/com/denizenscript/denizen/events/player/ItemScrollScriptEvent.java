@@ -31,6 +31,8 @@ public class ItemScrollScriptEvent extends BukkitScriptEvent implements Listener
     // <context.new_slot> returns the number of the new inventory slot.
     // <context.previous_slot> returns the number of the old inventory slot.
     //
+    // @Player Always.
+    //
     // -->
 
     public ItemScrollScriptEvent() {

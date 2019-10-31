@@ -40,6 +40,8 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     // @Determine
     // Element(Number) to set the amount of damage the item will take.
     //
+    // @Player Always.
+    //
     // -->
 
     public static PlayerItemTakesDamageScriptEvent instance;

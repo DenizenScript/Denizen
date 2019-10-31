@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.events.player;
+package com.denizenscript.denizen.events.core;
 
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
@@ -16,7 +16,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.TabCompleteEvent;
 
-public class PlayerTabCompleteScriptEvent extends BukkitScriptEvent implements Listener {
+public class TabCompleteScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -42,11 +42,11 @@ public class PlayerTabCompleteScriptEvent extends BukkitScriptEvent implements L
     //
     // -->
 
-    public PlayerTabCompleteScriptEvent() {
+    public TabCompleteScriptEvent() {
         instance = this;
     }
 
-    public static PlayerTabCompleteScriptEvent instance;
+    public static TabCompleteScriptEvent instance;
     public TabCompleteEvent event;
     public String buffer;
     public ListTag completions;

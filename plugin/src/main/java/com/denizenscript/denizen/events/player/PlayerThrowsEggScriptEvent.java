@@ -35,6 +35,8 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
     // @Determine
     // EntityTag to set the type of the hatching entity.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerThrowsEggScriptEvent() {

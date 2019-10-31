@@ -33,6 +33,8 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
     // <context.hanging> returns the EntityTag of the hanging.
     // <context.location> returns the LocationTag of the block the hanging was placed on.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerPlacesHangingScriptEvent() {

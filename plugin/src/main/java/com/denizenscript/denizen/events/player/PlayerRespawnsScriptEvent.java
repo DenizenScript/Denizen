@@ -29,6 +29,8 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
     // @Determine
     // LocationTag to change the respawn location.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerRespawnsScriptEvent() {

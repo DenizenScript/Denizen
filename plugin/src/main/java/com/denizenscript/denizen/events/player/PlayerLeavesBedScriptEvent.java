@@ -29,6 +29,8 @@ public class PlayerLeavesBedScriptEvent extends BukkitScriptEvent implements Lis
     // @Context
     // <context.location> returns the LocationTag of the bed.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerLeavesBedScriptEvent() {

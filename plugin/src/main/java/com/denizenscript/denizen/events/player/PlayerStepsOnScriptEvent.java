@@ -33,6 +33,8 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     // <context.previous_location> returns a LocationTag of where the player was before stepping onto the block.
     // <context.new_location> returns a LocationTag of where the player is now.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerStepsOnScriptEvent() {

@@ -33,6 +33,8 @@ public class PlayerTakesFromLecternScriptEvent extends BukkitScriptEvent impleme
     // <context.location> returns the LocationTag of the lectern.
     // <context.item> returns the book ItemTag taken out of the lectern.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerTakesFromLecternScriptEvent() {

@@ -37,6 +37,8 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
     // <context.item> returns the item that broke.
     // <context.slot> returns the slot of the item that broke.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerBreaksItemScriptEvent() {

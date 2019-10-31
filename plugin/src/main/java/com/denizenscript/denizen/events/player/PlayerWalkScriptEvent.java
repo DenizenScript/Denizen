@@ -32,6 +32,8 @@ public class PlayerWalkScriptEvent extends BukkitScriptEvent implements Listener
     // <context.old_location> returns the location of where the player was.
     // <context.new_location> returns the location of where the player is.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerWalkScriptEvent() {

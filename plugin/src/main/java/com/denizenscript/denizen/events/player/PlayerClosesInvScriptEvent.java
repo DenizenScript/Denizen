@@ -28,6 +28,8 @@ public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Lis
     // @Context
     // <context.inventory> returns the InventoryTag.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerClosesInvScriptEvent() {

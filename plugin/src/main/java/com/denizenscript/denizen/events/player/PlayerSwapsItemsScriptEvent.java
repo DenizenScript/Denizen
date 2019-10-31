@@ -33,6 +33,8 @@ public class PlayerSwapsItemsScriptEvent extends BukkitScriptEvent implements Li
     // "MAIN:" + ItemTag to set the item in the main hand.
     // "OFFHAND:" + ItemTag to set the item in the off hand.
     //
+    // @Player Always.
+    //
     // -->
 
     public PlayerSwapsItemsScriptEvent() {
