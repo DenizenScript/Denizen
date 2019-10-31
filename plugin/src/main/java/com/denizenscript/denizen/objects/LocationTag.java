@@ -1372,6 +1372,25 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
+        // @attribute <LocationTag.precise_target_position[<range>]>
+        // @returns LocationTag
+        // @description
+        // Returns the precise location this location is pointing at, when tracing against entities.
+        // Optionally, specify a maximum range to find the entity from (defaults to 200).
+        // -->
+        registerTag("precise_target_position", (attribute, object) -> {
+            int range = attribute.getIntContext(1);
+            if (range < 1) {
+                range = 200;
+            }
+            RayTraceResult result = object.getWorld().rayTraceEntities(object, object.getDirection(), range);
+            if (result != null) {
+                return new LocationTag(object.getWorld(), result.getHitPosition());
+            }
+            return null;
+        });
+
+        // <--[tag]
         // @attribute <LocationTag.points_between[<location>]>
         // @returns ListTag(LocationTag)
         // @description

@@ -2279,6 +2279,25 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
+        // @attribute <EntityTag.precise_target_position[<range>]>
+        // @returns LocationTag
+        // @description
+        // Returns the entity this entity is looking at, using precise ray trace logic.
+        // Optionally, specify a maximum range to find the entity from (defaults to 200).
+        // -->
+        registerTag("precise_target_position", (attribute, object) -> {
+            int range = attribute.getIntContext(1);
+            if (range < 1) {
+                range = 200;
+            }
+            RayTraceResult result = object.getWorld().rayTraceEntities(object.getEyeLocation(), object.getEyeLocation().getDirection(), range, (e) -> !e.equals(object.getBukkitEntity()));
+            if (result != null) {
+                return new LocationTag(object.getWorld(), result.getHitPosition());
+            }
+            return null;
+        });
+
+        // <--[tag]
         // @attribute <EntityTag.time_lived>
         // @returns DurationTag
         // @group attributes
