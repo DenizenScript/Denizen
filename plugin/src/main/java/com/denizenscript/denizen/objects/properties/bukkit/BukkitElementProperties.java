@@ -78,7 +78,7 @@ public class BukkitElementProperties implements Property {
         // Returns the element as a cuboid. Note: the value must be a valid cuboid.
         // -->
         PropertyParser.<ElementTag>registerTag("as_cuboid", (attribute, object) -> {
-            return ElementTag.handleNull(object.asString(), ColorTag.valueOf(object.asString(),
+            return ElementTag.handleNull(object.asString(), CuboidTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "CuboidTag", attribute.hasAlternative());
         }, "ascuboid");
 
@@ -90,7 +90,7 @@ public class BukkitElementProperties implements Property {
         // Returns the element as an entity. Note: the value must be a valid entity.
         // -->
         PropertyParser.<ElementTag>registerTag("as_entity", (attribute, object) -> {
-            return ElementTag.handleNull(object.asString(), ColorTag.valueOf(object.asString(),
+            return ElementTag.handleNull(object.asString(), EntityTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "EntityTag", attribute.hasAlternative());
         }, "asentity");
 
@@ -102,7 +102,7 @@ public class BukkitElementProperties implements Property {
         // Returns the element as an inventory. Note: the value must be a valid inventory.
         // -->
         PropertyParser.<ElementTag>registerTag("as_inventory", (attribute, object) -> {
-            return ElementTag.handleNull(object.asString(), ColorTag.valueOf(object.asString(),
+            return ElementTag.handleNull(object.asString(), InventoryTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "InventoryTag", attribute.hasAlternative());
         }, "asinventory");
 
@@ -114,7 +114,7 @@ public class BukkitElementProperties implements Property {
         // Returns the element as an item. Note: the value must be a valid item.
         // -->
         PropertyParser.<ElementTag>registerTag("as_item", (attribute, object) -> {
-            return ElementTag.handleNull(object.asString(), ColorTag.valueOf(object.asString(),
+            return ElementTag.handleNull(object.asString(), ItemTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "ItemTag", attribute.hasAlternative());
         }, "asitem");
 
@@ -126,7 +126,7 @@ public class BukkitElementProperties implements Property {
         // Returns the element as a location. Note: the value must be a valid location.
         // -->
         PropertyParser.<ElementTag>registerTag("as_location", (attribute, object) -> {
-            return ElementTag.handleNull(object.asString(), ColorTag.valueOf(object.asString(),
+            return ElementTag.handleNull(object.asString(), LocationTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "LocationTag", attribute.hasAlternative());
         }, "aslocation");
 
@@ -138,7 +138,7 @@ public class BukkitElementProperties implements Property {
         // Returns the element as a material. Note: the value must be a valid material.
         // -->
         PropertyParser.<ElementTag>registerTag("as_material", (attribute, object) -> {
-            return ElementTag.handleNull(object.asString(), ColorTag.valueOf(object.asString(),
+            return ElementTag.handleNull(object.asString(), MaterialTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "MaterialTag", attribute.hasAlternative());
         }, "asmaterial");
 
@@ -150,7 +150,7 @@ public class BukkitElementProperties implements Property {
         // Returns the element as an NPC. Note: the value must be a valid NPC.
         // -->
         PropertyParser.<ElementTag>registerTag("as_npc", (attribute, object) -> {
-            return ElementTag.handleNull(object.asString(), ColorTag.valueOf(object.asString(),
+            return ElementTag.handleNull(object.asString(), NPCTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "NPCTag", attribute.hasAlternative());
         }, "asnpc");
 
@@ -162,7 +162,7 @@ public class BukkitElementProperties implements Property {
         // Returns the element as a player. Note: the value must be a valid player. Can be online or offline.
         // -->
         PropertyParser.<ElementTag>registerTag("as_player", (attribute, object) -> {
-            return ElementTag.handleNull(object.asString(), ColorTag.valueOf(object.asString(),
+            return ElementTag.handleNull(object.asString(), PlayerTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "PlayerTag", attribute.hasAlternative());
         }, "asplayer");
 
@@ -174,7 +174,7 @@ public class BukkitElementProperties implements Property {
         // Returns the element as a world.
         // -->
         PropertyParser.<ElementTag>registerTag("as_world", (attribute, object) -> {
-            return ElementTag.handleNull(object.asString(), ColorTag.valueOf(object.asString(),
+            return ElementTag.handleNull(object.asString(), WorldTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "WorldTag", attribute.hasAlternative());
         }, "asworld");
 
@@ -186,7 +186,7 @@ public class BukkitElementProperties implements Property {
         // Returns the element as a plugin. Note: the value must be a valid plugin.
         // -->
         PropertyParser.<ElementTag>registerTag("as_plugin", (attribute, object) -> {
-            return ElementTag.handleNull(object.asString(), ColorTag.valueOf(object.asString(),
+            return ElementTag.handleNull(object.asString(), PluginTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "PluginTag", attribute.hasAlternative());
         }, "asplugin");
 
