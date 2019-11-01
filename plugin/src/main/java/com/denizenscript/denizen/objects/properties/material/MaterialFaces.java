@@ -100,7 +100,7 @@ public class MaterialFaces implements Property {
 
     @Override
     public String getPropertyId() {
-        return "direction";
+        return "faces";
     }
 
     @Override
