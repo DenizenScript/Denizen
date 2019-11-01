@@ -480,6 +480,38 @@ public class BukkitElementProperties implements Property {
         PropertyParser.<ElementTag>registerTag("obfuscate", (attribute, object) -> {
             return new ElementTag(ChatColor.MAGIC + object.asString() + ChatColor.COLOR_CHAR + "[reset=k]");
         });
+
+        // <--[tag]
+        // @attribute <ElementTag.color[<color>]>
+        // @returns ElementTag
+        // @group text manipulation
+        // @description
+        // Makes the input text colored by the input color. Equivalent to "<COLOR><ELEMENT_HERE><COLOR.end_format>"
+        // Color can be either a color name, or code.
+        // That is: ".color[gold]" and ".color[6]" are both valid.
+        // -->
+        PropertyParser.<ElementTag>registerTag("color", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
+            String colorName = attribute.getContext(1);
+            ChatColor color = null;
+            if (colorName.length() == 1) {
+                color = ChatColor.getByChar(colorName.charAt(0));
+            }
+            if (color == null) {
+                try {
+                    color = ChatColor.valueOf(colorName);
+                }
+                catch (IllegalArgumentException ex) {
+                    if (!attribute.hasAlternative()) {
+                        Debug.echoError("Color '" + colorName + "' doesn't exist (for ElementTag.color[...]).");
+                    }
+                    return null;
+                }
+            }
+            return new ElementTag(color + object.asString() + ChatColor.COLOR_CHAR + "[reset=" + color.getChar() + "]");
+        });
     }
 
     @Override
