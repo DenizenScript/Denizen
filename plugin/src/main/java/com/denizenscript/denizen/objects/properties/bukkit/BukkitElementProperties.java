@@ -425,6 +425,61 @@ public class BukkitElementProperties implements Property {
             }
             return null;
         });
+
+        // <--[tag]
+        // @attribute <ElementTag.italicize>
+        // @returns ElementTag
+        // @group text manipulation
+        // @description
+        // Makes the input text italic. Equivalent to "<&o><ELEMENT_HERE><&o.end_format>"
+        // -->
+        PropertyParser.<ElementTag>registerTag("italicize", (attribute, object) -> {
+            return new ElementTag(ChatColor.ITALIC + object.asString() + ChatColor.COLOR_CHAR + "[reset=o]");
+        });
+
+        // <--[tag]
+        // @attribute <ElementTag.bold>
+        // @returns ElementTag
+        // @group text manipulation
+        // @description
+        // Makes the input text bold. Equivalent to "<&l><ELEMENT_HERE><&l.end_format>"
+        // -->
+        PropertyParser.<ElementTag>registerTag("bold", (attribute, object) -> {
+            return new ElementTag(ChatColor.BOLD + object.asString() + ChatColor.COLOR_CHAR + "[reset=l]");
+        });
+
+        // <--[tag]
+        // @attribute <ElementTag.underline>
+        // @returns ElementTag
+        // @group text manipulation
+        // @description
+        // Makes the input text underlined. Equivalent to "<&n><ELEMENT_HERE><&n.end_format>"
+        // -->
+        PropertyParser.<ElementTag>registerTag("underline", (attribute, object) -> {
+            return new ElementTag(ChatColor.UNDERLINE + object.asString() + ChatColor.COLOR_CHAR + "[reset=n]");
+        });
+
+        // <--[tag]
+        // @attribute <ElementTag.strikethrough>
+        // @returns ElementTag
+        // @group text manipulation
+        // @description
+        // Makes the input text struck-through. Equivalent to "<&m><ELEMENT_HERE><&m.end_format>"
+        // -->
+        PropertyParser.<ElementTag>registerTag("strikethrough", (attribute, object) -> {
+            return new ElementTag(ChatColor.STRIKETHROUGH + object.asString() + ChatColor.COLOR_CHAR + "[reset=m]");
+        });
+
+        // <--[tag]
+        // @attribute <ElementTag.obfuscate>
+        // @returns ElementTag
+        // @group text manipulation
+        // @description
+        // Makes the input text obfuscated. Equivalent to "<&k><ELEMENT_HERE><&k.end_format>"
+        // -->
+        PropertyParser.<ElementTag>registerTag("obfuscate", (attribute, object) -> {
+            return new ElementTag(ChatColor.MAGIC + object.asString() + ChatColor.COLOR_CHAR + "[reset=k]");
+        });
     }
 
     @Override
