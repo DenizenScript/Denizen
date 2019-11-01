@@ -55,7 +55,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
     // @description
     // A EntityTag represents a spawned entity, or a generic entity type.
     //
-    // Note that players and NPCs are valid dEntities, but are generally represented by the more specific
+    // Note that players and NPCs are valid EntityTags, but are generally represented by the more specific
     // PlayerTag and NPCTag objects.
     //
     // For format info, see <@link language e@>
