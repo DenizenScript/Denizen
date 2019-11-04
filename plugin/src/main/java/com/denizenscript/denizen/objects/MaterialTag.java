@@ -522,8 +522,8 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // @returns ElementTag(Boolean)
         // @group properties
         // @description
-        // Returns whether the material is a bisected material.
-        // When this returns true, <@link tag MaterialTag.half>,
+        // Returns whether the material is a bisected material (doors, beds, double chests, double plants, ...).
+        // When this returns true, <@link tag MaterialTag.half>, <@link tag MaterialTag.relative_vector>
         // and <@link mechanism MaterialTag.half> are accessible.
         // -->
         registerTag("is_bisected", (attribute, object) -> {

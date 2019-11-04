@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.objects.notable.NotableManager;
+import com.denizenscript.denizen.objects.properties.material.MaterialHalf;
 import com.denizenscript.denizen.objects.properties.material.MaterialSwitchFace;
 import com.denizenscript.denizen.objects.properties.material.MaterialLeaves;
 import com.denizenscript.denizen.scripts.commands.world.SwitchCommand;
@@ -2748,29 +2749,24 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @attribute <LocationTag.other_block>
         // @returns LocationTag
         // @description
-        // If the location is part of a double-block structure
-        // (double chests, doors, beds, etc), returns the location of the other block in the double-block structure.
+        // If the location is part of a double-block structure (double chests, double plants, doors, beds, etc),
+        // returns the location of the other block in the double-block structure.
+        // You can test if this will be valid with <@link tag MaterialTag.is_bisected>.
         // -->
         registerTag("other_block", (attribute, object) -> {
-            BlockState state = object.getBlockStateForTag(attribute);
-            if (state instanceof Chest
-                    && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                Vector direction = DirectionalBlocksHelper.getFacing(object.getBlockForTag(attribute));
-                if (DirectionalBlocksHelper.isLeftHalf(object.getBlockForTag(attribute))) {
-                    direction = new Vector(-direction.getZ(), 0, direction.getX());
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+                Block b = object.getBlockForTag(attribute);
+                MaterialTag material = new MaterialTag(b);
+                if (MaterialHalf.describes(material)) {
+                    return new LocationTag(object.clone().add(MaterialHalf.getFrom(material).getRelativeBlockVector()));
                 }
-                else if (DirectionalBlocksHelper.isRightHalf(object.getBlockForTag(attribute))) {
-                    direction = new Vector(direction.getZ(), 0, -direction.getX());
+                if (!attribute.hasAlternative()) {
+                    Debug.echoError("Block of type " + object.getBlockTypeForTag(attribute).name() + " isn't supported by other_block.");
                 }
-                else {
-                    if (!attribute.hasAlternative()) {
-                        Debug.echoError("Block is a single-block chest.");
-                    }
-                    return null;
-                }
-                return new LocationTag(object.clone().add(direction));
+                return null;
             }
-            else if (state instanceof Chest) {
+            BlockState state = object.getBlockStateForTag(attribute);
+            if (state instanceof Chest) {
                 // There is no remotely sane API for this.
                 InventoryHolder holder = ((Chest) state).getBlockInventory().getHolder();
                 if (holder instanceof DoubleChest) {
@@ -2783,16 +2779,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                         return new LocationTag(left);
                     }
                 }
-            }
-            else if (state instanceof Bed
-                    && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                // There's no pre-1.13 API for this *at all*, and the new API isn't very sane, but can be used.
-                boolean isTop = DirectionalBlocksHelper.isTopHalf(object.getBlockForTag(attribute));
-                BlockFace direction = DirectionalBlocksHelper.getFace(object.getBlockForTag(attribute));
-                if (!isTop) {
-                    direction = direction.getOppositeFace();
-                }
-                return new LocationTag(object.clone().add(direction.getDirection()));
             }
             else if (state.getData() instanceof Door) {
                 if (((Door) state.getData()).isTopHalf()) {
