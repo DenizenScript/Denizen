@@ -501,7 +501,7 @@ public class BukkitElementProperties implements Property {
             }
             if (color == null) {
                 try {
-                    color = ChatColor.valueOf(colorName);
+                    color = ChatColor.valueOf(colorName.toUpperCase());
                 }
                 catch (IllegalArgumentException ex) {
                     if (!attribute.hasAlternative()) {
