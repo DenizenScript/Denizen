@@ -120,7 +120,7 @@ public class SwitchCommand extends AbstractCommand {
                     catch (Exception e) {
                     }
                 }
-                Debug.log("Setting delayed task 'SWITCH' for " + interactLocation.identify());
+                Debug.echoDebug(scriptEntry, "Setting delayed task 'SWITCH' for " + interactLocation.identify());
                 // Store new delayed task ID, for checking against, then schedule new delayed task.
                 taskMap.put(interactLocation, Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
                         new Runnable() {

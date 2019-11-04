@@ -6,35 +6,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Rotatable;
-import org.bukkit.block.data.type.Bed;
-import org.bukkit.block.data.type.Chest;
 import org.bukkit.util.Vector;
 
 public class DirectionalBlocksHelper {
-
-    public static boolean isTopHalf(Block b) {
-        ModernBlockData mbd = new ModernBlockData(b);
-        if (mbd.data instanceof Bed) {
-            return ((Bed) mbd.data).getPart() == Bed.Part.HEAD;
-        }
-        return false;
-    }
-
-    public static boolean isLeftHalf(Block b) {
-        ModernBlockData mbd = new ModernBlockData(b);
-        if (mbd.data instanceof Chest) {
-            return ((Chest) mbd.data).getType() == Chest.Type.LEFT;
-        }
-        return false;
-    }
-
-    public static boolean isRightHalf(Block b) {
-        ModernBlockData mbd = new ModernBlockData(b);
-        if (mbd.data instanceof Chest) {
-            return ((Chest) mbd.data).getType() == Chest.Type.RIGHT;
-        }
-        return false;
-    }
 
     public static BlockFace getFace(Block b) {
         ModernBlockData mbd = new ModernBlockData(b);
