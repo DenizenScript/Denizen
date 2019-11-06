@@ -90,7 +90,7 @@ public class ItemSpawnerRange implements Property {
         // <--[mechanism]
         // @object ItemTag
         // @name spawner_range
-        // @input ListTag
+        // @input ElementTag(Number)
         // @description
         // Sets the spawn range of a spawner block item.
         // @tags

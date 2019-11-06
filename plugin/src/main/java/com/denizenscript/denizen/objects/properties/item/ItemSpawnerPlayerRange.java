@@ -90,7 +90,7 @@ public class ItemSpawnerPlayerRange implements Property {
         // <--[mechanism]
         // @object ItemTag
         // @name spawner_player_range
-        // @input ListTag
+        // @input ElementTag(Number)
         // @description
         // Sets the maximum player range of a spawner block item.
         // @tags

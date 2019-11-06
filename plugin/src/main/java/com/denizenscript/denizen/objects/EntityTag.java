@@ -210,7 +210,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                 randomType = EntityType.values()[CoreUtilities.getRandom().nextInt(EntityType.values().length)];
             }
 
-            return new EntityTag(DenizenEntityType.getByName(randomType.name()), "RANDOM");
+            return new EntityTag(randomType, "RANDOM");
         }
 
         ///////
@@ -407,7 +407,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         }
     }
 
-    @Deprecated
     public EntityTag(EntityType entityType) {
         if (entityType != null) {
             this.entity = null;
@@ -418,13 +417,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         }
     }
 
-    @Deprecated
     public EntityTag(EntityType entityType, ArrayList<Mechanism> mechanisms) {
         this(entityType);
         this.mechanisms = mechanisms;
     }
 
-    @Deprecated
     public EntityTag(EntityType entityType, String data1) {
         if (entityType != null) {
             this.entity = null;
@@ -436,7 +433,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         }
     }
 
-    @Deprecated
     public EntityTag(EntityType entityType, String data1, String data2) {
         if (entityType != null) {
             this.entity = null;

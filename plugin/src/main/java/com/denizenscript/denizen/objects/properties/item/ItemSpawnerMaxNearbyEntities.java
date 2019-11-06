@@ -90,7 +90,7 @@ public class ItemSpawnerMaxNearbyEntities implements Property {
         // <--[mechanism]
         // @object ItemTag
         // @name spawner_max_nearby_entities
-        // @input ListTag
+        // @input ElementTag(Number)
         // @description
         // Sets the maximum nearby entities of a spawner block item.
         // @tags

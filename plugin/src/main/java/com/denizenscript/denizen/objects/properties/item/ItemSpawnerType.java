@@ -1,15 +1,15 @@
 package com.denizenscript.denizen.objects.properties.item;
 
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.inventory.meta.BlockStateMeta;
 
-public class ItemSpawnerCount implements Property {
+public class ItemSpawnerType implements Property {
 
     public static boolean describes(ObjectTag item) {
         return item instanceof ItemTag
@@ -18,25 +18,25 @@ public class ItemSpawnerCount implements Property {
                 && ((BlockStateMeta) ((ItemTag) item).getItemStack().getItemMeta()).getBlockState() instanceof CreatureSpawner;
     }
 
-    public static ItemSpawnerCount getFrom(ObjectTag _item) {
+    public static ItemSpawnerType getFrom(ObjectTag _item) {
         if (!describes(_item)) {
             return null;
         }
         else {
-            return new ItemSpawnerCount((ItemTag) _item);
+            return new ItemSpawnerType((ItemTag) _item);
         }
     }
 
     public static final String[] handledTags = new String[] {
-            "spawner_count"
+            "spawner_type"
     };
 
     public static final String[] handledMechs = new String[] {
-            "spawner_count"
+            "spawner_type"
     };
 
 
-    private ItemSpawnerCount(ItemTag _item) {
+    private ItemSpawnerType(ItemTag _item) {
         item = _item;
     }
 
@@ -50,18 +50,18 @@ public class ItemSpawnerCount implements Property {
         }
 
         // <--[tag]
-        // @attribute <ItemTag.spawner_count>
-        // @returns ElementTag(Number)
-        // @mechanism ItemTag.spawner_count
+        // @attribute <ItemTag.spawner_type>
+        // @returns EntityTag
+        // @mechanism ItemTag.spawner_type
         // @group properties
         // @description
-        // Returns the spawn count for a spawner block item.
+        // Returns the spawn type for a spawner block item.
         // -->
-        if (attribute.startsWith("spawner_count")) {
+        if (attribute.startsWith("spawner_type")) {
             BlockStateMeta meta = (BlockStateMeta) item.getItemStack().getItemMeta();
             if (meta.hasBlockState()) {
                 CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
-                return new ElementTag(state.getSpawnCount())
+                return new EntityTag(state.getSpawnedType())
                         .getObjectAttribute(attribute.fulfill(1));
             }
         }
@@ -74,14 +74,14 @@ public class ItemSpawnerCount implements Property {
         BlockStateMeta meta = (BlockStateMeta) item.getItemStack().getItemMeta();
         if (meta.hasBlockState()) {
             CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
-            return String.valueOf(state.getSpawnCount());
+            return state.getSpawnedType().name();
         }
         return null;
     }
 
     @Override
     public String getPropertyId() {
-        return "spawner_count";
+        return "spawner_type";
     }
 
     @Override
@@ -89,18 +89,18 @@ public class ItemSpawnerCount implements Property {
 
         // <--[mechanism]
         // @object ItemTag
-        // @name spawner_count
-        // @input ElementTag(Number)
+        // @name spawner_type
+        // @input EntityTag
         // @description
-        // Sets the spawn count of a spawner block item.
+        // Sets the spawn type of a spawner block item.
         // @tags
-        // <ItemTag.spawner_count>
+        // <ItemTag.spawner_type>
         // -->
-        if (mechanism.matches("spawner_count") && mechanism.requireInteger()) {
+        if (mechanism.matches("spawner_type") && mechanism.requireObject(EntityTag.class)) {
             BlockStateMeta meta = (BlockStateMeta) item.getItemStack().getItemMeta();
             if (meta.hasBlockState()) {
                 CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
-                state.setSpawnCount(mechanism.getValue().asInt());
+                state.setSpawnedType(mechanism.valueAsType(EntityTag.class).getBukkitEntityType());
                 meta.setBlockState(state);
                 item.getItemStack().setItemMeta(meta);
             }

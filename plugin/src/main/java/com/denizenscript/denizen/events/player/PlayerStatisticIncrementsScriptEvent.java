@@ -3,7 +3,6 @@ package com.denizenscript.denizen.events.player;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -88,7 +87,7 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
                 return new MaterialTag(event.getMaterial());
             }
             else if (statistic.getType() == Statistic.Type.ENTITY) {
-                return new EntityTag(DenizenEntityType.getByName(event.getEntityType().name()));
+                return new EntityTag(event.getEntityType());
             }
         }
         return super.getContext(name);

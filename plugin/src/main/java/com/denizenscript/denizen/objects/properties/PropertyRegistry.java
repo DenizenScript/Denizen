@@ -140,6 +140,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(ItemSpawnerMaxNearbyEntities.class, ItemTag.class);
         PropertyParser.registerProperty(ItemSpawnerPlayerRange.class, ItemTag.class);
         PropertyParser.registerProperty(ItemSpawnerRange.class, ItemTag.class);
+        PropertyParser.registerProperty(ItemSpawnerType.class, ItemTag.class);
         PropertyParser.registerProperty(ItemUnbreakable.class, ItemTag.class);
 
         // register core MaterialTag properties
