@@ -17,21 +17,16 @@ import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.ScriptHelper;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import com.denizenscript.denizencore.utilities.debugging.Debuggable;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class DenizenCoreImplementation implements DenizenImplementation {
@@ -126,18 +121,6 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     public void onScriptReload() {
         Depends.setupEconomy();
         Bukkit.getServer().getPluginManager().callEvent(new ScriptReloadEvent());
-    }
-
-    @Override
-    public List<YamlConfiguration> getOutsideScripts() {
-        List<YamlConfiguration> files = new ArrayList<>();
-        try {
-            files.add(ScriptHelper.loadConfig("Denizen.jar/util.dsc", DenizenAPI.getCurrentInstance().getResource("util.dsc")));
-        }
-        catch (IOException e) {
-            Debug.echoError(e);
-        }
-        return files;
     }
 
     @Override
