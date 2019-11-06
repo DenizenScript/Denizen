@@ -58,7 +58,7 @@ public class BossBarCommand extends AbstractCommand {
     //
     // @Usage
     // Remove a player from the boss bar.
-    // - bossbar remove MyMessageID players:<server.match_player[BlackCoyote]>
+    // - bossbar remove MyMessageID players:<server.match_player[joe]>
     //
     // @Usage
     // Delete the boss bar.

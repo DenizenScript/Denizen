@@ -55,11 +55,11 @@ public class AnimateChestCommand extends AbstractCommand {
     //
     // @Usage
     // Use to animate a chest opening that only a single specific player will see.
-    // - animatechest l@12,12,-64,space sound:false p@Morphan1
+    // - animatechest l@12,12,-64,space sound:false p@steve
     //
     // @Usage
     // Use to animate a chest opening that only a list of specific players will see.
-    // - animatechest l@12,12,-64,space sound:false p@Morphan1|p@mcmonkey4eva|p@Fortifier42
+    // - animatechest l@12,12,-64,space sound:false p@steve|p@bob|p@john
     // -->
 
     enum ChestAction {OPEN, CLOSE}

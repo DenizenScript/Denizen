@@ -42,7 +42,7 @@ public class ChatCommand extends AbstractCommand {
     // </code>
     // The player being chatted to, by default the attached Player to the script queue, will see a message
     // 'Jack says to you, Hello!', however surrounding entities will see something along the lines of
-    // 'Jack says to aufdemrand, Hello!'. The format for this is configurable.
+    // 'Jack says to Bob, Hello!'. The format for this is configurable.
     //
     // If sending messages to the Player without any surrounding entities hearing the message is desirable,
     // it is often times recommended to instead use the 'narrate' command. Alternatively, on a server-wide scale,

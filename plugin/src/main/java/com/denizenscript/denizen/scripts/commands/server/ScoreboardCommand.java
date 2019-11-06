@@ -64,8 +64,8 @@ public class ScoreboardCommand extends AbstractCommand {
     // <server.scoreboard[(<board>)].team[<team>].members>
     //
     // @Usage
-    // Add a score for the player "mythan" to the default scoreboard under the objective "cookies" and let him see it
-    // - scoreboard add obj:cookies lines:mythan score:1000 viewers:p@mythan
+    // Add a score for the player "joe" to the default scoreboard under the objective "cookies" and let him see it
+    // - scoreboard add obj:cookies lines:joe score:1000 viewers:p@joe
     //
     // @Usage
     // Add a new current objective called "food" to the "test" scoreboard with 3 lines that each have a score of 50:
@@ -73,7 +73,7 @@ public class ScoreboardCommand extends AbstractCommand {
     //
     // @Usage
     // Make a list of players see the scoreboard that has the id "test":
-    // - scoreboard add viewers:p@Goma|p@mythan|p@Ares513 id:test
+    // - scoreboard add viewers:p@bob|p@joe|p@john id:test
     //
     // @Usage
     // Change the value of one of the scores in the "food" objective:
@@ -85,11 +85,11 @@ public class ScoreboardCommand extends AbstractCommand {
     //
     // @Usage
     // Remove one of the viewers of the "test" scoreboard:
-    // - scoreboard remove viewers:p@mythan
+    // - scoreboard remove viewers:p@joe
     //
     // @Usage
-    // Make the player "dimensionZ" see the health of other players below their names
-    // - scoreboard add viewers:p@dimensionZ id:test obj:anything criteria:health displayslot:below_name
+    // Make the player "bob" see the health of other players below their names
+    // - scoreboard add viewers:p@bob id:test obj:anything criteria:health displayslot:below_name
     //
     // @Usage
     // Make all the players on the world "survival" see each other's number of entity kills in the player list when pressing Tab

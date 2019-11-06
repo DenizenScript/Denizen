@@ -52,7 +52,7 @@ public class AnimateCommand extends AbstractCommand {
     //
     // @Usage
     // Use to make a wolf NPC shake
-    // - animate '<n@aufdemrand's wolf>' animation:wolf_shake
+    // - animate <npc> animation:wolf_shake
     // -->
 
     @Override

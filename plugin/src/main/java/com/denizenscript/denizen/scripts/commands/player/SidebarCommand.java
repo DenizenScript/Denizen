@@ -70,7 +70,7 @@ public class SidebarCommand extends AbstractCommand {
     //
     // @Usage
     // Show a few players their ping.
-    // - sidebar set "title:Info" "value:Ping<&co> <player.ping>" "players:p@Morphan1|p@mcmonkey4eva|p@Matterom" per_player
+    // - sidebar set "title:Info" "value:Ping<&co> <player.ping>" "players:p@steve|p@bob|p@joe" per_player
     //
     // @Usage
     // Set a sidebar with the score values indicating information to the user.

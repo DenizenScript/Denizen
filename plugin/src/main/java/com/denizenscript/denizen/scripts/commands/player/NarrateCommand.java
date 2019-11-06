@@ -42,7 +42,7 @@ public class NarrateCommand extends AbstractCommand {
     //
     // @Usage
     // Use to narrate text to a list of players.
-    // - narrate "Hello there." targets:p@mcmonkey4eva|p@Morphan1|p@Fortifier42
+    // - narrate "Hello there." targets:p@bob|p@steve|p@john
     // -->
 
     @Override

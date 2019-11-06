@@ -99,7 +99,7 @@ public class InventoryCommand extends AbstractCommand {
     //
     // @Usage
     // Use to swap two players' inventories.
-    // - inventory swap d:in@player[holder=p@mcmonkey4eva] o:<p@fullwall.inventory>
+    // - inventory swap d:in@player[holder=p@bob] o:<p@joe.inventory>
     //
     // @Usage
     // Use to adjust a specific item in the player's inventory.

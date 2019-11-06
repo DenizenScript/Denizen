@@ -46,7 +46,7 @@ public class FakeItemCommand extends AbstractCommand {
     //
     // @Usage
     // Use to show a fake book in the player's hand for 1 tick.
-    // - fakeitem "written_book[book=author|Morphan1|title|My Book|pages|This is my book!]" slot:<player.item_in_hand.slot> duration:1t
+    // - fakeitem "written_book[book=author|Bob|title|My Book|pages|This is my book!]" slot:<player.item_in_hand.slot> duration:1t
     // -->
 
     @Override

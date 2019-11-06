@@ -39,8 +39,6 @@ public class FlagCommand extends AbstractCommand implements Listener {
     // Decrease a flag by 2:
     // - flag player counter:-:2
     //
-    // See <@link language flags> for more info.
-    //
     // All the flag values are stored by default in "plugins/denizen/saves.yml" file.
     // For an alternative way of storing values, use either yaml (See <@link command yaml>)
     // or sql (See <@link command sql>)
@@ -77,19 +75,19 @@ public class FlagCommand extends AbstractCommand implements Listener {
     //
     // @Usage
     // Use to add an item to a server flag as a new value without removing existing values.
-    // - flag server cool_people:->:p@TheBlackCoyote
+    // - flag server cool_people:->:p@stephen
     //
     // @Usage
     // Use to add both multiple items as individual new values to a server flag.
-    // - flag server cool_people:|:p@mcmonkey4eva|p@morphan1
+    // - flag server cool_people:|:p@bob|p@steve
     //
     // @Usage
     // Use to remove an entry from a server flag.
-    // - flag server cool_people:<-:p@morphan1
+    // - flag server cool_people:<-:p@steve
     //
     // @Usage
     // Use to clear a flag and fill it with a new list of values.
-    // - flag server cool_people:!|:p@mcmonkey4eva|p@morphan1|p@xenmai
+    // - flag server cool_people:!|:p@bob|p@steve|p@joe
     //
     // @Usage
     // Use to completely remove a flag.

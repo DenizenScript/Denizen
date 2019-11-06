@@ -167,7 +167,7 @@ public class InventoryHolder implements Property {
         // @group properties
         // @mechanism InventoryTag.holder
         // @description
-        // Returns Denizen's holder ID for this inventory. (p@aufdemrand, l@123,321,123, etc.)
+        // Returns Denizen's holder ID for this inventory. (p@joe, l@123,321,123,world, etc.)
         // -->
         PropertyParser.<InventoryTag>registerTag("id_holder", (attribute, object) -> {
             ObjectTag holder = getFrom(object).holder;
