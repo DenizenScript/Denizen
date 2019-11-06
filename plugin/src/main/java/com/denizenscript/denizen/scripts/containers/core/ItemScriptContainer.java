@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.nbt.LeatherColorer;
 import com.denizenscript.denizen.objects.ItemTag;
@@ -15,6 +16,7 @@ import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -62,7 +64,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //   # If you want an item to be damaged on creation, you can change its durability.
     //   durability: 12
     //
-    //   # Each line must specify a valid Bukkit enchantment. See 'enchantments' for more information.
+    //   # Each line must specify a valid Minecranft enchantment name.
     //   enchantments:
     //   - enchantment_name:level
     //   - ...
@@ -254,7 +256,11 @@ public class ItemScriptContainer extends ScriptContainer {
                             enchantment = split[0].replace(" ", "");
                         }
                         // Add enchantment
-                        Enchantment ench = Enchantment.getByName(enchantment.toUpperCase());
+                        NamespacedKey key = Utilities.parseNamespacedKey(enchantment);
+                        Enchantment ench = Enchantment.getByKey(key);
+                        if (ench == null) {
+                            ench = Enchantment.getByName(enchantment.toUpperCase());
+                        }
                         stack.getItemStack().addUnsafeEnchantment(ench, level);
                     }
                     catch (Exception e) {
