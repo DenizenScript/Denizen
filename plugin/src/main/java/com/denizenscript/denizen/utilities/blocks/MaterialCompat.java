@@ -102,6 +102,7 @@ public class MaterialCompat {
             REDSTONE_COMPARATOR_OFF = Material.valueOf("REDSTONE_COMPARATOR_OFF");
             REDSTONE_COMPARATOR_ON = Material.valueOf("REDSTONE_COMPARATOR_ON");
             SIGN = Material.valueOf("SIGN_POST");
+            WALL_SIGN = Material.valueOf("WALL_SIGN");
             SKULL_ITEM = Material.valueOf("SKULL_ITEM");
             STAINED_GLASS_PANE = Material.valueOf("STAINED_GLASS_PANE");
             STANDING_BANNER = Material.valueOf("STANDING_BANNER");

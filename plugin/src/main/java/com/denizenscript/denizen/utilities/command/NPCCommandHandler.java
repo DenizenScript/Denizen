@@ -58,7 +58,7 @@ public class NPCCommandHandler {
     // See also: 'pushable trait'
     // -->
     @Command(
-            aliases = {"npc"}, usage = "pushable -t (-r) (--delay #)", desc = "Makes a NPC pushable.",
+            aliases = {"npc"}, usage = "pushable -t (-r) (--delay #)", desc = "Makes an NPC pushable.",
             flags = "rt", modifiers = {"pushable", "push"}, min = 1, max = 2, permission = "denizen.npc.pushable")
     @Requirements(selected = true, ownership = true)
     public void pushable(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
