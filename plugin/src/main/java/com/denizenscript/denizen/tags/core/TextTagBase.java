@@ -487,7 +487,7 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns a special chat code that displays an autotranslated message.
-        // For example: - narrate "Reward: <&translate[item.swordDiamond.name]>"
+        // For example: - narrate "Reward: <&translate[item.minecraft.diamond_sword]>"
         // Be warned that language keys change between Minecraft versions.
         // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
