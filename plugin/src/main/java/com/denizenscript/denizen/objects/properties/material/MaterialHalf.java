@@ -126,10 +126,10 @@ public class MaterialHalf implements Property {
     public static Vector getRelativeBlockVector(BlockData data) {
         if (data instanceof Bisected) {
             if (((Bisected) data).getHalf() == Bisected.Half.TOP) {
-                return new Vector(0, 0, -1);
+                return new Vector(0, -1, 0);
             }
             else {
-                return new Vector(0, 0, 1);
+                return new Vector(0, 1, 0);
             }
         }
         else if (data instanceof Bed) {
