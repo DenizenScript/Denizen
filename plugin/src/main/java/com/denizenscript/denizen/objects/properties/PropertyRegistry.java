@@ -135,7 +135,11 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(ItemSignContents.class, ItemTag.class);
         PropertyParser.registerProperty(ItemSkullskin.class, ItemTag.class);
         PropertyParser.registerProperty(ItemSpawnEgg.class, ItemTag.class);
+        PropertyParser.registerProperty(ItemSpawnerCount.class, ItemTag.class);
         PropertyParser.registerProperty(ItemSpawnerDelay.class, ItemTag.class);
+        PropertyParser.registerProperty(ItemSpawnerMaxNearbyEntities.class, ItemTag.class);
+        PropertyParser.registerProperty(ItemSpawnerPlayerRange.class, ItemTag.class);
+        PropertyParser.registerProperty(ItemSpawnerRange.class, ItemTag.class);
         PropertyParser.registerProperty(ItemUnbreakable.class, ItemTag.class);
 
         // register core MaterialTag properties

@@ -63,7 +63,6 @@ public class ItemBlockMaterial implements Property {
             }
         }
 
-
         return null;
     }
 

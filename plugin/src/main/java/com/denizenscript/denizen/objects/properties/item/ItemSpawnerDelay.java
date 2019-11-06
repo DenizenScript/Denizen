@@ -29,11 +29,11 @@ public class ItemSpawnerDelay implements Property {
     }
 
     public static final String[] handledTags = new String[] {
-            "block_material"
+            "spawner_spawn_delay", "spawner_minimum_spawn_delay", "spawner_maximum_spawn_delay"
     };
 
     public static final String[] handledMechs = new String[] {
-            "block_material"
+            "spawner_delay_data"
     };
 
 
@@ -100,7 +100,6 @@ public class ItemSpawnerDelay implements Property {
                         .getObjectAttribute(attribute.fulfill(1));
             }
         }
-
 
         return null;
     }
