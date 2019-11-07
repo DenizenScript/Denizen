@@ -4,17 +4,12 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
 import java.util.HashMap;
@@ -62,9 +57,8 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
     public PlayerTag player;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("player equips ") || lower.startsWith("player unequips ");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.startsWith("player equips ") || path.eventLower.startsWith("player unequips ");
     }
 
     @Override
@@ -99,16 +93,6 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
         }
 
         return true;
-    }
-
-    @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
-    public void destroy() {
-        HandlerList.unregisterAll(this);
     }
 
     @Override
