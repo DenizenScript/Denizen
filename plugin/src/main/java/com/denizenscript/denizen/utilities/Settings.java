@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.utilities;
 
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
@@ -21,7 +20,7 @@ public class Settings {
         cache_showExHelp = config.getBoolean("Debug.Ex command help", true);
         cache_showExDebug = config.getBoolean("Debug.Ex command debug", true);
         cache_getAlternateScriptPath = config.getString("Scripts location.Alternative folder path", "plugins/Denizen");
-        String cache_scriptEncoding = config.getString("Scripts.Encoding", "default");
+        cache_scriptEncoding = config.getString("Scripts.Encoding", "default");
         if (cache_scriptEncoding.equalsIgnoreCase("default")) {
             ScriptHelper.encoding = null;
         }
@@ -95,7 +94,7 @@ public class Settings {
     private static String cache_getAlternateScriptPath, cache_scriptQueueSpeed, cache_healthTraitRespawnDelay,
             cache_engageTimeoutInSeconds, cache_chatMultipleTargetsFormat, cache_chatNoTargetFormat,
             cache_chatToTargetFormat, cache_chatWithTargetToBystandersFormat, cache_chatWithTargetsToBystandersFormat,
-            cache_chatToNpcFormat, cache_chatToNpcOverheardFormat, cache_interactQueueSpeed, cache_limitPath;
+            cache_chatToNpcFormat, cache_chatToNpcOverheardFormat, cache_interactQueueSpeed, cache_limitPath, cache_scriptEncoding;
 
     private static int cache_consoleWidth = 128, cache_trimLength = 1024, cache_whileMaxLoops, cache_blockTagsMaxBlocks,
             cache_chatHistoryMaxMessages, cache_tagTimeout, cache_debugLimitPerTick;
@@ -116,6 +115,10 @@ public class Settings {
 
     public static String getAlternateScriptPath() {
         return cache_getAlternateScriptPath;
+    }
+
+    public static String scriptEncoding() {
+        return cache_scriptEncoding;
     }
 
 

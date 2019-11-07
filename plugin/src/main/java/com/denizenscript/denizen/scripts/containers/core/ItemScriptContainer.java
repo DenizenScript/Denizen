@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.nbt.LeatherColorer;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
@@ -263,9 +263,12 @@ public class ItemScriptContainer extends ScriptContainer {
                         }
                         stack.getItemStack().addUnsafeEnchantment(ench, level);
                     }
-                    catch (Exception e) {
+                    catch (Exception ex) {
                         Debug.echoError("While constructing '" + getName() + "', encountered error: '"
-                                + enchantment + "' is an invalid enchantment!");
+                                + enchantment + "' is an invalid enchantment: " + ex.getClass().getName() + ": " + ex.getMessage());
+                        if (Debug.verbose) {
+                            Debug.echoError(ex);
+                        }
                     }
                 }
             }

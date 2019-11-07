@@ -37,6 +37,7 @@ import java.util.List;
 public class Utilities {
 
     public static NamespacedKey parseNamespacedKey(String input) {
+        input = CoreUtilities.toLowerCase(input);
         int colonIndex = input.indexOf(':');
         if (colonIndex != -1) {
             return new NamespacedKey(input.substring(0, colonIndex), input.substring(colonIndex + 1));
