@@ -35,7 +35,7 @@ public class NoteCommand extends AbstractCommand {
     //
     // @Usage
     // Use to add a notable cuboid.
-    // - note cu@1,2,3,world|4,5,6,world as:mycuboid
+    // - note cu@world,1,2,3,10,11,12 as:mycuboid
     //
     // @Usage
     // Use to remove a notable cuboid.
