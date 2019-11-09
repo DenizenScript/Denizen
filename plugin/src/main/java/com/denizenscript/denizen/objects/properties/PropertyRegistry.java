@@ -101,7 +101,7 @@ public class PropertyRegistry {
         if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12)) {
             PropertyParser.registerProperty(ItemBaseColor.class, ItemTag.class);
         }
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
             PropertyParser.registerProperty(ItemBlockMaterial.class, ItemTag.class);
         }
         PropertyParser.registerProperty(ItemBook.class, ItemTag.class);
