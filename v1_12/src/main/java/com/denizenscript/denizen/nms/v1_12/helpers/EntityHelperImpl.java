@@ -11,6 +11,7 @@ import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftAnimals;
@@ -44,7 +45,11 @@ public class EntityHelperImpl extends EntityHelper {
         else {
             monsterType = EnumMonsterType.UNDEFINED;
         }
-        double damage = attacker.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue();
+        double damage = 0;
+        AttributeInstance attrib = attacker.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE);
+        if (attrib != null) {
+            damage = attrib.getValue();
+        }
         if (attacker.getEquipment() != null && attacker.getEquipment().getItemInMainHand() != null) {
             damage += EnchantmentManager.a(CraftItemStack.asNMSCopy(attacker.getEquipment().getItemInMainHand()), monsterType);
         }
