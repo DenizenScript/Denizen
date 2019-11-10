@@ -33,6 +33,9 @@ public class TNTPrimesScriptEvent extends BukkitScriptEvent implements Listener 
     // <context.entity> returns the entity that primed the TNT, if any.
     // <context.location> returns the location of the TNT block being primed.
     // <context.reason> returns the reason the TNT was primed. Refer to <@link url https://papermc.io/javadocs/paper/com/destroystokyo/paper/event/block/TNTPrimeEvent.PrimeReason.html>
+    //
+    // @Player when the priming entity is a player.
+    //
     // -->
 
     public TNTPrimesScriptEvent() {
