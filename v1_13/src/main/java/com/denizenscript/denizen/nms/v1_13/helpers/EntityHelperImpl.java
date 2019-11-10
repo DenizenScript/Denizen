@@ -48,6 +48,31 @@ public class EntityHelperImpl extends EntityHelper {
         if (attacker.getEquipment() != null && attacker.getEquipment().getItemInMainHand() != null) {
             damage += EnchantmentManager.a(CraftItemStack.asNMSCopy(attacker.getEquipment().getItemInMainHand()), monsterType);
         }
+        if (damage <= 0) {
+            return 0;
+        }
+        if (target != null) {
+            DamageSource source;
+            if (attacker instanceof Player) {
+                source = DamageSource.playerAttack(((CraftPlayer) attacker).getHandle());
+            }
+            else {
+                source = DamageSource.mobAttack(((CraftLivingEntity) attacker).getHandle());
+            }
+            net.minecraft.server.v1_13_R2.Entity nmsTarget = ((CraftEntity) target).getHandle();
+            if (nmsTarget.isInvulnerable(source)) {
+                return 0;
+            }
+            if (!(nmsTarget instanceof EntityLiving)) {
+                return damage;
+            }
+            EntityLiving livingTarget = (EntityLiving) nmsTarget;
+            damage = CombatMath.a((float) damage, (float) livingTarget.getArmorStrength(), (float) livingTarget.getAttributeInstance(GenericAttributes.h).getValue());
+            int enchantDamageModifier = EnchantmentManager.a(livingTarget.getArmorItems(), source);
+            if (enchantDamageModifier > 0) {
+                damage = CombatMath.a((float) damage, (float) enchantDamageModifier);
+            }
+        }
         return damage;
     }
 

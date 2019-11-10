@@ -86,15 +86,10 @@ public class EntityHelperImpl extends EntityHelper {
                 return damage;
             }
             EntityLiving livingTarget = (EntityLiving) nmsTarget;
-            try {
-                damage = CombatMath.a((float) damage, (float) livingTarget.getArmorStrength(), (float) livingTarget.getAttributeInstance(GenericAttributes.ARMOR_TOUGHNESS).getValue());
-                int enchantDamageModifier = EnchantmentManager.a(livingTarget.getArmorItems(), source);
-                if (enchantDamageModifier > 0) {
-                    damage = CombatMath.a((float) damage, (float) enchantDamageModifier);
-                }
-            }
-            catch (Throwable ex) {
-                Debug.echoError(ex);
+            damage = CombatMath.a((float) damage, (float) livingTarget.getArmorStrength(), (float) livingTarget.getAttributeInstance(GenericAttributes.ARMOR_TOUGHNESS).getValue());
+            int enchantDamageModifier = EnchantmentManager.a(livingTarget.getArmorItems(), source);
+            if (enchantDamageModifier > 0) {
+                damage = CombatMath.a((float) damage, (float) enchantDamageModifier);
             }
         }
         return damage;
