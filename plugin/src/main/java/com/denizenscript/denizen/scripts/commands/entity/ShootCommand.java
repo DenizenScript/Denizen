@@ -47,16 +47,22 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
     // Shoots an entity through the air up to a certain height, optionally triggering a script on impact with a target.
     //
     // Generally, use the "speed" argument to send an entity exactly the direction you input,
-    // and don't include it to have the entity automatically attempt to land exactly on the destination.
+    // and don't include it to have the entity automatically attempt to land exactly on the destination by calculating an arc.
     //
     // If the origin is not an entity, specify a shooter so the damage handling code knows how to assume shot the projectile.
+    //
     // Normally, a list of entities will spawn mounted on top of each other. To have them instead fire separately and spread out,
     // specify the 'spread' argument with a decimal number indicating how wide to spread the entities.
-    // In the script ran when the arrow lands, the following definitions will be available:
-    // <[shot_entities]> for all shot entities, <[last_entity]> for the last one (The controlling entity),
+    //
+    // Use the 'script:<name>' argument to run a task script when the projectiles land.
+    // When that script runs, the following definitions will be available:
+    // <[shot_entities]> for all shot entities,
+    // <[last_entity]> for the last one (The controlling entity),
     // <[location]> for the last known location of the last shot entity, and
     // <[hit_entities]> for a list of any entities that were hit by fired projectiles.
+    //
     // Optionally, specify a speed and 'lead' value to use the experimental arrow-aiming system.
+    //
     // Optionally, add 'no_rotate' to prevent the shoot command from rotating launched entities.
     //
     // @Tags
