@@ -250,8 +250,8 @@ public class InventoryScriptContainer extends ScriptContainer {
 
         if (inventory != null) {
             InventoryScriptHelper.tempInventoryScripts.put(inventory.getInventory(), getName());
+            inventory.scriptName = getName();
         }
-        inventory.scriptName = getName();
 
         return inventory;
 
