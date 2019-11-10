@@ -150,10 +150,10 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
             String worldName = subStrs.get(0);
             try {
                 for (int i = 0; i < subStrs.size() - 1; i += 6) {
-                    LocationTag locationOne = new LocationTag(Integer.parseInt(subStrs.get(i + 1)),
-                            Integer.parseInt(subStrs.get(i + 2)), Integer.parseInt(subStrs.get(i + 3)), worldName);
-                    LocationTag locationTwo = new LocationTag(Integer.parseInt(subStrs.get(i + 4)),
-                            Integer.parseInt(subStrs.get(i + 5)), Integer.parseInt(subStrs.get(i + 6)), worldName);
+                    LocationTag locationOne = new LocationTag(parseRoundDouble(subStrs.get(i + 1)),
+                            parseRoundDouble(subStrs.get(i + 2)), parseRoundDouble(subStrs.get(i + 3)), worldName);
+                    LocationTag locationTwo = new LocationTag(parseRoundDouble(subStrs.get(i + 4)),
+                            parseRoundDouble(subStrs.get(i + 5)), parseRoundDouble(subStrs.get(i + 6)), worldName);
                     toReturn.addPair(locationOne, locationTwo);
                 }
             }
@@ -178,6 +178,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         return null;
     }
 
+    public static double parseRoundDouble(String str) {
+        return Math.floor(Double.parseDouble(str));
+    }
 
     public static boolean matches(String string) {
         if (valueOf(string, CoreUtilities.noDebugContext) != null) {
