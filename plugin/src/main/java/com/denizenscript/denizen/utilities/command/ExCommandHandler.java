@@ -51,7 +51,7 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
         //
         // Examples:
         // /ex flag <player> test_flag:!
-        // /ex run 's@npc walk script' as:<npc>
+        // /ex run npc_walk_script
         //
         // Need to '/ex' a command as a different player or NPC? No problem. Just use the 'npc' and 'player'
         // value arguments, or utilize the object fetcher.
