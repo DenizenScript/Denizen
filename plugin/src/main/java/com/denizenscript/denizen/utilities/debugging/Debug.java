@@ -574,13 +574,6 @@ public class Debug {
         }
     }
 
-
-    /**
-     * ConsoleSender sends dScript debugging information to the logger
-     * will attempt to intelligently wrap any debug information that is more
-     * than one line. This is used by the dB static methods which do some
-     * additional formatting.
-     */
     private static class ConsoleSender {
 
         // Bukkit CommandSender sends color nicely to the logger, so we'll use that.
@@ -637,6 +630,8 @@ public class Debug {
                 Debug.Recording.append(URLEncoder.encode(dateFormat.format(new Date())
                         + " [INFO] " + string.replace(ChatColor.COLOR_CHAR, (char) 0x01) + "\n"));
             }
+
+            string = Settings.debugPrefix() + string;
 
             // Send buffer to the player
             commandSender.sendMessage(showColor ? string : ChatColor.stripColor(string));

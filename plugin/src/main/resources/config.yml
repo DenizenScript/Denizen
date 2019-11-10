@@ -30,6 +30,8 @@ Debug:
   Limit per tick: 5000
   # Whether to show extra 'verbose' info output (will FLOOD your console!).
   Verbose: false
+  # Optional text to prefix all debug output.
+  Prefix: ""
 
 Scripts:
   World:

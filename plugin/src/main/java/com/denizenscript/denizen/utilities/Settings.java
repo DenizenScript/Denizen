@@ -38,6 +38,7 @@ public class Settings {
         cache_canRecordStats = config.getBoolean("Debug.Stats", true);
         cache_defaultDebugMode = config.getBoolean("Debug.Container default", true);
         cache_debugLimitPerTick = config.getInt("Debug.Limit per tick", 5000);
+        cache_debugPrefix = config.getString("Debug.Prefix", "");
         cache_scriptQueueSpeed = config.getString("Scripts.Queue speed", "instant");
         cache_interactQueueSpeed = config.getString("Scripts.Interact.Queue speed", "0.5s");
         cache_healthTraitEnabledByDefault = config.getBoolean("Traits.Health.Enabled", false);
@@ -94,7 +95,8 @@ public class Settings {
     private static String cache_getAlternateScriptPath, cache_scriptQueueSpeed, cache_healthTraitRespawnDelay,
             cache_engageTimeoutInSeconds, cache_chatMultipleTargetsFormat, cache_chatNoTargetFormat,
             cache_chatToTargetFormat, cache_chatWithTargetToBystandersFormat, cache_chatWithTargetsToBystandersFormat,
-            cache_chatToNpcFormat, cache_chatToNpcOverheardFormat, cache_interactQueueSpeed, cache_limitPath, cache_scriptEncoding;
+            cache_chatToNpcFormat, cache_chatToNpcOverheardFormat, cache_interactQueueSpeed, cache_limitPath,
+            cache_scriptEncoding, cache_debugPrefix;
 
     private static int cache_consoleWidth = 128, cache_trimLength = 1024, cache_whileMaxLoops, cache_blockTagsMaxBlocks,
             cache_chatHistoryMaxMessages, cache_tagTimeout, cache_debugLimitPerTick;
@@ -104,10 +106,6 @@ public class Settings {
     private static double cache_chatBystandersRange, cache_chatToNpcOverhearingRange;
 
     private static DurationTag cache_worldScriptTimeEventFrequency;
-
-    /*
-     * Scripts location settings
-    */
 
     public static boolean useDefaultScriptPath() {
         return cache_useDefaultScriptPath;
@@ -120,7 +118,6 @@ public class Settings {
     public static String scriptEncoding() {
         return cache_scriptEncoding;
     }
-
 
     /**
      * Whether Denizen should display debug in the console
@@ -163,6 +160,10 @@ public class Settings {
 
     public static int debugLimitPerTick() {
         return cache_debugLimitPerTick;
+    }
+
+    public static String debugPrefix() {
+        return cache_debugPrefix;
     }
 
     /**
