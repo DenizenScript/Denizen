@@ -89,6 +89,11 @@ public class ReflectionHelper {
         catch (Exception ex) {
             Debug.echoError(ex);
         }
+        if (f == null) {
+            String err = "Reflection method missing - Tried to read method '" + method + "' of class '" + clazz.getCanonicalName() + "'.";
+            DenizenAPI.getCurrentInstance().getLogger().warning(err);
+            Debug.echoError(err);
+        }
         return f;
     }
 

@@ -2559,7 +2559,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @group properties
         // @description
         // Returns the amount of damage the entity will do based on its held item.
-        // Optionally, specify a target entity to test how much damage will be done to that specific target (modified based on enchantments).
+        // Optionally, specify a target entity to test how much damage will be done to that specific target
+        // (modified based on enchantments and that entity's armor/status/etc).
+        // Note that the result will not always be completely exact, as it doesn't take into account some specific factors
+        // (eg sweeping vs single-hit, etc).
         // -->
         registerSpawnedOnlyTag("weapon_damage", (attribute, object) -> {
             Entity target = null;
