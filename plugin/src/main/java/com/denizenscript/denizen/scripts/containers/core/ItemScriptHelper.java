@@ -212,53 +212,59 @@ public class ItemScriptHelper implements Listener {
     public void rebuildRecipes() {
         currentFurnaceRecipes.clear();
         for (ItemScriptContainer container : item_scripts.values()) {
-            if (container.contains("recipes")) {
-                YamlConfiguration section = container.getConfigurationSection("recipes");
-                int id = 0;
-                for (StringHolder key : section.getKeys(false)) {
-                    id++;
-                    YamlConfiguration subSection = section.getConfigurationSection(key.str);
-                    String type = CoreUtilities.toLowerCase(subSection.getString("type"));
-                    String internalId = subSection.contains("recipe_id") ? subSection.getString("recipe_id") : getIdFor(container, type + "_recipe", id);
-                    String group = subSection.contains("group") ? subSection.getString("group") : "";
-                    ItemStack item = container.getCleanReference().getItemStack().clone();
-                    if (subSection.contains("output_quantity")) {
-                        item.setAmount(Integer.parseInt(subSection.getString("output_quantity")));
-                    }
-                    if (type.equals("shaped")) {
-                        registerShapedRecipe(container, item, subSection.getStringList("input"), internalId, group);
-                    }
-                    else if (type.equals("shapeless")) {
-                        registerShapelessRecipe(container, item, subSection.getString("input"), internalId, group);
-                    }
-                    else if (type.equals("stonecutting")) {
-                        registerStonecuttingRecipe(container, item, subSection.getString("input"), internalId, group);
-                    }
-                    else if (type.equals("furnace") || type.equals("blast") || type.equals("smoker") || type.equals("campfire")) {
-                        float exp = 0;
-                        int cookTime = 40;
-                        if (subSection.contains("experience")) {
-                            exp = Float.parseFloat(subSection.getString("experience"));
+            try {
+                if (container.contains("recipes")) {
+                    YamlConfiguration section = container.getConfigurationSection("recipes");
+                    int id = 0;
+                    for (StringHolder key : section.getKeys(false)) {
+                        id++;
+                        YamlConfiguration subSection = section.getConfigurationSection(key.str);
+                        String type = CoreUtilities.toLowerCase(subSection.getString("type"));
+                        String internalId = subSection.contains("recipe_id") ? subSection.getString("recipe_id") : getIdFor(container, type + "_recipe", id);
+                        String group = subSection.contains("group") ? subSection.getString("group") : "";
+                        ItemStack item = container.getCleanReference().getItemStack().clone();
+                        if (subSection.contains("output_quantity")) {
+                            item.setAmount(Integer.parseInt(subSection.getString("output_quantity")));
                         }
-                        if (subSection.contains("cook_time")) {
-                            cookTime = DurationTag.valueOf(subSection.getString("cook_time")).getTicksAsInt();
+                        if (type.equals("shaped")) {
+                            registerShapedRecipe(container, item, subSection.getStringList("input"), internalId, group);
                         }
-                        registerFurnaceRecipe(container, item, subSection.getString("input"), exp, cookTime, type, internalId, group);
+                        else if (type.equals("shapeless")) {
+                            registerShapelessRecipe(container, item, subSection.getString("input"), internalId, group);
+                        }
+                        else if (type.equals("stonecutting")) {
+                            registerStonecuttingRecipe(container, item, subSection.getString("input"), internalId, group);
+                        }
+                        else if (type.equals("furnace") || type.equals("blast") || type.equals("smoker") || type.equals("campfire")) {
+                            float exp = 0;
+                            int cookTime = 40;
+                            if (subSection.contains("experience")) {
+                                exp = Float.parseFloat(subSection.getString("experience"));
+                            }
+                            if (subSection.contains("cook_time")) {
+                                cookTime = DurationTag.valueOf(subSection.getString("cook_time")).getTicksAsInt();
+                            }
+                            registerFurnaceRecipe(container, item, subSection.getString("input"), exp, cookTime, type, internalId, group);
+                        }
                     }
                 }
+                // Old script style
+                if (container.contains("RECIPE")) {
+                    Deprecations.oldRecipeScript.warn(container);
+                    registerShapedRecipe(container, container.getCleanReference().getItemStack().clone(), container.getStringList("RECIPE"), getIdFor(container, "old_recipe", 0), "custom");
+                }
+                if (container.contains("SHAPELESS_RECIPE")) {
+                    Deprecations.oldRecipeScript.warn(container);
+                    registerShapelessRecipe(container, container.getCleanReference().getItemStack().clone(), container.getString("SHAPELESS_RECIPE"), getIdFor(container, "old_shapeless", 0), "custom");
+                }
+                if (container.contains("FURNACE_RECIPE")) {
+                    Deprecations.oldRecipeScript.warn(container);
+                    registerFurnaceRecipe(container, container.getCleanReference().getItemStack().clone(), container.getString("FURNACE_RECIPE"), 0, 40, "furnace", getIdFor(container, "old_furnace", 0), "custom");
+                }
             }
-            // Old script style
-            if (container.contains("RECIPE")) {
-                Deprecations.oldRecipeScript.warn(container);
-                registerShapedRecipe(container, container.getCleanReference().getItemStack().clone(), container.getStringList("RECIPE"), getIdFor(container, "old_recipe", 0), "custom");
-            }
-            if (container.contains("SHAPELESS_RECIPE")) {
-                Deprecations.oldRecipeScript.warn(container);
-                registerShapelessRecipe(container, container.getCleanReference().getItemStack().clone(), container.getString("SHAPELESS_RECIPE"), getIdFor(container, "old_shapeless", 0), "custom");
-            }
-            if (container.contains("FURNACE_RECIPE")) {
-                Deprecations.oldRecipeScript.warn(container);
-                registerFurnaceRecipe(container, container.getCleanReference().getItemStack().clone(), container.getString("FURNACE_RECIPE"), 0, 40, "furnace", getIdFor(container, "old_furnace", 0), "custom");
+            catch (Exception ex) {
+                Debug.echoError("Error while rebuilding item script recipes for '" + container.getName() + "'...");
+                Debug.echoError(ex);
             }
         }
     }
