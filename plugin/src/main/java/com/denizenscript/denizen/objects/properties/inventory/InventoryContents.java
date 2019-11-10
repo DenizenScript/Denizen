@@ -55,18 +55,23 @@ public class InventoryContents implements Property {
                     contents.add(new ItemTag(item).getFullString());
                 }
                 else {
-                    contents.add(new ItemTag(item).identify());
+                    contents.addObject(new ItemTag(item));
                 }
             }
             else {
-                contents.add("i@air");
+                contents.addObject(new ItemTag(Material.AIR));
             }
         }
         if (!containsNonAir) {
             contents.clear();
         }
         else {
-            contents = ListTag.valueOf(contents.identify().replaceAll("(\\|i@air)*$", ""));
+            for (int x = contents.size() - 1; x >= 0; x--) {
+                if (!contents.get(x).equals("i@air")) {
+                    break;
+                }
+                contents.remove(x);
+            }
         }
         return contents;
     }
@@ -88,7 +93,7 @@ public class InventoryContents implements Property {
                                 contents.add(new ItemTag(item).identifySimple());
                             }
                             else {
-                                contents.add(new ItemTag(item).identify());
+                                contents.addObject(new ItemTag(item));
                             }
                             break;
                         }
