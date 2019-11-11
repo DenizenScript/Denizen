@@ -17,7 +17,7 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
     //
     // @Regex ^on player steers [^\s]+$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true
     //

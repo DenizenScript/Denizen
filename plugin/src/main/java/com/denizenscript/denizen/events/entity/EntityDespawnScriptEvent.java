@@ -18,11 +18,10 @@ public class EntityDespawnScriptEvent extends BukkitScriptEvent {
     //
     // @Regex ^on [^\s]+ despawns$
     //
-    // @Switch in <area>
-    //
     // @Warning this event fires very rapidly.
     //
-    // @Switch cause death|chunk_unload|other
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Switch cause:<cause> to only process the event when it came from a specified cause.
     //
     // @Triggers when an entity despawns permanently from the world. May fire repeatedly for one entity.
     //

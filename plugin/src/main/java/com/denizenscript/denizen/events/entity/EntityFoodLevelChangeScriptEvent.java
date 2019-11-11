@@ -21,7 +21,7 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
     //
     // @Regex ^on [^\s]+ changes food level$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true
     //

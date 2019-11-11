@@ -19,7 +19,7 @@ public class ChunkLoadScriptEvent extends BukkitScriptEvent implements Listener 
     //
     // @Group World
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Warning This event will fire *extremely* rapidly and often!
     //

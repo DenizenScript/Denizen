@@ -19,7 +19,7 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
     //
     // @Regex ^on player animates [^\s]+$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true
     //

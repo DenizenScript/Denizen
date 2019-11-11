@@ -19,7 +19,7 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
     //
     // @Regex ^on [^\s]+ unleashed( because [^\s]+)?$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true
     //

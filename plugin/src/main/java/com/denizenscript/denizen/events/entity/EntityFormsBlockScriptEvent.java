@@ -24,7 +24,7 @@ public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Regex ^on [^\s]+ forms [^\s]+$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true
     //

@@ -21,7 +21,7 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
     //
     // @Regex ^on player throws( (hatching|non-hatching))? egg$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true
     //

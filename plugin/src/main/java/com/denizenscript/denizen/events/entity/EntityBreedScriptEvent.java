@@ -23,7 +23,7 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Regex ^on [^\s]+ breeds$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true
     //

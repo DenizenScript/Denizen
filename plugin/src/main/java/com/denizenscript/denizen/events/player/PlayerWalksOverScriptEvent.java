@@ -23,7 +23,7 @@ public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Lis
     //
     // @Regex ^on player walks over [^\s]+$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true
     //

@@ -23,7 +23,7 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
     //
     // @Group World
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true
     //

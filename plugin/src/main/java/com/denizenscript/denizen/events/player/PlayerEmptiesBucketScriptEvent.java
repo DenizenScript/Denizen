@@ -21,7 +21,7 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
     //
     // @Regex ^on player empties [^\s]+$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Triggers when a player empties a bucket.
     //

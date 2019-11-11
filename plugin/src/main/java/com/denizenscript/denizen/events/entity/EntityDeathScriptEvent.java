@@ -38,8 +38,8 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Regex ^on [^\s]+ (death|dies)$
     //
-    // @Switch in <area>
-    // @Switch by <entity type>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Switch by:<entity type> to only process the event if the killer is of a specified entity type.
     //
     // @Triggers when an entity dies. Note that this fires *after* the entity dies, and thus some data may be lost from the entity.
     // The death cannot be cancelled, only the death message (for players).

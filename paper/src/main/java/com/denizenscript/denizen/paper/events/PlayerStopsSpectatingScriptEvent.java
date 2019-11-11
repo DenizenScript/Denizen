@@ -18,7 +18,7 @@ public class PlayerStopsSpectatingScriptEvent extends BukkitScriptEvent implemen
     //
     // @Regex ^on player stops spectating( [^\s]+)?$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Plugin Paper
     //

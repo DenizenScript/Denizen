@@ -22,8 +22,8 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
     //
     // @Regex ^on player right clicks [^\s]+$
     //
-    // @Switch in <area>
-    // @Switch with <item>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Switch with:<item> to only process the event when the player is holding a specified item.
     //
     // @Cancellable true
     //

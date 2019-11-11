@@ -26,7 +26,7 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Regex ^on [^\s]+ enchanted$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true
     //

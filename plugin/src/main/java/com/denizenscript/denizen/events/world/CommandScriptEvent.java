@@ -30,7 +30,7 @@ public class CommandScriptEvent extends BukkitScriptEvent implements Listener {
     //
     // @Regex ^on( [^\s]+)? command$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Triggers when a player, console, or command block/minecart runs a Bukkit command. This happens before
     // any code of established commands, allowing scripts to 'override' existing commands.

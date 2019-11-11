@@ -30,7 +30,7 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
     //
     // @Regex ^on [^\s]+ shoots [^\s]+$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true
     //

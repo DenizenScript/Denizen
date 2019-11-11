@@ -22,7 +22,7 @@ public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Regex ^on [^\s]+ despawns$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true
     //

@@ -21,7 +21,7 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Group Block
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Warning This event may fire very rapidly.
     //

@@ -22,7 +22,7 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Regex ^on [^\s]+ merges$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true
     //

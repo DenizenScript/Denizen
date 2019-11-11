@@ -24,8 +24,8 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
     //
     // @Regex ^on [^\s]+ teleports$
     //
-    // @Switch in <area>
-    // @Switch cause <cause>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Switch cause:<cause> to only process the event when it came from a specified cause.
     //
     // @Triggers when an entity teleports.
     //

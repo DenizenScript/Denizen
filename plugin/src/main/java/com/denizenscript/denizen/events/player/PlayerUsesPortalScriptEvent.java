@@ -18,7 +18,7 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Regex ^on player uses portal$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Triggers when a player enters a portal.
     //

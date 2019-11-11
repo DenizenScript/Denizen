@@ -21,7 +21,7 @@ public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Regex ^on player (toggles|starts|stops) sneaking$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true
     //

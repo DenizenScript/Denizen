@@ -18,7 +18,7 @@ public class PlayerSpectatesEntityScriptEvent extends BukkitScriptEvent implemen
     //
     // @Regex ^on player spectates [^\s]+$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Plugin Paper
     //

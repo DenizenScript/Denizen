@@ -22,7 +22,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Regex ^on [^\s]+ targets( [^\s]+)?( because [^\s]+)?$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true
     //

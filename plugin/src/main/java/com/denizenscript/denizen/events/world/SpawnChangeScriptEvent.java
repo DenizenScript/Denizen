@@ -16,7 +16,7 @@ public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Regex ^on spawn changes$
     //
-    // @Switch for <world>
+    // @Switch for:<world> to only process the event when a specified world's spawn changes.
     //
     // @Group World
     //

@@ -19,8 +19,8 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     //
     // @Regex ^on player places [^\s]+$
     //
-    // @Switch in <area>
-    // @Switch using HAND/OFF_HAND
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Switch using:<hand type> to only process the event if the player is using the specified hand type (HAND or OFF_HAND).
     //
     // @Cancellable true
     //

@@ -21,7 +21,7 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
     //
     // @Regex ^on [^\s]+ explosion primes$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true
     //

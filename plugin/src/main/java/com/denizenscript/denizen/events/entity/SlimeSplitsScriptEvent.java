@@ -18,7 +18,7 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Regex ^on slime splits( into [^\s]+)?$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true
     //

@@ -20,7 +20,7 @@ public class PlayerLevelsUpScriptEvent extends BukkitScriptEvent implements List
     //
     // @Regex ^on player levels up( from [^\s]+)?( to [^\s]+)?$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Triggers when a player levels up.
     //

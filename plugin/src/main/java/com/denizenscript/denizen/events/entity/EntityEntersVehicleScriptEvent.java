@@ -22,7 +22,7 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
     //
     // @Regex ^on [^\s]+ enters [^\s]+$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true
     //

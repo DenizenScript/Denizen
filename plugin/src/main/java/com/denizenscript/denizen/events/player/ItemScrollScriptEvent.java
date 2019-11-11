@@ -20,8 +20,8 @@ public class ItemScrollScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Regex ^on player (scrolls their hotbar|holds item)$
     //
-    // @Switch in <area>
-    // @Switch item <item>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Switch item:<item> to only process the event when the player is going to hold a specified item.
     //
     // @Cancellable true
     //

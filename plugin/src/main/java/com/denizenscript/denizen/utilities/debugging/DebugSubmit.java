@@ -90,7 +90,7 @@ public class DebugSubmit extends Thread {
                     + "\nLoaded Worlds (" + worldCount + "): " + worldlist.substring(0, worldlist.length() - 2)
                     + "\nOnline Players (" + playerCount + "): " + playerlist.substring(0, playerlist.length() - 2)
                     + "\nOffline Players: " + (PlayerTag.getAllPlayers().size() - playerCount)
-                    + "\nMode: " + (Bukkit.getServer().getOnlineMode() ? "online" : "offline") + (bungee ? " (BungeeCoord)" : "")
+                    + "\nMode: " + (Bukkit.getServer().getOnlineMode() ? "online" : "offline") + (bungee ? " (BungeeCord)" : "")
                     + "\n\n") + recording)
                     .getBytes(StandardCharsets.UTF_8));
             // Wait for a response from the server

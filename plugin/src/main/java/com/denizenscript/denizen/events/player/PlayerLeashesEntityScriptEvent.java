@@ -19,7 +19,7 @@ public class PlayerLeashesEntityScriptEvent extends BukkitScriptEvent implements
     //
     // @Regex ^on player leashes [^\s]+$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true
     //

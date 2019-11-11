@@ -22,7 +22,7 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
     //
     // @Regex ^on player mends [^\s]+$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true
     //

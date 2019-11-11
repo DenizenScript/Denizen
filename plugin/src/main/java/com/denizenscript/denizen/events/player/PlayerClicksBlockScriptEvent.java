@@ -30,7 +30,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     //
     // @Regex ^on player (((([^\s]+ )?clicks [^\s]+( with [^\s]+)?( in [^\s]+)?)))$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Triggers when a player clicks on a block or in the air.
     //

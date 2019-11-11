@@ -24,7 +24,7 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
     //
     // @Regex ^on [^\s]+ collides with [^\s]+$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true
     //

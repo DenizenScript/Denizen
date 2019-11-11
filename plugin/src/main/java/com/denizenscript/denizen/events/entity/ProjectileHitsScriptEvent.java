@@ -25,7 +25,7 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     //
     // @Regex ^on [^\s]+ hits [^\s]+$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Triggers when a projectile hits a block.
     //
@@ -45,7 +45,7 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     //
     // @Regex ^on [^\s]+ shoots [^\s]+$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Triggers when a projectile shot by an entity hits a block.
     //

@@ -23,7 +23,7 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
     //
     // @Regex ^on player (enters|exits) [^\s]+$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Warning Cancelling this event will fire a similar event immediately after.
     //

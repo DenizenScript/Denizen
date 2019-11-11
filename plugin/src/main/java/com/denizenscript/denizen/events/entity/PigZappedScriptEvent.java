@@ -18,7 +18,7 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
     //
     // @Regex ^on pig zapped$
     //
-    // @Switch in <area>
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true
     //
