@@ -16,7 +16,7 @@ public class PlayerSpectatesEntityScriptEvent extends BukkitScriptEvent implemen
     // @Events
     // player spectates <entity>
     //
-    // @Regex ^on player spectates [^]s+$
+    // @Regex ^on player spectates [^\s]+$
     //
     // @Switch in <area>
     //

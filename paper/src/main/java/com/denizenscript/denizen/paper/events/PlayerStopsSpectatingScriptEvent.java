@@ -16,7 +16,7 @@ public class PlayerStopsSpectatingScriptEvent extends BukkitScriptEvent implemen
     // @Events
     // player stops spectating (<entity>)
     //
-    // @Regex ^on player stops spectating( [\^s]+)?$
+    // @Regex ^on player stops spectating( [^\s]+)?$
     //
     // @Switch in <area>
     //

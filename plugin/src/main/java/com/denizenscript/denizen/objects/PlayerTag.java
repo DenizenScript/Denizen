@@ -1653,6 +1653,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <PlayerTag.item_on_cursor>
         // @returns ItemTag
+        // @Mechanism PlayerTag.item_on_cursor
         // @description
         // Returns the item on the player's cursor, if any. This includes
         // chest interfaces, inventories, and hotbars, etc.
@@ -2540,8 +2541,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @name item_on_cursor
         // @input ItemTag
         // @description
-        // Sets the item on the player's cursor. This includes
-        // chest interfaces, inventories, and hotbars, etc.
+        // Sets the item on the player's cursor.
+        // This includes chest interfaces, inventories, and hotbars, etc.
         // @tags
         // <PlayerTag.item_on_cursor>
         // -->

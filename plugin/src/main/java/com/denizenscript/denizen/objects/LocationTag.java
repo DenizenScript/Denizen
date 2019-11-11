@@ -1545,8 +1545,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @attribute <LocationTag.facing[<entity>/<location>]>
         // @returns ElementTag(Boolean)
         // @description
-        // Returns whether the location's yaw is facing another
-        // entity or location.
+        // Returns whether the location's yaw is facing another entity or location, within a limit of 45 degrees of yaw.
         // -->
         registerTag("facing", (attribute, object) -> {
             if (attribute.hasContext(1)) {
