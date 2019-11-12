@@ -54,14 +54,13 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public boolean matches(ScriptPath path) {
-        String mat = path.eventArgLowerAt(0);
-        if (!tryMaterial(material, mat)) {
+        if (!runInCheck(path, location)) {
             return false;
         }
-        if (material.isStructure()) {
+        if (!tryMaterial(material, path.eventArgLowerAt(0))) {
             return false;
         }
-        return runInCheck(path, location);
+        return super.matches(path);
     }
 
     @Override
@@ -84,6 +83,9 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
     public void onBlockGrows(BlockGrowEvent event) {
         location = new LocationTag(event.getBlock().getLocation());
         material = new MaterialTag(event.getNewState());
+        if (material.isStructure()) {
+            return;
+        }
         this.event = event;
         fire(event);
     }

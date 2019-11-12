@@ -58,7 +58,7 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
         if (!runInCheck(path, location)) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

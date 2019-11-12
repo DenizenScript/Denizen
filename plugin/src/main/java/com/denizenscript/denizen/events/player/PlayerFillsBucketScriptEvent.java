@@ -58,8 +58,10 @@ public class PlayerFillsBucketScriptEvent extends BukkitScriptEvent implements L
     @Override
     public boolean matches(ScriptPath path) {
         String iTest = path.eventArgLowerAt(2);
-        return (iTest.equals("bucket") || tryItem(item, iTest))
-                && runInCheck(path, location);
+        if ((!iTest.equals("bucket") && !tryItem(item, iTest)) || !runInCheck(path, location)) {
+            return false;
+        }
+        return super.matches(path);
     }
 
     @Override

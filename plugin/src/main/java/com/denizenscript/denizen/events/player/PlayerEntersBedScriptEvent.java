@@ -47,7 +47,10 @@ public class PlayerEntersBedScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public boolean matches(ScriptPath path) {
-        return runInCheck(path, location);
+        if (!runInCheck(path, location)) {
+            return false;
+        }
+        return super.matches(path);
     }
 
     @Override

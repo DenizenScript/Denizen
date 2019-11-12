@@ -52,7 +52,13 @@ public class PlayerWalkScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public boolean matches(ScriptPath path) {
-        return runInCheck(path, old_location) || runInCheck(path, new_location);
+        if (!runInCheck(path, old_location)) {
+            return false;
+        }
+        if (!runInCheck(path, new_location)) {
+            return false;
+        }
+        return super.matches(path);
     }
 
     @Override

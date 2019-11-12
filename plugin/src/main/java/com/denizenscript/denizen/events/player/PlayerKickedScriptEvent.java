@@ -62,7 +62,7 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
         if (path.eventArgLowerAt(3).equals("flying")) {
             return isFlying();
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

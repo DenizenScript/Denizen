@@ -53,13 +53,10 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
     @Override
     public boolean matches(ScriptPath path) {
         String action = path.eventArgLowerAt(1);
-        if (action.equals("edits")) {
-            return true;
+        if (!(action.equals("edits") && !event.isSigning()) && !(action.equals("signs") && event.isSigning())) {
+            return false;
         }
-        if (action.equals("signs") && event.isSigning()) {
-            return true;
-        }
-        return false;
+        return super.matches(path);
     }
 
     @Override

@@ -59,7 +59,7 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
             return false;
         }
 
-        return true;
+        return super.matches(path);
     }
 
     // TODO: Can the vehicle be an NPC?

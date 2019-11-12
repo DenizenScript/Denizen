@@ -64,7 +64,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
             return false;
         }
 
-        return true;
+        return super.matches(path);
     }
 
     @Override

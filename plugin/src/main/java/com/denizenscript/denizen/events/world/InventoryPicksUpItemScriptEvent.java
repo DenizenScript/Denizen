@@ -63,7 +63,7 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
         if (!runInCheck(path, event.getItem().getLocation())) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

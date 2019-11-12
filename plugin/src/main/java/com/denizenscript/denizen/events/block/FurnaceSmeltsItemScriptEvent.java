@@ -61,7 +61,10 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
                 return false;
             }
         }
-        return runInCheck(path, location);
+        if (!runInCheck(path, location)) {
+            return false;
+        }
+        return super.matches(path);
     }
 
     @Override

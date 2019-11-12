@@ -55,7 +55,7 @@ public class VehicleCreatedScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
 
-        return true;
+        return super.matches(path);
     }
 
     // TODO: Can the vehicle be an NPC?

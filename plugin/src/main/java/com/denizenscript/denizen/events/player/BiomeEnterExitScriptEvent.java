@@ -76,7 +76,7 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
         if (!biome_test.equals("biome") && !biome_test.equals(CoreUtilities.toLowerCase(biome.getBiome().getName()))) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(event != null ? EntityTag.getPlayerFrom(event.getPlayer()) : null, null);
+        return new BukkitScriptEntryData(EntityTag.getPlayerFrom(event.getPlayer()), null);
     }
 
     @Override

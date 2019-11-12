@@ -68,8 +68,7 @@ public class EntitySwimScriptEvent extends BukkitScriptEvent implements Listener
         if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
-
-        return true;
+        return super.matches(path);
     }
 
     @Override

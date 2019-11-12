@@ -58,7 +58,7 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
             return false;
         }
 
-        return true;
+        return super.matches(path);
     }
 
     @Override

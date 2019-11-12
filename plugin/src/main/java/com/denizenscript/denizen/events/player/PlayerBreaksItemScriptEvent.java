@@ -75,7 +75,7 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
             Deprecations.oldStylePlayerBreaksItemEvent.message = oldWarningMessage + " (for event: " + path.toString() + ").";
             Deprecations.oldStylePlayerBreaksItemEvent.warn();
         }
-        return true;
+        return super.matches(path);
     }
 
     public static String oldWarningMessage = Deprecations.oldStylePlayerBreaksItemEvent.message;

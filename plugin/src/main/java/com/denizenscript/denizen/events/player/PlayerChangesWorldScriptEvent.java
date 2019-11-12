@@ -63,7 +63,7 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
             }
         }
 
-        return true;
+        return super.matches(path);
     }
 
     @Override

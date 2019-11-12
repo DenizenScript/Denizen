@@ -65,7 +65,7 @@ public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implement
             return false;
         }
 
-        return true;
+        return super.matches(path);
     }
 
     @Override

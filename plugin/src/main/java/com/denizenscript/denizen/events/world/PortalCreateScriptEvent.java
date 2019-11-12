@@ -59,7 +59,7 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
         if (!runInCheck(path, event.getBlocks().get(0).getLocation())) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

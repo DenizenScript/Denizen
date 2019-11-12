@@ -53,8 +53,10 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
             return false;
         }
 
-        String mat = path.eventArgLowerAt(0);
-        return tryMaterial(material, mat);
+        if (!tryMaterial(material, path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return super.matches(path);
     }
 
     @Override

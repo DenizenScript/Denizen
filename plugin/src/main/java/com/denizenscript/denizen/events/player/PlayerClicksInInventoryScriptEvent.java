@@ -148,7 +148,7 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
         if (withIndex > 0 && (event.getCursor() == null || !tryItem(new ItemTag(event.getCursor()), path.eventArgLowerAt(withIndex + 1)))) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

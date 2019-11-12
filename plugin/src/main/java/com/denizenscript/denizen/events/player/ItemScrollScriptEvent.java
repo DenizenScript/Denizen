@@ -57,7 +57,7 @@ public class ItemScrollScriptEvent extends BukkitScriptEvent implements Listener
         if (path.switches.containsKey("item") && !tryItem(new ItemTag(event.getPlayer().getInventory().getItem(event.getNewSlot())), path.switches.get("item"))) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

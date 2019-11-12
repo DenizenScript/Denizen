@@ -53,7 +53,7 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
         if (loc.equals("elsewhere") && event.isBedSpawn()) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

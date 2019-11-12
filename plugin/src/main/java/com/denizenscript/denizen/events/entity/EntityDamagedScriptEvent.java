@@ -119,7 +119,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
             return false;
         }
 
-        return true;
+        return super.matches(path);
     }
 
     @Override

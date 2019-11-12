@@ -48,7 +48,7 @@ public class WorldUnloadsScriptEvent extends BukkitScriptEvent implements Listen
         if (!runGenericCheck(path.eventArgAt(0), world.getName())) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

@@ -51,7 +51,7 @@ public class PlayerLoginScriptEvent extends BukkitScriptEvent implements Listene
         if (path.eventLower.contains("first") && PlayerTag.isNoted(event.getPlayer())) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

@@ -54,7 +54,7 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
             return false;
         }
 
-        return true;
+        return super.matches(path);
     }
 
     @Override

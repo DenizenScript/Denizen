@@ -68,7 +68,7 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
             return false;
         }
 
-        return true;
+        return super.matches(path);
     }
 
     @Override

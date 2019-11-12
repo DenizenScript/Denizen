@@ -53,7 +53,7 @@ public class PlayerStopsSpectatingScriptEvent extends BukkitScriptEvent implemen
         if (!runInCheck(path, event.getPlayer().getLocation())) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

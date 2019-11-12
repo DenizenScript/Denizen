@@ -88,7 +88,7 @@ public class EntityPotionEffectScriptEvent extends BukkitScriptEvent implements 
             return false;
         }
 
-        return true;
+        return super.matches(path);
     }
 
     @Override

@@ -71,7 +71,7 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
         if (!runInCheck(path, origin.getLocation())) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

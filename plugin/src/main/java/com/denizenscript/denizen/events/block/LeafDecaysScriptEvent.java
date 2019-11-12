@@ -52,7 +52,7 @@ public class LeafDecaysScriptEvent extends BukkitScriptEvent implements Listener
         if (!mat.equals("leaves") && !tryMaterial(material, mat)) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

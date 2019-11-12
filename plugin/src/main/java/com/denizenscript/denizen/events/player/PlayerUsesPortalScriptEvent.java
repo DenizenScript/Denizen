@@ -50,7 +50,10 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public boolean matches(ScriptPath path) {
-        return runInCheck(path, to) || runInCheck(path, from);
+        if (!runInCheck(path, to) && !runInCheck(path, from)) {
+            return false;
+        }
+        return super.matches(path);
     }
 
     @Override

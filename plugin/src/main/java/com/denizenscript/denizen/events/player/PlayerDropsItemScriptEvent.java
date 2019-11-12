@@ -61,7 +61,7 @@ public class PlayerDropsItemScriptEvent extends BukkitScriptEvent implements Lis
         if (!runInCheck(path, location)) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

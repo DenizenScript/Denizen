@@ -72,7 +72,7 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
             return false;
         }
 
-        return true;
+        return super.matches(path);
     }
 
     @Override

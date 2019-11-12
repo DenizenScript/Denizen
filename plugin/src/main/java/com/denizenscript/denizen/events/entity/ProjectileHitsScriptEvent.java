@@ -100,7 +100,7 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
         if (!runInCheck(path, location)) {
             return false;
         }
-        return true;
+        return super.matches(path);
 
     }
 

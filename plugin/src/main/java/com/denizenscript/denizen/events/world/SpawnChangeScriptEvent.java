@@ -46,7 +46,7 @@ public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listene
         if (!runGenericSwitchCheck(path, "world", event.getWorld().getName())) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

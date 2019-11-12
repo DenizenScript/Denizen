@@ -58,7 +58,7 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
         if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

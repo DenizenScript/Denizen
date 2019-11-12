@@ -64,7 +64,7 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
         if (path.eventArgLowerAt(isAt ? 5 : 4).equals("with") && !tryItem(item, path.eventArgLowerAt(isAt ? 6 : 5))) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

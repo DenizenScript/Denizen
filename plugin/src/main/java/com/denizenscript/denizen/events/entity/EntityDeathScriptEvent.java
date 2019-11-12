@@ -110,7 +110,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             return false;
         }
 
-        return true;
+        return super.matches(path);
     }
 
     @Override

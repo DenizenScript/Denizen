@@ -51,7 +51,7 @@ public class WeatherChangesScriptEvent extends BukkitScriptEvent implements List
         if (!runGenericCheck(path.eventArgLowerAt(3), world.getName())) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

@@ -45,7 +45,10 @@ public class PlayerRiptideScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean matches(ScriptPath path) {
-        return runInCheck(path, event.getPlayer().getLocation());
+        if (!runInCheck(path, event.getPlayer().getLocation())) {
+            return false;
+        }
+        return super.matches(path);
     }
 
     @Override

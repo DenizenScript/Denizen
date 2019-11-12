@@ -49,7 +49,7 @@ public class ChunkLoadScriptEvent extends BukkitScriptEvent implements Listener 
         if (!runInCheck(path, chunk.getCenter())) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

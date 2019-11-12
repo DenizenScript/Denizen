@@ -51,7 +51,7 @@ public class ChunkUnloadScriptEvent extends BukkitScriptEvent implements Listene
         if (!runInCheck(path, chunk.getCenter())) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

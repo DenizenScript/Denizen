@@ -41,7 +41,7 @@ public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent imp
 
     @Override
     public boolean matches(ScriptPath path) {
-        return true;
+        return super.matches(path);
     }
 
     @Override

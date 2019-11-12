@@ -85,7 +85,7 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
             return false;
         }
 
-        return true;
+        return super.matches(path);
 
     }
 

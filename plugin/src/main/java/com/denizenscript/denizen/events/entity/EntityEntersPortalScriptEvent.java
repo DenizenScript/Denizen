@@ -61,7 +61,7 @@ public class EntityEntersPortalScriptEvent extends BukkitScriptEvent implements 
             return false;
         }
 
-        return true;
+        return super.matches(path);
     }
 
     @Override

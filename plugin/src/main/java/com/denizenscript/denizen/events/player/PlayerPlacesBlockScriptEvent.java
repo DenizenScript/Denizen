@@ -70,8 +70,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
         if (!runInCheck(path, location)) {
             return false;
         }
-
-        return true;
+        return super.matches(path);
     }
 
     @Override

@@ -75,7 +75,7 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
         else if (!changeType.equals("changes")) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

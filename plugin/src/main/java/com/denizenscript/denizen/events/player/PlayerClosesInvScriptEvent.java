@@ -63,7 +63,7 @@ public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Lis
                 && !inv.equals(nname)) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

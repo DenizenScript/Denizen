@@ -60,7 +60,10 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
             return false;
         }
 
-        return runInCheck(path, egg.getLocation());
+        if (!runInCheck(path, egg.getLocation())) {
+            return false;
+        }
+        return super.matches(path);
     }
 
     @Override

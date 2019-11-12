@@ -77,7 +77,7 @@ public class CommandScriptEvent extends BukkitScriptEvent implements Listener {
         if (!path.eventArgLowerAt(0).equals("command") && !runGenericCheck(path.eventArgLowerAt(0), commandName)) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

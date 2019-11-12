@@ -60,8 +60,10 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
         if (!runGenericSwitchCheck(path, "cause", cause.asString())) {
             return false;
         }
-        String mat = path.eventArgLowerAt(0);
-        return tryMaterial(material, mat);
+        if (!tryMaterial(material, path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return super.matches(path);
     }
 
     @Override

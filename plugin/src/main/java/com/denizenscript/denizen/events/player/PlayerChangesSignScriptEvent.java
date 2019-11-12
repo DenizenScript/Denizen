@@ -75,7 +75,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
 
-        return true;
+        return super.matches(path);
     }
 
     @Override

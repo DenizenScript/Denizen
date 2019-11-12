@@ -63,7 +63,7 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
             return false;
         }
 
-        return true;
+        return super.matches(path);
     }
 
     @Override

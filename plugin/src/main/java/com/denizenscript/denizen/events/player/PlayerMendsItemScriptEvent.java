@@ -64,7 +64,7 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
         if (!runInCheck(path, location)) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

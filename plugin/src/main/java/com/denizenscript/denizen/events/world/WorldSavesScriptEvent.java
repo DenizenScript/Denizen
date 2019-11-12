@@ -43,7 +43,7 @@ public class WorldSavesScriptEvent extends BukkitScriptEvent implements Listener
         if (!runGenericCheck(path.eventArgAt(0), world.getName())) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

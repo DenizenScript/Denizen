@@ -47,7 +47,10 @@ public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public boolean matches(ScriptPath path) {
-        return runInCheck(path, location);
+        if (!runInCheck(path, location)) {
+            return false;
+        }
+        return super.matches(path);
     }
 
     @Override

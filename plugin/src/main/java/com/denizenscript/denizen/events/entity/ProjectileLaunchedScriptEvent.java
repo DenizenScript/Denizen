@@ -59,7 +59,7 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
             return false;
         }
 
-        return true;
+        return super.matches(path);
     }
 
     @Override

@@ -52,7 +52,7 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
         if (!runInCheck(path, pig.getLocation())) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

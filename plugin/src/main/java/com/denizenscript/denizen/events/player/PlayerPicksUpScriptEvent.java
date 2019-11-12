@@ -73,7 +73,10 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
         if (!tryItem(item, iTest)) {
             return false;
         }
-        return runInCheck(path, location);
+        if (!runInCheck(path, location)) {
+            return false;
+        }
+        return super.matches(path);
     }
 
     @Override

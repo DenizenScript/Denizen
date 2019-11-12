@@ -57,8 +57,10 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
             return false;
         }
 
-        String mat = path.eventArgLowerAt(0);
-        return tryMaterial(material, mat);
+        if (!tryMaterial(material, path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return super.matches(path);
 
     }
 

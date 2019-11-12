@@ -53,7 +53,7 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
         if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

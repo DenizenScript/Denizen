@@ -62,7 +62,7 @@ public class PistonRetractsScriptEvent extends BukkitScriptEvent implements List
         if (!mat.equals("piston") && !tryMaterial(material, mat)) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

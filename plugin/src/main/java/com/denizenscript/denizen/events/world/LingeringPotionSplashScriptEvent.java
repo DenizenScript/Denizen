@@ -68,7 +68,7 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
         if (runInCheck(path, location)) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

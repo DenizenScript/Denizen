@@ -52,7 +52,7 @@ public class PlayerChangesGamemodeScriptEvent extends BukkitScriptEvent implemen
                 return false;
             }
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

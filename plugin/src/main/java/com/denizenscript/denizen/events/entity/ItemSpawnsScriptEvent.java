@@ -69,7 +69,7 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
             return false;
         }
 
-        return true;
+        return super.matches(path);
     }
 
     @Override

@@ -56,7 +56,7 @@ public class TNTPrimesScriptEvent extends BukkitScriptEvent implements Listener 
         if (!runInCheck(path, location)) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

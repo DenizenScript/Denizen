@@ -78,7 +78,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
                 && !tryItem(new ItemTag(event.getPlayer().getItemInHand()), path.eventArgLowerAt(4))) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

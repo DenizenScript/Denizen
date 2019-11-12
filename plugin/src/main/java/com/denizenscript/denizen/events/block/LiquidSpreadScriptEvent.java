@@ -71,7 +71,7 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
         if (!runInCheck(path, location) && !runInCheck(path, destination)) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

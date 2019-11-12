@@ -92,7 +92,7 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
             }
         }
 
-        return true;
+        return super.matches(path);
     }
 
     @Override

@@ -65,7 +65,7 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
             return false;
         }
 
-        return true;
+        return super.matches(path);
     }
 
     @Override

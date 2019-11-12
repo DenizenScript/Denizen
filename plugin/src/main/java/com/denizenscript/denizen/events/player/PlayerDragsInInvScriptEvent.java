@@ -74,7 +74,10 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
         if (!arg2.equals("in") && !tryItem(item, arg2)) {
             return false;
         }
-        return runInCheck(path, entity.getLocation(), "in_area");
+        if (!runInCheck(path, entity.getLocation(), "in_area")) {
+            return false;
+        }
+        return super.matches(path);
     }
 
     @Override

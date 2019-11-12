@@ -55,7 +55,13 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
     @Override
     public boolean matches(ScriptPath path) {
         String iCheck = path.eventArgLowerAt(2);
-        return tryItem(item, iCheck) && runInCheck(path, event.getPlayer().getLocation());
+        if (!tryItem(item, iCheck)) {
+            return false;
+        }
+        if (!runInCheck(path, event.getPlayer().getLocation())) {
+            return false;
+        }
+        return super.matches(path);
     }
 
     @Override

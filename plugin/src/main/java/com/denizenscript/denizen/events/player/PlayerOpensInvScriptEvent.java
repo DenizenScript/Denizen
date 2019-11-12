@@ -58,7 +58,7 @@ public class PlayerOpensInvScriptEvent extends BukkitScriptEvent implements List
                 && !inv.equals(nname)) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override

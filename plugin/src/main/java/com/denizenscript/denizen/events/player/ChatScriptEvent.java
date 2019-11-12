@@ -72,7 +72,10 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public boolean matches(ScriptPath path) {
-        return runInCheck(path, player.getLocation());
+        if (!runInCheck(path, player.getLocation())) {
+            return false;
+        }
+        return super.matches(path);
     }
 
     @Override

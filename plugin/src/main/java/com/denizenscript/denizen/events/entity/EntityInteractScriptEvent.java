@@ -66,7 +66,7 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
 
-        return true;
+        return super.matches(path);
     }
 
     @Override
