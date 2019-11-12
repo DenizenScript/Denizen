@@ -1,8 +1,10 @@
 package com.denizenscript.denizen.events;
 
+import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.events.ScriptEvent;
@@ -334,6 +336,51 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             if (held == null || !tryItem(held, with)) {
                 return false;
             }
+        }
+        return true;
+    }
+
+    public boolean runFlaggedCheck(ScriptPath path, PlayerTag player) {
+        return runFlaggedCheck(path, "flagged", player);
+    }
+
+    public boolean runFlaggedCheck(ScriptPath path, String switchName, PlayerTag player) {
+        String flagged = path.switches.get(switchName);
+        if (flagged == null) {
+            return true;
+        }
+        if (player == null) {
+            return false;
+        }
+        if (!FlagManager.playerHasFlag(player, flagged)) {
+            return false;
+        }
+        return true;
+    }
+
+    // <--[language]
+    // @name Flagged Event Switch
+    // @group Script Events
+    // @description
+    // The "flagged:<flag name>" switch is a special switch available for any event that has a linked player.
+    // It can be used like "on player breaks block flagged:nobreak:" (that would be used alongside "- flag player nobreak").
+    // This switch will limit the event to only fire when the player has the flag with the specified name.
+    // -->
+
+    public boolean runAutomaticSwitches(ScriptPath path) {
+        BukkitScriptEntryData data = (BukkitScriptEntryData) getScriptEntryData();
+        if (data.hasPlayer()) {
+            if (!runFlaggedCheck(path, data.getPlayer())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean matches(ScriptPath path) {
+        if (!runAutomaticSwitches(path)) {
+            return false;
         }
         return true;
     }
