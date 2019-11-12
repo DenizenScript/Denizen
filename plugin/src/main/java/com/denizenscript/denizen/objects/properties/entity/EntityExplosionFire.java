@@ -88,7 +88,7 @@ public class EntityExplosionFire implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name explosion_fire
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // If this entity is explosive, sets whether its explosion creates fire.
         // @tags

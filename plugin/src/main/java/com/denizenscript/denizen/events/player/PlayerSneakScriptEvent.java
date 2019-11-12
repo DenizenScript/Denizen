@@ -28,7 +28,7 @@ public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listene
     // @Triggers when a player starts or stops sneaking.
     //
     // @Context
-    // <context.state> returns an Element(Boolean) with a value of "true" if the player is now sneaking and "false" otherwise.
+    // <context.state> returns an ElementTag(Boolean) with a value of "true" if the player is now sneaking and "false" otherwise.
     //
     // @Player Always.
     //

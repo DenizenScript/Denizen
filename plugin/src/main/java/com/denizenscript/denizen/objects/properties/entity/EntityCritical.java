@@ -94,7 +94,7 @@ public class EntityCritical implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name critical
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Changes whether an arrow/trident is critical.
         // @tags

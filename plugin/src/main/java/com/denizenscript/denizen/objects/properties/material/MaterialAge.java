@@ -102,7 +102,7 @@ public class MaterialAge implements Property {
         // <--[mechanism]
         // @object MaterialTag
         // @name age
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets an ageable material's current age. This includes plant growth.
         // @tags

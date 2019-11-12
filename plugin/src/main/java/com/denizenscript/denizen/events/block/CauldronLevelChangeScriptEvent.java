@@ -36,7 +36,7 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
     // <context.new_level> returns the new cauldron level.
     //
     // @Determine
-    // Element(Number) to set the new level.
+    // ElementTag(Number) to set the new level.
     //
     // -->
 

@@ -93,7 +93,7 @@ public class EntitySitting implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name sitting
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Changes the sitting state of a wolf, cat, or parrot.
         // @tags

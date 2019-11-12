@@ -94,7 +94,7 @@ public class EntityBodyArrows implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name body_arrows
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the number of arrows stuck in the entity's body.
         // Note: Body arrows will only be visible for players or player-type npcs.

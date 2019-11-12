@@ -60,7 +60,7 @@ public class TradeMaxUses implements Property {
         // <--[mechanism]
         // @object TradeTag
         // @name max_uses
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the maximum amount of times that the trade can be used.
         // @tags

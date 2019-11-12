@@ -97,7 +97,7 @@ public class EntityArmorBonus implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name armor_bonus
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Sets the entity's base armor bonus.
         // @tags

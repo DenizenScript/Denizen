@@ -126,7 +126,7 @@ public class MaterialLevel implements Property {
         // <--[mechanism]
         // @object MaterialTag
         // @name level
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the current level for a levelable material (like water, lava, and Cauldrons), or a cake.
         // @tags

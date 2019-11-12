@@ -29,10 +29,10 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
     //
     // @Context
     // <context.entity> returns the EntityTag.
-    // <context.food> returns an Element(Number) of the entity's new food level.
+    // <context.food> returns an ElementTag(Number) of the entity's new food level.
     //
     // @Determine
-    // Element(Decimal) to set the entity's new food level.
+    // ElementTag(Decimal) to set the entity's new food level.
     //
     // @Player when the entity that's food level has changed is a player.
     //

@@ -25,10 +25,10 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
     //
     // @Context
     // <context.entity> returns the EntityTag being steered by the player.
-    // <context.sideways> returns an Element(Decimal) where a positive number signifies leftward movement.
-    // <context.forward> returns an Element(Decimal) where a positive number signifies forward movement.
-    // <context.jump> returns an Element(Boolean) that signifies whether the player is attempting to jump with the entity.
-    // <context.dismount> returns an Element(Boolean) that signifies whether the player is attempting to dismount.
+    // <context.sideways> returns an ElementTag(Decimal) where a positive number signifies leftward movement.
+    // <context.forward> returns an ElementTag(Decimal) where a positive number signifies forward movement.
+    // <context.jump> returns an ElementTag(Boolean) that signifies whether the player is attempting to jump with the entity.
+    // <context.dismount> returns an ElementTag(Boolean) that signifies whether the player is attempting to dismount.
     //
     // @Player Always.
     //

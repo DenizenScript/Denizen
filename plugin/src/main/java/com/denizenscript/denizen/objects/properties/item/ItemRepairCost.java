@@ -87,7 +87,7 @@ public class ItemRepairCost implements Property {
         // <--[mechanism]
         // @object ItemTag
         // @name repair_cost
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Changes the repair cost (on an anvil) of the item.
         // @tags

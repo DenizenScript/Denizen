@@ -881,7 +881,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // <--[mechanism]
         // @object MaterialTag
         // @name block_resistance
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Sets the explosion resistance for all blocks of this material type.
         // @tags
@@ -896,7 +896,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // <--[mechanism]
         // @object MaterialTag
         // @name block_strength
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Sets the strength for all blocks of this material type.
         // This does not work for specifically obsidian (as it is a hardcoded special case in the Minecraft internals).

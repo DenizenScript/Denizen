@@ -36,11 +36,11 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
     // <context.blocks> returns a ListTag of blocks that the entity blew up.
     // <context.entity> returns the EntityTag that exploded.
     // <context.location> returns the LocationTag the entity blew up at.
-    // <context.strength> returns an Element(Decimal) of the strength of the explosion.
+    // <context.strength> returns an ElementTag(Decimal) of the strength of the explosion.
     //
     // @Determine
     // ListTag(LocationTag) to set a new lists of blocks that are to be affected by the explosion.
-    // Element(Decimal) to change the strength of the explosion.
+    // ElementTag(Decimal) to change the strength of the explosion.
     //
     // -->
 

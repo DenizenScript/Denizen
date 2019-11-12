@@ -93,7 +93,7 @@ public class EntityJumpStrength implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name jump_strength
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the power of the horse's jump.
         // @tags

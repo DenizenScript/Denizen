@@ -562,7 +562,7 @@ public class EntityAreaEffectCloud implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name radius
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Sets the radius of the Area Effect Cloud
         // @tags
@@ -575,7 +575,7 @@ public class EntityAreaEffectCloud implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name radius_on_use
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Sets the radius the Area Effect Cloud
         // will increase by when it applies an effect to an entity.
@@ -589,7 +589,7 @@ public class EntityAreaEffectCloud implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name radius_per_tick
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Sets the radius the Area Effect Cloud
         // will increase by every tick.

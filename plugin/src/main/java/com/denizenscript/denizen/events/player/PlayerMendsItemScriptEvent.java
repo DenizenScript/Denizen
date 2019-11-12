@@ -34,7 +34,7 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
     // <context.xp_orb> returns the XP orb that triggered the event.
     //
     // @Determine
-    // Element(Number) to set the amount of durability the item recovers.
+    // ElementTag(Number) to set the amount of durability the item recovers.
     //
     // @Player Always.
     //

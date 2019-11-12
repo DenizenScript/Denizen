@@ -103,7 +103,7 @@ public class EntitySize implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name size
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the size of a slime-type entity or a Phantom (1-120).
         // @tags

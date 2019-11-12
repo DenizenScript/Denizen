@@ -93,7 +93,7 @@ public class InventorySize implements Property {
         // <--[mechanism]
         // @object InventoryTag
         // @name size
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the size of the inventory. (Only works for "generic" chest inventories.)
         // @tags

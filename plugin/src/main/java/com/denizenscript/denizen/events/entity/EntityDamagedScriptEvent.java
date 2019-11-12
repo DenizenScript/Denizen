@@ -51,13 +51,13 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     // <context.entity> returns the EntityTag that was damaged.
     // <context.damager> returns the EntityTag damaging the other entity, if any.
     // <context.cause> returns the an ElementTag of reason the entity was damaged - see <@link language damage cause> for causes.
-    // <context.damage> returns an Element(Decimal) of the amount of damage dealt.
-    // <context.final_damage> returns an Element(Decimal) of the amount of damage dealt, after armor is calculated.
+    // <context.damage> returns an ElementTag(Decimal) of the amount of damage dealt.
+    // <context.final_damage> returns an ElementTag(Decimal) of the amount of damage dealt, after armor is calculated.
     // <context.projectile> returns a EntityTag of the projectile, if one caused the event.
     // <context.damage_TYPE> returns the damage dealt by a specific damage type where TYPE can be any of: BASE, HARD_HAT, BLOCKING, ARMOR, RESISTANCE, MAGIC, ABSORPTION.
     //
     // @Determine
-    // Element(Decimal) to set the amount of damage the entity receives.
+    // ElementTag(Decimal) to set the amount of damage the entity receives.
     //
     // @Player when the damager or damaged entity is a player. Cannot be both.
     //

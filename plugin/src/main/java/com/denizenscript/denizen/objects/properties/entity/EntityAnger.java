@@ -92,7 +92,7 @@ public class EntityAnger implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name anger
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Changes the anger level of a PigZombie.
         // @tags

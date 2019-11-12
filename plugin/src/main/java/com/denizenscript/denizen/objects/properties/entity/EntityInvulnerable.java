@@ -93,7 +93,7 @@ public class EntityInvulnerable implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name invulnerable
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether the entity is invulnerable (cannot be damaged).
         // @tags

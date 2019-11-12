@@ -42,7 +42,7 @@ public class EntityPotionEffectScriptEvent extends BukkitScriptEvent implements 
     // <context.effect_type> returns the name of the modified potion effect type.
     //
     // @Determine
-    // "OVERRIDE:" + Element(Boolean) to set whether the new potion effect should override.
+    // "OVERRIDE:" + ElementTag(Boolean) to set whether the new potion effect should override.
     //
     // @Player when the entity that has changed is a player.
     //

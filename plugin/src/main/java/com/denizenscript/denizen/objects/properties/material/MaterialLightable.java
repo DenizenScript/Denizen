@@ -82,7 +82,7 @@ public class MaterialLightable implements Property {
         // <--[mechanism]
         // @object MaterialTag
         // @name lit
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether a lightable material (such as a redstone torch) is lit currently.
         // @tags

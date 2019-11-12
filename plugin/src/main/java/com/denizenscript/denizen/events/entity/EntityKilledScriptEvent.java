@@ -46,14 +46,14 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
     // @Context
     // <context.entity> returns the EntityTag that was killed.
     // <context.cause> returns the an ElementTag of reason the entity was damaged - see <@link language damage cause> for causes.
-    // <context.damage> returns an Element(Decimal) of the amount of damage dealt.
-    // <context.final_damage> returns an Element(Decimal) of the amount of damage dealt, after armor is calculated.
+    // <context.damage> returns an ElementTag(Decimal) of the amount of damage dealt.
+    // <context.final_damage> returns an ElementTag(Decimal) of the amount of damage dealt, after armor is calculated.
     // <context.damager> returns the EntityTag damaging the other entity.
     // <context.projectile> returns a EntityTag of the projectile shot by the damager, if any.
     // <context.damage_TYPE> returns the damage dealt by a specific damage type where TYPE can be any of: BASE, HARD_HAT, BLOCKING, ARMOR, RESISTANCE, MAGIC, ABSORPTION.
     //
     // @Determine
-    // Element(Decimal) to set the amount of damage the entity receives, instead of dying.
+    // ElementTag(Decimal) to set the amount of damage the entity receives, instead of dying.
     //
     // @Player when the killer or entity that was killed is a player. Cannot be both.
     //

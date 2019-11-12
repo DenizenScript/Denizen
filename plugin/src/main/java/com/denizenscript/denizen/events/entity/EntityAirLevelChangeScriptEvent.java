@@ -29,10 +29,10 @@ public class EntityAirLevelChangeScriptEvent extends BukkitScriptEvent implement
     //
     // @Context
     // <context.entity> returns the EntityTag.
-    // <context.air> returns an Element(Number) of the entity's new air level (measured in ticks).
+    // <context.air> returns an ElementTag(Number) of the entity's new air level (measured in ticks).
     //
     // @Determine
-    // Element(Decimal) to set the entity's new air level.
+    // ElementTag(Decimal) to set the entity's new air level.
     //
     // @Player when the entity that's air level has changed is a player.
     //

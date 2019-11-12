@@ -101,7 +101,7 @@ public class ItemCustomModel implements Property {
         // <--[mechanism]
         // @object ItemTag
         // @name custom_model_data
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Changes the custom model data ID number of the item.
         // Use with no input to remove the custom model data.

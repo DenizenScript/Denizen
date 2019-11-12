@@ -2946,7 +2946,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <--[mechanism]
         // @object LocationTag
         // @name skull_skin
-        // @input Element(|Element(|Element))
+        // @input ElementTag(|ElementTag(|ElementTag))
         // @description
         // Sets the skin of a skull block.
         // The first ElementTag is a UUID.
@@ -3073,7 +3073,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <--[mechanism]
         // @object LocationTag
         // @name furnace_burn_time
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the burn time for a furnace in ticks. Maximum is 32767.
         // @tags
@@ -3090,7 +3090,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <--[mechanism]
         // @object LocationTag
         // @name furnace_cook_time
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the current cook time for a furnace in ticks. Maximum is 32767.
         // @tags
@@ -3107,7 +3107,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <--[mechanism]
         // @object LocationTag
         // @name furnace_cook_time_total
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the total cook time for a furnace in ticks. Maximum is 32767.
         // @tags
@@ -3176,7 +3176,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <--[mechanism]
         // @object LocationTag
         // @name head_rotation
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the rotation of the head at this location. Must be an integer 1 to 16.
         // @tags

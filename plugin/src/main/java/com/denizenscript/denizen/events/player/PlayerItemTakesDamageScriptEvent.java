@@ -37,7 +37,7 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     // <context.slot> returns the slot of the item that has taken damage.
     //
     // @Determine
-    // Element(Number) to set the amount of damage the item will take.
+    // ElementTag(Number) to set the amount of damage the item will take.
     //
     // @Player Always.
     //

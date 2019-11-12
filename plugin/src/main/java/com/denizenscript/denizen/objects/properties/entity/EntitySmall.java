@@ -95,7 +95,7 @@ public class EntitySmall implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name is_small
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether the armor stand is small.
         // @tags

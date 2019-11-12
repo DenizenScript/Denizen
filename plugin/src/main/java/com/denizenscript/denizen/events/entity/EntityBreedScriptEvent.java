@@ -38,7 +38,7 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
     // <context.experience> returns the amount of experience granted by breeding.
     //
     // @Determine
-    // Element(Number) to set the amount of experience granted by breeding.
+    // ElementTag(Number) to set the amount of experience granted by breeding.
     //
     // -->
 

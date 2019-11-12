@@ -30,7 +30,7 @@ public class EntityGlideScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Context
     // <context.entity> returns the EntityTag of this event.
-    // <context.state> returns an Element(Boolean) with a value of "true" if the entity is now gliding and "false" otherwise.
+    // <context.state> returns an ElementTag(Boolean) with a value of "true" if the entity is now gliding and "false" otherwise.
     //
     // @Player when the entity is a player.
     //

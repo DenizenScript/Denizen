@@ -174,7 +174,7 @@ public class EntityHealth implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name max_health
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the maximum health the entity may have.
         // The entity must be living.
@@ -203,7 +203,7 @@ public class EntityHealth implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name health_data
-        // @input Element(Decimal)/Element(Decimal)
+        // @input ElementTag(Decimal)/ElementTag(Decimal)
         // @description
         // Sets the amount of health the entity has, and the maximum health it has.
         // The entity must be living.
@@ -225,7 +225,7 @@ public class EntityHealth implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name health
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Sets the amount of health the entity has.
         // The entity must be living.

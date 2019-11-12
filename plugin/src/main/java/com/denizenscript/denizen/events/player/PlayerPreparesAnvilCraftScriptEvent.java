@@ -30,11 +30,11 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
     // @Context
     // <context.inventory> returns the InventoryTag of the anvil inventory.
     // <context.item> returns the ItemTag to be crafted.
-    // <context.repair_cost> returns an Element(Number) of the repair cost.
+    // <context.repair_cost> returns an ElementTag(Number) of the repair cost.
     // <context.new_name> returns an ElementTag of the new name.
     //
     // @Determine
-    // Element(Number) to set the repair cost.
+    // ElementTag(Number) to set the repair cost.
     // ItemTag to change the item that is crafted.
     //
     // @Player Always.

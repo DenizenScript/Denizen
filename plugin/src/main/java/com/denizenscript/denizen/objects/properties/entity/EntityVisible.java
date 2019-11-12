@@ -100,7 +100,7 @@ public class EntityVisible implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name visible
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether the armor stand is visible.
         // @tags

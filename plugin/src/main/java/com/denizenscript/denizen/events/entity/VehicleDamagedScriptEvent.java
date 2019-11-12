@@ -38,7 +38,7 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
     // <context.entity> returns the EntityTag of the attacking entity.
     //
     // @Determine
-    // Element(Decimal) to set the value of the damage received by the vehicle.
+    // ElementTag(Decimal) to set the value of the damage received by the vehicle.
     //
     // @NPC when the entity that damaged the vehicle is a player.
     //

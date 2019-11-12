@@ -794,7 +794,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[mechanism]
         // @object WorldTag
         // @name ambient_spawn_limit
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the limit for number of ambient mobs that can spawn in a chunk in this world.
         // @tags
@@ -808,7 +808,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[mechanism]
         // @object WorldTag
         // @name animal_spawn_limit
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the limit for number of animals that can spawn in a chunk in this world.
         // @tags
@@ -822,7 +822,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[mechanism]
         // @object WorldTag
         // @name auto_save
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether the world will automatically save edits.
         // @tags
@@ -913,7 +913,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[mechanism]
         // @object WorldTag
         // @name full_time
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the in-game time on the server.
         // @tags
@@ -926,7 +926,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[mechanism]
         // @object WorldTag
         // @name keep_spawn
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether the world's spawn area should be kept loaded into memory.
         // @tags
@@ -939,7 +939,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[mechanism]
         // @object WorldTag
         // @name monster_spawn_limit
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the limit for number of monsters that can spawn in a chunk in this world.
         // @tags
@@ -952,7 +952,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[mechanism]
         // @object WorldTag
         // @name allow_pvp
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether player versus player combat is allowed in this world.
         // @tags
@@ -979,7 +979,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[mechanism]
         // @object WorldTag
         // @name storming
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether there is a storm.
         // @tags
@@ -1005,7 +1005,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[mechanism]
         // @object WorldTag
         // @name thundering
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether it is thundering.
         // @tags
@@ -1044,7 +1044,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[mechanism]
         // @object WorldTag
         // @name time
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the relative in-game time on the server.
         // @tags
@@ -1071,7 +1071,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[mechanism]
         // @object WorldTag
         // @name water_animal_spawn_limit
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the limit for number of water animals that can spawn in a chunk in this world.
         // @tags

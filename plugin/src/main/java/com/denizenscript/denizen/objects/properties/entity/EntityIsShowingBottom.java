@@ -95,7 +95,7 @@ public class EntityIsShowingBottom implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name is_showing_bottom
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Changes the bottom state of an ender crystal.
         // @tags

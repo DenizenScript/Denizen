@@ -125,7 +125,7 @@ public class EntityTame implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name tame
-        // @input Element(Boolean)(|dPlayer)
+        // @input ElementTag(Boolean)(|dPlayer)
         // @description
         // Sets whether the entity has been tamed.
         // Also available: <@link mechanism EntityTag.owner>

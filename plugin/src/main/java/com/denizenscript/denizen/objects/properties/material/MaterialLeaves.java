@@ -85,7 +85,7 @@ public class MaterialLeaves implements Property {
         // <--[mechanism]
         // @object MaterialTag
         // @name persistent
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets leaves blocks to ignore decay, or to obey it.
         // @tags

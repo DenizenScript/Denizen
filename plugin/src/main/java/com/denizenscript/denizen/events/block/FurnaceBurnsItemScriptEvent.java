@@ -31,7 +31,7 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
     // <context.item> returns the ItemTag burnt.
     //
     // @Determine
-    // Element(Number) to set the burn time for this fuel.
+    // ElementTag(Number) to set the burn time for this fuel.
     //
     // -->
 

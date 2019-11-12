@@ -289,7 +289,7 @@ public class BiomeTag implements ObjectTag, Adjustable {
         // <--[mechanism]
         // @object BiomeTag
         // @name humidity
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Sets the humidity for this biome server-wide.
         // If this is greater than 0.85, fire has less chance
@@ -304,7 +304,7 @@ public class BiomeTag implements ObjectTag, Adjustable {
         // <--[mechanism]
         // @object BiomeTag
         // @name temperature
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Sets the temperature for this biome server-wide.
         // If this is less than 1.5, snow will form on the ground

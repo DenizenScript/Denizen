@@ -135,7 +135,7 @@ public class EntityDisabledSlots implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name disabled_slots_raw
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the raw disabled slots value of an armor stand.
         // See <@link url https://minecraft.gamepedia.com/Armor_Stand/ED>

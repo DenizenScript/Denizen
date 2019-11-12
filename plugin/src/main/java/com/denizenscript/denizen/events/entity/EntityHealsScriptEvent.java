@@ -33,7 +33,7 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
     // <context.reason> returns the cause of the entity healing. Can be: <@link url http://bit.ly/2GTtxsf>
     //
     // @Determine
-    // Element(Decimal) to set the amount of health the entity receives.
+    // ElementTag(Decimal) to set the amount of health the entity receives.
     //
     // @Player when the entity that was healed is a player.
     //

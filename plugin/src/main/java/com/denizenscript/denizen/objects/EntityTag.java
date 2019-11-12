@@ -2676,7 +2676,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object EntityTag
         // @name attach_to
-        // @input EntityTag(|dLocation(|Element(Boolean)))
+        // @input EntityTag(|dLocation(|ElementTag(Boolean)))
         // @description
         // Attaches this entity's client-visible motion to another entity.
         // Optionally, specify an offset vector as well.
@@ -2720,7 +2720,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object EntityTag
         // @name can_pickup_items
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether the entity can pick up items.
         // The entity must be living.
@@ -2734,7 +2734,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object EntityTag
         // @name fall_distance
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Sets the fall distance.
         // @tags
@@ -2747,7 +2747,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object EntityTag
         // @name fallingblock_drop_item
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether the falling block will drop an item if broken.
         // -->
@@ -2759,7 +2759,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object EntityTag
         // @name fallingblock_hurt_entities
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether the falling block will hurt entities when it lands.
         // -->
@@ -2799,7 +2799,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object EntityTag
         // @name can_breed
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether the entity is capable of mating with another of its kind.
         // The entity must be living and 'ageable'.
@@ -2813,7 +2813,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object EntityTag
         // @name breed
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether the entity is trying to mate with another of its kind.
         // The entity must be living and an animal.
@@ -2873,7 +2873,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object EntityTag
         // @name remaining_air
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets how much air the entity has remaining before it drowns.
         // The entity must be living.
@@ -2996,7 +2996,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object EntityTag
         // @name remove_when_far_away
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether the entity should be removed entirely when despawned.
         // The entity must be living.
@@ -3010,7 +3010,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object EntityTag
         // @name sheared
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether the sheep is sheared.
         // @tags
@@ -3024,7 +3024,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object EntityTag
         // @name collidable
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether the entity is collidable.
         // NOTE: To disable collision between two entities, set this mechanism to false on both entities.
@@ -3132,7 +3132,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object EntityTag
         // @name gliding
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether this entity is gliding.
         // @tags
@@ -3145,7 +3145,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object EntityTag
         // @name glowing
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether this entity is glowing.
         // @tags
@@ -3175,7 +3175,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object EntityTag
         // @name experience
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the experience value of this experience orb entity.
         // @tags
@@ -3188,7 +3188,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object EntityTag
         // @name fuse_ticks
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the number of ticks until the TNT blows up after being primed.
         // @tags
@@ -3223,7 +3223,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object EntityTag
         // @name mirror_player
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Makes the player-like entity have the same skin as the player looking at it.
         // For NPCs, this will add the Mirror trait.
@@ -3255,7 +3255,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object EntityTag
         // @name swimming
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether the entity is swimming.
         // @tags

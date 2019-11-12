@@ -28,7 +28,7 @@ public class PlayerFlyingScriptEvent extends BukkitScriptEvent implements Listen
     // @Triggers when a player starts or stops flying.
     //
     // @Context
-    // <context.state> returns an Element(Boolean) with a value of "true" if the player is now flying and "false" otherwise.
+    // <context.state> returns an ElementTag(Boolean) with a value of "true" if the player is now flying and "false" otherwise.
     //
     // @Player Always.
     //

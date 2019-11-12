@@ -60,7 +60,7 @@ public class TradeHasXp implements Property {
         // <--[mechanism]
         // @object TradeTag
         // @name has_xp
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether this trade will reward XP upon successful trading.
         // @tags

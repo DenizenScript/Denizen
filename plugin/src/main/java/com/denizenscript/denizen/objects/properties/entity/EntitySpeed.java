@@ -132,7 +132,7 @@ public class EntitySpeed implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name speed
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Sets how fast the entity can move.
         // @tags

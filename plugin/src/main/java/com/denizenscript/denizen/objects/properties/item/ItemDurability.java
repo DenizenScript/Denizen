@@ -96,7 +96,7 @@ public class ItemDurability implements Property {
         // <--[mechanism]
         // @object ItemTag
         // @name durability
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Changes the durability of damageable items.
         // @tags

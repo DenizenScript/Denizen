@@ -93,7 +93,7 @@ public class EntityGravity implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name gravity
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Changes the gravity state of an entity.
         // @tags

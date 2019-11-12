@@ -28,7 +28,7 @@ public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listen
     // @Triggers when a player starts or stops sprinting.
     //
     // @Context
-    // <context.state> returns an Element(Boolean) with a value of "true" if the player is now sprinting and "false" otherwise.
+    // <context.state> returns an ElementTag(Boolean) with a value of "true" if the player is now sprinting and "false" otherwise.
     //
     // @Player Always.
     //

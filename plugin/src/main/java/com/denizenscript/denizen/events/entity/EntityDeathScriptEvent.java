@@ -59,7 +59,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     // "NO_DROPS_OR_XP" to specify that any drops or XP orbs should be removed.
     // "NO_XP" to specify that any XP orbs should be removed.
     // ListTag(ItemTag) to specify new items to be dropped.
-    // Element(Number) to specify the new amount of XP to be dropped.
+    // ElementTag(Number) to specify the new amount of XP to be dropped.
     // "KEEP_INV" to specify (if a player death) that the inventory should be kept.
     // "KEEP_LEVEL" to specify (if a player death) that the XP level should be kept.
     // Note that the event can be cancelled to hide a player death message.

@@ -24,7 +24,7 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
     // <context.address> returns the IP address requesting the list.
     //
     // @Determine
-    // Element(Number) to change the max player amount that will show
+    // ElementTag(Number) to change the max player amount that will show
     // ElementTag to change the MOTD that will show.
     //
     // -->

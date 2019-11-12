@@ -194,7 +194,7 @@ public class EntityAge implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name age_lock
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether the entity is locked into its current age.
         // Also available: <@link mechanism EntityTag.age>

@@ -60,7 +60,7 @@ public class TradeUses implements Property {
         // <--[mechanism]
         // @object TradeTag
         // @name uses
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the amount of times the trade has been used.
         // @tags

@@ -29,7 +29,7 @@ public class EntitySwimScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Context
     // <context.entity> returns the EntityTag of this event.
-    // <context.state> returns an Element(Boolean) with a value of "true" if the entity is now swimming and "false" otherwise.
+    // <context.state> returns an ElementTag(Boolean) with a value of "true" if the entity is now swimming and "false" otherwise.
     //
     // @Player when the entity is a player.
     //

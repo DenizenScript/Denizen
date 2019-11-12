@@ -102,7 +102,7 @@ public class ItemQuantity implements Property {
         // <--[mechanism]
         // @object ItemTag
         // @name quantity
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Changes the number of items in this stack.
         // @tags

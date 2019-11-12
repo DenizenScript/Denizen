@@ -39,7 +39,7 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
     // <context.source_type> returns the type of the source, which can be: ENTITY, LOCATION, NONE.
     //
     // @Determine
-    // Element(Number) set the length of duration.
+    // ElementTag(Number) set the length of duration.
     //
     // @Player when the entity that catches fire is a player.
     //

@@ -90,7 +90,7 @@ public class EntityChestCarrier implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name carries_chest
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Changes whether a Horse carries a chest.
         // @tags

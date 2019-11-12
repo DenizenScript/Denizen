@@ -2299,7 +2299,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <InventoryTag.anvil_repair_cost>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @mechanism anvil_repair_cost
         // @description
         // Returns the current repair cost on an anvil.
@@ -2313,7 +2313,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <InventoryTag.anvil_max_repair_cost>
-        // @returns Element(Number)
+        // @returns ElementTag(Number)
         // @mechanism anvil_max_repair_cost
         // @description
         // Returns the maximum repair cost on an anvil.
@@ -2503,7 +2503,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // <--[mechanism]
         // @object InventoryTag
         // @name anvil_max_repair_cost
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the maximum repair cost of an anvil.
         // @tags
@@ -2520,7 +2520,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // <--[mechanism]
         // @object InventoryTag
         // @name anvil_repair_cost
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the current repair cost of an anvil.
         // @tags

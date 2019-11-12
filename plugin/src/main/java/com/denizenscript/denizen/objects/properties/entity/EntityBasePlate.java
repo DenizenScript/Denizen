@@ -95,7 +95,7 @@ public class EntityBasePlate implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name base_plate
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Changes the base plate state of an armor stand.
         // @tags

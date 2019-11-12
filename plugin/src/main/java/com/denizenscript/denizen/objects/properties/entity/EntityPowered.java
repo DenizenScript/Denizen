@@ -107,7 +107,7 @@ public class EntityPowered implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name powered
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Changes the powered state of a Creeper.
         // @tags

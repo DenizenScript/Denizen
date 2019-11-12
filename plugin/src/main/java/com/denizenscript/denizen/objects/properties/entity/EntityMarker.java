@@ -95,7 +95,7 @@ public class EntityMarker implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name marker
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Changes the marker state of an armor stand.
         // @tags

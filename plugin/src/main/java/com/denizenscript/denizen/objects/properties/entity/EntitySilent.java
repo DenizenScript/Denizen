@@ -89,7 +89,7 @@ public class EntitySilent implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name silent
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether this entity is silent. (Plays no sounds)
         // @tags

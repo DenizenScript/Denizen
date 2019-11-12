@@ -107,7 +107,7 @@ public class EntityElder implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name elder
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Changes the elder state of a Guardian.
         // @tags

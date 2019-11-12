@@ -99,7 +99,7 @@ public class EntityCustomName implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name custom_name_visible
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether the custom name is visible.
         // @tags

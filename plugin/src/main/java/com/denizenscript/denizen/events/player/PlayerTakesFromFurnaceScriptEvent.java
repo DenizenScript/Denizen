@@ -31,7 +31,7 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
     // <context.item> returns the ItemTag taken out of the furnace.
     //
     // @Determine
-    // Element(Number) to set the amount of experience the player will get.
+    // ElementTag(Number) to set the amount of experience the player will get.
     //
     // @Player Always.
     //

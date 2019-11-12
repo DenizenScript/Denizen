@@ -84,7 +84,7 @@ public class EntityRiptide implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name is_using_riptide
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether this entity is using the Riptide enchantment.
         // @tags

@@ -2478,7 +2478,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name level
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the level on the player. Does not affect the current progression
         // of experience towards next level.
@@ -2492,7 +2492,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name item_slot
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the inventory slot that the player has selected.
         // Works with offline players.
@@ -2576,7 +2576,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name absorption_health
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Sets the player's absorption health.
         // @tags
@@ -2589,7 +2589,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name fake_absorption_health
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Shows the player fake absorption health that persists on damage.
         // -->
@@ -2600,7 +2600,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name health_scale
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Sets the 'health scale' on the Player. Each heart equals '2'. The standard health scale is
         // 20, so for example, indicating a value of 40 will display double the amount of hearts
@@ -2616,7 +2616,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name scale_health
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Enables or disables the health scale value. Disabling will result in the standard
         // amount of hearts being shown.
@@ -2673,7 +2673,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name attack_cooldown_percent
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Sets the progress of the player's attack cooldown. Takes a decimal from 0 to 1.
         // 0 means the cooldown has just begun, while 1 means the cooldown has been completed.
@@ -2730,7 +2730,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name saturation
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Sets the current food saturation level of a player.
         // @tags
@@ -2743,7 +2743,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name send_map
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Forces a player to receive the entirety of the specified map ID instantly.
         // @tags
@@ -2762,7 +2762,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name food_level
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the current food level of a player. Typically, '20' is full.
         // @tags
@@ -2788,7 +2788,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name can_fly
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether the player is allowed to fly.
         // @tags
@@ -2801,7 +2801,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name fly_speed
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Sets the fly speed of the player. Valid range is 0.0 to 1.0
         // @tags
@@ -2814,7 +2814,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name flying
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether the player is flying.
         // @tags
@@ -2827,7 +2827,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name sprinting
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether the player is sprinting.
         // @tags
@@ -2952,7 +2952,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name time
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the time of day the Player is currently experiencing. Setting this will cause the
         // player to have a different time than other Players in the world are experiencing though
@@ -2969,7 +2969,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name freeze_time
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the time of day the Player is currently experiencing and freezes it there. Note:
         // there is a small 'twitch effect' when looking at the sky when time is frozen.
@@ -3005,7 +3005,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name walk_speed
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Sets the walk speed of the player. The standard value is '0.2'. Valid range is 0.0 to 1.0
         // @tags
@@ -3018,7 +3018,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name exhaustion
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Sets the exhaustion level of a player.
         // @tags
@@ -3042,7 +3042,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name hide_entity
-        // @input EntityTag(|Element(Boolean))
+        // @input EntityTag(|ElementTag(Boolean))
         // @description
         // Hides an entity from the player. You can optionally also specify a boolean to determine
         // whether the entity should be kept in the tab list (players only).
@@ -3075,7 +3075,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name show_boss_bar
-        // @input (Element(Number)|)Element
+        // @input (ElementTag(Number)|)Element
         // @description
         // Shows the player a boss health bar with the specified text as a name.
         // Use with no input value to remove the bar.
@@ -3105,7 +3105,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name fake_experience
-        // @input Element(Decimal)(|Element(Number))
+        // @input ElementTag(Decimal)(|ElementTag(Number))
         // @description
         // Shows the player a fake experience bar, with a number between 0.0 and 1.0
         // to specify how far along the bar is.
@@ -3140,7 +3140,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name fake_health
-        // @input Element(Decimal)(|Element(Number)(|Element(Decimal)))
+        // @input ElementTag(Decimal)(|ElementTag(Number)(|ElementTag(Decimal)))
         // @description
         // Shows the player a fake health bar, with a number between 0 and 20,
         // where 1 is half of a heart.
@@ -3234,7 +3234,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name fov_multiplier
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Sets the player's field of view multiplier.
         // Leave input empty to reset.
@@ -3391,7 +3391,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name tab_list_info
-        // @input Element(|Element)
+        // @input ElementTag(|ElementTag)
         // @description
         // Show the player some text in the header and footer area
         // in their tab list.
@@ -3420,7 +3420,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name sign_update
-        // @input LocationTag|dList
+        // @input LocationTag|ListTag
         // @description
         // Shows the player fake lines on a sign.
         // -->
@@ -3443,7 +3443,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name banner_update
-        // @input LocationTag|Element(|dList)
+        // @input LocationTag|ElementTag(|ListTag)
         // @description
         // Shows the player a fake base color and, optionally, patterns on a banner. Input must be
         // in the form: "LOCATION|BASE_COLOR(|COLOR/PATTERN|...)"
@@ -3581,7 +3581,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name is_whitelisted
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Changes whether the player is whitelisted or not.
         // @tags
@@ -3594,7 +3594,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name is_op
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Changes whether the player is a server operator or not.
         // @tags
@@ -3607,7 +3607,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name money
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @plugin Vault
         // @description
         // Set the amount of money a player has with the linked economy system (through Vault).

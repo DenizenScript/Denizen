@@ -38,7 +38,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     // @Determine
     // "NOTHING" to make the block drop no items.
     // ListTag(ItemTag) to make the block drop a specified list of items.
-    // Element(Number) to set the amount of xp to drop.
+    // ElementTag(Number) to set the amount of xp to drop.
     //
     // @Player Always.
     //

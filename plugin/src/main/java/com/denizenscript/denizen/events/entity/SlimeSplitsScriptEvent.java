@@ -26,10 +26,10 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Context
     // <context.entity> returns the EntityTag of the slime.
-    // <context.count> returns an Element(Number) of the number of smaller slimes it will split into.
+    // <context.count> returns an ElementTag(Number) of the number of smaller slimes it will split into.
     //
     // @Determine
-    // Element(Number) to set the number of smaller slimes it will split into.
+    // ElementTag(Number) to set the number of smaller slimes it will split into.
     //
     // -->
 

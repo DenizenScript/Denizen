@@ -95,7 +95,7 @@ public class EntityArms implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name arms
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Changes the arms state of an armor stand.
         // @tags

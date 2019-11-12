@@ -86,7 +86,7 @@ public class EntityMaxFuseTicks implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name max_fuse_ticks
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the default number of ticks until the creeper explodes when primed (NOT the time remaining if already primed).
         // @tags

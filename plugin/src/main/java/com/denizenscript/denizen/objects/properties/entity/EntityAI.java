@@ -92,7 +92,7 @@ public class EntityAI implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name has_ai
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether this entity will use the default
         // Minecraft AI to roam and look around.

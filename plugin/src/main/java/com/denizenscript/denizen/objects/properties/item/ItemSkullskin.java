@@ -137,7 +137,7 @@ public class ItemSkullskin implements Property {
         // <--[mechanism]
         // @object ItemTag
         // @name skull_skin
-        // @input Element(|Element(|Element))
+        // @input ElementTag(|ElementTag(|ElementTag))
         // @description
         // Sets the player skin on a skull_item.
         // The first ElementTag is a UUID.

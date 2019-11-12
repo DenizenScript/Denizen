@@ -1376,7 +1376,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[mechanism]
         // @object NPCTag
         // @name range
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Sets the maximum movement distance of the NPC.
         // @tags
@@ -1389,7 +1389,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[mechanism]
         // @object NPCTag
         // @name attack_range
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Sets the maximum attack distance of the NPC.
         // @tags
@@ -1402,7 +1402,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[mechanism]
         // @object NPCTag
         // @name speed
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Sets the movement speed of the NPC.
         // @tags
@@ -1428,7 +1428,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[mechanism]
         // @object NPCTag
         // @name set_sneaking
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether the NPC is sneaking or not. Only works for player-type NPCs.
         // @tags
@@ -1450,7 +1450,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[mechanism]
         // @object NPCTag
         // @name set_protected
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether or not the NPC is protected.
         // @tags
@@ -1463,7 +1463,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[mechanism]
         // @object NPCTag
         // @name lookclose
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets the NPC's lookclose value.
         // @tags
@@ -1476,7 +1476,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[mechanism]
         // @object NPCTag
         // @name teleport_on_stuck
-        // @input Element(Boolean)
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether the NPC teleports when it is stuck.
         // @tags
@@ -1494,7 +1494,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[mechanism]
         // @object NPCTag
         // @name distance_margin
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Sets the NPC's distance margin.
         // @tags
@@ -1507,7 +1507,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[mechanism]
         // @object NPCTag
         // @name path_distance_margin
-        // @input Element(Decimal)
+        // @input ElementTag(Decimal)
         // @description
         // Sets the NPC's path distance margin.
         // @tags

@@ -30,10 +30,10 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     // <context.entity> returns the EntityTag of the horse.
     // <context.color> returns an ElementTag of the horse's color.
     // <context.variant> returns an ElementTag of the horse's variant.
-    // <context.power> returns an Element(Decimal) of the jump's power.
+    // <context.power> returns an ElementTag(Decimal) of the jump's power.
     //
     // @Determine
-    // Element(Decimal) to set the power of the jump.
+    // ElementTag(Decimal) to set the power of the jump.
     //
     // -->
 
