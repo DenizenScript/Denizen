@@ -358,19 +358,44 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return true;
     }
 
+    public boolean runPermissionCheck(ScriptPath path, PlayerTag player) {
+        return runPermissionCheck(path, "permission", player);
+    }
+
+    public boolean runPermissionCheck(ScriptPath path, String switchName, PlayerTag player) {
+        String perm = path.switches.get(switchName);
+        if (perm == null) {
+            return true;
+        }
+        if (player == null || !player.isOnline()) {
+            return false;
+        }
+        if (!player.getPlayerEntity().hasPermission(perm)) {
+            return false;
+        }
+        return true;
+    }
+
     // <--[language]
-    // @name Flagged Event Switch
+    // @name Player Event Switches
     // @group Script Events
     // @description
-    // The "flagged:<flag name>" switch is a special switch available for any event that has a linked player.
+    // There are a few special switches available to any script event with a linked event.
+    //
+    // The "flagged:<flag name>" will limit the event to only fire when the player has the flag with the specified name.
     // It can be used like "on player breaks block flagged:nobreak:" (that would be used alongside "- flag player nobreak").
-    // This switch will limit the event to only fire when the player has the flag with the specified name.
+    //
+    // The "permisison:<perm key>" will limit the event to only fire when the player has the specified permission key.
+    // It can be used like "on player breaks block permission:denizen.my.perm"
     // -->
 
     public boolean runAutomaticSwitches(ScriptPath path) {
         BukkitScriptEntryData data = (BukkitScriptEntryData) getScriptEntryData();
         if (data.hasPlayer()) {
             if (!runFlaggedCheck(path, data.getPlayer())) {
+                return false;
+            }
+            if (!runPermissionCheck(path, data.getPlayer())) {
                 return false;
             }
         }
