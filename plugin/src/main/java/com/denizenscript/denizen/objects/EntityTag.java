@@ -50,7 +50,7 @@ import java.util.regex.Pattern;
 public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
 
     // <--[language]
-    // @name EntityTag
+    // @name EntityTag Objects
     // @group Object System
     // @description
     // A EntityTag represents a spawned entity, or a generic entity type.
@@ -70,7 +70,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
     // Fetcher. The constructor for a EntityTag is a spawned entity's UUID, or an entity type.
     // For example, 'e@zombie'.
     //
-    // For general info, see <@link language EntityTag>
+    // For general info, see <@link language EntityTag Objects>
     //
     // -->
 

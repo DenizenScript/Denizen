@@ -24,7 +24,7 @@ import java.util.*;
 public class ChunkTag implements ObjectTag, Adjustable {
 
     // <--[language]
-    // @name ChunkTag
+    // @name ChunkTag Objects
     // @group Object System
     // @description
     // A ChunkTag represents a chunk in the world.
@@ -53,7 +53,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
     // For example, block at X,Z 32,67 is in the chunk at X,Z 2,4
     // And the block at X,Z -32,-67 is in the chunk at X,Z -2,-5
     //
-    // For general info, see <@link language ChunkTag>
+    // For general info, see <@link language ChunkTag Objects>
     //
     // -->
 

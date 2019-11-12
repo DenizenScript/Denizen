@@ -23,7 +23,7 @@ public class NoteCommand extends AbstractCommand {
     //
     // @Description
     // Add or remove a notable object that can be referenced in events or scripts.
-    // Notable objects are "permanent" versions of other ObjectTags. (See: <@link language ObjectTag>)
+    // Notable objects are "permanent" versions of other ObjectTags. (See: <@link language ObjectTags>)
     // Notable objects keep their properties when added.
     //
     // @Tags

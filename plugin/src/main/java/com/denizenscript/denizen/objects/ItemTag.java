@@ -48,7 +48,7 @@ import java.util.Map;
 public class ItemTag implements ObjectTag, Notable, Adjustable {
 
     // <--[language]
-    // @name ItemTag
+    // @name ItemTag Objects
     // @group Object System
     // @description
     // A ItemTag represents a holdable item generically.
@@ -74,7 +74,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
     // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html>
     // Note that some materials on that list are exclusively for use with blocks, and cannot be held as items.
     //
-    // For general info, see <@link language ItemTag>
+    // For general info, see <@link language ItemTag Objects>
     //
     // -->
 

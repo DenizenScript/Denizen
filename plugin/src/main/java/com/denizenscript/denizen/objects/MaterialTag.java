@@ -29,7 +29,7 @@ import java.util.List;
 public class MaterialTag implements ObjectTag, Adjustable {
 
     // <--[language]
-    // @name MaterialTag
+    // @name MaterialTag Objects
     // @group Object System
     // @description
     // A MaterialTag represents a material (a type of block or item).
@@ -46,7 +46,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
     // Fetcher. The constructor for a MaterialTag is the material type name.
     // For example, 'm@stick'.
     //
-    // For general info, see <@link language MaterialTag>
+    // For general info, see <@link language MaterialTag Objects>
     //
     // -->
 

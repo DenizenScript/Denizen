@@ -52,7 +52,7 @@ public class WorldTag implements ObjectTag, Adjustable {
     /////////////////
 
     // <--[language]
-    // @name WorldTag
+    // @name WorldTag Objects
     // @group Object System
     // @description
     // A WorldTag represents a world on the server.
@@ -70,7 +70,7 @@ public class WorldTag implements ObjectTag, Adjustable {
     // associated with. For example, to reference the world named 'world1', use WorldTag1.
     // World names are case insensitive.
     //
-    // For general info, see <@link language WorldTag>
+    // For general info, see <@link language WorldTag Objects>
     // -->
 
 

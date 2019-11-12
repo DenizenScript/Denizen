@@ -56,7 +56,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
 
 
     // <--[language]
-    // @name PlayerTag
+    // @name PlayerTag Objects
     // @group Object System
     // @description
     // A PlayerTag represents a player in the game.
@@ -115,7 +115,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
     // Fetcher. The only valid constructor for a PlayerTag is the UUID of the player the object should be
     // associated with.
     //
-    // For general info, see <@link language PlayerTag>
+    // For general info, see <@link language PlayerTag Objects>
     //
     // -->
 

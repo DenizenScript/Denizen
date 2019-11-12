@@ -15,7 +15,7 @@ import org.bukkit.plugin.Plugin;
 public class PluginTag implements ObjectTag {
 
     // <--[language]
-    // @name PluginTag
+    // @name PluginTag Objects
     // @group Object System
     // @description
     // A PluginTag represents a Bukkit plugin on the server.
@@ -32,7 +32,7 @@ public class PluginTag implements ObjectTag {
     // Fetcher. The constructor for a PluginTag is the plugin's registered name.
     // For example, 'pl@Denizen'.
     //
-    // For general info, see <@link language PluginTag>
+    // For general info, see <@link language PluginTag Objects>
     //
     // -->
 

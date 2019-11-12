@@ -19,7 +19,7 @@ import java.util.List;
 public class BiomeTag implements ObjectTag, Adjustable {
 
     // <--[language]
-    // @name BiomeTag
+    // @name BiomeTag Objects
     // @group Object System
     // @description
     // A BiomeTag represents a world biome type.
@@ -39,7 +39,7 @@ public class BiomeTag implements ObjectTag, Adjustable {
     // Fetcher. The constructor for a BiomeTag is the name of a valid biome (in Bukkit).
     // For example, 'b@desert'.
     //
-    // For general info, see <@link language BiomeTag>
+    // For general info, see <@link language BiomeTag Objects>
     //
     // -->
 

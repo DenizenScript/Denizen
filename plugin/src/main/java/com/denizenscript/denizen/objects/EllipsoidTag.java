@@ -19,7 +19,7 @@ import java.util.List;
 public class EllipsoidTag implements ObjectTag, Notable {
 
     // <--[language]
-    // @name EllipsoidTag
+    // @name EllipsoidTag Objects
     // @group Object System
     // @description
     // A EllipsoidTag represents an ellipsoidal region in the world.
@@ -39,7 +39,7 @@ public class EllipsoidTag implements ObjectTag, Notable {
     // Fetcher. The constructor for a EllipsoidTag is <x>,<y>,<z>,<world>,<x-radius>,<y-radius>,<z-radius>
     // For example, 'ellipsoid@1,2,3,space,7,7,7'.
     //
-    // For general info, see <@link language EllipsoidTag>
+    // For general info, see <@link language EllipsoidTag Objects>
     //
     // -->
 

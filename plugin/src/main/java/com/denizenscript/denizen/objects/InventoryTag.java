@@ -48,7 +48,7 @@ import java.util.regex.Matcher;
 public class InventoryTag implements ObjectTag, Notable, Adjustable {
 
     // <--[language]
-    // @name InventoryTag
+    // @name InventoryTag Objects
     // @group Object System
     // @description
     // A InventoryTag represents an inventory, generically or attached to some in-the-world object.
@@ -70,7 +70,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
     // Valid inventory type classifications:
     // "npc", "player", "crafting", "enderchest", "workbench", "entity", "location", "generic"
     //
-    // For general info, see <@link language InventoryTag>
+    // For general info, see <@link language InventoryTag Objects>
     //
     // -->
 

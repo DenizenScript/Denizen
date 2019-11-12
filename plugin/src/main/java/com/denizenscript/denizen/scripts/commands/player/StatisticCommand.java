@@ -47,7 +47,7 @@ public class StatisticCommand extends AbstractCommand {
     // - statistic walk_one_cm add 500000
     //
     // @Usage
-    // Use to make it look like that challenge course wasn't even hard for at all.
+    // Use to make it look like that challenge course wasn't even hard for you at all.
     // - statistic deaths take 200
     //
     // -->

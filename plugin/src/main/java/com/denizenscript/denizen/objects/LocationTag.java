@@ -55,7 +55,7 @@ import java.util.Comparator;
 public class LocationTag extends org.bukkit.Location implements ObjectTag, Notable, Adjustable {
 
     // <--[language]
-    // @name LocationTag
+    // @name LocationTag Objects
     // @group Object System
     // @description
     // A LocationTag represents a point in the world.
@@ -75,7 +75,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     // You cannot leave off both the z and the pitch+yaw at the same time.
     // For example, 'l@1,2.15,3,45,90,space' or 'l@7.5,99,3.2'
     //
-    // For general info, see <@link language LocationTag>
+    // For general info, see <@link language LocationTag Objects>
     //
     // -->
 

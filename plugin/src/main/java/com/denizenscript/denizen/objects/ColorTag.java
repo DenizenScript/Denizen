@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 public class ColorTag implements ObjectTag {
 
     // <--[language]
-    // @name ColorTag
+    // @name ColorTag Objects
     // @group Object System
     // @description
     // A ColorTag represents an RGB color code.
@@ -42,7 +42,7 @@ public class ColorTag implements ObjectTag {
     //
     // Red/green/blue values are each from 0 to 256.
     //
-    // For general info, see <@link language ColorTag>
+    // For general info, see <@link language ColorTag Objects>
     //
     // -->
 

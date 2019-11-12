@@ -50,7 +50,7 @@ import java.util.regex.Pattern;
 public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFormObject {
 
     // <--[language]
-    // @name NPCTag
+    // @name NPCTag Objects
     // @group Object System
     // @description
     // A NPCTag represents an NPC configured through Citizens.
@@ -67,7 +67,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
     // Fetcher. The constructor for a NPCTag is the NPC's id number.
     // For example, 'n@5'.
     //
-    // For general info, see <@link language NPCTag>
+    // For general info, see <@link language NPCTag Objects>
     //
     // -->
 

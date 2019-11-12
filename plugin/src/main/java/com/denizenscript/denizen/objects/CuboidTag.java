@@ -32,7 +32,7 @@ import java.util.List;
 public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
 
     // <--[language]
-    // @name CuboidTag
+    // @name CuboidTag Objects
     // @group Object System
     // @description
     // A CuboidTag represents a cuboidal region in the world.
@@ -56,7 +56,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
     // Multi-member cuboids can simply continue listing x,y,z pairs.
     // For example, 'cu@space,1,2,3,4,5,6'.
     //
-    // For general info, see <@link language CuboidTag>
+    // For general info, see <@link language CuboidTag Objects>
     //
     // -->
 
