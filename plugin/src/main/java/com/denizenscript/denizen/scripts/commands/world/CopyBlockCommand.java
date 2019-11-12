@@ -36,11 +36,11 @@ public class CopyBlockCommand extends AbstractCommand {
     //
     // @Usage
     // Use to copy the block the player is looking at to their current location
-    // - copyblock <player.location.cursor_on> to:<player.location>
+    // - copyblock <player.cursor_on> to:<player.location>
     //
     // @Usage
     // Use to move the block the player is looking at to their current location (removing it from its original location)
-    // - copyblock <player.location.cursor_on> to:<player.location> remove_original
+    // - copyblock <player.cursor_on> to:<player.location> remove_original
     // -->
 
     @Override

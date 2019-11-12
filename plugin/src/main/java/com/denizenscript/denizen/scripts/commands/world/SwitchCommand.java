@@ -25,8 +25,8 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class SwitchCommand extends AbstractCommand {
 
@@ -38,10 +38,22 @@ public class SwitchCommand extends AbstractCommand {
     // @Group world
     //
     // @Description
-    // Changes the state of a block at the given location.
-    // Can specify a duration before it returns to the previous state.
+    // Changes the state of a block at the given location, or list of blocks at the given locations.
+    //
+    // Optionally specify "state:on" to turn a block on (or open it, or whatever as applicable) or "state:off" to turn it off (or close it, etc).
     // By default, will toggle the state (on to off, or off to on).
-    // Works on any interactable blocks.
+    //
+    // Optionally specify the "duration" argument to set a length of time after which the block will return to the original state.
+    //
+    // Works on any interactable blocks, including:
+    // - the standard toggling levers, doors, gates...
+    // - Single-use interactables like buttons, note blocks, dispensers, droppers, ...
+    // - Redstone interactables like repeaters, ...
+    // - Special interactables like tripwires, ...
+    // - Almost any other block with an interaction handler.
+    //
+    // This will generally (but not always) function equivalently to a user right-clicking the block
+    // (so it will open and close doors, flip levers on and off, press and depress buttons, ...).
     //
     // @Tags
     // <LocationTag.switched>
@@ -52,17 +64,17 @@ public class SwitchCommand extends AbstractCommand {
     //
     // @Usage
     // Opens a door that the player is looking at.
-    // - switch <player.location.cursor_on> state:on
+    // - switch <player.cursor_on> state:on
     //
     // @Usage
-    // Toggle a block at the player's location.
+    // Toggle a block at the player's foot location.
     // - switch <player.location>
     //
     // -->
 
     private enum SwitchState {ON, OFF, TOGGLE}
 
-    private Map<Location, Integer> taskMap = new ConcurrentHashMap<>(8, 0.9f, 1);
+    private Map<Location, Integer> taskMap = new HashMap<>(32);
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

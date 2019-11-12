@@ -44,7 +44,7 @@ public class LeashCommand extends AbstractCommand {
     //
     // @Usage
     // Use to attach the closest cow in 10 blocks to the fence the player is looking at.
-    // - leash <player.location.find.entities[cow].within[10].first> holder:<player.location.cursor_on>
+    // - leash <player.location.find.entities[cow].within[10].first> holder:<player.cursor_on>
     //
     // @Usage
     // Use to release the target entity.

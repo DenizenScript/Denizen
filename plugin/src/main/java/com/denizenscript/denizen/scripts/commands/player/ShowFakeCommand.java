@@ -53,7 +53,7 @@ public class ShowFakeCommand extends AbstractCommand {
     //
     // @Usage
     // Use to place a fake gold block at where the player is looking
-    // - showfake gold_block <player.location.cursor_on>
+    // - showfake gold_block <player.cursor_on>
     //
     // @Usage
     // Use to place a stone block right on player's head, that only stays for a second.

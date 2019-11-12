@@ -59,15 +59,15 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
     //
     // @Usage
     // Use to change the block a player is looking at to stone.
-    // - modifyblock <player.location.cursor_on> stone
+    // - modifyblock <player.cursor_on> stone
     //
     // @Usage
     // Use to modify an entire cuboid to half stone, half dirt.
-    // - modifyblock cu@<player.location>|<player.location.cursor_on> li@stone|dirt
+    // - modifyblock cu@<player.location>|<player.cursor_on> li@stone|dirt
     //
     // @Usage
     // Use to modify an entire cuboid to some stone, some dirt, and some left as it is.
-    // - modifyblock cu@<player.location>|<player.location.cursor_on> li@stone|dirt li@25|25
+    // - modifyblock cu@<player.location>|<player.cursor_on> li@stone|dirt li@25|25
     //
     // @Usage
     // Use to clear the area around the player and drop their respective items.

@@ -37,11 +37,11 @@ public class FishCommand extends AbstractCommand {
     //
     // @Usage
     // Makes the NPC throw their fishing line out to where the player is looking, with a 50% chance of catching fish
-    // - fish <player.location.cursor_on> catch:fish chance:50
+    // - fish <player.cursor_on> catch:fish chance:50
     //
     // @Usage
     // Makes the NPC stop fishing
-    // - fish <player.location.cursor_on> stop
+    // - fish <player.cursor_on> stop
     // -->
 
     @Override

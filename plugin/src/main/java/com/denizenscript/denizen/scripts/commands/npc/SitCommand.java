@@ -29,7 +29,7 @@ public class SitCommand extends AbstractCommand {
     //
     // @Usage
     // Make the linked NPC sit at the player's cursor location.
-    // - sit <player.location.cursor_on>
+    // - sit <player.cursor_on>
     //
     // -->
 

@@ -58,7 +58,7 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
         //
         // Examples:
         // /ex narrate player:p@Joe 'Your health is <player.health.formatted>.'
-        // /ex walk npc:n@5 <player.location.cursor_on>
+        // /ex walk npc:n@5 <player.cursor_on>
         //
         // -->
 

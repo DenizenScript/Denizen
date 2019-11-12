@@ -37,7 +37,7 @@ public class TeleportCommand extends AbstractCommand {
     //
     // @Usage
     // Use to teleport a player to the location its cursor is pointing on
-    // - teleport <player> <player.location.cursor_on>
+    // - teleport <player> <player.cursor_on>
     //
     // @Usage
     // Use to teleport a player high above
