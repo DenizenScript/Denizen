@@ -168,6 +168,31 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         return prefix.equals("player") || prefix.equals("npc") || prefix.equals("npcid");
     }
 
+    // <--[language]
+    // @name The Player and NPC Arguments
+    // @group Script Command System
+    // @description
+    // The "player:<player>" and "npc:<npc>" arguments are special meta-arguments that are available for all commands, but are only useful for some.
+    // They are written like:
+    // - give stick player:<server.flag[some_player]>
+    // or:
+    // - assign set script:MyScript npc:<entry[save].created_npc>
+    //
+    // Denizen tracks a "linked player" and a "linked NPC" in queues and the commands within.
+    // Many commands automatically operate on the linked player/NPC or by default or exclusively
+    // (for example, "give" defaults to giving items to the linked player but that can be changed with the "to" argument,
+    // "assign" exclusively changes the assignment of the linked NPC, and that cannot be changed except by the global NPC argument).
+    //
+    // When the player argument is used, it sets the linked player for the specific command it's on.
+    // This is only useful for commands that default to operating on the linked player.
+    // This can also be useful with the "run" command to link a specific player to the new queue.
+    //
+    // The NPC argument is essentially equivalent to the player argument, but for the linked NPC instead of the linked player.
+    //
+    // These arguments will also affect tags (mainly "<player>" and "<npc>") in the same command line (regardless of argument order).
+    // If you need to use the original player/NPC in a tag on the same line, use the define command to track it.
+    // -->
+
     @Override
     public boolean handleCustomArgs(ScriptEntry scriptEntry, Argument arg, boolean if_ignore) {
         // Fill player/off-line player
