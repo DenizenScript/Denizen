@@ -2483,7 +2483,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // Sets the level on the player. Does not affect the current progression
         // of experience towards next level.
         // @tags
-        // <PlayerTag.xp.level>
+        // <PlayerTag.xp_level>
         // -->
         if (mechanism.matches("level") && mechanism.requireInteger()) {
             setLevel(mechanism.getValue().asInt());
@@ -2497,7 +2497,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // Sets the inventory slot that the player has selected.
         // Works with offline players.
         // @tags
-        // <PlayerTag.item_in_hand.slot>
+        // <PlayerTag.held_item_slot>
         // -->
         if (mechanism.matches("item_slot") && mechanism.requireInteger()) {
             if (isOnline()) {
@@ -2607,7 +2607,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // standard.
         // Player relogging will reset this mechanism.
         // @tags
-        // <PlayerTag.health.scale>
+        // <PlayerTag.health_scale>
         // -->
         if (mechanism.matches("health_scale") && mechanism.requireDouble()) {
             getPlayerEntity().setHealthScale(mechanism.getValue().asDouble());
@@ -2621,7 +2621,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // Enables or disables the health scale value. Disabling will result in the standard
         // amount of hearts being shown.
         // @tags
-        // <PlayerTag.health.is_scaled>
+        // <PlayerTag.health_is_scaled>
         // -->
         if (mechanism.matches("scale_health") && mechanism.requireBoolean()) {
             getPlayerEntity().setHealthScaled(mechanism.getValue().asBoolean());
@@ -2644,9 +2644,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // Forces the player to wait for the full attack cooldown duration for the item in their hand.
         // NOTE: The clientside attack cooldown indicator will not reflect this change!
         // @tags
-        // <PlayerTag.attack_cooldown.time_passed>
-        // <PlayerTag.attack_cooldown.max_duration>
-        // <PlayerTag.attack_cooldown.percent_done>
+        // <PlayerTag.attack_cooldown_duration>
+        // <PlayerTag.attack_cooldown_max_duration>
+        // <PlayerTag.attack_cooldown_percent>
         // -->
         if (mechanism.matches("redo_attack_cooldown")) {
             NMSHandler.getPlayerHelper().setAttackCooldown(getPlayerEntity(), 0);
@@ -2661,9 +2661,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // NOTE: This will do nothing if the player's attack speed attribute is set to 0.
         // NOTE: The clientside attack cooldown indicator will not reflect this change!
         // @tags
-        // <PlayerTag.attack_cooldown.time_passed>
-        // <PlayerTag.attack_cooldown.max_duration>
-        // <PlayerTag.attack_cooldown.percent_done>
+        // <PlayerTag.attack_cooldown_duration>
+        // <PlayerTag.attack_cooldown_max_duration>
+        // <PlayerTag.attack_cooldown_percent>
         // -->
         if (mechanism.matches("reset_attack_cooldown")) {
             PlayerHelper playerHelper = NMSHandler.getPlayerHelper();
@@ -2679,9 +2679,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // 0 means the cooldown has just begun, while 1 means the cooldown has been completed.
         // NOTE: The clientside attack cooldown indicator will not reflect this change!
         // @tags
-        // <PlayerTag.attack_cooldown.time_passed>
-        // <PlayerTag.attack_cooldown.max_duration>
-        // <PlayerTag.attack_cooldown.percent_done>
+        // <PlayerTag.attack_cooldown_duration>
+        // <PlayerTag.attack_cooldown_max_duration>
+        // <PlayerTag.attack_cooldown_percent>
         // -->
         if (mechanism.matches("attack_cooldown_percent") && mechanism.requireFloat()) {
             float percent = mechanism.getValue().asFloat();
@@ -2705,9 +2705,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // attack cooldown, then the cooldown is considered finished.
         // NOTE: The clientside attack cooldown indicator will not reflect this change!
         // @tags
-        // <PlayerTag.attack_cooldown.time_passed>
-        // <PlayerTag.attack_cooldown.max_duration>
-        // <PlayerTag.attack_cooldown.percent_done>
+        // <PlayerTag.attack_cooldown_duration>
+        // <PlayerTag.attack_cooldown_max_duration>
+        // <PlayerTag.attack_cooldown_percent>
         // -->
         if (mechanism.matches("attack_cooldown") && mechanism.requireObject(DurationTag.class)) {
             NMSHandler.getPlayerHelper().setAttackCooldown(getPlayerEntity(),
@@ -2846,7 +2846,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // Valid gamemodes are survival, creative, adventure, and spectator.
         // @tags
         // <PlayerTag.gamemode>
-        // <PlayerTag.gamemode.id>
         // -->
         if (mechanism.matches("gamemode") && mechanism.requireEnum(false, GameMode.values())) {
             setGameMode(GameMode.valueOf(mechanism.getValue().asString().toUpperCase()));
@@ -2901,7 +2900,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Sets the entry that is shown in the 'player list' that is shown when pressing tab.
         // @tags
-        // <PlayerTag.name.list>
+        // <PlayerTag.list_name>
         // -->
         if (mechanism.matches("player_list_name")) {
             getPlayerEntity().setPlayerListName(mechanism.getValue().asString());
@@ -2914,7 +2913,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Sets the name displayed for the player when chatting.
         // @tags
-        // <PlayerTag.name.display>
+        // <PlayerTag.display_name>
         // -->
         if (mechanism.matches("display_name")) {
             getPlayerEntity().setDisplayName(mechanism.getValue().asString());
@@ -3084,8 +3083,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // - adjust <player> show_boss_bar:Hello
         // - adjust <player> show_boss_bar:100|Hello
         // NOTE: This has been replaced by <@link command bossbar>!
-        // @tags
-        // None
         // -->
         if (mechanism.matches("show_boss_bar")) {
             if (!mechanism.getValue().asString().isEmpty()) {
@@ -3112,8 +3109,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // Use with no input value to reset to the player's normal experience.
         // Optionally, you can specify a fake experience level.
         // - adjust <player> fake_experience:0.5|5
-        // @tags
-        // None
         // -->
         if (mechanism.matches("fake_experience")) {
             if (!mechanism.getValue().asString().isEmpty()) {
@@ -3150,8 +3145,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // - adjust <player> fake_health:1
         // - adjust <player> fake_health:10|15
         // - adjust <player> fake_health:<player.health>|3|0
-        // @tags
-        // None
         // -->
         if (mechanism.matches("fake_health")) {
             if (!mechanism.getValue().asString().isEmpty()) {
@@ -3626,36 +3619,42 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             }
         }
 
-        if (Depends.chat != null) {
-            // <--[mechanism]
-            // @object PlayerTag
-            // @name chat_prefix
-            // @input Element
-            // @plugin Vault
-            // @description
-            // Set the player's chat prefix.
-            // Requires a Vault-compatible chat plugin.
-            // @tags
-            // <PlayerTag.chat_prefix>
-            // -->
-            if (mechanism.matches("chat_prefix")) {
-                Depends.chat.setPlayerPrefix(getPlayerEntity(), mechanism.getValue().asString());
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name chat_prefix
+        // @input Element
+        // @plugin Vault
+        // @description
+        // Set the player's chat prefix.
+        // Requires a Vault-compatible chat plugin.
+        // @tags
+        // <PlayerTag.chat_prefix>
+        // -->
+        if (mechanism.matches("chat_prefix")) {
+            if (Depends.chat == null) {
+                Debug.echoError("Chat_Prefix mechanism invalid: No linked Chat plugin.");
+                return;
             }
+            Depends.chat.setPlayerPrefix(getPlayerEntity(), mechanism.getValue().asString());
+        }
 
-            // <--[mechanism]
-            // @object PlayerTag
-            // @name chat_suffix
-            // @input Element
-            // @plugin Vault
-            // @description
-            // Set the player's chat suffix.
-            // Requires a Vault-compatible chat plugin.
-            // @tags
-            // <PlayerTag.chat_suffix>
-            // -->
-            if (mechanism.matches("chat_suffix")) {
-                Depends.chat.setPlayerSuffix(getPlayerEntity(), mechanism.getValue().asString());
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name chat_suffix
+        // @input Element
+        // @plugin Vault
+        // @description
+        // Set the player's chat suffix.
+        // Requires a Vault-compatible chat plugin.
+        // @tags
+        // <PlayerTag.chat_suffix>
+        // -->
+        if (mechanism.matches("chat_suffix")) {
+            if (Depends.chat == null) {
+                Debug.echoError("Chat_Suffix mechanism invalid: No linked Chat plugin.");
+                return;
             }
+            Depends.chat.setPlayerSuffix(getPlayerEntity(), mechanism.getValue().asString());
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);
