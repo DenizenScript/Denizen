@@ -1756,6 +1756,29 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
+        // @attribute <EntityTag.cursor_on[(<range>)]>
+        // @returns ElementTag(Boolean)
+        // @group location
+        // @description
+        // Returns the location of the block the entity is looking at.
+        // Optionally, specify a maximum range to find the location from.
+        // This uses logic equivalent to <@link tag LocationTag.precise_cursor_on_block[(range)]>.
+        // Note that this will return null if there is no solid block in range.
+        // -->
+        registerSpawnedOnlyTag("cursor_on", (attribute, object) -> {
+            int range = attribute.getIntContext(1);
+            if (range < 1) {
+                range = 200;
+            }
+            // TODO: after 1.12 support is dropped, World#rayTraceBlocks should be used.
+            Location location = NMSHandler.getEntityHelper().rayTraceBlock(object.getEyeLocation(), object.getEyeLocation().getDirection(), range);
+            if (location != null) {
+                return new LocationTag(location).getBlockLocation();
+            }
+            return null;
+        });
+
+        // <--[tag]
         // @attribute <EntityTag.location>
         // @returns LocationTag
         // @group location
@@ -1766,15 +1789,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Works with offline players.
         // -->
         registerSpawnedOnlyTag("location", (attribute, object) -> {
-            // <--[tag]
-            // @attribute <EntityTag.location.cursor_on[<range>]>
-            // @returns LocationTag
-            // @group location
-            // @description
-            // Returns the location of the block the entity is looking at.
-            // Optionally, specify a maximum range to find the location from.
-            // -->
             if (attribute.startsWith("cursor_on", 2)) {
+                Deprecations.entityLocationCursorOnTag.warn(attribute.context);
                 int range = attribute.getIntContext(2);
                 if (range < 1) {
                     range = 50;
@@ -1782,16 +1798,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                 Set<Material> set = new HashSet<>();
                 set.add(Material.AIR);
 
-                // <--[tag]
-                // @attribute <EntityTag.location.cursor_on[<range>].ignore[<material>|...]>
-                // @returns LocationTag
-                // @group location
-                // @description
-                // Returns the location of the block the entity is looking at, ignoring
-                // the specified materials along the way. Note that air is always an
-                // ignored material.
-                // Optionally, specify a maximum range to find the location from.
-                // -->
                 if (attribute.startsWith("ignore", 3) && attribute.hasContext(3)) {
                     List<MaterialTag> ignoreList = ListTag.valueOf(attribute.getContext(3)).filter(MaterialTag.class, attribute.context);
                     for (MaterialTag material : ignoreList) {

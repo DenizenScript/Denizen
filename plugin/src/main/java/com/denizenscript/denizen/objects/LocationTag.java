@@ -1294,7 +1294,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         /////////////////
 
         // <--[tag]
-        // @attribute <LocationTag.precise_impact_normal[<range>]>
+        // @attribute <LocationTag.precise_impact_normal[(<range>)]>
         // @returns LocationTag
         // @description
         // Returns the exact impact normal at the location this location is pointing at.
@@ -1314,7 +1314,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
-        // @attribute <LocationTag.precise_cursor_on_block[<range>]>
+        // @attribute <LocationTag.precise_cursor_on_block[(<range>)]>
         // @returns LocationTag
         // @description
         // Returns the block location this location is pointing at.
@@ -1334,7 +1334,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
-        // @attribute <LocationTag.precise_cursor_on[<range>]>
+        // @attribute <LocationTag.precise_cursor_on[(<range>)]>
         // @returns LocationTag
         // @description
         // Returns the exact location this location is pointing at.
@@ -1354,7 +1354,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
-        // @attribute <LocationTag.precise_target[<range>]>
+        // @attribute <LocationTag.precise_target[(<range>)]>
         // @returns EntityTag
         // @description
         // Returns the entity this location is pointing at, using precise ray trace logic.
@@ -1373,7 +1373,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
-        // @attribute <LocationTag.precise_target_position[<range>]>
+        // @attribute <LocationTag.precise_target_position[(<range>)]>
         // @returns LocationTag
         // @description
         // Returns the precise location this location is pointing at, when tracing against entities.
@@ -1425,7 +1425,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
-        // @attribute <LocationTag.facing_blocks[<#>]>
+        // @attribute <LocationTag.facing_blocks[(<#>)]>
         // @returns ListTag(LocationTag)
         // @description
         // Finds all block locations in the direction this location is facing,
