@@ -385,26 +385,30 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // The "flagged:<flag name>" will limit the event to only fire when the player has the flag with the specified name.
     // It can be used like "on player breaks block flagged:nobreak:" (that would be used alongside "- flag player nobreak").
     //
-    // The "permisison:<perm key>" will limit the event to only fire when the player has the specified permission key.
-    // It can be used like "on player breaks block permission:denizen.my.perm"
+    // The "permission:<perm key>" will limit the event to only fire when the player has the specified permission key.
+    // It can be used like "on player breaks block permission:denizen.my.perm:"
+    //
+    // Note that these switches will be ignored for events that do not have a linked player.
+    // Be cautious with events that will only sometimes have a linked player.
     // -->
 
-    public boolean runAutomaticSwitches(ScriptPath path) {
+    public boolean runAutomaticPlayerSwitches(ScriptPath path) {
         BukkitScriptEntryData data = (BukkitScriptEntryData) getScriptEntryData();
-        if (data.hasPlayer()) {
-            if (!runFlaggedCheck(path, data.getPlayer())) {
-                return false;
-            }
-            if (!runPermissionCheck(path, data.getPlayer())) {
-                return false;
-            }
+        if (!data.hasPlayer()) {
+            return true;
+        }
+        if (!runFlaggedCheck(path, data.getPlayer())) {
+            return false;
+        }
+        if (!runPermissionCheck(path, data.getPlayer())) {
+            return false;
         }
         return true;
     }
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!runAutomaticSwitches(path)) {
+        if (!runAutomaticPlayerSwitches(path)) {
             return false;
         }
         return true;
