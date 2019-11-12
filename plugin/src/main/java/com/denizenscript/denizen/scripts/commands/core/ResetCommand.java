@@ -18,17 +18,30 @@ public class ResetCommand extends AbstractCommand {
     // @Name Reset
     // @Syntax reset (<player>|...) [cooldown/saves/global_cooldown] (<script>)
     // @Required 1
-    // @Short Resets various parts of Denizen's saves.yml, including a script's cooldowns or general player saves.
+    // @Short Resets various parts of Denizen's save data, including a script's cooldowns or general player saves.
     // @Group core
     //
     // @Description
-    // TODO: Document Command Details
+    // This command can reset save data for a player, or globally.
+    //
+    // The "cooldown" argument removes the player's cooldown for a specific script,
+    // as set by <@link command cooldown>.
+    //
+    // The "global_cooldown" argument removes all cooldowns for the specified script (not player-specific).
+    //
+    // The "saves" argument removes all permanent save data related to the player (most notably: all flags).
     //
     // @Tags
     // None
     //
     // @Usage
-    // TODO: Document Command Details
+    // Use to forget all data about the linked player.
+    // - reset saves
+    //
+    // @Usage
+    // Use to reset all cooldowns for a script when an event that limits usage completes.
+    // - reset global_cooldown MyScriptName
+    //
     // -->
 
     private enum Type {PLAYER_COOLDOWN, GLOBAL_COOLDOWN, SAVES}

@@ -16,14 +16,33 @@ public class TriggerCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Trigger
-    // @Syntax trigger [name:chat/click/damage/proximity] (state:{toggle}/true/false) (cooldown:<duration>) (radius:<#>)
+    // @Syntax trigger [name:<trigger>] (state:{toggle}/true/false) (cooldown:<duration>) (radius:<#>)
     // @Required 1
     // @Short Enables or disables a trigger.
     // @Group npc
     // @Guide https://guide.denizenscript.com/guides/npcs/interact-scripts.html
     //
     // @Description
-    // TODO: Document Command Details
+    // This command enables or disables an interact script trigger for the linked NPC.
+    // This is generally meant to be used within the 'on assignment' action in an assignment script.
+    // This might also be useful on timed activations or other special events (such as an NPC that "goes to bed" at the end of the day,
+    // you might disable the proximity trigger that would otherwise normally show a greeting message).
+    //
+    // The "name" argument is required, and can have any supported trigger name.
+    // The 4 triggers available by default are chat, click, damage, and proximity.
+    // For more details of the available trigger types, refer to <@link language Interact Script Triggers>.
+    //
+    // The "state" argument can be 'true' (to enable it), 'false' (to disable it),
+    // or unspecified to toggle it (that is, enable if it's currently off, or disable if it's currently on).
+    //
+    // You can specify the "cooldown" argument to set how long the trigger must wait
+    // after any firing before it can be fired again.
+    //
+    // You can specify the "radius" argument to set how far away a player can be when activating it.
+    // Note that the way this applies varies from trigger to trigger.
+    // For the "chat" trigger, a large radius can be easily accidentally triggered by unrelated chatter.
+    // For the "proximity" trigger, the radius argument should almost always be specified, as you generally want to control this with care.
+    // For the "click" and "damage" trigger, the radius argument will be ignored.
     //
     // @Tags
     // <NPCTag.has_trigger[<trigger>]>
@@ -37,7 +56,8 @@ public class TriggerCommand extends AbstractCommand {
     // - trigger name:chat state:true cooldown:10s radius:5
     //
     // @Usage
-    // TODO: Document Command Details
+    // Use to disable the proximity trigger.
+    // - trigger name:proximity state:false
     // -->
 
     private enum Toggle {TOGGLE, TRUE, FALSE}

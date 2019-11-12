@@ -22,14 +22,26 @@ public class TraitCommand extends AbstractCommand {
     // @Group npc
     //
     // @Description
-    // TODO: Document Command Details
+    // This command adds or removes a trait from an NPC.
+    //
+    // Use "state:true" to add or "state:false" to remove.
+    // If neither is specified, the default is "toggle", which means remove if already present or add if not.
+    //
+    // Note that a redundant instruction, like adding a trait that the NPC already has, will give an error message.
+    //
+    // The trait input is simply the name of the trait, like "sentinel".
     //
     // @Tags
     // <NPCTag.has_trait[<trait>]>
     // <NPCTag.list_traits>
     //
     // @Usage
-    // TODO: Document Command Details
+    // Use to add the Sentinel trait to the linked NPC.
+    // - trait state:true sentinel
+    //
+    // Use to toggle the MobProx trait on the linked NPC.
+    // - trait mobprox
+    //
     // -->
 
     private enum Toggle {TOGGLE, TRUE, FALSE, ON, OFF}

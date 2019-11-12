@@ -31,8 +31,7 @@ public class CommonRegistries {
     // clarification: Why <player.name> and not <PlayerTag.name>? That's because Denizen allows Players,
     // NPCs and other 'in-context objects' to be linked to certain scripts. In short, <player> already
     // contains a reference to a specific player, such as the player that died in a world event 'on player dies'.
-    // <PlayerTag.name> would incorrectly reference the player named 'player', however this format is often
-    // used to help with usage of a tag, simply indicating 'any player object'.
+    // <PlayerTag.name> is instead the format for document, with "PlayerTag" simply indicating 'any player object here'.
     //
     // ObjectTags can be used to CREATE new instances of objects, too! Though not all types allow 'new'
     // objects to be created, many do, such as ItemTags. With the use of tags, it's easy to reference a specific

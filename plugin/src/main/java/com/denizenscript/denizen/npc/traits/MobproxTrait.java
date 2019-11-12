@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// TODO: Documenting language/tutorial files
+// TODO: Documenting language files
 
 public class MobproxTrait extends Trait {
     public MobproxTrait() {

@@ -30,12 +30,26 @@ public class StatisticCommand extends AbstractCommand {
     // For more info on statistics, see <@link url https://minecraft.gamepedia.com/Statistics>
     // For statistic names, see <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Statistic.html>
     //
+    // You can add, take, or set a numeric value to the statistic for the linked player.
+    //
+    // Some statistics are unique per a material or entity - for those, use the "qualifier" argument.
+    //
     // @Tags
     // <PlayerTag.statistic[<statistic>]>
     // <PlayerTag.statistic[<statistic>].qualifier[<material>/<entity>]>
     //
     // @Usage
-    // TODO: Document Command Details
+    // Use to hide the evidence of all the animal breeding you've done.
+    // - statistic animals_bred set 0
+    //
+    // @Usage
+    // Use to pretend you just ran a 5k.
+    // - statistic walk_one_cm add 500000
+    //
+    // @Usage
+    // Use to make it look like that challenge course wasn't even hard for at all.
+    // - statistic deaths take 200
+    //
     // -->
 
     private enum Action {ADD, TAKE, SET}

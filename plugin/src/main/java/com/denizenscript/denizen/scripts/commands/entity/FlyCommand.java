@@ -35,7 +35,18 @@ public class FlyCommand extends AbstractCommand {
     // @Group entity
     //
     // @Description
-    // TODO: Document Command Details
+    // Make an entity fly where its controller is looking or fly to waypoints.
+    // This is particularly useful as a way to make flying entities rideable (or make a non-flying entity start flying).
+    //
+    // Optionally specify a list of "destinations" to make it move through a series of checkpoints (disabling the "controller" functionality).
+    //
+    // Optionally specify an "origin" location where the entities should teleport to at the start.
+    //
+    // Optionally specify the "speed" argument to set how fast the entity should fly.
+    //
+    // Optionally specify the "rotationthreshold" to set the minimum threshold (in degrees) before the entity should forcibly rotate to the correct direction.
+    //
+    // Use the "cancel" argument to stop an existing flight.
     //
     // @Tags
     // <PlayerTag.can_fly>
@@ -43,7 +54,8 @@ public class FlyCommand extends AbstractCommand {
     // <PlayerTag.is_flying>
     //
     // @Usage
-    // TODO: Document Command Details
+    // Use to make a player ride+fly a newly spawned dragon.
+    // - fly <player>|ender_dragon
     // -->
 
     @Override

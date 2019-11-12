@@ -19,17 +19,20 @@ public class CooldownCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Cooldown
-    // @Syntax cooldown [<duration>] (global) (s:<script>)
+    // @Syntax cooldown [<duration>] (global) (script:<script>)
     // @Required 1
     // @Short Temporarily disables a script-container from meeting requirements.
     // @Group core
     //
     // @Description
-    // Cools down a script-container. If an interact-container, when on cooldown, scripts will not pass a
-    // requirements check allowing the next highest priority script to trigger. If any other type of script, a
-    // manual requirements check (<ScriptTag_name.requirements.check>) will also return false until the cooldown
-    // period is completed. Cooldown requires a type (player or global), a script, and a duration. It also requires
-    // a valid link to a PlayerTag if using player-type cooldown.
+    // Cools down a script-container.
+    // If an interact-container, this will automatically prevent the script from running.
+    // If any other type of script, a manual check is needed,
+    // using <@link tag ScriptTag.cooled_down[player]>, which will return false until the cooldown period is completed.
+    // Cooldown requires a type (player or global), a script, and a duration. It also requires
+    // a valid link to a PlayerTag if using a non-global cooldown.
+    //
+    // To cooldown non-interact scripts automatically, consider <@link command ratelimit>.
     //
     // Cooldown periods are persistent through a server restart as they are saved in the saves.yml.
     //
@@ -43,12 +46,12 @@ public class CooldownCommand extends AbstractCommand {
     //
     // @Usage
     // Use to keep a player from activating a script for a specified duration.
-    // - cooldown 11h s:s@bonus_script
-    // - cooldown 5s s:s@hit_indicator
+    // - cooldown 11h script:bonus_script
+    // - cooldown 5s script:hit_indicator
     //
     // @Usage
     // Use the 'global' argument to indicate the script to be on cooldown for all players.
-    // - cooldown global 24h s:s@daily_treasure_offering
+    // - cooldown global 24h script:daily_treasure_offering
     // -->
 
     private enum Type {GLOBAL, PLAYER}

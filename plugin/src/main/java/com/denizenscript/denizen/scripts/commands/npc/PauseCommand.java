@@ -25,7 +25,14 @@ public class PauseCommand extends AbstractCommand {
     // @Group npc
     //
     // @Description
-    // TODO: Document Command Details
+    // The pause command pauses an NPC's waypoint navigation or goal activity temporarily or indefinitely.
+    // This works along side <@link command resume>.
+    //
+    // "Waypoints" refers to the NPC's path navigation, usually set via "/npc path".
+    //
+    // "Activity" refers to the Citizens AI Goal system, which may be used by some plugins but usually is not.
+    //
+    // If no duration is specified, the resume command must be used to unpause it.
     //
     // @Tags
     // <NPCTag.is_navigating>
@@ -53,18 +60,12 @@ public class PauseCommand extends AbstractCommand {
     // @Group npc
     //
     // @Description
-    // TODO: Document Command Details
+    // The resume command resumes an NPC's waypoint navigation or goal activity temporarily or indefinitely.
+    // This works along side <@link command pause>.
+    // See the documentation of the pause command for more details.
     //
     // @Tags
     // <NPCTag.is_navigating>
-    //
-    // @Usage
-    // Use to pause an NPC's waypoint navigation indefinitely.
-    // - pause waypoints
-    //
-    // @Usage
-    // Use to pause an NPC's goal activity temporarily.
-    // - pause activity 1m
     //
     // @Usage
     // Use to pause an NPC's waypoint navigation and then resume it.

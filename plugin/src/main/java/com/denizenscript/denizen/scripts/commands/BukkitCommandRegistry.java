@@ -79,7 +79,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         }
         registerCoreMember(ChunkLoadCommand.class, "CHUNKLOAD", "chunkload ({add}/remove/removeall) [<chunk>] (duration:<value>)", 1);
         registerCoreMember(CompassCommand.class, "COMPASS", "compass [<location>/reset]", 1);
-        registerCoreMember(CooldownCommand.class, "COOLDOWN", "cooldown [<duration>] (global) (s:<script>)", 1);
+        registerCoreMember(CooldownCommand.class, "COOLDOWN", "cooldown [<duration>] (global) (script:<script>)", 1);
         registerCoreMember(CopyBlockCommand.class, "COPYBLOCK", "copyblock [<location>/<cuboid>] [to:<location>] (remove_original)", 1);
         if (Depends.citizens != null) {
             registerCoreMember(CreateCommand.class, "CREATE", "create [<entity>] [<name>] (<location>)", 1);
@@ -208,7 +208,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         else {
             AutoNoCitizensCommand.registerFor("TRAIT");
         }
-        registerCoreMember(TriggerCommand.class, "TRIGGER", "trigger [name:chat/click/damage/proximity] (state:{toggle}/true/false) (cooldown:<duration>) (radius:<#>)", 1);
+        registerCoreMember(TriggerCommand.class, "TRIGGER", "trigger [name:<trigger>] (state:{toggle}/true/false) (cooldown:<duration>) (radius:<#>)", 1);
         if (Depends.citizens != null) {
             registerCoreMember(VulnerableCommand.class, "VULNERABLE", "vulnerable (state:{true}/false/toggle)", 0);
         }
