@@ -15,7 +15,7 @@ public class ItemTagBase {
         // @attribute <item[<item>]>
         // @returns ItemTag
         // @description
-        // Returns a item object constructed from the input value.
+        // Returns an item object constructed from the input value.
         // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override

@@ -15,7 +15,7 @@ public class EllipsoidTagBase {
         // @attribute <ellipsoid[<ellipsoid>]>
         // @returns EllipsoidTag
         // @description
-        // Returns a ellipsoid object constructed from the input value.
+        // Returns an ellipsoid object constructed from the input value.
         // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override

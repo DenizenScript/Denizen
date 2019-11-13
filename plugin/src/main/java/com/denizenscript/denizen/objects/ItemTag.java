@@ -51,7 +51,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
     // @name ItemTag Objects
     // @group Object System
     // @description
-    // A ItemTag represents a holdable item generically.
+    // An ItemTag represents a holdable item generically.
     //
     // ItemTags are temporary objects, to actually modify an item in an inventory you must add the item into that inventory.
     //
@@ -66,8 +66,8 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
     // @name i@
     // @group Object Fetcher System
     // @description
-    // i@ refers to the 'object identifier' of a ItemTag. The 'i@' is notation for Denizen's Object
-    // Fetcher. The constructor for a ItemTag is the basic material type name, or an item script name. Other data is specified in properties.
+    // i@ refers to the 'object identifier' of an ItemTag. The 'i@' is notation for Denizen's Object
+    // Fetcher. The constructor for an ItemTag is the basic material type name, or an item script name. Other data is specified in properties.
     // For example, 'i@stick'.
     //
     // Find a list of valid materials at:

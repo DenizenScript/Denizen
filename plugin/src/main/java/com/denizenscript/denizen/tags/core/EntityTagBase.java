@@ -15,7 +15,7 @@ public class EntityTagBase {
         // @attribute <entity[<entity>]>
         // @returns EntityTag
         // @description
-        // Returns a entity object constructed from the input value.
+        // Returns an entity object constructed from the input value.
         // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override

@@ -22,7 +22,7 @@ public class EllipsoidTag implements ObjectTag, Notable {
     // @name EllipsoidTag Objects
     // @group Object System
     // @description
-    // A EllipsoidTag represents an ellipsoidal region in the world.
+    // An EllipsoidTag represents an ellipsoidal region in the world.
     //
     // The word 'ellipsoid' means a less strict sphere.
     // Basically: an "ellipsoid" is to a 3D "sphere" what an "ellipse" (or "oval") is to a 2D "circle".
@@ -35,8 +35,8 @@ public class EllipsoidTag implements ObjectTag, Notable {
     // @name ellipsoid@
     // @group Object Fetcher System
     // @description
-    // ellipsoid@ refers to the 'object identifier' of a EllipsoidTag. The 'ellipsoid@' is notation for Denizen's Object
-    // Fetcher. The constructor for a EllipsoidTag is <x>,<y>,<z>,<world>,<x-radius>,<y-radius>,<z-radius>
+    // ellipsoid@ refers to the 'object identifier' of an EllipsoidTag. The 'ellipsoid@' is notation for Denizen's Object
+    // Fetcher. The constructor for an EllipsoidTag is <x>,<y>,<z>,<world>,<x-radius>,<y-radius>,<z-radius>
     // For example, 'ellipsoid@1,2,3,space,7,7,7'.
     //
     // For general info, see <@link language EllipsoidTag Objects>
