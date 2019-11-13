@@ -1734,7 +1734,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             double cos = Math.cos(angle);
             double sin = Math.sin(angle);
             double x = (object.getX() * cos) - (object.getY() * sin);
-            double y = (object.getZ() * sin) + (object.getY() * cos);
+            double y = (object.getX() * sin) + (object.getY() * cos);
             Location location = object.clone();
             location.setX(x);
             location.setY(y);

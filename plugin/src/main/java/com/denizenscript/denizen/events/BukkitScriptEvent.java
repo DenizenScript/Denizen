@@ -423,11 +423,11 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     //
     // The most common example of this is editing a player's inventory, within an inventory-related event.
     // Generally speaking, this problem becomes relevant any time an edit is made to something involved with an event,
-    // within the firing of an example.
+    // within the firing of that event.
     // Take the following examples:
     // <code>
     // on player clicks in inventory:
-    // - take <player.item_in_hand>
+    // - take iteminhand
     // on entity damaged:
     // - remove <context.entity>
     // </code>
@@ -447,7 +447,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // <code>
     // on player clicks in inventory:
     // - wait 1t
-    // - take <player.item_in_hand>
+    // - take iteminhand
     // on entity damaged:
     // - wait 1t
     // - if <context.entity.is_spawned||false>:
