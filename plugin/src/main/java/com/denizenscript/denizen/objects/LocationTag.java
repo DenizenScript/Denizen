@@ -1585,7 +1585,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                         return new ElementTag(NMSHandler.getEntityHelper().isFacingLocation(object, facingLoc, degrees, pitchDegrees));
                     }
                     else {
-                        degrees = attribute.getIntContext(2);
+                        degrees = Integer.parseInt(context);
                     }
                 }
 
