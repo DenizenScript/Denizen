@@ -313,6 +313,8 @@ public class ItemPotion implements Property {
         // Sets the potion's potion effect(s).
         // Input is a formed like: Effect,Upgraded,Extended(,Color)|Type,Amplifier,Duration,Ambient,Particles(,Icon)|...
         // For example: SPEED,true,false|SPEED,2,200,false,true,true
+        // Second example: REGEN,false,true,RED|REGENERATION,1,500,true,false,false
+        // Color can also be used like "255&comma128&comma0" (r,g,b but replace ',' with '&comma').
         // NOTE: In pre-1.13 Minecraft versions, you could set a color in the custom effects list instead of "icon".
         // @tags
         // <ItemTag.potion_effect[<#>]>
