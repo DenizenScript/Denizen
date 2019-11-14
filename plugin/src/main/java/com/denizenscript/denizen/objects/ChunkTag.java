@@ -3,6 +3,7 @@ package com.denizenscript.denizen.objects;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.tags.Attribute;
@@ -479,7 +480,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <ChunkTag.is_flat[#]>
+        // @attribute <ChunkTag.is_flat[(<#>)]>
         // @returns ElementTag(Boolean)
         // @description
         // scans the heights of the blocks to check variance between them. If no number is supplied, is_flat will return
@@ -540,6 +541,22 @@ public class ChunkTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <ChunkTag.inhabited_time>
+        // @returns Duration
+        // @Mechanism ChunkTag.inhabited_time
+        // @description
+        // Returns the total time the chunk has been inhabited for.
+        // This is a primary deciding factor in the "local difficulty" setting.
+        // -->
+        registerTag("inhabited_time", (attribute, object) -> {
+            Chunk chunk = object.getChunkForTag(attribute);
+            if (chunk == null) {
+                return null;
+            }
+            return new DurationTag(chunk.getInhabitedTime());
+        });
+
+        // <--[tag]
         // @attribute <ChunkTag.type>
         // @returns ElementTag
         // @description
@@ -571,19 +588,28 @@ public class ChunkTag implements ObjectTag, Adjustable {
 
         // <--[mechanism]
         // @object ChunkTag
+        // @name inhabited_time
+        // @input DurationTag
+        // @description
+        // Changes the amount of time the chunk has been inhabited for.
+        // This is a primary deciding factor in the "local difficulty" setting.
+        // @tags
+        // <ChunkTag.inhabited_time>
+        // -->
+        if (mechanism.matches("inhabited_time") && mechanism.requireObject(DurationTag.class)) {
+            getChunk().setInhabitedTime(mechanism.valueAsType(DurationTag.class).getTicks());
+        }
+
+        // <--[mechanism]
+        // @object ChunkTag
         // @name unload
         // @input None
         // @description
         // Removes a chunk from memory.
         // @tags
-        // <chunk.is_loaded>
+        // <ChunkTag.is_loaded>
         // -->
         if (mechanism.matches("unload")) {
-            getChunk().unload(true);
-        }
-
-        if (mechanism.matches("unload_safely")) {
-            Debug.echoError("Mechanism 'dChunk.unload_safely' is not valid: It is never safe to remove a chunk in use.");
             getChunk().unload(true);
         }
 
@@ -607,7 +633,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // @description
         // Loads a chunk into memory.
         // @tags
-        // <chunk.is_loaded>
+        // <ChunkTag.is_loaded>
         // -->
         if (mechanism.matches("load")) {
             getChunk().load(true);
