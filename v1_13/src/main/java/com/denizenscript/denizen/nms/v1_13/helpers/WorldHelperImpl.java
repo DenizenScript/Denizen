@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.interfaces.WorldAccess;
 import com.denizenscript.denizen.nms.interfaces.WorldHelper;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
 import net.minecraft.server.v1_13_R2.*;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_13_R2.CraftWorld;
 
@@ -25,6 +26,13 @@ public class WorldHelperImpl implements WorldHelper {
     public void setStatic(World world, boolean isStatic) {
         WorldServer worldServer = ((CraftWorld) world).getHandle();
         ReflectionHelper.setFieldValue(net.minecraft.server.v1_13_R2.World.class, "isClientSide", worldServer, isStatic);
+    }
+
+    @Override
+    public float getLocalDifficulty(Location location) {
+        BlockPosition pos = new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        DifficultyDamageScaler scaler = ((CraftWorld) location.getWorld()).getHandle().getDamageScaler(pos);
+        return scaler.b();
     }
 
     @Override

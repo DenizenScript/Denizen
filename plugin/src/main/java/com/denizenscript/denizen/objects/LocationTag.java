@@ -2813,6 +2813,17 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             return null;
         });
+
+        // <--[tag]
+        // @attribute <LocationTag.local_difficulty>
+        // @returns ElementTag(Decimal)
+        // @description
+        // Returns the local difficulty (damage scaler) at the location.
+        // This is based internally on multiple factors, including <@link tag ChunkTag.inhabited_time> and <@link tag WorldTag.difficulty>.
+        // -->
+        registerTag("local_difficulty", (attribute, object) -> {
+            return new ElementTag(NMSHandler.getWorldHelper().getLocalDifficulty(object));
+        });
     }
 
     public static ObjectTagProcessor<LocationTag> tagProcessor = new ObjectTagProcessor<>();
