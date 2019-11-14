@@ -325,6 +325,8 @@ public class BukkitElementProperties implements Property {
         // @group text manipulation
         // @description
         // Adds a hover message to the element, which makes the element display the input hover text when the mouse is left over it.
+        //
+        // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
         // -->
         PropertyParser.<ElementTag>registerTag("on_hover", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
@@ -341,6 +343,8 @@ public class BukkitElementProperties implements Property {
             // Adds a hover message to the element, which makes the element display the input hover text when the mouse is left over it.
             // Optionally specify the hover type as one of: SHOW_TEXT, SHOW_ACHIEVEMENT, SHOW_ITEM, or SHOW_ENTITY.
             // Note: for "SHOW_ITEM", replace the text with a valid ItemTag. For "SHOW_ENTITY", replace the text with a valid spawned EntityTag (requires F3+H to see entities).
+            //
+            // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
             // -->
             if (attribute.startsWith("type", 2)) {
                 type = attribute.getContext(2);
@@ -356,6 +360,8 @@ public class BukkitElementProperties implements Property {
         // @group text manipulation
         // @description
         // Adds a click command to the element, which makes the element execute the input command when clicked.
+        //
+        // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
         // -->
         PropertyParser.<ElementTag>registerTag("on_click", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
@@ -371,6 +377,8 @@ public class BukkitElementProperties implements Property {
             // @description
             // Adds a click command to the element, which makes the element execute the input command when clicked.
             // Optionally specify the hover type as one of: OPEN_URL, OPEN_FILE, RUN_COMMAND, SUGGEST_COMMAND, or CHANGE_PAGE.
+            //
+            // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
             // -->
             if (attribute.startsWith("type", 2)) {
                 type = attribute.getContext(2);
@@ -386,6 +394,8 @@ public class BukkitElementProperties implements Property {
         // @group text manipulation
         // @description
         // Adds an insertion message to the element, which makes the element insert the input message to chat when shift-clicked.
+        //
+        // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
         // -->
         PropertyParser.<ElementTag>registerTag("with_insertion", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
@@ -403,6 +413,8 @@ public class BukkitElementProperties implements Property {
         // @description
         // Makes a color code (&0123456789abcdef) not reset other formatting details.
         // Use like '<&c.no_reset>' or '<red.no_reset>'.
+        //
+        // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
         // -->
         PropertyParser.<ElementTag>registerTag("no_reset", (attribute, object) -> {
             if (object.asString().length() == 2 && object.asString().charAt(0) == ChatColor.COLOR_CHAR) {
@@ -418,6 +430,8 @@ public class BukkitElementProperties implements Property {
         // @description
         // Makes a chat format code (&klmno) be the end of a format, as opposed to the start.
         // Use like '<&o.end_format>' or '<italic.end_format>'.
+        //
+        // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
         // -->
         PropertyParser.<ElementTag>registerTag("end_format", (attribute, object) -> {
             if (object.asString().length() == 2 && object.asString().charAt(0) == ChatColor.COLOR_CHAR) {
@@ -432,6 +446,8 @@ public class BukkitElementProperties implements Property {
         // @group text manipulation
         // @description
         // Makes the input text italic. Equivalent to "<&o><ELEMENT_HERE><&o.end_format>"
+        //
+        // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
         // -->
         PropertyParser.<ElementTag>registerTag("italicize", (attribute, object) -> {
             return new ElementTag(ChatColor.ITALIC + object.asString() + ChatColor.COLOR_CHAR + "[reset=o]");
@@ -443,6 +459,8 @@ public class BukkitElementProperties implements Property {
         // @group text manipulation
         // @description
         // Makes the input text bold. Equivalent to "<&l><ELEMENT_HERE><&l.end_format>"
+        //
+        // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
         // -->
         PropertyParser.<ElementTag>registerTag("bold", (attribute, object) -> {
             return new ElementTag(ChatColor.BOLD + object.asString() + ChatColor.COLOR_CHAR + "[reset=l]");
@@ -454,6 +472,8 @@ public class BukkitElementProperties implements Property {
         // @group text manipulation
         // @description
         // Makes the input text underlined. Equivalent to "<&n><ELEMENT_HERE><&n.end_format>"
+        //
+        // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
         // -->
         PropertyParser.<ElementTag>registerTag("underline", (attribute, object) -> {
             return new ElementTag(ChatColor.UNDERLINE + object.asString() + ChatColor.COLOR_CHAR + "[reset=n]");
@@ -465,6 +485,8 @@ public class BukkitElementProperties implements Property {
         // @group text manipulation
         // @description
         // Makes the input text struck-through. Equivalent to "<&m><ELEMENT_HERE><&m.end_format>"
+        //
+        // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
         // -->
         PropertyParser.<ElementTag>registerTag("strikethrough", (attribute, object) -> {
             return new ElementTag(ChatColor.STRIKETHROUGH + object.asString() + ChatColor.COLOR_CHAR + "[reset=m]");
@@ -476,6 +498,8 @@ public class BukkitElementProperties implements Property {
         // @group text manipulation
         // @description
         // Makes the input text obfuscated. Equivalent to "<&k><ELEMENT_HERE><&k.end_format>"
+        //
+        // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
         // -->
         PropertyParser.<ElementTag>registerTag("obfuscate", (attribute, object) -> {
             return new ElementTag(ChatColor.MAGIC + object.asString() + ChatColor.COLOR_CHAR + "[reset=k]");
@@ -489,6 +513,8 @@ public class BukkitElementProperties implements Property {
         // Makes the input text colored by the input color. Equivalent to "<COLOR><ELEMENT_HERE><COLOR.end_format>"
         // Color can be either a color name, or code.
         // That is: ".color[gold]" and ".color[6]" are both valid.
+        //
+        // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
         // -->
         PropertyParser.<ElementTag>registerTag("color", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
