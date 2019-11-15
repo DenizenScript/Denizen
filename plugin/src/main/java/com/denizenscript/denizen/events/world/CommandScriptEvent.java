@@ -10,6 +10,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import com.denizenscript.denizencore.tags.core.EscapeTagBase;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
 import org.bukkit.command.BlockCommandSender;
@@ -34,6 +35,7 @@ public class CommandScriptEvent extends BukkitScriptEvent implements Listener {
     //
     // @Triggers when a player, console, or command block/minecart runs a Bukkit command. This happens before
     // any code of established commands, allowing scripts to 'override' existing commands.
+    // Note that for the sake of the event line, escaping is used, so 'bukkit:plugins' becomes 'bukkit&coplugins'
     // @Context
     // <context.command> returns the command name as an Element.
     // <context.raw_args> returns any args used as an Element.
@@ -74,7 +76,7 @@ public class CommandScriptEvent extends BukkitScriptEvent implements Listener {
         if (!runInCheck(path, playerEvent == null ? null : playerEvent.getPlayer().getLocation())) {
             return false;
         }
-        if (!path.eventArgLowerAt(0).equals("command") && !runGenericCheck(path.eventArgLowerAt(0), commandName)) {
+        if (!path.eventArgLowerAt(0).equals("command") && !runGenericCheck(path.eventArgLowerAt(0), EscapeTagBase.escape(commandName))) {
             return false;
         }
         return super.matches(path);
