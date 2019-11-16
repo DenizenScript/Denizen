@@ -15,7 +15,6 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
     // <--[event]
     // @Events
     // block ignites
-    // <material> ignites
     //
     // @Regex ^on [^\s]+ ignites$
     //
@@ -29,8 +28,7 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
     // @Triggers when a block is set on fire.
     //
     // @Context
-    // <context.location> returns the LocationTag of the block was set on fire at.
-    // <context.material> returns the MaterialTag of the block that was set on fire.
+    // <context.location> returns the LocationTag of the block that was set on fire.
     // <context.entity> returns the EntityTag of the entity that ignited the block.
     // <context.origin_location> returns the LocationTag of the fire block that ignited this block.
     // <context.cause> returns an ElementTag of the cause of the event: ENDER_CRYSTAL, EXPLOSION, FIREBALL, FLINT_AND_STEEL, LAVA, or SPREAD.
@@ -60,9 +58,6 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
         if (!runGenericSwitchCheck(path, "cause", cause.asString())) {
             return false;
         }
-        if (!tryMaterial(material, path.eventArgLowerAt(0))) {
-            return false;
-        }
         return super.matches(path);
     }
 
@@ -77,7 +72,7 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
             return location;
         }
         else if (name.equals("material")) {
-            return material;
+            return new MaterialTag(event.getBlock());
         }
         else if (name.equals("entity") && event.getIgnitingEntity() != null) {
             return new EntityTag(event.getIgnitingEntity());
@@ -94,7 +89,6 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
     @EventHandler
     public void onBlockIgnites(BlockIgniteEvent event) {
         location = new LocationTag(event.getBlock().getLocation());
-        material = new MaterialTag(event.getBlock());
         cause = new ElementTag(event.getCause().name());
         this.event = event;
         fire(event);
