@@ -98,6 +98,7 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
         if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
+        statistic = event.getStatistic();
         this.event = event;
         fire(event);
     }
