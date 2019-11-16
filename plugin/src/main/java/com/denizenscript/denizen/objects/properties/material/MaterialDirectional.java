@@ -7,15 +7,27 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
+import org.bukkit.Axis;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
+import org.bukkit.block.data.Orientable;
 
 public class MaterialDirectional implements Property {
 
     public static boolean describes(ObjectTag material) {
-        return material instanceof MaterialTag
-                && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData().data instanceof Directional;
+        if (!(material instanceof MaterialTag)) {
+            return false;
+        }
+        MaterialTag mat = (MaterialTag) material;
+        if (!mat.hasModernData()) {
+            return false;
+        }
+        BlockData data = mat.getModernData().data;
+        if (!(data instanceof Directional || data instanceof Orientable)) {
+            return false;
+        }
+        return true;
     }
 
     public static MaterialDirectional getFrom(ObjectTag _material) {
@@ -60,8 +72,15 @@ public class MaterialDirectional implements Property {
         // -->
         if (attribute.startsWith("valid_directions")) {
             ListTag toReturn = new ListTag();
-            for (BlockFace face : getDirectional().getFaces()) {
-                toReturn.add(face.name());
+            if (isOrientable()) {
+                for (Axis axis : getOrientable().getAxes()) {
+                    toReturn.add(axis.name());
+                }
+            }
+            else {
+                for (BlockFace face : getDirectional().getFaces()) {
+                    toReturn.add(face.name());
+                }
             }
             return toReturn.getObjectAttribute(attribute.fulfill(1));
         }
@@ -73,13 +92,28 @@ public class MaterialDirectional implements Property {
         // @group properties
         // @description
         // Returns the current facing direction for a directional material (like a door or a bed).
-        // Output is a direction name like "NORTH".
+        // Output is a direction name like "NORTH", or an axis like "X".
         // -->
         if (attribute.startsWith("direction")) {
-            return new ElementTag(getDirectional().getFacing().name()).getObjectAttribute(attribute.fulfill(1));
+            String dirName;
+            if (isOrientable()) {
+                dirName = getOrientable().getAxis().name();
+            }
+            else {
+                dirName = getDirectional().getFacing().name();
+            }
+            return new ElementTag(dirName).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;
+    }
+
+    public boolean isOrientable() {
+        return material.getModernData().data instanceof Orientable;
+    }
+
+    public Orientable getOrientable() {
+        return (Orientable) material.getModernData().data;
     }
 
     public Directional getDirectional() {
@@ -113,8 +147,13 @@ public class MaterialDirectional implements Property {
         // <MaterialTag.direction>
         // <MaterialTag.valid_directions>
         // -->
-        if (mechanism.matches("direction") && mechanism.requireEnum(false, BlockFace.values())) {
-            getDirectional().setFacing(BlockFace.valueOf(mechanism.getValue().asString().toUpperCase()));
+        if (mechanism.matches("direction")) {
+            if (isOrientable() && mechanism.requireEnum(false, Axis.values())) {
+                getOrientable().setAxis(Axis.valueOf(mechanism.getValue().asString().toUpperCase()));
+            }
+            else if (!isOrientable() && mechanism.requireEnum(false, BlockFace.values())) {
+                getDirectional().setFacing(BlockFace.valueOf(mechanism.getValue().asString().toUpperCase()));
+            }
         }
     }
 }
