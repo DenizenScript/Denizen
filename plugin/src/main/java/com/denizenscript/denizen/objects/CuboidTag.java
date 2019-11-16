@@ -508,12 +508,15 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         List<LocationTag> locs = getBlocks_internal(materials, attribute);
         ListTag list = new ListTag();
         for (LocationTag loc : locs) {
-            list.add(loc.identify());
+            list.addObject(loc);
         }
         return list;
     }
 
     public List<LocationTag> getBlocks_internal(List<MaterialTag> materials, Attribute attribute) {
+        if (materials == null && filter.isEmpty()) {
+            return getBlockLocationsUnfiltered();
+        }
         int max = Settings.blockTagsMaxBlocks();
         LocationTag loc;
         List<LocationTag> list = new ArrayList<>();
@@ -557,54 +560,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
             }
 
         }
-
         return list;
-    }
-
-    public void setBlocks_internal(List<BlockData> materials) {
-        LocationTag loc;
-        int index = 0;
-        for (LocationPair pair : pairs) {
-            LocationTag loc_1 = pair.low;
-            int y_distance = pair.y_distance;
-            int z_distance = pair.z_distance;
-            int x_distance = pair.x_distance;
-
-            for (int x = 0; x != x_distance + 1; x++) {
-                for (int y = 0; y != y_distance + 1; y++) {
-                    for (int z = 0; z != z_distance + 1; z++) {
-                        if (loc_1.getY() + y >= 0 && loc_1.getY() + y < 256) {
-                            materials.get(index).setBlock(loc_1.clone().add(x, y, z).getBlock(), false);
-                        }
-                        index++;
-                    }
-                }
-            }
-        }
-    }
-
-    public BlockData getBlockAt(double nX, double nY, double nZ, List<BlockData> materials) {
-        LocationTag loc;
-        int index = 0;
-        // TODO: calculate rather than cheat
-        for (LocationPair pair : pairs) {
-            LocationTag loc_1 = pair.low;
-            int y_distance = pair.y_distance;
-            int z_distance = pair.z_distance;
-            int x_distance = pair.x_distance;
-
-            for (int x = 0; x != x_distance + 1; x++) {
-                for (int y = 0; y != y_distance + 1; y++) {
-                    for (int z = 0; z != z_distance + 1; z++) {
-                        if (x == nX && nY == y && z == nZ) {
-                            return materials.get(index);
-                        }
-                        index++;
-                    }
-                }
-            }
-        }
-        return null;
     }
 
     public List<LocationTag> getBlockLocationsUnfiltered() {
@@ -618,48 +574,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
             int y_distance = pair.y_distance;
             int z_distance = pair.z_distance;
             int x_distance = pair.x_distance;
-            for (int x = 0; x != x_distance + 1; x++) {
-                for (int z = 0; z != z_distance + 1; z++) {
-                    for (int y = 0; y != y_distance + 1; y++) {
+            for (int x = 0; x <= x_distance; x++) {
+                for (int z = 0; z <= z_distance; z++) {
+                    for (int y = 0; y <= y_distance; y++) {
                         loc = new LocationTag(loc_1.clone().add(x, y, z));
                         list.add(loc);
-                        index++;
-                        if (index > max) {
-                            return list;
-                        }
-                    }
-                }
-            }
-        }
-        return list;
-    }
-
-    public List<LocationTag> getBlockLocations(Attribute attribute) {
-        int max = Settings.blockTagsMaxBlocks();
-        LocationTag loc;
-        List<LocationTag> list = new ArrayList<>();
-        int index = 0;
-
-        for (LocationPair pair : pairs) {
-            LocationTag loc_1 = pair.low;
-            int y_distance = pair.y_distance;
-            int z_distance = pair.z_distance;
-            int x_distance = pair.x_distance;
-            for (int x = 0; x != x_distance + 1; x++) {
-                for (int z = 0; z != z_distance + 1; z++) {
-                    for (int y = 0; y != y_distance + 1; y++) {
-                        loc = new LocationTag(loc_1.clone().add(x, y, z));
-                        if (!filter.isEmpty()) {
-                            // Check filter
-                            for (ObjectTag material : filter) {
-                                if (loc.getBlockTypeForTag(attribute).name().equalsIgnoreCase(((MaterialTag) material).getMaterial().name())) {
-                                    list.add(loc);
-                                }
-                            }
-                        }
-                        else {
-                            list.add(loc);
-                        }
                         index++;
                         if (index > max) {
                             return list;

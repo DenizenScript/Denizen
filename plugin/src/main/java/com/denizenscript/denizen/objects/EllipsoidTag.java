@@ -143,7 +143,7 @@ public class EllipsoidTag implements ObjectTag, Notable {
         ListTag list = new ListTag();
         for (LocationTag loc : initial) {
             if (contains(loc)) {
-                list.add(loc.identify());
+                list.addObject(loc);
             }
         }
         return list;
