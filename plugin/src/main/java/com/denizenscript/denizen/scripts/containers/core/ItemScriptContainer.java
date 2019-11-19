@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.nbt.LeatherColorer;
@@ -256,8 +258,11 @@ public class ItemScriptContainer extends ScriptContainer {
                             enchantment = split[0].replace(" ", "");
                         }
                         // Add enchantment
-                        NamespacedKey key = Utilities.parseNamespacedKey(enchantment);
-                        Enchantment ench = Enchantment.getByKey(key);
+                        Enchantment ench = null;
+                        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+                            NamespacedKey key = Utilities.parseNamespacedKey(enchantment);
+                            ench = Enchantment.getByKey(key);
+                        }
                         if (ench == null) {
                             ench = Enchantment.getByName(enchantment.toUpperCase());
                         }
