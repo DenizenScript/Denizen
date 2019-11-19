@@ -34,11 +34,18 @@ public class MapCommand extends AbstractCommand {
     // @Description
     // This command modifies an existing map, or creates a new one. Using this will override existing
     // non-Denizen map renderers with Denizen's custom map renderer.
+    //
     // You can reset this at any time by using the 'reset:<location>' argument, which will remove all
     // images and texts on the map and show the default world map at the specified location.
+    //
     // Note that all maps have a size of 128x128.
+    //
     // The file path is relative to the 'plugins/Denizen/images/' folder.
+    // Instead of a local file path, an http(s) URL can be used, which will automatically download the image from the URL given.
+    // If the file path points to a .gif, the map will automatically be animated.
+    //
     // Use escaping to let the image and text arguments have tags based on the player viewing the map.
+    //
     // Custom maps will persist over restarts using the 'maps.yml' save file in the Denizen plugins folder.
     //
     // @Tags

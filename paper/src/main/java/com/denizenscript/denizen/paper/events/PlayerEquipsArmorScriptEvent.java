@@ -7,10 +7,12 @@ import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 
@@ -119,8 +121,21 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
         return super.getContext(name);
     }
 
+    public String simpleComparisonString(ItemStack stack) {
+        if (stack == null) {
+            return "null";
+        }
+        stack = stack.clone();
+        stack.setAmount(1);
+        stack.setDurability((short) 0);
+        return CoreUtilities.toLowerCase(new ItemTag(stack).identify());
+    }
+
     @EventHandler
     public void armorChangeEvent(PlayerArmorChangeEvent event) {
+        if (simpleComparisonString(event.getOldItem()).equals(simpleComparisonString(event.getNewItem()))) {
+            return;
+        }
         newItem = new ItemTag(event.getNewItem());
         oldItem = new ItemTag(event.getOldItem());
         slot = event.getSlotType();
