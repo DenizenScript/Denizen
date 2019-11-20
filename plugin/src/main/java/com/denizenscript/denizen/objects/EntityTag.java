@@ -2843,7 +2843,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         if (mechanism.matches("passengers")) {
             entity.eject();
             for (EntityTag ent : mechanism.valueAsType(ListTag.class).filter(EntityTag.class, mechanism.context)) {
-                if (ent.isSpawned() && comparesTo(ent) != 1) {
+                if (comparesTo(ent) == 1) {
+                    continue;
+                }
+                if (!ent.isSpawned()) {
+                    ent.spawnAt(getLocation());
+                }
+                if (ent.isSpawned()) {
                     entity.addPassenger(ent.getBukkitEntity());
                 }
             }
@@ -2860,7 +2866,14 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <EntityTag.empty>
         // -->
         if (mechanism.matches("passenger") && mechanism.requireObject(EntityTag.class)) {
-            entity.setPassenger(mechanism.valueAsType(EntityTag.class).getBukkitEntity());
+            EntityTag ent = mechanism.valueAsType(EntityTag.class);
+            if (!ent.isSpawned()) {
+                ent.spawnAt(getLocation());
+            }
+            entity.eject();
+            if (ent.isSpawned()) {
+                entity.addPassenger(ent.getBukkitEntity());
+            }
         }
 
         // <--[mechanism]
