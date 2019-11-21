@@ -9,8 +9,12 @@ import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.tags.TagContext;
 
 public class BukkitTagContext extends TagContext {
-    public final PlayerTag player;
-    public final NPCTag npc;
+    public PlayerTag player;
+    public NPCTag npc;
+
+    public BukkitTagContext(BukkitTagContext copyFrom) {
+        this(copyFrom.player, copyFrom.npc, copyFrom.instant, copyFrom.entry, copyFrom.debug, copyFrom.script);
+    }
 
     public BukkitTagContext(PlayerTag player, NPCTag npc, ScriptTag script) {
         super(false, script == null || script.getContainer().shouldDebug(), null, script);

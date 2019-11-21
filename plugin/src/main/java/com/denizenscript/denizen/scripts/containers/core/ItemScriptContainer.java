@@ -174,6 +174,10 @@ public class ItemScriptContainer extends ScriptContainer {
         if (context == null) {
             context = new BukkitTagContext(null, null, new ScriptTag(this));
         }
+        else {
+            context = new BukkitTagContext(context);
+            context.script = new ScriptTag(this);
+        }
         // Try to use this script to make an item.
         ItemTag stack = null;
         isProcessing = true;
