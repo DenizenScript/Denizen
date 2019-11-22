@@ -148,6 +148,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
             }
             CuboidTag toReturn = new CuboidTag();
             String worldName = subStrs.get(0);
+            if (worldName.startsWith("w@")) {
+                worldName = worldName.substring("w@".length());
+            }
             try {
                 for (int i = 0; i < subStrs.size() - 1; i += 6) {
                     LocationTag locationOne = new LocationTag(parseRoundDouble(subStrs.get(i + 1)),
