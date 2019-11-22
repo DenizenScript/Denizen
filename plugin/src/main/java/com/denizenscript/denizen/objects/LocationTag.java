@@ -2125,6 +2125,18 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
+        // @attribute <LocationTag.xyz>
+        // @returns ElementTag
+        // @description
+        // Returns the location in "x,y,z" format.
+        // For example: 1,2,3
+        // World, yaw, and pitch will be excluded from this output.
+        // -->
+        registerTag("xyz", (attribute, object) -> {
+            return new ElementTag(object.getX() + "," + object.getY() + "," + object.getZ());
+        });
+
+        // <--[tag]
         // @attribute <LocationTag.with_x[<number>]>
         // @returns LocationTag
         // @description
