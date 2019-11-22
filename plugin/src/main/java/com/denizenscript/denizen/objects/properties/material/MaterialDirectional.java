@@ -95,17 +95,19 @@ public class MaterialDirectional implements Property {
         // Output is a direction name like "NORTH", or an axis like "X".
         // -->
         if (attribute.startsWith("direction")) {
-            String dirName;
-            if (isOrientable()) {
-                dirName = getOrientable().getAxis().name();
-            }
-            else {
-                dirName = getDirectional().getFacing().name();
-            }
-            return new ElementTag(dirName).getObjectAttribute(attribute.fulfill(1));
+            return new ElementTag(getDirectionName()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;
+    }
+
+    public String getDirectionName() {
+        if (isOrientable()) {
+            return getOrientable().getAxis().name();
+        }
+        else {
+            return getDirectional().getFacing().name();
+        }
     }
 
     public boolean isOrientable() {
@@ -126,7 +128,7 @@ public class MaterialDirectional implements Property {
 
     @Override
     public String getPropertyString() {
-        return getDirectional().getFacing().name();
+        return getDirectionName();
     }
 
     @Override
