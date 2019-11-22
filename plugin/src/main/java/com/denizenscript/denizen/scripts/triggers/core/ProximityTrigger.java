@@ -8,7 +8,6 @@ import com.denizenscript.denizen.npc.traits.TriggerTrait;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
-import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
@@ -294,13 +293,13 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
     @EventHandler // TODO: Does this have any point?
     public void checkMaxProximities(ScriptReloadEvent event) {
 
-        for (String script : ScriptRegistry._getScriptNames()) {
+        //for (String script : ScriptRegistry._getScriptNames()) {
             //
             // TODO: Check interact scripts for proximity triggers and ranges.
             // Find largest number, add 10, and set it as maxProximityRange.
             // For now, let's assume 25.
             //
-        }
+        //}
     }
 
     private static Map<UUID, Set<Integer>> proximityTracker = new ConcurrentHashMap<>(8, 0.9f, 1);

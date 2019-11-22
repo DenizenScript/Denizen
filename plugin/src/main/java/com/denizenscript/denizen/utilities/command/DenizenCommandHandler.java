@@ -388,7 +388,7 @@ public class DenizenCommandHandler {
             filter = args.getFlag("filter");
         }
         // Get script names from the scripts.yml in memory
-        Set<String> scripts = ScriptRegistry._getScriptNames();
+        Set<String> scripts = ScriptRegistry.scriptContainers.keySet();
         // New Paginator to display script names
         Paginator paginator = new Paginator().header("Scripts");
         paginator.addLine("<e>Key: <a>Type  <b>Name");
