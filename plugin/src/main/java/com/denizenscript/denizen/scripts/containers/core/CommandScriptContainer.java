@@ -124,31 +124,31 @@ public class CommandScriptContainer extends ScriptContainer {
     }
 
     public String getCommandName() {
-        return CoreUtilities.toLowerCase(getString("NAME", null));
+        return CoreUtilities.toLowerCase(getString("name", null));
     }
 
     public String getDescription() {
         // Replace new lines with a space and a new line, to allow full brief descriptions in /help.
         // Without this, "line<n>line"s brief description would be "lin", because who doesn't like
         // random cutoff-
-        return TagManager.tag((getString("DESCRIPTION", "")).replace("\n", " \n"), new BukkitTagContext(null, null, new ScriptTag(this)));
+        return TagManager.tag((getString("description", "")).replace("\n", " \n"), new BukkitTagContext(null, null, new ScriptTag(this)));
     }
 
     public String getUsage() {
-        return TagManager.tag((getString("USAGE", "")), new BukkitTagContext(null, null, new ScriptTag(this)));
+        return TagManager.tag((getString("usage", "")), new BukkitTagContext(null, null, new ScriptTag(this)));
     }
 
     public List<String> getAliases() {
-        List<String> aliases = getStringList("ALIASES");
+        List<String> aliases = getStringList("aliases");
         return aliases != null ? aliases : new ArrayList<>();
     }
 
     public String getPermission() {
-        return getString("PERMISSION");
+        return getString("permission");
     }
 
     public String getPermissionMessage() {
-        return getString("PERMISSION MESSAGE");
+        return getString("permission message");
     }
 
     public ScriptQueue runCommandScript(PlayerTag player, NPCTag npc, Map<String, ObjectTag> context) {
@@ -164,7 +164,7 @@ public class CommandScriptContainer extends ScriptContainer {
     }
 
     public boolean runAllowedHelpProcedure(PlayerTag player, NPCTag npc, Map<String, ObjectTag> context) {
-        List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(player, npc), "ALLOWED HELP");
+        List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(player, npc), "allowed help");
 
         ScriptQueue queue = new InstantQueue(getName()).addEntries(entries);
         if (context != null) {
@@ -177,7 +177,7 @@ public class CommandScriptContainer extends ScriptContainer {
     }
 
     public List<String> runTabCompleteProcedure(PlayerTag player, NPCTag npc, Map<String, ObjectTag> context) {
-        List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(player, npc), "TAB COMPLETE");
+        List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(player, npc), "tab complete");
 
         ScriptQueue queue = new InstantQueue(getName()).addEntries(entries);
         if (context != null) {
@@ -195,10 +195,10 @@ public class CommandScriptContainer extends ScriptContainer {
     }
 
     public boolean hasAllowedHelpProcedure() {
-        return contains("ALLOWED HELP");
+        return contains("allowed help");
     }
 
     public boolean hasTabCompleteProcedure() {
-        return contains("TAB COMPLETE");
+        return contains("tab complete");
     }
 }

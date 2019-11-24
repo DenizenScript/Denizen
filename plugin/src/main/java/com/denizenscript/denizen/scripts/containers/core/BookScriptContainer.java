@@ -66,26 +66,26 @@ public class BookScriptContainer extends ScriptContainer {
         // Get current ItemMeta from the book
         BookMeta bookInfo = (BookMeta) book.getItemStack().getItemMeta();
 
-        if (contains("TITLE")) {
-            String title = getString("TITLE");
+        if (contains("title")) {
+            String title = getString("title");
             title = TagManager.tag(title, context);
             bookInfo.setTitle(title);
         }
 
-        if (contains("SIGNED")) {
-            if (getString("SIGNED").equalsIgnoreCase("false")) {
+        if (contains("signed")) {
+            if (getString("signed").equalsIgnoreCase("false")) {
                 book.getItemStack().setType(MaterialCompat.WRITABLE_BOOK);
             }
         }
 
-        if (contains("AUTHOR")) {
-            String author = getString("AUTHOR");
+        if (contains("author")) {
+            String author = getString("author");
             author = TagManager.tag(author, context);
             bookInfo.setAuthor(author);
         }
 
-        if (contains("TEXT")) {
-            List<String> pages = getStringList("TEXT");
+        if (contains("text")) {
+            List<String> pages = getStringList("text");
 
             for (String page : pages) {
                 page = TagManager.tag(page, context);

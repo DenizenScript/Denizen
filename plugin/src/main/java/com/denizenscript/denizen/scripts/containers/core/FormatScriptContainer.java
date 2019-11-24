@@ -36,7 +36,7 @@ public class FormatScriptContainer extends ScriptContainer {
     }
 
     public String getFormat() {
-        return getString("FORMAT", "<text>");
+        return getString("format", "<text>");
     }
 
     public String getFormattedText(ScriptEntry entry) {

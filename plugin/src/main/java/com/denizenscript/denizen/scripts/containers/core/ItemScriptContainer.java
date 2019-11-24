@@ -183,8 +183,8 @@ public class ItemScriptContainer extends ScriptContainer {
         isProcessing = true;
         try {
             // Check validity of material
-            if (contains("MATERIAL")) {
-                String material = TagManager.tag(getString("MATERIAL"), context);
+            if (contains("material")) {
+                String material = TagManager.tag(getString("material"), context);
                 if (material.startsWith("m@")) {
                     material = material.substring(2);
                 }
@@ -197,8 +197,8 @@ public class ItemScriptContainer extends ScriptContainer {
             }
 
             // Handle listed mechanisms
-            if (contains("MECHANISMS")) {
-                YamlConfiguration mechs = getConfigurationSection("MECHANISMS");
+            if (contains("mechanisms")) {
+                YamlConfiguration mechs = getConfigurationSection("mechanisms");
                 for (StringHolder key : mechs.getKeys(false)) {
                     String val;
                     if (mechs.isList(key.str)) {
@@ -219,23 +219,23 @@ public class ItemScriptContainer extends ScriptContainer {
             List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
 
             // Set Display Name
-            if (contains("DISPLAY NAME")) {
-                String displayName = TagManager.tag(getString("DISPLAY NAME"), context);
+            if (contains("display name")) {
+                String displayName = TagManager.tag(getString("display name"), context);
                 meta.setDisplayName(displayName);
             }
 
             // Set if the object is bound to the player
-            if (contains("BOUND")) {
+            if (contains("bound")) {
                 Deprecations.boundWarning.warn(context);
-                bound = Boolean.valueOf(TagManager.tag(getString("BOUND"), context));
+                bound = Boolean.valueOf(TagManager.tag(getString("bound"), context));
             }
 
             // Set Lore
-            if (contains("LORE")) {
+            if (contains("lore")) {
 
-                for (String l : getStringList("LORE")) {
-                    l = TagManager.tag(l, context);
-                    lore.add(l);
+                for (String line : getStringList("lore")) {
+                    line = TagManager.tag(line, context);
+                    lore.add(line);
                 }
             }
 
@@ -243,14 +243,14 @@ public class ItemScriptContainer extends ScriptContainer {
             stack.getItemStack().setItemMeta(meta);
 
             // Set Durability
-            if (contains("DURABILITY")) {
-                short durability = Short.valueOf(getString("DURABILITY"));
+            if (contains("durability")) {
+                short durability = Short.valueOf(getString("durability"));
                 stack.setDurability(durability);
             }
 
             // Set Enchantments
-            if (contains("ENCHANTMENTS")) {
-                for (String enchantment : getStringList("ENCHANTMENTS")) {
+            if (contains("enchantments")) {
+                for (String enchantment : getStringList("enchantments")) {
 
                     enchantment = TagManager.tag(enchantment, context);
                     try {
@@ -283,15 +283,15 @@ public class ItemScriptContainer extends ScriptContainer {
             }
 
             // Set Color
-            if (contains("COLOR")) {
-                String color = TagManager.tag(getString("COLOR"), context);
+            if (contains("color")) {
+                String color = TagManager.tag(getString("color"), context);
                 LeatherColorer.colorArmor(stack, color);
             }
 
             // Set Book
-            if (contains("BOOK")) {
+            if (contains("book")) {
                 BookScriptContainer book = ScriptRegistry
-                        .getScriptContainer(TagManager.tag(getString("BOOK"),
+                        .getScriptContainer(TagManager.tag(getString("book"),
                                 context).replace("s@", ""));
 
                 stack = book.writeBookTo(stack, context);

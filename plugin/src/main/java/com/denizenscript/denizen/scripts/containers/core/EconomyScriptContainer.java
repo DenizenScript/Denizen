@@ -324,7 +324,7 @@ public class EconomyScriptContainer extends ScriptContainer {
     }
 
     public ServicePriority getPriority() {
-        String prioString = CoreUtilities.toLowerCase(getString("PRIORITY", "normal"));
+        String prioString = CoreUtilities.toLowerCase(getString("priority", "normal"));
         // Enumeration name casing is weird for ServicePriority.
         for (ServicePriority prio : ServicePriority.values()) {
             if (CoreUtilities.toLowerCase(prio.name()).equals(prioString)) {

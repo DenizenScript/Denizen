@@ -45,8 +45,8 @@ public class InteractScriptHelper {
         // Get list of interact scripts from the assignment script.
         // Note: this list includes the # priorities that prefix the script names.
         List<String> assignedScripts = new ArrayList<>();
-        if (assignmentScript.contains("INTERACT SCRIPTS")) {
-            assignedScripts = assignmentScript.getStringList("INTERACT SCRIPTS");
+        if (assignmentScript.contains("interact scripts")) {
+            assignedScripts = assignmentScript.getStringList("interact scripts");
         }
 
         // No debug necessary if there are no Interact Scripts specified in this Assignment.

@@ -66,8 +66,8 @@ public class EntityScriptContainer extends ScriptContainer {
     public EntityTag getEntityFrom(PlayerTag player, NPCTag npc) {
         EntityTag entity = null;
         try {
-            if (contains("ENTITY_TYPE")) {
-                String entityType = TagManager.tag((getString("ENTITY_TYPE", "")), new BukkitTagContext(player, npc, new ScriptTag(this)));
+            if (contains("entity_type")) {
+                String entityType = TagManager.tag((getString("entity_type", "")), new BukkitTagContext(player, npc, new ScriptTag(this)));
                 entity = EntityTag.valueOf(entityType);
             }
             else {
