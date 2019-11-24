@@ -1,10 +1,12 @@
 package com.denizenscript.denizen.utilities.implementation;
 
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.tags.TagContext;
+import org.bukkit.entity.Entity;
 
 public class BukkitScriptEntryData extends ScriptEntryData {
     private PlayerTag player;
@@ -13,6 +15,22 @@ public class BukkitScriptEntryData extends ScriptEntryData {
     public BukkitScriptEntryData(PlayerTag player, NPCTag npc) {
         this.player = player;
         this.npc = npc;
+    }
+
+    public BukkitScriptEntryData(EntityTag entity) {
+        if (entity == null) {
+            return;
+        }
+        if (entity.isCitizensNPC()) {
+            this.npc = entity.getDenizenNPC();
+        }
+        if (entity.isPlayer()) {
+            this.player = entity.getDenizenPlayer();
+        }
+    }
+
+    public BukkitScriptEntryData(Entity entity) {
+        this(entity == null ? null : new EntityTag(entity));
     }
 
     public PlayerTag getPlayer() {
