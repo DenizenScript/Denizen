@@ -13,15 +13,16 @@ public class ChunkLoadScriptEvent extends BukkitScriptEvent implements Listener 
 
     // <--[event]
     // @Events
-    // chunk loads for the first time
+    // chunk loads (for the first time)
     //
-    // @Regex ^on chunk loads for the first time$
+    // @Regex ^on chunk loads( for the first time)?$
     //
     // @Group World
     //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
-    // @Warning This event will fire *extremely* rapidly and often!
+    // @Warning This event will fire *extremely* rapidly and often when using 'for the first time'.
+    // When not using that, it will fire so rapidly that lag is almost guaranteed. Use with maximum caution.
     //
     // @Triggers when a new chunk is loaded
     //
@@ -41,11 +42,14 @@ public class ChunkLoadScriptEvent extends BukkitScriptEvent implements Listener 
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("chunk loads for the first time");
+        return path.eventLower.startsWith("chunk loads");
     }
 
     @Override
     public boolean matches(ScriptPath path) {
+        if (path.eventArgLowerAt(2).equals("for") && !event.isNewChunk()) {
+            return false;
+        }
         if (!runInCheck(path, chunk.getCenter())) {
             return false;
         }
@@ -71,9 +75,6 @@ public class ChunkLoadScriptEvent extends BukkitScriptEvent implements Listener 
 
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent event) {
-        if (!event.isNewChunk()) {
-            return;
-        }
         chunk = new ChunkTag(event.getChunk());
         this.event = event;
         fire(event);
