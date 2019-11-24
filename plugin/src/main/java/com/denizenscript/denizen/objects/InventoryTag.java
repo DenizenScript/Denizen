@@ -2362,7 +2362,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // <--[tag]
         // @attribute <InventoryTag.input>
         // @returns ItemTag
-        // @mechanism smelting
+        // @mechanism input
         // @description
         // Returns the item currently in the smelting slot of a furnace inventory, or the ingredient slot of a brewing stand inventory.
         // -->
@@ -2474,33 +2474,37 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @name fuel
         // @input ItemTag
         // @description
-        // Sets the item in the fuel slot of this furnace inventory.
+        // Sets the item in the fuel slot of this furnace or brewing stand inventory.
         // @tags
         // <InventoryTag.fuel>
         // -->
         if (mechanism.matches("fuel") && mechanism.requireObject(ItemTag.class)) {
             if (inventory instanceof FurnaceInventory) {
-                FurnaceInventory furnaceInventory = (FurnaceInventory) inventory;
-                furnaceInventory.setFuel(mechanism.valueAsType(ItemTag.class).getItemStack());
+                ((FurnaceInventory) inventory).setFuel(mechanism.valueAsType(ItemTag.class).getItemStack());
+            }
+            else if (inventory instanceof BrewerInventory) {
+                ((BrewerInventory) inventory).setFuel(mechanism.valueAsType(ItemTag.class).getItemStack());
             }
             else {
-                Debug.echoError("Inventory is not a furnace inventory, cannot set fuel.");
+                Debug.echoError("Inventory is not a furnace or brewing stand inventory, cannot set fuel.");
             }
         }
 
         // <--[mechanism]
         // @object InventoryTag
-        // @name smelting
+        // @name input
         // @input ItemTag
         // @description
-        // Sets the item in the smelting slot of this furnace inventory.
+        // Sets the item in the smelting slot of a furnace inventory, or ingredient slot of a brewing stand inventory.
         // @tags
-        // <InventoryTag.smelting>
+        // <InventoryTag.input>
         // -->
-        if (mechanism.matches("smelting") && mechanism.requireObject(ItemTag.class)) {
+        if ((mechanism.matches("input") || mechanism.matches("smelting")) && mechanism.requireObject(ItemTag.class)) {
             if (inventory instanceof FurnaceInventory) {
-                FurnaceInventory furnaceInventory = (FurnaceInventory) inventory;
-                furnaceInventory.setSmelting(mechanism.valueAsType(ItemTag.class).getItemStack());
+                ((FurnaceInventory) inventory).setSmelting(mechanism.valueAsType(ItemTag.class).getItemStack());
+            }
+            else if (inventory instanceof BrewerInventory) {
+                ((BrewerInventory) inventory).setIngredient(mechanism.valueAsType(ItemTag.class).getItemStack());
             }
             else {
                 Debug.echoError("Inventory is not a furnace inventory, cannot set smelting.");
