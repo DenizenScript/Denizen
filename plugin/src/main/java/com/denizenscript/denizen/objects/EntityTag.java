@@ -1410,6 +1410,24 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
+        // @attribute <EntityTag.script>
+        // @returns ElementTag
+        // @group data
+        // @description
+        // Returns the entity script that spawned this entity, if any.
+        // -->
+        registerTag("script", (attribute, object) -> {
+            if (object.entityScript == null) {
+                return null;
+            }
+            ScriptTag tag = new ScriptTag(object.entityScript);
+            if (tag.isValid()) {
+                return tag;
+            }
+            return null;
+        });
+
+        // <--[tag]
         // @attribute <EntityTag.scriptname>
         // @returns ElementTag
         // @group data
