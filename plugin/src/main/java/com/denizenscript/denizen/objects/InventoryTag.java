@@ -783,6 +783,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         if (inventory instanceof FurnaceInventory) {
             return new ItemTag(((FurnaceInventory) inventory).getFuel());
         }
+        if (inventory instanceof BrewerInventory) {
+            return new ItemTag(((BrewerInventory) inventory).getFuel());
+        }
         return null;
     }
 
@@ -2343,7 +2346,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @returns ItemTag
         // @mechanism fuel
         // @description
-        // Returns the item currently in the fuel section of a furnace inventory.
+        // Returns the item currently in the fuel section of a furnace or brewing stand inventory.
         // -->
         registerTag("fuel", (attribute, object) -> {
             ItemTag fuel = object.getFuel();
