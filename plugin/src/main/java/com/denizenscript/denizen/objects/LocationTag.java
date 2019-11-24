@@ -1023,7 +1023,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 return null;
             }
             ObjectTag obj = ElementTag.handleNull(object.identify() + ".inventory", object.getInventory(), "InventoryTag", attribute.hasAlternative());
-            return obj == null ? null : obj;
+            return obj;
         });
 
         // <--[tag]
@@ -2726,7 +2726,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @returns ElementTag(Number)
         // @mechanism LocationTag.brewing_fuel_level
         // @description
-        // Returns the level of fuel a brewing stand has.
+        // Returns the level of fuel a brewing stand has. Each unit of fuel can power one brewing operation.
         // -->
         registerTag("brewing_fuel_level", (attribute, object) -> {
             return new ElementTag(((BrewingStand) object.getBlockStateForTag(attribute)).getFuelLevel());

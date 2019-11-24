@@ -1,0 +1,115 @@
+package com.denizenscript.denizen.events.block;
+
+import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.BrewingStandFuelEvent;
+
+public class BrewingStandFueledScriptEvent extends BukkitScriptEvent implements Listener {
+
+    // <--[event]
+    // @Events
+    // brewing stand fueled (with <item>)
+    //
+    // @Regex ^on brewing stand fueled( with [^\s]+)?$
+    //
+    // @Group Block
+    //
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    //
+    // @Cancellable true
+    //
+    // @Triggers when a brewing stand receives an item to use as fuel.
+    //
+    // @Context
+    // <context.location> returns the LocationTag of the brewing stand.
+    // <context.item> returns the ItemTag being inserted as fuel.
+    // <context.fuel_power> returns the fuel power level being added. Each unit of fuel can power one brewing operation.
+    // <context.consuming> returns a boolean indicating whether the fuel item will be consumed.
+    //
+    // @Determine
+    // "FUEL_POWER:" + ElementTag(Number) to set the fuel power level to be added.
+    // "CONSUMING" to indicate that the fuel item should be consumed.
+    // "NOT_CONSUMING" to indicate that the fuel item should not be consumed.
+    //
+    // -->
+
+    public BrewingStandFueledScriptEvent() {
+        instance = this;
+    }
+
+    public static BrewingStandFueledScriptEvent instance;
+    public LocationTag location;
+    public ItemTag item;
+    public BrewingStandFuelEvent event;
+
+    @Override
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.startsWith("brewing stand fueled");
+    }
+
+    @Override
+    public boolean matches(ScriptPath path) {
+        if (!runInCheck(path, location)) {
+            return false;
+        }
+        if (path.eventArgLowerAt(3).equals("with") && !tryItem(item, path.eventArgLowerAt(4))) {
+            return false;
+        }
+        return super.matches(path);
+    }
+
+    @Override
+    public String getName() {
+        return "BrewingStandFueled";
+    }
+
+    @Override
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        if (determinationObj instanceof ElementTag) {
+            String val = ((ElementTag) determinationObj).asString();
+            if (val.startsWith("fuel_power:")) {
+                event.setFuelPower(Integer.parseInt(val.substring("fuel_power:".length())));
+                return true;
+            }
+            else if (val.equalsIgnoreCase("consuming")) {
+                event.setConsuming(true);
+                return true;
+            }
+            else if (val.equalsIgnoreCase("not_consuming")) {
+                event.setConsuming(false);
+                return true;
+            }
+        }
+        return super.applyDetermination(path, determinationObj);
+    }
+
+    @Override
+    public ObjectTag getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("item")) {
+            return item;
+        }
+        else if (name.equals("fuel_power")) {
+            return new ElementTag(event.getFuelPower());
+        }
+        else if (name.equals("consuming")) {
+            return new ElementTag(event.isConsuming());
+        }
+        return super.getContext(name);
+    }
+
+    @EventHandler
+    public void onBrewingStandFueled(BrewingStandFuelEvent event) {
+        location = new LocationTag(event.getBlock().getLocation());
+        item = new ItemTag(event.getFuel());
+        this.event = event;
+        fire(event);
+    }
+}
