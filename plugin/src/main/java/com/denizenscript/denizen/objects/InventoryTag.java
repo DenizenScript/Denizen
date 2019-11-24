@@ -789,9 +789,12 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         return null;
     }
 
-    public ItemTag getSmelting() {
+    public ItemTag getInput() {
         if (inventory instanceof FurnaceInventory) {
             return new ItemTag(((FurnaceInventory) inventory).getSmelting());
+        }
+        if (inventory instanceof BrewerInventory) {
+            return new ItemTag(((BrewerInventory) inventory).getIngredient());
         }
         return null;
     }
@@ -2357,19 +2360,20 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <InventoryTag.smelting>
+        // @attribute <InventoryTag.input>
         // @returns ItemTag
         // @mechanism smelting
         // @description
-        // Returns the item currently in the smelting section of a furnace inventory.
+        // Returns the item currently in the smelting slot of a furnace inventory, or the ingredient slot of a brewing stand inventory.
         // -->
-        registerTag("smelting", (attribute, object) -> {
-            ItemTag smelting = object.getSmelting();
+        registerTag("input", (attribute, object) -> {
+            ItemTag smelting = object.getInput();
             if (smelting == null) {
                 return null;
             }
             return smelting;
         });
+        registerTag("smelting", tagProcessor.registeredObjectTags.get("input"));
 
         // <--[tag]
         // @attribute <InventoryTag.type>
