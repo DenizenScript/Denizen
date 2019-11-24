@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.events.world;
+package com.denizenscript.denizen.events.core;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;

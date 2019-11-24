@@ -2,6 +2,7 @@ package com.denizenscript.denizen.events;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.block.*;
+import com.denizenscript.denizen.events.core.CommandScriptEvent;
 import com.denizenscript.denizen.events.core.ListPingScriptEvent;
 import com.denizenscript.denizen.events.core.ServerPrestartScriptEvent;
 import com.denizenscript.denizen.events.core.TabCompleteScriptEvent;

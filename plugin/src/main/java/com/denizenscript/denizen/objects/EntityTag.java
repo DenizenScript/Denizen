@@ -1433,6 +1433,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @group data
         // @description
         // Returns the name of the entity script that spawned this entity, if any.
+        // Generally prefer <@link tag entity.script>, but this tag may be useful if an entity script was renamed after this entity was spawned.
         // -->
         registerTag("scriptname", (attribute, object) -> {
             if (object.entityScript == null) {

@@ -10,6 +10,7 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.*;
@@ -17,6 +18,7 @@ import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.IllegalPluginAccessException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -115,6 +117,20 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // Monitor is executed last, and is intended to only be used when reading the results of an event but not changing it.
     // The default priority is "normal".
     // -->
+
+    @Override
+    public void fire() {
+        if (!Bukkit.isPrimaryThread()) {
+            BukkitScriptEvent altEvent = (BukkitScriptEvent) clone();
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    altEvent.fire();
+                }
+            }.runTask(DenizenAPI.getCurrentInstance());
+        }
+        super.fire();
+    }
 
     public void fire(Event event) {
         if (event instanceof Cancellable) {
