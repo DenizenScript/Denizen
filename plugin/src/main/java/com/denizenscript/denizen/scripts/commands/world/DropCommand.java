@@ -42,6 +42,7 @@ public class DropCommand extends AbstractCommand {
     // @Tags
     // <EntityTag.item>
     // <entry[saveName].dropped_entities> returns a list of entities that were dropped.
+    // <entry[saveName].dropped_entity> returns a single entity that was dropped (if only one).
     //
     // @Usage
     // Use to drop some loot around the player.
@@ -212,6 +213,8 @@ public class DropCommand extends AbstractCommand {
 
         // Add entities to context so that the specific entities dropped can be fetched.
         scriptEntry.addObject("dropped_entities", entityList);
+            scriptEntry.addObject("dropped_entity", entityList.get(0));
+        }
 
     }
 }
