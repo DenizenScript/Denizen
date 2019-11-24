@@ -103,8 +103,11 @@ public class MaterialTag implements ObjectTag, Adjustable {
         }
         int data = 0;
         if (index >= 0) {
-            data = ArgumentHelper.getIntegerFrom(string.substring(index + 1));
-            string = string.substring(0, index);
+            String dataStr = string.substring(index + 1);
+            if (ArgumentHelper.matchesInteger(dataStr)) {
+                data = Integer.parseInt(dataStr);
+                string = string.substring(0, index);
+            }
         }
         Material m = Material.getMaterial(string);
         if (m == null && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
@@ -142,15 +145,17 @@ public class MaterialTag implements ObjectTag, Adjustable {
                 return OldMaterialsHelper.getMaterialFrom(mat.material, data);
             }
         }
-        int matid = ArgumentHelper.getIntegerFrom(string);
-        if (matid != 0) {
-            // It's always an error (except in the 'matches' call) to use a material ID number instead of a name.
-            if (context != noDebugContext) {
-                Deprecations.materialIdsSuggestNames.warn(context);
-            }
-            m = OldMaterialsHelper.getLegacyMaterial(matid);
-            if (m != null) {
-                return OldMaterialsHelper.getMaterialFrom(m, data);
+        if (ArgumentHelper.matchesInteger(string)) {
+            int matid = Integer.parseInt(string);
+            if (matid != 0) {
+                // It's always an error (except in the 'matches' call) to use a material ID number instead of a name.
+                if (context != noDebugContext) {
+                    Deprecations.materialIdsSuggestNames.warn(context);
+                }
+                m = OldMaterialsHelper.getLegacyMaterial(matid);
+                if (m != null) {
+                    return OldMaterialsHelper.getMaterialFrom(m, data);
+                }
             }
         }
         return null;
@@ -164,8 +169,11 @@ public class MaterialTag implements ObjectTag, Adjustable {
         }
         int data = 0;
         if (index >= 0) {
-            data = ArgumentHelper.getIntegerFrom(string.substring(index + 1));
-            string = string.substring(0, index);
+            String dataStr = string.substring(index + 1);
+            if (ArgumentHelper.matchesInteger(dataStr)) {
+                data = Integer.parseInt(dataStr);
+                string = string.substring(0, index);
+            }
         }
         Material m = Material.getMaterial(string);
         if (m != null) {

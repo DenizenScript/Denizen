@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.objects.notable.NotableManager;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -89,10 +90,17 @@ public class EllipsoidTag implements ObjectTag, Notable {
             return null;
         }
 
-        LocationTag location = new LocationTag(world.getWorld(),
-                ArgumentHelper.getDoubleFrom(split.get(0)), ArgumentHelper.getDoubleFrom(split.get(1)), ArgumentHelper.getDoubleFrom(split.get(2)));
-        LocationTag size = new LocationTag(null, ArgumentHelper.getDoubleFrom(split.get(4)),
-                ArgumentHelper.getDoubleFrom(split.get(5)), ArgumentHelper.getDoubleFrom(split.get(6)));
+        for (int i = 0; i < 7; i++) {
+            if (i != 3 && !ArgumentHelper.matchesDouble(split.get(i))) {
+                if (context == null || context.debug) {
+                    Debug.echoError("EllipsoidTag input is not a valid decimal number: " + split.get(i));
+                    return null;
+                }
+            }
+        }
+
+        LocationTag location = new LocationTag(world.getWorld(), Double.parseDouble(split.get(0)), Double.parseDouble(split.get(1)), Double.parseDouble(split.get(2)));
+        LocationTag size = new LocationTag(null, Double.parseDouble(split.get(4)), Double.parseDouble(split.get(5)), Double.parseDouble(split.get(6)));
         return new EllipsoidTag(location, size);
     }
 
@@ -105,7 +113,7 @@ public class EllipsoidTag implements ObjectTag, Notable {
     public static boolean matches(String arg) {
 
         try {
-            return EllipsoidTag.valueOf(arg) != null;
+            return EllipsoidTag.valueOf(arg, CoreUtilities.noDebugContext) != null;
         }
         catch (Exception e) {
             return false;

@@ -378,7 +378,11 @@ public class SidebarCommand extends AbstractCommand {
                     }
                     try {
                         for (int i = 0; i < value.size(); i++) {
-                            int score = ArgumentHelper.getIntegerFrom(scores.get(i));
+                            if (!ArgumentHelper.matchesInteger(scores.get(i))) {
+                                Debug.echoError("Sidebar command scores input contains not-a-valid-number: " + scores.get(i));
+                                return;
+                            }
+                            int score = Integer.parseInt(scores.get(i));
                             if (hasScoreAlready(current, score)) {
                                 for (Sidebar.SidebarLine line : current) {
                                     if (line.score == score) {

@@ -96,7 +96,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         string = string.toUpperCase().replace("N@", "");
         NPC npc;
         if (ArgumentHelper.matchesInteger(string)) {
-            int id = ArgumentHelper.getIntegerFrom(string);
+            int id = Integer.parseInt(string);
 
             npc = CitizensAPI.getNPCRegistry().getById(id);
             if (npc != null) {
@@ -119,7 +119,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         string = string.toUpperCase().replace("N@", "");
         NPC npc;
         if (ArgumentHelper.matchesInteger(string)) {
-            npc = CitizensAPI.getNPCRegistry().getById(ArgumentHelper.getIntegerFrom(string));
+            npc = CitizensAPI.getNPCRegistry().getById(Integer.parseInt(string));
             if (npc != null) {
                 return true;
             }

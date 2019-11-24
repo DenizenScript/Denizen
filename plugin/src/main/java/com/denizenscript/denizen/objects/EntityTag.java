@@ -978,7 +978,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                         // Get special data value from data2 if it is a valid integer
                         if (data2 != null && ArgumentHelper.matchesInteger(data2)) {
 
-                            materialData = (byte) ArgumentHelper.getIntegerFrom(data2);
+                            materialData = (byte) Integer.parseInt(data2);
                         }
 
                         // This is currently the only way to spawn a falling block

@@ -76,8 +76,8 @@ public class DenizenMapManager {
                 String xTag = objectsData.getString(objectKey + ".x");
                 String yTag = objectsData.getString(objectKey + ".y");
                 String visibilityTag = objectsData.getString(objectKey + ".visibility");
-                boolean debug = ArgumentHelper.getBooleanFrom(objectsData.getString(objectKey + ".debug", "false"));
-                boolean worldC = ArgumentHelper.getBooleanFrom(objectsData.getString(objectKey + ".world_coordinates", "false"));
+                boolean debug = objectsData.getString(objectKey + ".debug", "false").equalsIgnoreCase("true");
+                boolean worldC = objectsData.getString(objectKey + ".world_coordinates", "false").equalsIgnoreCase("true");
                 MapObject object = null;
                 if (type.equals("CURSOR")) {
                     object = new MapCursor(xTag, yTag, visibilityTag, debug,

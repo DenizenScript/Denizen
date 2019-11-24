@@ -22,7 +22,7 @@ public class MapCursor extends MapObject {
     }
 
     public byte getDirection(PlayerTag player) {
-        return yawToDirection(ArgumentHelper.getDoubleFrom(tag(directionTag, player)));
+        return yawToDirection(Double.parseDouble(tag(directionTag, player)));
     }
 
     public org.bukkit.map.MapCursor.Type getType(PlayerTag player) {

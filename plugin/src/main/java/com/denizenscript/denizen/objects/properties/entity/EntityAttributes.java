@@ -231,14 +231,14 @@ public class EntityAttributes implements Property {
                     Debug.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntity().getType().name());
                     continue;
                 }
-                instance.setBaseValue(ArgumentHelper.getDoubleFrom(subList.get(1)));
+                instance.setBaseValue(Double.parseDouble(subList.get(1)));
                 for (AttributeModifier modifier : instance.getModifiers()) {
                     instance.removeModifier(modifier);
                 }
                 for (int x = 2; x < subList.size(); x += 4) {
                     String slot = subList.get(x + 3).toUpperCase();
                     AttributeModifier modifier = new AttributeModifier(UUID.randomUUID(), EscapeTagBase.unEscape(subList.get(x)),
-                            ArgumentHelper.getDoubleFrom(subList.get(x + 1)), AttributeModifier.Operation.valueOf(subList.get(x + 2).toUpperCase()),
+                            Double.parseDouble(subList.get(x + 1)), AttributeModifier.Operation.valueOf(subList.get(x + 2).toUpperCase()),
                                     slot.equals("ANY") ? null : EquipmentSlot.valueOf(slot));
                     instance.addModifier(modifier);
                 }

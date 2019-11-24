@@ -130,7 +130,13 @@ public class InventoryScriptContainer extends ScriptContainer {
                     Debug.echoError("You can only set the size of chest inventories!");
                 }
                 else {
-                    size = ArgumentHelper.getIntegerFrom(TagManager.tag(getString("size"), context));
+                    String sizeText = TagManager.tag(getString("size"), context);
+                    if (!ArgumentHelper.matchesInteger(sizeText)) {
+                        Debug.echoError("Inventory script '" + getName() + "' has invalid (not-a-number) size value.");
+                    }
+                    else {
+                        size = Integer.parseInt(sizeText);
+                    }
 
                     if (size == 0) {
                         Debug.echoError("Inventory size can't be 0. Assuming default of inventory type...");

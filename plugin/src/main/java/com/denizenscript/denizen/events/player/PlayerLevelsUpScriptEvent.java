@@ -52,12 +52,12 @@ public class PlayerLevelsUpScriptEvent extends BukkitScriptEvent implements List
         String[] data = path.eventArgsLower;
         for (int index = 3; index < data.length; index++) {
             if (data[index].equals("from")) {
-                if (ArgumentHelper.getIntegerFrom(data[index + 1]) != old_level) {
+                if (Integer.parseInt(data[index + 1]) != old_level) {
                     return false;
                 }
             }
             if (data[index].equals("to")) {
-                if (ArgumentHelper.getIntegerFrom(data[index + 1]) != new_level) {
+                if (Integer.parseInt(data[index + 1]) != new_level) {
                     return false;
                 }
             }

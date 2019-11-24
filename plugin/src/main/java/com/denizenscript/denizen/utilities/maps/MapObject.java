@@ -35,12 +35,12 @@ public abstract class MapObject {
     public void update(PlayerTag player, UUID uuid) {
         currentX.put(uuid, getX(player, uuid));
         currentY.put(uuid, getY(player, uuid));
-        currentVisibility.put(uuid, ArgumentHelper.getBooleanFrom(tag(visibilityTag, player)));
+        currentVisibility.put(uuid, tag(visibilityTag, player).equalsIgnoreCase("true"));
     }
 
     public int getX(PlayerTag player, UUID uuid) {
         //if (!currentX.containsKey(uuid)) {
-        int x = (int) ArgumentHelper.getDoubleFrom(tag(xTag, player));
+        int x = (int) Double.parseDouble(tag(xTag, player));
         currentX.put(uuid, x);
         //}
         if (worldCoordinates && lastMap != null) {
@@ -53,7 +53,7 @@ public abstract class MapObject {
 
     public int getY(PlayerTag player, UUID uuid) {
         //if (!currentY.containsKey(uuid)) {
-        int y = (int) ArgumentHelper.getDoubleFrom(tag(yTag, player));
+        int y = (int) Double.parseDouble(tag(yTag, player));
         currentY.put(uuid, y);
         //}
         if (worldCoordinates && lastMap != null) {

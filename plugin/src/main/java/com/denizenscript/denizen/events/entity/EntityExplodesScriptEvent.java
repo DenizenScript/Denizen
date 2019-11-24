@@ -85,7 +85,7 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         if (ArgumentHelper.matchesDouble(determination)) {
-            strength = ArgumentHelper.getFloatFrom(determination);
+            strength = Float.parseFloat(determination);
             return true;
         }
         if (ListTag.matches(determination)) {

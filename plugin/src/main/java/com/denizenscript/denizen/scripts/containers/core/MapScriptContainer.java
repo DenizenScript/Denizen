@@ -74,14 +74,13 @@ public class MapScriptContainer extends ScriptContainer {
     // -->
 
     public void applyTo(MapView mapView) {
-        DenizenMapRenderer renderer = new DenizenMapRenderer(mapView.getRenderers(),
-                ArgumentHelper.getBooleanFrom(getString("auto update", "true")));
+        DenizenMapRenderer renderer = new DenizenMapRenderer(mapView.getRenderers(), getString("auto update", "true").equalsIgnoreCase("true"));
         boolean debug = true;
         if (contains("original")) {
-            renderer.displayOriginal = ArgumentHelper.getBooleanFrom(getString("original"));
+            renderer.displayOriginal = getString("original").equalsIgnoreCase("true");
         }
         if (contains("debug")) {
-            debug = ArgumentHelper.getBooleanFrom(getString("debug"));
+            debug = getString("debug").equalsIgnoreCase("true");
         }
         if (contains("objects")) {
             YamlConfiguration objectsSection = getConfigurationSection("objects");
@@ -101,7 +100,7 @@ public class MapScriptContainer extends ScriptContainer {
                 String x = objectSection.getString("x", "0");
                 String y = objectSection.getString("y", "0");
                 String visible = objectSection.getString("visible", "true");
-                boolean worldC = objectSection.contains("world_coordinates") && ArgumentHelper.getBooleanFrom(objectSection.getString("world_coordinates", "false"));
+                boolean worldC = objectSection.contains("world_coordinates") && objectSection.getString("world_coordinates", "false").equalsIgnoreCase("true");
                 if (type.equals("image")) {
                     if (!objectSection.contains("image")) {
                         Debug.echoError("Map script '" + getName() + "'s image '" + objectKey
@@ -109,8 +108,8 @@ public class MapScriptContainer extends ScriptContainer {
                         return;
                     }
                     String image = objectSection.getString("image");
-                    int width = ArgumentHelper.getIntegerFrom(objectSection.getString("width", "0"));
-                    int height = ArgumentHelper.getIntegerFrom(objectSection.getString("height", "0"));
+                    int width = Integer.parseInt(objectSection.getString("width", "0"));
+                    int height = Integer.parseInt(objectSection.getString("height", "0"));
                     if (CoreUtilities.toLowerCase(image).endsWith(".gif")) {
                         renderer.addObject(new MapAnimatedImage(x, y, visible, debug, image, width, height));
                     }

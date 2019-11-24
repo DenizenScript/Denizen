@@ -254,16 +254,20 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // -->
         registerTag("add", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
-                Debug.echoError("The tag ChunkTag.add[<#>,<#>] must have a value.");
+                attribute.echoError("The tag ChunkTag.add[<#>,<#>] must have a value.");
                 return null;
             }
             List<String> coords = CoreUtilities.split(attribute.getContext(1), ',');
             if (coords.size() < 2) {
-                Debug.echoError("The tag ChunkTag.add[<#>,<#>] requires two values!");
+                attribute.echoError("The tag ChunkTag.add[<#>,<#>] requires two values!");
                 return null;
             }
-            int x = ArgumentHelper.getIntegerFrom(coords.get(0));
-            int z = ArgumentHelper.getIntegerFrom(coords.get(1));
+            if (!ArgumentHelper.matchesInteger(coords.get(0)) || !ArgumentHelper.matchesInteger(coords.get(1))) {
+                attribute.echoError("Input to ChunkTag.add[x,z] is not a valid integer pair!");
+                return null;
+            }
+            int x = Integer.parseInt(coords.get(0));
+            int z = Integer.parseInt(coords.get(1));
             ChunkTag chunk = object;
 
             return new ChunkTag(chunk.world, chunk.chunkX + x, chunk.chunkZ + z);
@@ -278,16 +282,20 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // -->
         registerTag("sub", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
-                Debug.echoError("The tag ChunkTag.add[<#>,<#>] must have a value.");
+                attribute.echoError("The tag ChunkTag.add[<#>,<#>] must have a value.");
                 return null;
             }
             List<String> coords = CoreUtilities.split(attribute.getContext(1), ',');
             if (coords.size() < 2) {
-                Debug.echoError("The tag ChunkTag.sub[<#>,<#>] requires two values!");
+                attribute.echoError("The tag ChunkTag.sub[<#>,<#>] requires two values!");
                 return null;
             }
-            int x = ArgumentHelper.getIntegerFrom(coords.get(0));
-            int z = ArgumentHelper.getIntegerFrom(coords.get(1));
+            if (!ArgumentHelper.matchesInteger(coords.get(0)) || !ArgumentHelper.matchesInteger(coords.get(1))) {
+                attribute.echoError("Input to ChunkTag.sub[x,z] is not a valid integer pair!");
+                return null;
+            }
+            int x = Integer.parseInt(coords.get(0));
+            int z = Integer.parseInt(coords.get(1));
             ChunkTag chunk = object;
 
             return new ChunkTag(chunk.world, chunk.chunkX - x, chunk.chunkZ - z);
@@ -493,7 +501,10 @@ public class ChunkTag implements ObjectTag, Adjustable {
                 return null;
             }
             int[] heightMap = NMSHandler.getChunkHelper().getHeightMap(chunk);
-            int tolerance = attribute.hasContext(1) ? ArgumentHelper.getIntegerFrom(attribute.getContext(1)) : 2;
+            int tolerance = 2;
+            if (attribute.hasContext(1) && ArgumentHelper.matchesInteger(attribute.getContext(1))) {
+                tolerance = attribute.getIntContext(1);
+            }
             int x = heightMap[0];
             for (int i : heightMap) {
                 if (Math.abs(x - i) > tolerance) {

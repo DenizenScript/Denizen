@@ -142,7 +142,7 @@ public class SlotHelper {
             return matched;
         }
         if (ArgumentHelper.matchesInteger(name)) {
-            return ArgumentHelper.getIntegerFrom(name) - 1;
+            return Integer.parseInt(name) - 1;
         }
         return -1;
     }

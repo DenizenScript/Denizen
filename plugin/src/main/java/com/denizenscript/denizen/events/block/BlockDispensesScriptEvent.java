@@ -83,7 +83,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
         String determination = determinationObj.toString();
         if (ArgumentHelper.matchesDouble(determination)) {
             Deprecations.blockDispensesItemDetermination.warn();
-            event.setVelocity(event.getVelocity().multiply(ArgumentHelper.getDoubleFrom(determination)));
+            event.setVelocity(event.getVelocity().multiply(Double.parseDouble(determination)));
             return true;
         }
         else if (LocationTag.matches(determination)) {

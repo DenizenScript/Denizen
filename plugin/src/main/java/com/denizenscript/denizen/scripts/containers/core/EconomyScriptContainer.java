@@ -130,7 +130,7 @@ public class EconomyScriptContainer extends ScriptContainer {
 
         @Override
         public int fractionalDigits() {
-            return ArgumentHelper.getIntegerFrom(backingScript.getString("digits", "2"));
+            return Integer.parseInt(backingScript.getString("digits", "2"));
         }
 
         @Override
@@ -154,7 +154,7 @@ public class EconomyScriptContainer extends ScriptContainer {
                 Debug.echoError("Economy attempted BALANCE-CHECK to NULL player.");
                 return 0;
             }
-            return ArgumentHelper.getDoubleFrom(autoTag(backingScript.getString("balance"), player));
+            return Double.parseDouble(autoTag(backingScript.getString("balance"), player));
         }
 
         @Override
@@ -185,7 +185,7 @@ public class EconomyScriptContainer extends ScriptContainer {
                 Debug.echoError("Economy attempted HAS-CHECK to NULL player for " + amount);
                 return false;
             }
-            return ArgumentHelper.getBooleanFrom(autoTagAmount(backingScript.getString("has"), player, amount));
+            return autoTagAmount(backingScript.getString("has"), player, amount).equalsIgnoreCase("true");
         }
 
         @Override

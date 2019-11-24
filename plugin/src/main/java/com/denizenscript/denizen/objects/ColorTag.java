@@ -78,9 +78,10 @@ public class ColorTag implements ObjectTag {
         Matcher m = rgbPattern.matcher(string);
 
         if (m.matches()) {
-            return new ColorTag(ArgumentHelper.getIntegerFrom(m.group(1)),
-                    ArgumentHelper.getIntegerFrom(m.group(2)),
-                    ArgumentHelper.getIntegerFrom(m.group(3)));
+            if (!ArgumentHelper.matchesInteger(m.group(1)) || !ArgumentHelper.matchesInteger(m.group(2)) || !ArgumentHelper.matchesInteger(m.group(3))) {
+                return null;
+            }
+            return new ColorTag(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)));
         }
 
         Field colorField = null;

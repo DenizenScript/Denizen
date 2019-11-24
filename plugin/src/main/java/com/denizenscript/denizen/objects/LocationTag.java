@@ -1593,8 +1593,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                     if (context.contains(",")) {
                         String yaw = context.substring(0, context.indexOf(','));
                         String pitch = context.substring(context.indexOf(',') + 1);
-                        degrees = ArgumentHelper.getIntegerFrom(yaw);
-                        int pitchDegrees = ArgumentHelper.getIntegerFrom(pitch);
+                        degrees = Integer.parseInt(yaw);
+                        int pitchDegrees = Integer.parseInt(pitch);
                         return new ElementTag(NMSHandler.getEntityHelper().isFacingLocation(object, facingLoc, degrees, pitchDegrees));
                     }
                     else {

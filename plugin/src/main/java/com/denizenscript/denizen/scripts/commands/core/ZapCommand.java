@@ -130,7 +130,7 @@ public class ZapCommand extends AbstractCommand implements Listener {
             // If the currentStep is a number, increment it. If not, set it
             // to '1' so it can be incremented next time.
             if (ArgumentHelper.matchesInteger(currentStep)) {
-                step = String.valueOf(ArgumentHelper.getIntegerFrom(currentStep) + 1);
+                step = String.valueOf(Integer.parseInt(currentStep) + 1);
             }
             else {
                 step = "1";

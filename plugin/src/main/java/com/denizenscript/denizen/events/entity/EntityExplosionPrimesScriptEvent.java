@@ -72,12 +72,12 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         if (ArgumentHelper.matchesDouble(determination)) {
-            radius = ArgumentHelper.getFloatFrom(determination);
+            radius = Float.parseFloat(determination);
             return true;
         }
         if (Argument.valueOf(determination)
                 .matchesPrimitive(ArgumentHelper.PrimitiveType.Boolean)) {
-            fire = ArgumentHelper.getBooleanFrom(determination);
+            fire = determination.equalsIgnoreCase("true");
             return true;
         }
         return super.applyDetermination(path, determinationObj);
