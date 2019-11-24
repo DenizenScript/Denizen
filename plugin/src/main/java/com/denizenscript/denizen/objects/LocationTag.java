@@ -20,6 +20,7 @@ import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.tags.BukkitTagContext;
+import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
@@ -2710,6 +2711,28 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
+        // @attribute <LocationTag.brewing_time>
+        // @returns DurationTag
+        // @mechanism LocationTag.brewing_time
+        // @description
+        // Returns the brewing time a brewing stand has left.
+        // -->
+        registerTag("brewing_time", (attribute, object) -> {
+            return new DurationTag((long) ((BrewingStand) object.getBlockStateForTag(attribute)).getBrewingTime());
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.brewing_fuel_level>
+        // @returns ElementTag(Number)
+        // @mechanism LocationTag.brewing_fuel_level
+        // @description
+        // Returns the level of fuel a brewing stand has.
+        // -->
+        registerTag("brewing_fuel_level", (attribute, object) -> {
+            return new ElementTag(((BrewingStand) object.getBlockStateForTag(attribute)).getFuelLevel());
+        });
+
+        // <--[tag]
         // @attribute <LocationTag.furnace_burn_time>
         // @returns ElementTag(Number)
         // @mechanism LocationTag.furnace_burn_time
@@ -3102,6 +3125,40 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 BlockState state = getBlockState();
                 ((Nameable) state).setCustomName(title);
                 state.update(true);
+            }
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name brewing_time
+        // @input DurationTag
+        // @description
+        // Sets the brewing time a brewing stand has left.
+        // @tags
+        // <LocationTag.brewing_time>
+        // -->
+        if (mechanism.matches("brewing_time")) {
+            if (getBlockState() instanceof BrewingStand) {
+                BrewingStand stand = (BrewingStand) getBlockState();
+                stand.setBrewingTime(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
+                stand.update();
+            }
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name brewing_fuel_level
+        // @input ElementTag(Number)
+        // @description
+        // Sets the brewing fuel level a brewing stand has.
+        // @tags
+        // <LocationTag.brewing_fuel_level>
+        // -->
+        if (mechanism.matches("brewing_fuel_level")) {
+            if (getBlockState() instanceof BrewingStand) {
+                BrewingStand stand = (BrewingStand) getBlockState();
+                stand.setFuelLevel(mechanism.getValue().asInt());
+                stand.update();
             }
         }
 
