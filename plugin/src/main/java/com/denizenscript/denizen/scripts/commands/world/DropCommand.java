@@ -213,6 +213,7 @@ public class DropCommand extends AbstractCommand {
 
         // Add entities to context so that the specific entities dropped can be fetched.
         scriptEntry.addObject("dropped_entities", entityList);
+        if (entityList.size() == 1) {
             scriptEntry.addObject("dropped_entity", entityList.get(0));
         }
 
