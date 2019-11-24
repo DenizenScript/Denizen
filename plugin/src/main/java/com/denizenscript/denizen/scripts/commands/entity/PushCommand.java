@@ -37,22 +37,36 @@ public class PushCommand extends AbstractCommand implements Holdable {
     //
     // @Description
     // Pushes entities through the air in a straight line at a certain speed and for a certain duration,
-    // triggering a script when they hit an obstacle or stop flying. You can specify the script to be run
-    // with the (script:<name>) argument, and optionally specify definitions to be available in this script
-    // with the (def:<element>|...) argument. Using the 'no_damage' argument causes the entity to receive no damage
-    // when they stop moving.
+    // triggering a script when they hit an obstacle or stop flying.
+    //
+    // You must specify an entity to be pushed.
+    //
+    // Usually, you should specify the origin and the destination. If unspecified, they will be assumed from contextual data.
+    //
+    // You can specify the script to be run with the (script:<name>) argument,
+    // and optionally specify definitions to be available in this script with the (def:<element>|...) argument.
+    //
+    // Using the 'no_damage' argument causes the entity to receive no damage when they stop moving.
     //
     // Optionally use the "ignore_collision" argument to ignore block collisions.
+    //
+    // Optionally use "speed:#" to set how fast it should be pushed.
+    //
+    // Optionally use "force_along" to cause the entity to teleport through any blockage.
+    //
+    // Optionally use "no_rotate" to prevent entities being rotated at the start of the push.
+    //
+    // Optionally use "duration:#" to set the max length of time to continue pushing.
     //
     // @Tags
     // <EntityTag.velocity>
     //
     // @Usage
-    // Use to launch an arrow straight towards a target
+    // Use to launch an arrow straight towards a target.
     // - push arrow destination:<player.location>
     //
     // @Usage
-    // Use to launch an entity into the air
+    // Use to launch an entity into the air.
     // - push cow
     // -->
 
