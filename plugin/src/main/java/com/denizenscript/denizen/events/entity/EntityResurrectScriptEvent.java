@@ -68,8 +68,7 @@ public class EntityResurrectScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? EntityTag.getPlayerFrom(event.getEntity()) : null,
-                entity.isCitizensNPC() ? EntityTag.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(entity);
     }
 
     @Override

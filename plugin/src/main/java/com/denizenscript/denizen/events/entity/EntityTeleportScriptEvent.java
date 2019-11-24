@@ -119,9 +119,7 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        // TODO: Store the player / npc?
-        return new BukkitScriptEntryData(pEvent != null ? EntityTag.getPlayerFrom(pEvent.getPlayer()) : null,
-                entity.isCitizensNPC() ? entity.getDenizenNPC() : null);
+        return new BukkitScriptEntryData(entity);
     }
 
     @Override

@@ -85,8 +85,7 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
     @Override
     public ScriptEntryData getScriptEntryData() {
         if (entity != null) {
-            return new BukkitScriptEntryData(entity.isPlayer() ? entity.getDenizenPlayer() : null,
-                    entity.isCitizensNPC() ? entity.getDenizenNPC() : null);
+            return new BukkitScriptEntryData(entity);
         }
         return new BukkitScriptEntryData(null, null);
     }

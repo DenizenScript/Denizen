@@ -91,9 +91,7 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        // TODO: What if the hanging is an NPC?
-        return new BukkitScriptEntryData(breaker.isPlayer() ? breaker.getDenizenPlayer() : null,
-                breaker.isCitizensNPC() ? breaker.getDenizenNPC() : null);
+        return new BukkitScriptEntryData(breaker);
     }
 
     @Override

@@ -78,8 +78,7 @@ public class EntitySwimScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? entity.getDenizenPlayer() : null,
-                entity.isCitizensNPC() ? entity.getDenizenNPC() : null);
+        return new BukkitScriptEntryData(entity);
     }
 
     @Override

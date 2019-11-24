@@ -77,9 +77,7 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        // TODO: Store the player / npc?
-        return new BukkitScriptEntryData(owner.isPlayer() ? owner.getDenizenPlayer() : null,
-                owner.isCitizensNPC() ? owner.getDenizenNPC() : null);
+        return new BukkitScriptEntryData(owner);
     }
 
     @Override

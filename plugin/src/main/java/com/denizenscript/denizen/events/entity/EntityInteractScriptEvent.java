@@ -76,8 +76,7 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? EntityTag.getPlayerFrom(event.getEntity()) : null,
-                entity.isCitizensNPC() ? EntityTag.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(entity);
     }
 
     @Override
