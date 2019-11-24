@@ -24,23 +24,23 @@ public class EntityScriptContainer extends ScriptContainer {
     // @description
     // Entity script containers are an easy way to pre-define custom entities for use within scripts. Entity
     // scripts work with the EntityTag object, and can be fetched with the Object Fetcher by using the
-    // EntityTag constructor e@EntityScriptName. Example: - spawn <player.location> e@MyEntity
+    // EntityTag constructor of simply the script name. Example: - spawn <player.location> MyEntity
     //
-    // The following is the format for the container. Except for the 'entity_type' key (and the dScript
-    // required 'type' key), all other keys are optional.
+    // The following is the format for the container.
+    // Except for the 'entity_type' key (and the required 'type' key), all other keys are optional.
     //
     // You can also include a 'custom' key to hold any custom yaml data attached to the script.
     //
     // <code>
     // # The name of the entity script is the same name that you can use to construct a new
-    // # EntityTag based on this entity script. For example, an entity script named 'space zombie'
-    // # can be referred to as 'e@space zombie'.
+    // # EntityTag based on this entity script. For example, an entity script named 'space_zombie'
+    // # can be referred to as 'space_zombie'.
     // Entity_Script_Name:
     //
     //   type: entity
     //
-    //   # Must be a valid EntityTag (EG e@zombie or e@pig[age=baby]) See 'dEntity' for more information.
-    //   entity_type: e@base_entity
+    //   # Must be a valid EntityTag (EG 'zombie' or 'pig[age=baby]') See 'EntityTag' for more information.
+    //   entity_type: BASE_ENTITY_TYPE_HERE
     //
     //   # Samples of mechanisms to use (any valid EntityTag mechanisms may be listed like this):
     //
@@ -51,7 +51,7 @@ public class EntityScriptContainer extends ScriptContainer {
     //   age: baby/adult/<#>
     // </code>
     //
-    // MORE OPTIONS ARE LISTED HERE: <@link url /denizen/mecs/dentity.>
+    // MORE OPTIONS ARE LISTED HERE: <@link url /denizen/mecs/entitytag.>
     //
     // -->
 
