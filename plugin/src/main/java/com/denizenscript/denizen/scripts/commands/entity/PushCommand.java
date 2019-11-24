@@ -310,13 +310,13 @@ public class PushCommand extends AbstractCommand implements Holdable {
                         ScriptQueue queue = new InstantQueue(script.getContainer().getName())
                                 .addEntries(entries);
                         if (lastEntity.getLocation() != null) {
-                            queue.addDefinition("location", lastEntity.getLocation().identify());
+                            queue.addDefinition("location", lastEntity.getLocation());
                         }
                         else {
-                            queue.addDefinition("location", lastLocation.identify());
+                            queue.addDefinition("location", lastLocation);
                         }
-                        queue.addDefinition("pushed_entities", entityList.toString());
-                        queue.addDefinition("last_entity", lastEntity.identify());
+                        queue.addDefinition("pushed_entities", entityList);
+                        queue.addDefinition("last_entity", lastEntity);
                         if (definitions != null) {
                             int x = 1;
                             String[] definition_names = null;

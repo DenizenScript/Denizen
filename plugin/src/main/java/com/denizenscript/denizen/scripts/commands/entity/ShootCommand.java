@@ -377,9 +377,9 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                                 .addEntries(entries);
 
                         // Add relevant definitions
-                        queue.addDefinition("location", lastLocation.identify());
-                        queue.addDefinition("shot_entities", entityList.toString());
-                        queue.addDefinition("last_entity", lastEntity.identify());
+                        queue.addDefinition("location", lastLocation);
+                        queue.addDefinition("shot_entities", entityList);
+                        queue.addDefinition("last_entity", lastEntity);
 
                         // Handle hit_entities definition
                         ListTag hitEntities = new ListTag();
@@ -392,7 +392,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                                 }
                             }
                         }
-                        queue.addDefinition("hit_entities", hitEntities.identify());
+                        queue.addDefinition("hit_entities", hitEntities);
                         if (definitions != null) {
                             int x = 1;
                             String[] definition_names = null;
