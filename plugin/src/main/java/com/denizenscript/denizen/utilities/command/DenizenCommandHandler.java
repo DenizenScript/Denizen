@@ -141,6 +141,9 @@ public class DenizenCommandHandler {
     // '-i' enables/disables source information. When enabled, debug will show where it came from (when possible).
     // '-p' enables/disables packet debug logging. When enabled, all packets sent to players (from anywhere) will be logged to console.
     // '-f' enables/disables showing of future warnings. When enabled, future warnings (such as upcoming deprecations) will be displayed in console logs.
+    // '-v' enables/disables advanced verbose log output. This will *flood* your console super hard.
+    // '-o' enables/disables 'override' mode. This will display all script debug, even when 'debug: false' is set for scripts.
+    // '-x' clears the debug filter (see below).
     //
     // The debugger also allows the targeting of specific scripts by using the '--filter script_name' argument. For
     // example: /denizen debug --filter 'my script|my other script' will instruct the debugger to only debug the
@@ -241,16 +244,16 @@ public class DenizenCommandHandler {
                 Debug.toggle();
             }
             Debug.showSources = !Debug.showSources;
-            Messaging.sendInfo(sender, (Debug.showSources ? "Denizen debugger is now showing packet logs."
-                    : "Denizen debugger is no longer showing packet logs."));
+            Messaging.sendInfo(sender, (NMSHandler.debugPackets ? "Denizen debugger is now showing source information."
+                    : "Denizen debugger is no longer showing source information."));
         }
         if (args.hasFlag('p')) {
             if (!Debug.showDebug) {
                 Debug.toggle();
             }
             NMSHandler.debugPackets = !NMSHandler.debugPackets;
-            Messaging.sendInfo(sender, (NMSHandler.debugPackets ? "Denizen debugger is now showing source information."
-                    : "Denizen debugger is no longer showing source information."));
+            Messaging.sendInfo(sender, (Debug.showSources ? "Denizen debugger is now showing packet logs."
+                    : "Denizen debugger is no longer showing packet logs."));
         }
         if (args.hasValueFlag("filter")) {
             if (!Debug.showDebug) {
