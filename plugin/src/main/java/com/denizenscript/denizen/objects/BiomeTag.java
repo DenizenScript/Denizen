@@ -168,6 +168,16 @@ public class BiomeTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <BiomeTag.name>
+        // @returns ElementTag
+        // @description
+        // Returns this biome's name.
+        // -->
+        registerTag("name", (attribute, object) -> {
+            return new ElementTag(CoreUtilities.toLowerCase(object.biome.getName()));
+        });
+
+        // <--[tag]
         // @attribute <BiomeTag.humidity>
         // @returns ElementTag(Decimal)
         // @description
