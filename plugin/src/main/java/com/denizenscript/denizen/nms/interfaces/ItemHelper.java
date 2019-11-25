@@ -8,11 +8,14 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public abstract class ItemHelper {
+
+    public abstract Recipe getRecipeById(NamespacedKey key);
 
     public abstract void removeRecipe(NamespacedKey key);
 

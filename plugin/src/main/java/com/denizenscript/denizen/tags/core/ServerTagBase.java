@@ -52,7 +52,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.*;
 import org.bukkit.map.MapCursor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
@@ -65,6 +65,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 public class ServerTagBase {
@@ -77,7 +78,6 @@ public class ServerTagBase {
             }
         }, "server", "svr", "global");
     }
-
 
     public void serverTag(ReplaceableTagEvent event) {
         if (!event.matches("server", "svr", "global") || event.replaced()) {
@@ -176,8 +176,7 @@ public class ServerTagBase {
         // @description
         // Returns the ItemTag resultant from parsing Bukkit item serialization data (under subkey "item").
         // -->
-        if (attribute.startsWith("parse_bukkit_item")
-                && attribute.hasContext(1)) {
+        if (attribute.startsWith("parse_bukkit_item") && attribute.hasContext(1)) {
             YamlConfiguration config = new YamlConfiguration();
             try {
                 config.loadFromString(attribute.getContext(1));
@@ -210,6 +209,49 @@ public class ServerTagBase {
                 }
             });
             event.setReplaced(list.getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.recipe_items[<id>]>
+        // @returns ListTag(ItemTag)
+        // @description
+        // Returns a list of the items used as input to the recipe within the input ID.
+        // This is formatted equivalently to the item script recipe input, with "material:" for non-exact matches, and a full ItemTag for exact matches.
+        // Note that this won't represent all recipes perfectly (primarily those with multiple input choices per slot).
+        // For furnace-style recipes, this will return a list with only 1 item.
+        // -->
+        if (attribute.startsWith("recipe_items") && attribute.hasContext(1)) {
+            NamespacedKey key = Utilities.parseNamespacedKey(attribute.getContext(1));
+            Recipe recipe = NMSHandler.getItemHelper().getRecipeById(key);
+            if (recipe == null) {
+                return;
+            }
+            ListTag result = new ListTag();
+            Consumer<RecipeChoice> addChoice = (choice) -> {
+                if (choice instanceof RecipeChoice.ExactChoice) {
+                    result.addObject(new ItemTag(choice.getItemStack()));
+                }
+                else {
+                    result.add("material:" + choice.getItemStack().getType().name());
+                }
+            };
+            if (recipe instanceof ShapedRecipe) {
+                for (String row : ((ShapedRecipe) recipe).getShape()) {
+                    for (char column : row.toCharArray()) {
+                        addChoice.accept(((ShapedRecipe) recipe).getChoiceMap().get(column));
+                    }
+                }
+            }
+            else if (recipe instanceof ShapelessRecipe) {
+                for (RecipeChoice choice : ((ShapelessRecipe) recipe).getChoiceList()) {
+                    addChoice.accept(choice);
+                }
+            }
+            else if (recipe instanceof CookingRecipe<?>) {
+                addChoice.accept(((CookingRecipe) recipe).getInputChoice());
+            }
+            event.setReplacedObject(result.getObjectAttribute(attribute.fulfill(1)));
             return;
         }
 
