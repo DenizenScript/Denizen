@@ -170,7 +170,7 @@ public class ItemNBT implements Property {
         // @name nbt
         // @input ListTag
         // @description
-        // Sets the Denizen NBT for this item in the format li@key/value|key/value...
+        // Adds Denizen NBT to this item in the format li@key/value|key/value...
         // See also <@link language property escaping>.
         // @tags
         // <ItemTag.has_nbt[<key>]>
