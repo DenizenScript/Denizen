@@ -145,7 +145,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCoreMember(MoneyCommand.class, "MONEY", "money [give/take/set] (quantity:<#.#>) (players:<player>|...)", 1);
         registerCoreMember(MountCommand.class, "MOUNT", "mount (cancel) [<entity>|...] (<location>)", 0);
         registerCoreMember(ModifyBlockCommand.class, "MODIFYBLOCK", "modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally) (delayed) (<script>) (<percent chance>|...)", 2);
-        registerCoreMember(NarrateCommand.class, "NARRATE", "narrate [<text>] (targets:<player>|...) (format:<name>)", 1);
+        registerCoreMember(NarrateCommand.class, "NARRATE", "narrate [<text>] (targets:<player>|...) (format:<name>) (per_player)", 1);
         registerCoreMember(NBTCommand.class, "NBT", "nbt [<item>] [<key>:<value>]", 2);
         registerCoreMember(NoteCommand.class, "NOTE", "note [<Notable ObjectTag>/remove] [as:<name>]", 2);
         registerCoreMember(OpenTradesCommand.class, "OPENTRADES", "opentrades [<entity>/<trade>|...] (title:<title>) (players:<player>|...)", 1);
