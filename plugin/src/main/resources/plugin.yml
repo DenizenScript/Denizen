@@ -4,7 +4,7 @@ version: ${project.version} (build ${BUILD_NUMBER}-${BUILD_CLASS})
 main: com.denizenscript.denizen.Denizen
 softdepend: [Citizens, Vault]
 
-api-version: 1.13
+api-version: '1.13'
 
 commands:
   denizen:

@@ -6,7 +6,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.Ageable;
 
 public class MaterialAge implements Property {
@@ -26,10 +26,6 @@ public class MaterialAge implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[] {
-            "maximum_age", "age", "maximum_plant_growth", "plant_growth"
-    };
-
     public static final String[] handledMechs = new String[] {
             "age", "plant_growth"
     };
@@ -41,12 +37,7 @@ public class MaterialAge implements Property {
 
     MaterialTag material;
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <MaterialTag.maximum_age>
@@ -55,9 +46,11 @@ public class MaterialAge implements Property {
         // @description
         // Returns the maximum age for an ageable material. This includes plant growth.
         // -->
-        if (attribute.startsWith("maximum_age") || attribute.startsWith("maximum_plant_growth")) {
-            return new ElementTag(getMax()).getObjectAttribute(attribute.fulfill(1));
-        }
+        PropertyParser.PropertyTag<MaterialAge> runnable = (attribute, material) -> {
+            return new ElementTag(material.getMax());
+        };
+        PropertyParser.registerTag("maximum_age", runnable);
+        PropertyParser.registerTag("maximum_plant_growth", runnable);
 
         // <--[tag]
         // @attribute <MaterialTag.age>
@@ -67,11 +60,11 @@ public class MaterialAge implements Property {
         // @description
         // Returns the current age for an ageable material. This includes plant growth.
         // -->
-        if (attribute.startsWith("age") || attribute.startsWith("plant_growth")) {
-            return new ElementTag(getCurrent()).getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        runnable = (attribute, material) -> {
+            return new ElementTag(material.getCurrent());
+        };
+        PropertyParser.registerTag("age", runnable);
+        PropertyParser.registerTag("plant_growth", runnable);
     }
 
     public Ageable getAgeable() {

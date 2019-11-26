@@ -5,7 +5,7 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.type.Slab;
 
 public class MaterialSlab implements Property {
@@ -25,10 +25,6 @@ public class MaterialSlab implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[] {
-            "slab_type"
-    };
-
     public static final String[] handledMechs = new String[] {
             "slab_type"
     };
@@ -40,12 +36,7 @@ public class MaterialSlab implements Property {
 
     MaterialTag material;
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <MaterialTag.slab_type>
@@ -56,11 +47,9 @@ public class MaterialSlab implements Property {
         // Returns the current type for a slab.
         // Output is "BOTTOM", "TOP", or "DOUBLE".
         // -->
-        if (attribute.startsWith("slab_type")) {
-            return new ElementTag(getSlab().getType().name()).getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        PropertyParser.<MaterialSlab>registerTag("slab_type", (attribute, material) -> {
+            return new ElementTag(material.getSlab().getType().name());
+        });
     }
 
     public Slab getSlab() {

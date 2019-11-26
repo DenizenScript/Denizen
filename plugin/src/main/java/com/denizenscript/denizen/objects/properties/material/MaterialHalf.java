@@ -6,7 +6,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.BlockData;
@@ -42,10 +42,6 @@ public class MaterialHalf implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[] {
-            "half"
-    };
-
     public static final String[] handledMechs = new String[] {
             "half"
     };
@@ -57,12 +53,7 @@ public class MaterialHalf implements Property {
 
     MaterialTag material;
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <MaterialTag.half>
@@ -75,9 +66,9 @@ public class MaterialHalf implements Property {
         // Output for beds is "HEAD" or "FOOT".
         // Output for chests is "LEFT" or "RIGHT".
         // -->
-        if (attribute.startsWith("half")) {
-            return new ElementTag(getHalfName()).getObjectAttribute(attribute.fulfill(1));
-        }
+        PropertyParser.<MaterialHalf>registerTag("half", (attribute, material) -> {
+            return new ElementTag(material.getHalfName());
+        });
 
         // <--[tag]
         // @attribute <MaterialTag.relative_vector>
@@ -87,11 +78,9 @@ public class MaterialHalf implements Property {
         // @description
         // Returns a vector location of the other block for a bisected material.
         // -->
-        if (attribute.startsWith("relative_vector")) {
-            return new LocationTag(getRelativeBlockVector()).getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        PropertyParser.<MaterialHalf>registerTag("relative_vector", (attribute, material) -> {
+            return new LocationTag(material.getRelativeBlockVector());
+        });
     }
 
     public static String getHalfName(BlockData data) {

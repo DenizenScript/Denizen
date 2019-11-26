@@ -5,7 +5,7 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.MultipleFacing;
 
@@ -26,10 +26,6 @@ public class MaterialFaces implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[] {
-            "faces", "valid_faces"
-    };
-
     public static final String[] handledMechs = new String[] {
             "faces"
     };
@@ -41,12 +37,7 @@ public class MaterialFaces implements Property {
 
     MaterialTag material;
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <MaterialTag.valid_faces>
@@ -57,13 +48,13 @@ public class MaterialFaces implements Property {
         // Returns a list of faces that are valid for a material that has multiple faces.
         // See also <@link tag MaterialTag.faces>
         // -->
-        if (attribute.startsWith("valid_faces")) {
+        PropertyParser.<MaterialFaces>registerTag("valid_faces", (attribute, material) -> {
             ListTag toReturn = new ListTag();
-            for (BlockFace face : getFaces().getAllowedFaces()) {
+            for (BlockFace face : material.getFaces().getAllowedFaces()) {
                 toReturn.add(face.name());
             }
-            return toReturn.getObjectAttribute(attribute.fulfill(1));
-        }
+            return toReturn;
+        });
 
         // <--[tag]
         // @attribute <MaterialTag.faces>
@@ -74,15 +65,17 @@ public class MaterialFaces implements Property {
         // Returns a list of the current faces for a material that has multiple faces (like a mushroom block).
         // Output is a direction name like "NORTH".
         // -->
-        if (attribute.startsWith("faces")) {
-            ListTag toReturn = new ListTag();
-            for (BlockFace face : getFaces().getFaces()) {
-                toReturn.add(face.name());
-            }
-            return toReturn.getObjectAttribute(attribute.fulfill(1));
-        }
+        PropertyParser.<MaterialFaces>registerTag("faces", (attribute, material) -> {
+            return material.getFaceList();
+        });
+    }
 
-        return null;
+    public ListTag getFaceList() {
+        ListTag toReturn = new ListTag();
+        for (BlockFace face : getFaces().getFaces()) {
+            toReturn.add(face.name());
+        }
+        return toReturn;
     }
 
     public MultipleFacing getFaces() {
@@ -91,11 +84,7 @@ public class MaterialFaces implements Property {
 
     @Override
     public String getPropertyString() {
-        ListTag toReturn = new ListTag();
-        for (BlockFace face : getFaces().getFaces()) {
-            toReturn.add(face.name());
-        }
-        return toReturn.identify();
+        return getFaceList().identify();
     }
 
     @Override

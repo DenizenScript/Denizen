@@ -6,7 +6,7 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.Axis;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
@@ -39,10 +39,6 @@ public class MaterialDirectional implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[] {
-            "direction", "valid_directions"
-    };
-
     public static final String[] handledMechs = new String[] {
             "direction"
     };
@@ -54,12 +50,7 @@ public class MaterialDirectional implements Property {
 
     MaterialTag material;
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <MaterialTag.valid_directions>
@@ -70,20 +61,20 @@ public class MaterialDirectional implements Property {
         // Returns a list of directions that are valid for a directional material.
         // See also <@link tag MaterialTag.direction>
         // -->
-        if (attribute.startsWith("valid_directions")) {
+        PropertyParser.<MaterialDirectional>registerTag("valid_directions", (attribute, material) -> {
             ListTag toReturn = new ListTag();
-            if (isOrientable()) {
-                for (Axis axis : getOrientable().getAxes()) {
+            if (material.isOrientable()) {
+                for (Axis axis : material.getOrientable().getAxes()) {
                     toReturn.add(axis.name());
                 }
             }
             else {
-                for (BlockFace face : getDirectional().getFaces()) {
+                for (BlockFace face : material.getDirectional().getFaces()) {
                     toReturn.add(face.name());
                 }
             }
-            return toReturn.getObjectAttribute(attribute.fulfill(1));
-        }
+            return toReturn;
+        });
 
         // <--[tag]
         // @attribute <MaterialTag.direction>
@@ -94,11 +85,9 @@ public class MaterialDirectional implements Property {
         // Returns the current facing direction for a directional material (like a door or a bed).
         // Output is a direction name like "NORTH", or an axis like "X".
         // -->
-        if (attribute.startsWith("direction")) {
-            return new ElementTag(getDirectionName()).getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        PropertyParser.<MaterialDirectional>registerTag("direction", (attribute, material) -> {
+            return new ElementTag(material.getDirectionName());
+        });
     }
 
     public String getDirectionName() {
