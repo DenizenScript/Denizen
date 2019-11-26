@@ -32,6 +32,8 @@ Debug:
   Verbose: false
   # Optional text to prefix all debug output.
   Prefix: ""
+  # Whether to show full information about scripts being loaded (at startup and "/ex reload" usage).
+  Show loading info: false
 
 Scripts:
   World:

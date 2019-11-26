@@ -143,6 +143,7 @@ public class DenizenCommandHandler {
     // '-f' enables/disables showing of future warnings. When enabled, future warnings (such as upcoming deprecations) will be displayed in console logs.
     // '-v' enables/disables advanced verbose log output. This will *flood* your console super hard.
     // '-o' enables/disables 'override' mode. This will display all script debug, even when 'debug: false' is set for scripts.
+    // '-l' enables/disables script loading information. When enabled, '/ex reload' will produce a potentially large amount of debug output.
     // '-x' clears the debug filter (see below).
     //
     // The debugger also allows the targeting of specific scripts by using the '--filter script_name' argument. For
@@ -159,7 +160,7 @@ public class DenizenCommandHandler {
     @Command(
             aliases = {"denizen"}, usage = "debug",
             desc = "Toggles debug mode for Denizen.", modifiers = {"debug", "de", "db", "dbug"},
-            min = 1, max = 5, permission = "denizen.debug", flags = "scebrxovnipf")
+            min = 1, max = 5, permission = "denizen.debug", flags = "scebrxovnipfl")
     public void debug(CommandContext args, CommandSender sender) throws CommandException {
         if (args.hasFlag('s')) {
             if (!Debug.showDebug) {
@@ -214,8 +215,7 @@ public class DenizenCommandHandler {
             if (!Debug.showDebug) {
                 Debug.toggle();
             }
-            com.denizenscript.denizencore.utilities.debugging.Debug.verbose =
-                    !com.denizenscript.denizencore.utilities.debugging.Debug.verbose;
+            com.denizenscript.denizencore.utilities.debugging.Debug.verbose = !com.denizenscript.denizencore.utilities.debugging.Debug.verbose;
             Messaging.sendInfo(sender, (com.denizenscript.denizencore.utilities.debugging.Debug.verbose ? "Denizen debugger is now verbose." :
                     "Denizen debugger verbosity disabled."));
         }
@@ -254,6 +254,14 @@ public class DenizenCommandHandler {
             NMSHandler.debugPackets = !NMSHandler.debugPackets;
             Messaging.sendInfo(sender, (Debug.showSources ? "Denizen debugger is now showing packet logs."
                     : "Denizen debugger is no longer showing packet logs."));
+        }
+        if (args.hasFlag('l')) {
+            if (!Debug.showDebug) {
+                Debug.toggle();
+            }
+            com.denizenscript.denizencore.utilities.debugging.Debug.showLoading = !com.denizenscript.denizencore.utilities.debugging.Debug.showLoading;
+            Messaging.sendInfo(sender, (com.denizenscript.denizencore.utilities.debugging.Debug.showLoading ? "Denizen debugger is now showing script loading information."
+                    : "Denizen debugger is no longer showing script loading information."));
         }
         if (args.hasValueFlag("filter")) {
             if (!Debug.showDebug) {

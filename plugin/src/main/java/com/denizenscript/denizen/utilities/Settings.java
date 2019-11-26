@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.utilities;
 
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -13,8 +13,9 @@ public class Settings {
     public static void refillCache() {
         FileConfiguration config = DenizenAPI.getCurrentInstance().getConfig();
         cache_showDebug = config.getBoolean("Debug.Show", true);
-        Debug.showDebug = cache_showDebug;
-        com.denizenscript.denizencore.utilities.debugging.Debug.verbose = config.getBoolean("Debug.Verbose", false);
+        com.denizenscript.denizen.utilities.debugging.Debug.showDebug = cache_showDebug;
+        Debug.verbose = config.getBoolean("Debug.Verbose", false);
+        Debug.showLoading = config.getBoolean("Debug.Show loading info", false);
         cache_overrideHelp = config.getBoolean("Debug.Override help", true);
         cache_useDefaultScriptPath = config.getBoolean("Scripts location.Use default script folder", true);
         cache_showExHelp = config.getBoolean("Debug.Ex command help", true);
