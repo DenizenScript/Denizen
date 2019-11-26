@@ -169,8 +169,8 @@ public class InventoryHolder implements Property {
         // @description
         // Returns Denizen's holder ID for this inventory. (p@joe, l@123,321,123,world, etc.)
         // -->
-        PropertyParser.<InventoryTag>registerTag("id_holder", (attribute, object) -> {
-            ObjectTag holder = getFrom(object).holder;
+        PropertyParser.<InventoryHolder>registerTag("id_holder", (attribute, object) -> {
+            ObjectTag holder = object.holder;
             if (holder == null) {
                 return null;
             }

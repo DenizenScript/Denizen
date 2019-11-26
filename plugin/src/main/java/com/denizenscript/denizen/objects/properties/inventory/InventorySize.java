@@ -82,8 +82,8 @@ public class InventorySize implements Property {
         // @description
         // Return the number of slots in the inventory.
         // -->
-        PropertyParser.<InventoryTag>registerTag("size", (attribute, inventory) -> {
-            return new ElementTag(getFrom(inventory).getSize());
+        PropertyParser.<InventorySize>registerTag("size", (attribute, inventory) -> {
+            return new ElementTag(inventory.getSize());
         });
     }
 

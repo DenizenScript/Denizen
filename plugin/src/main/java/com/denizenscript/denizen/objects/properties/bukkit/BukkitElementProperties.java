@@ -53,7 +53,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Returns the element as a chunk. Note: the value must be a valid chunk.
         // -->
-        PropertyParser.<ElementTag>registerTag("as_chunk", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("as_chunk", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), ChunkTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "ChunkTag", attribute.hasAlternative());
         }, "aschunk");
@@ -65,7 +65,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Returns the element as a ColorTag. Note: the value must be a valid color.
         // -->
-        PropertyParser.<ElementTag>registerTag("as_color", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("as_color", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), ColorTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "ColorTag", attribute.hasAlternative());
         }, "ascolor");
@@ -77,7 +77,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Returns the element as a cuboid. Note: the value must be a valid cuboid.
         // -->
-        PropertyParser.<ElementTag>registerTag("as_cuboid", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("as_cuboid", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), CuboidTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "CuboidTag", attribute.hasAlternative());
         }, "ascuboid");
@@ -89,7 +89,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Returns the element as an entity. Note: the value must be a valid entity.
         // -->
-        PropertyParser.<ElementTag>registerTag("as_entity", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("as_entity", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), EntityTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "EntityTag", attribute.hasAlternative());
         }, "asentity");
@@ -101,7 +101,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Returns the element as an inventory. Note: the value must be a valid inventory.
         // -->
-        PropertyParser.<ElementTag>registerTag("as_inventory", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("as_inventory", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), InventoryTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "InventoryTag", attribute.hasAlternative());
         }, "asinventory");
@@ -113,7 +113,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Returns the element as an item. Note: the value must be a valid item.
         // -->
-        PropertyParser.<ElementTag>registerTag("as_item", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("as_item", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), ItemTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "ItemTag", attribute.hasAlternative());
         }, "asitem");
@@ -125,7 +125,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Returns the element as a location. Note: the value must be a valid location.
         // -->
-        PropertyParser.<ElementTag>registerTag("as_location", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("as_location", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), LocationTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "LocationTag", attribute.hasAlternative());
         }, "aslocation");
@@ -137,7 +137,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Returns the element as a material. Note: the value must be a valid material.
         // -->
-        PropertyParser.<ElementTag>registerTag("as_material", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("as_material", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), MaterialTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "MaterialTag", attribute.hasAlternative());
         }, "asmaterial");
@@ -149,7 +149,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Returns the element as an NPC. Note: the value must be a valid NPC.
         // -->
-        PropertyParser.<ElementTag>registerTag("as_npc", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("as_npc", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), NPCTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "NPCTag", attribute.hasAlternative());
         }, "asnpc");
@@ -161,7 +161,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Returns the element as a player. Note: the value must be a valid player. Can be online or offline.
         // -->
-        PropertyParser.<ElementTag>registerTag("as_player", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("as_player", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), PlayerTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "PlayerTag", attribute.hasAlternative());
         }, "asplayer");
@@ -173,7 +173,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Returns the element as a world.
         // -->
-        PropertyParser.<ElementTag>registerTag("as_world", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("as_world", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), WorldTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "WorldTag", attribute.hasAlternative());
         }, "asworld");
@@ -185,7 +185,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Returns the element as a plugin. Note: the value must be a valid plugin.
         // -->
-        PropertyParser.<ElementTag>registerTag("as_plugin", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("as_plugin", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), PluginTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry(), false)), "PluginTag", attribute.hasAlternative());
         }, "asplugin");
@@ -197,7 +197,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Returns the ChatColors used last in an element.
         // -->
-        PropertyParser.<ElementTag>registerTag("last_color", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("last_color", (attribute, object) -> {
             return new ElementTag(ChatColor.getLastColors(object.asString()));
         });
 
@@ -208,7 +208,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Returns the text re-formatted according to a format script.
         // -->
-        PropertyParser.<ElementTag>registerTag("format", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("format", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -231,7 +231,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Returns the element with all color encoding stripped.
         // -->
-        PropertyParser.<ElementTag>registerTag("strip_color", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("strip_color", (attribute, object) -> {
             return new ElementTag(ChatColor.stripColor(object.asString()));
         });
 
@@ -243,7 +243,7 @@ public class BukkitElementProperties implements Property {
         // Returns the element with all color codes parsed.
         // Optionally, specify a character to prefix the color ids. Defaults to '&' if not specified.
         // -->
-        PropertyParser.<ElementTag>registerTag("parse_color", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("parse_color", (attribute, object) -> {
             char prefix = '&';
             if (attribute.hasContext(1)) {
                 prefix = attribute.getContext(1).charAt(0);
@@ -258,7 +258,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Shortens the element down to an itemscript hash ID, made of invisible color codes.
         // -->
-        PropertyParser.<ElementTag>registerTag("to_itemscript_hash", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("to_itemscript_hash", (attribute, object) -> {
             return new ElementTag(ItemScriptHelper.createItemScriptID(object.asString()));
         });
 
@@ -270,7 +270,7 @@ public class BukkitElementProperties implements Property {
         // Hides the element's text in invisible color codes.
         // Inverts <@link tag ElementTag.from_secret_colors>.
         // -->
-        PropertyParser.<ElementTag>registerTag("to_secret_colors", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("to_secret_colors", (attribute, object) -> {
             String text = object.asString();
             byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
             String hex = DatatypeConverter.printHexBinary(bytes);
@@ -289,7 +289,7 @@ public class BukkitElementProperties implements Property {
         // Un-hides the element's text from invisible color codes back to normal text.
         // Inverts <@link tag ElementTag.to_secret_colors>.
         // -->
-        PropertyParser.<ElementTag>registerTag("from_secret_colors", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("from_secret_colors", (attribute, object) -> {
             String text = object.asString().replace(String.valueOf(ChatColor.COLOR_CHAR), "");
             byte[] bytes = DatatypeConverter.parseHexBinary(text);
             return new ElementTag(new String(bytes, StandardCharsets.UTF_8));
@@ -303,7 +303,7 @@ public class BukkitElementProperties implements Property {
         // Converts normal colored text to Minecraft-style "raw JSON" format.
         // Inverts <@link tag ElementTag.from_raw_json>.
         // -->
-        PropertyParser.<ElementTag>registerTag("to_raw_json", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("to_raw_json", (attribute, object) -> {
             return new ElementTag(ComponentSerializer.toString(FormattedTextHelper.parse(object.asString())));
         });
 
@@ -315,7 +315,7 @@ public class BukkitElementProperties implements Property {
         // Un-hides the element's text from invisible color codes back to normal text.
         // Inverts <@link tag ElementTag.to_raw_json>.
         // -->
-        PropertyParser.<ElementTag>registerTag("from_raw_json", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("from_raw_json", (attribute, object) -> {
             return new ElementTag(FormattedTextHelper.stringify(ComponentSerializer.parse(object.asString())));
         });
 
@@ -328,7 +328,7 @@ public class BukkitElementProperties implements Property {
         //
         // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
         // -->
-        PropertyParser.<ElementTag>registerTag("on_hover", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("on_hover", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -363,7 +363,7 @@ public class BukkitElementProperties implements Property {
         //
         // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
         // -->
-        PropertyParser.<ElementTag>registerTag("on_click", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("on_click", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -397,7 +397,7 @@ public class BukkitElementProperties implements Property {
         //
         // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
         // -->
-        PropertyParser.<ElementTag>registerTag("with_insertion", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("with_insertion", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -416,7 +416,7 @@ public class BukkitElementProperties implements Property {
         //
         // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
         // -->
-        PropertyParser.<ElementTag>registerTag("no_reset", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("no_reset", (attribute, object) -> {
             if (object.asString().length() == 2 && object.asString().charAt(0) == ChatColor.COLOR_CHAR) {
                 return new ElementTag(ChatColor.COLOR_CHAR + "[color=" + object.asString().charAt(1) + "]");
             }
@@ -433,7 +433,7 @@ public class BukkitElementProperties implements Property {
         //
         // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
         // -->
-        PropertyParser.<ElementTag>registerTag("end_format", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("end_format", (attribute, object) -> {
             if (object.asString().length() == 2 && object.asString().charAt(0) == ChatColor.COLOR_CHAR) {
                 return new ElementTag(ChatColor.COLOR_CHAR + "[reset=" + object.asString().charAt(1) + "]");
             }
@@ -449,7 +449,7 @@ public class BukkitElementProperties implements Property {
         //
         // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
         // -->
-        PropertyParser.<ElementTag>registerTag("italicize", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("italicize", (attribute, object) -> {
             return new ElementTag(ChatColor.ITALIC + object.asString() + ChatColor.COLOR_CHAR + "[reset=o]");
         });
 
@@ -462,7 +462,7 @@ public class BukkitElementProperties implements Property {
         //
         // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
         // -->
-        PropertyParser.<ElementTag>registerTag("bold", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("bold", (attribute, object) -> {
             return new ElementTag(ChatColor.BOLD + object.asString() + ChatColor.COLOR_CHAR + "[reset=l]");
         });
 
@@ -475,7 +475,7 @@ public class BukkitElementProperties implements Property {
         //
         // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
         // -->
-        PropertyParser.<ElementTag>registerTag("underline", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("underline", (attribute, object) -> {
             return new ElementTag(ChatColor.UNDERLINE + object.asString() + ChatColor.COLOR_CHAR + "[reset=n]");
         });
 
@@ -488,7 +488,7 @@ public class BukkitElementProperties implements Property {
         //
         // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
         // -->
-        PropertyParser.<ElementTag>registerTag("strikethrough", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("strikethrough", (attribute, object) -> {
             return new ElementTag(ChatColor.STRIKETHROUGH + object.asString() + ChatColor.COLOR_CHAR + "[reset=m]");
         });
 
@@ -501,7 +501,7 @@ public class BukkitElementProperties implements Property {
         //
         // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
         // -->
-        PropertyParser.<ElementTag>registerTag("obfuscate", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("obfuscate", (attribute, object) -> {
             return new ElementTag(ChatColor.MAGIC + object.asString() + ChatColor.COLOR_CHAR + "[reset=k]");
         });
 
@@ -516,7 +516,7 @@ public class BukkitElementProperties implements Property {
         //
         // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
         // -->
-        PropertyParser.<ElementTag>registerTag("color", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties>registerTag("color", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -538,6 +538,10 @@ public class BukkitElementProperties implements Property {
             }
             return new ElementTag(color + object.asString() + ChatColor.COLOR_CHAR + "[reset=" + color.getChar() + "]");
         });
+    }
+
+    public String asString() {
+        return element.asString();
     }
 
     @Override

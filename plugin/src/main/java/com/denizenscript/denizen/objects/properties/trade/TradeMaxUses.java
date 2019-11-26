@@ -50,8 +50,8 @@ public class TradeMaxUses implements Property {
         // @description
         // Returns the maximum amount of times that the trade can be used.
         // -->
-        PropertyParser.<TradeTag>registerTag("max_uses", (attribute, recipe) -> {
-            return new ElementTag(recipe.getRecipe().getMaxUses());
+        PropertyParser.<TradeMaxUses>registerTag("max_uses", (attribute, recipe) -> {
+            return new ElementTag(recipe.recipe.getRecipe().getMaxUses());
         });
     }
 

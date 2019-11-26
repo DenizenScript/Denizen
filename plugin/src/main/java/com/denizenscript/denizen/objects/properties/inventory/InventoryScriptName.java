@@ -58,8 +58,8 @@ public class InventoryScriptName implements Property {
         // @description
         // Returns the name of the script that this inventory came from (if any).
         // -->
-        PropertyParser.<InventoryTag>registerTag("script_name", (attribute, inventory) -> {
-            return new ElementTag(inventory.scriptName);
+        PropertyParser.<InventoryScriptName>registerTag("script_name", (attribute, inventory) -> {
+            return new ElementTag(inventory.inventory.scriptName);
         });
     }
 

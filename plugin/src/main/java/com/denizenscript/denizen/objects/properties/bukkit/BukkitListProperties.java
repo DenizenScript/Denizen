@@ -42,7 +42,8 @@ public class BukkitListProperties implements Property {
         // Returns the list in a human-readable format.
         // EG, a list of "n@3|p@bob|potato" will return "GuardNPC, bob, and potato".
         // -->
-        PropertyParser.<ListTag>registerTag("formatted", (attribute, list) -> {
+        PropertyParser.<BukkitListProperties>registerTag("formatted", (attribute, listObj) -> {
+            ListTag list = listObj.list;
             if (list.isEmpty()) {
                 return new ElementTag("");
             }
