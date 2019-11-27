@@ -396,7 +396,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // @name Player Event Switches
     // @group Script Events
     // @description
-    // There are a few special switches available to any script event with a linked event.
+    // There are a few special switches available to any script event with a linked player.
     //
     // The "flagged:<flag name>" will limit the event to only fire when the player has the flag with the specified name.
     // It can be used like "on player breaks block flagged:nobreak:" (that would be used alongside "- flag player nobreak").
