@@ -23,7 +23,7 @@ public class ScoreboardCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Scoreboard
-    // @Syntax scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar}/none)
+    // @Syntax scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar}/none) (displayname:<name>)
     // @Required 1
     // @Short Add or removes viewers, objectives and scores from scoreboards.
     // @Group server
@@ -31,33 +31,32 @@ public class ScoreboardCommand extends AbstractCommand {
     // @Description
     // Lets you make players see a certain scoreboard and then a certain objective in that scoreboard.
     //
-    // There are currently three slots where objectives can be displayed: in the sidebar on the right of
-    // the screen, below player names and in the player list that shows up when you press Tab. The names
-    // of these slots can be found here:
-    // http://jd.bukkit.org/rb/apidocs/org/bukkit/scoreboard/DisplaySlot.html
+    // There are currently three slots where objectives can be displayed:
+    // in the sidebar on the right of the screen, below player names and in the player list that shows up when you press Tab.
+    // The names of these slots can be found here: <@link url http://jd.bukkit.org/rb/apidocs/org/bukkit/scoreboard/DisplaySlot.html>
     //
-    // Every objective has several lines of scores. Technically, the lines track players, but fake player
-    // names can be used by Denizen to let you call the lines anything you want.
+    // Every objective has several lines of scores.
+    // Technically, the lines track players, but fake player names can be used by Denizen to let you call the lines anything you want.
     //
-    // When using the sidebar as the display slot, all the scores set for an objective will be displayed
-    // there, but you will need to put actual player names in the lines to be able to use the below_name
-    // display slot (which displays each player's score underneath his/her name) and the player_list
-    // display slot (which displays each player's score to the right of his/her name in the player list).
+    // When using the sidebar as the display slot, all the scores set for an objective will be displayed there,
+    // but you will need to put actual player names in the lines to be able to use
+    // the below_name display slot (which displays each player's score underneath his/her name) and
+    // the player_list display slot (which displays each player's score to the right of his/her name in the player list).
     //
     // If you do not specify a display slot, the sidebar will be used. You can also use "none" as the
     // display slot if you want to add a hidden objective without automatically making it get displayed.
     //
-    // You can set scores manually, or you can use different Minecraft criteria that set and update the
-    // scores automatically. A list of these criteria can be found here:
-    // http://minecraft.gamepedia.com/Scoreboard#Objectives
+    // When setting an objective, you can also optionally set the display name by using the "displayname:" argument.
     //
-    // You can use the "remove" argument to remove different parts of scoreboards. The more arguments
-    // you use with it, the more specific your removal will be. For example, if you only use the "remove"
-    // argument and the "id" argument, you will completely remove all the objectives in a scoreboard,
-    // but if you specify an objective as well, you will only delete that one objective from that
-    // scoreboard, and if you also specify certain lines, you will only delete those specific lines from
-    // that objective. Similarly, if you use the "remove" argument along with the "id" and "viewers"
-    // arguments, you will only remove those viewers from the scoreboard, not the entire scoreboard.
+    // You can set scores manually, or you can use different Minecraft criteria that set and update the scores automatically.
+    // A list of these criteria can be found here: <@link url http://minecraft.gamepedia.com/Scoreboard#Objectives>
+    //
+    // You can use the "remove" argument to remove different parts of scoreboards.
+    // The more arguments you use with it, the more specific your removal will be.
+    // For example, if you only use the "remove" argument and the "id" argument, you will completely remove all the objectives in a scoreboard,
+    // but if you specify an objective as well, you will only delete that one objective from that scoreboard,
+    // and if you also specify certain lines, you will only delete those specific lines from that objective.
+    // Similarly, if you use the "remove" argument along with the "id" and "viewers" arguments, you will only remove those viewers from the scoreboard, not the entire scoreboard.
     //
     // @Tags
     // <server.scoreboard[(<board>)].exists>
@@ -133,6 +132,10 @@ public class ScoreboardCommand extends AbstractCommand {
                     arg.matches("none"))) {
                 scriptEntry.addObject("displayslot", arg.asElement());
             }
+            else if (!scriptEntry.hasObject("displayslot")
+                    && (arg.matchesPrefix("displayname"))) {
+                scriptEntry.addObject("displayname", arg.asElement());
+            }
             else if (!scriptEntry.hasObject("viewers")
                     && arg.matchesArgumentList(PlayerTag.class)) {
                 scriptEntry.addObject("viewers", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
@@ -173,6 +176,7 @@ public class ScoreboardCommand extends AbstractCommand {
         ElementTag criteria = scriptEntry.getElement("criteria");
         ElementTag score = scriptEntry.getElement("score");
         ElementTag displaySlot = scriptEntry.getElement("displayslot");
+        ElementTag displayName = scriptEntry.getElement("displayname");
         Action act = Action.valueOf(action.asString().toUpperCase());
 
         // Report to dB
@@ -181,16 +185,14 @@ public class ScoreboardCommand extends AbstractCommand {
                     id.debug() +
                     (viewers != null ? ArgumentHelper.debugObj("viewers", viewers.toString()) : "") +
                     (objective != null ? objective.debug() : "") +
-                    (act.equals(Action.ADD) && objective != null
-                            ? criteria.debug()
-                            : "") +
                     (!lines.isEmpty() ? lines.debug() : "") +
-                    (act.equals(Action.ADD) && score != null
-                            ? score.debug()
-                            : "") +
-                    (act.equals(Action.ADD) && objective != null
-                            ? displaySlot.debug()
-                            : ""));
+                    (!act.equals(Action.ADD) ? "" :
+                            (score == null ? "" : score.debug())
+                            + (objective == null ? "" : (
+                                    displaySlot.debug()
+                                    + criteria.debug()
+                                    + (displayName == null ? "" : displayName.debug())
+                                    ))));
         }
 
         Scoreboard board = null;
@@ -216,7 +218,7 @@ public class ScoreboardCommand extends AbstractCommand {
             return;
         }
 
-        Objective obj = null;
+        Objective obj;
 
         if (act.equals(Action.ADD)) {
 
@@ -238,6 +240,9 @@ public class ScoreboardCommand extends AbstractCommand {
                 // Change the objective's display slot
                 if (!displaySlot.asString().equalsIgnoreCase("none")) {
                     obj.setDisplaySlot(DisplaySlot.valueOf(displaySlot.asString().toUpperCase()));
+                }
+                if (displayName != null) {
+                    obj.setDisplayName(displayName.asString());
                 }
 
                 obj.setDisplayName(objective.asString());
