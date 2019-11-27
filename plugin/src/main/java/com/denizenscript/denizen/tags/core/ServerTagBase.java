@@ -52,6 +52,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.map.MapCursor;
 import org.bukkit.plugin.Plugin;
@@ -255,36 +256,6 @@ public class ServerTagBase {
             return;
         }
 
-        // <--[tag]
-        // @attribute <server.list_advancements>
-        // @returns ListTag
-        // @description
-        // Returns a list of all registered advancement names.
-        // -->
-        if (attribute.startsWith("list_advancements")) {
-            ListTag list = new ListTag();
-            Bukkit.advancementIterator().forEachRemaining((adv) -> {
-                list.add(adv.getKey().toString());
-            });
-            event.setReplaced(list.getAttribute(attribute.fulfill(1)));
-            return;
-        }
-
-        // <--[tag]
-        // @attribute <server.list_commands>
-        // @returns ListTag
-        // @description
-        // Returns a list of all registered command names in Bukkit.
-        // -->
-        if (attribute.startsWith("list_commands")) {
-            ListTag list = new ListTag();
-            for (String cmd : CommandScriptHelper.knownCommands.keySet()) {
-                list.add(cmd);
-            }
-            event.setReplaced(list.getAttribute(attribute.fulfill(1)));
-            return;
-        }
-
         if (attribute.startsWith("scoreboard")) {
             Scoreboard board;
             String name = "main";
@@ -444,10 +415,77 @@ public class ServerTagBase {
         }
 
         // <--[tag]
+        // @attribute <server.list_commands>
+        // @returns ListTag
+        // @description
+        // Returns a list of all registered command names in Bukkit.
+        // -->
+        if (attribute.startsWith("list_commands")) {
+            ListTag list = new ListTag();
+            for (String cmd : CommandScriptHelper.knownCommands.keySet()) {
+                list.add(cmd);
+            }
+            event.setReplaced(list.getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.list_advancements>
+        // @returns ListTag
+        // @description
+        // Returns a list of all registered advancement names.
+        // Generally used with <@link tag PlayerTag.has_advancement>.
+        // -->
+        if (attribute.startsWith("list_advancements")) {
+            ListTag list = new ListTag();
+            Bukkit.advancementIterator().forEachRemaining((adv) -> {
+                list.add(adv.getKey().toString());
+            });
+            event.setReplaced(list.getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.list_nbt_attribute_types>
+        // @returns ListTag
+        // @description
+        // Returns a list of all registered advancement names.
+        // Generally used with <@link tag EntityTag.has_attribute>.
+        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>.
+        // -->
+        if (attribute.startsWith("list_nbt_attribute_types")) {
+            ListTag list = new ListTag();
+            for (org.bukkit.attribute.Attribute attribType : org.bukkit.attribute.Attribute.values()) {
+                list.add(attribType.name());
+            }
+            event.setReplaced(list.getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.list_damage_causes>
+        // @returns ListTag
+        // @description
+        // Returns a list of all registered damage causes.
+        // Generally used with <@link event entity damaged>.
+        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EntityDamageEvent.DamageCause.html>.
+        // -->
+        if (attribute.startsWith("list_damage_causes")) {
+            ListTag list = new ListTag();
+            for (EntityDamageEvent.DamageCause damageCause : EntityDamageEvent.DamageCause.values()) {
+                list.add(damageCause.name());
+            }
+            event.setReplaced(list.getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
         // @attribute <server.list_biomes>
         // @returns ListTag
         // @description
-        // Returns a list of all biomes known to the server (only their Bukkit enum names).
+        // Returns a list of all biomes known to the server.
+        // Generally used with <@link language BiomeTag Objects>.
+        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Biome.html>.
         // -->
         if (attribute.startsWith("list_biomes")) {
             ListTag allBiomes = new ListTag();
@@ -461,7 +499,9 @@ public class ServerTagBase {
         // @attribute <server.list_enchantments>
         // @returns ListTag
         // @description
-        // Returns a list of all enchantments known to the server (only their Bukkit enum names).
+        // Returns a list of all enchantments known to the server.
+        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html>.
+        // Generally, prefer <@link tag server.list_enchantment_keys>.
         // -->
         if (attribute.startsWith("list_enchantments")) {
             ListTag enchants = new ListTag();
@@ -472,10 +512,28 @@ public class ServerTagBase {
         }
 
         // <--[tag]
+        // @attribute <server.list_enchantment_keys>
+        // @returns ListTag
+        // @description
+        // Returns a list of all enchantments known to the server.
+        // Generally used with <@link mechanism ItemTag.enchantments>.
+        // This is specifically their minecraft key names, which generally align with the names you see in-game.
+        // -->
+        if (attribute.startsWith("list_enchantment_keys")) {
+            ListTag enchants = new ListTag();
+            for (Enchantment e : Enchantment.values()) {
+                enchants.add(e.getKey().getKey());
+            }
+            event.setReplaced(enchants.getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
         // @attribute <server.list_entity_types>
         // @returns ListTag
         // @description
-        // Returns a list of all entity types known to the server (only their Bukkit enum names).
+        // Returns a list of all entity types known to the server.
+        // Generally used with <@link language EntityTag Objects>.
+        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html>.
         // -->
         if (attribute.startsWith("list_entity_types")) {
             ListTag allEnt = new ListTag();
@@ -489,7 +547,9 @@ public class ServerTagBase {
         // @attribute <server.list_materials>
         // @returns ListTag
         // @description
-        // Returns a list of all materials known to the server (only their Bukkit enum names).
+        // Returns a list of all materials known to the server.
+        // Generally used with <@link language MaterialTag Objects>.
+        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html>.
         // -->
         if (attribute.startsWith("list_materials")) {
             ListTag allMats = new ListTag();
@@ -503,7 +563,9 @@ public class ServerTagBase {
         // @attribute <server.list_sounds>
         // @returns ListTag
         // @description
-        // Returns a list of all sounds known to the server (only their Bukkit enum names).
+        // Returns a list of all sounds known to the server.
+        // Generally used with <@link command playsound>.
+        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html>.
         // -->
         if (attribute.startsWith("list_sounds")) {
             ListTag sounds = new ListTag();
@@ -514,10 +576,46 @@ public class ServerTagBase {
         }
 
         // <--[tag]
+        // @attribute <server.list_particles>
+        // @returns ListTag
+        // @description
+        // Returns a list of all particle effect types known to the server.
+        // Generally used with <@link command playeffect>.
+        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html>.
+        // Refer also to <@link tag server.list_effects>.
+        // -->
+        if (attribute.startsWith("list_particles")) {
+            ListTag particleTypes = new ListTag();
+            for (Particle particle : Particle.values()) {
+                particleTypes.add(particle.toString());
+            }
+            event.setReplaced(particleTypes.getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.list_effects>
+        // @returns ListTag
+        // @description
+        // Returns a list of all 'effect' types known to the server.
+        // Generally used with <@link command playeffect>.
+        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Effect.html>.
+        // Refer also to <@link tag server.list_particles>.
+        // -->
+        if (attribute.startsWith("list_effects")) {
+            ListTag effectTypes = new ListTag();
+            for (Effect effect : Effect.values()) {
+                effectTypes.add(effect.toString());
+            }
+            event.setReplaced(effectTypes.getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
         // @attribute <server.list_patterns>
         // @returns ListTag
         // @description
-        // Returns a list of all banner patterns known to the server (only their Bukkit enum names).
+        // Returns a list of all banner patterns known to the server.
+        // Generally used with <@link tag ItemTag.patterns>.
+        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/banner/PatternType.html>.
         // -->
         if (attribute.startsWith("list_patterns")) {
             ListTag allPatterns = new ListTag();
@@ -533,6 +631,8 @@ public class ServerTagBase {
         // @description
         // Returns a list of all potion effects known to the server.
         // Can be used with <@link command cast>.
+        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
+        // Refer also to <@link tag server.list_potion_types>.
         // -->
         if (attribute.startsWith("list_potion_effects")) {
             ListTag statuses = new ListTag();
@@ -548,7 +648,9 @@ public class ServerTagBase {
         // @attribute <server.list_potion_types>
         // @returns ListTag
         // @description
-        // Returns a list of all potion types known to the server (only their Bukkit enum names).
+        // Returns a list of all potion types known to the server.
+        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html>.
+        // Refer also to <@link tag server.list_potion_effects>.
         // -->
         if (attribute.startsWith("list_potion_types")) {
             ListTag potionTypes = new ListTag();
@@ -562,7 +664,9 @@ public class ServerTagBase {
         // @attribute <server.list_tree_types>
         // @returns ListTag
         // @description
-        // Returns a list of all tree types known to the server (only their Bukkit enum names).
+        // Returns a list of all tree types known to the server.
+        // Generally used with <@link mechanism LocationTag.generate_tree>.
+        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/TreeType.html>.
         // -->
         if (attribute.startsWith("list_tree_types")) {
             ListTag allTrees = new ListTag();
@@ -576,7 +680,9 @@ public class ServerTagBase {
         // @attribute <server.list_map_cursor_types>
         // @returns ListTag
         // @description
-        // Returns a list of all map cursor types known to the server (only their Bukkit enum names).
+        // Returns a list of all map cursor types known to the server.
+        // Generally used with <@link command map> and <@link language Map Script Containers>.
+        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/map/MapCursor.Type.html>.
         // -->
         if (attribute.startsWith("list_map_cursor_types")) {
             ListTag mapCursors = new ListTag();
@@ -590,7 +696,9 @@ public class ServerTagBase {
         // @attribute <server.list_world_types>
         // @returns ListTag
         // @description
-        // Returns a list of all world types known to the server (only their Bukkit enum names).
+        // Returns a list of all world types known to the server.
+        // Generally used with <@link command createworld>.
+        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/WorldType.html>.
         // -->
         if (attribute.startsWith("list_world_types")) {
             ListTag worldTypes = new ListTag();
@@ -598,6 +706,30 @@ public class ServerTagBase {
                 worldTypes.add(world.toString());
             }
             event.setReplaced(worldTypes.getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.list_statistics[(<type>)]>
+        // @returns ListTag
+        // @description
+        // Returns a list of all statistic types known to the server.
+        // Generally used with <@link tag PlayerTag.statistic>.
+        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Statistic.html>.
+        // Optionally, specify a type to limit to statistics of a given type. Valid types: UNTYPED, ITEM, ENTITY, or BLOCK.
+        // Refer also to <@link tag server.statistic_type>.
+        // -->
+        if (attribute.startsWith("list_statistics")) {
+            Statistic.Type type = null;
+            if (attribute.hasContext(1)) {
+                type = Statistic.Type.valueOf(attribute.getContext(1).toUpperCase());
+            }
+            ListTag statisticTypes = new ListTag();
+            for (Statistic stat : Statistic.values()) {
+                if (type == null || type == stat.getType()) {
+                    statisticTypes.add(stat.toString());
+                }
+            }
+            event.setReplaced(statisticTypes.getAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]
@@ -670,6 +802,27 @@ public class ServerTagBase {
                 }
             }
             event.setReplaced(allNotables.getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.statistic_type[<statistic>]>
+        // @returns ElementTag
+        // @description
+        // Returns the qualifier type of the given statistic.
+        // Generally relevant to usage with <@link tag PlayerTag.statistic.qualifier>.
+        // Returns UNTYPED, ITEM, ENTITY, or BLOCK.
+        // Refer also to <@link tag server.list_statistics>.
+        // -->
+        if (attribute.startsWith("statistic_type") && attribute.hasContext(1)) {
+            Statistic statistic;
+            try {
+                statistic = Statistic.valueOf(attribute.getContext(1).toUpperCase());
+            }
+            catch (IllegalArgumentException ex) {
+                attribute.echoError("Statistic '" + attribute.getContext(1) + "' does not exist: " + ex.getMessage());
+                return;
+            }
+            event.setReplaced(new ElementTag(statistic.getType().name()).getAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]
