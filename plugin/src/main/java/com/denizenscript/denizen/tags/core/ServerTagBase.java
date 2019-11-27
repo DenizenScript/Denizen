@@ -59,6 +59,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
+import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -279,18 +280,75 @@ public class ServerTagBase {
                 return;
             }
             if (board == null) {
-                if (!attribute.hasAlternative()) {
-                    Debug.echoError("Scoreboard '" + name + "' does not exist.");
-                }
+                attribute.echoError("Scoreboard '" + name + "' does not exist.");
                 return;
+            }
+
+            // <--[tag]
+            // @attribute <server.scoreboard[(<board>)].objectives>
+            // @returns ListTag
+            // @description
+            // Returns a list of all objective names in the scoreboard.
+            // Optionally, specify which scoreboard to use.
+            // -->
+            if (attribute.startsWith("objectives")) {
+                ListTag list = new ListTag();
+                for (Objective objective : board.getObjectives()) {
+                    list.add(objective.getName());
+                }
+                event.setReplacedObject((list).getObjectAttribute(attribute.fulfill(1)));
+            }
+
+            if (attribute.startsWith("objective") && attribute.hasContext(1)) {
+                Objective objective = board.getObjective(attribute.getContext(1));
+                if (objective == null) {
+                    attribute.echoError("Scoreboard objective '" + attribute.getContext(1) + "' does not exist.");
+                    return;
+                }
+                attribute = attribute.fulfill(1);
+
+                // <--[tag]
+                // @attribute <server.scoreboard[(<board>)].objective[<name>].criteria>
+                // @returns ListTag
+                // @description
+                // Returns the criteria specified for the given objective.
+                // Optionally, specify which scoreboard to use.
+                // -->
+                if (attribute.startsWith("criteria")) {
+                    event.setReplacedObject(new ElementTag(objective.getCriteria()).getObjectAttribute(attribute.fulfill(1)));
+                }
+
+                // <--[tag]
+                // @attribute <server.scoreboard[(<board>)].objective[<name>].display_name>
+                // @returns ListTag
+                // @description
+                // Returns the display name specified for the given objective.
+                // Optionally, specify which scoreboard to use.
+                // -->
+                if (attribute.startsWith("display_name")) {
+                    event.setReplacedObject(new ElementTag(objective.getDisplayName()).getObjectAttribute(attribute.fulfill(1)));
+                }
+
+                // <--[tag]
+                // @attribute <server.scoreboard[(<board>)].objective[<name>].display_slot>
+                // @returns ListTag
+                // @description
+                // Returns the display slot specified for the given objective. Can be: BELOW_NAME, PLAYER_LIST, or SIDEBAR.
+                // Note that not all objectives have a display slot.
+                // Optionally, specify which scoreboard to use.
+                // -->
+                if (attribute.startsWith("display_slot")) {
+                    if (objective.getDisplaySlot() == null) {
+                        return;
+                    }
+                    event.setReplacedObject(new ElementTag(objective.getDisplaySlot().name()).getObjectAttribute(attribute.fulfill(1)));
+                }
             }
 
             if (attribute.startsWith("team") && attribute.hasContext(1)) {
                 Team team = board.getTeam(attribute.getContext(1));
                 if (team == null) {
-                    if (!attribute.hasAlternative()) {
-                        Debug.echoError("Scoreboard team '" + attribute.getContext(1) + "' does not exist.");
-                    }
+                    attribute.echoError("Scoreboard team '" + attribute.getContext(1) + "' does not exist.");
                     return;
                 }
                 attribute = attribute.fulfill(1);
