@@ -31,9 +31,14 @@ public class NarrateCommand extends AbstractCommand {
     // @Group player
     //
     // @Description
-    // Prints some text into the target's chat area. If no target is specified it will default to the attached player
-    // or the console. Accepts the 'format:<script>' argument, which will reformat the text according to the specified
-    // format script.
+    // Prints some text into the target's chat area. If no target is specified it will default to the attached player or the console.
+    //
+    // Accepts the 'format:<script>' argument, which will reformat the text according to the specified format script.
+    //
+    // Optionally use 'per_player' with a list of player targets, to have the tags in the text input be reparsed for each and every player.
+    // So, for example, "- narrate 'hello <player.name>' targets:<server.list_online_players>"
+    // would normally say "hello bob" to every player (every player sees the exact same name in the text, ie bob sees "hello bob", steve also sees "hello bob", etc)
+    // but if you use "per_player", each player online would see their own name (so bob sees "hello bob", steve sees "hello steve", etc).
     //
     // @Tags
     // None
@@ -45,6 +50,10 @@ public class NarrateCommand extends AbstractCommand {
     // @Usage
     // Use to narrate text to a list of players.
     // - narrate "Hello there." targets:p@bob|p@steve|p@john
+    //
+    // @Usage
+    // Use to narrate text to a unique message to every player on the server.
+    // - narrate "Hello <player.name>, your secret code is <util.random.duuid>." targets:<server.list_online_players> per_player
     // -->
 
     @Override
