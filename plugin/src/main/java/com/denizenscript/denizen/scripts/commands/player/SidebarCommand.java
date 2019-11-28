@@ -139,6 +139,9 @@ public class SidebarCommand extends AbstractCommand {
                     && arg.matches("per_player")) {
                 scriptEntry.addObject("per_player", new ElementTag(true));
             }
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         if (action == Action.ADD && !scriptEntry.hasObject("value")) {
