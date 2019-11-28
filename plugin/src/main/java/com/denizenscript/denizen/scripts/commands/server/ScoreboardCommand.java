@@ -45,11 +45,13 @@ public class ScoreboardCommand extends AbstractCommand {
     //
     // If you do not specify a display slot, the sidebar will be used. You can also use "none" as the
     // display slot if you want to add a hidden objective without automatically making it get displayed.
+    // If the object already exists, and you don't specify the display slot, it will use the existing setting.
     //
     // When setting an objective, you can also optionally set the display name by using the "displayname:" argument.
     //
     // You can set scores manually, or you can use different Minecraft criteria that set and update the scores automatically.
     // A list of these criteria can be found here: <@link url http://minecraft.gamepedia.com/Scoreboard#Objectives>
+    // If the object already exists, and you don't specify the criteria, it will use the existing setting.
     //
     // You can use the "remove" argument to remove different parts of scoreboards.
     // The more arguments you use with it, the more specific your removal will be.
@@ -147,8 +149,6 @@ public class ScoreboardCommand extends AbstractCommand {
 
         scriptEntry.defaultObject("action", new ElementTag("add"));
         scriptEntry.defaultObject("id", new ElementTag("main"));
-        scriptEntry.defaultObject("criteria", new ElementTag("dummy"));
-        scriptEntry.defaultObject("displayslot", new ElementTag("sidebar"));
     }
 
     public static OfflinePlayer getOfflinePlayer(String name) {
@@ -178,6 +178,14 @@ public class ScoreboardCommand extends AbstractCommand {
         ElementTag displaySlot = scriptEntry.getElement("displayslot");
         ElementTag displayName = scriptEntry.getElement("displayname");
         Action act = Action.valueOf(action.asString().toUpperCase());
+        boolean hadCriteria = criteria != null;
+        boolean hadDisplaySlot = displaySlot != null;
+        if (!hadCriteria) {
+            criteria = new ElementTag("dummy");
+        }
+        if (!hadDisplaySlot) {
+            criteria = new ElementTag("sidebar");
+        }
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
@@ -225,6 +233,7 @@ public class ScoreboardCommand extends AbstractCommand {
             if (objective != null) {
                 // Try getting the objective from the board
                 obj = board.getObjective(objective.asString());
+                boolean existedAlready = obj != null;
 
                 // Create the objective if it does not already exist
                 if (obj == null) {
@@ -232,20 +241,21 @@ public class ScoreboardCommand extends AbstractCommand {
                 }
                 // If a different criteria has been set for this objective,
                 // recreate the objective
-                else if (criteria != null && !obj.getCriteria().equals(criteria.asString())) {
+                else if (hadCriteria && !obj.getCriteria().equals(criteria.asString())) {
                     obj.unregister();
                     obj = board.registerNewObjective(objective.asString(), criteria.asString());
                 }
 
                 // Change the objective's display slot
-                if (!displaySlot.asString().equalsIgnoreCase("none")) {
+                if ((!existedAlready || hadDisplaySlot) && !displaySlot.asString().equalsIgnoreCase("none")) {
                     obj.setDisplaySlot(DisplaySlot.valueOf(displaySlot.asString().toUpperCase()));
                 }
                 if (displayName != null) {
                     obj.setDisplayName(displayName.asString());
                 }
-
-                obj.setDisplayName(objective.asString());
+                else if (!existedAlready) {
+                    obj.setDisplayName(objective.asString());
+                }
 
                 if (!lines.isEmpty()) {
                     // If we've gotten this far, but the score is null,
