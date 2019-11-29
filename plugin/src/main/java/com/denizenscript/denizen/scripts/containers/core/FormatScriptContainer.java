@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
@@ -39,10 +39,8 @@ public class FormatScriptContainer extends ScriptContainer {
         return getString("format", "<text>");
     }
 
-    public String getFormattedText(ScriptEntry entry) {
-        return getFormattedText(entry.getElement("text").asString(),
-                ((BukkitScriptEntryData) entry.entryData).getNPC(),
-                ((BukkitScriptEntryData) entry.entryData).getPlayer());
+    public String getFormattedText(String text, ScriptEntry entry) {
+        return getFormattedText(text, Utilities.getEntryNPC(entry), Utilities.getEntryPlayer(entry));
     }
 
     public String getFormattedText(String textToReplace, NPCTag npc, PlayerTag player) {

@@ -110,7 +110,7 @@ public class NarrateCommand extends AbstractCommand {
 
         boolean perPlayer = perPlayerObj != null && perPlayerObj.asBoolean();
         BukkitTagContext context = new BukkitTagContext(scriptEntry, false);
-        if (!perPlayer) {
+        if (!perPlayer || targets == null) {
             text = TagManager.tag(text, context);
         }
 
@@ -124,7 +124,7 @@ public class NarrateCommand extends AbstractCommand {
 
         FormatScriptContainer format = formatObj == null ? null : (FormatScriptContainer) formatObj.getContainer();
         if (targets == null) {
-            Bukkit.getServer().getConsoleSender().sendMessage(format != null ? format.getFormattedText(scriptEntry) : text);
+            Bukkit.getServer().getConsoleSender().sendMessage(format != null ? format.getFormattedText(text, scriptEntry) : text);
             return;
         }
 
@@ -134,7 +134,7 @@ public class NarrateCommand extends AbstractCommand {
                 if (perPlayer) {
                     personalText = TagManager.tag(personalText, context);
                 }
-                player.getPlayerEntity().spigot().sendMessage(FormattedTextHelper.parse(format != null ? format.getFormattedText(scriptEntry) : personalText));
+                player.getPlayerEntity().spigot().sendMessage(FormattedTextHelper.parse(format != null ? format.getFormattedText(personalText, scriptEntry) : personalText));
             }
             else {
                 Debug.echoError("Narrated to non-existent or offline player!");
