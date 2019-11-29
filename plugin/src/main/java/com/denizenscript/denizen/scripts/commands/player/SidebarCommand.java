@@ -65,27 +65,31 @@ public class SidebarCommand extends AbstractCommand {
     // <PlayerTag.sidebar_scores>
     //
     // @Usage
-    // Show all online players a sidebar.
+    // Use to show all online players a sidebar.
     // - sidebar set "title:Hello World!" "values:This is|My Message!|Wee!" "players:<server.list_online_players>"
     //
     // @Usage
-    // Show a few players their ping.
-    // - sidebar set "title:Info" "value:Ping<&co> <player.ping>" "players:p@steve|p@bob|p@joe" per_player
+    // Use to show a few players their ping.
+    // - sidebar set "title:Info" "values:Ping<&co> <player.ping>" "players:p@steve|p@bob|p@joe" per_player
     //
     // @Usage
-    // Set a sidebar with the score values indicating information to the user.
-    // - sidebar set "scores:<server.list_online_players.size>|<server.max_players>" "value:Players online|Players allowed"
+    // Use to set a sidebar with the score values indicating information to the user.
+    // - sidebar set "scores:<server.list_online_players.size>|<server.max_players>" "values:Players online|Players allowed"
     //
     // @Usage
-    // Add a line to the bottom of the sidebar.
-    // - sidebar add "value:This is the bottom!"
+    // Use to change a specific line of a sidebar.
+    // - sidebar set_line scores:5 "values:Better message!"
     //
     // @Usage
-    // Remove multiple lines from the sidebar.
+    // Use to add a line to the bottom of the sidebar.
+    // - sidebar add "values:This is the bottom!"
+    //
+    // @Usage
+    // Use to remove multiple lines from the sidebar.
     // - sidebar remove "scores:2|4|6"
     //
     // @Usage
-    // Stop showing the sidebar.
+    // Use to stop showing the sidebar.
     // - sidebar remove
     // -->
 
