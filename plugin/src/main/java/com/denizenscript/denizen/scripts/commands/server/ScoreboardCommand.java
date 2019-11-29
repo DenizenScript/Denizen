@@ -94,7 +94,7 @@ public class ScoreboardCommand extends AbstractCommand {
     //
     // @Usage
     // Make all the players on the world "survival" see each other's number of entity kills in the player list when pressing Tab
-    // - scoreboard add "viewers:<w@survival.players>" id:test obj:anything criteria:totalKillCount displayslot:player_list
+    // - scoreboard add viewers:<world[survival].players> id:test obj:anything criteria:totalKillCount displayslot:player_list
     // -->
 
     private enum Action {ADD, REMOVE}

@@ -58,15 +58,15 @@ public class AdvancementCommand extends AbstractCommand {
     //
     // @Usage
     // Creates a new advancement that has a potato icon.
-    // - advancement "id:hello_world" "icon:baked_potato" "title:Hello World" "description:You said hello to the world."
+    // - advancement id:hello_world icon:baked_potato "title:Hello World" "description:You said hello to the world."
     //
     // @Usage
     // Creates a new advancement with the parent "hello_world" and a CHALLENGE frame. Hidden until it is completed.
-    // - advancement "id:hello_universe" "parent:hello_world" "icon:ender_pearl" "title:Hello Universe" "description:You said hello to the UNIVERSE." "frame:challenge" "hidden:true" "x:1"
+    // - advancement id:hello_universe parent:hello_world icon:ender_pearl "title:Hello Universe" "description:You said hello to the UNIVERSE." frame:challenge hidden:true x:1
     //
     // @Usage
     // Grants the "hello_world" advancement to the current player.
-    // - advancement "id:hello_world" "grant:<player>"
+    // - advancement id:hello_world grant:<player>
     //
     // -->
 

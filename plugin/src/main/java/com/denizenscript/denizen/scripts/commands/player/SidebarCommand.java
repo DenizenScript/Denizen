@@ -66,15 +66,15 @@ public class SidebarCommand extends AbstractCommand {
     //
     // @Usage
     // Use to show all online players a sidebar.
-    // - sidebar set "title:Hello World!" "values:This is|My Message!|Wee!" "players:<server.list_online_players>"
+    // - sidebar set "title:Hello World!" "values:This is|My Message!|Wee!" players:<server.list_online_players>
     //
     // @Usage
     // Use to show a few players their ping.
-    // - sidebar set "title:Info" "values:Ping<&co> <player.ping>" "players:p@steve|p@bob|p@joe" per_player
+    // - sidebar set title:Info "values:Ping<&co> <player.ping>" players:p@steve|p@bob|p@joe per_player
     //
     // @Usage
     // Use to set a sidebar with the score values indicating information to the user.
-    // - sidebar set "scores:<server.list_online_players.size>|<server.max_players>" "values:Players online|Players allowed"
+    // - sidebar set scores:<server.list_online_players.size>|<server.max_players> "values:Players online|Players allowed"
     //
     // @Usage
     // Use to change a specific line of a sidebar.
@@ -86,7 +86,7 @@ public class SidebarCommand extends AbstractCommand {
     //
     // @Usage
     // Use to remove multiple lines from the sidebar.
-    // - sidebar remove "scores:2|4|6"
+    // - sidebar remove scores:2|4|6
     //
     // @Usage
     // Use to stop showing the sidebar.
