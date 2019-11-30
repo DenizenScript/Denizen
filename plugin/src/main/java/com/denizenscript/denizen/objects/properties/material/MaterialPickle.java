@@ -61,7 +61,7 @@ public class MaterialPickle implements Property {
     }
 
     public int getMax() {
-        return getSeaPickle().getMinimumPickles();
+        return getSeaPickle().getMaximumPickles();
     }
 
     public int getMin() {
