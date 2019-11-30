@@ -538,14 +538,23 @@ public class ServerTagBase {
         }
 
         // <--[tag]
-        // @attribute <server.list_biomes>
-        // @returns ListTag
+        // @attribute <server.list_biome_types>
+        // @returns ListTag(BiomeTag)
         // @description
         // Returns a list of all biomes known to the server.
         // Generally used with <@link language BiomeTag Objects>.
-        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Biome.html>.
+        // This is based on Bukkit Biome enum, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Biome.html>.
         // -->
+        if (attribute.startsWith("list_biome_types")) {
+            ListTag allBiomes = new ListTag();
+            for (Biome biome : Biome.values()) {
+                allBiomes.addObject(new BiomeTag(biome));
+            }
+            event.setReplaced(allBiomes.getAttribute(attribute.fulfill(1)));
+        }
+
         if (attribute.startsWith("list_biomes")) {
+            Deprecations.serverListBiomeNames.warn(attribute.context);
             ListTag allBiomes = new ListTag();
             for (Biome biome : Biome.values()) {
                 allBiomes.add(biome.name());
@@ -602,14 +611,23 @@ public class ServerTagBase {
         }
 
         // <--[tag]
-        // @attribute <server.list_materials>
-        // @returns ListTag
+        // @attribute <server.list_material_types>
+        // @returns ListTag(MaterialTag)
         // @description
         // Returns a list of all materials known to the server.
         // Generally used with <@link language MaterialTag Objects>.
-        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html>.
+        // This is only types listed in the Bukkit Material enum, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html>.
         // -->
+        if (attribute.startsWith("list_material_types")) {
+            ListTag allMats = new ListTag();
+            for (Material mat : Material.values()) {
+                allMats.addObject(new MaterialTag(mat));
+            }
+            event.setReplaced(allMats.getAttribute(attribute.fulfill(1)));
+        }
+
         if (attribute.startsWith("list_materials")) {
+            Deprecations.serverListMaterialNames.warn(attribute.context);
             ListTag allMats = new ListTag();
             for (Material mat : Material.values()) {
                 allMats.add(mat.name());
