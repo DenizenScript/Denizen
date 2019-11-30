@@ -1647,6 +1647,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <EntityTag.item_in_hand>
         // @returns ItemTag
+        // @mechanism EntityTag.item_in_hand
         // @group inventory
         // @description
         // Returns the item the entity is holding, or air if none.
@@ -1658,6 +1659,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <EntityTag.item_in_offhand>
         // @returns ItemTag
+        // @mechanism EntityTag.item_in_offhand
         // @group inventory
         // @description
         // Returns the item the entity is holding in their off hand, or air if none.
@@ -1858,6 +1860,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @attribute <EntityTag.velocity>
         // @returns LocationTag
         // @group location
+        // @mechanism EntityTag.velocity
         // @description
         // Returns the movement velocity of the entity.
         // Note: Does not accurately calculate player clientside movement velocity.
@@ -1885,6 +1888,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <EntityTag.can_pickup_items>
         // @returns ElementTag(Boolean)
+        // @mechanism EntityTag.can_pickup_items
         // @group attributes
         // @description
         // Returns whether the entity can pick up items.
@@ -1913,6 +1917,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <EntityTag.fall_distance>
         // @returns ElementTag(Decimal)
+        // @mechanism EntityTag.fall_distance
         // @group attributes
         // @description
         // Returns how far the entity has fallen.
@@ -1924,6 +1929,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <EntityTag.fire_time>
         // @returns DurationTag
+        // @mechanism EntityTag.fire_time
         // @group attributes
         // @description
         // Returns the duration for which the entity will remain on fire
@@ -1946,6 +1952,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <EntityTag.leash_holder>
         // @returns EntityTag
+        // @mechanism EntityTag.leash_holder
         // @group attributes
         // @description
         // Returns the leash holder of entity.
@@ -1960,6 +1967,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <EntityTag.passengers>
         // @returns ListTag(EntityTag)
+        // @mechanism EntityTag.passengers
         // @group attributes
         // @description
         // Returns a list of the entity's passengers, if any.
@@ -1975,6 +1983,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <EntityTag.passenger>
         // @returns EntityTag
+        // @mechanism EntityTag.passenger
         // @group attributes
         // @description
         // Returns the entity's passenger, if any.
@@ -2001,6 +2010,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <EntityTag.left_shoulder>
         // @returns EntityTag
+        // @mechanism EntityTag.left_shoulder
         // @description
         // Returns the entity on the entity's left shoulder.
         // Only applies to player-typed entities.
@@ -2017,6 +2027,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <EntityTag.right_shoulder>
         // @returns EntityTag
+        // @mechanism EntityTag.right_shoulder
         // @description
         // Returns the entity on the entity's right shoulder.
         // Only applies to player-typed entities.
@@ -2047,6 +2058,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <EntityTag.can_breed>
         // @returns ElementTag(Boolean)
+        // @mechanism EntityTag.can_breed
         // @group attributes
         // @description
         // Returns whether the animal entity is capable of mating with another of its kind.
@@ -2069,6 +2081,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <EntityTag.has_passenger>
         // @returns ElementTag(Boolean)
+        // @mechanism EntityTag.passenger
         // @group attributes
         // @description
         // Returns whether the entity has a passenger.
@@ -2321,6 +2334,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <EntityTag.time_lived>
         // @returns DurationTag
+        // @mechanism EntityTag.time_lived
         // @group attributes
         // @description
         // Returns how long the entity has lived.
@@ -2332,6 +2346,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <EntityTag.pickup_delay>
         // @returns DurationTag
+        // @mechanism EntityTag.pickup_delay
         // @group attributes
         // @description
         // Returns how long before the item-type entity can be picked up by a player.
@@ -2538,6 +2553,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <EntityTag.experience>
         // @returns ElementTag(Number)
+        // @mechanism EntityTag.experience
         // @group properties
         // @description
         // Returns the experience value of this experience orb entity.
@@ -2552,6 +2568,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <EntityTag.fuse_ticks>
         // @returns ElementTag(Number)
+        // @mechanism EntityTag.fuse_ticks
         // @group properties
         // @description
         // Returns the number of ticks until the explosion of the primed TNT.
@@ -2565,7 +2582,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <EntityTag.dragon_phase>
-        // @returns ElementTag(Number)
+        // @returns ElementTag
+        // @mechanism EntityTag.dragon_phase
         // @group properties
         // @description
         // Returns the phase an EnderDragon is currently in.
@@ -2599,7 +2617,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <EntityTag.describe>
-        // @returns ElementTag(Boolean)
+        // @returns ElementTag
         // @group properties
         // @description
         // Returns the entity's full description, including all properties.

@@ -98,6 +98,7 @@ public class EntityHealth implements Property {
         // <--[tag]
         // @attribute <EntityTag.formatted_health>
         // @returns ElementTag
+        // @mechanism EntityTag.health_data
         // @group attributes
         // @description
         // Returns a formatted value of the player's current health level.
@@ -114,6 +115,7 @@ public class EntityHealth implements Property {
         // <--[tag]
         // @attribute <EntityTag.health_max>
         // @returns ElementTag(Decimal)
+        // @mechanism EntityTag.max_health
         // @group attributes
         // @description
         // Returns the maximum health of the entity.
@@ -131,6 +133,7 @@ public class EntityHealth implements Property {
         // <--[tag]
         // @attribute <EntityTag.health_percentage>
         // @returns ElementTag(Decimal)
+        // @mechanism EntityTag.health
         // @group attributes
         // @description
         // Returns the entity's current health as a percentage.
@@ -156,6 +159,7 @@ public class EntityHealth implements Property {
         // <--[tag]
         // @attribute <EntityTag.health>
         // @returns ElementTag(Decimal)
+        // @mechanism EntityTag.health
         // @group attributes
         // @description
         // Returns the current health of the entity.

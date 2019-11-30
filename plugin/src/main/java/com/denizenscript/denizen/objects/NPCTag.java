@@ -505,12 +505,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                     .getNickname() : object.getName());
         });
 
-        // <--[tag]
-        // @attribute <NPCTag.name>
-        // @returns ElementTag
-        // @description
-        // Returns the name of the NPC.
-        // -->
+        // Documented in EntityTag
         registerTag("name", (attribute, object) -> {
             if (attribute.startsWith("nickname", 2)) {
                 Deprecations.npcNicknameTag.warn(attribute.context);
@@ -830,6 +825,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.owner>
         // @returns PlayerTag/Element
+        // @mechanism NPCTag.owner
         // @description
         // Returns the owner of the NPC as a PlayerTag if it's a player, otherwise as just the name.
         // -->
@@ -850,6 +846,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.has_skin>
         // @returns ElementTag
+        // @mechanism NPCTag.skin
         // @description
         // Returns whether the NPC has a custom skinskin.
         // -->
@@ -860,6 +857,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.skin_blob>
         // @returns ElementTag
+        // @mechanism NPCTag.skin_blob
         // @description
         // Returns the NPC's custom skin blob, if any.
         // -->
@@ -878,6 +876,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.skin>
         // @returns ElementTag
+        // @mechanism NPCTag.skin
         // @description
         // Returns the NPC's custom skin, if any.
         // -->
@@ -921,8 +920,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.lookclose>
         // @returns ElementTag(Boolean)
+        // @mechanism NPCTag.lookclose
         // @description
-        // Returns the NPC's "lookclose" value.
+        // Returns whether the NPC has lookclose enabled.
         // -->
         registerTag("lookclose", (attribute, object) -> {
             NPC citizen = object.getCitizen();
@@ -1009,6 +1009,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.speed>
         // @returns ElementTag(Decimal)
+        // @mechanism NPCTag.speed
         // @description
         // Returns the current speed of the NPC.
         // -->
@@ -1019,6 +1020,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.range>
         // @returns ElementTag(Decimal)
+        // @mechanism NPCTag.range
         // @description
         // Returns the NPC's current maximum pathfinding range.
         // -->
@@ -1029,6 +1031,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.attack_range>
         // @returns ElementTag(Decimal)
+        // @mechanism NPCTag.attack_range
         // @description
         // Returns the NPC's current navigator attack range limit.
         // -->

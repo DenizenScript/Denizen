@@ -1120,6 +1120,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <PlayerTag.exhaustion>
         // @returns ElementTag(Decimal)
+        // @mechanism PlayerTag.exhaustion
         // @description
         // Returns how fast the food level drops (exhaustion).
         // -->
@@ -1154,6 +1155,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <PlayerTag.health_scale>
         // @returns ElementTag(Decimal)
+        // @mechanism PlayerTag.health_scale
         // @description
         // Returns the current scale for the player's health bar
         // -->
@@ -1540,6 +1542,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <PlayerTag.display_name>
         // @returns ElementTag
+        // @mechanism PlayerTag.display_name
         // @description
         // Returns the display name of the player, which may contain
         // prefixes and suffixes, colors, etc.
@@ -1548,13 +1551,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             return new ElementTag(object.getPlayerEntity().getDisplayName());
         });
 
-        // <--[tag]
-        // @attribute <PlayerTag.name>
-        // @returns ElementTag
-        // @description
-        // Returns the name of the player.
-        // Works with offline players.
-        // -->
+        // Documented in EntityTag
         registerTag("name", (attribute, object) -> {
             if (attribute.startsWith("list", 2) && object.isOnline()) {
                 Deprecations.playerNameTags.warn(attribute.context);
@@ -1775,6 +1772,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <PlayerTag.attack_cooldown_duration>
         // @returns DurationTag
+        // @mechanism PlayerTag.attack_cooldown
         // @description
         // Returns the amount of time that passed since the start of the attack cooldown.
         // -->
@@ -1785,6 +1783,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <PlayerTag.attack_cooldown_max_duration>
         // @returns DurationTag
+        // @mechanism PlayerTag.attack_cooldown
         // @description
         // Returns the maximum amount of time that can pass before the player's main hand has returned
         // to its original place after the cooldown has ended.
@@ -1798,6 +1797,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <PlayerTag.attack_cooldown_percent>
         // @returns ElementTag(Decimal)
+        // @mechanism PlayerTag.attack_cooldown_percent
         // @description
         // Returns the progress of the attack cooldown. 0 means that the attack cooldown has just
         // started, while 100 means that the attack cooldown has finished.
@@ -1967,6 +1967,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <PlayerTag.fly_speed>
         // @returns ElementTag(Decimal)
+        // @mechanism PlayerTag.fly_speed
         // @description
         // Returns the speed the player can fly at.
         // -->
@@ -1975,8 +1976,20 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
+        // @attribute <PlayerTag.walk_speed>
+        // @returns ElementTag(Decimal)
+        // @mechanism PlayerTag.walk_speed
+        // @description
+        // Returns the speed the player can walk at.
+        // -->
+        registerOnlineOnlyTag("walk_speed", (attribute, object) -> {
+            return new ElementTag(object.getPlayerEntity().getWalkSpeed());
+        });
+
+        // <--[tag]
         // @attribute <PlayerTag.saturation>
         // @returns ElementTag(Decimal)
+        // @mechanism PlayerTag.saturation
         // @description
         // Returns the current saturation of the player.
         // -->
@@ -1987,6 +2000,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <PlayerTag.formatted_food_level[(<max>)]>
         // @returns ElementTag
+        // @mechanism PlayerTag.food_level
         // @description
         // Returns a 'formatted' value of the player's current food level.
         // May be 'starving', 'famished', 'parched, 'hungry', or 'healthy'.
@@ -2018,6 +2032,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <PlayerTag.food_level>
         // @returns ElementTag(Number)
+        // @mechanism PlayerTag.food_level
         // @description
         // Returns the current food level of the player.
         // -->
@@ -2052,6 +2067,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <PlayerTag.gamemode>
         // @returns ElementTag
+        // @mechanism PlayerTag.gamemode
         // @description
         // Returns the name of the gamemode the player is currently set to.
         // -->
@@ -2231,6 +2247,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <PlayerTag.time>
         // @returns ElementTag(Number)
+        // @mechanism PlayerTag.time
         // @description
         // Returns the time the player is currently experiencing. This time could differ from
         // the time that the rest of the world is currently experiencing if a 'time' or 'freeze_time'
@@ -2238,16 +2255,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // -->
         registerOnlineOnlyTag("time", (attribute, object) -> {
             return new ElementTag(object.getPlayerEntity().getPlayerTime());
-        });
-
-        // <--[tag]
-        // @attribute <PlayerTag.walk_speed>
-        // @returns ElementTag(Decimal)
-        // @description
-        // Returns the speed the player can walk at.
-        // -->
-        registerOnlineOnlyTag("walk_speed", (attribute, object) -> {
-            return new ElementTag(object.getPlayerEntity().getWalkSpeed());
         });
 
         // <--[tag]
@@ -3536,6 +3543,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @input Element
         // @description
         // Changes the name on this player's nameplate.
+        // @tags
+        // <PlayerTag.name>
         // -->
         if (mechanism.matches("name")) {
             String name = mechanism.getValue().asString();
@@ -3571,6 +3580,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @input Element
         // @description
         // Changes the skin of the player to the specified blob.
+        // @tags
+        // <PlayerTag.skin_blob>
         // -->
         if (mechanism.matches("skin_blob")) {
             NMSHandler.getInstance().getProfileEditor().setPlayerSkinBlob(getPlayerEntity(), mechanism.getValue().asString());

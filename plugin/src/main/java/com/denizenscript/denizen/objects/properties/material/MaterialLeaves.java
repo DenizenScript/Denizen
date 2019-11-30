@@ -41,6 +41,7 @@ public class MaterialLeaves implements Property {
         // <--[tag]
         // @attribute <MaterialTag.persistent>
         // @returns ElementTag(Boolean)
+        // @mechanism MaterialTag.persistent
         // @group properties
         // @description
         // Returns whether this block will decay from being too far away from a tree.

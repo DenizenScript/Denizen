@@ -82,6 +82,7 @@ public class EntityVisible implements Property {
         // <--[tag]
         // @attribute <EntityTag.visible>
         // @returns ElementTag(Boolean)
+        // @mechanism EntityTag.visible
         // @group attributes
         // @description
         // Returns whether the armor stand is visible.

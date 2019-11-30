@@ -180,6 +180,7 @@ public class BiomeTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <BiomeTag.humidity>
         // @returns ElementTag(Decimal)
+        // @mechanism BiomeTag.humidity
         // @description
         // Returns the humidity of this biome.
         // -->
@@ -189,6 +190,7 @@ public class BiomeTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <BiomeTag.temperature>
         // @returns ElementTag(Decimal)
+        // @mechanism BiomeTag.temperature
         // @description
         // Returns the temperature of this biome.
         // -->

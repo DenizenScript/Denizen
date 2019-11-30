@@ -150,6 +150,7 @@ public class EntityEquipment implements Property {
         // <--[tag]
         // @attribute <EntityTag.equipment>
         // @returns ListTag
+        // @mechanism EntityTag.equipment
         // @group inventory
         // @description
         // Returns a ListTag containing the entity's equipment.

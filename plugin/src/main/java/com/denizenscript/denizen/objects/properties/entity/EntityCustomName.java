@@ -60,6 +60,7 @@ public class EntityCustomName implements Property {
         // <--[tag]
         // @attribute <EntityTag.custom_name_visible>
         // @returns ElementTag(Boolean)
+        // @mechanism EntityTag.custom_name_visible
         // @group attributes
         // @description
         // Returns true if the entity's custom name is visible.
@@ -75,6 +76,7 @@ public class EntityCustomName implements Property {
         // <--[tag]
         // @attribute <EntityTag.custom_name>
         // @returns ElementTag
+        // @mechanism EntityTag.custom_name
         // @group attributes
         // @description
         // Returns the entity's custom name, if any.

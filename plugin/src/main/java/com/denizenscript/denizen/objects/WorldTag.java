@@ -376,6 +376,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <WorldTag.spawn_location>
         // @returns LocationTag
+        // @mechanism WorldTag.spawn_location
         // @description
         // Returns the spawn location of the world.
         // -->
@@ -457,6 +458,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <WorldTag.auto_save>
         // @returns ElementTag(Boolean)
+        // @mechanism WorldTag.auto_save
         // @description
         // Returns whether the world automatically saves.
         // -->
@@ -467,6 +469,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <WorldTag.ambient_spawn_limit>
         // @returns ElementTag(Number)
+        // @mechanism WorldTag.ambient_spawn_limit
         // @description
         // Returns the number of ambient mobs that can spawn in a chunk in this world.
         // -->
@@ -477,6 +480,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <WorldTag.animal_spawn_limit>
         // @returns ElementTag(Number)
+        // @mechanism WorldTag.animal_spawn_limit
         // @description
         // Returns the number of animals that can spawn in a chunk in this world.
         // -->
@@ -487,6 +491,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <WorldTag.monster_spawn_limit>
         // @returns ElementTag(Number)
+        // @mechanism WorldTag.monster_spawn_limit
         // @description
         // Returns the number of monsters that can spawn in a chunk in this world.
         // -->
@@ -497,6 +502,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <WorldTag.water_animal_spawn_limit>
         // @returns ElementTag(Number)
+        // @mechanism WorldTag.water_animal_spawn_limit
         // @description
         // Returns the number of water animals that can spawn in a chunk in this world.
         // -->
@@ -507,6 +513,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <WorldTag.difficulty>
         // @returns ElementTag
+        // @mechanism WorldTag.difficulty
         // @description
         // Returns the name of the difficulty level.
         // -->
@@ -517,6 +524,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <WorldTag.keep_spawn>
         // @returns ElementTag(Boolean)
+        // @mechanism WorldTag.keep_spawn
         // @description
         // Returns whether the world's spawn area should be kept loaded into memory.
         // -->
@@ -563,6 +571,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <WorldTag.time>
         // @returns ElementTag(Number)
+        // @mechanism WorldTag.time
         // @description
         // Returns the relative in-game time of this world.
         // -->
@@ -649,6 +658,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <WorldTag.thunder_duration>
         // @returns DurationTag
+        // @mechanism WorldTag.thunder_duration
         // @description
         // Returns the duration of thunder.
         // -->
@@ -659,6 +669,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <WorldTag.thundering>
         // @returns ElementTag(Boolean)
+        // @mechanism WorldTag.thundering
         // @description
         // Returns whether it is currently thundering in this world.
         // -->
@@ -669,6 +680,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <WorldTag.weather_duration>
         // @returns DurationTag
+        // @mechanism WorldTag.weather_duration
         // @description
         // Returns the duration of storms.
         // -->

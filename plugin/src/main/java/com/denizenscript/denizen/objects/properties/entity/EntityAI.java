@@ -72,6 +72,7 @@ public class EntityAI implements Property {
         // <--[tag]
         // @attribute <EntityTag.has_ai>
         // @returns ElementTag(Boolean)
+        // @mechanism EntityTag.has_ai
         // @group attributes
         // @description
         // Returns whether the entity uses the default Minecraft AI to roam and look around.

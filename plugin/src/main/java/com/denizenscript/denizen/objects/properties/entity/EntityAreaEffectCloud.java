@@ -87,6 +87,7 @@ public class EntityAreaEffectCloud implements Property {
         // <--[tag]
         // @attribute <EntityTag.base_potion>
         // @returns ElementTag
+        // @mechanism EntityTag.base_potion
         // @group properties
         // @description
         // Returns the Area Effect Cloud's base potion data.
@@ -138,6 +139,7 @@ public class EntityAreaEffectCloud implements Property {
         // <--[tag]
         // @attribute <EntityTag.particle>
         // @returns ElementTag
+        // @mechanism EntityTag.particle
         // @group properties
         // @description
         // Returns the Area Effect Cloud's particle.
@@ -164,6 +166,7 @@ public class EntityAreaEffectCloud implements Property {
         // <--[tag]
         // @attribute <EntityTag.duration>
         // @returns DurationTag
+        // @mechanism EntityTag.duration
         // @group properties
         // @description
         // Returns the Area Effect Cloud's duration.
@@ -191,6 +194,7 @@ public class EntityAreaEffectCloud implements Property {
         // <--[tag]
         // @attribute <EntityTag.radius>
         // @returns ElementTag(Decimal)
+        // @mechanism EntityTag.radius
         // @group properties
         // @description
         // Returns the Area Effect Cloud's radius.
@@ -231,6 +235,7 @@ public class EntityAreaEffectCloud implements Property {
         // <--[tag]
         // @attribute <EntityTag.reapplication_delay>
         // @returns DurationTag
+        // @mechanism EntityTag.reapplication_delay
         // @group properties
         // @description
         // Returns the duration an entity will be immune
@@ -244,6 +249,7 @@ public class EntityAreaEffectCloud implements Property {
         // <--[tag]
         // @attribute <EntityTag.wait_time>
         // @returns DurationTag
+        // @mechanism EntityTag.wait_time
         // @group properties
         // @description
         // Returns the duration an entity must be exposed to
@@ -257,6 +263,7 @@ public class EntityAreaEffectCloud implements Property {
         // <--[tag]
         // @attribute <EntityTag.has_custom_effect[<effect>]>
         // @returns ElementTag(Boolean)
+        // @mechanism EntityTag.custom_effects
         // @group properties
         // @description
         // Returns whether the Area Effect Cloud has a specified effect.
@@ -281,6 +288,7 @@ public class EntityAreaEffectCloud implements Property {
         // <--[tag]
         // @attribute <EntityTag.source>
         // @returns EntityTag
+        // @mechanism EntityTag.source
         // @group properties
         // @description
         // Returns the source of the Area Effect Cloud.
@@ -296,6 +304,7 @@ public class EntityAreaEffectCloud implements Property {
         // <--[tag]
         // @attribute <EntityTag.custom_effects>
         // @returns ListTag
+        // @mechanism EntityTag.custom_effects
         // @group properties
         // @description
         // Returns a ListTag of the Area Effect Cloud's custom effects

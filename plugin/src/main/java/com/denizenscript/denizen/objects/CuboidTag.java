@@ -1029,6 +1029,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // <--[tag]
         // @attribute <CuboidTag.add_member[<cuboid>]>
         // @returns CuboidTag
+        // @mechanism CuboidTag.add_member
         // @description
         // Returns a modified copy of this cuboid, with the input cuboid added at the end.
         // -->
@@ -1051,6 +1052,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
             // <--[tag]
             // @attribute <CuboidTag.add_member[<cuboid>].at[<index>]>
             // @returns CuboidTag
+            // @mechanism CuboidTag.add_member
             // @description
             // Returns a modified copy of this cuboid, with the input cuboid added at the specified index.
             // -->
@@ -1076,6 +1078,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // <--[tag]
         // @attribute <CuboidTag.remove_member[<#>]>
         // @returns CuboidTag
+        // @mechanism CuboidTag.remove_member
         // @description
         // Returns a modified copy of this cuboid, with member at the input index removed.
         // -->

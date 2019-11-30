@@ -786,6 +786,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <--[tag]
         // @attribute <LocationTag.block_facing>
         // @returns LocationTag
+        // @mechanism LocationTag.block_facing
         // @description
         // Returns the relative location vector of where this block is facing.
         // Only works for block types that have directionality (such as signs, chests, stairs, etc.).
@@ -987,6 +988,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
         // <--[tag]
         // @attribute <LocationTag.base_color>
+        // @mechanism LocationTag.base_color
         // @returns ElementTag
         // @description
         // Returns the base color of the banner at this location.
@@ -1176,6 +1178,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <--[tag]
         // @attribute <LocationTag.flowerpot_contents>
         // @returns ElementTag
+        // @mechanism LocationTag.flowerpot_contents
         // @description
         // Returns the flower pot contents at the location.
         // NOTE: Replaced by materials (such as POTTED_CACTUS) in 1.13 and above.

@@ -88,6 +88,7 @@ public class EntityArmorPose implements Property {
         // <--[tag]
         // @attribute <EntityTag.armor_pose_list>
         // @returns ListTag
+        // @mechanism EntityTag.armor_pose
         // @group attributes
         // @description
         // Returns a list of all poses and angles for the armor stand in the
@@ -102,6 +103,7 @@ public class EntityArmorPose implements Property {
         // <--[tag]
         // @attribute <EntityTag.armor_pose[<part>]>
         // @returns LocationTag
+        // @mechanism EntityTag.armor_pose
         // @group attributes
         // @description
         // Returns the current angle pose for the specified part.

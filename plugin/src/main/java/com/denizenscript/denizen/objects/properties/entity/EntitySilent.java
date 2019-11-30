@@ -70,6 +70,7 @@ public class EntitySilent implements Property {
         // <--[tag]
         // @attribute <EntityTag.silent>
         // @returns ElementTag(Boolean)
+        // @mechanism EntityTag.silent
         // @group attributes
         // @description
         // Returns whether the entity is silent. (Plays no sounds)

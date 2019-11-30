@@ -2261,6 +2261,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // <--[tag]
         // @attribute <InventoryTag.matrix>
         // @returns ListTag(ItemTag)
+        // @mechanism InventoryTag.matrix
         // @description
         // Returns the items currently in a crafting inventory's matrix.
         // -->
@@ -2283,6 +2284,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // <--[tag]
         // @attribute <InventoryTag.result>
         // @returns ItemTag
+        // @mechanism InventoryTag.result
         // @description
         // Returns the item currently in the result section of a crafting inventory or furnace inventory.
         // -->
