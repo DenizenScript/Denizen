@@ -57,7 +57,7 @@ public class MaterialLightable implements Property {
 
     @Override
     public String getPropertyString() {
-        return getLightable().isLit() ? "true" : "false";
+        return String.valueOf(getLightable().isLit());
     }
 
     @Override

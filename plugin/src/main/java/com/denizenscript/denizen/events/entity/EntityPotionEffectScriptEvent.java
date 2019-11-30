@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizen.objects.properties.entity.EntityPotionEffects;
+import com.denizenscript.denizen.objects.properties.item.ItemPotion;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -131,10 +131,10 @@ public class EntityPotionEffectScriptEvent extends BukkitScriptEvent implements 
             return new ElementTag(event.isOverride());
         }
         else if (name.equals("new_effect") && event.getNewEffect() != null) {
-            return new ElementTag(EntityPotionEffects.stringify(event.getNewEffect()));
+            return new ElementTag(ItemPotion.stringifyEffect(event.getNewEffect()));
         }
         else if (name.equals("old_effect") && event.getOldEffect() != null) {
-            return new ElementTag(EntityPotionEffects.stringify(event.getOldEffect()));
+            return new ElementTag(ItemPotion.stringifyEffect(event.getOldEffect()));
         }
         return super.getContext(name);
     }
