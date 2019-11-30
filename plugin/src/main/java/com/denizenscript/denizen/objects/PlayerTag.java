@@ -837,11 +837,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <PlayerTag.money>
         // @returns ElementTag(Decimal)
+        // @mechanism PlayerTag.money
         // @plugin Vault
         // @description
         // Returns the amount of money the player has with the registered Economy system.
         // May work offline depending on economy provider.
-        // @mechanism PlayerTag.money
         // -->
         registerTag("money", (attribute, object) -> {
             if (Depends.economy == null) {
@@ -1034,11 +1034,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <PlayerTag.bed_spawn>
         // @returns LocationTag
+        // @mechanism PlayerTag.bed_spawn_location
         // @description
         // Returns the location of the player's bed spawn location, null if
         // it doesn't exist.
         // Works with offline players.
-        // @mechanism PlayerTag.bed_spawn_location
         // -->
         registerTag("bed_spawn", (attribute, object) -> {
             try {
@@ -1109,9 +1109,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <PlayerTag.absorption_health>
         // @returns ElementTag(Decimal)
+        // @mechanism PlayerTag.absorption_health
         // @description
         // Returns the player's absorption health.
-        // @mechanism PlayerTag.absorption_health
         // -->
         registerTag("absorption_health", (attribute, object) -> {
             return new ElementTag(NMSHandler.getPlayerHelper().getAbsorption(object.getPlayerEntity()));
@@ -1247,10 +1247,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <PlayerTag.is_op>
         // @returns ElementTag(Boolean)
+        // @mechanism PlayerTag.is_op
         // @description
         // Returns whether the player is a full server operator.
         // Works with offline players.
-        // @mechanism PlayerTag.is_op
         // -->
         registerTag("is_op", (attribute, object) -> {
             return new ElementTag(object.getOfflinePlayer().isOp());
@@ -1259,10 +1259,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <PlayerTag.is_whitelisted>
         // @returns ElementTag(Boolean)
+        // @mechanism PlayerTag.is_whitelisted
         // @description
         // Returns whether the player is whitelisted.
         // Works with offline players.
-        // @mechanism PlayerTag.is_whitelisted
         // -->
         registerTag("is_whitelisted", (attribute, object) -> {
             return new ElementTag(object.getOfflinePlayer().isWhitelisted());
@@ -1956,9 +1956,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <PlayerTag.can_fly>
         // @returns ElementTag(Boolean)
+        // @mechanism PlayerTag.can_fly
         // @description
         // Returns whether the player is allowed to fly.
-        // @mechanism PlayerTag.can_fly
         // -->
         registerOnlineOnlyTag("can_fly", (attribute, object) -> {
             return new ElementTag(object.getPlayerEntity().getAllowFlight());
@@ -2334,11 +2334,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @attribute <PlayerTag.chat_prefix>
         // @returns ElementTag
         // @plugin Vault
+        // @mechanism PlayerTag.chat_prefix
         // @description
         // Returns the player's chat prefix.
         // NOTE: May work with offline players.
         // Requires a Vault-compatible chat plugin.
-        // @mechanism PlayerTag.chat_prefix
         // -->
         registerTag("chat_prefix", (attribute, object) -> {
             if (Depends.chat == null) {
@@ -2358,11 +2358,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @attribute <PlayerTag.chat_suffix>
         // @returns ElementTag
         // @plugin Vault
+        // @mechanism PlayerTag.chat_suffix
         // @description
         // Returns the player's chat suffix.
         // NOTE: May work with offline players.
         // Requires a Vault-compatible chat plugin.
-        // @mechanism PlayerTag.chat_suffix
         // -->
         registerTag("chat_suffix", (attribute, object) -> {
             if (Depends.chat == null) {

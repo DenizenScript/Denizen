@@ -1063,9 +1063,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <--[tag]
         // @attribute <LocationTag.head_rotation>
         // @returns ElementTag(Number)
+        // @mechanism LocationTag.head_rotation
         // @description
         // Gets the rotation of the head at this location. Can be 1-16.
-        // @mechanism LocationTag.head_rotation
         // -->
         registerTag("head_rotation", (attribute, object) -> {
             return new ElementTag(object.getSkullRotation(((Skull) object.getBlockStateForTag(attribute)).getRotation()) + 1);
