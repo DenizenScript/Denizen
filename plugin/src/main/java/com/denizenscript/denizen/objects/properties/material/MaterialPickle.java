@@ -45,6 +45,7 @@ public class MaterialPickle implements Property {
         // @group properties
         // @description
         // Returns the amount of pickles in a Sea Pickle material.
+        // @mechanism MaterialTag.pickle_count
         // -->
         PropertyParser.<MaterialPickle>registerTag("pickle_count", (attribute, material) -> {
             return new ElementTag(material.getCurrent());
@@ -67,7 +68,6 @@ public class MaterialPickle implements Property {
         // @group properties
         // @description
         // Returns the minimum amount of pickles allowed in a Sea Pickle material.
-        // @mechanism MaterialTag.pickle_count
         // -->
         PropertyParser.<MaterialPickle>registerTag("pickle_min", (attribute, material) -> {
             return new ElementTag(material.getMin());
