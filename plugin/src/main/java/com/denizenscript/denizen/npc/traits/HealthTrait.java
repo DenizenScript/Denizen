@@ -48,7 +48,7 @@ public class HealthTrait extends Trait implements Listener {
     // <@link tag EntityTag.formatted_health>
     // <@link tag EntityTag.health_max>
     // <@link tag EntityTag.health_percentage>
-    // <@link tag EntityTag.has_trait[health]>
+    // <@link tag NPCTag.has_trait[health]>
     //
     // Related Mechanisms
     // <@link mechanism EntityTag.health>
