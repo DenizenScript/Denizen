@@ -53,7 +53,7 @@ public class MaterialPickle implements Property {
         // @returns ElementTag(Number)
         // @group properties
         // @description
-        // Returns the the amount of pickles in a Sea Pickle material.
+        // Returns the amount of pickles in a Sea Pickle material.
         // -->
         if (attribute.startsWith("pickle_count")) {
             return new ElementTag(getCurrent()).getObjectAttribute(attribute.fulfill(1));
