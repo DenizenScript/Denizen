@@ -113,7 +113,6 @@ public class ItemColor implements Property {
         // Sets the leather armor item's dye color or the potion item's color in the format RED,GREEN,BLUE.
         // @tags
         // <ItemTag.color>
-        // <ItemTag.dye_color>
         // -->
         if ((mechanism.matches("dye") || mechanism.matches("dye_color")
                 || mechanism.matches("color")) && (mechanism.requireObject(ColorTag.class))) {

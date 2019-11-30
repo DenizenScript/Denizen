@@ -202,7 +202,7 @@ public class EntityAge implements Property {
         // <EntityTag.age>
         // <EntityTag.is_baby>
         // <EntityTag.is_age_locked>
-        // <EntityTag.is_ageable>
+        // <EntityTag.ageable>
         // -->
 
         if (mechanism.matches("age_lock")
@@ -224,7 +224,7 @@ public class EntityAge implements Property {
         // <EntityTag.age>
         // <EntityTag.is_baby>
         // <EntityTag.is_age_locked>
-        // <EntityTag.is_ageable>
+        // <EntityTag.ageable>
         // -->
 
         if (mechanism.matches("age")) {

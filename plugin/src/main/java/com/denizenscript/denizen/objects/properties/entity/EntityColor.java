@@ -202,7 +202,7 @@ public class EntityColor implements Property {
         // For the available color options, refer to <@link language Entity Color Types>.
         // @tags
         // <EntityTag.color>
-        // <EntityTag.is_colorable>
+        // <EntityTag.colorable>
         // -->
 
         if (mechanism.matches("color")) {

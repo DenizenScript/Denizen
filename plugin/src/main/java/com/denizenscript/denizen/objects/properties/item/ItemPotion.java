@@ -123,7 +123,7 @@ public class ItemPotion implements Property {
         // <--[tag]
         // @attribute <ItemTag.has_potion_effect>
         // @returns ElementTag(Boolean)
-        // @mechanism ItemTag.potion
+        // @mechanism ItemTag.potion_effects
         // @description
         // Returns whether the potion has a potion effect.
         // -->

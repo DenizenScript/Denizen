@@ -26,10 +26,12 @@ public class RemoveCommand extends AbstractCommand {
     // @Group entity
     // @Description
     // Removes the selected entity. May also take a list of entities to remove.
+    //
     // Any NPC removed this way is completely removed, as if by '/npc remove'.
-    // If a generic entity name is given (see: <@link language entities>)
-    // it will remove all entities of that type from the given world.
-    // Optionally, you may specifiy a world to target.
+    // For temporary NPC removal, see <@link command despawn>.
+    //
+    // If a generic entity name is given (like 'zombie'), this will remove all entities of that type from the given world.
+    // Optionally, you may specify a world to target.
     // (Defaults to the world of the player running the command)
     //
     // @Tags

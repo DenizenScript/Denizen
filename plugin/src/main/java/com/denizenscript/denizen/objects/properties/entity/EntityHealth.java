@@ -120,7 +120,7 @@ public class EntityHealth implements Property {
         // -->
         if (attribute.startsWith("health_max")) {
             return new ElementTag(entity.getLivingEntity().getMaxHealth())
-                    .getObjectAttribute(attribute.fulfill(2));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
         if (attribute.startsWith("health.max")) {
             Deprecations.entityHealthTags.warn(attribute.context);
@@ -137,11 +137,11 @@ public class EntityHealth implements Property {
         // -->
         if (attribute.startsWith("health_percentage")) {
             double maxHealth = entity.getLivingEntity().getMaxHealth();
-            if (attribute.hasContext(2)) {
-                maxHealth = attribute.getIntContext(2);
+            if (attribute.hasContext(1)) {
+                maxHealth = attribute.getIntContext(1);
             }
             return new ElementTag((entity.getLivingEntity().getHealth() / maxHealth) * 100)
-                    .getObjectAttribute(attribute.fulfill(2));
+                    .getObjectAttribute(attribute.fulfill(1));
         }
         if (attribute.startsWith("health.percentage")) {
             Deprecations.entityHealthTags.warn(attribute.context);
@@ -180,7 +180,7 @@ public class EntityHealth implements Property {
         // The entity must be living.
         // @tags
         // <EntityTag.health>
-        // <EntityTag.health.max>
+        // <EntityTag.health_max>
         // -->
         if (mechanism.matches("max_health") && mechanism.requireDouble()) {
             if (entity.isCitizensNPC()) {
@@ -209,7 +209,7 @@ public class EntityHealth implements Property {
         // The entity must be living.
         // @tags
         // <EntityTag.health>
-        // <EntityTag.health.max>
+        // <EntityTag.health_max>
         // -->
         if (mechanism.matches("health_data")) {
             if (entity.isLivingEntity()) {
@@ -231,7 +231,7 @@ public class EntityHealth implements Property {
         // The entity must be living.
         // @tags
         // <EntityTag.health>
-        // <EntityTag.health.max>
+        // <EntityTag.health_max>
         // -->
         if (mechanism.matches("health") && mechanism.requireDouble()) {
             if (entity.isLivingEntity()) {

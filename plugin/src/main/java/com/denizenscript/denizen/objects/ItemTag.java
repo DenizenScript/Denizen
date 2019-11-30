@@ -685,8 +685,8 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Returns whether the item can be repaired.
         // If this returns true, it will enable access to:
-        // <@link mechanism ItemTag.durability>, <@link tag ItemTag.max_durability>,
-        // and <@link tag ItemTag.durability>
+        // <@link mechanism ItemTag.durability>,
+        // <@link tag ItemTag.max_durability>, and <@link tag ItemTag.durability>.
         // -->
         registerTag("repairable", (attribute, object) -> {
             return new ElementTag(ItemDurability.describes(object));
@@ -699,7 +699,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Returns whether the item is a growable crop.
         // If this returns true, it will enable access to:
-        // <@link mechanism ItemTag.plant_growth> and <@link tag ItemTag.plant_growth>
+        // <@link mechanism ItemTag.plant_growth> and <@link tag ItemTag.plant_growth>.
         // -->
         registerTag("is_crop", (attribute, object) -> {
             return new ElementTag(ItemPlantgrowth.describes(object));
@@ -712,10 +712,8 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Returns whether the item is considered an editable book.
         // If this returns true, it will enable access to:
-        // <@link mechanism ItemTag.book>, <@link tag ItemTag.book>,
-        // <@link tag ItemTag.book.author>, <@link tag ItemTag.book.title>,
-        // <@link tag ItemTag.book.page_count>, <@link tag ItemTag.book.page[<#>]>,
-        // and <@link tag ItemTag.book.pages>
+        // <@link mechanism ItemTag.book>,
+        // <@link tag ItemTag.book_author>, <@link tag ItemTag.book_title>, and <@link tag ItemTag.book_pages>.
         // -->
         registerTag("is_book", (attribute, object) -> {
             return new ElementTag(ItemBook.describes(object));
@@ -725,9 +723,10 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         // @attribute <ItemTag.is_colorable>
         // @returns ElementTag(Boolean)
         // @group properties
+        // @description
         // Returns whether the item can have a custom color.
         // If this returns true, it will enable access to:
-        // <@link mechanism ItemTag.color>, and <@link tag ItemTag.color>
+        // <@link mechanism ItemTag.color>, and <@link tag ItemTag.color>.
         // -->
         registerTag("is_colorable", (attribute, object) -> {
             return new ElementTag(ItemColor.describes(object));
@@ -741,9 +740,10 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         // @attribute <ItemTag.is_firework>
         // @returns ElementTag(Boolean)
         // @group properties
+        // @description
         // Returns whether the item is a firework.
         // If this returns true, it will enable access to:
-        // <@link mechanism ItemTag.firework>, and <@link tag ItemTag.firework>
+        // <@link mechanism ItemTag.firework>, and <@link tag ItemTag.firework>.
         // -->
         registerTag("is_firework", (attribute, object) -> {
             return new ElementTag(ItemFirework.describes(object));
@@ -753,9 +753,10 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         // @attribute <ItemTag.has_inventory>
         // @returns ElementTag(Boolean)
         // @group properties
+        // @description
         // Returns whether the item has an inventory.
         // If this returns true, it will enable access to:
-        // <@link mechanism ItemTag.inventory>, and <@link tag ItemTag.inventory>
+        // <@link mechanism ItemTag.inventory>, and <@link tag ItemTag.inventory>.
         // -->
         registerTag("has_inventory", (attribute, object) -> {
             return new ElementTag(ItemInventory.describes(object));
@@ -765,9 +766,10 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         // @attribute <ItemTag.is_lockable>
         // @returns ElementTag(Boolean)
         // @group properties
+        // @description
         // Returns whether the item is lockable.
         // If this returns true, it will enable access to:
-        // <@link mechanism ItemTag.lock>, and <@link tag ItemTag.lock>
+        // <@link mechanism ItemTag.lock>, and <@link tag ItemTag.lock>.
         // -->
         registerTag("is_lockable", (attribute, object) -> {
             return new ElementTag(ItemLock.describes(object));
@@ -801,9 +803,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Returns the item converted to a raw JSON object with one layer of escaping for network transmission.
         // EG, via /tellraw.
-        // EXAMPLE USAGE: execute as_server 'tellraw <player.name>
-        // {"text":"","extra":[{"text":"This is the item in your hand ","color":"white"},
-        // {"text":"Item","color":"white","hoverEvent":{"action":"show_item","value":"{<player.item_in_hand.json>}"}}]}'
+        // Generally, prefer tags like <@link tag ElementTag.on_hover.type> with type 'show_item'.
         // -->
         registerTag("json", (attribute, object) -> {
             return new ElementTag(NMSHandler.getItemHelper().getJsonString(object.item));

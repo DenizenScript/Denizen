@@ -77,9 +77,9 @@ public class TradeInputs implements Property {
         // @input ListTag(ItemTag)
         // @description
         // Sets the items required to make a successful trade. Use an empty input to make the trade impossible.
-        // NOTE: If a more than two items are specified, then only the first two items will be used.
+        // NOTE: If more than two items are specified, then only the first two items will be used.
         // @tags
-        // <TradeTag.input>
+        // <TradeTag.inputs>
         // -->
         if (mechanism.matches("inputs")) {
             List<ItemStack> ingredients = new ArrayList<>();

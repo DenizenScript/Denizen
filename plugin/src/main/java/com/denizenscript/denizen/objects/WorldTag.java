@@ -537,6 +537,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <WorldTag.ticks_per_animal_spawn>
         // @returns DurationTag
+        // @Mechanism WorldTag.ticks_per_animal_spawns
         // @description
         // Returns the world's ticks per animal spawn value.
         // -->
@@ -547,6 +548,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <WorldTag.ticks_per_monster_spawn>
         // @returns DurationTag
+        // @Mechanism WorldTag.ticks_per_monster_spawns
         // @description
         // Returns the world's ticks per monster spawn value.
         // -->
@@ -1022,7 +1024,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @description
         // Sets the time between animal spawns.
         // @tags
-        // <WorldTag.ticks_per_animal_spawns>
+        // <WorldTag.ticks_per_animal_spawn>
         // -->
         if (mechanism.matches("ticks_per_animal_spawns") && mechanism.requireObject(DurationTag.class)) {
             getWorld().setTicksPerAnimalSpawns(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
@@ -1035,7 +1037,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @description
         // Sets the time between monster spawns.
         // @tags
-        // <WorldTag.ticks_per_monster_spawns>
+        // <WorldTag.ticks_per_monster_spawn>
         // -->
         if (mechanism.matches("ticks_per_monster_spawns") && mechanism.requireObject(DurationTag.class)) {
             getWorld().setTicksPerMonsterSpawns(mechanism.valueAsType(DurationTag.class).getTicksAsInt());

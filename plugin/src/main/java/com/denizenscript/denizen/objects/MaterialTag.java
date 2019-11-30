@@ -816,7 +816,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <MaterialTag.piston_reaction>
         // @returns ElementTag
-        // @mechanism piston_reaction
+        // @mechanism MaterialTag.piston_reaction
         // @description
         // Returns the material's piston reaction. (Only for block materials).
         // -->
@@ -831,7 +831,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <MaterialTag.block_strength>
         // @returns ElementTag(Decimal)
-        // @mechanism block_strength
+        // @mechanism MaterialTag.block_strength
         // @description
         // Returns the material's strength level. (Only for block materials).
         // This is a representation of how much time mining is needed to break a block.

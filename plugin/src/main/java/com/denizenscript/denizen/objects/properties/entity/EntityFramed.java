@@ -155,7 +155,6 @@ public class EntityFramed implements Property {
         // Valid rotations: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Rotation.html>
         // For example: framed:diamond_sword|clockwise
         // @tags
-        // <EntityTag.is_frame>
         // <EntityTag.has_framed_item>
         // <EntityTag.framed_item>
         // <EntityTag.framed_item_rotation>

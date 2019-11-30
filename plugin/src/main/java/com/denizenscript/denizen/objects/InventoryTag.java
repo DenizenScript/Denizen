@@ -2306,7 +2306,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // <--[tag]
         // @attribute <InventoryTag.anvil_repair_cost>
         // @returns ElementTag(Number)
-        // @mechanism anvil_repair_cost
+        // @mechanism InventoryTag.anvil_repair_cost
         // @description
         // Returns the current repair cost on an anvil.
         // -->
@@ -2320,7 +2320,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // <--[tag]
         // @attribute <InventoryTag.anvil_max_repair_cost>
         // @returns ElementTag(Number)
-        // @mechanism anvil_max_repair_cost
+        // @mechanism InventoryTag.anvil_max_repair_cost
         // @description
         // Returns the maximum repair cost on an anvil.
         // -->
@@ -2347,7 +2347,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // <--[tag]
         // @attribute <InventoryTag.fuel>
         // @returns ItemTag
-        // @mechanism fuel
+        // @mechanism InventoryTag.fuel
         // @description
         // Returns the item currently in the fuel section of a furnace or brewing stand inventory.
         // -->
@@ -2362,7 +2362,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // <--[tag]
         // @attribute <InventoryTag.input>
         // @returns ItemTag
-        // @mechanism input
+        // @mechanism InventoryTag.input
         // @description
         // Returns the item currently in the smelting slot of a furnace inventory, or the ingredient slot of a brewing stand inventory.
         // -->

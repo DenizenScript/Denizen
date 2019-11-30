@@ -105,7 +105,7 @@ public class EntityAttributes implements Property {
         // <--[tag]
         // @attribute <EntityTag.attributes>
         // @returns ListTag
-        // @mechanism attributes
+        // @mechanism EntityTag.attributes
         // @group properties
         // @description
         // Returns a list of all attributes on the entity, formatted in a way that can be sent back into the 'attributes' mechanism.
@@ -117,7 +117,7 @@ public class EntityAttributes implements Property {
         // <--[tag]
         // @attribute <EntityTag.has_attribute[<attribute>]>
         // @returns ElementTag(Boolean)
-        // @mechanism attributes
+        // @mechanism EntityTag.attributes
         // @group properties
         // @description
         // Returns whether the entity has the named attribute.
@@ -132,7 +132,7 @@ public class EntityAttributes implements Property {
         // <--[tag]
         // @attribute <EntityTag.attribute_value[<attribute>]>
         // @returns ElementTag(Decimal)
-        // @mechanism attributes
+        // @mechanism EntityTag.attributes
         // @group properties
         // @description
         // Returns the final calculated value of the named attribute for the entity.
@@ -154,7 +154,7 @@ public class EntityAttributes implements Property {
         // <--[tag]
         // @attribute <EntityTag.attribute_base_value[<attribute>]>
         // @returns ElementTag(Decimal)
-        // @mechanism attributes
+        // @mechanism EntityTag.attributes
         // @group properties
         // @description
         // Returns the base value of the named attribute for the entity.
@@ -176,7 +176,7 @@ public class EntityAttributes implements Property {
         // <--[tag]
         // @attribute <EntityTag.attribute_default_value[<attribute>]>
         // @returns ElementTag(Decimal)
-        // @mechanism attributes
+        // @mechanism EntityTag.attributes
         // @group properties
         // @description
         // Returns the default value of the named attribute for the entity.

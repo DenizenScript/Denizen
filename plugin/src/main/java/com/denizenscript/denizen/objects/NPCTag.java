@@ -977,7 +977,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.distance_margin>
         // @returns ElementTag(Decimal)
-        // @mechanism distance_margin
+        // @mechanism NPCTag.distance_margin
         // @description
         // Returns the NPC's current pathfinding distance margin. That is, how close it needs to get to its destination (in block-lengths).
         // -->
@@ -988,7 +988,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.path_distance_margin>
         // @returns ElementTag(Decimal)
-        // @mechanism path_distance_margin
+        // @mechanism NPCTag.path_distance_margin
         // @description
         // Returns the NPC's current pathfinding distance margin. That is, how close it needs to get to individual points along its path.
         // -->
@@ -1380,7 +1380,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Sets the maximum movement distance of the NPC.
         // @tags
-        // <NPCTag.navigator.range>
+        // <NPCTag.range>
         // -->
         if (mechanism.matches("range") && mechanism.requireFloat()) {
             getCitizen().getNavigator().getDefaultParameters().range(mechanism.getValue().asFloat());
@@ -1393,7 +1393,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Sets the maximum attack distance of the NPC.
         // @tags
-        // <NPCTag.navigator.attack_range>
+        // <NPCTag.attack_range>
         // -->
         if (mechanism.matches("attack_range") && mechanism.requireFloat()) {
             getCitizen().getNavigator().getDefaultParameters().attackRange(mechanism.getValue().asFloat());
@@ -1406,7 +1406,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Sets the movement speed of the NPC.
         // @tags
-        // <NPCTag.navigator.speed>
+        // <NPCTag.speed>
         // -->
         if (mechanism.matches("speed") && mechanism.requireFloat()) {
             getCitizen().getNavigator().getDefaultParameters().speedModifier(mechanism.getValue().asFloat());

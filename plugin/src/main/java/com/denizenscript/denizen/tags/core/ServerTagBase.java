@@ -1030,7 +1030,7 @@ public class ServerTagBase {
         // @returns ElementTag(Number)
         // @description
         // Returns whether a world event exists on the server.
-        // This tag will ignore ObjectTag identifiers (see <@link language dobject>).
+        // This tag will ignore ObjectTag identifiers (see <@link language objecttag>).
         // -->
         if (attribute.startsWith("has_event")
                 && attribute.hasContext(1)) {
@@ -1044,7 +1044,7 @@ public class ServerTagBase {
         // @returns ListTag(ScriptTag)
         // @description
         // Returns a list of all world scripts that will handle a given event name.
-        // This tag will ignore ObjectTag identifiers (see <@link language dobject>).
+        // This tag will ignore ObjectTag identifiers (see <@link language objecttag>).
         // For use with <@link tag server.has_event[<event_name>]>
         // -->
         if (attribute.startsWith("event_handlers")

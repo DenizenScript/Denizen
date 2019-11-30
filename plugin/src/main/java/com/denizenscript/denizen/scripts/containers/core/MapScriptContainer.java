@@ -62,13 +62,15 @@ public class MapScriptContainer extends ScriptContainer {
     //
     //     3:
     //       type: cursor
-    //       # Specify a cursor - <@link tag server.list_map_cursor_types>
+    //       # Specify a cursor type
     //       cursor: red_marker
     //       # Supported on all objects: x/y positions, and whether to use worldly or map coordinates.
     //       x: 5
     //       y: 5
     //       world_coordinates: false
     // </code>
+    //
+    // A list of cursor types is available through <@link tag server.list_map_cursor_types>.
     //
     // -->
 

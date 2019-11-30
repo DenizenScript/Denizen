@@ -131,7 +131,7 @@ public class EntityTame implements Property {
         // Also available: <@link mechanism EntityTag.owner>
         // @tags
         // <EntityTag.is_tamed>
-        // <EntityTag.is_tameable>
+        // <EntityTag.tameable>
         // -->
 
         if (mechanism.matches("tame")) {
@@ -160,7 +160,7 @@ public class EntityTame implements Property {
         // Also available: <@link mechanism EntityTag.tame>
         // @tags
         // <EntityTag.is_tamed>
-        // <EntityTag.is_tameable>
+        // <EntityTag.tameable>
         // <EntityTag.owner>
         // -->
 

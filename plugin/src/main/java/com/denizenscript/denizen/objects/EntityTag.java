@@ -2149,7 +2149,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <EntityTag.is_collidable>
         // @returns ElementTag(Boolean)
-        // @mechanism collidable
+        // @mechanism EntityTag.collidable
         // @group attributes
         // @description
         // Returns whether the entity is collidable.
@@ -2814,7 +2814,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Sets the entity holding this entity by leash.
         // The entity must be living.
         // @tags
-        // <EntityTag.leashed>
+        // <EntityTag.is_leashed>
         // <EntityTag.leash_holder>
         // -->
         if (mechanism.matches("leash_holder") && mechanism.requireObject(EntityTag.class)) {
@@ -2857,7 +2857,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Sets the passengers of this entity.
         // @tags
         // <EntityTag.passengers>
-        // <EntityTag.empty>
+        // <EntityTag.is_empty>
         // -->
         if (mechanism.matches("passengers")) {
             entity.eject();
@@ -2882,7 +2882,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Sets the passenger of this entity.
         // @tags
         // <EntityTag.passenger>
-        // <EntityTag.empty>
+        // <EntityTag.is_empty>
         // -->
         if (mechanism.matches("passenger") && mechanism.requireObject(EntityTag.class)) {
             EntityTag ent = mechanism.valueAsType(EntityTag.class);
@@ -2917,7 +2917,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // The entity must be living.
         // @tags
         // <EntityTag.oxygen>
-        // <EntityTag.oxygen.max>
+        // <EntityTag.max_oxygen>
         // -->
         if (mechanism.matches("remaining_air") && mechanism.requireInteger()) {
             getLivingEntity().setRemainingAir(mechanism.getValue().asInt());
