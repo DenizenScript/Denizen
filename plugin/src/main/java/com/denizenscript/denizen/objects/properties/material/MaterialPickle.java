@@ -1,41 +1,41 @@
 package com.denizenscript.denizen.objects.properties.material;
 
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
-import org.bukkit.block.data.Ageable;
+import org.bukkit.block.data.type.SeaPickle;
 
-public class MaterialAge implements Property {
+public class MaterialPickle implements Property {
 
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData().data instanceof Ageable;
+                && ((MaterialTag) material).getModernData().data instanceof SeaPickle;
     }
 
-    public static MaterialAge getFrom(ObjectTag _material) {
+    public static MaterialPickle getFrom(ObjectTag _material) {
         if (!describes(_material)) {
             return null;
         }
         else {
-            return new MaterialAge((MaterialTag) _material);
+            return new MaterialPickle((MaterialTag) _material);
         }
     }
 
     public static final String[] handledTags = new String[] {
-            "maximum_age", "age", "maximum_plant_growth", "plant_growth"
+            "pickle_count"
     };
 
     public static final String[] handledMechs = new String[] {
-            "age", "plant_growth"
+            "pickle_count"
     };
 
 
-    private MaterialAge(MaterialTag _material) {
+    private MaterialPickle(MaterialTag _material) {
         material = _material;
     }
 
@@ -49,41 +49,33 @@ public class MaterialAge implements Property {
         }
 
         // <--[tag]
-        // @attribute <MaterialTag.maximum_age>
+        // @attribute <MaterialTag.pickle_count>
         // @returns ElementTag(Number)
         // @group properties
         // @description
-        // Returns the maximum age for an ageable material. This includes plant growth.
+        // Returns the the amount of pickles in a Sea Pickle material.
         // -->
-        if (attribute.startsWith("maximum_age") || attribute.startsWith("maximum_plant_growth")) {
-            return new ElementTag(getMax()).getObjectAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <MaterialTag.age>
-        // @returns ElementTag(Number)
-        // @mechanism MaterialTag.age
-        // @group properties
-        // @description
-        // Returns the current age for an ageable material. This includes plant growth.
-        // -->
-        if (attribute.startsWith("age") || attribute.startsWith("plant_growth")) {
+        if (attribute.startsWith("pickle_count")) {
             return new ElementTag(getCurrent()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;
     }
 
-    public Ageable getAgeable() {
-        return (Ageable) material.getModernData().data;
+    public SeaPickle getSeaPickle() {
+        return (SeaPickle) material.getModernData().data;
     }
 
     public int getCurrent() {
-        return getAgeable().getAge();
+        return getSeaPickle().getPickles();
     }
 
     public int getMax() {
-        return getAgeable().getMaximumAge();
+        return getSeaPickle().getMinimumPickles();
+    }
+
+    public int getMin() {
+        return getSeaPickle().getMinimumPickles();
     }
 
     @Override
@@ -93,7 +85,7 @@ public class MaterialAge implements Property {
 
     @Override
     public String getPropertyId() {
-        return "age";
+        return "pickle_count";
     }
 
     @Override
@@ -101,21 +93,20 @@ public class MaterialAge implements Property {
 
         // <--[mechanism]
         // @object MaterialTag
-        // @name age
+        // @name pickle_count
         // @input ElementTag(Number)
         // @description
-        // Sets an ageable material's current age. This includes plant growth.
+        // Sets the amount of pickles in a Sea Pickle material.
         // @tags
-        // <MaterialTag.age>
-        // <MaterialTag.maximum_age>
+        // <MaterialTag.pickle_count>
         // -->
-        if ((mechanism.matches("age") || mechanism.matches("plant_growth")) && mechanism.requireInteger()) {
-            int age = mechanism.getValue().asInt();
-            if (age < 0 || age > getMax()) {
-                Debug.echoError("Age value '" + age + "' is not valid. Must be between 0 and " + getMax() + " for material '" + material.realName() + "'.");
+        if (mechanism.matches("pickle_count") && mechanism.requireInteger()) {
+            int count = mechanism.getValue().asInt();
+            if (count < getMin() || count > getMax()) {
+                Debug.echoError("Pickle count value '" + count + "' is not valid. Must be between" + getMin() + " and " + getMax() + ".");
                 return;
             }
-            getAgeable().setAge(age);
+            getSeaPickle().setPickles(count);
         }
     }
 }
