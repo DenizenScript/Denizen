@@ -6,7 +6,7 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.type.SeaPickle;
 
 public class MaterialPickle implements Property {
@@ -26,10 +26,6 @@ public class MaterialPickle implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[] {
-            "pickle_count"
-    };
-
     public static final String[] handledMechs = new String[] {
             "pickle_count"
     };
@@ -41,12 +37,7 @@ public class MaterialPickle implements Property {
 
     MaterialTag material;
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <MaterialTag.pickle_count>
@@ -55,11 +46,10 @@ public class MaterialPickle implements Property {
         // @description
         // Returns the amount of pickles in a Sea Pickle material.
         // -->
-        if (attribute.startsWith("pickle_count")) {
-            return new ElementTag(getCurrent()).getObjectAttribute(attribute.fulfill(1));
-        }
+        PropertyParser.<MaterialPickle>registerTag("pickle_count", (attribute, material) -> {
+            return new ElementTag(material.getCurrent());
+        });
 
-        return null;
     }
 
     public SeaPickle getSeaPickle() {
