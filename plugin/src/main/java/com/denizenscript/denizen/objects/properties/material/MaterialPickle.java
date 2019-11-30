@@ -93,7 +93,7 @@ public class MaterialPickle implements Property {
         if (mechanism.matches("pickle_count") && mechanism.requireInteger()) {
             int count = mechanism.getValue().asInt();
             if (count < getMin() || count > getMax()) {
-                Debug.echoError("Pickle count value '" + count + "' is not valid. Must be between" + getMin() + " and " + getMax() + ".");
+                Debug.echoError("Pickle count value '" + count + "' is not valid. Must be between " + getMin() + " and " + getMax() + ".");
                 return;
             }
             getSeaPickle().setPickles(count);
