@@ -50,6 +50,28 @@ public class MaterialPickle implements Property {
             return new ElementTag(material.getCurrent());
         });
 
+        // <--[tag]
+        // @attribute <MaterialTag.pickle_max>
+        // @returns ElementTag(Number)
+        // @group properties
+        // @description
+        // Returns the maximum amount of pickles allowed in a Sea Pickle material.
+        // -->
+        PropertyParser.<MaterialPickle>registerTag("pickle_max", (attribute, material) -> {
+            return new ElementTag(material.getMax());
+        });
+
+        // <--[tag]
+        // @attribute <MaterialTag.pickle_min>
+        // @returns ElementTag(Number)
+        // @group properties
+        // @description
+        // Returns the minimum amount of pickles allowed in a Sea Pickle material.
+        // -->
+        PropertyParser.<MaterialPickle>registerTag("pickle_max", (attribute, material) -> {
+            return new ElementTag(material.getMin());
+        });
+
     }
 
     public SeaPickle getSeaPickle() {
