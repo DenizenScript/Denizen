@@ -42,10 +42,10 @@ public class MaterialPickle implements Property {
         // <--[tag]
         // @attribute <MaterialTag.pickle_count>
         // @returns ElementTag(Number)
+        // @mechanism MaterialTag.pickle_count
         // @group properties
         // @description
         // Returns the amount of pickles in a Sea Pickle material.
-        // @mechanism MaterialTag.pickle_count
         // -->
         PropertyParser.<MaterialPickle>registerTag("pickle_count", (attribute, material) -> {
             return new ElementTag(material.getCurrent());
