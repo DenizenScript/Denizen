@@ -29,7 +29,6 @@ public class MaterialWaterlogged implements Property {
             "waterlogged"
     };
 
-
     private MaterialWaterlogged(MaterialTag _material) {
         material = _material;
     }
