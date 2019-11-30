@@ -68,7 +68,7 @@ public class MaterialPickle implements Property {
         // @description
         // Returns the minimum amount of pickles allowed in a Sea Pickle material.
         // -->
-        PropertyParser.<MaterialPickle>registerTag("pickle_max", (attribute, material) -> {
+        PropertyParser.<MaterialPickle>registerTag("pickle_min", (attribute, material) -> {
             return new ElementTag(material.getMin());
         });
 
