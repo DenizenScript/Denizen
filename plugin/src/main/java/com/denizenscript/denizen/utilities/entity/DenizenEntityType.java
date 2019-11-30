@@ -36,7 +36,7 @@ public class DenizenEntityType {
 
     // <--[language]
     // @name Denizen Entity Types
-    // @group Entities
+    // @group Useful Lists
     // @description
     // Along with the default EntityTypes <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html>,
     // Denizen also adds in a few altered entities:
