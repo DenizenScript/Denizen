@@ -50,8 +50,8 @@ public class TradeUses implements Property {
         // @description
         // Returns how many times the trade has been used.
         // -->
-        PropertyParser.<TradeTag>registerTag("uses", (attribute, recipe) -> {
-            return new ElementTag(recipe.getRecipe().getUses());
+        PropertyParser.<TradeUses>registerTag("uses", (attribute, recipe) -> {
+            return new ElementTag(recipe.recipe.getRecipe().getUses());
         });
     }
 

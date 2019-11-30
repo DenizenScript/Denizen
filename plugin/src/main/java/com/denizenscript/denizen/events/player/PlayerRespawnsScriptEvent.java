@@ -6,6 +6,7 @@ import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
@@ -24,6 +25,7 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
     //
     // @Context
     // <context.location> returns a LocationTag of the respawn location.
+    // <context.is_bed_spawn> returns a boolean indicating whether the player is about to respawn at their bed.
     //
     // @Determine
     // LocationTag to change the respawn location.
@@ -83,6 +85,9 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
     public ObjectTag getContext(String name) {
         if (name.equals("location")) {
             return new LocationTag(event.getRespawnLocation());
+        }
+        else if (name.equals("is_bed_spawn")) {
+            return new ElementTag(event.isBedSpawn());
         }
         return super.getContext(name);
     }

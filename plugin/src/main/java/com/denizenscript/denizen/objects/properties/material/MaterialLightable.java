@@ -5,7 +5,7 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.Lightable;
 
 public class MaterialLightable implements Property {
@@ -25,10 +25,6 @@ public class MaterialLightable implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[] {
-            "lit"
-    };
-
     public static final String[] handledMechs = new String[] {
             "lit"
     };
@@ -40,12 +36,7 @@ public class MaterialLightable implements Property {
 
     MaterialTag material;
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <MaterialTag.lit>
@@ -55,11 +46,9 @@ public class MaterialLightable implements Property {
         // @description
         // Returns whether a lightable material (such as a redstone torch) is lit currently.
         // -->
-        if (attribute.startsWith("lit")) {
-            return new ElementTag(getLightable().isLit()).getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        PropertyParser.<MaterialLightable>registerTag("lit", (attribute, material) -> {
+            return new ElementTag(material.getLightable().isLit());
+        });
     }
 
     public Lightable getLightable() {

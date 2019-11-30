@@ -139,9 +139,7 @@ public class InventoryContents implements Property {
         // @description
         // Returns a list of all items in the inventory.
         // -->
-        PropertyParser.<InventoryTag>registerTag("list_contents", (attribute, object) -> {
-
-            InventoryContents contents = getFrom(object);
+        PropertyParser.<InventoryContents>registerTag("list_contents", (attribute, contents) -> {
 
             // <--[tag]
             // @attribute <InventoryTag.list_contents.simple>

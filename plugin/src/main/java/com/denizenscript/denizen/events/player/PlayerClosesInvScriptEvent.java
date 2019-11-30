@@ -2,12 +2,12 @@ package com.denizenscript.denizen.events.player;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.InventoryTag;
-import com.denizenscript.denizen.objects.notable.NotableManager;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -38,7 +38,7 @@ public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Lis
     public static PlayerClosesInvScriptEvent instance;
 
     public InventoryTag inventory;
-    private EntityTag entity;
+    private PlayerTag player;
     public InventoryCloseEvent event;
 
     @Override
@@ -48,19 +48,7 @@ public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public boolean matches(ScriptPath path) {
-        String entName = path.eventArgLowerAt(0);
-        if (entName.equals("player") && !entity.isPlayer()) {
-            return false;
-        }
-        String inv = path.eventArgLowerAt(2);
-        String nname = NotableManager.isSaved(inventory) ?
-                CoreUtilities.toLowerCase(NotableManager.getSavedId(inventory)) :
-                "\0";
-        if (!inv.equals("inventory")
-                && !inv.equals(CoreUtilities.toLowerCase(inventory.getInventoryType().name()))
-                && !inv.equals(CoreUtilities.toLowerCase(inventory.getIdHolder()))
-                && !(inv.equals("notable") && !nname.equals("\0"))
-                && !inv.equals(nname)) {
+        if (!tryInventory(inventory, path.eventArgLowerAt(2))) {
             return false;
         }
         return super.matches(path);
@@ -73,8 +61,7 @@ public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        // TODO: Store the player?
-        return new BukkitScriptEntryData(entity.isPlayer() ? entity.getDenizenPlayer() : null, null);
+        return new BukkitScriptEntryData(player, null);
     }
 
     @Override
@@ -91,7 +78,7 @@ public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Lis
             return;
         }
         inventory = InventoryTag.mirrorBukkitInventory(event.getInventory());
-        entity = new EntityTag(event.getPlayer());
+        player = new PlayerTag((Player) event.getPlayer());
         this.event = event;
         fire(event);
     }

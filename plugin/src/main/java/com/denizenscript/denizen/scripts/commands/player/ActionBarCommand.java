@@ -105,7 +105,7 @@ public class ActionBarCommand extends AbstractCommand {
 
         }
         if (format != null) {
-            text = new ElementTag(format.getFormattedText(scriptEntry));
+            text = new ElementTag(format.getFormattedText(text.asString(), scriptEntry));
         }
 
         for (PlayerTag player : targets) {

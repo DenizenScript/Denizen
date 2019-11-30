@@ -45,11 +45,11 @@ public class BukkitScriptProperties implements Property {
         // cooldown present on the script will also be taken into account. Not specifying a player will result in
         // using the attached player available in the script entry. Not having a valid player will result in 'null'.
         // -->
-        PropertyParser.<ScriptTag>registerTag("cooled_down", (attribute, script) -> {
+        PropertyParser.<BukkitScriptProperties>registerTag("cooled_down", (attribute, script) -> {
             PlayerTag player = (attribute.hasContext(1) ? PlayerTag.valueOf(attribute.getContext(1))
                     : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
             if (player != null && player.isValid()) {
-                return new ElementTag(CooldownCommand.checkCooldown(player, script.getContainer().getName()));
+                return new ElementTag(CooldownCommand.checkCooldown(player, script.script.getContainer().getName()));
             }
             else {
                 return null;
@@ -62,10 +62,10 @@ public class BukkitScriptProperties implements Property {
         // @description
         // Returns the time left for the player to cooldown for the script.
         // -->
-        PropertyParser.<ScriptTag>registerTag("cooldown", (attribute, script) -> {
+        PropertyParser.<BukkitScriptProperties>registerTag("cooldown", (attribute, script) -> {
             PlayerTag player = (attribute.hasContext(1) ? PlayerTag.valueOf(attribute.getContext(1))
                     : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
-            return CooldownCommand.getCooldownDuration(player, script.getName());
+            return CooldownCommand.getCooldownDuration(player, script.script.getName());
         });
 
         // <--[tag]
@@ -75,11 +75,11 @@ public class BukkitScriptProperties implements Property {
         // Returns the name of a script step that the player is currently on.
         // Must be an INTERACT script.
         // -->
-        PropertyParser.<ScriptTag>registerTag("step", (attribute, script) -> {
+        PropertyParser.<BukkitScriptProperties>registerTag("step", (attribute, script) -> {
             PlayerTag player = (attribute.hasContext(1) ? PlayerTag.valueOf(attribute.getContext(1))
                     : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
             if (player != null && player.isValid()) {
-                return new ElementTag(InteractScriptHelper.getCurrentStep(player, script.getContainer().getName()));
+                return new ElementTag(InteractScriptHelper.getCurrentStep(player, script.script.getContainer().getName()));
             }
             else {
                 return null;

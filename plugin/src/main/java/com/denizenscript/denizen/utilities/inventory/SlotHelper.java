@@ -65,7 +65,7 @@ public class SlotHelper {
 
     // <--[language]
     // @name Slot Inputs
-    // @group inventories
+    // @group Useful Lists
     // @description
     // Whenever a script component requires a slot ID (such as the take command, when using '- take slot:#')
     // you can give the slot ID input as either a number of the 1-based index (where the first slot is 1, the second is 2, etc.)

@@ -2303,8 +2303,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @attribute <EntityTag.precise_target_position[<range>]>
         // @returns LocationTag
         // @description
-        // Returns the entity this entity is looking at, using precise ray trace logic.
-        // Optionally, specify a maximum range to find the entity from (defaults to 200).
+        // Returns the location this entity is looking at, using precise ray trace (against entities) logic.
+        // Optionally, specify a maximum range to find the target from (defaults to 200).
         // -->
         registerTag("precise_target_position", (attribute, object) -> {
             int range = attribute.getIntContext(1);

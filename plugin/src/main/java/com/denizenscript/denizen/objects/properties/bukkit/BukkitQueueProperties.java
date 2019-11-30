@@ -32,7 +32,7 @@ public class BukkitQueueProperties implements Property {
     };
 
     private BukkitQueueProperties(QueueTag queue) {
-        this.queue = queue.queue;
+        this.queue = queue.getQueue();
     }
 
     ScriptQueue queue;
@@ -46,7 +46,7 @@ public class BukkitQueueProperties implements Property {
         // @description
         // Returns the NPCTag linked to a queue.
         // -->
-        PropertyParser.<QueueTag>registerTag("npc", (attribute, object) -> {
+        PropertyParser.<BukkitQueueProperties>registerTag("npc", (attribute, object) -> {
             NPCTag npc = null;
             if (object.queue.getLastEntryExecuted() != null) {
                 npc = ((BukkitScriptEntryData) object.queue.getLastEntryExecuted().entryData).getNPC();
@@ -72,7 +72,7 @@ public class BukkitQueueProperties implements Property {
         // @description
         // Returns the PlayerTag linked to a queue.
         // -->
-        PropertyParser.<QueueTag>registerTag("player", (attribute, object) -> {
+        PropertyParser.<BukkitQueueProperties>registerTag("player", (attribute, object) -> {
             PlayerTag player = null;
             if (object.queue.getLastEntryExecuted() != null) {
                 player = ((BukkitScriptEntryData) object.queue.getLastEntryExecuted().entryData).getPlayer();

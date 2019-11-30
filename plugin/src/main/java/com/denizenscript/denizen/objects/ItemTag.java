@@ -776,6 +776,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         // <--[tag]
         // @attribute <ItemTag.material>
         // @returns MaterialTag
+        // @mechanism ItemTag.material
         // @group conversion
         // @description
         // Returns the MaterialTag that is the basis of the item.
@@ -1000,6 +1001,21 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
 
     @Override
     public void adjust(Mechanism mechanism) {
+
+        // <--[mechanism]
+        // @object ItemTag
+        // @name material
+        // @input MaterialTag
+        // @description
+        // Changes the item's material to the given material.
+        // Only copies the base material type, not any advanced block-data material properties.
+        // Note that this may cause some properties of the item to be lost.
+        // @tags
+        // <ItemTag.material>
+        // -->
+        if (mechanism.matches("material") && mechanism.requireObject(MaterialTag.class)) {
+            item.setType(mechanism.valueAsType(MaterialTag.class).getMaterial());
+        }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }

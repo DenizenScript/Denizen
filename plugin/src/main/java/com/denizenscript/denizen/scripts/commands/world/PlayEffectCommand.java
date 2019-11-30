@@ -75,7 +75,7 @@ public class PlayEffectCommand extends AbstractCommand {
     //
     // @Usage
     // Use to play some effects at spawn.
-    // - playeffect effect:FIREWORKS_SPARK at:<WorldTag.spawn_location> visibility:100 quantity:375 data:0 offset:50.0
+    // - playeffect effect:FIREWORKS_SPARK at:<world[world].spawn_location> visibility:100 quantity:375 data:0 offset:50.0
     // -->
 
     @Override

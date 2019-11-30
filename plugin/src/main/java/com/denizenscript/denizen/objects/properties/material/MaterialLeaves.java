@@ -5,7 +5,7 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.type.Leaves;
 
 public class MaterialLeaves implements Property {
@@ -25,10 +25,6 @@ public class MaterialLeaves implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[] {
-            "persistent"
-    };
-
     public static final String[] handledMechs = new String[] {
             "persistent"
     };
@@ -40,12 +36,7 @@ public class MaterialLeaves implements Property {
 
     MaterialTag material;
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <MaterialTag.persistent>
@@ -54,11 +45,9 @@ public class MaterialLeaves implements Property {
         // @description
         // Returns whether this block will decay from being too far away from a tree.
         // -->
-        if (attribute.startsWith("persistent")) {
-            return new ElementTag(getLeaves().isPersistent()).getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        PropertyParser.<MaterialLeaves>registerTag("persistent", (attribute, material) -> {
+            return new ElementTag(material.getLeaves().isPersistent());
+        });
     }
 
     public Leaves getLeaves() {

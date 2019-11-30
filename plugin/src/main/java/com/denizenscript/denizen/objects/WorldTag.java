@@ -584,7 +584,7 @@ public class WorldTag implements ObjectTag, Adjustable {
             // -->
             else if (attribute.startsWith("full", 2)) {
                 attribute.fulfill(1);
-                return new ElementTag(object.getWorld().getFullTime());
+                return new DurationTag(object.getWorld().getFullTime());
             }
 
             // <--[tag]

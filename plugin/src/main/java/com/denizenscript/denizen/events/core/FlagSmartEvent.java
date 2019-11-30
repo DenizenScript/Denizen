@@ -30,6 +30,7 @@ public class FlagSmartEvent implements OldSmartEvent, Listener {
                     .matcher(event);
 
             if (m.matches()) {
+                Debug.echoError("You are using flag events ('" + event + "'). These are only available for experimental dev reasons, and should ABSOLUTELY NOT be used in any live scripts.");
                 return true;
             }
         }

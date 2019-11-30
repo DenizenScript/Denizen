@@ -6,7 +6,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.type.Cake;
 
@@ -28,10 +28,6 @@ public class MaterialLevel implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[] {
-            "maximum_level", "level"
-    };
-
     public static final String[] handledMechs = new String[] {
             "level"
     };
@@ -43,12 +39,7 @@ public class MaterialLevel implements Property {
 
     MaterialTag material;
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <MaterialTag.maximum_level>
@@ -57,9 +48,9 @@ public class MaterialLevel implements Property {
         // @description
         // Returns the maximum level for a levelable material (like water, lava, and Cauldrons), or a cake.
         // -->
-        if (attribute.startsWith("maximum_level")) {
-            return new ElementTag(getMax()).getObjectAttribute(attribute.fulfill(1));
-        }
+        PropertyParser.<MaterialLevel>registerTag("maximum_level", (attribute, material) -> {
+            return new ElementTag(material.getMax());
+        });
 
         // <--[tag]
         // @attribute <MaterialTag.level>
@@ -69,11 +60,9 @@ public class MaterialLevel implements Property {
         // @description
         // Returns the current level for a levelable material (like water, lava, and Cauldrons), or a cake.
         // -->
-        if (attribute.startsWith("level")) {
-            return new ElementTag(getCurrent()).getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        PropertyParser.<MaterialLevel>registerTag("level", (attribute, material) -> {
+            return new ElementTag(material.getCurrent());
+        });
     }
 
     public boolean isCake() {

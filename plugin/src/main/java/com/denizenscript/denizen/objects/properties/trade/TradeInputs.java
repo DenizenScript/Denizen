@@ -40,11 +40,15 @@ public class TradeInputs implements Property {
         if (recipe.getRecipe() == null) {
             return null;
         }
-        ListTag ingredients = new ListTag();
+        return getIngredientsList().identify();
+    }
+
+    public ListTag getIngredientsList() {
+        ListTag result = new ListTag();
         for (ItemStack item : recipe.getRecipe().getIngredients()) {
-            ingredients.addObject(new ItemTag(item));
+            result.addObject(new ItemTag(item));
         }
-        return ingredients.identify();
+        return result;
     }
 
     public String getPropertyId() {
@@ -60,12 +64,8 @@ public class TradeInputs implements Property {
         // @description
         // Returns the list of items required to make the trade.
         // -->
-        PropertyParser.<TradeTag>registerTag("inputs", (attribute, recipe) -> {
-            ListTag result = new ListTag();
-            for (ItemStack item : recipe.getRecipe().getIngredients()) {
-                result.addObject(new ItemTag(item));
-            }
-            return result;
+        PropertyParser.<TradeInputs>registerTag("inputs", (attribute, recipe) -> {
+            return recipe.getIngredientsList();
         });
     }
 

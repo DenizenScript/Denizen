@@ -46,7 +46,7 @@ public class DropCommand extends AbstractCommand {
     //
     // @Usage
     // Use to drop some loot around the player.
-    // - drop gold_nugget <cuboid[cu@<player.location.add[-2,-2,-2]>|<player.location.add[2,2,2]>].spawnable_blocks.random>
+    // - drop gold_nugget <cuboid[<player.location.add[-2,-2,-2]>|<player.location.add[2,2,2]>].spawnable_blocks.random>
     //
     // @Usage
     // Use to reward a player with 500 xp.

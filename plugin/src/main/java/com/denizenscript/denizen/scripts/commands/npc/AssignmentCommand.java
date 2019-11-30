@@ -32,12 +32,12 @@ public class AssignmentCommand extends AbstractCommand {
     // <server.list_npcs_assigned[<assignment_script>]>
     //
     // @Usage
-    // Use to assign an npc with an assignment script named 'Bob the Builder'.
-    // - assignment set "script:Bob the Builder"
+    // Use to assign an npc with an assignment script named 'Bob_the_Builder'.
+    // - assignment set script:Bob_the_Builder
     //
     // @Usage
     // Use to give an npc with the id of 3 an assignment.
-    // - assignment set "script:Bob the Builder" npc:n@3
+    // - assignment set script:Bob_the_Builder npc:n@3
     //
     // @Usage
     // Use to remove an npc's assignment.

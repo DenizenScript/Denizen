@@ -8,39 +8,10 @@ import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.inventory.ItemStack;
 
 public class NBTCommand extends AbstractCommand {
-
-    // <--[command]
-    // @Name NBT
-    // @Syntax nbt [<item>] [<key>:<value>]
-    // @Required 2
-    // @Short Sets the value of an item's NBT key.
-    // @Group item
-    //
-    // @Description
-    // Edits an NBT key on an item and the edited item to the 'new_item' entry tag.
-    // This can be useful for storing hidden information on items.
-    //
-    // @Tags
-    // <entry[saveName].new_item> returns the item resulting from the NBT change.
-    //
-    // @Usage
-    // Use to set a hidden value on an item and give the item to a player.
-    // - nbt snow_ball "MyCustomNBT.Damage:10" "save:SnowballOfDeath"
-    // - give <entry[SnowballOfDeath].new_item>
-    //
-    // @Usage
-    // Use to edit the NBT of a player's item in hand.
-    // - nbt <player.item_in_hand> "MyCustomNBT.Owner:<player>" "save:edited"
-    // - inventory set "slot:<player.item_in_hand.slot>" "o:<entry[edited].new_item>"
-    //
-    // @Usage
-    // Use to remove an NBT tag from a player's item in hand.
-    // - nbt <player.item_in_hand> "MyCustomNBT.Owner:!" "save:item"
-    // - inventory set "slot:<player.item_in_hand.slot>" "o:<entry[item].new_item>"
-    // -->
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -75,14 +46,14 @@ public class NBTCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
+        Deprecations.nbtCommand.warn(scriptEntry);
+
         ItemTag item = scriptEntry.getObjectTag("item");
         ElementTag key = scriptEntry.getElement("key");
         ElementTag value = scriptEntry.getElement("value");
 
         if (scriptEntry.dbCallShouldDebug()) {
-
             Debug.report(scriptEntry, getName(), item.debug() + key.debug() + value.debug());
-
         }
 
         ItemStack itemStack = item.getItemStack();
