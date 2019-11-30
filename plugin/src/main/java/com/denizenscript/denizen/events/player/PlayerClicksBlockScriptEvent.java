@@ -49,13 +49,13 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         instance = this;
     }
 
-    PlayerClicksBlockScriptEvent instance;
-    PlayerInteractEvent event;
-    ItemTag item;
-    LocationTag location;
-    ElementTag click_type;
-    ElementTag hand;
-    MaterialTag blockMaterial;
+    public PlayerClicksBlockScriptEvent instance;
+    public PlayerInteractEvent event;
+    public ItemTag item;
+    public LocationTag location;
+    public ElementTag click_type;
+    public ElementTag hand;
+    public MaterialTag blockMaterial;
 
     private boolean couldMatchIn(String lower) {
         int index = CoreUtilities.split(lower, ' ').indexOf("in");
@@ -90,7 +90,6 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         else {
             using = path.eventArgLowerAt(index + 1);
         }
-
         if (!using.equals("hand") && !using.equals("off_hand") && !using.equals("either_hand")) {
             Debug.echoError("Invalid USING hand in " + getName() + " for '" + path.event + "' in " + path.container.getName());
             return false;
@@ -137,32 +136,22 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     @Override
     public boolean matches(ScriptPath path) {
         int index = path.eventArgLowerAt(1).equals("clicks") ? 1 : 2;
-
-        if (index == 2
-                && !click_type.identify().startsWith(path.eventArgLowerAt(1).toUpperCase())) {
+        if (index == 2 && !click_type.identify().startsWith(path.eventArgLowerAt(1).toUpperCase())) {
             return false;
         }
-
         String mat = path.eventArgLowerAt(index + 1);
-        if (mat.length() > 0
-                && !withHelpList.contains(mat)
-                && !tryMaterial(blockMaterial, mat)) {
+        if (mat.length() > 0 && !withHelpList.contains(mat) && !tryMaterial(blockMaterial, mat)) {
             return false;
         }
-
         if (!nonSwitchWithCheck(path, new ItemTag(event.getItem()))) {
             return false;
         }
-
         if (!runUsingCheck(path)) {
             return false;
         }
-
-        if (location != null ? !runInCheck(path, location)
-                : !runInCheck(path, event.getPlayer().getLocation())) {
+        if (!runInCheck(path, location != null ? location : event.getPlayer().getLocation())) {
             return false;
         }
-
         return super.matches(path);
     }
 

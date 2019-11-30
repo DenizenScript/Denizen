@@ -1714,7 +1714,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @returns ListTag
         // @description
         // Returns the current scores set on the player's Sidebar via the Sidebar command,
-        // in the same order as <@link tag PlayerTag.sidebar.lines>.
+        // in the same order as <@link tag PlayerTag.sidebar_lines>.
         // -->
         registerOnlineOnlyTag("sidebar_scores", (attribute, object) -> {
             Sidebar sidebar = SidebarCommand.getSidebar(object);
