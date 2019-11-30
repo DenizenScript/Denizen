@@ -2670,17 +2670,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
-        // @attribute <LocationTag.type>
-        // @returns ElementTag
-        // @description
-        // Always returns 'Location' for LocationTag objects. All objects fetchable by the Object Fetcher will return the
-        // type of object that is fulfilling this attribute.
-        // -->
-        registerTag("type", (attribute, object) -> {
-            return new ElementTag("Location");
-        });
-
-        // <--[tag]
         // @attribute <LocationTag.command_block_name>
         // @returns ElementTag
         // @mechanism LocationTag.command_block_name
@@ -2761,6 +2750,16 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         registerTag("furnace_cook_time_total", (attribute, object) -> {
             return new ElementTag(((Furnace) object.getBlockStateForTag(attribute)).getCookTimeTotal());
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.beacon_tier>
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the tier level of a beacon pyramid (0-4).
+        // -->
+        registerTag("beacon_tier", (attribute, object) -> {
+            return new ElementTag(((Beacon) object.getBlockStateForTag(attribute)).getTier());
         });
 
         // <--[tag]
@@ -2868,6 +2867,17 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         registerTag("local_difficulty", (attribute, object) -> {
             return new ElementTag(NMSHandler.getWorldHelper().getLocalDifficulty(object));
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.type>
+        // @returns ElementTag
+        // @description
+        // Always returns 'Location' for LocationTag objects. All objects fetchable by the Object Fetcher will return the
+        // type of object that is fulfilling this attribute.
+        // -->
+        registerTag("type", (attribute, object) -> {
+            return new ElementTag("Location");
         });
     }
 
