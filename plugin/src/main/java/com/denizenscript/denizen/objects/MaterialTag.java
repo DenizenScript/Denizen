@@ -612,6 +612,18 @@ public class MaterialTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <MaterialTag.is_item>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns whether the material is a holdable item.
+        // Note that most blocks are valid items as well.
+        // This only returns "false" for certain non-holdable "special" blocks, like Fire.
+        // -->
+        registerTag("is_item", (attribute, object) -> {
+            return new ElementTag(object.material.isItem());
+        });
+
+        // <--[tag]
         // @attribute <MaterialTag.is_burnable>
         // @returns ElementTag(Boolean)
         // @description
