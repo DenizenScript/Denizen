@@ -50,24 +50,6 @@ public class Debug {
     //  by the Debuggable interface, which usually checks a ScriptContainer's 'debug' node
     //////
 
-
-    // <--[language]
-    // @Name 'show_command_reports' player flag
-    // @Group Useful flags
-
-    // @Description
-    // Giving a player the flag 'show_command_reports' will tell the Denizen dBugger to output
-    // command reports to the player involved with the ScriptEntry. This can be useful for
-    // script debugging, though it not an all-inclusive view of debugging information.
-    //
-    // To turn on and turn off the flag, just use:
-    // <code>
-    // /ex flag <player> show_command_reports
-    // /ex flag <player> show_command_reports:!
-    // </code>
-    //
-    // -->
-
     public static Consumer<String> getDebugSender(Debuggable caller) {
         if (caller == null) {
             caller = CommandExecuter.currentQueue;
@@ -102,21 +84,7 @@ public class Debug {
         if (!showDebug || !shouldDebug(caller)) {
             return;
         }
-        echo("<Y>+> <G>Executing '<Y>" + name + "<G>': "
-                + trimMessage(report), caller);
-
-        if (caller instanceof ScriptEntry) {
-            if (((BukkitScriptEntryData) ((ScriptEntry) caller).entryData).hasPlayer()) {
-                if (FlagManager.playerHasFlag(((BukkitScriptEntryData) ((ScriptEntry) caller).entryData)
-                        .getPlayer(), "show_command_reports")) {
-                    String message = "<Y>+> <G>Executing '<Y>" + name + "<G>': "
-                            + trimMessage(report);
-
-                    ((BukkitScriptEntryData) ((ScriptEntry) caller).entryData).getPlayer().getPlayerEntity()
-                            .sendRawMessage(cleanTextForDebugOutput(message));
-                }
-            }
-        }
+        echo("<Y>+> <G>Executing '<Y>" + name + "<G>': " + trimMessage(report), caller);
     }
 
     public static void echoDebug(Debuggable caller, DebugElement element) {
