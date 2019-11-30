@@ -1,8 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
+import com.denizenscript.denizen.objects.properties.item.ItemPotion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -10,14 +8,12 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Arrow;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class EntityPotionEffects implements Property {
 
@@ -85,12 +81,6 @@ public class EntityPotionEffects implements Property {
         return "potion_effects";
     }
 
-    public static String stringify(PotionEffect effect) {
-        return effect.getType().getName() + "," + effect.getAmplifier() + "," + effect.getDuration()
-                + "," + effect.isAmbient() + "," + effect.hasParticles()
-                + (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) ? "," + effect.hasIcon() : "");
-    }
-
     public ObjectTag getObjectAttribute(Attribute attribute) {
 
         if (attribute == null) {
@@ -110,7 +100,7 @@ public class EntityPotionEffects implements Property {
         if (attribute.startsWith("list_effects")) {
             ListTag effects = new ListTag();
             for (PotionEffect effect : getEffectsList()) {
-                effects.add(stringify(effect));
+                effects.add(ItemPotion.stringifyEffect(effect));
             }
             return effects.getObjectAttribute(attribute.fulfill(1));
         }
@@ -159,42 +149,13 @@ public class EntityPotionEffects implements Property {
         // -->
         if (mechanism.matches("potion_effects")) {
             ListTag effects = ListTag.valueOf(mechanism.getValue().asString());
-            for (String effect : effects) {
-                List<String> split = CoreUtilities.split(effect, ',');
-                if (split.size() < 3) {
-                    // Maybe error message?
-                    continue;
+            for (String effectStr : effects) {
+                PotionEffect effect = ItemPotion.parseEffect(effectStr);
+                if (entity.isLivingEntity()) {
+                    entity.getLivingEntity().addPotionEffect(effect);
                 }
-                PotionEffectType effectType = PotionEffectType.getByName(split.get(0));
-                if (effectType == null) {
-                    Debug.echoError("Cannot apply potion effect '" + split.get(0) + "': unknown effect type.");
-                    continue;
-                }
-                try {
-                    PotionEffect actualEffect;
-                    if (split.size() >= 6) {
-                        actualEffect = new PotionEffect(effectType, Integer.valueOf(split.get(2)),
-                                Integer.valueOf(split.get(1)), split.get(3).equalsIgnoreCase("true"), split.get(4).equalsIgnoreCase("true"),
-                                split.get(5).equalsIgnoreCase("true"));
-                    }
-                    else if (split.size() >= 5) {
-                        actualEffect = new PotionEffect(effectType, Integer.valueOf(split.get(2)),
-                                Integer.valueOf(split.get(1)), split.get(3).equalsIgnoreCase("true"), split.get(4).equalsIgnoreCase("true"));
-                    }
-                    else {
-                         actualEffect = new PotionEffect(effectType, Integer.valueOf(split.get(2)),
-                                Integer.valueOf(split.get(1)));
-                    }
-                    if (entity.isLivingEntity()) {
-                        entity.getLivingEntity().addPotionEffect(actualEffect);
-                    }
-                    else if (entity.getBukkitEntity() instanceof Arrow) {
-                        ((Arrow) entity.getBukkitEntity()).addCustomEffect(actualEffect, true);
-                    }
-                }
-                catch (NumberFormatException ex) {
-                    Debug.echoError("Cannot apply potion effect '" + effect + "': invalid amplifier or duration number.");
-                    continue;
+                else if (entity.getBukkitEntity() instanceof Arrow) {
+                    ((Arrow) entity.getBukkitEntity()).addCustomEffect(effect, true);
                 }
             }
         }

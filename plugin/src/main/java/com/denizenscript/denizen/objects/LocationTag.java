@@ -46,6 +46,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Attachable;
 import org.bukkit.material.Door;
 import org.bukkit.material.MaterialData;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
@@ -2763,6 +2765,36 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
+        // @attribute <LocationTag.beacon_primary_effect>
+        // @returns ElementTag
+        // @mechanism LocationTag.beacon_primary_effect
+        // @description
+        // Returns the primary effect of the beacon. The return is simply a potion effect type name.
+        // -->
+        registerTag("beacon_primary_effect", (attribute, object) -> {
+            PotionEffect effect = ((Beacon) object.getBlockStateForTag(attribute)).getPrimaryEffect();
+            if (effect == null) {
+                return null;
+            }
+            return new ElementTag(effect.getType().getName());
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.beacon_secondary_effect>
+        // @returns ElementTag
+        // @mechanism LocationTag.beacon_secondary_effect
+        // @description
+        // Returns the secondary effect of the beacon. The return is simply a potion effect type name.
+        // -->
+        registerTag("beacon_secondary_effect", (attribute, object) -> {
+            PotionEffect effect = ((Beacon) object.getBlockStateForTag(attribute)).getSecondaryEffect();
+            if (effect == null) {
+                return null;
+            }
+            return new ElementTag(effect.getType().getName());
+        });
+
+        // <--[tag]
         // @attribute <LocationTag.attached_to>
         // @returns LocationTag
         // @description
@@ -3303,6 +3335,36 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (!generated) {
                 Debug.echoError("Could not generate tree at " + identifySimple() + ". Make sure this location can naturally generate a tree!");
             }
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name beacon_primary_effect
+        // @input ElementTag
+        // @description
+        // Sets the primary effect of a beacon, with input as just an effect type name.
+        // @tags
+        // <LocationTag.beacon_primary_effect>
+        // -->
+        if (mechanism.matches("beacon_primary_effect")) {
+            Beacon beacon = (Beacon) getBlockState();
+            beacon.setPrimaryEffect(PotionEffectType.getByName(mechanism.getValue().asString().toUpperCase()));
+            beacon.update();
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name beacon_secondary_effect
+        // @input ElementTag
+        // @description
+        // Sets the secondary effect of a beacon, with input as just an effect type name.
+        // @tags
+        // <LocationTag.beacon_secondary_effect>
+        // -->
+        if (mechanism.matches("beacon_secondary_effect")) {
+            Beacon beacon = (Beacon) getBlockState();
+            beacon.setSecondaryEffect(PotionEffectType.getByName(mechanism.getValue().asString().toUpperCase()));
+            beacon.update();
         }
 
         // <--[mechanism]

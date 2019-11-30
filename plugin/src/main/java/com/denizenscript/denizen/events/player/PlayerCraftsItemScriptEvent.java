@@ -117,9 +117,6 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
             return;
         }
         Recipe eRecipe = event.getRecipe();
-        if (eRecipe == null || eRecipe.getResult() == null) {
-            return;
-        }
         this.event = event;
         result = new ItemTag(eRecipe.getResult());
         this.player = EntityTag.getPlayerFrom(humanEntity);
