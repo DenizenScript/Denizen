@@ -63,12 +63,12 @@ public class PlayerHelperImpl extends PlayerHelper {
 
     @Override
     public float getAbsorption(Player player) {
-        return ((CraftPlayer) player).getHandle().getDataWatcher().get(DataWatcherRegistry.c.a(11));
+        return ((CraftPlayer) player).getHandle().getAbsorptionHearts();
     }
 
     @Override
     public void setAbsorption(Player player, float value) {
-        ((CraftPlayer) player).getHandle().getDataWatcher().set(DataWatcherRegistry.c.a(11), value);
+        ((CraftPlayer) player).getHandle().setAbsorptionHearts(value);
     }
 
     @Override
