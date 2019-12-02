@@ -151,9 +151,9 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         oldManager.sendPacket(packet, genericfuturelistener);
     }
 
-    public boolean isAttached(Entity e) {
+    public boolean shouldSendAttachOriginal(Entity e) {
         UUID attached = NMSHandler.getInstance().attachmentsA.get(e.getUniqueID());
-        return attached != null && attached.equals(player.getUniqueID());
+        return attached != null && !attached.equals(player.getUniqueID());
     }
 
     public boolean processAttachToForPacket(Packet<?> packet) {
@@ -198,17 +198,20 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                                 POS_Y_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getY());
                                 POS_Z_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getZ());
                                 oldManager.sendPacket(newTeleportPacket);
-                                return true;
                             }
-                            POS_X_PACKENT.setInt(pNew, MathHelper.clamp(offX, Short.MIN_VALUE, Short.MAX_VALUE));
-                            POS_Y_PACKENT.setInt(pNew, MathHelper.clamp(offY, Short.MIN_VALUE, Short.MAX_VALUE));
-                            POS_Z_PACKENT.setInt(pNew, MathHelper.clamp(offZ, Short.MIN_VALUE, Short.MAX_VALUE));
+                            else {
+                                POS_X_PACKENT.setShort(pNew, (short) MathHelper.clamp(offX, Short.MIN_VALUE, Short.MAX_VALUE));
+                                POS_Y_PACKENT.setShort(pNew, (short) MathHelper.clamp(offY, Short.MIN_VALUE, Short.MAX_VALUE));
+                                POS_Z_PACKENT.setShort(pNew, (short) MathHelper.clamp(offZ, Short.MIN_VALUE, Short.MAX_VALUE));
+                                oldManager.sendPacket(pNew);
+                            }
                         }
-                        oldManager.sendPacket(pNew);
-                        return true;
+                        else {
+                            oldManager.sendPacket(pNew);
+                        }
                     }
                 }
-                return isAttached(e);
+                return shouldSendAttachOriginal(e);
             }
             else if (packet instanceof PacketPlayOutEntityVelocity) {
                 int ider = ENTITY_ID_PACKVELENT.getInt(packet);
@@ -223,10 +226,9 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                         Packet pNew = (Packet) duplo(packet);
                         ENTITY_ID_PACKVELENT.setInt(pNew, target.getEntityId());
                         oldManager.sendPacket(pNew);
-                        return true;
                     }
                 }
-                return isAttached(e);
+                return shouldSendAttachOriginal(e);
             }
             else if (packet instanceof PacketPlayOutEntityTeleport) {
                 int ider = ENTITY_ID_PACKTELENT.getInt(packet);
@@ -258,10 +260,9 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                         }
                         NMSHandler.getInstance().visiblePositions.put(target.getUniqueId(), resultPos);
                         oldManager.sendPacket(pNew);
-                        return true;
                     }
                 }
-                return isAttached(e);
+                return shouldSendAttachOriginal(e);
             }
         }
         catch (Exception ex) {
