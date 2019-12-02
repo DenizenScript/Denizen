@@ -298,7 +298,9 @@ public class Debug {
             context.put("message", new ElementTag(thrown.getMessage()));
             context.put("full_trace", new ElementTag(errorMessage));
             context.put("type", new ElementTag(thrown.getClass().getSimpleName()));
-            context.put("queue", new QueueTag(source));
+            if (source != null) {
+                context.put("queue", new QueueTag(source));
+            }
             ScriptEntry entry = (source != null ? source.getLastEntryExecuted() : null);
             List<String> Determinations = OldEventManager.doEvents(Arrays.asList("server generates exception"),
                     entry == null ? new BukkitScriptEntryData(null, null) : entry.entryData, context);
