@@ -52,11 +52,17 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     // @Short Creates, loads, pastes, and saves schematics (Sets of blocks).
     //
     // @Description
-    // Creates, loads, pastes, and saves schematics. Schematics are files containing info about
-    // blocks and the order of those blocks.
+    // Creates, loads, pastes, and saves schematics. Schematics are files containing info about blocks and the order of those blocks.
     //
     // Denizen offers a number of tools to manipulate and work with schematics.
     // Schematics can be rotated, flipped, pasted with no air, or pasted with a delay.
+    //
+    // All schematic command usages must specify the "name" argument, which is a unique global identifier of the schematic in memory.
+    // This will be created by "create" or "load" options, and persist in memory until "unload" is used (or the server is restarted).
+    //
+    // The 'create' option requires a cuboid region and a center location as input. This will create a new schematic in memory based on world data.
+    //
+    // The "rotate" and "flip_x/y/z" options will apply the change to the copy of the schematic in memory, to later be pasted or saved.
     //
     // The "delayed" option makes the command non-instant. This is recommended for large schematics.
     // For 'save', 'load', and 'rotate', this processes async to prevent server lockup.
@@ -65,12 +71,16 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     // The "load" option by default will load '.schem' files. If no '.schem' file is available, will attempt to load a legacy '.schematic' file instead.
     // The "save" option will save to '.schem' files, unless you are on MC 1.12.2 (in which case it will save legacy '.schematic' files).
     //
+    // For load and save, the "filename" option is available to specify the name of the file to look for.
+    // If unspecified, the filename will default to the same as the "name" input.
+    //
     // The "noair" option skips air blocks in the pasted schematics- this means those air blocks will not replace any blocks in the target location.
     //
     // The "mask" option can be specified to limit what block types the schematic will be pasted over.
     //
     // The "fake_to" option can be specified to cause the schematic paste to be a fake (packet-based, see <@link command showfake>)
-    // block set, instead of actually modifying the blocks in the world. This takes an optional duration for how long the fake blocks should remain.
+    // block set, instead of actually modifying the blocks in the world.
+    // This takes an optional duration as "fake_duration" for how long the fake blocks should remain.
     //
     // @Tags
     // <schematic[<name>].height>
