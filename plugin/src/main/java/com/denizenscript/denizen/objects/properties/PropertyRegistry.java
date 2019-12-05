@@ -73,6 +73,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityPotion.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPowered.class, EntityTag.class);
         PropertyParser.registerProperty(EntityProfession.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityPumpkinHead.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             PropertyParser.registerProperty(EntityRiptide.class, EntityTag.class);
         }
