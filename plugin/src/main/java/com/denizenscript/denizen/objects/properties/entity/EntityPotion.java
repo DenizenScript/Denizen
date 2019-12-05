@@ -1,14 +1,18 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
-import org.bukkit.entity.EntityType;
+import org.bukkit.Material;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
 
 public class EntityPotion implements Property {
 
@@ -16,8 +20,9 @@ public class EntityPotion implements Property {
         if (!(entity instanceof EntityTag)) {
             return false;
         }
-        // Check if the entity is a SPLASH_POTION, the EntityType alias for ThrownPotion
-        return ((EntityTag) entity).getBukkitEntityType() == EntityType.SPLASH_POTION;
+        return ((EntityTag) entity).getBukkitEntity() instanceof ThrownPotion
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) &&
+                    ((EntityTag) entity).getBukkitEntity() instanceof Arrow);
     }
 
     public static EntityPotion getFrom(ObjectTag entity) {
@@ -42,22 +47,31 @@ public class EntityPotion implements Property {
     // Instance Fields and Methods
     /////////////
 
-    EntityTag potion;
+    EntityTag entity;
 
     private EntityPotion(EntityTag entity) {
-        potion = entity;
+        this.entity = entity;
     }
 
-    private ThrownPotion getPotion() {
-        if (potion == null) {
-            return null;
+    public ItemStack getPotion() {
+        if (entity.getBukkitEntity() instanceof ThrownPotion) {
+            return ((ThrownPotion) entity.getBukkitEntity()).getItem();
         }
-        return (ThrownPotion) potion.getBukkitEntity();
+        else { // Tipped arrow
+            ItemStack refItem = new ItemStack(Material.POTION);
+            PotionMeta meta = (PotionMeta) refItem.getItemMeta();
+            meta.setBasePotionData(((Arrow) entity.getBukkitEntity()).getBasePotionData());
+            refItem.setItemMeta(meta);
+            return refItem;
+        }
     }
 
     public void setPotion(ItemStack item) {
-        if (potion != null) {
-            ((ThrownPotion) potion.getBukkitEntity()).setItem(item);
+        if (entity.getBukkitEntity() instanceof ThrownPotion) {
+            ((ThrownPotion) entity.getBukkitEntity()).setItem(item);
+        }
+        else { // Tipped arrow
+            ((Arrow) entity.getBukkitEntity()).setBasePotionData(((PotionMeta) item.getItemMeta()).getBasePotionData());
         }
     }
 
@@ -68,10 +82,7 @@ public class EntityPotion implements Property {
 
     @Override
     public String getPropertyString() {
-        if (potion == null) {
-            return null;
-        }
-        return new ItemTag(getPotion().getItem()).identify();
+        return new ItemTag(getPotion()).identify();
     }
 
     @Override
@@ -96,10 +107,11 @@ public class EntityPotion implements Property {
         // @mechanism EntityTag.potion
         // @group properties
         // @description
-        // Returns the ItemTag of the splash potion.
+        // If the entity is a Tipped Arrow, returns an ItemTag of a potion with the base potion data of the arrow.
+        // If the entity is a Splash Potion, returns an ItemTag of the splash potion's full potion data.
         // -->
         if (attribute.startsWith("potion")) {
-            return new ItemTag(getPotion().getItem()).getObjectAttribute(attribute.fulfill(1));
+            return new ItemTag(getPotion()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;
@@ -113,7 +125,9 @@ public class EntityPotion implements Property {
         // @name potion
         // @input ItemTag
         // @description
-        // Sets the splash potion's ItemStack (must be a potion), thereby changing the effects.
+        // Input must be a potion item!
+        // If the entity is a Tipped Arrow, sets the arrow's base potion data based on the item input.
+        // If the entity is a splash Potion, sets the splash potion's full potion data from the item input.
         // @tags
         // <EntityTag.potion>
         // -->

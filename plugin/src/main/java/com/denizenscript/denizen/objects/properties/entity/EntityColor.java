@@ -2,6 +2,7 @@ package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
+import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.CatHelper;
 import com.denizenscript.denizen.utilities.entity.FoxHelper;
@@ -37,6 +38,7 @@ public class EntityColor implements Property {
                 type == EntityType.MUSHROOM_COW ||
                 (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.CAT) ||
                 (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.PANDA) ||
+                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.ARROW) ||
                 (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && type == EntityType.TROPICAL_FISH);
     }
 
@@ -112,8 +114,10 @@ public class EntityColor implements Property {
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.PANDA) {
             return PandaHelper.getColor(colored);
         }
-        else // Should never happen
-        {
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.ARROW) {
+            return new ColorTag(((Arrow) colored).getColor()).identify();
+        }
+        else { // Should never happen
             return null;
         }
     }
@@ -161,6 +165,7 @@ public class EntityColor implements Property {
     // For tropical_fish, the input is PATTERN|BODYCOLOR|PATTERNCOLOR, where BodyColor and PatterenColor are both DyeColor (see below),
     //          and PATTERN is KOB, SUNSTREAK, SNOOPER, DASHER, BRINELY, SPOTTY, FLOPPER, STRIPEY, GLITTER, BLOCKFISH, BETTY, is CLAYFISH.
     // For sheep, wolf, and shulker entities, the input is a Dye Color.
+    // For Tipped Arrow entities, the input is a ColorTag.
     //
     // For all places where a DyeColor is needed, the options are:
     // BLACK, BLUE, BROWN, CYAN, GRAY, GREEN, LIGHT_BLUE, LIGHT_GRAY, LIME, MAGENTA, ORANGE, PINK, PURPLE, RED, WHITE, or YELLOW.
@@ -258,7 +263,10 @@ public class EntityColor implements Property {
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.PANDA) {
                 PandaHelper.setColor(colored, mechanism.getValue().asString());
             }
-            else {
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.ARROW) {
+                ((Arrow) colored).setColor(mechanism.valueAsType(ColorTag.class).getColor());
+            }
+            else { // Should never happen
                 Debug.echoError("Could not apply color '" + mechanism.getValue().toString() + "' to entity of type " + type.name() + ".");
             }
 
