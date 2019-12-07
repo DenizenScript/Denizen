@@ -142,7 +142,8 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         }
         if (processAttachToForPacket(packet)
             || processHiddenEntitiesForPacket(packet)
-            || processPacketHandlerForPacket(packet)) {
+            || processPacketHandlerForPacket(packet)
+            || processMirrorForPacket(packet)) {
             return;
         }
         processMirrorForPacket(packet);
@@ -326,14 +327,15 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         }
     }
 
-    public void processMirrorForPacket(Packet<?> packet) {
+    public boolean processMirrorForPacket(Packet<?> packet) {
         if (packet instanceof PacketPlayOutPlayerInfo) {
             PacketPlayOutPlayerInfo playerInfo = (PacketPlayOutPlayerInfo) packet;
-            if (ProfileEditorImpl.handleMirrorProfiles(playerInfo, this)) {
-                ProfileEditorImpl.updatePlayerProfiles(playerInfo);
-                oldManager.sendPacket(playerInfo);
+            if (!ProfileEditorImpl.handleMirrorProfiles(playerInfo, this)) {
+                return true;
             }
+            ProfileEditorImpl.updatePlayerProfiles(playerInfo);
         }
+        return false;
     }
 
     public boolean processPacketHandlerForPacket(Packet<?> packet) {
