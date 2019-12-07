@@ -44,24 +44,26 @@ public class InventoryScriptContainer extends ScriptContainer {
     // # The name of the script is the same name that you can use to construct a new
     // # InventoryTag based on this inventory script. For example, an inventory script named 'Super Cool Inventory'
     // # can be referred to as 'in@Super Cool Inventory'.
-    // Inventory Script Name:
+    // Inventory_Script_Name:
     //
     //   type: inventory
     //
     //   # Must be a valid inventory type.
     //   # Valid inventory types: BREWING, CHEST, DISPENSER, ENCHANTING, ENDER_CHEST, HOPPER, PLAYER, WORKBENCH
+    //   # | All inventory scripts MUST have this key!
     //   inventory: inventory type
     //
     //   # The title can be anything you wish. Use color tags to make colored titles.
     //   # Note that titles only work for some inventory types, including CHEST, DISPENSER, FURNACE, ENCHANTING, and HOPPER.
+    //   # | MOST inventory scripts should have this key!
     //   title: custom title
     //
-    //   # The size must be a multiple of 9. It is recommended not to go above 54, as it will not show
-    //   # correctly when a player looks into it. Tags are allowed for advanced usage.
+    //   # The size must be a multiple of 9. It is recommended to not go above 54, as it will not show correctly when a player looks into it.
+    //   # | Some inventory scripts should have this key! Most can exclude it if 'slots' is used.
     //   size: 27
     //
-    //   # You can use definitions to define items to use in the slots. These are not like normal
-    //   # script definitions, and do not need %'s around them.
+    //   # You can use definitions to define items to use in the slots. These are not like normal script definitions, and do not need to be in a definition tag.
+    //   # | Some inventory scripts MAY have this key, but it is optional. Most scripts will just specify items directly.
     //   definitions:
     //     my item: ItemTag
     //     other item: ItemTag
@@ -71,6 +73,7 @@ public class InventoryScriptContainer extends ScriptContainer {
     //   # When the inventory has no more empty slots, it will discard any remaining items in the list.
     //   # A slot is considered empty when it has no value specified in the slots section.
     //   # If the slot is filled with air, it will no longer count as being empty.
+    //   # | Most inventory scripts should exclude this key, but it may be useful in some cases.
     //   procedural items:
     //     - define list li@
     //     - foreach <server.list_online_players>:
@@ -78,8 +81,9 @@ public class InventoryScriptContainer extends ScriptContainer {
     //       - define list <[list].include[<[item]>]>
     //     - determine <[list]>
     //
-    //   # You can specify the items in the slots of the inventory. For empty spaces, simply put
-    //   # an empty "slot". Note the quotes around the entire lines.
+    //   # You can specify the items in the slots of the inventory. For empty spaces, simply put an empty "slot" value, like "[]".
+    //   # Note the quotes around the entire lines.
+    //   # | Most inventory scripts SHOULD have this key!
     //   slots:
     //     - "[] [] [] [my item] [ItemTag] [] [other item] [] []"
     //     - "[my item] [] [] [] [] [ItemTag] [ItemTag] [] []"
@@ -155,7 +159,12 @@ public class InventoryScriptContainer extends ScriptContainer {
                 }
             }
             if (size == 0) {
-                size = getInventoryType().getDefaultSize();
+                if (contains("slots")) {
+                    size = getStringList("slots").size() * 9;
+                }
+                else {
+                    size = getInventoryType().getDefaultSize();
+                }
             }
             boolean[] filledSlots = new boolean[size];
             if (contains("slots")) {
