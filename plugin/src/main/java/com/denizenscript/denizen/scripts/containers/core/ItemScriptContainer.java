@@ -42,36 +42,43 @@ public class ItemScriptContainer extends ScriptContainer {
     // # The name of the item script is the same name that you can use to construct a new
     // # ItemTag based on this item script. For example, an item script named 'sword of swiftness'
     // # can be referred to as 'sword of swiftness'.
-    // Item Script Name:
+    // Item_Script_Name:
     //
     //   type: item
     //
     //   # Must be a valid ItemTag (EG red_wool or potion,8226) See 'ItemTag' for more information.
+    //   # | All item scripts MUST have this key!
     //   material: base_material
     //
     //   # List any mechanisms you want to apply to the item within
+    //   # | Some item scripts should have this key!
     //   mechanisms:
     //     # An example of a mechanism to apply
     //     unbreakable: true
     //
     //   # The 'custom name' can be anything you wish. Use color tags to make colored custom names.
+    //   # | Some item scripts should have this key!
     //   display name: custom name
     //
     //   # Lore lines can make items extra unique. This is a list, so multiple entries will result in multiple lores.
     //   # If using a replaceable tag, they are filled in when the item script is given/created/dropped/etc.
+    //   # | Some item scripts should have this key!
     //   lore:
     //   - item
     //   - ...
     //
     //   # If you want an item to be damaged on creation, you can change its durability.
+    //   # | Most item scripts should exclude this key!
     //   durability: 12
     //
     //   # Each line must specify a valid Minecranft enchantment name.
+    //   # | Some item scripts should have this key!
     //   enchantments:
     //   - enchantment_name:level
     //   - ...
     //
     //   # You can optionally add crafting recipes for your item script.
+    //   # | Most item scripts should exclude this key, unless you're specifically building craftable items.
     //   recipes:
     //       1:
     //           # The type can be: shaped, shapeless, stonecutting, furnace, blast, smoker, or campfire.
@@ -120,14 +127,17 @@ public class ItemScriptContainer extends ScriptContainer {
     //
     //   # Set to true to not store the scriptID on the item, treating it as an item dropped by any other plugin.
     //   # NOTE: THIS IS NOT RECOMMENDED UNLESS YOU HAVE A SPECIFIC REASON TO USE IT.
+    //   # | Most item scripts should exclude this key!
     //   no_id: true/false
     //
     //   # For colorable items, such as leather armor, you can specify a valid ColorTag to specify the item's appearance.
     //   # See 'ColorTag' for more information.
+    //   # | Most item scripts should exclude this key!
     //   color: ColorTag
     //
     //   # If your material is a 'm@written_book', you can specify a book script to automatically scribe your item
     //   # upon creation. See 'book script containers' for more information.
+    //   # | Most item scripts should exclude this key, though there are certain rare cases it may be useful to.
     //   book: book_script_name
     // </code>
     //

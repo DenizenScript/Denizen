@@ -29,20 +29,24 @@ public class MapScriptContainer extends ScriptContainer {
     //
     // <code>
     // # The name of the map script is used by the map command.
-    // Item Script Name:
+    // Map_Script_Name:
     //
     //   type: map
     //
-    //   # Whether to display the original map below the custom values.
+    //   # Whether to display the original map below the custom values. Defaults to true.
+    //   # | Some map scripts should have this key!
     //   original: true/false
     //
     //   # The 'custom name' can be anything you wish. Use color tags to make colored custom names.
+    //   # | Some map scripts should have this key!
     //   display name: custom name
     //
     //   # Whether to constantly update things.
+    //   # | Some map scripts should have this key!
     //   auto update: true
     //
     //   # Lists all contained objects.
+    //   # | Most map scripts should have this key!
     //   objects:
     //
     //     # The first object...

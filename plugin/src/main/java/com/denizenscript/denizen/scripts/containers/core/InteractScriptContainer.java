@@ -44,6 +44,7 @@ public class InteractScriptContainer extends ScriptContainer {
     //
     //   type: interact
     //
+    //   # | All interact scripts MUST have this key!
     //   steps:
     //
     //     # The first step

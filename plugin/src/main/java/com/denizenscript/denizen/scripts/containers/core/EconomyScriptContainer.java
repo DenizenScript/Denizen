@@ -42,7 +42,7 @@ public class EconomyScriptContainer extends ScriptContainer {
     //
     // Note that in most cases, you do not want to have multiple economy providers, as only one will actually be in use.
     //
-    // All script keys are required.
+    // ALL SCRIPT KEYS ARE REQUIRED.
     //
     // <code>
     // # The script name will be shown to the economy provider as the name of the economy system.

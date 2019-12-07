@@ -40,14 +40,17 @@ public class EntityScriptContainer extends ScriptContainer {
     //   type: entity
     //
     //   # Must be a valid EntityTag (EG 'zombie' or 'pig[age=baby]') See 'EntityTag' for more information.
+    //   # | All entity scripts MUST have this key!
     //   entity_type: BASE_ENTITY_TYPE_HERE
     //
     //   # Samples of mechanisms to use (any valid EntityTag mechanisms may be listed like this):
     //
     //   # Whether the entity has the default AI
+    //   # | Do not copy this line, it is only an example.
     //   has_ai: true/false
     //
     //   # What age the entity is
+    //   # | Do not copy this line, it is only an example.
     //   age: baby/adult/<#>
     // </code>
     //

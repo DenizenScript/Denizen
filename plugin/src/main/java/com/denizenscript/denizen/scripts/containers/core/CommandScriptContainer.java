@@ -50,20 +50,23 @@ public class CommandScriptContainer extends ScriptContainer {
     //
     //   type: command
     //
-    //   # The name of the command. This will show up in the default list in the '/help' command
-    //   # and will be the default method for running the command.
+    //   # The name of the command. This will be the default method for running the command, and will show in '/help'.
+    //   # | All command scripts MUST have this key!
     //   name: mycmd
     //
     //   # The description of the command. This will be shown in the '/help' command.
     //   # Multiple lines are acceptable, via <&nl> (the tag for a new line), but you should
     //   # make the first line a brief summary of what your command does.
+    //   # | All command scripts MUST have this key!
     //   description: My command.
     //
     //   # Correct usage for the command. This will show in the '/help' command.
+    //   # This is NOT the name of the command, and it is NOT used to control input parsing. It is EXCLUSIVELY for '/help'.
+    //   # | All command scripts MUST have this key!
     //   usage: /mycmd <&lt>myArg1<&gt>
     //
-    //   # A list of aliases for the command. These will show in the '/help' command, and
-    //   # are alternatives to the default name.
+    //   # A list of aliases for the command. These will be used as alternative ways to trigger the command, and will show in the '/help' command.
+    //   # | Some command scripts might have this key, but it's optional.
     //   aliases:
     //   - myalias
     //   - mycommand
@@ -71,10 +74,12 @@ public class CommandScriptContainer extends ScriptContainer {
     //   # The permission node to check for permissions plugins. This will automatically
     //   # block players without the permission from accessing the command and help for
     //   # the command.
+    //   # | Most command scripts should have this key!
     //   permission: my.permission.node
     //
     //   # The message to send to the player when they try to use the command without
     //   # permission. If this is not specified, the default Bukkit message will be sent.
+    //   # | Most command scripts should NOT have this key, but it's available.
     //   permission message: Sorry, <player.name>, you can't use my command because you don't have the permission '<permission>'!
     //
     //   # The procedure-based script that will be checked when a player or the console
@@ -82,6 +87,7 @@ public class CommandScriptContainer extends ScriptContainer {
     //   # or false. If there is no script, it's assumed that all players and the console
     //   # should be allowed to view the help for this command.
     //   # Available context: <context.server> returns whether the server is viewing the help (a player if false).
+    //   # | Most command scripts should NOT have this key, but it's available.
     //   allowed help:
     //   - determine <player.is_op||<context.server>>
     //
@@ -93,6 +99,7 @@ public class CommandScriptContainer extends ScriptContainer {
     //   # <context.raw_args> returns all the arguments as raw text.
     //   # <context.server> returns whether the server is using tab completion (a player if false).
     //   # <context.alias> returns the command alias being used.
+    //   # | This key is great to have when used well, but if you're not going to take full advantage of it and write a complex handler, leave it off.
     //   tab complete:
     //   - if !<player.is_op||<context.server>>:
     //     - stop
@@ -107,6 +114,7 @@ public class CommandScriptContainer extends ScriptContainer {
     //   # <context.alias> returns the command alias being used.
     //   # <context.command_block_location> returns the command block's location (if the command was run from one).
     //   # <context.command_minecart> returns the EntityTag of the command minecart (if the command was run from one).
+    //   # | All command scripts MUST have this key!
     //   script:
     //   - if !<player.is_op||<context.server>>:
     //     - narrate "<red>You do not have permission for that command."
