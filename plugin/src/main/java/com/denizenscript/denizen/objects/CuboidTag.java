@@ -170,8 +170,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
             }
         }
 
-        if (NotableManager.isType(string, CuboidTag.class)) {
-            return (CuboidTag) NotableManager.getSavedObject(string);
+        Notable noted = NotableManager.getSavedObject(string);
+        if (noted instanceof CuboidTag) {
+            return (CuboidTag) noted;
         }
 
         if (context == null || context.debug) {

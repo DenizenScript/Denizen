@@ -113,8 +113,9 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
             return ObjectFetcher.getObjectFrom(ItemTag.class, string, context);
         }
 
-        if (NotableManager.isSaved(string) && NotableManager.isType(string, ItemTag.class)) {
-            return (ItemTag) NotableManager.getSavedObject(string);
+        Notable noted = NotableManager.getSavedObject(string);
+        if (noted instanceof ItemTag) {
+            return (ItemTag) noted;
         }
         if (string.startsWith("i@")) {
             string = string.substring("i@".length());

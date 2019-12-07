@@ -75,8 +75,9 @@ public class EllipsoidTag implements ObjectTag, Notable {
             string = string.substring(10);
         }
 
-        if (NotableManager.isType(string, EllipsoidTag.class)) {
-            return (EllipsoidTag) NotableManager.getSavedObject(string);
+        Notable noted = NotableManager.getSavedObject(string);
+        if (noted instanceof EllipsoidTag) {
+            return (EllipsoidTag) noted;
         }
 
         List<String> split = CoreUtilities.split(string, ',');

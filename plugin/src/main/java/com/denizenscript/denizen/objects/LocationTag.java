@@ -174,8 +174,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             string = string.substring(2);
         }
 
-        if (NotableManager.isSaved(string) && NotableManager.isType(string, LocationTag.class)) {
-            return (LocationTag) NotableManager.getSavedObject(string);
+        Notable noted = NotableManager.getSavedObject(string);
+        if (noted instanceof LocationTag) {
+            return (LocationTag) noted;
         }
 
         ////////

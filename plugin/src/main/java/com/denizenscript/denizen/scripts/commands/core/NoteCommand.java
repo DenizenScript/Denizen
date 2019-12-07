@@ -91,8 +91,7 @@ public class NoteCommand extends AbstractCommand {
         }
 
         if (remove.asBoolean()) {
-            if (NotableManager.isSaved(id.asString())) {
-                NotableManager.remove(id.asString());
+            if (NotableManager.remove(id.asString()) != null) {
                 Debug.echoDebug(scriptEntry, "notable '" + id.asString() + "' removed");
             }
             else {

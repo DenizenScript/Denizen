@@ -498,10 +498,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (inv.scriptName != null && equalityCheck(inv.scriptName, comparedto, regexd)) {
             return true;
         }
-        if (NotableManager.isSaved(inv)) {
-            if (equalityCheck(NotableManager.getSavedId(inv), comparedto, regexd)) {
-                return true;
-            }
+        String notedId = NotableManager.getSavedId(inv);
+        if (notedId != null && equalityCheck(notedId, comparedto, regexd)) {
+            return true;
         }
         return false;
     }

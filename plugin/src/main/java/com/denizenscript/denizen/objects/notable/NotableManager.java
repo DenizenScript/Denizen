@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,57 +35,34 @@ public class NotableManager {
         registerWithNotableManager(LocationTag.class);
     }
 
-
-    public static Map<String, Notable>
-            notableObjects = new ConcurrentHashMap<>();
-    public static Map<String, Class>
-            typeTracker = new ConcurrentHashMap<>();
-    public static Map<Notable, String>
-            reverseObjects = new ConcurrentHashMap<>();
-
-
-    public static boolean isSaved(String id) {
-        return notableObjects.containsKey(CoreUtilities.toLowerCase(id));
-    }
-
+    public static HashMap<String, Notable> notableObjects = new HashMap<>();
+    public static HashMap<String, Class> typeTracker = new HashMap<>();
+    public static HashMap<Notable, String> reverseObjects = new HashMap<>();
 
     public static boolean isSaved(Notable object) {
         return reverseObjects.containsKey(object);
     }
-
 
     public static boolean isExactSavedObject(Notable object) {
         String id = reverseObjects.get(object);
         if (id == null) {
             return false;
         }
-        // Reference equality
         return notableObjects.get(id) == object;
     }
 
     public static Notable getSavedObject(String id) {
-        if (notableObjects.containsKey(CoreUtilities.toLowerCase(id))) {
-            return notableObjects.get(CoreUtilities.toLowerCase(id));
-        }
-        else {
-            return null;
-        }
+        return notableObjects.get(CoreUtilities.toLowerCase(id));
     }
-
 
     public static String getSavedId(Notable object) {
-        if (reverseObjects.containsKey(object)) {
-            return reverseObjects.get(object);
-        }
-        return null;
+        return reverseObjects.get(object);
     }
-
 
     public static boolean isType(String id, Class type) {
-        return (typeTracker.containsKey(CoreUtilities.toLowerCase(id)))
-                && typeTracker.get(CoreUtilities.toLowerCase(id)) == type;
+        Class trackedType = typeTracker.get(CoreUtilities.toLowerCase(id));
+        return trackedType == type;
     }
-
 
     public static void saveAs(Notable object, String id) {
         if (object == null) {
@@ -97,12 +73,15 @@ public class NotableManager {
         typeTracker.put(CoreUtilities.toLowerCase(id), object.getClass());
     }
 
-
-    public static void remove(String id) {
+    public static Notable remove(String id) {
         Notable obj = notableObjects.get(CoreUtilities.toLowerCase(id));
+        if (obj == null) {
+            return null;
+        }
         notableObjects.remove(CoreUtilities.toLowerCase(id));
         reverseObjects.remove(obj);
         typeTracker.remove(CoreUtilities.toLowerCase(id));
+        return obj;
     }
 
     public static void remove(Notable obj) {
@@ -128,23 +107,16 @@ public class NotableManager {
      * Called on '/denizen reload notables'.
      */
     private static void _recallNotables() {
-
         notableObjects.clear();
         typeTracker.clear();
         reverseObjects.clear();
-
         // Find each type of notable
         for (String key : DenizenAPI.getCurrentInstance().notableManager().getNotables().getKeys(false)) {
-
             Class<? extends ObjectTag> clazz = reverse_objects.get(key);
-
-            ConfigurationSection section = DenizenAPI.getCurrentInstance().notableManager().getNotables()
-                    .getConfigurationSection(key);
-
+            ConfigurationSection section = DenizenAPI.getCurrentInstance().notableManager().getNotables().getConfigurationSection(key);
             if (section == null) {
                 continue;
             }
-
             for (String notableRaw : section.getKeys(false)) {
                 String notable = EscapeTagBase.unEscape(notableRaw.replace("DOT", "."));
                 Notable obj = (Notable) ObjectFetcher.getObjectFrom(clazz, section.getString(notableRaw), CoreUtilities.noDebugContext);
@@ -155,21 +127,17 @@ public class NotableManager {
                     Debug.echoError("Notable '" + notable + "' failed to load!");
                 }
             }
-
         }
-
     }
 
     /**
      * Called on by '/denizen save'.
      */
     private static void _saveNotables() {
-
         FileConfiguration notables = DenizenAPI.getCurrentInstance().notableManager().getNotables();
         for (String key : notables.getKeys(false)) {
             notables.set(key, null);
         }
-
         for (Map.Entry<String, Notable> notable : notableObjects.entrySet()) {
 
             try {
@@ -246,17 +214,8 @@ public class NotableManager {
         }
     }
 
-    public static boolean canFetch(Class notable) {
-        return objects.containsKey(notable);
-    }
-
     public static String getClassId(Class notable) {
-        if (canFetch(notable)) {
-            return objects.get(notable);
-        }
-        else {
-            return null;
-        }
+        return objects.get(notable);
     }
 
     public static Map<String, Class> getReverseClassIdMap() {
