@@ -59,6 +59,9 @@ public class InventoryScriptName implements Property {
         // Returns the name of the script that this inventory came from (if any).
         // -->
         PropertyParser.<InventoryScriptName>registerTag("script_name", (attribute, inventory) -> {
+            if (inventory.inventory.scriptName == null) {
+                return null;
+            }
             return new ElementTag(inventory.inventory.scriptName);
         });
     }
