@@ -180,11 +180,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         if (result != null) {
             return result;
         }
-        // Scripts have priority over notables
-        String scriptResult = InventoryScriptHelper.tempInventoryScripts.get(inventory);
-        if (scriptResult != null) {
-            return new InventoryTag(inventory).setIdentifiers("script", scriptResult);
-        }
         // Use the map to get notable inventories
         String title = NMSHandler.getInstance().getTitle(inventory);
         result = InventoryScriptHelper.notableInventories.get(title);
@@ -332,17 +327,19 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         }
 
         if (ScriptRegistry.containsScript(string, InventoryScriptContainer.class)) {
-            return ScriptRegistry.getScriptContainerAs(string, InventoryScriptContainer.class)
-                    .getInventoryFrom(player, npc);
+            return ScriptRegistry.getScriptContainerAs(string, InventoryScriptContainer.class).getInventoryFrom(player, npc);
         }
 
-        if (NotableManager.isSaved(string) && NotableManager.isType(string, InventoryTag.class)) {
-            return (InventoryTag) NotableManager.getSavedObject(string);
+        Notable noted = NotableManager.getSavedObject(string);
+        if (noted instanceof InventoryTag) {
+            return (InventoryTag) noted;
         }
 
         for (String idType : idTypes) {
             if (string.equalsIgnoreCase(idType)) {
-                return new InventoryTag(string);
+                InventoryTag result = new InventoryTag(string);
+                trackTemporaryInventory(result);
+                return result;
             }
         }
 
@@ -376,7 +373,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             return true;
         }
 
-        if (NotableManager.isSaved(tid) && NotableManager.isType(tid, InventoryTag.class)) {
+        if (NotableManager.isType(tid, InventoryTag.class)) {
             return true;
         }
 
@@ -679,8 +676,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             }
         }
         else if (getIdType().equals("script")) {
-            if (InventoryScriptHelper.tempInventoryScripts.containsKey(inventory)) {
-                idHolder = InventoryScriptHelper.tempInventoryScripts.get(inventory);
+            InventoryTag tracked = InventoryTrackerSystem.retainedInventoryLinks.get(inventory);
+            if (tracked != null) {
+                idHolder = tracked.idHolder;
                 return;
             }
         }

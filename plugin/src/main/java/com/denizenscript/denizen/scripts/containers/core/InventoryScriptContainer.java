@@ -263,7 +263,7 @@ public class InventoryScriptContainer extends ScriptContainer {
         }
 
         if (inventory != null) {
-            InventoryScriptHelper.tempInventoryScripts.put(inventory.getInventory(), getName());
+            InventoryTag.trackTemporaryInventory(inventory);
             inventory.scriptName = getName();
         }
 
