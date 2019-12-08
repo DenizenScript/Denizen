@@ -132,7 +132,6 @@ public class TimeCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-        // Fetch objects
         DurationTag value = scriptEntry.getObjectTag("value");
         DurationTag resetAfter = scriptEntry.getObjectTag("reset_after");
         WorldTag world = (WorldTag) scriptEntry.getObject("world");
@@ -141,7 +140,6 @@ public class TimeCommand extends AbstractCommand {
         ElementTag freeze = scriptEntry.getElement("freeze");
         Type type = Type.valueOf(type_element.asString().toUpperCase());
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), type_element.debug()
                     + (reset != null ? reset.debug() : value.debug())

@@ -11,12 +11,13 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.WeatherType;
+import org.bukkit.entity.Player;
 
 public class WeatherCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Weather
-    // @Syntax weather [type:{global}/player] [sunny/storm/thunder] (world:<name>)
+    // @Syntax weather [{global}/player] [sunny/storm/thunder] (<world>)
     // @Required 1
     // @Short Changes the current weather in the minecraft world.
     // @Group world
@@ -41,11 +42,11 @@ public class WeatherCommand extends AbstractCommand {
     //
     // @Usage
     // Makes the weather storm in world "cookies"
-    // - weather storm world:cookies
+    // - weather storm cookies
     //
     // @Usage
     // Make the weather storm for the attached player.
-    // - weather type:player storm
+    // - weather player storm
     //
     // -->
 
@@ -75,11 +76,11 @@ public class WeatherCommand extends AbstractCommand {
             }
         }
 
-        // Check to make sure required arguments have been filled
-
         if ((!scriptEntry.hasObject("value"))) {
             throw new InvalidArgumentsException("Must specify a value!");
         }
+
+        scriptEntry.defaultObject("type", Type.GLOBAL);
 
         // If the world has not been specified, try to use the NPC's or player's
         // world, or default to "world" if necessary
@@ -91,55 +92,40 @@ public class WeatherCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-        // Fetch objects
-        Value value = Value.valueOf(((ElementTag) scriptEntry.getObject("value"))
-                .asString().toUpperCase());
-        WorldTag world = (WorldTag) scriptEntry.getObject("world");
-        Type type = scriptEntry.hasObject("type") ?
-                (Type) scriptEntry.getObject("type") : Type.GLOBAL;
+        Value value = Value.valueOf(((ElementTag) scriptEntry.getObject("value")).asString().toUpperCase());
+        WorldTag world = scriptEntry.getObjectTag("world");
+        Type type = (Type) scriptEntry.getObject("type");
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("type", type.name()) +
-                    (type.name().equalsIgnoreCase("player") ?
-                            ArgumentHelper.debugObj("player", Utilities.getEntryPlayer(scriptEntry)) : "") +
-                    (type.name().equalsIgnoreCase("global") ?
-                            ArgumentHelper.debugObj("world", world) : "") +
+                    (type.name().equalsIgnoreCase("player") ? ArgumentHelper.debugObj("player", Utilities.getEntryPlayer(scriptEntry)) : "") +
+                    (type.name().equalsIgnoreCase("global") ? ArgumentHelper.debugObj("world", world) : "") +
                     ArgumentHelper.debugObj("value", value));
         }
 
-        switch (value) {
-            case SUNNY:
-                if (type.equals(Type.GLOBAL)) {
+        if (type.equals(Type.GLOBAL)) {
+            switch (value) {
+                case SUNNY:
                     world.getWorld().setStorm(false);
                     world.getWorld().setThundering(false);
-                }
-                else {
-                    Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().setPlayerWeather(WeatherType.CLEAR);
-                }
-
-                break;
-
-            case STORM:
-                if (type.equals(Type.GLOBAL)) {
+                    break;
+                case STORM:
                     world.getWorld().setStorm(true);
-                }
-                else {
-                    Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().setPlayerWeather(WeatherType.DOWNFALL);
-                }
-
-                break;
-
-            case THUNDER:
-                // Note: setThundering always creates a storm
-                if (type.equals(Type.GLOBAL)) {
+                    break;
+                case THUNDER:
+                    // Note: setThundering always creates a storm
                     world.getWorld().setThundering(true);
-                }
-                else {
-                    Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().setPlayerWeather(WeatherType.DOWNFALL);
-                }
-
-                break;
+                    break;
+            }
+        }
+        else {
+            Player player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
+            if (value == Value.SUNNY) {
+                player.setPlayerWeather(WeatherType.CLEAR);
+            }
+            else {
+                player.setPlayerWeather(WeatherType.DOWNFALL);
+            }
         }
     }
 }

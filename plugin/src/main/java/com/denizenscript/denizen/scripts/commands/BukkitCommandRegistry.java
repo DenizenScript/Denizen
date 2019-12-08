@@ -216,7 +216,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
             AutoNoCitizensCommand.registerFor("VULNERABLE");
         }
         registerCoreMember(WalkCommand.class, "WALK", "walk (<entity>|...) [<location>/stop] (speed:<#>) (auto_range) (radius:<#.#>) (lookat:<location>)", 1);
-        registerCoreMember(WeatherCommand.class, "WEATHER", "weather [type:{global}/player] [sunny/storm/thunder] (world:<name>)", 1);
+        registerCoreMember(WeatherCommand.class, "WEATHER", "weather [{global}/player] [sunny/storm/thunder] (<world>)", 1);
         registerCoreMember(WorldBorderCommand.class, "WORLDBORDER", "worldborder [<world>/<player>|...] (center:<location>) (size:<#.#>) (current_size:<#.#>) (damage:<#.#>) (damagebuffer:<#.#>) (warningdistance:<#>) (warningtime:<duration>) (duration:<duration>) (reset)", 2);
         registerCoreMember(ZapCommand.class, "ZAP", "zap (<script>) [<step>] (<duration>)", 0);
 
