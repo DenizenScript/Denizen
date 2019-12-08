@@ -199,7 +199,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCoreMember(TakeCommand.class, "TAKE", "take [money/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/nbt:<key>/<item>|...] (qty:<#>) (from:<inventory>)", 1);
         registerCoreMember(TeamCommand.class, "TEAM", "team (id:<scoreboard>/{main}) [name:<team>] (add:<entry>|...) (remove:<entry>|...) (prefix:<prefix>) (suffix:<suffix>)", 2);
         registerCoreMember(TeleportCommand.class, "TELEPORT", "teleport (<entity>|...) [<location>]", 1);
-        registerCoreMember(TimeCommand.class, "TIME", "time ({global}/player) [<time duration>] (<world>)", 1);
+        registerCoreMember(TimeCommand.class, "TIME", "time ({global}/player) [<time duration>/reset] (<world>) (reset:<duration>) (freeze)", 1);
         registerCoreMember(TitleCommand.class, "TITLE", "title (title:<text>) (subtitle:<text>) (fade_in:<duration>/{1s}) (stay:<duration>/{3s}) (fade_out:<duration>/{1s}) (targets:<player>|...)", 1);
         registerCoreMember(ToastCommand.class, "TOAST", "toast [<text>] (targets:<player>|...) (icon:<item>) (frame:{task}/challenge/goal) (background:<texture>)", 1);
         if (Depends.citizens != null) {
