@@ -30,7 +30,7 @@ public class TimeCommand extends AbstractCommand {
     // If no world is specified, defaults to the NPCs world. If no NPC is available,
     // defaults to the player's world. If no player is available, an error will be thrown.
     //
-    // If 'player is specified', it will change their personal time.
+    // If 'player' is specified, this will change their personal time.
     // This is separate from the global time, and does not affect other players.
     // When that player logs off, their time will be reset to the global time.
     // Additionally, you may instead specify 'reset' to return the player's time back to global time.
@@ -109,7 +109,7 @@ public class TimeCommand extends AbstractCommand {
 
         // Check to make sure required arguments have been filled
 
-        if ((!scriptEntry.hasObject("value") && !scriptEntry.hasObject("reset"))) {
+        if (!scriptEntry.hasObject("value") && !scriptEntry.hasObject("reset")) {
             throw new InvalidArgumentsException("Must specify a value!");
         }
 
