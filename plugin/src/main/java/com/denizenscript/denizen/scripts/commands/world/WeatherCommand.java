@@ -47,15 +47,15 @@ public class WeatherCommand extends AbstractCommand {
     // <WorldTag.thunder_duration>
     //
     // @Usage
-    // Use to makes the weather sunny
+    // Use to make the weather sunny.
     // - weather sunny
     //
     // @Usage
-    // Use to makes the weather storm in world "cookies"
+    // Use to start a storm in world "cookies".
     // - weather storm cookies
     //
     // @Usage
-    // Use to make the weather storm for the attached player.
+    // Use to start a storm that's only visible to the attached player.
     // - weather player storm
     //
     // @Usage
@@ -89,7 +89,7 @@ public class WeatherCommand extends AbstractCommand {
                     && arg.matchesEnum(Value.values())) {
                 scriptEntry.addObject("value", arg.asElement());
             }
-            else if (!scriptEntry.hasObject("value")
+            else if (!scriptEntry.hasObject("reset_after")
                     && arg.matchesPrefix("reset")
                     && arg.matchesArgumentType(DurationTag.class)) {
                 scriptEntry.addObject("reset_after", arg.asType(DurationTag.class));

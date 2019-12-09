@@ -81,6 +81,7 @@ public class TimeCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("value")
                     && !scriptEntry.hasObject("reset")
+                    && !arg.matchesPrefix("reset")
                     && arg.matchesArgumentType(DurationTag.class)) {
                 scriptEntry.addObject("value", arg.asType(DurationTag.class));
             }
@@ -93,7 +94,7 @@ public class TimeCommand extends AbstractCommand {
                     && arg.matches("freeze")) {
                 scriptEntry.addObject("freeze", new ElementTag(true));
             }
-            else if (!scriptEntry.hasObject("value")
+            else if (!scriptEntry.hasObject("reset_after")
                     && arg.matchesPrefix("reset")
                     && arg.matchesArgumentType(DurationTag.class)) {
                 scriptEntry.addObject("reset_after", arg.asType(DurationTag.class));
