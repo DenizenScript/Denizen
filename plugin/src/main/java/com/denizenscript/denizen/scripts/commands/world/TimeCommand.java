@@ -20,7 +20,7 @@ public class TimeCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Time
-    // @Syntax time ({global}/player) [<time duration>/reset] (<world>) (reset:<duration>) (freeze)
+    // @Syntax time ({global}/player) [<time-duration>/reset] (<world>) (reset:<duration>) (freeze)
     // @Required 1
     // @Short Changes the current time in the minecraft world.
     // @Group world

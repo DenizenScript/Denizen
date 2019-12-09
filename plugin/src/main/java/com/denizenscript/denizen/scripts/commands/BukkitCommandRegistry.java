@@ -109,7 +109,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
             AutoNoCitizensCommand.registerFor("ENGAGE");
         }
         registerCoreMember(EquipCommand.class, "EQUIP", "equip (<entity>|...) (offhand:<item>) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>) (saddle:<item>) (horse_armor:<item>)", 1);
-        registerCoreMember(ExecuteCommand.class, "EXECUTE", "execute [as_player/as_op/as_npc/as_server] [<Bukkit command>] (silent)", 2);
+        registerCoreMember(ExecuteCommand.class, "EXECUTE", "execute [as_player/as_op/as_npc/as_server] [<Bukkit-command>] (silent)", 2);
         registerCoreMember(ExperienceCommand.class, "EXPERIENCE", "experience [{set}/give/take] (level) [<#>]", 2);
         registerCoreMember(ExplodeCommand.class, "EXPLODE", "explode (power:<#.#>) (<location>) (fire) (breakblocks)", 0);
         registerCoreMember(FakeItemCommand.class, "FAKEITEM", "fakeitem [<item>] [slot:<slot>] (duration:<duration>) (players:<player>|...) (player_only)", 2);
@@ -199,7 +199,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCoreMember(TakeCommand.class, "TAKE", "take [money/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/nbt:<key>/<item>|...] (qty:<#>) (from:<inventory>)", 1);
         registerCoreMember(TeamCommand.class, "TEAM", "team (id:<scoreboard>/{main}) [name:<team>] (add:<entry>|...) (remove:<entry>|...) (prefix:<prefix>) (suffix:<suffix>)", 2);
         registerCoreMember(TeleportCommand.class, "TELEPORT", "teleport (<entity>|...) [<location>]", 1);
-        registerCoreMember(TimeCommand.class, "TIME", "time ({global}/player) [<time duration>/reset] (<world>) (reset:<duration>) (freeze)", 1);
+        registerCoreMember(TimeCommand.class, "TIME", "time ({global}/player) [<time-duration>/reset] (<world>) (reset:<duration>) (freeze)", 1);
         registerCoreMember(TitleCommand.class, "TITLE", "title (title:<text>) (subtitle:<text>) (fade_in:<duration>/{1s}) (stay:<duration>/{3s}) (fade_out:<duration>/{1s}) (targets:<player>|...)", 1);
         registerCoreMember(ToastCommand.class, "TOAST", "toast [<text>] (targets:<player>|...) (icon:<item>) (frame:{task}/challenge/goal) (background:<texture>)", 1);
         if (Depends.citizens != null) {
