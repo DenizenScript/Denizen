@@ -174,7 +174,7 @@ public class TimeCommand extends AbstractCommand {
                             public void run() {
                                 player.resetPlayerTime();
                             }
-                        });
+                        }, resetAfter.getTicks());
                         resetTasks.put(player.getUniqueId(), newTask);
                     }
                 }

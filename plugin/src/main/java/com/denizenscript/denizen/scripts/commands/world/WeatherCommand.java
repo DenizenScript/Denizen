@@ -170,7 +170,7 @@ public class WeatherCommand extends AbstractCommand {
                     public void run() {
                         player.resetPlayerWeather();
                     }
-                });
+                }, resetAfter.getTicks());
                 resetTasks.put(player.getUniqueId(), newTask);
             }
         }
