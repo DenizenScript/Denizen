@@ -1,8 +1,9 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
+import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
 import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.blocks.DirectionalBlocksHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
@@ -96,7 +97,9 @@ public class SignCommand extends AbstractCommand {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             // TODO: 1.14 - allow new sign types?
             sign.setType(MaterialCompat.WALL_SIGN, false);
-            DirectionalBlocksHelper.setFace(sign, bf);
+            MaterialTag signMaterial = new MaterialTag(sign);
+            MaterialDirectional.getFrom(signMaterial).setFacing(bf);
+            signMaterial.getModernData().setToBlock(sign);
         }
         else {
             // TODO: 1.14 - allow new sign types?

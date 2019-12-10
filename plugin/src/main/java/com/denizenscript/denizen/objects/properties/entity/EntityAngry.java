@@ -92,7 +92,7 @@ public class EntityAngry implements Property {
         // @mechanism EntityTag.angry
         // @group properties
         // @description
-        // If the entity is a wolf, returns whether the wolf is angry.
+        // If the entity is a wolf or PigZombie, returns whether the entity is angry.
         // -->
         if (attribute.startsWith("angry")) {
             if (entity.getBukkitEntityType() == EntityType.WOLF) {

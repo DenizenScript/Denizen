@@ -294,19 +294,22 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         pairs.add(pair);
     }
 
+    public static boolean isBetween(double a, double b, double c) {
+        return b > a ? (c >= a && c < b) : (c >= b && c < a); // Cuboid's have to be compensated for weirdly
+    }
 
     public boolean isInsideCuboid(Location location) {
         for (LocationPair pair : pairs) {
             if (!location.getWorld().equals(pair.low.getWorld())) {
                 continue;
             }
-            if (!Utilities.isBetween(pair.low.getBlockX(), pair.high.getBlockX() + 1, location.getBlockX())) {
+            if (!isBetween(pair.low.getBlockX(), pair.high.getBlockX() + 1, location.getBlockX())) {
                 continue;
             }
-            if (!Utilities.isBetween(pair.low.getBlockY(), pair.high.getBlockY() + 1, location.getBlockY())) {
+            if (!isBetween(pair.low.getBlockY(), pair.high.getBlockY() + 1, location.getBlockY())) {
                 continue;
             }
-            if (Utilities.isBetween(pair.low.getBlockZ(), pair.high.getBlockZ() + 1, location.getBlockZ())) {
+            if (isBetween(pair.low.getBlockZ(), pair.high.getBlockZ() + 1, location.getBlockZ())) {
                 return true;
             }
         }

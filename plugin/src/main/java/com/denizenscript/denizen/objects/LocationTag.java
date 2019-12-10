@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.objects.notable.NotableManager;
+import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
 import com.denizenscript.denizen.objects.properties.material.MaterialHalf;
 import com.denizenscript.denizen.objects.properties.material.MaterialSwitchFace;
 import com.denizenscript.denizen.objects.properties.material.MaterialLeaves;
@@ -8,7 +9,6 @@ import com.denizenscript.denizen.scripts.commands.world.SwitchCommand;
 import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizen.utilities.world.PathFinder;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.blocks.DirectionalBlocksHelper;
 import com.denizenscript.denizen.utilities.blocks.OldMaterialsHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
@@ -797,11 +797,32 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // You can use <some_block_location.add[<some_block_location.block_facing>]> to get the block directly in front of this block (based on its facing direction).
         // -->
         registerTag("block_facing", (attribute, object) -> {
-            Vector facing = DirectionalBlocksHelper.getFacing(object.getBlockForTag(attribute));
-            if (facing != null) {
-                return new LocationTag(object.getWorld(), facing.getX(), facing.getY(), facing.getZ());
+            Block block = object.getBlockForTag(attribute);
+            MaterialTag material = new MaterialTag(block);
+            if (!MaterialDirectional.describes(material)) {
+                return null;
             }
-            return null;
+            return new LocationTag(object.getWorld(), MaterialDirectional.getFrom(material).getDirectionVector());
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.with_facing_direction>
+        // @returns LocationTag
+        // @description
+        // Returns the location with its direction set to the block's facing direction.
+        // Only works for block types that have directionality (such as signs, chests, stairs, etc.).
+        // You can use <some_block_location.with_facing_direction.forward[1]> to get the block directly in front of this block (based on its facing direction).
+        // -->
+        registerTag("with_facing_direction", (attribute, object) -> {
+            Block block = object.getBlockForTag(attribute);
+            MaterialTag material = new MaterialTag(block);
+            if (!MaterialDirectional.describes(material)) {
+                return null;
+            }
+            Vector facing = MaterialDirectional.getFrom(material).getDirectionVector();
+            LocationTag result = object.clone();
+            result.setDirection(facing);
+            return result;
         });
 
         // <--[tag]
@@ -2949,7 +2970,14 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         if (mechanism.matches("block_facing") && mechanism.requireObject(LocationTag.class)) {
             LocationTag faceVec = mechanism.valueAsType(LocationTag.class);
-            DirectionalBlocksHelper.setFacing(getBlock(), faceVec.toVector());
+            Block block = getBlock();
+            MaterialTag material = new MaterialTag(block);
+            if (!MaterialDirectional.describes(material)) {
+                Debug.echoError("LocationTag.block_facing mechanism failed: block is not directional.");
+                return;
+            }
+            MaterialDirectional.getFrom(material).setFacing(Utilities.faceFor(faceVec.toVector()));
+            material.getModernData().setToBlock(block);
         }
 
         // <--[mechanism]

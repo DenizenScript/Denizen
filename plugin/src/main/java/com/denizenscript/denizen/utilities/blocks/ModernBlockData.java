@@ -60,6 +60,10 @@ public class ModernBlockData implements Cloneable {
         return null;
     }
 
+    public void setToBlock(Block block) {
+        block.setBlockData(data);
+    }
+
     public boolean setSwitchState(Block block, boolean state) {
         if (data instanceof Openable) {
             ((Openable) data).setOpen(state);

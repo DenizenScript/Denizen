@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.utilities;
 
-import com.denizenscript.denizen.utilities.blocks.DirectionalBlocksHelper;
+import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
@@ -182,9 +183,6 @@ public class Utilities {
         return locations.get(CoreUtilities.getRandom().nextInt(locations.size()));
     }
 
-
-    // TODO: Javadocs, comments
-    //
     public static boolean isWalkable(Location location) {
         BlockHelper blockHelper = NMSHandler.getBlockHelper();
         return !blockHelper.isSafeBlock(location.clone().subtract(0, 1, 0).getBlock().getType())
@@ -192,9 +190,6 @@ public class Utilities {
                 && blockHelper.isSafeBlock(location.clone().add(0, 1, 0).getBlock().getType());
     }
 
-
-    // TODO: Javadocs, comments
-    //
     public static String[] wrapWords(String text, int width) {
         StringBuilder sb = new StringBuilder(text);
 
@@ -205,7 +200,6 @@ public class Utilities {
 
         return sb.toString().split("\n");
     }
-
 
     /**
      * @param player the player doing the talking
@@ -238,30 +232,6 @@ public class Utilities {
         }
     }
 
-
-    public static int lastIndexOfUCL(String str) {
-        for (int i = str.length() - 1; i >= 0; i--) {
-            if (Character.isUpperCase(str.charAt(i))) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-
-    /**
-     * Checks if c is in between a and b, or equal to a or b.
-     *
-     * @param a first number
-     * @param b second number
-     * @param c number to check if between
-     * @return true if c is in between.
-     */
-    public static boolean isBetween(double a, double b, double c) {
-        return b > a ? (c >= a && c < b) : (c >= b && c < a); // Cuboid's have to be compensated for weirdly
-    }
-
-
     /**
      * Finds the closest NPC to a particular location.
      *
@@ -291,93 +261,38 @@ public class Utilities {
         return new NPCTag(closestNPC);
     }
 
-
-    /**
-     * Checks entity's location against a Location (with leeway). Should be faster than
-     * bukkit's built in Location.distance(Location) since there's no sqrt math.
-     * <p/>
-     * Thanks chainsol :)
-     *
-     * @return true if within the specified location, false otherwise.
-     */
     public static boolean checkLocation(LivingEntity entity, Location theLocation, double theLeeway) {
-        if (entity.getWorld() != theLocation.getWorld()) {
-            return false;
-        }
-
-        Location entityLocation = entity.getLocation();
-
-        if (Math.abs(entityLocation.getX() - theLocation.getX())
-                > theLeeway) {
-            return false;
-        }
-        if (Math.abs(entityLocation.getY() - theLocation.getY())
-                > theLeeway) {
-            return false;
-        }
-        if (Math.abs(entityLocation.getZ() - theLocation.getZ())
-                > theLeeway) {
-            return false;
-        }
-
-        return true;
+        return checkLocation(entity.getLocation(), theLocation, theLeeway);
     }
 
-
-    /**
-     * Checks entity's location against a Location (with leeway). Should be faster than
-     * bukkit's built in Location.distance(Location) since there's no sqrt math.
-     *
-     * @return true if within the specified location, false otherwise.
-     */
     public static boolean checkLocation(Location baseLocation, Location theLocation, double theLeeway) {
-
-        if (!baseLocation.getWorld().getName().equals(theLocation.getWorld().getName())) {
+        if (baseLocation.getWorld() != theLocation.getWorld()) {
             return false;
         }
-
         return baseLocation.distanceSquared(theLocation) < theLeeway * theLeeway;
     }
 
-    /**
-     * Set the lines on a sign to the strings in a string array
-     *
-     * @param sign  The sign
-     * @param lines The string array
-     */
     public static void setSignLines(Sign sign, String[] lines) {
-
         for (int n = 0; n < 4; n++) {
             sign.setLine(n, lines[n]);
         }
-
         sign.update();
     }
 
-
     public static BlockFace chooseSignRotation(Block signBlock) {
-
         BlockFace[] blockFaces = {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
-
         for (BlockFace blockFace : blockFaces) {
-
             Block block = signBlock.getRelative(blockFace);
-
             Material material = block.getType();
-            if (material != Material.AIR
-                    && !MaterialCompat.isAnySign(material)) {
-
+            if (material != Material.AIR && !MaterialCompat.isAnySign(material)) {
                 return blockFace.getOppositeFace();
             }
         }
-
         return BlockFace.SOUTH;
     }
 
     public static BlockFace chooseSignRotation(String direction) {
-
         BlockFace[] blockFaces = {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
-
         for (BlockFace blockFace : blockFaces) {
             if (blockFace.name().startsWith(direction.toUpperCase().substring(0, 1))) {
                 return blockFace;
@@ -386,38 +301,9 @@ public class Utilities {
         return BlockFace.SOUTH;
     }
 
-    /**
-     * Make a wall sign attach itself to an available surface
-     *
-     * @param signState The sign's blockState
-     */
-    public static void setSignRotation(BlockState signState) {
-
-        BlockFace[] blockFaces = {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
-
-        for (BlockFace blockFace : blockFaces) {
-
-            Block block = signState.getBlock().getRelative(blockFace);
-
-            Material material = block.getType();
-            if (material != Material.AIR
-                    && !MaterialCompat.isAnySign(material)) {
-
-                ((org.bukkit.material.Sign) signState.getData())
-                        .setFacingDirection(blockFace.getOppositeFace());
-                signState.update();
-            }
-        }
-    }
-
-    // TODO: Javadocs, comments
-    //
     public static void setSignRotation(BlockState signState, String direction) {
-
         direction = CoreUtilities.toLowerCase(direction);
-
         BlockFace bf;
-
         if (direction.startsWith("n")) {
             bf = BlockFace.NORTH;
         }
@@ -433,46 +319,16 @@ public class Utilities {
         else {
             return;
         }
-
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            DirectionalBlocksHelper.setFace(signState.getBlock(), bf);
+            MaterialTag signMaterial = new MaterialTag(signState.getBlock());
+            MaterialDirectional.getFrom(signMaterial).setFacing(bf);
+            signMaterial.getModernData().setToBlock(signState.getBlock());
         }
         else {
             ((org.bukkit.material.Sign) signState.getData()).setFacingDirection(bf);
             signState.update();
         }
     }
-
-
-    /**
-     * Check if a block location equals another location.
-     *
-     * @param block    The block location to check for.
-     * @param location The location to check against.
-     * @return Whether or not the block location equals the location.
-     */
-    public static boolean isBlock(Location block, Location location) {
-
-        if (!block.getWorld().getName().equals(location.getWorld().getName())) {
-            return false;
-        }
-
-        if (Math.abs(block.getBlockX() - location.getBlockX())
-                > 0) {
-            return false;
-        }
-        if (Math.abs(block.getBlockY() - location.getBlockY())
-                > 0) {
-            return false;
-        }
-        if (Math.abs(block.getBlockZ() - location.getBlockZ())
-                > 0) {
-            return false;
-        }
-
-        return true;
-    }
-
 
     /**
      * Extract a file from a zip or jar.
@@ -483,7 +339,6 @@ public class Utilities {
      */
     public static void extractFile(File jarFile, String fileName, String destDir) {
         java.util.jar.JarFile jar = null;
-
         try {
             jar = new java.util.jar.JarFile(jarFile);
             java.util.Enumeration myEnum = jar.entries();
@@ -505,7 +360,6 @@ public class Utilities {
                 }
             }
             Debug.echoError(fileName + " not found in the jar!");
-
         }
         catch (IOException e) {
             Debug.echoError(e);
