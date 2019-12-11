@@ -124,9 +124,6 @@ public class CopyBlockCommand extends AbstractCommand {
                     n++;
                 }
             }
-            else if (sourceState instanceof NoteBlock) {
-                ((NoteBlock) updateState).setNote(((NoteBlock) sourceState).getNote());
-            }
             else if (sourceState instanceof Skull) {
                 ((Skull) updateState).setSkullType(((Skull) sourceState).getSkullType());
                 ((Skull) updateState).setOwner(((Skull) sourceState).getOwner());
