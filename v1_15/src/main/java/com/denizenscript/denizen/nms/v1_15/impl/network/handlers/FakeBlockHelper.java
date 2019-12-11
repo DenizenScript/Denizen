@@ -16,8 +16,9 @@ public class FakeBlockHelper {
 
     public static Field BITMASK_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("c");
     public static Field HEIGHTMAPS_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("d");
-    public static Field DATA_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("e");
-    public static Field BLOCKENTITIES_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("f");
+    public static Field DATA_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("f");
+    public static Field BLOCKENTITIES_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("g");
+    public static Field BIOMESTORAGE_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("e");
 
     public static IBlockData getNMSState(FakeBlock block) {
         return ((CraftBlockData) block.material.getModernData().data).getState();
@@ -158,8 +159,10 @@ public class FakeBlockHelper {
                 }
             }
             if (isFull) {
-                // biomes
-                outputSerial.writeBytes(serial, 256 * 4);
+                BiomeStorage biomes = (BiomeStorage) BIOMESTORAGE_MAPCHUNK.get(packet);
+                if (biomes != null) {
+                    biomes.a(outputSerial);
+                }
             }
             byte[] outputBytes = outputSerial.array();
             DATA_MAPCHUNK.set(packet, outputBytes);

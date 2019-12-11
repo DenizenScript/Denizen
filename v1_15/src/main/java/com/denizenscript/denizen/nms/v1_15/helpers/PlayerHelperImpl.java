@@ -34,7 +34,6 @@ public class PlayerHelperImpl extends PlayerHelper {
         if (conn instanceof AbstractListenerPlayInImpl) {
             conn = ((AbstractListenerPlayInImpl) conn).oldListener;
         }
-
         try {
             return Math.max(80 - Math.max(FLY_TICKS.getInt(conn), VEHICLE_FLY_TICKS.getInt(conn)), 0);
         }
@@ -51,7 +50,6 @@ public class PlayerHelperImpl extends PlayerHelper {
         if (conn instanceof AbstractListenerPlayInImpl) {
             conn = ((AbstractListenerPlayInImpl) conn).oldListener;
         }
-
         try {
             FLY_TICKS.setInt(conn, ticks);
             VEHICLE_FLY_TICKS.setInt(conn, ticks);
@@ -136,8 +134,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public void showEndCredits(Player player) {
         ((CraftPlayer) player).getHandle().viewingCredits = true;
-        ((CraftPlayer) player).getHandle().playerConnection
-                .sendPacket(new PacketPlayOutGameStateChange(4, 0.0F));
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutGameStateChange(4, 0.0F));
     }
 
     @Override
