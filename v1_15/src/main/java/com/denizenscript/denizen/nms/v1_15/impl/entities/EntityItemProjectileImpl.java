@@ -40,9 +40,9 @@ public class EntityItemProjectileImpl extends EntityItem implements IProjectile 
 
     @Override
     public void tick() {
-        this.H = this.locX;
-        this.I = this.locY;
-        this.J = this.locZ;
+        this.E = this.locX();
+        this.F = this.locY();
+        this.G = this.locZ();
         super.tick();
         if (this.shake > 0) {
             --this.shake;
@@ -92,9 +92,7 @@ public class EntityItemProjectileImpl extends EntityItem implements IProjectile 
         }
 
         Vec3D vec3d = this.getMot();
-        this.locX += vec3d.x;
-        this.locY += vec3d.y;
-        this.locZ += vec3d.z;
+        this.setPositionRaw(this.locX() + vec3d.x, this.locY() + vec3d.y, this.locZ() + vec3d.z);
         float f = MathHelper.sqrt(b(vec3d));
         this.yaw = (float) (MathHelper.d(vec3d.x, vec3d.z) * 57.2957763671875D);
 
@@ -120,7 +118,7 @@ public class EntityItemProjectileImpl extends EntityItem implements IProjectile 
         if (this.isInWater()) {
             for (int i = 0; i < 4; ++i) {
                 float f2 = 0.25F;
-                this.world.addParticle(Particles.BUBBLE, this.locX - vec3d.x * 0.25D, this.locY - vec3d.y * 0.25D, this.locZ - vec3d.z * 0.25D, vec3d.x, vec3d.y, vec3d.z);
+                this.world.addParticle(Particles.BUBBLE, this.locX() - vec3d.x * 0.25D, this.locY() - vec3d.y * 0.25D, this.locZ() - vec3d.z * 0.25D, vec3d.x, vec3d.y, vec3d.z);
             }
 
             f1 = 0.8F;
@@ -135,7 +133,7 @@ public class EntityItemProjectileImpl extends EntityItem implements IProjectile 
             this.setMot(vec3d1.x, vec3d1.y - 0.03, vec3d1.z);
         }
 
-        this.setPosition(this.locX, this.locY, this.locZ);
+        this.setPosition(this.locX(), this.locY(), this.locZ());
     }
 
     @Override

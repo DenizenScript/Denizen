@@ -176,10 +176,10 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                             boolean rotationBasis = NMSHandler.getInstance().attachmentRotations.contains(att);
                             Vector goalPosition;
                             if (!rotationBasis) {
-                                goalPosition = new Vector(e.locX, e.locY, e.locZ).add(offset);
+                                goalPosition = new Vector(e.locX(), e.locY(), e.locZ()).add(offset);
                             }
                             else {
-                                goalPosition = new Vector(e.locX, e.locY, e.locZ).add(NMSHandler.fixOffset(offset, -e.yaw, e.pitch));
+                                goalPosition = new Vector(e.locX(), e.locY(), e.locZ()).add(NMSHandler.fixOffset(offset, -e.yaw, e.pitch));
                             }
                             Vector oldPos = NMSHandler.getInstance().visiblePositions.get(target.getUniqueId());
                             if (oldPos == null) {

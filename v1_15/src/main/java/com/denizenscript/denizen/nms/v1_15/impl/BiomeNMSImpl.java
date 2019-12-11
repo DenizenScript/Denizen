@@ -71,20 +71,20 @@ public class BiomeNMSImpl extends BiomeNMS {
             Chunk chunk = world.getChunkAtWorldCoords(new BlockPosition(x, 0, z));
 
             if (chunk != null) {
-                BiomeBase[] biomevals = chunk.getBiomeIndex();
-                biomevals[((z & 0xF) << 4) | (x & 0xF)] = biomeBase;
+                BiomeStorage biomes = chunk.getBiomeIndex();
+                biomes.setBiome(z, 0, x, biomeBase); // TODO: 1.15 -> logic changed. Is this correct? Original: biomevals[((z & 0xF) << 4) | (x & 0xF)] = biomeBase;
             }
         }
     }
 
     @Override
     protected boolean getDoesRain() {
-        return biomeBase.b() == BiomeBase.Precipitation.RAIN;
+        return biomeBase.d() == BiomeBase.Precipitation.RAIN;
     }
 
     @Override
     protected boolean getDoesSnow() {
-        return biomeBase.b() == BiomeBase.Precipitation.SNOW;
+        return biomeBase.d() == BiomeBase.Precipitation.SNOW;
     }
 
     private List<EntityType> getSpawnableEntities(EnumCreatureType creatureType) {
