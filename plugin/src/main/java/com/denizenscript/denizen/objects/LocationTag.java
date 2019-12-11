@@ -1517,7 +1517,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
-        // @attribute <LocationTag.direction[<location>]>
+        // @attribute <LocationTag.direction[(<location>)]>
         // @returns ElementTag
         // @description
         // Returns the compass direction between two locations.

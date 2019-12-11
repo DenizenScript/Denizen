@@ -58,7 +58,6 @@ public class SignCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("type")
                     && arg.matchesEnum(Type.values())) {
                 scriptEntry.addObject("type", arg.asElement());
@@ -79,17 +78,13 @@ public class SignCommand extends AbstractCommand {
             }
         }
 
-        // Check to make sure required arguments have been filled
-
         if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Must specify a Sign location!");
         }
-
         if (!scriptEntry.hasObject("text")) {
             throw new InvalidArgumentsException("Must specify sign text!");
         }
 
-        // Default to AUTOMATIC
         scriptEntry.defaultObject("type", new ElementTag(Type.AUTOMATIC.name()));
     }
 
