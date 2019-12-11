@@ -45,7 +45,7 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public void setSneaking(Player player, boolean sneak) {
         player.setSneaking(sneak);
-        EntityPose pose = sneak ? EntityPose.SNEAKING : EntityPose.STANDING;
+        EntityPose pose = sneak ? EntityPose.CROUCHING : EntityPose.STANDING;
         try {
             ENTITY_SETPOSE.invoke(((CraftPlayer) player).getHandle(), pose);
         }

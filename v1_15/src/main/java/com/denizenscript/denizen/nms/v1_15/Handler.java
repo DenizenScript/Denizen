@@ -74,7 +74,7 @@ public class Handler extends NMSHandler {
 
     @Override
     public boolean isCorrectMappingsCode() {
-        return ((CraftMagicNumbers) CraftMagicNumbers.INSTANCE).getMappingsVersion().equals("11ae498d9cf909730659b6357e7c2afa");
+        return ((CraftMagicNumbers) CraftMagicNumbers.INSTANCE).getMappingsVersion().equals("e50e3dd1d07234cc9c09cb516a951227");
     }
 
     @Override
@@ -117,7 +117,7 @@ public class Handler extends NMSHandler {
                 MinecraftServer minecraftServer = ((CraftServer) Bukkit.getServer()).getServer();
                 GameProfile gameProfile1 = null;
                 if (gameProfile.getId() != null) {
-                    gameProfile1 = minecraftServer.getUserCache().a(gameProfile.getId());
+                    gameProfile1 = minecraftServer.getUserCache().getProfile(gameProfile.getId());
                 }
                 if (gameProfile1 == null && gameProfile.getName() != null) {
                     gameProfile1 = minecraftServer.getUserCache().getProfile(gameProfile.getName());
