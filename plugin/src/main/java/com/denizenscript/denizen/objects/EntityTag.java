@@ -2236,6 +2236,17 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
+        // @attribute <EntityTag.absorption_health>
+        // @returns ElementTag(Decimal)
+        // @mechanism EntityTag.absorption_health
+        // @description
+        // Returns the living entity's absorption health.
+        // -->
+        registerTag("absorption_health", (attribute, object) -> {
+            return new ElementTag(NMSHandler.getEntityHelper().getAbsorption(object.getLivingEntity()));
+        });
+
+        // <--[tag]
         // @attribute <EntityTag.max_oxygen>
         // @returns DurationTag
         // @group attributes
@@ -2250,6 +2261,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <EntityTag.oxygen>
         // @returns DurationTag
+        // @mechanism EntityTag.remaining_air
         // @group attributes
         // @description
         // Returns the duration of oxygen the entity has left.
@@ -2924,6 +2936,19 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("time_lived") && mechanism.requireObject(DurationTag.class)) {
             entity.setTicksLived(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
+        }
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name absorption_health
+        // @input ElementTag(Decimal)
+        // @description
+        // Sets the living entity's absorption health.
+        // @tags
+        // <EntityTag.absorption_health>
+        // -->
+        if (mechanism.matches("absorption_health") && mechanism.requireFloat()) {
+            NMSHandler.getEntityHelper().setAbsorption(getLivingEntity(), mechanism.getValue().asDouble());
         }
 
         // <--[mechanism]

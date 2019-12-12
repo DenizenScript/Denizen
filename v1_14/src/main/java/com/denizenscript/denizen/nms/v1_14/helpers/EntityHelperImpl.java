@@ -36,6 +36,16 @@ import java.util.*;
 
 public class EntityHelperImpl extends EntityHelper {
 
+    @Override
+    public double getAbsorption(LivingEntity entity) {
+        return entity.getAbsorptionAmount();
+    }
+
+    @Override
+    public void setAbsorption(LivingEntity entity, double value) {
+        entity.setAbsorptionAmount(value);
+    }
+
     public static final Field RECIPE_BOOK_DISCOVERED_SET = ReflectionHelper.getFields(RecipeBook.class).get("a");
 
     public static final MethodHandle ENTITY_HOVER_TEXT_GETTER = ReflectionHelper.getMethodHandle(net.minecraft.server.v1_14_R1.Entity.class, "bK");

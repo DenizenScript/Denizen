@@ -37,6 +37,16 @@ import java.util.UUID;
 public class EntityHelperImpl extends EntityHelper {
 
     @Override
+    public double getAbsorption(LivingEntity entity) {
+        return ((CraftPlayer) entity).getHandle().getDataWatcher().get(DataWatcherRegistry.c.a(11));
+    }
+
+    @Override
+    public void setAbsorption(LivingEntity entity, double value) {
+        ((CraftPlayer) entity).getHandle().getDataWatcher().set(DataWatcherRegistry.c.a(11), (float) value);
+    }
+
+    @Override
     public double getDamageTo(LivingEntity attacker, Entity target) {
         EnumMonsterType monsterType;
         if (target instanceof LivingEntity) {

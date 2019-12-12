@@ -1107,17 +1107,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
-        // @attribute <PlayerTag.absorption_health>
-        // @returns ElementTag(Decimal)
-        // @mechanism PlayerTag.absorption_health
-        // @description
-        // Returns the player's absorption health.
-        // -->
-        registerTag("absorption_health", (attribute, object) -> {
-            return new ElementTag(NMSHandler.getPlayerHelper().getAbsorption(object.getPlayerEntity()));
-        });
-
-        // <--[tag]
         // @attribute <PlayerTag.exhaustion>
         // @returns ElementTag(Decimal)
         // @mechanism PlayerTag.exhaustion
@@ -2583,19 +2572,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             for (String criteria : prog.getRemainingCriteria()) {
                 prog.awardCriteria(criteria);
             }
-        }
-
-        // <--[mechanism]
-        // @object PlayerTag
-        // @name absorption_health
-        // @input ElementTag(Decimal)
-        // @description
-        // Sets the player's absorption health.
-        // @tags
-        // <PlayerTag.absorption_health>
-        // -->
-        if (mechanism.matches("absorption_health") && mechanism.requireFloat()) {
-            NMSHandler.getPlayerHelper().setAbsorption(getPlayerEntity(), mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]

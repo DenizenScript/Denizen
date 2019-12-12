@@ -13,10 +13,6 @@ public abstract class PlayerHelper {
 
     public abstract void setFlyKickCooldown(Player player, int ticks);
 
-    public abstract float getAbsorption(Player player);
-
-    public abstract void setAbsorption(Player player, float value);
-
     public abstract int ticksPassedDuringCooldown(Player player);
 
     public abstract float getMaxAttackCooldownTicks(Player player);

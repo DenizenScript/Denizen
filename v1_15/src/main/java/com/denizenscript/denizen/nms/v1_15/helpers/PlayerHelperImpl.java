@@ -60,16 +60,6 @@ public class PlayerHelperImpl extends PlayerHelper {
     }
 
     @Override
-    public float getAbsorption(Player player) {
-        return ((CraftPlayer) player).getHandle().getAbsorptionHearts();
-    }
-
-    @Override
-    public void setAbsorption(Player player, float value) {
-        ((CraftPlayer) player).getHandle().setAbsorptionHearts(value);
-    }
-
-    @Override
     public int ticksPassedDuringCooldown(Player player) {
         try {
             return ATTACK_COOLDOWN_TICKS.getInt(((CraftPlayer) player).getHandle());
