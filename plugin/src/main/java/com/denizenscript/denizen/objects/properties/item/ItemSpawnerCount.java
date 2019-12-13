@@ -14,7 +14,6 @@ public class ItemSpawnerCount implements Property {
     public static boolean describes(ObjectTag item) {
         return item instanceof ItemTag
                 && ((ItemTag) item).getItemStack().getItemMeta() instanceof BlockStateMeta
-                && ((BlockStateMeta) ((ItemTag) item).getItemStack().getItemMeta()).hasBlockState()
                 && ((BlockStateMeta) ((ItemTag) item).getItemStack().getItemMeta()).getBlockState() instanceof CreatureSpawner;
     }
 
@@ -59,11 +58,9 @@ public class ItemSpawnerCount implements Property {
         // -->
         if (attribute.startsWith("spawner_count")) {
             BlockStateMeta meta = (BlockStateMeta) item.getItemStack().getItemMeta();
-            if (meta.hasBlockState()) {
-                CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
-                return new ElementTag(state.getSpawnCount())
-                        .getObjectAttribute(attribute.fulfill(1));
-            }
+            CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
+            return new ElementTag(state.getSpawnCount())
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;
@@ -72,11 +69,8 @@ public class ItemSpawnerCount implements Property {
     @Override
     public String getPropertyString() {
         BlockStateMeta meta = (BlockStateMeta) item.getItemStack().getItemMeta();
-        if (meta.hasBlockState()) {
-            CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
-            return String.valueOf(state.getSpawnCount());
-        }
-        return null;
+        CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
+        return String.valueOf(state.getSpawnCount());
     }
 
     @Override
@@ -98,12 +92,10 @@ public class ItemSpawnerCount implements Property {
         // -->
         if (mechanism.matches("spawner_count") && mechanism.requireInteger()) {
             BlockStateMeta meta = (BlockStateMeta) item.getItemStack().getItemMeta();
-            if (meta.hasBlockState()) {
-                CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
-                state.setSpawnCount(mechanism.getValue().asInt());
-                meta.setBlockState(state);
-                item.getItemStack().setItemMeta(meta);
-            }
+            CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
+            state.setSpawnCount(mechanism.getValue().asInt());
+            meta.setBlockState(state);
+            item.getItemStack().setItemMeta(meta);
         }
     }
 }

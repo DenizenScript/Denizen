@@ -15,7 +15,6 @@ public class ItemSpawnerDelay implements Property {
     public static boolean describes(ObjectTag item) {
         return item instanceof ItemTag
                 && ((ItemTag) item).getItemStack().getItemMeta() instanceof BlockStateMeta
-                && ((BlockStateMeta) ((ItemTag) item).getItemStack().getItemMeta()).hasBlockState()
                 && ((BlockStateMeta) ((ItemTag) item).getItemStack().getItemMeta()).getBlockState() instanceof CreatureSpawner;
     }
 
@@ -60,11 +59,9 @@ public class ItemSpawnerDelay implements Property {
         // -->
         if (attribute.startsWith("spawner_spawn_delay")) {
             BlockStateMeta meta = (BlockStateMeta) item.getItemStack().getItemMeta();
-            if (meta.hasBlockState()) {
-                CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
-                return new ElementTag(state.getDelay())
-                        .getObjectAttribute(attribute.fulfill(1));
-            }
+            CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
+            return new ElementTag(state.getDelay())
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -77,11 +74,9 @@ public class ItemSpawnerDelay implements Property {
         // -->
         if (attribute.startsWith("spawner_minimum_spawn_delay")) {
             BlockStateMeta meta = (BlockStateMeta) item.getItemStack().getItemMeta();
-            if (meta.hasBlockState()) {
-                CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
-                return new ElementTag(state.getMinSpawnDelay())
-                        .getObjectAttribute(attribute.fulfill(1));
-            }
+            CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
+            return new ElementTag(state.getMinSpawnDelay())
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -94,11 +89,9 @@ public class ItemSpawnerDelay implements Property {
         // -->
         if (attribute.startsWith("spawner_maximum_spawn_delay")) {
             BlockStateMeta meta = (BlockStateMeta) item.getItemStack().getItemMeta();
-            if (meta.hasBlockState()) {
-                CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
-                return new ElementTag(state.getMaxSpawnDelay())
-                        .getObjectAttribute(attribute.fulfill(1));
-            }
+            CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
+            return new ElementTag(state.getMaxSpawnDelay())
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;
@@ -107,11 +100,8 @@ public class ItemSpawnerDelay implements Property {
     @Override
     public String getPropertyString() {
         BlockStateMeta meta = (BlockStateMeta) item.getItemStack().getItemMeta();
-        if (meta.hasBlockState()) {
-            CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
-            return state.getDelay() + "," + state.getMinSpawnDelay() + "," + state.getMaxSpawnDelay();
-        }
-        return null;
+        CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
+        return state.getDelay() + "," + state.getMinSpawnDelay() + "," + state.getMaxSpawnDelay();
     }
 
     @Override
@@ -140,14 +130,12 @@ public class ItemSpawnerDelay implements Property {
                 return;
             }
             BlockStateMeta meta = (BlockStateMeta) item.getItemStack().getItemMeta();
-            if (meta.hasBlockState()) {
-                CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
-                state.setDelay(Integer.parseInt(list.get(0)));
-                state.setMinSpawnDelay(Integer.parseInt(list.get(1)));
-                state.setMaxSpawnDelay(Integer.parseInt(list.get(2)));
-                meta.setBlockState(state);
-                item.getItemStack().setItemMeta(meta);
-            }
+            CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
+            state.setDelay(Integer.parseInt(list.get(0)));
+            state.setMinSpawnDelay(Integer.parseInt(list.get(1)));
+            state.setMaxSpawnDelay(Integer.parseInt(list.get(2)));
+            meta.setBlockState(state);
+            item.getItemStack().setItemMeta(meta);
         }
     }
 }

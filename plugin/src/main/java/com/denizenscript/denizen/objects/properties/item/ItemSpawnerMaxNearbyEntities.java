@@ -14,7 +14,6 @@ public class ItemSpawnerMaxNearbyEntities implements Property {
     public static boolean describes(ObjectTag item) {
         return item instanceof ItemTag
                 && ((ItemTag) item).getItemStack().getItemMeta() instanceof BlockStateMeta
-                && ((BlockStateMeta) ((ItemTag) item).getItemStack().getItemMeta()).hasBlockState()
                 && ((BlockStateMeta) ((ItemTag) item).getItemStack().getItemMeta()).getBlockState() instanceof CreatureSpawner;
     }
 
@@ -59,11 +58,9 @@ public class ItemSpawnerMaxNearbyEntities implements Property {
         // -->
         if (attribute.startsWith("spawner_max_nearby_entities")) {
             BlockStateMeta meta = (BlockStateMeta) item.getItemStack().getItemMeta();
-            if (meta.hasBlockState()) {
-                CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
-                return new ElementTag(state.getMaxNearbyEntities())
-                        .getObjectAttribute(attribute.fulfill(1));
-            }
+            CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
+            return new ElementTag(state.getMaxNearbyEntities())
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;
@@ -72,11 +69,8 @@ public class ItemSpawnerMaxNearbyEntities implements Property {
     @Override
     public String getPropertyString() {
         BlockStateMeta meta = (BlockStateMeta) item.getItemStack().getItemMeta();
-        if (meta.hasBlockState()) {
-            CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
-            return String.valueOf(state.getMaxNearbyEntities());
-        }
-        return null;
+        CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
+        return String.valueOf(state.getMaxNearbyEntities());
     }
 
     @Override
@@ -98,12 +92,10 @@ public class ItemSpawnerMaxNearbyEntities implements Property {
         // -->
         if (mechanism.matches("spawner_max_nearby_entities") && mechanism.requireInteger()) {
             BlockStateMeta meta = (BlockStateMeta) item.getItemStack().getItemMeta();
-            if (meta.hasBlockState()) {
-                CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
-                state.setMaxNearbyEntities(mechanism.getValue().asInt());
-                meta.setBlockState(state);
-                item.getItemStack().setItemMeta(meta);
-            }
+            CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
+            state.setMaxNearbyEntities(mechanism.getValue().asInt());
+            meta.setBlockState(state);
+            item.getItemStack().setItemMeta(meta);
         }
     }
 }
