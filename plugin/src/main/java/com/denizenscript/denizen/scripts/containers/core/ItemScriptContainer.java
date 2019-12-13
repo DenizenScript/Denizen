@@ -192,14 +192,16 @@ public class ItemScriptContainer extends ScriptContainer {
         ItemTag stack = null;
         isProcessing = true;
         try {
-            // Check validity of material
-            if (contains("material")) {
-                String material = TagManager.tag(getString("material"), context);
-                if (material.startsWith("m@")) {
-                    material = material.substring(2);
-                }
-                stack = ItemTag.valueOf(material, this);
+            if (!contains("material")) {
+                Debug.echoError("Item script '" + getName() + "' does not contain a material. Script cannot function.");
+                return null;
             }
+            // Check validity of material
+            String material = TagManager.tag(getString("material"), context);
+            if (material.startsWith("m@")) {
+                material = material.substring(2);
+            }
+            stack = ItemTag.valueOf(material, this);
 
             // Make sure we're working with a valid base ItemStack
             if (stack == null) {
