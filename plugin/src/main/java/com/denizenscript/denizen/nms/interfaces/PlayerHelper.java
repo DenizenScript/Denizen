@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.interfaces;
 
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import org.bukkit.Chunk;
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -32,4 +33,8 @@ public abstract class PlayerHelper {
     public abstract ImprovedOfflinePlayer getOfflineData(UUID uuid);
 
     public abstract ImprovedOfflinePlayer getOfflineData(OfflinePlayer offlinePlayer);
+
+    public abstract void resendRecipes(Player player);
+
+    public abstract void quietlyAddRecipe(Player player, NamespacedKey key);
 }

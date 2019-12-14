@@ -31,15 +31,23 @@ import java.util.HashMap;
 
 public class ItemHelperImpl extends ItemHelper {
 
-    @Override
-    public Recipe getRecipeById(NamespacedKey key) {
+    public static IRecipe getNMSRecipe(NamespacedKey key) {
         MinecraftKey nmsKey = CraftNamespacedKey.toMinecraft(key);
         Object2ObjectLinkedOpenHashMap<MinecraftKey, IRecipe> recipeMap = ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().recipes;
         IRecipe recipe = recipeMap.get(nmsKey);
         if (recipe != null) {
-            return recipe.toBukkitRecipe();
+            return recipe;
         }
         return null;
+    }
+
+    @Override
+    public Recipe getRecipeById(NamespacedKey key) {
+        IRecipe recipe = getNMSRecipe(key);
+        if (recipe == null) {
+            return null;
+        }
+        return recipe.toBukkitRecipe();
     }
 
     @Override

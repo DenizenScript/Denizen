@@ -3327,6 +3327,34 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
 
         // <--[mechanism]
         // @object PlayerTag
+        // @name resend_recipes
+        // @input None
+        // @description
+        // Sends the player the full list of recipes they have discovered over again.
+        // This is useful when used alongside <@link mechanism PlayerTag.quietly_discover_recipe>.
+        // -->
+        if (mechanism.matches("resend_recipes")) {
+            NMSHandler.getPlayerHelper().resendRecipes(getPlayerEntity());
+        }
+
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name quietly_discover_recipe
+        // @input ListTag
+        // @description
+        // Causes the player to discover a recipe, or list of recipes, without being notified or updated about this happening.
+        // Generally helpful to follow this with <@link mechanism PlayerTag.resend_recipes>.
+        // Input is in the Namespace:Key format, for example "minecraft:gold_nugget".
+        // -->
+        if (mechanism.matches("quietly_discover_recipe")) {
+            for (String keyText : mechanism.valueAsType(ListTag.class)) {
+                NamespacedKey key = Utilities.parseNamespacedKey(keyText);
+                NMSHandler.getPlayerHelper().quietlyAddRecipe(getPlayerEntity(), key);
+            }
+        }
+
+        // <--[mechanism]
+        // @object PlayerTag
         // @name discover_recipe
         // @input ListTag
         // @description

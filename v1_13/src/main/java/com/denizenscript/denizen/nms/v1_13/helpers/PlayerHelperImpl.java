@@ -10,6 +10,7 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_13_R2.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.craftbukkit.v1_13_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_13_R2.CraftWorld;
@@ -137,5 +138,23 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public ImprovedOfflinePlayer getOfflineData(OfflinePlayer offlinePlayer) {
         return new ImprovedOfflinePlayerImpl(offlinePlayer.getUniqueId());
+    }
+
+    @Override
+    public void resendRecipes(Player player) {
+        RecipeBookServer recipeBook = ((CraftPlayer) player).getHandle().B();
+        recipeBook.a(((CraftPlayer) player).getHandle());
+    }
+
+    @Override
+    public void quietlyAddRecipe(Player player, NamespacedKey key) {
+        RecipeBookServer recipeBook = ((CraftPlayer) player).getHandle().B();
+        IRecipe recipe = ItemHelperImpl.getNMSRecipe(key);
+        if (recipe == null) {
+            Debug.echoError("Cannot add recipe '" + key + "': it does not exist.");
+            return;
+        }
+        recipeBook.a(recipe);
+        recipeBook.f(recipe);
     }
 }
