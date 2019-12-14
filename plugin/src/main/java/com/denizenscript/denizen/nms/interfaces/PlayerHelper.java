@@ -37,4 +37,6 @@ public abstract class PlayerHelper {
     public abstract void resendDiscoveredRecipes(Player player);
 
     public abstract void quietlyAddRecipe(Player player, NamespacedKey key);
+
+    public abstract void resendRecipeDetails(Player player);
 }

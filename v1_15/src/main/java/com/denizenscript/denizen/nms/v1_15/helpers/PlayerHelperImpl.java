@@ -18,6 +18,7 @@ import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 
@@ -136,6 +137,13 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public ImprovedOfflinePlayer getOfflineData(OfflinePlayer offlinePlayer) {
         return new ImprovedOfflinePlayerImpl(offlinePlayer.getUniqueId());
+    }
+
+    @Override
+    public void resendRecipeDetails(Player player) {
+        Collection<IRecipe<?>> recipes = ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().b();
+        PacketPlayOutRecipeUpdate updatePacket = new PacketPlayOutRecipeUpdate(recipes);
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(updatePacket);
     }
 
     @Override

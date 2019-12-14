@@ -3327,6 +3327,20 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
 
         // <--[mechanism]
         // @object PlayerTag
+        // @name resend_recipes
+        // @input None
+        // @description
+        // Sends the player a list of the full details of all recipes on the server.
+        // This is useful when reloading new item scripts with custom recipes.
+        // This will automatically resend discovered recipes at the same time (otherwise the player will seemingly have no recipes unlocked).
+        // -->
+        if (mechanism.matches("resend_recipes")) {
+            NMSHandler.getPlayerHelper().resendRecipeDetails(getPlayerEntity());
+            NMSHandler.getPlayerHelper().resendDiscoveredRecipes(getPlayerEntity());
+        }
+
+        // <--[mechanism]
+        // @object PlayerTag
         // @name resend_discovered_recipes
         // @input None
         // @description

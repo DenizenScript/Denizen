@@ -140,6 +140,11 @@ public class PlayerHelperImpl extends PlayerHelper {
     }
 
     @Override
+    public void resendRecipeDetails(Player player) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void resendDiscoveredRecipes(Player player) {
         throw new UnsupportedOperationException();
     }
