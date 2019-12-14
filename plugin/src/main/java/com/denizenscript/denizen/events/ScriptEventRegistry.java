@@ -2,10 +2,7 @@ package com.denizenscript.denizen.events;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.block.*;
-import com.denizenscript.denizen.events.core.CommandScriptEvent;
-import com.denizenscript.denizen.events.core.ListPingScriptEvent;
-import com.denizenscript.denizen.events.core.ServerPrestartScriptEvent;
-import com.denizenscript.denizen.events.core.TabCompleteScriptEvent;
+import com.denizenscript.denizen.events.core.*;
 import com.denizenscript.denizen.events.entity.*;
 import com.denizenscript.denizen.events.player.*;
 import com.denizenscript.denizen.events.world.*;
@@ -42,6 +39,7 @@ public class ScriptEventRegistry {
         // Core events
         ScriptEvent.registerScriptEvent(new ListPingScriptEvent());
         ScriptEvent.registerScriptEvent(new ServerPrestartScriptEvent());
+        ScriptEvent.registerScriptEvent(new ServerStartScriptEvent());
         ScriptEvent.registerScriptEvent(new TabCompleteScriptEvent());
 
         // Entity events

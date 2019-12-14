@@ -438,6 +438,7 @@ public class Denizen extends JavaPlugin {
                     Debug.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
 
                     // Fire the 'on Server Start' world event
+                    ServerStartScriptEvent.instance.fire();
                     worldScriptHelper.serverStartEvent();
 
                     if (Settings.allowStupidx()) {
