@@ -306,8 +306,6 @@ public class EntityHelperImpl extends EntityHelper {
         nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(speed);
     }
 
-    static final int MAX_ITERATIONS = 100000; // TODO: 1.14.4: Is this name choice correct? Is the value reasonable?
-
     @Override
     public void follow(final Entity target, final Entity follower, final double speed, final double lead,
                        final double maxRange, final boolean allowWander) {
@@ -350,7 +348,7 @@ public class EntityHelperImpl extends EntityHelper {
                     }
                     else {
                         inRadius = false;
-                        path = followerNavigation.a(targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), MAX_ITERATIONS);
+                        path = followerNavigation.a(targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), 0);
                         if (path != null) {
                             followerNavigation.a(path, 1D);
                             followerNavigation.a(2D);
@@ -358,7 +356,7 @@ public class EntityHelperImpl extends EntityHelper {
                     }
                 }
                 else if (!inRadius && !Utilities.checkLocation(targetLocation, follower.getLocation(), lead)) {
-                    path = followerNavigation.a(targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), MAX_ITERATIONS);
+                    path = followerNavigation.a(targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), 0);
                     if (path != null) {
                         followerNavigation.a(path, 1D);
                         followerNavigation.a(2D);
@@ -394,7 +392,7 @@ public class EntityHelperImpl extends EntityHelper {
             toggleAI(entity, true);
             nmsEntity.onGround = true;
         }
-        path = entityNavigation.a(location.getX(), location.getY(), location.getZ(), MAX_ITERATIONS);
+        path = entityNavigation.a(location.getX(), location.getY(), location.getZ(), 0);
         if (path != null) {
             entityNavigation.a(path, 1D);
             entityNavigation.a(2D);
