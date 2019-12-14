@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.objects.notable.NotableManager;
-import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.objects.*;
@@ -24,6 +23,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -1383,6 +1383,32 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
             CuboidTag cuboid = object;
             LocationTag location = LocationTag.valueOf(attribute.getContext(1));
             return new CuboidTag(location, cuboid.pairs.get(0).low);
+        });
+
+        // <--[tag]
+        // @attribute <CuboidTag.expand[<location>]>
+        // @returns CuboidTag
+        // @description
+        // Changes the first member of the CuboidTag to be expanded by the given amount, and returns the changed cuboid.
+        // This will decrease the min coordinates by the given vector location, and increase the max coordinates by it.
+        // Supplying a negative input will therefore contract the cuboid.
+        // Note that you can also specify a single number to expand all coordinates by the same amount (equivalent to specifying a location that is that value on X, Y, and Z).
+        // -->
+        registerTag("expand", (attribute, cuboid) -> {
+            if (!attribute.hasContext(1)) {
+                Debug.echoError("The tag CuboidTag.expand[...] must have a value.");
+                return null;
+            }
+            Vector expandBy;
+            if (ArgumentHelper.matchesInteger(attribute.getContext(1))) {
+                int val = attribute.getIntContext(1);
+                expandBy = new Vector(val, val, val);
+            }
+            else {
+                expandBy = LocationTag.valueOf(attribute.getContext(1)).toVector();
+            }
+            LocationPair pair = cuboid.pairs.get(0);
+            return new CuboidTag(pair.low.clone().subtract(expandBy), pair.high.clone().add(expandBy));
         });
 
         // <--[tag]
