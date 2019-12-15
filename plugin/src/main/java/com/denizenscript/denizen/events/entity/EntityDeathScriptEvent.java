@@ -98,7 +98,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             return false;
         }
 
-        if (!runGenericSwitchCheck(path, "cause", cause.asString())) {
+        if (!runGenericSwitchCheck(path, "cause", cause == null ? null : cause.asString())) {
             return false;
         }
 

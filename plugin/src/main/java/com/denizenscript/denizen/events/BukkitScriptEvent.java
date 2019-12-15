@@ -312,37 +312,6 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return runWithCheck(new ScriptPath(scriptContainer, s), held);
     }
 
-    public boolean runGenericCheck(String inputValue, String trueValue) {
-        if (inputValue != null) {
-            trueValue = CoreUtilities.toLowerCase(trueValue);
-            inputValue = CoreUtilities.toLowerCase(inputValue);
-            if (inputValue.equals(trueValue)) {
-                return true;
-            }
-            Pattern regexd = regexHandle(inputValue);
-            if (!equalityCheck(trueValue, inputValue, regexd)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public boolean runGenericSwitchCheck(ScriptPath path, String switchName, String value) {
-        String with = path.switches.get(switchName);
-        if (with != null) {
-            value = CoreUtilities.toLowerCase(value);
-            with = CoreUtilities.toLowerCase(with);
-            if (with.equals(value)) {
-                return true;
-            }
-            Pattern regexd = regexHandle(with);
-            if (!equalityCheck(value, with, regexd)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public boolean runWithCheck(ScriptPath path, ItemTag held) {
         String with = path.switches.get("with");
         if (with != null) {
