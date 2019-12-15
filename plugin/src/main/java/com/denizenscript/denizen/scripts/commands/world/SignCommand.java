@@ -11,6 +11,7 @@ import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
@@ -24,16 +25,19 @@ public class SignCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Sign
-    // @Syntax sign (type:{automatic}/sign_post/wall_sign) ["<line>|..."] [<location>] (direction:n/e/w/s)
+    // @Syntax sign (type:{automatic}/sign_post/wall_sign) (material:<material>) [<line>|...] [<location>] (direction:north/east/south/west)
     // @Required 1
     // @Short Modifies a sign.
     // @Group world
     //
     // @Description
     // Modifies a sign that replaces the text shown on it. If no sign is at the location, it replaces the location with the modified sign.
+    //
     // The direction argument tells which direction the text shown. If a direction is not specified, it defaults to south.
     // Specify 'automatic' as a type to use whatever sign type and direction is already placed there.
     // If there is not already a sign there, defaults to a sign_post.
+    //
+    // Optionally specify a material to use. If not specified, will use an oak sign.
     //
     // @Tags
     // <LocationTag.sign_contents>
@@ -44,7 +48,7 @@ public class SignCommand extends AbstractCommand {
     //
     // @Usage
     // Use to show the time on a sign that points north
-    // - sign type:automatic "I point|North.|System Time<&co>|<util.date.time>" l@233,65,123,world direction:n
+    // - sign type:automatic "I point|North.|System Time<&co>|<util.date.time>" l@233,65,123,world direction:north
     //
     // @Usage
     // Use to force a sign to be a wall_sign if no sign is found.
@@ -70,6 +74,11 @@ public class SignCommand extends AbstractCommand {
                     && arg.matchesPrefix("direction", "dir")) {
                 scriptEntry.addObject("direction", arg.asElement());
             }
+            else if (!scriptEntry.hasObject("material")
+                    && arg.matchesPrefix("material")
+                    && arg.matchesArgumentType(MaterialTag.class)) {
+                scriptEntry.addObject("material", arg.asType(MaterialTag.class));
+            }
             else if (!scriptEntry.hasObject("text")) {
                 scriptEntry.addObject("text", arg.asType(ListTag.class));
             }
@@ -88,16 +97,14 @@ public class SignCommand extends AbstractCommand {
         scriptEntry.defaultObject("type", new ElementTag(Type.AUTOMATIC.name()));
     }
 
-    public void setWallSign(Block sign, BlockFace bf) {
+    public void setWallSign(Block sign, BlockFace bf, MaterialTag material) {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            // TODO: 1.14 - allow new sign types?
-            sign.setType(MaterialCompat.WALL_SIGN, false);
+            sign.setType(material == null ? MaterialCompat.WALL_SIGN : material.getMaterial(), false);
             MaterialTag signMaterial = new MaterialTag(sign);
             MaterialDirectional.getFrom(signMaterial).setFacing(bf);
             signMaterial.getModernData().setToBlock(sign);
         }
         else {
-            // TODO: 1.14 - allow new sign types?
             org.bukkit.material.Sign sgntmp = new org.bukkit.material.Sign(MaterialCompat.WALL_SIGN);
             sgntmp.setFacingDirection(bf);
             BlockData blockData = NMSHandler.getBlockHelper().getBlockData(MaterialCompat.WALL_SIGN, sgntmp.getData());
@@ -111,13 +118,16 @@ public class SignCommand extends AbstractCommand {
         // Get objects
         String direction = scriptEntry.hasObject("direction") ? ((ElementTag) scriptEntry.getObject("direction")).asString() : null;
         ElementTag typeElement = scriptEntry.getElement("type");
-        ListTag text = (ListTag) scriptEntry.getObject("text");
-        LocationTag location = (LocationTag) scriptEntry.getObject("location");
+        ListTag text = scriptEntry.getObjectTag("text");
+        LocationTag location = scriptEntry.getObjectTag("location");
+        MaterialTag material = scriptEntry.getObjectTag("material");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), typeElement.debug()
                     + location.debug()
+                    + (direction == null ? "" : ArgumentHelper.debugObj("direction", direction))
+                    + (material == null ? "" : material.debug())
                     + text.debug());
         }
 
@@ -133,11 +143,10 @@ public class SignCommand extends AbstractCommand {
                 else {
                     bf = Utilities.chooseSignRotation(sign);
                 }
-                setWallSign(sign, bf);
+                setWallSign(sign, bf, material);
             }
             else {
-                // TODO: 1.14 - allow new sign types?
-                sign.setType(MaterialCompat.SIGN, false);
+                sign.setType(material == null ? MaterialCompat.SIGN : material.getMaterial(), false);
                 if (direction != null) {
                     Utilities.setSignRotation(sign.getState(), direction);
                 }
@@ -145,12 +154,11 @@ public class SignCommand extends AbstractCommand {
         }
         else if (!MaterialCompat.isAnySign(sign.getType())) {
             if (sign.getRelative(BlockFace.DOWN).getType().isSolid()) {
-                // TODO: 1.14 - allow new sign types?
-                sign.setType(MaterialCompat.SIGN, false);
+                sign.setType(material == null ? MaterialCompat.SIGN : material.getMaterial(), false);
             }
             else {
                 BlockFace bf = Utilities.chooseSignRotation(sign);
-                setWallSign(sign, bf);
+                setWallSign(sign, bf, material);
             }
         }
         BlockState signState = sign.getState();

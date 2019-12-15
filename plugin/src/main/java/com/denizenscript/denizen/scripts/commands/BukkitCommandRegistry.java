@@ -184,7 +184,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCoreMember(ShootCommand.class, "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (speed:<#.#>) (script:<name>) (def:<element>|...) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)", 1);
         registerCoreMember(ShowFakeCommand.class, "SHOWFAKE", "showfake [<material>|.../cancel] [<location>|...] (players:<player>|...) (d:<duration>{10s})", 2);
         registerCoreMember(SidebarCommand.class, "SIDEBAR", "sidebar (add/remove/{set}/set_line) (title:<title>) (scores:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...) (per_player)", 1);
-        registerCoreMember(SignCommand.class, "SIGN", "sign (type:{automatic}/sign_post/wall_sign) [\"<line>|...\"] [<location>] (direction:n/s/e/w)", 1);
+        registerCoreMember(SignCommand.class, "SIGN", "sign (type:{automatic}/sign_post/wall_sign) (material:<material>) [<line>|...] [<location>] (direction:n/s/e/w)", 1);
         registerCoreMember(SitCommand.class, "SIT", "sit (<location>)", 0);
         registerCoreMember(SpawnCommand.class, "SPAWN", "spawn [<entity>|...] (<location>) (target:<entity>) (persistent)", 1);
         if (Depends.citizens != null) {
