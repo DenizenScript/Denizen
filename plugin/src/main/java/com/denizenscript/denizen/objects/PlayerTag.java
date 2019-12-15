@@ -2556,7 +2556,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @name award_advancement
         // @input Element
         // @description
-        // Awards an achievement to the player.
+        // Awards an advancement to the player.
         // @tags
         // <PlayerTag.has_advancement[<name>]>
         // -->

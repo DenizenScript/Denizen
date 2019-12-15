@@ -61,8 +61,8 @@ public class EntityBoundingBox implements Property {
     private ListTag getBoundingBox() {
         BoundingBox boundingBox = NMSHandler.getEntityHelper().getBoundingBox(entity.getBukkitEntity());
         ListTag list = new ListTag();
-        list.add(new LocationTag(boundingBox.getLow().toLocation(entity.getWorld())).identify());
-        list.add(new LocationTag(boundingBox.getHigh().toLocation(entity.getWorld())).identify());
+        list.addObject(new LocationTag(boundingBox.getLow().toLocation(entity.getWorld())));
+        list.addObject(new LocationTag(boundingBox.getHigh().toLocation(entity.getWorld())));
         return list;
     }
 

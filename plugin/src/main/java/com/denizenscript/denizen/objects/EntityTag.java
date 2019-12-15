@@ -2317,7 +2317,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             if (range < 1) {
                 range = 200;
             }
-            RayTraceResult result = object.getWorld().rayTraceEntities(object.getEyeLocation(), object.getEyeLocation().getDirection(), range, (e) -> !e.equals(object.getBukkitEntity()));
+            RayTraceResult result = object.getWorld().rayTrace(object.getEyeLocation(), object.getEyeLocation().getDirection(), range, FluidCollisionMode.NEVER, true, 0, (e) -> !e.equals(object.getBukkitEntity()));
             if (result != null && result.getHitEntity() != null) {
                 return new EntityTag(result.getHitEntity());
             }
@@ -2336,7 +2336,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             if (range < 1) {
                 range = 200;
             }
-            RayTraceResult result = object.getWorld().rayTraceEntities(object.getEyeLocation(), object.getEyeLocation().getDirection(), range, (e) -> !e.equals(object.getBukkitEntity()));
+            RayTraceResult result = object.getWorld().rayTrace(object.getEyeLocation(), object.getEyeLocation().getDirection(), range, FluidCollisionMode.NEVER, true, 0, (e) -> !e.equals(object.getBukkitEntity()));
             if (result != null) {
                 return new LocationTag(object.getWorld(), result.getHitPosition());
             }
