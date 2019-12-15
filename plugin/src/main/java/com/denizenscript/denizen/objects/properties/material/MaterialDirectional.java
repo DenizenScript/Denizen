@@ -9,7 +9,6 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.Axis;
-import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
@@ -28,7 +27,7 @@ public class MaterialDirectional implements Property {
             return false;
         }
         BlockData data = mat.getModernData().data;
-        if (!(data instanceof Directional || data instanceof Orientable)) {
+        if (!(data instanceof Directional || data instanceof Orientable || data instanceof Rotatable)) {
             return false;
         }
         return true;

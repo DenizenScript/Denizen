@@ -66,7 +66,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
 
         String mat = path.eventArgLowerAt(2);
         if (!mat.equals("sign")
-                && (!(LocationTag.getBlockStateFor(event.getBlock()) instanceof Sign)
+                && (!(event.getBlock().getState() instanceof Sign)
                 && (!mat.equals(material.identifyNoIdentifier()) && !mat.equals(material.identifyFullNoIdentifier())))) {
             return false;
         }
@@ -123,7 +123,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
         if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        BlockState state = LocationTag.getBlockStateFor(event.getBlock());
+        BlockState state = event.getBlock().getState();
         if (!(state instanceof Sign)) {
             return;
         }

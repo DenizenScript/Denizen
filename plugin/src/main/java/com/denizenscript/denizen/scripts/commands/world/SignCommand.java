@@ -31,7 +31,7 @@ public class SignCommand extends AbstractCommand {
     //
     // @Description
     // Modifies a sign that replaces the text shown on it. If no sign is at the location, it replaces the location with the modified sign.
-    // The direction arguement tells which direction the text shown. If a direction is not specified, it defaults to south.
+    // The direction argument tells which direction the text shown. If a direction is not specified, it defaults to south.
     // Specify 'automatic' as a type to use whatever sign type and direction is already placed there.
     // If there is not already a sign there, defaults to a sign_post.
     //
@@ -139,7 +139,7 @@ public class SignCommand extends AbstractCommand {
                 // TODO: 1.14 - allow new sign types?
                 sign.setType(MaterialCompat.SIGN, false);
                 if (direction != null) {
-                    Utilities.setSignRotation(LocationTag.getBlockStateFor(sign), direction);
+                    Utilities.setSignRotation(sign.getState(), direction);
                 }
             }
         }
@@ -153,7 +153,7 @@ public class SignCommand extends AbstractCommand {
                 setWallSign(sign, bf);
             }
         }
-        BlockState signState = LocationTag.getBlockStateFor(sign);
+        BlockState signState = sign.getState();
 
         Utilities.setSignLines((Sign) signState, text.toArray(4));
     }

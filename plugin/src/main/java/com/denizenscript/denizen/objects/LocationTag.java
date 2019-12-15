@@ -464,10 +464,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         }
     }
 
-    public static BlockState getBlockStateFor(Block block) {
-        return block.getState();
-    }
-
     public static BlockState getBlockStateSafe(Block block) {
         NMSHandler.getChunkHelper().changeChunkServerThread(block.getWorld());
         try {
@@ -545,7 +541,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     }
 
     public BlockState getBlockState() {
-        return getBlockStateFor(getBlock());
+        return getBlock().getState();
     }
 
     public BlockState getBlockStateForTag(Attribute attribute) {

@@ -293,8 +293,15 @@ public class Utilities {
 
     public static BlockFace chooseSignRotation(String direction) {
         BlockFace[] blockFaces = {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
+        String dirUpper = direction.toUpperCase();
+        String firstChar = dirUpper.substring(0, 1);
         for (BlockFace blockFace : blockFaces) {
-            if (blockFace.name().startsWith(direction.toUpperCase().substring(0, 1))) {
+            if (blockFace.name().startsWith(firstChar)) {
+                return blockFace;
+            }
+        }
+        for (BlockFace blockFace : BlockFace.values()) { // Avoid valueOf which throws exceptions on failure
+            if (blockFace.name().equals(dirUpper)) {
                 return blockFace;
             }
         }

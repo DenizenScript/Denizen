@@ -101,14 +101,14 @@ public class CopyBlockCommand extends AbstractCommand {
         for (Location loc : locations) {
 
             Block source = loc.getBlock();
-            BlockState sourceState = LocationTag.getBlockStateFor(source);
+            BlockState sourceState = source.getState();
             Block update = destination.getBlock();
 
             // TODO: 1.13 - confirm this works
             BlockData blockData = NMSHandler.getBlockHelper().getBlockData(source);
             blockData.setBlock(update, false);
 
-            BlockState updateState = LocationTag.getBlockStateFor(update);
+            BlockState updateState = update.getState();
 
             // Note: only a BlockState, not a Block, is actually an instance
             // of InventoryHolder
