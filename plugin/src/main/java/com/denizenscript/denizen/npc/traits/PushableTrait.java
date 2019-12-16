@@ -170,7 +170,9 @@ public class PushableTrait extends Trait implements Listener {
                         DenizenAPI.getCurrentInstance(), new Runnable() {
                             @Override
                             public void run() {
-                                navigateBack();
+                                if (npc.isSpawned()) {
+                                    navigateBack();
+                                }
                             }
                         }, delay * 20);
             }
