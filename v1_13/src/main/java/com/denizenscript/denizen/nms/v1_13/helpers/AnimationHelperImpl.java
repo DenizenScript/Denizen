@@ -2,10 +2,12 @@ package com.denizenscript.denizen.nms.v1_13.helpers;
 
 import com.denizenscript.denizen.nms.abstracts.AnimationHelper;
 import com.denizenscript.denizen.nms.interfaces.EntityAnimation;
+import org.bukkit.craftbukkit.v1_13_R2.entity.CraftHorse;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPolarBear;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftSkeleton;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Horse;
 
 public class AnimationHelperImpl extends AnimationHelper {
 
@@ -40,6 +42,11 @@ public class AnimationHelperImpl extends AnimationHelper {
                 if (entity.getType() == EntityType.POLAR_BEAR) {
                     ((CraftPolarBear) entity).getHandle().s(false);
                 }
+            }
+        });
+        register("HORSE_BUCK", entity -> {
+            if (entity instanceof Horse) {
+                ((CraftHorse) entity).getHandle().dZ();
             }
         });
     }

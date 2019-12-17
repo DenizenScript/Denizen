@@ -39,7 +39,7 @@ public class AnimateCommand extends AbstractCommand {
     // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/EntityEffect.html>
     //
     // In addition, Denizen adds a few new entity animations:
-    // SKELETON_START_SWING_ARM, SKELETON_STOP_SWING_ARM, POLAR_BEAR_START_STANDING, POLAR_BEAR_STOP_STANDING
+    // SKELETON_START_SWING_ARM, SKELETON_STOP_SWING_ARM, POLAR_BEAR_START_STANDING, POLAR_BEAR_STOP_STANDING, HORSE_BUCK
     //
     // Note that the above list only applies where logical, EG 'WOLF_' animations only apply to wolves.
     //
