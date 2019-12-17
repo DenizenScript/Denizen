@@ -211,7 +211,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
             if (broad_detection) {
                 ListTag cuboid_context = new ListTag();
                 for (CuboidTag cuboid : exits) {
-                    cuboid_context.add(cuboid.identify());
+                    cuboid_context.addObject(cuboid);
                 }
                 if (Fire(event, cuboid_context, "player exits notable cuboid", cause)) {
                     return;
@@ -228,7 +228,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
             if (broad_detection) {
                 ListTag cuboid_context = new ListTag();
                 for (CuboidTag cuboid : enters) {
-                    cuboid_context.add(cuboid.identify());
+                    cuboid_context.addObject(cuboid);
                 }
                 if (Fire(event, cuboid_context, "player enters notable cuboid", cause)) {
                     return;

@@ -772,7 +772,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         }
         ListTag equipmentList = new ListTag();
         for (ItemStack item : equipment) {
-            equipmentList.add(new ItemTag(item).identify());
+            equipmentList.addObject(new ItemTag(item));
         }
         return equipmentList;
     }
@@ -2270,10 +2270,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             ListTag recipeList = new ListTag();
             for (ItemStack item : ((CraftingInventory) object.inventory).getMatrix()) {
                 if (item != null) {
-                    recipeList.add(new ItemTag(item).identify());
+                    recipeList.addObject(new ItemTag(item));
                 }
                 else {
-                    recipeList.add(new ItemTag(Material.AIR).identify());
+                    recipeList.addObject(new ItemTag(Material.AIR));
                 }
             }
             return recipeList;

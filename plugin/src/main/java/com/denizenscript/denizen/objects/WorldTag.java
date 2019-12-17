@@ -347,7 +347,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         registerTag("loaded_chunks", (attribute, object) -> {
             ListTag chunks = new ListTag();
             for (Chunk ent : object.getWorld().getLoadedChunks()) {
-                chunks.add(new ChunkTag(ent).identify());
+                chunks.addObject(new ChunkTag(ent));
             }
 
             return chunks;

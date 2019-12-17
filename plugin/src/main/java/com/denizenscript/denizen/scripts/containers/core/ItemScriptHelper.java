@@ -520,10 +520,10 @@ public class ItemScriptHelper implements Listener {
                             ListTag recipeList = new ListTag();
                             for (ItemStack item : matrix) {
                                 if (item != null) {
-                                    recipeList.add(new ItemTag(item).identify());
+                                    recipeList.addObject(new ItemTag(item));
                                 }
                                 else {
-                                    recipeList.add(new ItemTag(Material.AIR).identify());
+                                    recipeList.addObject(new ItemTag(Material.AIR));
                                 }
                             }
 

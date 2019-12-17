@@ -69,7 +69,7 @@ public class EntityArmorPose implements Property {
         ListTag list = new ListTag();
         for (PosePart posePart : PosePart.values()) {
             list.add(CoreUtilities.toLowerCase(posePart.name()));
-            list.add(fromEulerAngle(posePart.getAngle(armorStand)).identify());
+            list.addObject(fromEulerAngle(posePart.getAngle(armorStand)));
         }
         return list;
     }

@@ -188,7 +188,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
         if (name.equals("recipients")) {
             ListTag list = new ListTag();
             for (Player tplayer : pcEvent != null ? pcEvent.getRecipients() : apcEvent.getRecipients()) {
-                list.add(PlayerTag.mirrorBukkitPlayer(tplayer).identify());
+                list.addObject(PlayerTag.mirrorBukkitPlayer(tplayer));
             }
             return list;
         }

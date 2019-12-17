@@ -494,7 +494,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                     return list;
                 }
             }
-            list.add(pair.high.identify());
+            list.addObject(pair.high);
         }
         return list;
     }
@@ -643,7 +643,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                             // Get the center of the block, so the entity won't suffocate
                             // inside the edges for a couple of seconds
                             loc.add(0.5, 0, 0.5);
-                            list.add(loc.identify());
+                            list.addObject(loc);
                         }
                         index++;
                         if (index > max) {

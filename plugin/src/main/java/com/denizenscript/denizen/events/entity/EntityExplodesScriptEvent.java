@@ -97,7 +97,7 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
                     Debug.echoError("Invalid location '" + loc + "' check [" + getName() + "]: '  for " + path.container.getName());
                 }
                 else {
-                    blocks.add(location.identifySimple());
+                    blocks.addObject(location);
                 }
             }
             return true;
@@ -135,7 +135,7 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
         blocks = new ListTag();
         blockSet = false;
         for (Block block : event.blockList()) {
-            blocks.add(new LocationTag(block.getLocation()).identify());
+            blocks.addObject(new LocationTag(block.getLocation()));
         }
         this.event = event;
         fire(event);

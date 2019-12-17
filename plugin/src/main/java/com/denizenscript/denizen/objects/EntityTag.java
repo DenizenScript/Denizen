@@ -789,7 +789,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         ItemStack[] equipment = getLivingEntity().getEquipment().getArmorContents();
         ListTag equipmentList = new ListTag();
         for (ItemStack item : equipment) {
-            equipmentList.add(new ItemTag(item).identify());
+            equipmentList.addObject(new ItemTag(item));
         }
         return equipmentList;
     }

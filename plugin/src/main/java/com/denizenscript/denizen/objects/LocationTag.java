@@ -1190,7 +1190,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             ListTag list = new ListTag();
             for (ItemStack it : object.getDropsForTag(attribute, inputItem)) {
-                list.add(new ItemTag(it).identify());
+                list.addObject(new ItemTag(it));
             }
             return list;
         });
@@ -1455,7 +1455,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             double len = rel.length();
             rel = rel.multiply(1d / len);
             for (double i = 0d; i <= len; i += rad) {
-                list.add(new LocationTag(object.clone().add(rel.clone().multiply(i))).identify());
+                list.addObject(new LocationTag(object.clone().add(rel.clone().multiply(i))));
             }
             return list;
         });
@@ -1479,7 +1479,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 NMSHandler.getChunkHelper().changeChunkServerThread(object.getWorld());
                 BlockIterator iterator = new BlockIterator(object, 0, range);
                 while (iterator.hasNext()) {
-                    list.add(new LocationTag(iterator.next().getLocation()).identify());
+                    list.addObject(new LocationTag(iterator.next().getLocation()));
                 }
             }
             finally {
@@ -2060,7 +2060,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             List<LocationTag> locs = PathFinder.getPath(object, two);
             ListTag list = new ListTag();
             for (LocationTag loc : locs) {
-                list.add(loc.identify());
+                list.addObject(loc);
             }
             return list;
         });
@@ -2568,7 +2568,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             List<CuboidTag> cuboids = CuboidTag.getNotableCuboidsContaining(object);
             ListTag cuboid_list = new ListTag();
             for (CuboidTag cuboid : cuboids) {
-                cuboid_list.add(cuboid.identify());
+                cuboid_list.addObject(cuboid);
             }
             return cuboid_list;
         });
@@ -2583,7 +2583,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             List<EllipsoidTag> ellipsoids = EllipsoidTag.getNotableEllipsoidsContaining(object);
             ListTag ellipsoid_list = new ListTag();
             for (EllipsoidTag ellipsoid : ellipsoids) {
-                ellipsoid_list.add(ellipsoid.identify());
+                ellipsoid_list.addObject(ellipsoid);
             }
             return ellipsoid_list;
         });

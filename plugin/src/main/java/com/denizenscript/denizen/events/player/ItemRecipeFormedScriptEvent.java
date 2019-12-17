@@ -107,10 +107,10 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
             ListTag recipe = new ListTag();
             for (ItemStack itemStack : event.getInventory().getMatrix()) {
                 if (itemStack != null && itemStack.getType() != Material.AIR) {
-                    recipe.add(new ItemTag(itemStack).identify());
+                    recipe.addObject(new ItemTag(itemStack));
                 }
                 else {
-                    recipe.add(new ItemTag(Material.AIR).identify());
+                    recipe.addObject(new ItemTag(Material.AIR));
                 }
             }
             return recipe;

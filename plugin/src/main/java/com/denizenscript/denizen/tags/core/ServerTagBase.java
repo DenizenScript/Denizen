@@ -1892,7 +1892,7 @@ public class ServerTagBase {
         else if (attribute.startsWith("recent_tps")) {
             ListTag list = new ListTag();
             for (double tps : NMSHandler.getInstance().getRecentTps()) {
-                list.add(new ElementTag(tps).identify());
+                list.addObject(new ElementTag(tps));
             }
             event.setReplaced(list.getAttribute(attribute.fulfill(1)));
         }

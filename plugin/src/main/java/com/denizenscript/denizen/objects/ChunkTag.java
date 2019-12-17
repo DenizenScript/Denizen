@@ -530,7 +530,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
             ChunkSnapshot snapshot = chunk.getChunkSnapshot();
             for (int x = 0; x < 16; x++) {
                 for (int z = 0; z < 16; z++) {
-                    surface_blocks.add(new LocationTag(chunk.getBlock(x, snapshot.getHighestBlockYAt(x, z) - 1, z).getLocation()).identify());
+                    surface_blocks.addObject(new LocationTag(chunk.getBlock(x, snapshot.getHighestBlockYAt(x, z) - 1, z).getLocation()));
                 }
             }
 
