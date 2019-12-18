@@ -1514,7 +1514,7 @@ public class ServerTagBase {
             String flag = attribute.getContext(1);
             ListTag players = new ListTag();
             for (Map.Entry<String, UUID> entry : PlayerTag.getAllPlayers().entrySet()) {
-                if (DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag(new PlayerTag(entry.getValue()), flag).size() > 0) {
+                if (FlagManager.playerHasFlag(new PlayerTag(entry.getValue()), flag)) {
                     players.addObject(new PlayerTag(entry.getValue()));
                 }
             }

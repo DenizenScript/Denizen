@@ -28,12 +28,7 @@ import java.util.Map;
 public class BukkitWorldScriptHelper implements Listener {
 
     public BukkitWorldScriptHelper() {
-        DenizenAPI.getCurrentInstance().getServer().getPluginManager()
-                .registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    public static String doEvents(List<String> events, NPCTag npc, PlayerTag player, Map<String, ObjectTag> context) {
-        return doEvents(events, npc, player, context, false);
+        DenizenAPI.getCurrentInstance().getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
     }
 
     public static String doEvents(List<String> events, NPCTag npc, PlayerTag player, Map<String, ObjectTag> context, boolean useids) {

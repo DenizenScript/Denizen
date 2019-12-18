@@ -40,32 +40,28 @@ public class FlagManager {
         if (player == null || flagName == null) {
             return false;
         }
-        return DenizenAPI.getCurrentInstance().flagManager()
-                .getPlayerFlag(player, flagName).size() > 0;
+        return DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag(player, flagName).size() > 0;
     }
 
     public static boolean entityHasFlag(EntityTag entity, String flagName) {
         if (entity == null || flagName == null) {
             return false;
         }
-        return DenizenAPI.getCurrentInstance().flagManager()
-                .getEntityFlag(entity, flagName).size() > 0;
+        return DenizenAPI.getCurrentInstance().flagManager().getEntityFlag(entity, flagName).size() > 0;
     }
 
     public static boolean npcHasFlag(NPCTag npc, String flagName) {
         if (npc == null || flagName == null) {
             return false;
         }
-        return DenizenAPI.getCurrentInstance().flagManager()
-                .getNPCFlag(npc.getId(), flagName).size() > 0;
+        return DenizenAPI.getCurrentInstance().flagManager().getNPCFlag(npc.getId(), flagName).size() > 0;
     }
 
     public static boolean serverHasFlag(String flagName) {
         if (flagName == null) {
             return false;
         }
-        return DenizenAPI.getCurrentInstance().flagManager()
-                .getGlobalFlag(flagName).size() > 0;
+        return DenizenAPI.getCurrentInstance().flagManager().getGlobalFlag(flagName).size() > 0;
     }
 
     public static void clearNPCFlags(int npcid) {
