@@ -134,9 +134,9 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
         if (damager != null && player == null && damager.isPlayer()) {
             player = EntityTag.getPlayerFrom(damager.getBukkitEntity());
         }
-        NPCTag npc = entity.isCitizensNPC() ? EntityTag.getNPCFrom(event.getEntity()) : null;
+        NPCTag npc = entity.isCitizensNPC() ? entity.getDenizenNPC() : null;
         if (damager != null && npc == null && damager.isCitizensNPC()) {
-            npc = EntityTag.getNPCFrom(damager.getBukkitEntity());
+            npc = damager.getDenizenNPC();
         }
         return new BukkitScriptEntryData(player, npc);
     }

@@ -139,7 +139,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(damager != null && damager.isPlayer() ? damager.getDenizenPlayer() : entity.isPlayer() ? entity.getDenizenPlayer() : null,
-                damager != null && damager.isCitizensNPC() ? damager.getDenizenNPC() : entity.isCitizensNPC() ? EntityTag.getNPCFrom(event.getEntity()) : null);
+                damager != null && damager.isCitizensNPC() ? damager.getDenizenNPC() : entity.isCitizensNPC() ? entity.getDenizenNPC() : null);
     }
 
     @Override
