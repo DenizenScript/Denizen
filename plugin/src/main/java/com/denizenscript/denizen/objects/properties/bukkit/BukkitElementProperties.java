@@ -236,7 +236,7 @@ public class BukkitElementProperties implements Property {
         });
 
         // <--[tag]
-        // @attribute <ElementTag.parse_color[<prefix>]>
+        // @attribute <ElementTag.parse_color[(<prefix>)]>
         // @returns ElementTag
         // @group text manipulation
         // @description
