@@ -20,7 +20,7 @@ public class EntityAnger implements Property {
         }
         Entity bukkitEntity = ((EntityTag) entity).getBukkitEntity();
         return bukkitEntity instanceof PigZombie ||
-                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && bukkitEntity instanceof Bee);
+                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && bukkitEntity instanceof Bee);
     }
 
     public static EntityAnger getFrom(ObjectTag entity) {
