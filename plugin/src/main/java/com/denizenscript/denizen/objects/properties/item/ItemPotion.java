@@ -142,8 +142,8 @@ public class ItemPotion implements Property {
         // @mechanism ItemTag.potion_effects
         // @group properties
         // @description
-        // Returns the potion effect on this item.
-        // In the format Effect,Level,Extended,Splash,Color
+        // Returns the potion type details for this potion item.
+        // In the format Type,Level,Extended,Splash,Color
         // -->
         if (attribute.startsWith("potion_base") && item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof PotionMeta) {
             PotionMeta meta = ((PotionMeta) item.getItemStack().getItemMeta());
@@ -344,7 +344,7 @@ public class ItemPotion implements Property {
         // @input ListTag
         // @description
         // Sets the potion's potion effect(s).
-        // Input is a formed like: Effect,Upgraded,Extended(,Color)|Type,Amplifier,Duration,Ambient,Particles(,Icon)|...
+        // Input is a formed like: Type,Upgraded,Extended(,Color)|Effect,Amplifier,Duration,Ambient,Particles(,Icon)|...
         // For example: SPEED,true,false|SPEED,2,200,false,true,true
         // Second example: REGEN,false,true,RED|REGENERATION,1,500,true,false,false
         // Color can also be used like "255&comma128&comma0" (r,g,b but replace ',' with '&comma').
