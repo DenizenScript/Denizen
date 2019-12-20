@@ -15,6 +15,7 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(new PlayerEquipsArmorScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerJumpsPaperScriptEventImpl());
         ScriptEvent.registerScriptEvent(new PlayerSpectatesEntityScriptEvent());
+        ScriptEvent.registerScriptEvent(new EntityKnockbackByEntityScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerStopsSpectatingScriptEvent());
         ScriptEvent.registerScriptEvent(new ProjectileCollideScriptEvent());
         ScriptEvent.registerScriptEvent(new TNTPrimesScriptEvent());
