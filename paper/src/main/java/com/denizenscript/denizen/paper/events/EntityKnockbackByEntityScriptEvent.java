@@ -61,7 +61,8 @@ public class EntityKnockbackByEntityScriptEvent extends BukkitScriptEvent implem
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return CoreUtilities.getXthArg(1, lower).equals("knocks") && CoreUtilities.getXthArg(1, lower).equals("back");
+         return CoreUtilities.getXthArg(1, lower).equals("knocks") &&
+                CoreUtilities.getXthArg(2, lower).equals("back");
     }
 
     @Override
