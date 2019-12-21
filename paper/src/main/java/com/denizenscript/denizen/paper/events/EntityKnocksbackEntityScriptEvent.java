@@ -12,9 +12,8 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.util.Vector;
 
-public class EntityKnockbackByEntityScriptEvent extends BukkitScriptEvent implements Listener  {
+public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -26,7 +25,6 @@ public class EntityKnockbackByEntityScriptEvent extends BukkitScriptEvent implem
     // @Regex ^on [^\s]+ knocks back [^\s]+$
     //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
-    //
     // @Switch with:<item> to only process the event when the item used to cause damage (in the damager's hand) is a specified item.
     //
     // @Plugin Paper
@@ -37,7 +35,7 @@ public class EntityKnockbackByEntityScriptEvent extends BukkitScriptEvent implem
     //
     // @Context
     // <context.entity> returns the EntityTag that was knocked back.
-    // <context.attacker> returns the EntityTag of the one who knocked.
+    // <context.damager> returns the EntityTag of the one who knocked.
     // <context.acceleration> returns the knockback applied as a vector.
     //
     // @Player when the damager or damaged entity is a player. Cannot be both.
@@ -46,22 +44,21 @@ public class EntityKnockbackByEntityScriptEvent extends BukkitScriptEvent implem
     //
     // -->
 
-    public EntityKnockbackByEntityScriptEvent() {
+    public EntityKnocksbackEntityScriptEvent() {
         instance = this;
     }
 
-    public static EntityKnockbackByEntityScriptEvent instance;
+    public static EntityKnocksbackEntityScriptEvent instance;
 
     public EntityTag entity;
     public EntityTag hitBy;
     public ItemTag held;
-    public LocationTag acceleration;
     public EntityKnockbackByEntityEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-         return CoreUtilities.getXthArg(1, lower).equals("knocks") &&
+        return CoreUtilities.getXthArg(1, lower).equals("knocks") &&
                 CoreUtilities.getXthArg(2, lower).equals("back");
     }
 
@@ -69,15 +66,12 @@ public class EntityKnockbackByEntityScriptEvent extends BukkitScriptEvent implem
     public boolean matches(ScriptPath path) {
         String attacker = path.eventArgLowerAt(0);
         String target = path.eventArgLowerAt(3);
-
         if (!tryEntity(hitBy, attacker) || (!tryEntity(entity, target))) {
             return false;
         }
-
         if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
-
         if (!runWithCheck(path, held)) {
             return false;
         }
@@ -87,13 +81,13 @@ public class EntityKnockbackByEntityScriptEvent extends BukkitScriptEvent implem
 
     @Override
     public String getName() {
-        return "EntityKnocksbackEntityEvent";
+        return "EntityKnocksbackEntity";
     }
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof LocationTag) {
-            acceleration = new LocationTag(((LocationTag) determinationObj).toVector());
+            event.getAcceleration().copy(((LocationTag) determinationObj).toVector());
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -106,7 +100,7 @@ public class EntityKnockbackByEntityScriptEvent extends BukkitScriptEvent implem
                         (entity.isPlayer() ? entity.getDenizenPlayer() : null),
 
                 hitBy.isCitizensNPC() ? hitBy.getDenizenNPC() :
-                        (entity.isCitizensNPC() ? EntityTag.getNPCFrom(event.getHitBy()) : null)
+                        (entity.isCitizensNPC() ? entity.getDenizenNPC() : null)
         );
     }
 
@@ -114,9 +108,10 @@ public class EntityKnockbackByEntityScriptEvent extends BukkitScriptEvent implem
     public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return entity.getDenizenObject();
-        }
-        else if (name.equals("attacker")) {
+        } else if (name.equals("damager")) {
             return hitBy.getDenizenObject();
+        } else if (name.equals("acceleration")) {
+            return new LocationTag(event.getAcceleration());
         }
         return super.getContext(name);
     }
@@ -125,7 +120,6 @@ public class EntityKnockbackByEntityScriptEvent extends BukkitScriptEvent implem
     public void onEntityKnockbackEntity(EntityKnockbackByEntityEvent event) {
         entity = new EntityTag(event.getEntity());
         hitBy = new EntityTag(event.getHitBy());
-        acceleration = new LocationTag(event.getAcceleration());
         held = hitBy.getItemInHand();
         this.event = event;
         fire(event);
