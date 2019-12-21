@@ -57,7 +57,7 @@ public class EntityAnger implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(((PigZombie) entity.getBukkitEntity()).getAnger());
+        return String.valueOf(getAnger());
     }
 
     @Override
