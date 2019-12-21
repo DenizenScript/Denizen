@@ -15,6 +15,7 @@ public class MaterialSnowable implements Property {
                 && ((MaterialTag) material).hasModernData()
                 && ((MaterialTag) material).getModernData().data instanceof Snowable;
     }
+
     public static MaterialSnowable getFrom(ObjectTag _material) {
         if (!describes(_material)) {
             return null;
@@ -64,7 +65,7 @@ public class MaterialSnowable implements Property {
 
     @Override
     public String getPropertyId() {
-        return "snowable";
+        return "snowy";
     }
 
     @Override
