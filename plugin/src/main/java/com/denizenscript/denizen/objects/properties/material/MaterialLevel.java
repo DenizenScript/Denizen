@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.objects.properties.material;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -9,6 +11,7 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.type.Cake;
+import org.bukkit.block.data.type.Beehive;
 
 public class MaterialLevel implements Property {
 
@@ -16,7 +19,8 @@ public class MaterialLevel implements Property {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
                 && (((MaterialTag) material).getModernData().data instanceof Levelled
-                || ((MaterialTag) material).getModernData().data instanceof Cake);
+                || ((MaterialTag) material).getModernData().data instanceof Cake
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && ((MaterialTag) material).getModernData().data instanceof Beehive));
     }
 
     public static MaterialLevel getFrom(ObjectTag _material) {
@@ -46,7 +50,7 @@ public class MaterialLevel implements Property {
         // @returns ElementTag(Number)
         // @group properties
         // @description
-        // Returns the maximum level for a levelable material (like water, lava, and Cauldrons), or a cake.
+        // Returns the maximum level for a levelable material (like water, lava, and Cauldrons), a cake, or a beehive.
         // -->
         PropertyParser.<MaterialLevel>registerTag("maximum_level", (attribute, material) -> {
             return new ElementTag(material.getMax());
@@ -58,7 +62,7 @@ public class MaterialLevel implements Property {
         // @mechanism MaterialTag.level
         // @group properties
         // @description
-        // Returns the current level for a levelable material (like water, lava, and Cauldrons), or a cake.
+        // Returns the current level for a levelable material (like water, lava, and Cauldrons), a cake, or a beehive.
         // -->
         PropertyParser.<MaterialLevel>registerTag("level", (attribute, material) -> {
             return new ElementTag(material.getCurrent());
@@ -69,6 +73,10 @@ public class MaterialLevel implements Property {
         return material.getModernData().data instanceof Cake;
     }
 
+    public boolean isHive() {
+            return (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && material.getModernData().data instanceof Beehive);
+        }
+
     public Levelled getLevelled() {
         return (Levelled) material.getModernData().data;
     }
@@ -77,9 +85,24 @@ public class MaterialLevel implements Property {
         return (Cake) material.getModernData().data;
     }
 
+    public int getHoneyLevel() {
+        return ((Beehive) material.getModernData().data).getHoneyLevel();
+    }
+
+    public int getMaxHoneyLevel() {
+        return ((Beehive) material.getModernData().data).getMaximumHoneyLevel();
+    }
+
+    public void setHoneyLevel(int level) {
+        ((Beehive) material.getModernData().data).setHoneyLevel(level);
+    }
+    
     public int getCurrent() {
         if (isCake()) {
             return getCake().getBites();
+        }
+        else if (isHive()) {
+            return getHoneyLevel();
         }
         return getLevelled().getLevel();
     }
@@ -88,12 +111,19 @@ public class MaterialLevel implements Property {
         if (isCake()) {
             return getCake().getMaximumBites();
         }
+        else if (isHive()) {
+            return getMaxHoneyLevel();
+        }
         return getLevelled().getMaximumLevel();
     }
 
     public void setCurrent(int level) {
         if (isCake()) {
             getCake().setBites(level);
+            return;
+        }
+        else if (isHive()) {
+            setHoneyLevel(level);
             return;
         }
         getLevelled().setLevel(level);
@@ -117,7 +147,7 @@ public class MaterialLevel implements Property {
         // @name level
         // @input ElementTag(Number)
         // @description
-        // Sets the current level for a levelable material (like water, lava, and Cauldrons), or a cake.
+        // Sets the current level for a levelable material (like water, lava, and Cauldrons), a cake, or a beehive.
         // @tags
         // <MaterialTag.level>
         // <MaterialTag.maximum_level>
