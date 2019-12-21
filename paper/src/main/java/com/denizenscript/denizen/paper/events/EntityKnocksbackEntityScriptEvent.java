@@ -97,12 +97,8 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
     @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(
-                hitBy.isPlayer() ? hitBy.getDenizenPlayer() :
-                        (entity.isPlayer() ? entity.getDenizenPlayer() : null),
-
-                hitBy.isCitizensNPC() ? hitBy.getDenizenNPC() :
-                        (entity.isCitizensNPC() ? entity.getDenizenNPC() : null)
-        );
+                hitBy.isPlayer() ? hitBy.getDenizenPlayer() : entity.isPlayer() ? entity.getDenizenPlayer() : null,
+                hitBy.isCitizensNPC() ? hitBy.getDenizenNPC() : entity.isCitizensNPC() ? entity.getDenizenNPC() : null);
     }
 
     @Override
