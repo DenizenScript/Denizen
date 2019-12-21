@@ -112,7 +112,7 @@ public class MaterialLevel implements Property {
             getCake().setBites(level);
             return;
         }
-        if (isHive()) {
+        else if (isHive()) {
             getHive().setHoneyLevel(level);
             return;
         }
