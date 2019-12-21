@@ -26,6 +26,7 @@ public class StatsRecord extends Thread {
             // Safely connected at this point
             // Create the final message pack and upload it
             uc.getOutputStream().write(("postid=pluginstats&plugin_st_players=" + Bukkit.getOnlinePlayers().size()
+                    + "&plugin_st_server_version=" + URLEncoder.encode(Bukkit.getVersion())
                     + "&plugin_st_motd=" + URLEncoder.encode(Bukkit.getServer().getMotd().replace(ChatColor.COLOR_CHAR, (char) 0x01)))
                     .getBytes(StandardCharsets.UTF_8));
             // Wait for a response from the server
