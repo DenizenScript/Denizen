@@ -21,7 +21,7 @@ public class PlayerLoginScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Regex ^on player (logs in( for the first time)?|( first)? login)$
     //
-    // @Triggers when a player logs in to the server.
+    // @Triggers when a player logs in to the server. This is during the authentication process, and should NOT be confused with <@link event player joins>.
     //
     // @Context
     // <context.hostname> returns an ElementTag of the player's hostname.
