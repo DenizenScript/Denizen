@@ -38,6 +38,9 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
     // <context.damager> returns the EntityTag of the one who knocked.
     // <context.acceleration> returns the knockback applied as a vector.
     //
+    // @Determine
+    // LocationTag as a vector to change the acceleration applied.
+    //
     // @Player when the damager or damaged entity is a player. Cannot be both.
     //
     // @NPC when the damager or damaged entity is an NPC. Cannot be both.
