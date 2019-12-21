@@ -56,10 +56,9 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
     public EntityKnockbackByEntityEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return CoreUtilities.getXthArg(1, lower).equals("knocks") &&
-                CoreUtilities.getXthArg(2, lower).equals("back");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventArgLowerAt(1).equals("knocks") &&
+                path.eventArgLowerAt(2).equals("back");
     }
 
     @Override
@@ -75,7 +74,6 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
         if (!runWithCheck(path, held)) {
             return false;
         }
-
         return super.matches(path);
     }
 
@@ -86,9 +84,12 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof LocationTag) {
-            event.getAcceleration().copy(((LocationTag) determinationObj).toVector());
-            return true;
+        String determination = determinationObj.toString();
+        if (!isDefaultDetermination(determinationObj)) {
+            if (determinationObj instanceof LocationTag && LocationTag.matches(determination)) {
+                event.getAcceleration().copy(((LocationTag) determinationObj).toVector());
+                return true;
+            }
         }
         return super.applyDetermination(path, determinationObj);
     }
@@ -108,9 +109,11 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
     public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return entity.getDenizenObject();
-        } else if (name.equals("damager")) {
+        }
+        else if (name.equals("damager")) {
             return hitBy.getDenizenObject();
-        } else if (name.equals("acceleration")) {
+        }
+        else if (name.equals("acceleration")) {
             return new LocationTag(event.getAcceleration());
         }
         return super.getContext(name);
