@@ -43,7 +43,7 @@ public class MaterialSnowable implements Property {
         // @mechanism MaterialTag.snowy
         // @group properties
         // @description
-        // Returns whether this block is covered in snow or not.
+        // Returns whether this material is covered in snow or not.
         // -->
         PropertyParser.<MaterialSnowable>registerTag("snowy", (attribute, material) -> {
             return new ElementTag(material.isSnowy());
@@ -76,7 +76,7 @@ public class MaterialSnowable implements Property {
         // @name snowy
         // @input ElementTag(Boolean)
         // @description
-        // Sets this block to be covered in snow, or not.
+        // Sets this material to be covered in snow, or not.
         // @tags
         // <MaterialTag.snowy>
         // -->
