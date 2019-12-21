@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.objects.properties.material;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -18,7 +20,7 @@ public class MaterialLevel implements Property {
                 && ((MaterialTag) material).hasModernData()
                 && (((MaterialTag) material).getModernData().data instanceof Levelled
                 || ((MaterialTag) material).getModernData().data instanceof Cake
-                || ((MaterialTag) material).getModernData().data instanceof Beehive);
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && ((MaterialTag) material).getModernData().data instanceof Beehive));
     }
 
     public static MaterialLevel getFrom(ObjectTag _material) {
@@ -72,8 +74,8 @@ public class MaterialLevel implements Property {
     }
 
     public boolean isHive() {
-        return material.getModernData().data instanceof Beehive;
-    }
+            return (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && material.getModernData().data instanceof Beehive);
+        }
 
     public Levelled getLevelled() {
         return (Levelled) material.getModernData().data;
@@ -83,16 +85,25 @@ public class MaterialLevel implements Property {
         return (Cake) material.getModernData().data;
     }
 
-    public Beehive getHive() {
-        return (Beehive) material.getModernData().data;
+    public int getHoneyLevel() {
+        return ((Beehive) material.getModernData().data).getHoneyLevel();
     }
+
+    public int getMaxHoneyLevel() {
+        return ((Beehive) material.getModernData().data).getMaximumHoneyLevel();
+    }
+
+    public void setHoneyLevel(int level) {
+        ((Beehive) material.getModernData().data).setHoneyLevel(level);
+    }
+
 
     public int getCurrent() {
         if (isCake()) {
             return getCake().getBites();
         }
         else if (isHive()) {
-            return getHive().getHoneyLevel();
+            return getHoneyLevel();
         }
         return getLevelled().getLevel();
     }
@@ -102,7 +113,7 @@ public class MaterialLevel implements Property {
             return getCake().getMaximumBites();
         }
         else if (isHive()) {
-            return getHive().getMaximumHoneyLevel();
+            return getMaxHoneyLevel();
         }
         return getLevelled().getMaximumLevel();
     }
@@ -113,7 +124,7 @@ public class MaterialLevel implements Property {
             return;
         }
         else if (isHive()) {
-            getHive().setHoneyLevel(level);
+            setHoneyLevel(level);
             return;
         }
         getLevelled().setLevel(level);
