@@ -96,8 +96,7 @@ public class MaterialLevel implements Property {
     public void setHoneyLevel(int level) {
         ((Beehive) material.getModernData().data).setHoneyLevel(level);
     }
-
-
+    
     public int getCurrent() {
         if (isCake()) {
             return getCake().getBites();
