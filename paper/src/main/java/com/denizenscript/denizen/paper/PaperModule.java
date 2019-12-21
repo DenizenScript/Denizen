@@ -12,6 +12,7 @@ public class PaperModule {
     public static void init() {
         Debug.log("Loading Paper support module...");
         // Events
+        ScriptEvent.registerScriptEvent(new EntityKnocksbackEntityScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerEquipsArmorScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerJumpsPaperScriptEventImpl());
         ScriptEvent.registerScriptEvent(new PlayerSpectatesEntityScriptEvent());
