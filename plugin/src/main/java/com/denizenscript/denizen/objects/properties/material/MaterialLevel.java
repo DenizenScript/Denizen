@@ -84,12 +84,12 @@ public class MaterialLevel implements Property {
         });
     }
 
-    //Levelled Interface
+    // Levelled Interface
     public Levelled getLevelled() {
         return (Levelled) material.getModernData().data;
     }
 
-    //Cake Interface
+    // Cake Interface
     public boolean isCake() {
         return material.getModernData().data instanceof Cake;
     }
@@ -98,7 +98,7 @@ public class MaterialLevel implements Property {
         return (Cake) material.getModernData().data;
     }
 
-    //Snow Interface
+    // Snow Interface
     public boolean isSnow() {
         return material.getModernData().data instanceof Snow;
     }
@@ -107,7 +107,7 @@ public class MaterialLevel implements Property {
         return (Snow) material.getModernData().data;
     }
 
-    //Beehive Interface
+    // Beehive Interface
     public boolean isHive() {
             return (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && material.getModernData().data instanceof Beehive);
         }
@@ -124,7 +124,7 @@ public class MaterialLevel implements Property {
         ((Beehive) material.getModernData().data).setHoneyLevel(level);
     }
 
-    //Functions
+    // Functions
     public int getCurrent() {
         if (isCake()) {
             return getCake().getBites();
