@@ -76,22 +76,22 @@ public class MaterialSwitchable  implements Property {
 
 
     public boolean getState() {
-        if (isPowerable()) {
-            return getPowerable().isPowered();
-        }
-        else if (isOpenable()) {
+        if (isOpenable()) {
             return getOpenable().isOpen();
+        }
+        else if (isPowerable()) {
+            return getPowerable().isPowered();
         }
         return getDispenser().isTriggered();
     }
 
     public void setState(boolean state) {
-        if (isPowerable()) {
-            getPowerable().setPowered(state);
+        if (isOpenable()) {
+            getOpenable().setOpen(state);
             return;
         }
-        else if (isOpenable()) {
-            getOpenable().setOpen(state);
+        else if (isPowerable()) {
+            getPowerable().setPowered(state);
             return;
         }
         getDispenser().setTriggered(state);
