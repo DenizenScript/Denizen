@@ -7,7 +7,6 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.type.Bamboo;
-import org.bukkit.block.data.type.Leaves;
 
 public class MaterialBamboo implements Property {
 
