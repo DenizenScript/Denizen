@@ -200,7 +200,7 @@ public class MaterialLevel implements Property {
         // -->
         if (mechanism.matches("level") && mechanism.requireInteger()) {
             int level = mechanism.getValue().asInt();
-            if (level < 0 || level > getMax()) {
+            if (level < getMin() || level > getMax()) {
                 Debug.echoError("Level value '" + level + "' is not valid. Must be between " + getMin() + " and " + getMax() + " for material '" + material.realName() + "'.");
                 return;
             }
