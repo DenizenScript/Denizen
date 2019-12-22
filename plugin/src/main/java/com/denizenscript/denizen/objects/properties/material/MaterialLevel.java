@@ -12,6 +12,7 @@ import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.type.Cake;
 import org.bukkit.block.data.type.Beehive;
+import org.bukkit.block.data.type.Snow;
 
 public class MaterialLevel implements Property {
 
@@ -20,6 +21,7 @@ public class MaterialLevel implements Property {
                 && ((MaterialTag) material).hasModernData()
                 && (((MaterialTag) material).getModernData().data instanceof Levelled
                 || ((MaterialTag) material).getModernData().data instanceof Cake
+                || ((MaterialTag) material).getModernData().data instanceof Snow
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && ((MaterialTag) material).getModernData().data instanceof Beehive));
     }
 
@@ -36,7 +38,6 @@ public class MaterialLevel implements Property {
             "level"
     };
 
-
     private MaterialLevel(MaterialTag _material) {
         material = _material;
     }
@@ -50,10 +51,23 @@ public class MaterialLevel implements Property {
         // @returns ElementTag(Number)
         // @group properties
         // @description
-        // Returns the maximum level for a levelable material (like water, lava, and Cauldrons), a cake, or a beehive.
+        // Returns the Maximum level for a levelable material
+        // Levelable materials include water, lava, cauldrons, cake, beehives, and snow.
         // -->
         PropertyParser.<MaterialLevel>registerTag("maximum_level", (attribute, material) -> {
             return new ElementTag(material.getMax());
+        });
+
+        // <--[tag]
+        // @attribute <MaterialTag.minimum_level>
+        // @returns ElementTag(Number)
+        // @group properties
+        // @description
+        // Returns the Minimum level for a levelable material
+        // Levelable materials include water, lava, cauldrons, cake, beehives, and snow.
+        // -->
+        PropertyParser.<MaterialLevel>registerTag("minimum_level", (attribute, material) -> {
+            return new ElementTag(material.getMin());
         });
 
         // <--[tag]
@@ -62,28 +76,41 @@ public class MaterialLevel implements Property {
         // @mechanism MaterialTag.level
         // @group properties
         // @description
-        // Returns the current level for a levelable material (like water, lava, and Cauldrons), a cake, or a beehive.
+        // Returns the current level for a levelable material
+        // Levelable materials include water, lava, cauldrons, cake, beehives, and snow.
         // -->
         PropertyParser.<MaterialLevel>registerTag("level", (attribute, material) -> {
             return new ElementTag(material.getCurrent());
         });
     }
 
-    public boolean isCake() {
-        return material.getModernData().data instanceof Cake;
-    }
-
-    public boolean isHive() {
-            return (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && material.getModernData().data instanceof Beehive);
-        }
-
+    //Levelled Interface
     public Levelled getLevelled() {
         return (Levelled) material.getModernData().data;
+    }
+
+    //Cake Interface
+    public boolean isCake() {
+        return material.getModernData().data instanceof Cake;
     }
 
     public Cake getCake() {
         return (Cake) material.getModernData().data;
     }
+
+    //Snow Interface
+    public boolean isSnow() {
+        return material.getModernData().data instanceof Snow;
+    }
+
+    public Snow getSnow() {
+        return (Snow) material.getModernData().data;
+    }
+
+    //Beehive Interface
+    public boolean isHive() {
+            return (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && material.getModernData().data instanceof Beehive);
+        }
 
     public int getHoneyLevel() {
         return ((Beehive) material.getModernData().data).getHoneyLevel();
@@ -96,10 +123,14 @@ public class MaterialLevel implements Property {
     public void setHoneyLevel(int level) {
         ((Beehive) material.getModernData().data).setHoneyLevel(level);
     }
-    
+
+    //Functions
     public int getCurrent() {
         if (isCake()) {
             return getCake().getBites();
+        }
+        else if (isSnow()) {
+            return getSnow().getLayers();
         }
         else if (isHive()) {
             return getHoneyLevel();
@@ -111,15 +142,29 @@ public class MaterialLevel implements Property {
         if (isCake()) {
             return getCake().getMaximumBites();
         }
+        if (isSnow()) {
+            return getSnow().getMaximumLayers();
+        }
         else if (isHive()) {
             return getMaxHoneyLevel();
         }
         return getLevelled().getMaximumLevel();
     }
 
+    public int getMin() {
+        if (isSnow()) {
+            return getSnow().getMinimumLayers();
+        }
+        return 0;
+    }
+
     public void setCurrent(int level) {
         if (isCake()) {
             getCake().setBites(level);
+            return;
+        }
+        else if (isSnow()) {
+            getSnow().setLayers(level);
             return;
         }
         else if (isHive()) {
@@ -147,7 +192,8 @@ public class MaterialLevel implements Property {
         // @name level
         // @input ElementTag(Number)
         // @description
-        // Sets the current level for a levelable material (like water, lava, and Cauldrons), a cake, or a beehive.
+        // Sets the current level for a levelable material.
+        // Levelable materials include water, lava, cauldrons, cake, beehives, and snow.
         // @tags
         // <MaterialTag.level>
         // <MaterialTag.maximum_level>
@@ -155,7 +201,7 @@ public class MaterialLevel implements Property {
         if (mechanism.matches("level") && mechanism.requireInteger()) {
             int level = mechanism.getValue().asInt();
             if (level < 0 || level > getMax()) {
-                Debug.echoError("Level value '" + level + "' is not valid. Must be between 0 and " + getMax() + " for material '" + material.realName() + "'.");
+                Debug.echoError("Level value '" + level + "' is not valid. Must be between " + getMin() + " and " + getMax() + " for material '" + material.realName() + "'.");
                 return;
             }
             setCurrent(level);
