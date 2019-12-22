@@ -159,6 +159,9 @@ public class PropertyRegistry {
             PropertyParser.registerProperty(MaterialSwitchFace.class, MaterialTag.class);
             PropertyParser.registerProperty(MaterialWaterlogged.class, MaterialTag.class);
         }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
+            PropertyParser.registerProperty(MaterialBamboo.class, MaterialTag.class);
+        }
 
         // register core TradeTag properties
         PropertyParser.registerProperty(TradeHasXp.class, TradeTag.class);
