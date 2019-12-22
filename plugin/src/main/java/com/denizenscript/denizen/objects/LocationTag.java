@@ -2087,7 +2087,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             // In the format: x.x:y.y:z.z:world
             // For example: 1.0:2.0:3.0:world_nether
             // -->
-            if (attribute.startsWith("citzens", 2)) {
+            if (attribute.startsWith("citizens", 2)) {
                 attribute.fulfill(1);
                 return new ElementTag(object.getX() + ":" + object.getY() + ":" + object.getZ() + ":" + object.getWorldName());
             }

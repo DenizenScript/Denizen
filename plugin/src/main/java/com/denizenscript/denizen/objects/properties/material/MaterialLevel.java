@@ -51,8 +51,7 @@ public class MaterialLevel implements Property {
         // @returns ElementTag(Number)
         // @group properties
         // @description
-        // Returns the maximum level for a valid material.
-        // Valid materials include water, lava, cauldrons, cake, beehives, and snow.
+        // Returns the maximum level for a level-able material (like water, lava, and cauldrons).
         // -->
         PropertyParser.<MaterialLevel>registerTag("maximum_level", (attribute, material) -> {
             return new ElementTag(material.getMax());
@@ -63,8 +62,8 @@ public class MaterialLevel implements Property {
         // @returns ElementTag(Number)
         // @group properties
         // @description
-        // Returns the minimum level for a valid material.
-        // Valid materials include water, lava, cauldrons, cake, beehives, and snow.
+        // Returns the minimum level for a level-able material (like water, lava, and cauldrons).
+        // This will return 0 for all level-able materials aside from snow.
         // -->
         PropertyParser.<MaterialLevel>registerTag("minimum_level", (attribute, material) -> {
             return new ElementTag(material.getMin());
@@ -76,20 +75,18 @@ public class MaterialLevel implements Property {
         // @mechanism MaterialTag.level
         // @group properties
         // @description
-        // Returns the current level for a valid material.
-        // Valid materials include water, lava, cauldrons, cake, beehives, and snow.
+        // Returns the current level for a level-able material (like water, lava, and cauldrons)
         // -->
         PropertyParser.<MaterialLevel>registerTag("level", (attribute, material) -> {
             return new ElementTag(material.getCurrent());
         });
     }
 
-    // Levelled Interface
+
     public Levelled getLevelled() {
         return (Levelled) material.getModernData().data;
     }
 
-    // Cake Interface
     public boolean isCake() {
         return material.getModernData().data instanceof Cake;
     }
@@ -98,7 +95,6 @@ public class MaterialLevel implements Property {
         return (Cake) material.getModernData().data;
     }
 
-    // Snow Interface
     public boolean isSnow() {
         return material.getModernData().data instanceof Snow;
     }
@@ -107,10 +103,7 @@ public class MaterialLevel implements Property {
         return (Snow) material.getModernData().data;
     }
 
-    // Beehive Interface
-    public boolean isHive() {
-            return (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && material.getModernData().data instanceof Beehive);
-        }
+    public boolean isHive() { return (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && material.getModernData().data instanceof Beehive); }
 
     public int getHoneyLevel() {
         return ((Beehive) material.getModernData().data).getHoneyLevel();
@@ -192,8 +185,7 @@ public class MaterialLevel implements Property {
         // @name level
         // @input ElementTag(Number)
         // @description
-        // Sets the current level for a valid material.
-        // Valid materials include water, lava, cauldrons, cake, beehives, and snow.
+        // Sets the current level for a level-able material (like water, lava, and cauldrons).
         // @tags
         // <MaterialTag.level>
         // <MaterialTag.maximum_level>
