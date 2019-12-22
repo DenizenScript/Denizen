@@ -7,6 +7,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.type.Bamboo;
+import org.bukkit.block.data.type.Leaves;
 
 public class MaterialBamboo implements Property {
 
@@ -48,7 +49,7 @@ public class MaterialBamboo implements Property {
         // Output is SMALL, LARGE, or NONE.
         // -->
         PropertyParser.<MaterialBamboo>registerTag("leaf_size", (attribute, material) -> {
-            return new ElementTag(String.valueOf(material.getBamboo().getLeaves()));
+            return new ElementTag(material.getBamboo().getLeaves().name());
         });
     }
 
@@ -62,7 +63,7 @@ public class MaterialBamboo implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(getBamboo().getLeaves());
+        return getBamboo().getLeaves().name();
     }
 
     @Override
