@@ -47,8 +47,8 @@ public class MaterialBamboo implements Property {
         // Returns the size of the leaves for this bamboo block.
         // Output is SMALL, LARGE, or NONE.
         // -->
-        PropertyParser.<MaterialLeaves>registerTag("leaf_size", (attribute, material) -> {
-            return new ElementTag(material.getLeaves().isPersistent());
+        PropertyParser.<MaterialBamboo>registerTag("leaf_size", (attribute, material) -> {
+            return new ElementTag(String.valueOf(material.getBamboo().getLeaves()));
         });
     }
 
