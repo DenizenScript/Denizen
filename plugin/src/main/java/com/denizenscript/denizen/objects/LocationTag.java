@@ -4,7 +4,7 @@ import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
 import com.denizenscript.denizen.objects.properties.material.MaterialHalf;
 import com.denizenscript.denizen.objects.properties.material.MaterialSwitchFace;
-import com.denizenscript.denizen.objects.properties.material.MaterialLeaves;
+import com.denizenscript.denizen.objects.properties.material.MaterialPersistent;
 import com.denizenscript.denizen.scripts.commands.world.SwitchCommand;
 import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizen.utilities.world.PathFinder;
@@ -2683,8 +2683,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         registerTag("tree_distance", (attribute, object) -> {
             MaterialTag material = new MaterialTag(object.getBlockForTag(attribute));
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)
-                    && MaterialLeaves.describes(material)) {
-                return new ElementTag(MaterialLeaves.getFrom(material).getDistance());
+                    && MaterialPersistent.describes(material)) {
+                return new ElementTag(MaterialPersistent.getFrom(material).getDistance());
             }
             return null;
         });

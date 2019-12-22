@@ -549,7 +549,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // <@link mechanism MaterialTag.persistent> are accessible.
         // -->
         registerTag("is_leaves", (attribute, object) -> {
-            return new ElementTag(MaterialLeaves.describes(object));
+            return new ElementTag(MaterialPersistent.describes(object));
         });
 
         // <--[tag]

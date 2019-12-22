@@ -8,7 +8,7 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.type.Bamboo;
 
-public class MaterialBamboo implements Property {
+public class MaterialLeafSize implements Property {
 
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
@@ -16,12 +16,12 @@ public class MaterialBamboo implements Property {
                 && ((MaterialTag) material).getModernData().data instanceof Bamboo;
     }
 
-    public static MaterialBamboo getFrom(ObjectTag _material) {
+    public static MaterialLeafSize getFrom(ObjectTag _material) {
         if (!describes(_material)) {
             return null;
         }
         else {
-            return new MaterialBamboo((MaterialTag) _material);
+            return new MaterialLeafSize((MaterialTag) _material);
         }
     }
 
@@ -30,7 +30,7 @@ public class MaterialBamboo implements Property {
     };
 
 
-    private MaterialBamboo(MaterialTag _material) {
+    private MaterialLeafSize(MaterialTag _material) {
         material = _material;
     }
 
@@ -47,7 +47,7 @@ public class MaterialBamboo implements Property {
         // Returns the size of the leaves for this bamboo block.
         // Output is SMALL, LARGE, or NONE.
         // -->
-        PropertyParser.<MaterialBamboo>registerTag("leaf_size", (attribute, material) -> {
+        PropertyParser.<MaterialLeafSize>registerTag("leaf_size", (attribute, material) -> {
             return new ElementTag(material.getBamboo().getLeaves().name());
         });
     }
