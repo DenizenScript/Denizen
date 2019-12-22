@@ -2306,7 +2306,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
-        // @attribute <EntityTag.precise_target[<range>]>
+        // @attribute <EntityTag.precise_target[(<range>)]>
         // @returns EntityTag
         // @description
         // Returns the entity this entity is looking at, using precise ray trace logic.
@@ -2325,7 +2325,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
-        // @attribute <EntityTag.precise_target_position[<range>]>
+        // @attribute <EntityTag.precise_target_position[(<range>)]>
         // @returns LocationTag
         // @description
         // Returns the location this entity is looking at, using precise ray trace (against entities) logic.

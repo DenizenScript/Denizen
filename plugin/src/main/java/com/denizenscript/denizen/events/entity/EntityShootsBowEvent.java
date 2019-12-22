@@ -43,7 +43,7 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
     // <context.force> returns the force of the shot.
     //
     // @Determine
-    // ListTag(EntityTag) to change the projectile(s) being shot.
+    // ListTag(EntityTag) to change the projectile(s) being shot. (Note that in certain cases, determining an arrow may not be valid).
     //
     // @Player when the entity that shot the bow is a player.
     //

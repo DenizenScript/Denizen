@@ -103,6 +103,7 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
 
     public InventoryTag inventory;
     public ItemTag item;
+    public ItemTag cursor; // Needed due to internal oddity
     public InventoryClickEvent event;
 
     @Override
@@ -127,7 +128,8 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
         if (hasClickType && !path.eventArgLowerAt(1).equals(CoreUtilities.toLowerCase(event.getClick().name()))) {
             return false;
         }
-        if (!path.eventArgLowerAt(hasClickType ? 3 : 2).equals("in") && !tryItem(item, path.eventArgLowerAt(hasClickType ? 3 : 2))) {
+        String clickedItemText = path.eventArgLowerAt(hasClickType ? 3 : 2);
+        if (!clickedItemText.equals("in") && !tryItem(item, clickedItemText)) {
             return false;
         }
         int inIndex = -1;
@@ -170,7 +172,7 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
             return item;
         }
         else if (name.equals("cursor_item")) {
-            return new ItemTag(event.getCursor() == null ? new ItemStack(Material.AIR) : event.getCursor());
+            return cursor;
         }
         else if (name.equals("click")) {
             return new ElementTag(event.getClick().name());
@@ -202,7 +204,8 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
     @EventHandler
     public void inventoryClickEvent(InventoryClickEvent event) {
         inventory = InventoryTag.mirrorBukkitInventory(event.getInventory());
-        item = event.getCurrentItem() == null ? new ItemTag(Material.AIR) : new ItemTag(event.getCurrentItem());
+        item = event.getCurrentItem() == null ? new ItemTag(Material.AIR) : new ItemTag(event.getCurrentItem().clone());
+        cursor = new ItemTag(event.getCursor() == null ? new ItemStack(Material.AIR) : event.getCursor().clone());
         this.event = event;
         fire(event);
     }
