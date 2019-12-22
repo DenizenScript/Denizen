@@ -81,8 +81,7 @@ public class MaterialLevel implements Property {
             return new ElementTag(material.getCurrent());
         });
     }
-
-
+    
     public Levelled getLevelled() {
         return (Levelled) material.getModernData().data;
     }
