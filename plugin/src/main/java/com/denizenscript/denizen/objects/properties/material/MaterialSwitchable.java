@@ -1,9 +1,6 @@
 package com.denizenscript.denizen.objects.properties.material;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -11,7 +8,6 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.Powerable;
 import org.bukkit.block.data.Openable;
-import org.bukkit.block.data.type.Cake;
 import org.bukkit.block.data.type.Dispenser;
 
 public class MaterialSwitchable  implements Property {
@@ -53,7 +49,7 @@ public class MaterialSwitchable  implements Property {
         // @description
         // Returns if this material is switched, or not. (doors, dispensers, and other redstone materials)
         // -->
-        PropertyParser.<MaterialSwitchable>registerTag("maximum_level", (attribute, material) -> {
+        PropertyParser.<MaterialSwitchable>registerTag("switched", (attribute, material) -> {
             return new ElementTag(material.getState());
         });
     }
@@ -117,20 +113,15 @@ public class MaterialSwitchable  implements Property {
 
         // <--[mechanism]
         // @object MaterialTag
-        // @name level
+        // @name switched
         // @input ElementTag(boolean)
         // @description
         // Sets if this material is switched, or not. (doors, dispensers, and other redstone materials)
         // @tags
         // <MaterialTag.switched>
         // -->
-        if (mechanism.matches("level") && mechanism.requireInteger()) {
-            int level = mechanism.getValue().asInt();
-            if (level < 0 || level > getMax()) {
-                Debug.echoError("Level value '" + level + "' is not valid. Must be between 0 and " + getMax() + " for material '" + material.realName() + "'.");
-                return;
-            }
-            setCurrent(level);
+        if (mechanism.matches("switched") && mechanism.requireBoolean()) {
+            setState(mechanism.getValue().asBoolean());
         }
     }
 }
