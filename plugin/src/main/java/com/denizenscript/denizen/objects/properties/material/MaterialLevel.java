@@ -51,8 +51,8 @@ public class MaterialLevel implements Property {
         // @returns ElementTag(Number)
         // @group properties
         // @description
-        // Returns the Maximum level for a levelable material
-        // Levelable materials include water, lava, cauldrons, cake, beehives, and snow.
+        // Returns the maximum level for a valid material.
+        // Valid materials include water, lava, cauldrons, cake, beehives, and snow.
         // -->
         PropertyParser.<MaterialLevel>registerTag("maximum_level", (attribute, material) -> {
             return new ElementTag(material.getMax());
@@ -63,8 +63,8 @@ public class MaterialLevel implements Property {
         // @returns ElementTag(Number)
         // @group properties
         // @description
-        // Returns the Minimum level for a levelable material
-        // Levelable materials include water, lava, cauldrons, cake, beehives, and snow.
+        // Returns the minimum level for a valid material.
+        // Valid materials include water, lava, cauldrons, cake, beehives, and snow.
         // -->
         PropertyParser.<MaterialLevel>registerTag("minimum_level", (attribute, material) -> {
             return new ElementTag(material.getMin());
@@ -76,8 +76,8 @@ public class MaterialLevel implements Property {
         // @mechanism MaterialTag.level
         // @group properties
         // @description
-        // Returns the current level for a levelable material
-        // Levelable materials include water, lava, cauldrons, cake, beehives, and snow.
+        // Returns the current level for a valid material.
+        // Valid materials include water, lava, cauldrons, cake, beehives, and snow.
         // -->
         PropertyParser.<MaterialLevel>registerTag("level", (attribute, material) -> {
             return new ElementTag(material.getCurrent());
@@ -192,11 +192,12 @@ public class MaterialLevel implements Property {
         // @name level
         // @input ElementTag(Number)
         // @description
-        // Sets the current level for a levelable material.
-        // Levelable materials include water, lava, cauldrons, cake, beehives, and snow.
+        // Sets the current level for a valid material.
+        // Valid materials include water, lava, cauldrons, cake, beehives, and snow.
         // @tags
         // <MaterialTag.level>
         // <MaterialTag.maximum_level>
+        // <MaterialTag.minimum_level>
         // -->
         if (mechanism.matches("level") && mechanism.requireInteger()) {
             int level = mechanism.getValue().asInt();
