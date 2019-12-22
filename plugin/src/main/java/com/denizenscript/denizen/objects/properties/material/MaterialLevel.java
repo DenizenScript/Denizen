@@ -103,8 +103,7 @@ public class MaterialLevel implements Property {
     }
 
     public boolean isHive() {
-        return (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)
-                && material.getModernData().data instanceof Beehive);
+        return (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && material.getModernData().data instanceof Beehive);
     }
 
     public int getHoneyLevel() {
@@ -136,7 +135,7 @@ public class MaterialLevel implements Property {
         if (isCake()) {
             return getCake().getMaximumBites();
         }
-        if (isSnow()) {
+        else if (isSnow()) {
             return getSnow().getMaximumLayers();
         }
         else if (isHive()) {
