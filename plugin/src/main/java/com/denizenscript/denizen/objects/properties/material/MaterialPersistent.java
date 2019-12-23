@@ -8,7 +8,7 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.type.Leaves;
 
-public class MaterialLeaves implements Property {
+public class MaterialPersistent implements Property {
 
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
@@ -16,12 +16,12 @@ public class MaterialLeaves implements Property {
                 && ((MaterialTag) material).getModernData().data instanceof Leaves;
     }
 
-    public static MaterialLeaves getFrom(ObjectTag _material) {
+    public static MaterialPersistent getFrom(ObjectTag _material) {
         if (!describes(_material)) {
             return null;
         }
         else {
-            return new MaterialLeaves((MaterialTag) _material);
+            return new MaterialPersistent((MaterialTag) _material);
         }
     }
 
@@ -30,7 +30,7 @@ public class MaterialLeaves implements Property {
     };
 
 
-    private MaterialLeaves(MaterialTag _material) {
+    private MaterialPersistent(MaterialTag _material) {
         material = _material;
     }
 
@@ -46,7 +46,7 @@ public class MaterialLeaves implements Property {
         // @description
         // Returns whether this block will decay from being too far away from a tree.
         // -->
-        PropertyParser.<MaterialLeaves>registerTag("persistent", (attribute, material) -> {
+        PropertyParser.<MaterialPersistent>registerTag("persistent", (attribute, material) -> {
             return new ElementTag(material.getLeaves().isPersistent());
         });
     }
