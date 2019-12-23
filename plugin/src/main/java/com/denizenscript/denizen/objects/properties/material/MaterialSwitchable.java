@@ -33,7 +33,6 @@ public class MaterialSwitchable  implements Property {
             "switched"
     };
 
-
     private MaterialSwitchable(MaterialTag _material) {
         material = _material;
     }
@@ -73,8 +72,7 @@ public class MaterialSwitchable  implements Property {
     public Dispenser getDispenser() {
         return (Dispenser) material.getModernData().data;
     }
-
-
+    
     public boolean getState() {
         if (isOpenable()) {
             return getOpenable().isOpen();
