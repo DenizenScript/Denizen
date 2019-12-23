@@ -72,7 +72,7 @@ public class MaterialSwitchable  implements Property {
     public Dispenser getDispenser() {
         return (Dispenser) material.getModernData().data;
     }
-    
+
     public boolean getState() {
         if (isOpenable()) {
             return getOpenable().isOpen();
@@ -80,7 +80,9 @@ public class MaterialSwitchable  implements Property {
         else if (isPowerable()) {
             return getPowerable().isPowered();
         }
-        return getDispenser().isTriggered();
+        else {
+            return getDispenser().isTriggered();
+        }
     }
 
     public void setState(boolean state) {
@@ -92,8 +94,10 @@ public class MaterialSwitchable  implements Property {
             getPowerable().setPowered(state);
             return;
         }
-        getDispenser().setTriggered(state);
-        return;
+        else {
+            getDispenser().setTriggered(state);
+            return;
+        }
     }
 
     @Override
