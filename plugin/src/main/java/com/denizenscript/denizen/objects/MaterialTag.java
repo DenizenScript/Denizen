@@ -544,7 +544,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // @group properties
         // @description
         // Returns whether the material is a bamboo material.
-        // When this returns true, <@link tag LocationTag.leaf_size>,
+        // When this returns true, <@link tag MaterialTag.leaf_size>,
         // and <@link mechanism MaterialTag.leaf_size> are accessible.
         // -->
         registerTag("is_bamboo", (attribute, object) -> {
@@ -599,7 +599,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // Returns whether the material is a slab.
         // When this returns true, <@link tag MaterialTag.pickle_count>,
         // <@link tag MaterialTag.pickle_max>, <@link tag MaterialTag.pickle_min>,
-        // and <@link mechanism MaterialTag.pickle_max> are accessible.
+        // and <@link mechanism MaterialTag.pickle_count> are accessible.
         // -->
         registerTag("is_pickle", (attribute, object) -> {
             return new ElementTag(MaterialPickle.describes(object));
