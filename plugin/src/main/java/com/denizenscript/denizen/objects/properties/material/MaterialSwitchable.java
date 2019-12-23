@@ -46,7 +46,7 @@ public class MaterialSwitchable  implements Property {
         // @returns ElementTag(Boolean)
         // @group properties
         // @description
-        // Returns if this material is switched, or not. (doors, dispensers, and other redstone materials).
+        // Returns whether a Powerable material (like pressure plates) or an Openable material (like doors), or a dispenser is switched.
         // -->
         PropertyParser.<MaterialSwitchable>registerTag("switched", (attribute, material) -> {
             return new ElementTag(material.getState());
@@ -118,7 +118,7 @@ public class MaterialSwitchable  implements Property {
         // @name switched
         // @input ElementTag(boolean)
         // @description
-        // Sets if this material is switched, or not. (doors, dispensers, and other redstone materials).
+        // Sets whether a Powerable material (like pressure plates) or an Openable material (like doors), or a dispenser is switched.
         // @tags
         // <MaterialTag.switched>
         // -->
