@@ -539,30 +539,16 @@ public class MaterialTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <MaterialTag.is_leaves>
+        // @attribute <MaterialTag.is_bamboo>
         // @returns ElementTag(Boolean)
         // @group properties
         // @description
-        // Returns whether the material is a leaves material.
-        // When this returns true, <@link tag LocationTag.tree_distance>,
-        // <@link tag MaterialTag.persistent>, and
-        // <@link mechanism MaterialTag.persistent> are accessible.
+        // Returns whether the material is a bamboo material.
+        // When this returns true, <@link tag LocationTag.leaf_size>,
+        // and <@link mechanism MaterialTag.leaf_size> are accessible.
         // -->
-        registerTag("is_leaves", (attribute, object) -> {
-            return new ElementTag(MaterialPersistent.describes(object));
-        });
-
-        // <--[tag]
-        // @attribute <MaterialTag.is_slab>
-        // @returns ElementTag(Boolean)
-        // @group properties
-        // @description
-        // Returns whether the material is a slab.
-        // When this returns true, <@link tag MaterialTag.slab_type>,
-        // and <@link mechanism MaterialTag.slab_type> are accessible.
-        // -->
-        registerTag("is_slab", (attribute, object) -> {
-            return new ElementTag(MaterialSlab.describes(object));
+        registerTag("is_bamboo", (attribute, object) -> {
+            return new ElementTag(MaterialLeafSize.describes(object));
         });
 
         // <--[tag]
@@ -589,6 +575,86 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // -->
         registerTag("is_lightable", (attribute, object) -> {
             return new ElementTag(MaterialLightable.describes(object));
+        });
+
+        // <--[tag]
+        // @attribute <MaterialTag.is_leaves>
+        // @returns ElementTag(Boolean)
+        // @group properties
+        // @description
+        // Returns whether the material is a leaves material.
+        // When this returns true, <@link tag LocationTag.tree_distance>,
+        // <@link tag MaterialTag.persistent>, and
+        // <@link mechanism MaterialTag.persistent> are accessible.
+        // -->
+        registerTag("is_leaves", (attribute, object) -> {
+            return new ElementTag(MaterialPersistent.describes(object));
+        });
+
+        // <--[tag]
+        // @attribute <MaterialTag.is_pickle>
+        // @returns ElementTag(Boolean)
+        // @group properties
+        // @description
+        // Returns whether the material is a slab.
+        // When this returns true, <@link tag MaterialTag.pickle_count>,
+        // <@link tag MaterialTag.pickle_max>, <@link tag MaterialTag.pickle_min>,
+        // and <@link mechanism MaterialTag.pickle_max> are accessible.
+        // -->
+        registerTag("is_pickle", (attribute, object) -> {
+            return new ElementTag(MaterialPickle.describes(object));
+        });
+
+        // <--[tag]
+        // @attribute <MaterialTag.is_slab>
+        // @returns ElementTag(Boolean)
+        // @group properties
+        // @description
+        // Returns whether the material is a slab.
+        // When this returns true, <@link tag MaterialTag.slab_type>,
+        // and <@link mechanism MaterialTag.slab_type> are accessible.
+        // -->
+        registerTag("is_slab", (attribute, object) -> {
+            return new ElementTag(MaterialSlab.describes(object));
+        });
+
+        // <--[tag]
+        // @attribute <MaterialTag.is_snowable>
+        // @returns ElementTag(Boolean)
+        // @group properties
+        // @description
+        // Returns whether the material is snowable.
+        // When this returns true, <@link tag MaterialTag.snowy>,
+        // and <@link mechanism MaterialTag.snowy> are accessible.
+        // -->
+        registerTag("is_snowable", (attribute, object) -> {
+            return new ElementTag(MaterialSnowable.describes(object));
+        });
+
+        // <--[tag]
+        // @attribute <MaterialTag.is_switch>
+        // @returns ElementTag(Boolean)
+        // @group properties
+        // @description
+        // Returns whether the material is a switch.
+        // When this returns true, <@link tag MaterialTag.switch_face>,
+        // and <@link mechanism MaterialTag.switch_face> are accessible.
+        // -->
+        registerTag("is_switch", (attribute, object) -> {
+            return new ElementTag(MaterialSnowable.describes(object));
+        });
+
+        // <--[tag]
+        // @attribute <MaterialTag.is_waterloggable>
+        // @returns ElementTag(Boolean)
+        // @group properties
+        // @description
+        // Returns whether the material is able to be waterlogged.
+        // When this returns true, <@link tag MaterialTag.waterlogged>,
+        // and <@link mechanism MaterialTag.waterlogged> are accessible.
+        // -->
+        registerTag("is_waterloggable", (attribute, object) -> {
+            return new ElementTag(MaterialSnowable.describes(object));
         });
 
         // <--[tag]

@@ -70,6 +70,9 @@ public class InventoryCommand extends AbstractCommand {
     // destination to be a valid player inventory.
     // Using "close" closes any inventory that the currently attached player has opened.
     //
+    // Note that instead of "add", you should usually use <@link command give>,
+    // and instead of "remove", you should usually use <@link command take>.
+    //
     // @Tags
     // <PlayerTag.inventory>
     // <PlayerTag.enderchest>
