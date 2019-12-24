@@ -2261,7 +2261,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <EntityTag.oxygen>
         // @returns DurationTag
-        // @mechanism EntityTag.remaining_air
+        // @mechanism EntityTag.oxygen
         // @group attributes
         // @description
         // Returns the duration of oxygen the entity has left.
@@ -2953,8 +2953,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
 
         // <--[mechanism]
         // @object EntityTag
-        // @name remaining_air
-        // @input ElementTag(Number)
+        // @name oxygen
+        // @input DurationTag
         // @description
         // Sets how much air the entity has remaining before it drowns.
         // The entity must be living.
@@ -2962,7 +2962,12 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <EntityTag.oxygen>
         // <EntityTag.max_oxygen>
         // -->
+        if (mechanism.matches("oxygen") && mechanism.requireObject(DurationTag.class)) {
+            getLivingEntity().setRemainingAir(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
+        }
+
         if (mechanism.matches("remaining_air") && mechanism.requireInteger()) {
+            Deprecations.entityRemainingAir.warn(mechanism.context);
             getLivingEntity().setRemainingAir(mechanism.getValue().asInt());
         }
 
