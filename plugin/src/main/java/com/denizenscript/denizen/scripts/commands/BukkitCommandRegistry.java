@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.scripts.commands;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.scripts.commands.core.*;
 import com.denizenscript.denizen.scripts.commands.entity.*;
 import com.denizenscript.denizen.scripts.commands.item.*;
@@ -42,6 +44,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         registerCoreMember(ActionCommand.class,"ACTION", "action [<action name>|...] (<npc>|...) (context:<name>|<object>|...)", 1);
         registerCoreMember(ActionBarCommand.class, "ACTIONBAR", "actionbar [<text>] (targets:<player>|...)", 1);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+            registerCoreMember(AdjustBlockCommand.class, "ADJUSTBLOCK", "adjustblock [<location>|...] [<mechanism>](:<value>)", 2);
+        }
         registerCoreMember(AdvancementCommand.class, "ADVANCEMENT", "advancement [id:<name>] (delete/grant:<players>/revoke:<players>/{create}) (parent:<name>) (icon:<item>) (title:<text>) (description:<text>) (background:<key>) (frame:<type>) (toast:<boolean>) (announce:<boolean>) (hidden:<boolean>)", 1);
         registerCoreMember(AgeCommand.class, "AGE", "age [<entity>|...] (adult/baby/<age>) (lock)", 1);
         registerCoreMember(AnchorCommand.class, "ANCHOR", "anchor [id:<name>] [assume/remove/add <location>/walkto/walknear (r:#)]", 2);
