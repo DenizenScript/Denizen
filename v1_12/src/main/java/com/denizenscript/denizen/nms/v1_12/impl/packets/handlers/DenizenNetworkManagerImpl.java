@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.v1_12.impl.packets.handlers;
 
 import com.denizenscript.denizen.nms.v1_12.impl.packets.PacketOutSetSlotImpl;
 import com.denizenscript.denizen.nms.v1_12.impl.entities.EntityFakePlayerImpl;
+import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
@@ -13,7 +14,6 @@ import com.denizenscript.denizen.nms.v1_12.impl.packets.PacketOutEntityMetadataI
 import com.denizenscript.denizen.nms.v1_12.impl.packets.PacketOutSpawnEntityImpl;
 import com.denizenscript.denizen.nms.v1_12.impl.packets.PacketOutTradeListImpl;
 import com.denizenscript.denizen.nms.v1_12.impl.packets.PacketOutWindowItemsImpl;
-import com.denizenscript.denizen.nms.interfaces.packets.PacketHandler;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -35,9 +35,9 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     private final NetworkManager oldManager;
     private final DenizenPacketListenerImpl packetListener;
     private final EntityPlayer player;
-    private final PacketHandler packetHandler;
+    private final DenizenPacketHandler packetHandler;
 
-    public DenizenNetworkManagerImpl(EntityPlayer entityPlayer, NetworkManager oldManager, PacketHandler packetHandler) {
+    public DenizenNetworkManagerImpl(EntityPlayer entityPlayer, NetworkManager oldManager, DenizenPacketHandler packetHandler) {
         super(getProtocolDirection(oldManager));
         this.oldManager = oldManager;
         this.channel = oldManager.channel;
@@ -47,7 +47,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         this.packetHandler = packetHandler;
     }
 
-    public static void setNetworkManager(Player player, PacketHandler packetHandler) {
+    public static void setNetworkManager(Player player, DenizenPacketHandler packetHandler) {
         EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
         PlayerConnection playerConnection = entityPlayer.playerConnection;
         setNetworkManager(playerConnection, new DenizenNetworkManagerImpl(entityPlayer, playerConnection.networkManager, packetHandler));

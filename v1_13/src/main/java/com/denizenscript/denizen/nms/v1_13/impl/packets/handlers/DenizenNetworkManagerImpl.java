@@ -6,9 +6,9 @@ import com.denizenscript.denizen.nms.v1_13.impl.entities.EntityFakePlayerImpl;
 import com.denizenscript.denizen.nms.v1_13.impl.packets.PacketOutChatImpl;
 import com.denizenscript.denizen.nms.v1_13.impl.packets.PacketOutSpawnEntityImpl;
 import com.denizenscript.denizen.nms.v1_13.impl.packets.PacketOutTradeListImpl;
-import com.denizenscript.denizen.nms.interfaces.packets.PacketHandler;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
+import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
@@ -35,9 +35,9 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     public final NetworkManager oldManager;
     public final DenizenPacketListenerImpl packetListener;
     public final EntityPlayer player;
-    public final PacketHandler packetHandler;
+    public final DenizenPacketHandler packetHandler;
 
-    public DenizenNetworkManagerImpl(EntityPlayer entityPlayer, NetworkManager oldManager, PacketHandler packetHandler) {
+    public DenizenNetworkManagerImpl(EntityPlayer entityPlayer, NetworkManager oldManager, DenizenPacketHandler packetHandler) {
         super(getProtocolDirection(oldManager));
         this.oldManager = oldManager;
         this.channel = oldManager.channel;
@@ -47,7 +47,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         this.packetHandler = packetHandler;
     }
 
-    public static void setNetworkManager(Player player, PacketHandler packetHandler) {
+    public static void setNetworkManager(Player player, DenizenPacketHandler packetHandler) {
         EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
         PlayerConnection playerConnection = entityPlayer.playerConnection;
         setNetworkManager(playerConnection, new DenizenNetworkManagerImpl(entityPlayer, playerConnection.networkManager, packetHandler));

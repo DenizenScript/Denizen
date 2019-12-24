@@ -8,6 +8,7 @@ import com.denizenscript.denizen.nms.v1_12.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_12.impl.SidebarImpl;
 import com.denizenscript.denizen.nms.v1_12.impl.blocks.BlockLightImpl;
 import com.denizenscript.denizen.nms.v1_12.impl.jnbt.CompoundTagImpl;
+import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -15,7 +16,6 @@ import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
-import com.denizenscript.denizen.nms.interfaces.packets.PacketHandler;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
@@ -71,7 +71,7 @@ public class Handler extends NMSHandler {
     }
 
     @Override
-    public void enablePacketInterception(PacketHandler packetHandler) {
+    public void enablePacketInterception(DenizenPacketHandler packetHandler) {
         DenizenPacketListenerImpl.enable(packetHandler);
     }
 

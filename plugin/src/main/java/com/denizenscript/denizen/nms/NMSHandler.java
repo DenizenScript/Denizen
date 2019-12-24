@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.nms;
 
 import com.denizenscript.denizen.nms.interfaces.*;
-import com.denizenscript.denizen.nms.interfaces.packets.PacketHandler;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
@@ -11,6 +10,7 @@ import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizen.nms.abstracts.ParticleHelper;
 import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
+import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Entity;
@@ -167,7 +167,7 @@ public abstract class NMSHandler {
 
     public abstract double[] getRecentTps();
 
-    public abstract void enablePacketInterception(PacketHandler packetHandler);
+    public abstract void enablePacketInterception(DenizenPacketHandler packetHandler);
 
     public abstract CompoundTag createCompoundTag(Map<String, Tag> value);
 

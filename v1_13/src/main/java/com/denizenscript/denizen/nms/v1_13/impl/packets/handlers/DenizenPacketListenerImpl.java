@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.nms.v1_13.impl.packets.handlers;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.interfaces.packets.PacketHandler;
+import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import com.denizenscript.denizen.nms.v1_13.impl.packets.PacketInResourcePackStatusImpl;
@@ -21,13 +21,13 @@ import javax.annotation.Nullable;
 
 public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
 
-    private static PacketHandler packetHandler;
+    private static DenizenPacketHandler packetHandler;
 
     public DenizenPacketListenerImpl(NetworkManager networkManager, EntityPlayer entityPlayer) {
         super(networkManager, entityPlayer, entityPlayer.playerConnection);
     }
 
-    public static void enable(PacketHandler handler) {
+    public static void enable(DenizenPacketHandler handler) {
         packetHandler = handler;
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerEventListener(), NMSHandler.getJavaPlugin());
     }

@@ -29,9 +29,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
-public class DenizenPacketHandler implements PacketHandler {
+public class DenizenPacketHandler {
 
-    @Override
     public void receivePacket(final Player player, final PacketInResourcePackStatus resourcePackStatus) {
         Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), new Runnable() {
             @Override
@@ -44,7 +43,6 @@ public class DenizenPacketHandler implements PacketHandler {
         });
     }
 
-    @Override
     public boolean receivePacket(final Player player, final PacketInSteerVehicle steerVehicle) {
         if (PlayerSteersEntityScriptEvent.instance.enabled) {
             Future<Boolean> future = Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(),
@@ -74,7 +72,6 @@ public class DenizenPacketHandler implements PacketHandler {
         return false;
     }
 
-    @Override
     public boolean sendPacket(final Player player, final PacketOutChat chat) {
         if (ExecuteCommand.silencedPlayers.contains(player.getUniqueId())) {
             return true;
@@ -123,19 +120,16 @@ public class DenizenPacketHandler implements PacketHandler {
         return false;
     }
 
-    @Override
     public boolean sendPacket(Player player, PacketOutEntityMetadata entityMetadata) {
         HashSet<UUID> players = GlowCommand.glowViewers.get(entityMetadata.getEntityId());
         return players != null && entityMetadata.checkForGlow() && !players.contains(player.getUniqueId());
     }
 
-    @Override
     public boolean sendPacket(Player player, PacketOutSetSlot setSlot) {
         setSlot.setItemStack(removeItemScriptLore(setSlot.getItemStack()));
         return false;
     }
 
-    @Override
     public boolean sendPacket(Player player, PacketOutWindowItems windowItems) {
         ItemStack[] contents = windowItems.getContents();
         for (int i = 0; i < contents.length; i++) {
@@ -145,7 +139,6 @@ public class DenizenPacketHandler implements PacketHandler {
         return false;
     }
 
-    @Override
     public boolean sendPacket(Player player, PacketOutTradeList tradeList) {
         List<TradeOffer> tradeOffers = tradeList.getTradeOffers();
         for (TradeOffer tradeOffer : tradeOffers) {
