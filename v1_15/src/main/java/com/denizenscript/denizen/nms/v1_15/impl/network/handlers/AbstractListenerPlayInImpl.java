@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.nms.v1_15.impl.network.handlers;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
@@ -60,223 +62,272 @@ public class AbstractListenerPlayInImpl extends PlayerConnection {
         oldListener.tick();
     }
 
+    public void handlePacketIn(Packet<PacketListenerPlayIn> packet) {
+        if (NMSHandler.debugPackets) {
+            Debug.log("Packet: " + packet.getClass().getCanonicalName() + " sent from " + player.getName());
+        }
+    }
+
     @Override
     public void a(PacketPlayInChat packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInKeepAlive packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInArmAnimation packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInTabComplete packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInClientCommand packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInSettings packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInTransaction packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInEnchantItem packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInWindowClick packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInCloseWindow packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInCustomPayload packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInUseEntity packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInFlying packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInAbilities packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInBlockDig packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInEntityAction packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInSteerVehicle packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInHeldItemSlot packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInSetCreativeSlot packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInUpdateSign packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInBlockPlace packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInSpectate packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInResourcePackStatus packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInBoatMove packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInTeleportAccept packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInUseItem packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInVehicleMove packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInAdvancements packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInAutoRecipe packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInRecipeDisplayed packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInBEdit packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInTrSel packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInBeacon packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInStruct packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInItemName packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInPickItem packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInTileNBTQuery packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInEntityNBTQuery packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInSetCommandBlock packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(PacketPlayInSetCommandMinecart packet) {
+        handlePacketIn(packet);
+        oldListener.a(packet);
+    }
+
+    @Override
+    public void a(PacketPlayInSetJigsaw packet) {
+        handlePacketIn(packet);
+        oldListener.a(packet);
+    }
+
+    @Override
+    public void a(PacketPlayInDifficultyLock packet) {
+        handlePacketIn(packet);
+        oldListener.a(packet);
+    }
+
+    @Override
+    public void a(PacketPlayInDifficultyChange packet) {
+        handlePacketIn(packet);
         oldListener.a(packet);
     }
 
     @Override
     public void a(IChatBaseComponent iChatBaseComponent) {
         oldListener.a(iChatBaseComponent);
-    }
-
-    @Override
-    public void a(PacketPlayInSetJigsaw packetplayinsetjigsaw) {
-        oldListener.a(packetplayinsetjigsaw);
-    }
-
-    @Override
-    public void a(PacketPlayInDifficultyLock packetplayindifficultylock) {
-        oldListener.a(packetplayindifficultylock);
-    }
-
-    @Override
-    public void a(PacketPlayInDifficultyChange packetplayindifficultychange) {
-        oldListener.a(packetplayindifficultychange);
     }
 }
