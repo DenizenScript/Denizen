@@ -552,6 +552,19 @@ public class MaterialTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <MaterialTag.is_campfire>
+        // @returns ElementTag(Boolean)
+        // @group properties
+        // @description
+        // Returns whether the material is a campfire material.
+        // When this returns true, <@link tag MaterialTag.signal_fire>,
+        // and <@link mechanism MaterialTag.signal_fire> are accessible.
+        // -->
+        registerTag("is_campfire", (attribute, object) -> {
+            return new ElementTag(MaterialCampfire.describes(object));
+        });
+
+        // <--[tag]
         // @attribute <MaterialTag.is_levelable>
         // @returns ElementTag(Boolean)
         // @group properties
