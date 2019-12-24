@@ -41,6 +41,18 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
         super.a(packet);
     }
 
+    @Override
+    public void a(PacketPlayInBlockPlace packet) {
+        packetHandler.receivePlacePacket(player.getBukkitEntity());
+        super.a(packet);
+    }
+
+    @Override
+    public void a(PacketPlayInBlockDig packet) {
+        packetHandler.receiveDigPacket(player.getBukkitEntity());
+        super.a(packet);
+    }
+
     // For compatibility with other plugins using Reflection weirdly...
     @Override
     public void sendPacket(Packet packet) {

@@ -6,11 +6,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import com.denizenscript.denizen.nms.v1_13.impl.packets.PacketInResourcePackStatusImpl;
 import com.denizenscript.denizen.nms.v1_13.impl.packets.PacketInSteerVehicleImpl;
-import net.minecraft.server.v1_13_R2.EntityPlayer;
-import net.minecraft.server.v1_13_R2.NetworkManager;
-import net.minecraft.server.v1_13_R2.Packet;
-import net.minecraft.server.v1_13_R2.PacketPlayInResourcePackStatus;
-import net.minecraft.server.v1_13_R2.PacketPlayInSteerVehicle;
+import net.minecraft.server.v1_13_R2.*;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -42,6 +38,18 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
     @Override
     public void a(PacketPlayInResourcePackStatus packet) {
         packetHandler.receivePacket(player.getBukkitEntity(), new PacketInResourcePackStatusImpl(packet));
+        super.a(packet);
+    }
+
+    @Override
+    public void a(PacketPlayInBlockPlace packet) {
+        packetHandler.receivePlacePacket(player.getBukkitEntity());
+        super.a(packet);
+    }
+
+    @Override
+    public void a(PacketPlayInBlockDig packet) {
+        packetHandler.receiveDigPacket(player.getBukkitEntity());
         super.a(packet);
     }
 

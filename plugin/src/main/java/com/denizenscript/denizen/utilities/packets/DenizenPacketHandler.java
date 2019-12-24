@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.utilities.packets;
 
+import com.denizenscript.denizen.events.player.PlayerHoldsShieldEvent;
 import com.denizenscript.denizen.utilities.implementation.DenizenCoreImplementation;
 import com.denizenscript.denizen.nms.interfaces.packets.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -17,6 +18,7 @@ import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -70,6 +72,27 @@ public class DenizenPacketHandler {
             }
         }
         return false;
+    }
+
+    public static boolean isHoldingShield(Player player) {
+        return player.getEquipment().getItemInMainHand().getType() == Material.SHIELD
+            || player.getEquipment().getItemInOffHand().getType() == Material.SHIELD;
+    }
+
+    public void receivePlacePacket(final Player player) {
+        if (isHoldingShield(player)) {
+            Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), () -> {
+                PlayerHoldsShieldEvent.signalDidRaise(player);
+            });
+        }
+    }
+
+    public void receiveDigPacket(final Player player) {
+        if (isHoldingShield(player)) {
+            Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), () -> {
+                PlayerHoldsShieldEvent.signalDidLower(player);
+            });
+        }
     }
 
     public boolean sendPacket(final Player player, final PacketOutChat chat) {

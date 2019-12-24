@@ -131,6 +131,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new PlayerFillsBucketScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerFishesScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerFlyingScriptEvent());
+        ScriptEvent.registerScriptEvent(new PlayerHoldsShieldEvent());
         ScriptEvent.registerScriptEvent(new PlayerItemTakesDamageScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerJoinsScriptEvent());
         if (!Denizen.supportsPaper) {

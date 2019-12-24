@@ -39,12 +39,16 @@ public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     public static PlayerSneakScriptEvent instance;
-    public Boolean state;
+    public boolean state;
     public PlayerToggleSneakEvent event;
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(2).equals("sneaking");
+        String middleWord = path.eventArgAt(1);
+        if (!(middleWord.equals("starts") || middleWord.equals("stops") || middleWord.equals("toggles"))) {
+            return false;
+        }
+        return path.eventArgLowerAt(0).equals("player") && path.eventArgLowerAt(2).equals("sneaking");
     }
 
     @Override
@@ -56,11 +60,9 @@ public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listene
         if (cmd.equals("stops") && state) {
             return false;
         }
-
         if (!runInCheck(path, event.getPlayer().getLocation())) {
             return false;
         }
-
         return super.matches(path);
     }
 

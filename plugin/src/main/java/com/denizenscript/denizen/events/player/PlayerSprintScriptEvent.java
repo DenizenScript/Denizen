@@ -19,7 +19,7 @@ public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listen
     // player starts sprinting
     // player stops sprinting
     //
-    // @Regex ^on player (toggles|starts\stops) sprinting$
+    // @Regex ^on player (toggles|starts|stops) sprinting$
     //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
@@ -39,12 +39,16 @@ public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     public static PlayerSprintScriptEvent instance;
-    public Boolean state;
+    public boolean state;
     public PlayerToggleSprintEvent event;
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(2).startsWith("sprint");
+        String middleWord = path.eventArgAt(1);
+        if (!(middleWord.equals("starts") || middleWord.equals("stops") || middleWord.equals("toggles"))) {
+            return false;
+        }
+        return path.eventArgLowerAt(0).equals("player") && path.eventArgLowerAt(2).equals("sprinting");
     }
 
     @Override
@@ -56,7 +60,6 @@ public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listen
         if (cmd.equals("stops") && state) {
             return false;
         }
-
         if (!runInCheck(path, event.getPlayer().getLocation())) {
             return false;
         }
