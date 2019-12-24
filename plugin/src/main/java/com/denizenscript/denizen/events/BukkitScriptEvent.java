@@ -128,6 +128,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                     altEvent.fire();
                 }
             }.runTask(DenizenAPI.getCurrentInstance());
+            return;
         }
         super.fire();
     }
