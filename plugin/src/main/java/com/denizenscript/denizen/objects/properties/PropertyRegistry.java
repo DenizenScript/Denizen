@@ -60,6 +60,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityFramed.class, EntityTag.class);
         PropertyParser.registerProperty(EntityGravity.class, EntityTag.class);
         PropertyParser.registerProperty(EntityHealth.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)) {
+            PropertyParser.registerProperty(EntityHive.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityInfected.class, EntityTag.class);
         PropertyParser.registerProperty(EntityInventory.class, EntityTag.class);
         PropertyParser.registerProperty(EntityIsShowingBottom.class, EntityTag.class);
@@ -85,6 +88,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntitySkeleton.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySpeed.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySpell.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityStrength.class, EntityTag.class);
         PropertyParser.registerProperty(EntityTame.class, EntityTag.class);
         PropertyParser.registerProperty(EntityTrades.class, EntityTag.class);
         PropertyParser.registerProperty(EntityVisible.class, EntityTag.class);
