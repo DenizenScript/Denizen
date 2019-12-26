@@ -36,6 +36,8 @@ public class BreakCommand extends AbstractCommand implements Holdable {
     // to fulfill the command, just specify a 'fetchable' npc object. It can also accept a radius to start
     // breaking the block from within. To specify the radius, prefix the radius with 'radius:'.
     //
+    // The break command is ~waitable. Refer to <@link language ~waitable>.
+    //
     // @Tags
     // <NPCTag.is_navigating>
     // <NPCTag.target_location>

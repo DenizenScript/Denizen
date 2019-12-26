@@ -58,6 +58,8 @@ public class PushCommand extends AbstractCommand implements Holdable {
     //
     // Optionally use "duration:#" to set the max length of time to continue pushing.
     //
+    // The push command is ~waitable. Refer to <@link language ~waitable>.
+    //
     // @Tags
     // <EntityTag.velocity>
     //

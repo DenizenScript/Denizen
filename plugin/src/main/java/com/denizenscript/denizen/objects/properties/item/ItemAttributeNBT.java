@@ -60,7 +60,7 @@ public class ItemAttributeNBT implements Property {
         // @group properties
         // @mechanism ItemTag.nbt_attributes
         // @description
-        // Returns the NBT attribute data (as matches the mechanism input), if any.
+        // Returns the NBT attribute data from the item, in a format that matches the mechanism input.
         // -->
         if (attribute.startsWith("nbt_attributes")) {
             return getList().getObjectAttribute(attribute.fulfill(1));

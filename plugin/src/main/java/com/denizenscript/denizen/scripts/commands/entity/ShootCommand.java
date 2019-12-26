@@ -65,6 +65,8 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
     //
     // Optionally, add 'no_rotate' to prevent the shoot command from rotating launched entities.
     //
+    // The shoot command is ~waitable. Refer to <@link language ~waitable>.
+    //
     // @Tags
     // <entry[saveName].shot_entities> returns a ListTag of entities that were shot.
     //

@@ -52,7 +52,8 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
     // Use 'delayed' to make the modifyblock slowly edit blocks at a time pace roughly equivalent to the server's limits.
     // Note that specify a list of locations will take more time in parsing than in the actual block modification.
     // Optionally, specify a script to be ran after the delayed edits finish. (Doesn't fire if delayed is not set.)
-    // This command is ~holdable.
+    //
+    // The modifyblock command is ~waitable. Refer to <@link language ~waitable>.
     //
     // @Tags
     // <LocationTag.material>

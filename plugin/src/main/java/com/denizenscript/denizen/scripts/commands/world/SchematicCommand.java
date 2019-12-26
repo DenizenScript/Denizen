@@ -82,6 +82,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     // block set, instead of actually modifying the blocks in the world.
     // This takes an optional duration as "fake_duration" for how long the fake blocks should remain.
     //
+    // The schematic command is ~waitable when 'load' or 'save' are used. Refer to <@link language ~waitable>.
+    //
     // @Tags
     // <schematic[<name>].height>
     // <schematic[<name>].length>
@@ -94,24 +96,24 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     // <schematic.list>
     //
     // @Usage
-    // Use to create a new schematic from a cuboid and an origin location
+    // Use to create a new schematic from a cuboid and an origin location.
     // - schematic create name:MySchematic cu@<player.location.sub[5,5,5]>|<player.location.add[5,5,5]> <player.location>
     //
     // @Usage
-    // Use to load a schematic
-    // - schematic load name:MySchematic
+    // Use to load a schematic.
+    // - ~schematic load name:MySchematic
     //
     // @Usage
-    // Use to unload a schematic
+    // Use to unload a schematic.
     // - schematic unload name:MySchematic
     //
     // @Usage
-    // Use to paste a loaded schematic with no air blocks
+    // Use to paste a loaded schematic with no air blocks.
     // - schematic paste name:MySchematic <player.location> noair
     //
     // @Usage
-    // Use to save a created schematic
-    // - schematic save name:MySchematic
+    // Use to save a created schematic.
+    // - ~schematic save name:MySchematic
     // -->
 
     @Override

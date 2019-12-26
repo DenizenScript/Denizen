@@ -38,6 +38,8 @@ public class MidiCommand extends AbstractCommand implements Holdable {
     // Also, an example Midi song file has been included: "Denizen" by Black Coyote. He made it just for us!
     // Check out more of his amazing work at: http://www.youtube.com/user/BlaCoyProductions
     //
+    // The midi command is ~waitable. Refer to <@link language ~waitable>.
+    //
     // @Tags
     // None
     //

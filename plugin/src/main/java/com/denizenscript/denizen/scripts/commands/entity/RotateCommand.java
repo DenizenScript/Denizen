@@ -38,6 +38,8 @@ public class RotateCommand extends AbstractCommand implements Holdable {
     //
     // You can use "cancel" to prematurely stop the ongoing rotation (useful when set to infinite)
     //
+    // The rotate command is ~waitable. Refer to <@link language ~waitable>.
+    //
     // @Tags
     // <EntityTag.location>
     //
