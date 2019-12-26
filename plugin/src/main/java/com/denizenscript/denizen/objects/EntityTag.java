@@ -2455,8 +2455,12 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether the entity is a living-type entity (eg a cow or a player or anything else that lives, as specifically opposed to non-living entities like paintings, etc).
         // Not to be confused with the idea of being alive - see <@link tag EntityTag.is_spawned>.
+        // This tag is valid for entity type objects.
         // -->
         registerSpawnedOnlyTag("is_living", (attribute, object) -> {
+            if (object.entity == null && object.entity_type != null) {
+                return new ElementTag(object.entity_type.getBukkitEntityType().isAlive());
+            }
             return new ElementTag(object.isLivingEntity());
         });
 
