@@ -2457,7 +2457,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Not to be confused with the idea of being alive - see <@link tag EntityTag.is_spawned>.
         // This tag is valid for entity type objects.
         // -->
-        registerSpawnedOnlyTag("is_living", (attribute, object) -> {
+        registerTag("is_living", (attribute, object) -> {
             if (object.entity == null && object.entity_type != null) {
                 return new ElementTag(object.entity_type.getBukkitEntityType().isAlive());
             }
@@ -2638,7 +2638,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the entity's full description, including all properties.
         // -->
-        registerSpawnedOnlyTag("describe", (attribute, object) -> {
+        registerTag("describe", (attribute, object) -> {
             String escript = object.getEntityScript();
             return new ElementTag("e@" + (escript != null && escript.length() > 0 ? escript : object.getEntityType().getLowercaseName())
                     + PropertyParser.getPropertiesString(object));
