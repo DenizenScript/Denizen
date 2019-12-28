@@ -22,6 +22,9 @@ public class DenizenAPI {
      * @return a NPCTag
      */
     public static NPCTag getDenizenNPC(NPC npc) {
+        if (npc == null) {
+            return null;
+        }
         return DenizenNPCHelper.getDenizen(npc);
     }
 

@@ -12,6 +12,7 @@ import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.tags.TagManager;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
@@ -79,21 +80,8 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
     // -->
     @EventHandler
     public void damageTrigger(EntityDamageByEntityEvent event) {
-
-        if (event.getEntity() == null) {
-            return;
-        }
-
-        EntityTag damager = new EntityTag(event.getDamager());
-
-        if (damager.isProjectile() && damager.hasShooter()) {
-            damager = damager.getShooter();
-        }
-
         Map<String, ObjectTag> context = new HashMap<>();
         context.put("damage", new ElementTag(event.getDamage()));
-
-        PlayerTag dplayer = null;
 
         if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
             NPCTag npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()));
@@ -104,21 +92,22 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
                 return;
             }
 
+            EntityTag damager = new EntityTag(event.getDamager());
+            if (damager.isProjectile() && damager.hasShooter()) {
+                damager = damager.getShooter();
+            }
             context.put("damager", damager);
 
             String determ = npc.action("damaged", null, context);
-
             if (determ != null && determ.equalsIgnoreCase("CANCELLED")) {
                 event.setCancelled(true);
                 return;
             }
 
-            if (damager.isPlayer()) {
-                dplayer = damager.getDenizenPlayer();
-            }
-            else {
+            if (!damager.isPlayer()) {
                 return;
             }
+            PlayerTag dplayer = damager.getDenizenPlayer();
 
             if (!npc.getCitizen().hasTrait(TriggerTrait.class)) {
                 return;
@@ -127,38 +116,25 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
                 return;
             }
 
-            // Get the TriggerContext
             TriggerTrait.TriggerContext trigger = npc.getTriggerTrait().trigger(this, dplayer);
 
-            // Return if the trigger wasn't triggered.
             if (!trigger.wasTriggered()) {
                 return;
             }
 
-            // ..or if the determination was cancelled.
-            if (trigger.hasDetermination()
-                    && trigger.getDetermination().equalsIgnoreCase("cancelled")) {
+            if (trigger.hasDetermination() && trigger.getDetermination().equalsIgnoreCase("cancelled")) {
                 event.setCancelled(true);
                 return;
             }
 
-            // Build the interact script
-            InteractScriptContainer script = InteractScriptHelper
-                    .getInteractScript(npc, dplayer, getClass());
+            InteractScriptContainer script = InteractScriptHelper.getInteractScript(npc, dplayer, getClass());
 
             String id = null;
             if (script != null) {
                 Map<String, String> idMap = script.getIdMapFor(this.getClass(), dplayer);
-                if (!idMap.isEmpty())
-                // Iterate through the different id entries in the step's click trigger
-                {
+                if (!idMap.isEmpty()) {
                     for (Map.Entry<String, String> entry : idMap.entrySet()) {
-                        // Tag the entry value to account for replaceables
-                        // TODO: script arg?
-                        String entry_value = TagManager.tag(entry.getValue(), new BukkitTagContext
-                                (dplayer, npc, false, null, false, null));
-                        // Check if the item specified in the specified id's 'trigger:' key
-                        // matches the item that the player is holding.
+                        String entry_value = TagManager.tag(entry.getValue(), new BukkitTagContext(dplayer, npc, false, null, false, new ScriptTag(script)));
                         if (ItemTag.valueOf(entry_value, script).comparesTo(dplayer.getPlayerEntity().getItemInHand()) >= 0) {
                             id = entry.getKey();
                         }
