@@ -111,7 +111,6 @@ public class EntityProfession implements Property {
         // @tags
         // <EntityTag.profession>
         // -->
-
         if (mechanism.matches("profession") && mechanism.requireEnum(false, Villager.Profession.values())) {
             setProfession(Villager.Profession.valueOf(mechanism.getValue().asString().toUpperCase()));
         }

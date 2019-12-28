@@ -88,7 +88,6 @@ public class EntityArms implements Property {
         // @tags
         // <EntityTag.arms>
         // -->
-
         if (mechanism.matches("arms") && mechanism.requireBoolean()) {
             ((ArmorStand) dentity.getBukkitEntity()).setArms(mechanism.getValue().asBoolean());
         }

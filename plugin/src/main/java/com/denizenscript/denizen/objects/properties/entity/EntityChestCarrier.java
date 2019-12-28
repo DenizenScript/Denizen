@@ -83,7 +83,6 @@ public class EntityChestCarrier implements Property {
         // @tags
         // <EntityTag.carries_chest>
         // -->
-
         if (mechanism.matches("carries_chest") && mechanism.requireBoolean()) {
             NMSHandler.getEntityHelper().setCarryingChest(entity.getBukkitEntity(), mechanism.getValue().asBoolean());
         }

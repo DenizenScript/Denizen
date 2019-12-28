@@ -156,7 +156,6 @@ public class EntityColor implements Property {
     // For all places where a DyeColor is needed, the options are:
     // BLACK, BLUE, BROWN, CYAN, GRAY, GREEN, LIGHT_BLUE, LIGHT_GRAY, LIME, MAGENTA, ORANGE, PINK, PURPLE, RED, WHITE, or YELLOW.
     // -->
-
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {
 
@@ -195,7 +194,6 @@ public class EntityColor implements Property {
         // <EntityTag.color>
         // <EntityTag.colorable>
         // -->
-
         if (mechanism.matches("color")) {
             EntityType type = colored.getBukkitEntityType();
 

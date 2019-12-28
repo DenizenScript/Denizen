@@ -102,7 +102,6 @@ public class ItemApple implements Property {
         // @tags
         // <ItemTag.apple_enchanted>
         // -->
-
         if (mechanism.matches("apple_enchanted") && mechanism.requireBoolean()) {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
                 item.getItemStack().setType(mechanism.getValue().asBoolean() ? Material.ENCHANTED_GOLDEN_APPLE : Material.GOLDEN_APPLE);

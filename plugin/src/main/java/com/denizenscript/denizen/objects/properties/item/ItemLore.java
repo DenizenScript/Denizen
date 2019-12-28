@@ -133,7 +133,6 @@ public class ItemLore implements Property {
         // @tags
         // <ItemTag.lore>
         // -->
-
         if (mechanism.matches("lore")) {
             ItemMeta meta = item.getItemStack().getItemMeta();
             ListTag lore = mechanism.valueAsType(ListTag.class);

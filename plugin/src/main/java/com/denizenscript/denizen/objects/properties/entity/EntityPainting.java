@@ -110,7 +110,6 @@ public class EntityPainting implements Property {
         // @tags
         // <EntityTag.painting>
         // -->
-
         if (mechanism.matches("painting") && mechanism.requireEnum(false, Art.values())) {
             ((Painting) painting.getBukkitEntity()).setArt(Art.valueOf(mechanism.getValue().asString().toUpperCase()));
         }

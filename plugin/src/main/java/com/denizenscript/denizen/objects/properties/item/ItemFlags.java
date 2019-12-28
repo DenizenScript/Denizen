@@ -107,7 +107,6 @@ public class ItemFlags implements Property {
         // @tags
         // <ItemTag.flags>
         // -->
-
         if (mechanism.matches("flags")) {
             ItemMeta meta = item.getItemStack().getItemMeta();
             meta.removeItemFlags(ItemFlag.values());

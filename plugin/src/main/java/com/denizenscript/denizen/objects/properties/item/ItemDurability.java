@@ -104,7 +104,6 @@ public class ItemDurability implements Property {
         // <ItemTag.max_durability>
         // <ItemTag.repairable>
         // -->
-
         if (mechanism.matches("durability") && mechanism.requireInteger()) {
             item.getItemStack().getData().setData((byte) mechanism.getValue().asInt());
             item.setDurability((short) mechanism.getValue().asInt());

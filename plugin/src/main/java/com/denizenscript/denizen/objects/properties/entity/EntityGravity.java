@@ -86,7 +86,6 @@ public class EntityGravity implements Property {
         // @tags
         // <EntityTag.gravity>
         // -->
-
         if (mechanism.matches("gravity") && mechanism.requireBoolean()) {
             dentity.getBukkitEntity().setGravity(mechanism.getValue().asBoolean());
         }

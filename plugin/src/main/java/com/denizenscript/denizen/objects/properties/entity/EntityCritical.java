@@ -87,7 +87,6 @@ public class EntityCritical implements Property {
         // @tags
         // <EntityTag.critical>
         // -->
-
         if (mechanism.matches("critical") && mechanism.requireBoolean()) {
             ((Arrow) critical.getBukkitEntity()).setCritical(mechanism.getValue().asBoolean());
         }

@@ -139,7 +139,6 @@ public class ItemPlantgrowth implements Property {
         // <ItemTag.is_crop>
         // <ItemTag.plant_growth>
         // -->
-
         if (mechanism.matches("plant_growth")) {
             ElementTag inputValue = new ElementTag(mechanism.getValue().asString().toUpperCase());
             if (item.getItemStack().getData() instanceof Crops && inputValue.matchesEnum(CropState.values())) {

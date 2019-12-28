@@ -63,22 +63,21 @@ public class ItemSkullskin implements Property {
         // Returns the UUID of the player whose skin a skull item uses.
         // Note: Item must be a 'skull_item' with a skin.
         // -->
-
-        // <--[tag]
-        // @attribute <ItemTag.skin.full>
-        // @returns ElementTag|Element
-        // @mechanism ItemTag.skull_skin
-        // @group properties
-        // @description
-        // Returns the UUID of the player whose skin a skull item uses, along
-        // with the permanently cached texture property.
-        // Note: Item must be a 'skull_item' with a skin.
-        // -->
-
         if (attribute.startsWith("skin")) {
             String skin = getPropertyString();
             if (skin != null) {
                 attribute = attribute.fulfill(1);
+
+                // <--[tag]
+                // @attribute <ItemTag.skin.full>
+                // @returns ElementTag|Element
+                // @mechanism ItemTag.skull_skin
+                // @group properties
+                // @description
+                // Returns the UUID of the player whose skin a skull item uses, along
+                // with the permanently cached texture property.
+                // Note: Item must be a 'skull_item' with a skin.
+                // -->
                 if (attribute.startsWith("full")) {
                     return new ElementTag(skin).getObjectAttribute(attribute.fulfill(1));
                 }

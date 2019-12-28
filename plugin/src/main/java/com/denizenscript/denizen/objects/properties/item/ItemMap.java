@@ -123,7 +123,6 @@ public class ItemMap implements Property {
         // @tags
         // <ItemTag.map>
         // -->
-
         if (mechanism.matches("map") && mechanism.requireInteger()) {
             setMapId(mechanism.getValue().asInt());
         }

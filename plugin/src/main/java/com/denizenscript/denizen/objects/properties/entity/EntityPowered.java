@@ -100,7 +100,6 @@ public class EntityPowered implements Property {
         // @tags
         // <EntityTag.powered>
         // -->
-
         if (mechanism.matches("powered") && mechanism.requireBoolean()) {
             setPowered(mechanism.getValue().asBoolean());
         }

@@ -230,7 +230,6 @@ public class ItemBook implements Property {
         // @tags
         // <ItemTag.book_pages>
         // -->
-
         if (mechanism.matches("book_pages")) {
             BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
             ListTag data = mechanism.valueAsType(ListTag.class);
@@ -251,7 +250,6 @@ public class ItemBook implements Property {
         // @tags
         // <ItemTag.book_author>
         // -->
-
         if (mechanism.matches("book_author")) {
             if (!item.getItemStack().getType().equals(Material.WRITTEN_BOOK)) {
                 Debug.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
@@ -272,7 +270,6 @@ public class ItemBook implements Property {
         // @tags
         // <ItemTag.book_title>
         // -->
-
         if (mechanism.matches("book_title")) {
             if (!item.getItemStack().getType().equals(Material.WRITTEN_BOOK)) {
                 Debug.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
@@ -297,7 +294,6 @@ public class ItemBook implements Property {
         // <ItemTag.book_author>
         // <ItemTag.book_pages>
         // -->
-
         if (mechanism.matches("book")) {
             BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
             ListTag data = mechanism.valueAsType(ListTag.class);

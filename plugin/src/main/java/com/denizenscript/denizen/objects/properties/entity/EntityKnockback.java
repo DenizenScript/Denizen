@@ -82,7 +82,6 @@ public class EntityKnockback implements Property {
         // @tags
         // <EntityTag.knockback>
         // -->
-
         if (mechanism.matches("knockback") && mechanism.requireInteger()) {
             ((Arrow) arrow.getBukkitEntity()).setKnockbackStrength(mechanism.getValue().asInt());
         }

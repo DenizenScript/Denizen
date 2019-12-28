@@ -127,7 +127,6 @@ public class ItemFirework implements Property {
         // @tags
         // <ItemTag.firework>
         // -->
-
         if (mechanism.matches("firework")) {
             ListTag fireworks = mechanism.valueAsType(ListTag.class);
             ItemMeta meta = item.getItemStack().getItemMeta();

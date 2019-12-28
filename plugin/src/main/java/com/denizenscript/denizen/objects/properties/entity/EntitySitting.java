@@ -86,7 +86,6 @@ public class EntitySitting implements Property {
         // @tags
         // <EntityTag.sitting>
         // -->
-
         if (mechanism.matches("sitting") && mechanism.requireBoolean()) {
             ((Sittable) entity.getBukkitEntity()).setSitting(mechanism.getValue().asBoolean());
         }

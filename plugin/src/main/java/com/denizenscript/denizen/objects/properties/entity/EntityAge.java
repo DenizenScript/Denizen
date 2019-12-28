@@ -189,7 +189,6 @@ public class EntityAge implements Property {
         // <EntityTag.is_age_locked>
         // <EntityTag.ageable>
         // -->
-
         if (mechanism.matches("age_lock")
                 && mechanism.requireBoolean()) {
             setLock(mechanism.getValue().asBoolean());
@@ -211,7 +210,6 @@ public class EntityAge implements Property {
         // <EntityTag.is_age_locked>
         // <EntityTag.ageable>
         // -->
-
         if (mechanism.matches("age")) {
             ListTag list = mechanism.valueAsType(ListTag.class);
             if (list.size() == 0) {

@@ -110,7 +110,6 @@ public class EntityItem implements Property {
         // @tags
         // <EntityTag.item>
         // -->
-
         if (mechanism.matches("item") && mechanism.requireObject(ItemTag.class)) {
             if (item.getBukkitEntity() instanceof Item) {
                 ((Item) item.getBukkitEntity()).setItemStack(mechanism.valueAsType(ItemTag.class).getItemStack());

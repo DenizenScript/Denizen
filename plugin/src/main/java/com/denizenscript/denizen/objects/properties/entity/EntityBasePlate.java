@@ -88,7 +88,6 @@ public class EntityBasePlate implements Property {
         // @tags
         // <EntityTag.base_plate>
         // -->
-
         if (mechanism.matches("base_plate") && mechanism.requireBoolean()) {
             ((ArmorStand) dentity.getBukkitEntity()).setBasePlate(mechanism.getValue().asBoolean());
         }

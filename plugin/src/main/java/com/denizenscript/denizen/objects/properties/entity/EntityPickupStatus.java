@@ -82,7 +82,6 @@ public class EntityPickupStatus implements Property {
         // @tags
         // <EntityTag.pickup_status>
         // -->
-
         if (mechanism.matches("pickup_status")) {
             NMSHandler.getEntityHelper().setArrowPickupStatus(dentity.getBukkitEntity(), mechanism.getValue().asString().toUpperCase());
         }

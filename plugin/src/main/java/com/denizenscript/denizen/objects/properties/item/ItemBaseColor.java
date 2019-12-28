@@ -131,7 +131,6 @@ public class ItemBaseColor implements Property {
         // @tags
         // <ItemTag.base_color>
         // -->
-
         if (mechanism.matches("base_color")) {
             setBaseColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
         }

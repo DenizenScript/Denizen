@@ -116,7 +116,6 @@ public class EntityRotation implements Property {
         // <EntityTag.rotation>
         // <EntityTag.rotation_vector>
         // -->
-
         if (mechanism.matches("rotation") && mechanism.requireEnum(false, BlockFace.values())) {
             setRotation(BlockFace.valueOf(mechanism.getValue().asString().toUpperCase()));
         }

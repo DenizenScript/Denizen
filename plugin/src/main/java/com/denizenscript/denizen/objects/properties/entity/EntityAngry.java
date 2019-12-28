@@ -107,7 +107,6 @@ public class EntityAngry implements Property {
         // @tags
         // <EntityTag.angry>
         // -->
-
         if (mechanism.matches("angry") && mechanism.requireBoolean()) {
             if (entity.getBukkitEntityType() == EntityType.WOLF) {
                 ((Wolf) entity.getBukkitEntity()).setAngry(mechanism.getValue().asBoolean());

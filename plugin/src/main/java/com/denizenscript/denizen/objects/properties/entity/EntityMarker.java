@@ -88,7 +88,6 @@ public class EntityMarker implements Property {
         // @tags
         // <EntityTag.marker>
         // -->
-
         if (mechanism.matches("marker") && mechanism.requireBoolean()) {
             ((ArmorStand) dentity.getBukkitEntity()).setMarker(mechanism.getValue().asBoolean());
         }

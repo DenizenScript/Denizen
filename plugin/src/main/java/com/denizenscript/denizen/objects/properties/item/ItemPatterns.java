@@ -158,7 +158,6 @@ public class ItemPatterns implements Property {
         // <ItemTag.patterns>
         // <server.list_patterns>
         // -->
-
         if (mechanism.matches("patterns")) {
             List<Pattern> patterns = new ArrayList<>();
             ListTag list = mechanism.valueAsType(ListTag.class);

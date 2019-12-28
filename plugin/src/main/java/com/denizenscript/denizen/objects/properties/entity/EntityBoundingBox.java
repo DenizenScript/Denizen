@@ -111,7 +111,6 @@ public class EntityBoundingBox implements Property {
         // @tags
         // <EntityTag.bounding_box>
         // -->
-
         if (mechanism.matches("bounding_box")) {
             if (entity.isCitizensNPC()) {
                 // TODO: Allow editing NPC boxes properly?

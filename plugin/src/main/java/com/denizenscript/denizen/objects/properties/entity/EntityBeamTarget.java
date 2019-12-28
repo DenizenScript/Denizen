@@ -87,7 +87,6 @@ public class EntityBeamTarget implements Property {
         // @tags
         // <EntityTag.beam_target>
         // -->
-
         if (mechanism.matches("beam_target")) {
             if (mechanism.hasValue()) {
                 if (mechanism.requireObject(LocationTag.class)) {

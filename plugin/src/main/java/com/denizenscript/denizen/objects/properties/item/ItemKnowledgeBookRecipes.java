@@ -108,7 +108,6 @@ public class ItemKnowledgeBookRecipes implements Property {
         // @tags
         // <ItemTag.knowledge_book_recipes>
         // -->
-
         if (mechanism.matches("knowledge_book_recipes")) {
             KnowledgeBookMeta meta = (KnowledgeBookMeta) item.getItemStack().getItemMeta();
             List<NamespacedKey> recipes = new ArrayList<>();

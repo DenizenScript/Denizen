@@ -88,7 +88,6 @@ public class EntityIsShowingBottom implements Property {
         // @tags
         // <EntityTag.is_showing_bottom>
         // -->
-
         if (mechanism.matches("is_showing_bottom") && mechanism.requireBoolean()) {
             ((EnderCrystal) dentity.getBukkitEntity()).setShowingBottom(mechanism.getValue().asBoolean());
         }

@@ -242,7 +242,6 @@ public class ItemEnchantments implements Property {
         // <ItemTag.enchantments.levels>
         // <ItemTag.enchantments.with_levels>
         // -->
-
         if (mechanism.matches("enchantments")) {
             for (String enchant : mechanism.valueAsType(ListTag.class)) {
                 if (!enchant.contains(",")) {

@@ -144,7 +144,6 @@ public class EntityFramed implements Property {
         // <EntityTag.framed_item>
         // <EntityTag.framed_item_rotation>
         // -->
-
         if (mechanism.matches("framed")) {
             ListTag list = mechanism.valueAsType(ListTag.class);
             if (list.size() == 0) {

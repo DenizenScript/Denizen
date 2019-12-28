@@ -86,7 +86,6 @@ public class EntityInvulnerable implements Property {
         // @tags
         // <EntityTag.invulnerable>
         // -->
-
         if (mechanism.matches("invulnerable") && mechanism.requireBoolean()) {
             dentity.getBukkitEntity().setInvulnerable(mechanism.getValue().asBoolean());
         }

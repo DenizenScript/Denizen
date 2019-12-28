@@ -112,7 +112,6 @@ public class ItemDisplayname implements Property {
         // @tags
         // <ItemTag.display>
         // -->
-
         if (mechanism.matches("display_name")) {
             ItemMeta meta = item.getItemStack().getItemMeta();
             meta.setDisplayName(mechanism.hasValue() ? EscapeTagBase.unEscape(mechanism.getValue().asString()) : null);

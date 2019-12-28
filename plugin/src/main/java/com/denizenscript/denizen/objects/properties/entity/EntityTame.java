@@ -119,7 +119,6 @@ public class EntityTame implements Property {
         // <EntityTag.is_tamed>
         // <EntityTag.tameable>
         // -->
-
         if (mechanism.matches("tame")) {
             ListTag list = mechanism.valueAsType(ListTag.class);
             if (list.size() == 0) {
@@ -149,7 +148,6 @@ public class EntityTame implements Property {
         // <EntityTag.tameable>
         // <EntityTag.owner>
         // -->
-
         if (mechanism.matches("owner")) {
             if (mechanism.hasValue() && mechanism.requireObject(PlayerTag.class)) {
                 ((Tameable) entity.getBukkitEntity()).setOwner(mechanism.valueAsType(PlayerTag.class).getOfflinePlayer());

@@ -100,7 +100,6 @@ public class EntityAnger implements Property {
         // @tags
         // <EntityTag.anger>
         // -->
-
         if (mechanism.matches("anger") && mechanism.requireInteger()) {
             if (entity.getBukkitEntity() instanceof PigZombie) {
                 ((PigZombie) entity.getBukkitEntity()).setAnger(mechanism.getValue().asInt());

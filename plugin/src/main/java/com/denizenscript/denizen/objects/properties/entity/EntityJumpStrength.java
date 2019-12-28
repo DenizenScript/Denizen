@@ -86,7 +86,6 @@ public class EntityJumpStrength implements Property {
         // @tags
         // <EntityTag.jump_strength>
         // -->
-
         if (mechanism.matches("jump_strength") && mechanism.requireDouble()) {
             ((AbstractHorse) entity.getBukkitEntity()).setJumpStrength(mechanism.getValue().asDouble());
         }

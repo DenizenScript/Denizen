@@ -109,7 +109,6 @@ public class ItemQuantity implements Property {
         // <ItemTag.quantity>
         // <ItemTag.max_stack>
         // -->
-
         if (mechanism.matches("quantity") && mechanism.requireInteger()) {
             item.setAmount(mechanism.getValue().asInt());
         }

@@ -82,7 +82,6 @@ public class EntityArrowDamage implements Property {
         // @tags
         // <EntityTag.damage>
         // -->
-
         if (mechanism.matches("damage") && mechanism.requireDouble()) {
             NMSHandler.getEntityHelper().setArrowDamage(dentity.getBukkitEntity(), mechanism.getValue().asDouble());
         }

@@ -100,7 +100,6 @@ public class EntityElder implements Property {
         // @tags
         // <EntityTag.elder>
         // -->
-
         if (mechanism.matches("elder") && mechanism.requireBoolean()) {
             setElder(mechanism.getValue().asBoolean());
         }
