@@ -31,7 +31,7 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Cancellable true
     //
-    // @Triggers when a player drags in an inventory.
+    // @Triggers when a player drags in an inventory (that is, clicks and then holds the mouse button down while moving the mouse across multiple slots).
     //
     // @Context
     // <context.item> returns the ItemTag the player has dragged.

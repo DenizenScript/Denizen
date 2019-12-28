@@ -132,6 +132,7 @@ public class NarrateCommand extends AbstractCommand {
             if (player != null && player.isOnline()) {
                 String personalText = text;
                 if (perPlayer) {
+                    context.player = player;
                     personalText = TagManager.tag(personalText, context);
                 }
                 player.getPlayerEntity().spigot().sendMessage(FormattedTextHelper.parse(format != null ? format.getFormattedText(personalText, scriptEntry) : personalText));

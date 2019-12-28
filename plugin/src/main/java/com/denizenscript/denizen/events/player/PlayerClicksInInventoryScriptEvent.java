@@ -73,7 +73,8 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
     //
     // @Regex ^on player( [^\s]+)? clicks [^\s]+( in [^\s]+)?( with [^\s]+)?$
     //
-    // @Triggers when a player clicks in an inventory.
+    // @Triggers when a player clicks in an inventory. Note that you likely will also want to listen to <@link event player drags in inventory>.
+    //
     // @Context
     // <context.item> returns the ItemTag the player has clicked on.
     // <context.inventory> returns the InventoryTag (the 'top' inventory, regardless of which slot was clicked).
