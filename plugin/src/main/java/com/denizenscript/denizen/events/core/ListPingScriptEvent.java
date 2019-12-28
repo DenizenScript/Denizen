@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.events.core;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -24,7 +25,7 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
     // <context.address> returns the IP address requesting the list.
     //
     // @Determine
-    // ElementTag(Number) to change the max player amount that will show
+    // ElementTag(Number) to change the max player amount that will show.
     // ElementTag to change the MOTD that will show.
     //
     // -->
@@ -59,15 +60,13 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
             String[] values = determination.split("[\\|" + ListTag.internal_escape + "]", 2);
             if (new ElementTag(values[0]).isInt()) {
                 event.setMaxPlayers(new ElementTag(values[0]).asInt());
-                if (values.length == 1) {
-                    return true;
+                if (values.length == 2) {
+                    event.setMotd(values[1]);
                 }
             }
-            if (values.length == 2) {
-                event.setMotd(values[1]);
-            }
             else {
-                event.setMotd(values[0]);
+                event.setMotd(determination);
+                Debug.log("MOTD Set: " + determination);
             }
             return true;
         }
