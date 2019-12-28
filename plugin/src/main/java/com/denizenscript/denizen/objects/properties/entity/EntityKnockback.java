@@ -31,20 +31,11 @@ public class EntityKnockback implements Property {
             "knockback"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityKnockback(EntityTag entity) {
         arrow = entity;
     }
 
     EntityTag arrow;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -55,10 +46,6 @@ public class EntityKnockback implements Property {
     public String getPropertyId() {
         return "knockback";
     }
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

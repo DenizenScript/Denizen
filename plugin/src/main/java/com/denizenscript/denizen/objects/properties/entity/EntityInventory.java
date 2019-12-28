@@ -35,20 +35,11 @@ public class EntityInventory implements Property {
             "inventory_contents"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityInventory(EntityTag ent) {
         entity = ent;
     }
 
     EntityTag entity;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -59,11 +50,6 @@ public class EntityInventory implements Property {
     public String getPropertyId() {
         return "inventory_contents";
     }
-
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

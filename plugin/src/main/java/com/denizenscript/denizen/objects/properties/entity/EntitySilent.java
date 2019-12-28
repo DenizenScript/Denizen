@@ -30,20 +30,11 @@ public class EntitySilent implements Property {
             "silent"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntitySilent(EntityTag ent) {
         entity = ent;
     }
 
     EntityTag entity;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -54,11 +45,6 @@ public class EntitySilent implements Property {
     public String getPropertyId() {
         return "silent";
     }
-
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

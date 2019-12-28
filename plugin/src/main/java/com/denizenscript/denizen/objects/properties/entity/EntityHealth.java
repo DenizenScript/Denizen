@@ -37,20 +37,11 @@ public class EntityHealth implements Property {
             "max_health", "health_data", "health"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityHealth(EntityTag ent) {
         entity = ent;
     }
 
     EntityTag entity;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -82,11 +73,6 @@ public class EntityHealth implements Property {
             return new ElementTag("healthy");
         }
     }
-
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

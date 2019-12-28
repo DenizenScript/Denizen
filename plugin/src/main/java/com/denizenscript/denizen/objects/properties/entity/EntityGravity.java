@@ -30,20 +30,11 @@ public class EntityGravity implements Property {
             "gravity"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityGravity(EntityTag entity) {
         dentity = entity;
     }
 
     EntityTag dentity;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -59,10 +50,6 @@ public class EntityGravity implements Property {
     public String getPropertyId() {
         return "gravity";
     }
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

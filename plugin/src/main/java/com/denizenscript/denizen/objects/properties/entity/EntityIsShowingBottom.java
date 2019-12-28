@@ -32,20 +32,11 @@ public class EntityIsShowingBottom implements Property {
             "is_showing_bottom"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityIsShowingBottom(EntityTag entity) {
         dentity = entity;
     }
 
     EntityTag dentity;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -61,10 +52,6 @@ public class EntityIsShowingBottom implements Property {
     public String getPropertyId() {
         return "is_showing_bottom";
     }
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

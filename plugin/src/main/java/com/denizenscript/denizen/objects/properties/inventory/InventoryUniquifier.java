@@ -25,19 +25,11 @@ public class InventoryUniquifier implements Property {
             "uniquifier"
     };
 
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     InventoryTag inventory;
 
     public InventoryUniquifier(InventoryTag inventory) {
         this.inventory = inventory;
     }
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {

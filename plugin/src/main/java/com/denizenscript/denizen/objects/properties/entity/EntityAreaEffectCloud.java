@@ -47,20 +47,11 @@ public class EntityAreaEffectCloud implements Property {
             "radius_per_tick", "reapplication_delay", "source", "wait_time"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityAreaEffectCloud(EntityTag ent) {
         entity = ent;
     }
 
     EntityTag entity;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -71,11 +62,6 @@ public class EntityAreaEffectCloud implements Property {
     public String getPropertyId() {
         return "area_effect_cloud";
     }
-
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

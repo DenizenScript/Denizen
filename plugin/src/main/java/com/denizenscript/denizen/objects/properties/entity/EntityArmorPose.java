@@ -39,20 +39,11 @@ public class EntityArmorPose implements Property {
             "armor_pose"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityArmorPose(EntityTag ent) {
         entity = ent;
     }
 
     EntityTag entity;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -73,10 +64,6 @@ public class EntityArmorPose implements Property {
         }
         return list;
     }
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

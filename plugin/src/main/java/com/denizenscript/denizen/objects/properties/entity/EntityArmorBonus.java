@@ -31,20 +31,11 @@ public class EntityArmorBonus implements Property {
             "armor_bonus"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityArmorBonus(EntityTag ent) {
         entity = ent;
     }
 
     EntityTag entity;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -62,11 +53,6 @@ public class EntityArmorBonus implements Property {
     public ElementTag getArmorBonus() {
         return new ElementTag(entity.getLivingEntity().getAttribute(org.bukkit.attribute.Attribute.GENERIC_ARMOR).getValue());
     }
-
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

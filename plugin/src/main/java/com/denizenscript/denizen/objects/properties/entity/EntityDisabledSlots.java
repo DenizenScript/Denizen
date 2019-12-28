@@ -38,11 +38,6 @@ public class EntityDisabledSlots implements Property {
             "disabled_slots_raw", "disabled_slots"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityDisabledSlots(EntityTag entity) {
         dentity = entity;
     }
@@ -74,10 +69,6 @@ public class EntityDisabledSlots implements Property {
         return list;
     }
 
-    /////////
-    // Property Methods
-    ///////
-
     @Override
     public String getPropertyString() {
         ListTag list = getDisabledSlots();
@@ -88,10 +79,6 @@ public class EntityDisabledSlots implements Property {
     public String getPropertyId() {
         return "disabled_slots";
     }
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

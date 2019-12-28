@@ -30,20 +30,11 @@ public class EntityRiptide implements Property {
             "is_using_riptide"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityRiptide(EntityTag entity) {
         this.entity = entity;
     }
 
     EntityTag entity;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {

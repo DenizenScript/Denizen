@@ -32,20 +32,11 @@ public class EntityAI implements Property {
             "has_ai", "toggle_ai"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityAI(EntityTag ent) {
         entity = ent;
     }
 
     EntityTag entity;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -56,11 +47,6 @@ public class EntityAI implements Property {
     public String getPropertyId() {
         return "has_ai";
     }
-
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

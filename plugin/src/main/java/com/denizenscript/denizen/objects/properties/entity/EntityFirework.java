@@ -36,20 +36,11 @@ public class EntityFirework implements Property {
             "firework_item", "detonate"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityFirework(EntityTag entity) {
         firework = entity;
     }
 
     EntityTag firework;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -62,10 +53,6 @@ public class EntityFirework implements Property {
     public String getPropertyId() {
         return "firework_item";
     }
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

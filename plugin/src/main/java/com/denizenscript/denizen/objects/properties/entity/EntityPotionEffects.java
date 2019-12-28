@@ -45,11 +45,6 @@ public class EntityPotionEffects implements Property {
             "potion_effects"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityPotionEffects(EntityTag entity) {
         this.entity = entity;
     }
@@ -65,10 +60,6 @@ public class EntityPotionEffects implements Property {
         }
         return new ArrayList<>();
     }
-
-    /////////
-    // Property Methods
-    ///////
 
     public String getPropertyString() {
         Collection<PotionEffect> effects = getEffectsList();

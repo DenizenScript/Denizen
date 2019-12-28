@@ -25,10 +25,6 @@ public class InventorySize implements Property {
             "size"
     };
 
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     InventoryTag inventory;
 
     public InventorySize(InventoryTag inventory) {
@@ -46,11 +42,6 @@ public class InventorySize implements Property {
         inventory.setSize(size);
     }
 
-
-    /////////
-    // Property Methods
-    ///////
-
     @Override
     public String getPropertyString() {
         if (getSize() > 0 && inventory.getIdType().equals("generic")
@@ -66,11 +57,6 @@ public class InventorySize implements Property {
     public String getPropertyId() {
         return "size";
     }
-
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     public static void registerTags() {
 

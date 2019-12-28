@@ -41,20 +41,11 @@ public class EntityAttributes implements Property {
             "attributes"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityAttributes(EntityTag entity) {
         this.entity = entity;
     }
 
     EntityTag entity;
-
-    /////////
-    // Property Methods
-    ///////
 
     public static String stringify(AttributeModifier modifier) {
         return EscapeTagBase.escape(modifier.getName()) + "/" + modifier.getAmount() + "/" + modifier.getOperation().name()
@@ -90,10 +81,6 @@ public class EntityAttributes implements Property {
     public String getPropertyId() {
         return "attributes";
     }
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

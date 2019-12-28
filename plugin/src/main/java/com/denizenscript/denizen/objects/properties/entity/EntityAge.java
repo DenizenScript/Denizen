@@ -41,11 +41,6 @@ public class EntityAge implements Property {
             "age_lock", "age"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityAge(EntityTag entity) {
         ageable = entity;
     }
@@ -117,11 +112,6 @@ public class EntityAge implements Property {
         return (ageable.getBukkitEntity() instanceof Zombie) || ((Ageable) ageable.getBukkitEntity()).getAgeLock();
     }
 
-
-    /////////
-    // Property Methods
-    ///////
-
     @Override
     public String getPropertyString() {
         return getAge() + (getLock() ? "|locked" : "");
@@ -131,11 +121,6 @@ public class EntityAge implements Property {
     public String getPropertyId() {
         return "age";
     }
-
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

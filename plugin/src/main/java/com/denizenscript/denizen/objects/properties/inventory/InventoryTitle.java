@@ -26,10 +26,6 @@ public class InventoryTitle implements Property {
             "title"
     };
 
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     InventoryTag inventory;
 
     public InventoryTitle(InventoryTag inventory) {
@@ -50,11 +46,6 @@ public class InventoryTitle implements Property {
         }
         return null;
     }
-
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {

@@ -32,20 +32,11 @@ public class EntitySitting implements Property {
             "sitting"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntitySitting(EntityTag entity) {
         this.entity = entity;
     }
 
     EntityTag entity;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -59,10 +50,6 @@ public class EntitySitting implements Property {
     public String getPropertyId() {
         return "sitting";
     }
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

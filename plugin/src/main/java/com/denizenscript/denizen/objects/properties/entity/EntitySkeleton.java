@@ -33,20 +33,11 @@ public class EntitySkeleton implements Property {
             "skeleton"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntitySkeleton(EntityTag entity) {
         skeleton = entity;
     }
 
     EntityTag skeleton;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -57,10 +48,6 @@ public class EntitySkeleton implements Property {
     public String getPropertyId() {
         return "skeleton";
     }
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

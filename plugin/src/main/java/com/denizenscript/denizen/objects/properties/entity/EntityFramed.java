@@ -39,11 +39,6 @@ public class EntityFramed implements Property {
             "framed"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityFramed(EntityTag item) {
         item_frame = item;
     }
@@ -67,11 +62,6 @@ public class EntityFramed implements Property {
         return new ItemTag(getItemFrameEntity().getItem());
     }
 
-
-    /////////
-    // Property Methods
-    ///////
-
     @Override
     public String getPropertyString() {
         if (hasItem()) {
@@ -88,11 +78,6 @@ public class EntityFramed implements Property {
     public String getPropertyId() {
         return "framed";
     }
-
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

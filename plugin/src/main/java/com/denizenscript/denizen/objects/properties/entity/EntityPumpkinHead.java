@@ -32,20 +32,11 @@ public class EntityPumpkinHead implements Property {
             "has_pumpkin_head"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityPumpkinHead(EntityTag entity) {
         dentity = entity;
     }
 
     EntityTag dentity;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -56,10 +47,6 @@ public class EntityPumpkinHead implements Property {
     public String getPropertyId() {
         return "has_pumpkin_head";
     }
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

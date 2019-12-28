@@ -35,20 +35,11 @@ public class EntityEquipment implements Property {
             "equipment"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityEquipment(EntityTag ent) {
         entity = ent;
     }
 
     EntityTag entity;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -59,11 +50,6 @@ public class EntityEquipment implements Property {
     public String getPropertyId() {
         return "equipment";
     }
-
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

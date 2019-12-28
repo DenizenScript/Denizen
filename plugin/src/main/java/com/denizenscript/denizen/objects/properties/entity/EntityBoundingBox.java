@@ -48,10 +48,6 @@ public class EntityBoundingBox implements Property {
         }
     }
 
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityBoundingBox(EntityTag entity) {
         this.entity = entity;
     }
@@ -65,10 +61,6 @@ public class EntityBoundingBox implements Property {
         list.addObject(new LocationTag(boundingBox.getHigh().toLocation(entity.getWorld())));
         return list;
     }
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {

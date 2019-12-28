@@ -33,20 +33,11 @@ public class EntityPainting implements Property {
             "painting"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityPainting(EntityTag entity) {
         painting = entity;
     }
 
     EntityTag painting;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -57,10 +48,6 @@ public class EntityPainting implements Property {
     public String getPropertyId() {
         return "painting";
     }
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

@@ -37,20 +37,11 @@ public class EntityTame implements Property {
             "tame", "owner"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityTame(EntityTag tame) {
         entity = tame;
     }
 
     EntityTag entity;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -72,11 +63,6 @@ public class EntityTame implements Property {
     public String getPropertyId() {
         return "tame";
     }
-
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

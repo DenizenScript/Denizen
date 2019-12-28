@@ -29,10 +29,6 @@ public class InventoryContents implements Property {
             "contents"
     };
 
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     InventoryTag inventory;
 
     public InventoryContents(InventoryTag inventory) {
@@ -103,11 +99,6 @@ public class InventoryContents implements Property {
         }
         return contents;
     }
-
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {

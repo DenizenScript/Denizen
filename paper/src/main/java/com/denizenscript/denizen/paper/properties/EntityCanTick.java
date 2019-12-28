@@ -26,20 +26,11 @@ public class EntityCanTick implements Property {
             "can_tick"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityCanTick(EntityTag entity) {
         this.entity = entity;
     }
 
     EntityTag entity;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -50,10 +41,6 @@ public class EntityCanTick implements Property {
     public String getPropertyId() {
         return "can_tick";
     }
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     public static void registerTags() {
 

@@ -31,19 +31,11 @@ public class EntityExplosionFire implements Property {
         return ((Explosive) entity.getBukkitEntity()).isIncendiary();
     }
 
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityExplosionFire(EntityTag ent) {
         entity = ent;
     }
 
     EntityTag entity;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -54,10 +46,6 @@ public class EntityExplosionFire implements Property {
     public String getPropertyId() {
         return "explosion_fire";
     }
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

@@ -25,19 +25,11 @@ public class InventoryScriptName implements Property {
             "script_name"
     };
 
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     InventoryTag inventory;
 
     public InventoryScriptName(InventoryTag inventory) {
         this.inventory = inventory;
     }
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {

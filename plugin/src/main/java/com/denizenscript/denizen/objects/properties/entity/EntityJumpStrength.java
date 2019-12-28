@@ -33,20 +33,11 @@ public class EntityJumpStrength implements Property {
             "jump_strength"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityJumpStrength(EntityTag ent) {
         entity = ent;
     }
 
     EntityTag entity;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -57,11 +48,6 @@ public class EntityJumpStrength implements Property {
     public String getPropertyId() {
         return "jump_strength";
     }
-
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

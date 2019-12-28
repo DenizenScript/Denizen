@@ -36,11 +36,6 @@ public class EntityVisible implements Property {
             "visible"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityVisible(EntityTag ent) {
         entity = ent;
         stand = (ArmorStand) ent.getBukkitEntity();
@@ -49,10 +44,6 @@ public class EntityVisible implements Property {
     EntityTag entity;
 
     ArmorStand stand;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -66,11 +57,6 @@ public class EntityVisible implements Property {
     public String getPropertyId() {
         return "visible";
     }
-
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

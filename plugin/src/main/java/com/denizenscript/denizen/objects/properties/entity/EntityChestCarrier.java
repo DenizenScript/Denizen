@@ -32,20 +32,11 @@ public class EntityChestCarrier implements Property {
             "carries_chest"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityChestCarrier(EntityTag entity) {
         this.entity = entity;
     }
 
     EntityTag entity;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -56,10 +47,6 @@ public class EntityChestCarrier implements Property {
     public String getPropertyId() {
         return "carries_chest";
     }
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

@@ -30,20 +30,11 @@ public class EntityBodyArrows implements Property {
             "body_arrows", "clear_body_arrows"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityBodyArrows(EntityTag entity) {
         this.entity = entity;
     }
 
     EntityTag entity;
-
-    /////////
-    // Property Methods
-    ///////
 
     private int getBodyArrows() {
         return NMSHandler.getEntityHelper().getBodyArrows(entity.getBukkitEntity());

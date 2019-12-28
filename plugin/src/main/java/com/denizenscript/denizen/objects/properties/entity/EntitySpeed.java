@@ -51,20 +51,11 @@ public class EntitySpeed implements Property {
             "speed"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntitySpeed(EntityTag ent) {
         entity = ent;
     }
 
     EntityTag entity;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -97,11 +88,6 @@ public class EntitySpeed implements Property {
         }
         return new ElementTag(0.0);
     }
-
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

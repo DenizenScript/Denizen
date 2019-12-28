@@ -42,11 +42,6 @@ public class EntityPotion implements Property {
             "potion"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     EntityTag entity;
 
     private EntityPotion(EntityTag entity) {
@@ -75,11 +70,6 @@ public class EntityPotion implements Property {
         }
     }
 
-
-    /////////
-    // Property Methods
-    ///////
-
     @Override
     public String getPropertyString() {
         return new ItemTag(getPotion()).identify();
@@ -89,11 +79,6 @@ public class EntityPotion implements Property {
     public String getPropertyId() {
         return "potion";
     }
-
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

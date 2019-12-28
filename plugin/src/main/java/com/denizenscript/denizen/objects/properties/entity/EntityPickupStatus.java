@@ -30,20 +30,11 @@ public class EntityPickupStatus implements Property {
             "pickup_status"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityPickupStatus(EntityTag entity) {
         dentity = entity;
     }
 
     EntityTag dentity;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -54,10 +45,6 @@ public class EntityPickupStatus implements Property {
     public String getPropertyId() {
         return "pickup_status";
     }
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

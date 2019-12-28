@@ -41,11 +41,6 @@ public class EntityInfected implements Property {
             "is_infected"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityInfected(EntityTag item) {
         infected = item;
     }
@@ -78,11 +73,6 @@ public class EntityInfected implements Property {
         }
     }
 
-
-    /////////
-    // Property Methods
-    ///////
-
     @Override
     public String getPropertyString() {
         if (isInfected()) {
@@ -97,11 +87,6 @@ public class EntityInfected implements Property {
     public String getPropertyId() {
         return "infected";
     }
-
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

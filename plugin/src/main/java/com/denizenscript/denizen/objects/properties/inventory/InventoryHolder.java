@@ -36,10 +36,6 @@ public class InventoryHolder implements Property {
             "holder"
     };
 
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     InventoryTag inventory;
     ObjectTag holder;
 
@@ -133,11 +129,6 @@ public class InventoryHolder implements Property {
         }
     }
 
-
-    /////////
-    // Property Methods
-    ///////
-
     @Override
     public String getPropertyString() {
         if (holder == null || (inventory.getIdType().equals("generic")
@@ -153,11 +144,6 @@ public class InventoryHolder implements Property {
     public String getPropertyId() {
         return "holder";
     }
-
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     public static void registerTags() {
 

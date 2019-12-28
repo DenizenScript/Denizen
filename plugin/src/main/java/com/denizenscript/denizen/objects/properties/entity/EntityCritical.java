@@ -31,20 +31,11 @@ public class EntityCritical implements Property {
             "critical"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityCritical(EntityTag entity) {
         critical = entity;
     }
 
     EntityTag critical;
-
-    /////////
-    // Property Methods
-    ///////
 
     @Override
     public String getPropertyString() {
@@ -60,10 +51,6 @@ public class EntityCritical implements Property {
     public String getPropertyId() {
         return "critical";
     }
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

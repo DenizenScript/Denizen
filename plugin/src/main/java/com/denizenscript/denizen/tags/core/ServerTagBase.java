@@ -370,7 +370,7 @@ public class ServerTagBase {
 
         // <--[tag]
         // @attribute <server.object_is_valid[<object>]>
-        // @returns ElementTag(boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the object is a valid object (non-null), as well as not an Element.
         // -->
@@ -382,7 +382,7 @@ public class ServerTagBase {
 
         // <--[tag]
         // @attribute <server.has_whitelist>
-        // @returns ElementTag(boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns true if the server's whitelist is active, otherwise returns false.
         // -->
@@ -393,7 +393,7 @@ public class ServerTagBase {
 
         // <--[tag]
         // @attribute <server.has_flag[<flag_name>]>
-        // @returns ElementTag(boolean)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns true if the server has the specified flag, otherwise returns false.
         // -->

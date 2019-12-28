@@ -59,11 +59,6 @@ public class EntityColor implements Property {
             "color"
     };
 
-
-    ///////////////////
-    // Instance Fields and Methods
-    /////////////
-
     private EntityColor(EntityTag entity) {
         colored = entity;
     }
@@ -122,10 +117,6 @@ public class EntityColor implements Property {
         }
     }
 
-    /////////
-    // Property Methods
-    ///////
-
     @Override
     public String getPropertyString() {
         String color = getColor();
@@ -136,11 +127,6 @@ public class EntityColor implements Property {
     public String getPropertyId() {
         return "color";
     }
-
-
-    ///////////
-    // ObjectTag Attributes
-    ////////
 
     // <--[language]
     // @name Entity Color Types
