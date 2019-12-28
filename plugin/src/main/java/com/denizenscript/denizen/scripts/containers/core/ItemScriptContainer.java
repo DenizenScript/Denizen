@@ -40,13 +40,13 @@ public class ItemScriptContainer extends ScriptContainer {
     //
     // <code>
     // # The name of the item script is the same name that you can use to construct a new
-    // # ItemTag based on this item script. For example, an item script named 'sword of swiftness'
-    // # can be referred to as 'sword of swiftness'.
+    // # ItemTag based on this item script. For example, an item script named 'sword_of_swiftness'
+    // # can be referred to as simply 'sword_of_swiftness'.
     // Item_Script_Name:
     //
     //   type: item
     //
-    //   # Must be a valid ItemTag (EG red_wool or potion,8226) See 'ItemTag' for more information.
+    //   # Must be a valid ItemTag. See 'ItemTag' for more information.
     //   # | All item scripts MUST have this key!
     //   material: base_material
     //

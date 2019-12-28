@@ -37,14 +37,14 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
     // <--[command]
     // @Name ModifyBlock
-    // @Syntax modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally) (delayed) (<script>) (<percent chance>|...)
+    // @Syntax modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (no_physics/naturally) (delayed) (<script>) (<percent chance>|...)
     // @Required 2
     // @Short Modifies blocks.
     // @Group world
     //
     // @Description
-    // Changes blocks in the world based on the criteria given. Specifying no radius/height/depth will result
-    // in only the specified blocks being changed. Use 'no_physics' to place the blocks without
+    // Changes blocks in the world based on the criteria given.
+    // Use 'no_physics' to place the blocks without
     // physics taking over the modified blocks. This is useful for block types such as portals. This does NOT
     // control physics for an extended period of time.
     // Specify (<percent chance>|...) to give a chance of each material being placed (in any material at all).
@@ -69,10 +69,6 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
     // @Usage
     // Use to modify an entire cuboid to some stone, some dirt, and some left as it is.
     // - modifyblock cu@<player.location>|<player.cursor_on> li@stone|dirt li@25|25
-    //
-    // @Usage
-    // Use to clear the area around the player and drop their respective items.
-    // - modifyblock <player.location> air radius:5 naturally delayed
     //
     // @Usage
     // Use to modify the ground beneath the player's feet.
