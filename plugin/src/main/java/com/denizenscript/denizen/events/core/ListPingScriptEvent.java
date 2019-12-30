@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.events.core;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -61,7 +60,6 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
             }
             else {
                 event.setMotd(determination);
-                Debug.log("MOTD Set: " + determination);
             }
             return true;
         }

@@ -117,7 +117,9 @@ public class FeedCommand extends AbstractCommand {
             npc.getCitizen().getTrait(HungerTrait.class).feed(amount.asInt());
         }
         else {
-            player.getPlayerEntity().setFoodLevel(Math.max(0, Math.min(9999, player.getPlayerEntity().getFoodLevel() + amount.asInt())));
+            int result = Math.max(0, Math.min(20, player.getPlayerEntity().getFoodLevel() + amount.asInt()));
+            player.getPlayerEntity().setFoodLevel(result);
+            Debug.echoDebug(scriptEntry, "Player food level updated to " + result + ".");
         }
     }
 }
