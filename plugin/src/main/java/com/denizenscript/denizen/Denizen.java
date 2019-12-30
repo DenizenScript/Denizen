@@ -416,8 +416,13 @@ public class Denizen extends JavaPlugin {
         // Load the saves.yml into memory
         reloadSaves();
 
-        // Fire the 'on Server PreStart' world event
-        ServerPrestartScriptEvent.instance.specialHackRunEvent();
+        try {
+            // Fire the 'on Server PreStart' world event
+            ServerPrestartScriptEvent.instance.specialHackRunEvent();
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
 
         // Run everything else on the first server tick
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
