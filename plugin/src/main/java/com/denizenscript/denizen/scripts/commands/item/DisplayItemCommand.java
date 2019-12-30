@@ -49,12 +49,12 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
     // - displayitem diamond_sword <context.location>
     //
     // @Usage
-    // Use to display redstone dust dropped at -54,100,-87 in world creative disappear after 10 seconds.
-    // - displayitem redstone l@-54,100,-87,creative duration:10s
+    // Use to display redstone dust dropped at a related location disappear after 10 seconds.
+    // - displayitem redstone <context.location> duration:10s
     //
     // @Usage
     // Use to save the dropped item to save entry 'item_dropped'.
-    // - displayitem redstone l@-54,100,-87,creative duration:10s save:item_dropped
+    // - displayitem redstone <context.location> duration:10s save:item_dropped
     // -->
 
     @Override
