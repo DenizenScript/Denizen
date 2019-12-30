@@ -106,7 +106,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
             AutoNoCitizensCommand.registerFor("DISENGAGE");
         }
         registerCoreMember(DisplayItemCommand.class, "DISPLAYITEM", "displayitem [<item>] [<location>] (duration:<value>)", 2);
-        registerCoreMember(DropCommand.class, "DROP", "drop [<entity_type>/xp/<item>|...] (<location>) (qty:<#>) (speed:<#.#>) (delay:<duration>)", 1);
+        registerCoreMember(DropCommand.class, "DROP", "drop [<entity_type>/xp/<item>|...] (<location>) (quantity:<#>) (speed:<#.#>) (delay:<duration>)", 1);
         if (Depends.citizens != null) {
             registerCoreMember(EngageCommand.class, "ENGAGE", "engage (<duration>)", 0);
         }
@@ -118,7 +118,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCoreMember(ExperienceCommand.class, "EXPERIENCE", "experience [{set}/give/take] (level) [<#>]", 2);
         registerCoreMember(ExplodeCommand.class, "EXPLODE", "explode (power:<#.#>) (<location>) (fire) (breakblocks)", 0);
         registerCoreMember(FakeItemCommand.class, "FAKEITEM", "fakeitem [<item>] [slot:<slot>] (duration:<duration>) (players:<player>|...) (player_only)", 2);
-        registerCoreMember(FeedCommand.class, "FEED", "feed (amt:<#>) (target:<entity>)", 0);
+        registerCoreMember(FeedCommand.class, "FEED", "feed (<entity>) (amount:<#>) (saturation:<#.#>)", 0);
         registerCoreMember(FireworkCommand.class, "FIREWORK", "firework (<location>) (power:<#>) (<type>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)", 0);
         registerCoreMember(FishCommand.class, "FISH", "fish [<location>] (catch:{none}/default/junk/treasure/fish) (stop) (chance:<#>)", 1);
         registerCoreMember(FlagCommand.class, "FLAG", "flag ({player}/npc/server/<entity>) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)", 1);
@@ -163,7 +163,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
             AutoNoCitizensCommand.registerFor("PAUSE");
             AutoNoCitizensCommand.registerFor("RESUME");
         }
-        registerCoreMember(PlayEffectCommand.class, "PLAYEFFECT", "playeffect [effect:<name>] [at:<location>|...] (data:<#.#>) (visibility:<#.#>) (qty:<#>) (offset:<#.#>,<#.#>,<#.#>) (targets:<player>|...)", 2);
+        registerCoreMember(PlayEffectCommand.class, "PLAYEFFECT", "playeffect [effect:<name>] [at:<location>|...] (data:<#.#>) (visibility:<#.#>) (quantity:<#>) (offset:<#.#>,<#.#>,<#.#>) (targets:<player>|...)", 2);
         registerCoreMember(PlaySoundCommand.class, "PLAYSOUND", "playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>) (custom) (sound_category:<category name>)", 2);
         registerCoreMember(PermissionCommand.class, "PERMISSION", "permission [add/remove] [permission] (group:<name>) (<world>)", 2);
         if (Depends.citizens != null) {
@@ -201,7 +201,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCoreMember(StatisticCommand.class, "STATISTIC", "statistic [<statistic>] [add/take/set] (<#>) (qualifier:<material>/<entity>) (players:<player>|...)", 2);
         registerCoreMember(StrikeCommand.class, "STRIKE", "strike (no_damage) [<location>]", 1);
         registerCoreMember(SwitchCommand.class, "SWITCH", "switch [<location>|...] (state:[{toggle}/on/off]) (duration:<value>)", 1);
-        registerCoreMember(TakeCommand.class, "TAKE", "take [money/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/nbt:<key>/<item>|...] (qty:<#>) (from:<inventory>)", 1);
+        registerCoreMember(TakeCommand.class, "TAKE", "take [money/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/nbt:<key>/<item>|...] (quantity:<#>) (from:<inventory>)", 1);
         registerCoreMember(TeamCommand.class, "TEAM", "team (id:<scoreboard>/{main}) [name:<team>] (add:<entry>|...) (remove:<entry>|...) (prefix:<prefix>) (suffix:<suffix>)", 2);
         registerCoreMember(TeleportCommand.class, "TELEPORT", "teleport (<entity>|...) [<location>]", 1);
         registerCoreMember(TimeCommand.class, "TIME", "time ({global}/player) [<time-duration>/reset] (<world>) (reset:<duration>) (freeze)", 1);
