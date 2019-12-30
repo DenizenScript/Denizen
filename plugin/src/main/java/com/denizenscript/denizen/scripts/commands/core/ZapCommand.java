@@ -53,7 +53,7 @@ public class ZapCommand extends AbstractCommand implements Listener {
     //
     // @Usage
     // Use to change the step to 1 for player bob in a script called InteractScript.
-    // - zap 1 InteractScript player:p@bob
+    // - zap 1 InteractScript player:<[player]>
     // -->
 
     @Override

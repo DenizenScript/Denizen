@@ -43,7 +43,7 @@ public class ActionCommand extends AbstractCommand {
     //
     // @Usage
     // Use to trigger multiple custom action with context on a different NPC
-    // - action "player dances|target enemy" n@10 context:action|custom|target|<player.selected_npc>
+    // - action "player dances|target enemy" <[some_npc]> context:action|custom|target|<player.selected_npc>
     // -->
 
     @Override

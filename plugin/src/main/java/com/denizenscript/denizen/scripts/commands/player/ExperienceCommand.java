@@ -46,7 +46,7 @@ public class ExperienceCommand extends AbstractCommand {
     // - experience take level 1
     // @Usage
     // Use to give a player with the name steve 10 experience points.
-    // - experience give 10 player:p@steve
+    // - experience give 10 player:<[someplayer]>
     // -->
 
     private enum Type {SET, GIVE, TAKE}

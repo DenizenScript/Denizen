@@ -41,19 +41,19 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
     // <entry[saveName].dropped> returns a EntityTag of the spawned item.
     //
     // @Usage
-    // Use to display a stone block dropped at a players location
+    // Use to display a stone block dropped at a players location.
     // - displayitem stone <player.location>
     //
     // @Usage
-    // Use to display a diamond sword dropped at 12,64,-847 in world survival
-    // - displayitem diamond_sword l@12,64,-847,survival
+    // Use to display a diamond sword dropped at a relevant location.
+    // - displayitem diamond_sword <context.location>
     //
     // @Usage
-    // Use to display redstone dust dropped at -54,100,-87 in world creative disappear after 10 seconds
+    // Use to display redstone dust dropped at -54,100,-87 in world creative disappear after 10 seconds.
     // - displayitem redstone l@-54,100,-87,creative duration:10s
     //
     // @Usage
-    // Use to save the dropped item to save entry 'item_dropped'
+    // Use to save the dropped item to save entry 'item_dropped'.
     // - displayitem redstone l@-54,100,-87,creative duration:10s save:item_dropped
     // -->
 

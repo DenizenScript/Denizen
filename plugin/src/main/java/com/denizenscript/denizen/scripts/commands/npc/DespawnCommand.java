@@ -39,7 +39,7 @@ public class DespawnCommand extends AbstractCommand {
     //
     // @Usage
     // Use to despawn several NPCs.
-    // - despawn <npc>|<player.selected_npc>|n@32
+    // - despawn <npc>|<player.selected_npc>|<[some_npc]>
     // -->
 
     @Override

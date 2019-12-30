@@ -47,15 +47,15 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
     //
     // @Usage
     // Use to load a chunk.
-    // - chunkload ch@0,0,world
+    // - chunkload <[some_chunk]>
     //
     // @Usage
     // Use to temporarily load a chunk.
-    // - chunkload ch@0,0,world duration:5m
+    // - chunkload <player.location.add[5000,0,0].chunk> duration:5m
     //
     // @Usage
     // Use to stop loading a chunk.
-    // - chunkload remove ch@0,0,world
+    // - chunkload remove <[some_chunk]>
     //
     // @Usage
     // Use to stop loading all chunks.

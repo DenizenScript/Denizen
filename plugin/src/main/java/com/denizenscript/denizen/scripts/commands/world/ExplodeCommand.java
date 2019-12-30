@@ -44,8 +44,8 @@ public class ExplodeCommand extends AbstractCommand {
     // - explode power:3 <npc.location>
     //
     // @Usage
-    // Use to create an explosion with a power radius of 3 at a 12,12,-1297 in a world called survival which breaks blocks.
-    // - explode power:3 l@12,12,-1297,survival breakblocks
+    // Use to create an explosion with a power radius of 3 at a related location which breaks blocks.
+    // - explode power:3 <context.location> breakblocks
     // -->
 
     @Override

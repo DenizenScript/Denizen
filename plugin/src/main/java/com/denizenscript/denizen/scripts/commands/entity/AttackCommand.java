@@ -52,7 +52,7 @@ public class AttackCommand extends AbstractCommand {
     //
     // @Usage
     // Use to stop an attack
-    // - attack n@Herobrine stop
+    // - attack <npc> stop
     // -->
 
     @Override

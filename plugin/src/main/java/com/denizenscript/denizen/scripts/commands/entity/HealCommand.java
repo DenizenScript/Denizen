@@ -41,7 +41,7 @@ public class HealCommand extends AbstractCommand {
     //
     // @Usage
     // Use to heal a player by the name of steve fully.
-    // - heal p@steve
+    // - heal <[someplayer]>
     // -->
 
     @Override

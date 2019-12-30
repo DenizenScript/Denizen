@@ -42,11 +42,11 @@ public class ActionBarCommand extends AbstractCommand {
     //
     // @Usage
     // Use to send a message to a list of players.
-    // - actionbar "Hey, welcome to the server!" targets:p@john|p@bob|p@steve
+    // - actionbar "Hey, welcome to the server!" targets:<[thatplayer]>|<[player]>|<[someplayer]>
     //
     // @Usage
     // Use to send a message to a list of players, with a formatted message.
-    // - actionbar "Hey there!" targets:p@john|p@bob format:ServerChat
+    // - actionbar "Hey there!" targets:<[thatplayer]>|<[player]> format:ServerChat
     // -->
 
     @Override

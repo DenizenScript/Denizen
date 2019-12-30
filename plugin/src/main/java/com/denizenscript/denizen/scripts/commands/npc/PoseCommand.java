@@ -39,7 +39,7 @@ public class PoseCommand extends AbstractCommand {
     //
     // @Usage
     // Add a pose to an NPC. (Note that only the last 2 numbers matter)
-    // - pose add id:MyPose2 l@0,0,0,-2.3,5.4,world
+    // - pose add id:MyPose2 0,0,0,-2.3,5.4
     //
     // @Usage
     // Remove a pose from an NPC.

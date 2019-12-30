@@ -1408,8 +1408,8 @@ public class ServerTagBase {
         // @returns PlayerTag
         // @description
         // Returns the online player that best matches the input name.
-        // EG, in a group of 'bo', 'bob', and 'bobby'... input 'bob' returns p@bob,
-        // input 'bobb' returns p@bobby, and input 'b' returns p@bo.
+        // EG, in a group of 'bo', 'bob', and 'bobby'... input 'bob' returns player object for 'bob',
+        // input 'bobb' returns player object for 'bobby', and input 'b' returns player object for 'bo'.
         // -->
         if (attribute.startsWith("match_player") && attribute.hasContext(1)) {
             Player matchPlayer = null;
@@ -1436,8 +1436,8 @@ public class ServerTagBase {
         // @returns PlayerTag
         // @description
         // Returns any player (online or offline) that best matches the input name.
-        // EG, in a group of 'bo', 'bob', and 'bobby'... input 'bob' returns p@bob,
-        // input 'bobb' returns p@bobby, and input 'b' returns p@bo.
+        // EG, in a group of 'bo', 'bob', and 'bobby'... input 'bob' returns player object for 'bob',
+        // input 'bobb' returns player object for 'bobby', and input 'b' returns player object for 'bo'.
         // -->
         if (attribute.startsWith("match_offline_player") && attribute.hasContext(1)) {
             UUID matchPlayer = null;

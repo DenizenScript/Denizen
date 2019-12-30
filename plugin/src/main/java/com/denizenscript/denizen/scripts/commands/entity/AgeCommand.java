@@ -35,17 +35,17 @@ public class AgeCommand extends AbstractCommand {
     //
     // @Usage
     // Use to make an ageable entity a permanant baby.
-    // - age e@50 baby lock
+    // - age <[some_entity]> baby lock
     // ...or a mature adult.
-    // - age e@50 adult lock
+    // - age <[some_entity]> adult lock
     //
     // @Usage
     // Use to make a baby entity an adult.
-    // - age n@puppy adult
+    // - age <[some_npc]> adult
     //
     // @Usage
-    // Use to mature an animals so that it is old enough to breed.
-    // - age <player.location.find.entities.within[20]> 10
+    // Use to mature some animals so that they are old enough to breed.
+    // - age <player.location.find.entities.within[20]> adult
     // -->
 
     private enum AgeType {ADULT, BABY}

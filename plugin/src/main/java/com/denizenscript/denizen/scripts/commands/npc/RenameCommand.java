@@ -36,7 +36,7 @@ public class RenameCommand extends AbstractCommand {
     //
     // @Usage
     // Use to rename a different NPC.
-    // - rename Bob npc:n@32
+    // - rename Bob npc:<[some_npc]>
     // -->
 
     @Override

@@ -48,11 +48,11 @@ public class SignCommand extends AbstractCommand {
     //
     // @Usage
     // Use to show the time on a sign that points north
-    // - sign type:automatic "I point|North.|System Time<&co>|<util.date.time>" l@233,65,123,world direction:north
+    // - sign type:automatic "I point|North.|System Time<&co>|<util.date.time>" <context.location> direction:north
     //
     // @Usage
     // Use to force a sign to be a wall_sign if no sign is found.
-    // - sign type:wall_sign "Player<&co>|<player.name>|Online Players<&co>|<server.list_online_players.size>" l@233,65,123,world
+    // - sign type:wall_sign "Player<&co>|<player.name>|Online Players<&co>|<server.list_online_players.size>" <context.location>
     //
     // -->
 

@@ -29,7 +29,7 @@ public class PushableCommand extends AbstractCommand {
     //
     // @Usage
     // Use to toggle the Pushable trait for a specified NPC.
-    // - pushable npc:n@321
+    // - pushable npc:<[some_npc]>
     //
     // @Usage
     // Use to enable the Pushable trait and return after 2 seconds.

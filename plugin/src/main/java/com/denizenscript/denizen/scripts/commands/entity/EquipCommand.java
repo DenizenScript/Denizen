@@ -50,7 +50,7 @@ public class EquipCommand extends AbstractCommand {
     //
     // @Usage
     // Use to equip a iron helmet on two players named Bob and Steve.
-    // - equip p@bob|p@steve head:iron_helmet
+    // - equip <[player]>|<[someplayer]> head:iron_helmet
     //
     // @Usage
     // Use to unequip all armor off the player.

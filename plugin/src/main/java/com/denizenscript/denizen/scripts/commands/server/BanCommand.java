@@ -48,19 +48,19 @@ public class BanCommand extends AbstractCommand {
     //
     // @Usage
     // Use to ban a player.
-    // - ban p@bob
+    // - ban <[player]>
     //
     // @Usage
     // Use to ban a list of players with a reason.
-    // - ban p@bob|p@steve "reason:Didn't grow enough potatoes."
+    // - ban <[player]>|<[someplayer]> "reason:Didn't grow enough potatoes."
     //
     // @Usage
     // Use to ban a list of players for 10 minutes with a reason.
-    // - ban p@bob|p@steve "reason:Didn't grow enough potatoes." duration:10m
+    // - ban <[player]>|<[someplayer]> "reason:Didn't grow enough potatoes." duration:10m
     //
     // @Usage
     // Use to ban a player with a source.
-    // - ban p@jie "reason:Grew too many potatoes." source:<player.name>
+    // - ban <[aplayer]> "reason:Grew too many potatoes." source:<player.name>
     //
     // @Usage
     // Use to ban an ip address.
@@ -72,7 +72,7 @@ public class BanCommand extends AbstractCommand {
     //
     // @Usage
     // Use to unban a list of players.
-    // - ban remove p@bob|p@steve
+    // - ban remove <[player]>|<[someplayer]>
     //
     // @Usage
     // Use to unban an ip address.

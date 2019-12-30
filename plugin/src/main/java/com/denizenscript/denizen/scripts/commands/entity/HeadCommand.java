@@ -42,8 +42,8 @@ public class HeadCommand extends AbstractCommand {
     // - head <player> skin:Notch
     //
     // @Usage
-    // Use to equip an npc with id 5 with your own head.
-    // - head n@5 skin:<player.name>
+    // Use to equip a different NPC with your own head.
+    // - head <[some_npc]> skin:<player.name>
     //
     // @Usage
     // Use to equip all online players with Notch's head.

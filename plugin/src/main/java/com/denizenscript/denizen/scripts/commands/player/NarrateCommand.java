@@ -49,7 +49,7 @@ public class NarrateCommand extends AbstractCommand {
     //
     // @Usage
     // Use to narrate text to a list of players.
-    // - narrate "Hello there." targets:p@bob|p@steve|p@john
+    // - narrate "Hello there." targets:<[player]>|<[someplayer]>|<[thatplayer]>
     //
     // @Usage
     // Use to narrate text to a unique message to every player on the server.

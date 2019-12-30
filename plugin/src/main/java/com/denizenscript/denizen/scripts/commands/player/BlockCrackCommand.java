@@ -41,16 +41,16 @@ public class BlockCrackCommand extends AbstractCommand {
     //
     // @Usage
     // Use to show a crack in a block to the currently attached player.
-    // - blockcrack l@12,43,20,world progress:4
+    // - blockcrack <context.location> progress:4
     //
     // @Usage
     // Use to stop showing a crack in a block to all online players.
-    // - blockcrack l@12,43,20,world progress:0 players:<server.list_online_players>
+    // - blockcrack <context.location> progress:0 players:<server.list_online_players>
     //
     // @Usage
     // Use to show all 10 layers of block cracking at the same time.
     // - repeat 10:
-    //   - blockcrack l@12,43,20,world progress:<[value]> stack
+    //   - blockcrack <context.location> progress:<[value]> stack
     // -->
 
     @Override

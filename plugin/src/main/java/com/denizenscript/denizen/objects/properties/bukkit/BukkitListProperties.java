@@ -40,7 +40,7 @@ public class BukkitListProperties implements Property {
         // @returns ElementTag
         // @description
         // Returns the list in a human-readable format.
-        // EG, a list of "n@3|p@bob|potato" will return "GuardNPC, bob, and potato".
+        // EG, a list of "<npc>|<player>|potato" will return "GuardNPC, bob, and potato".
         // -->
         PropertyParser.<BukkitListProperties>registerTag("formatted", (attribute, listObj) -> {
             ListTag list = listObj.list;

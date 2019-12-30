@@ -35,7 +35,7 @@ public class NoteCommand extends AbstractCommand {
     //
     // @Usage
     // Use to add a notable cuboid.
-    // - note cu@world,1,2,3,10,11,12 as:mycuboid
+    // - note <[some_cuboid]> as:mycuboid
     //
     // @Usage
     // Use to remove a notable cuboid.
@@ -43,7 +43,7 @@ public class NoteCommand extends AbstractCommand {
     //
     // @Usage
     // Use to note a location.
-    // - note l@10,5,10,world as:mylocation
+    // - note <context.location> as:mylocation
     // -->
 
     @Override

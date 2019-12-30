@@ -46,20 +46,20 @@ public class FireworkCommand extends AbstractCommand {
     // <entry[saveName].launched_firework> returns a EntityTag of the firework that was launched.
     //
     // @Usage
-    // Use to launch a star firework which explodes yellow and fades to white afterwards at the player's location
+    // Use to launch a star firework which explodes yellow and fades to white afterwards at the player's location.
     // - firework <player.location> star primary:yellow fade:white
     //
     // @Usage
-    // Use to make the firework launch double the height before exploding
+    // Use to make the firework launch double the height before exploding.
     // - firework <player.location> power:2 star primary:yellow fade:white
     //
     // @Usage
-    // Use to launch a firework which leaves a trail
+    // Use to launch a firework which leaves a trail.
     // - firework <player.location> random trail
     //
     // @Usage
-    // Use to launch a firework which leaves a trail and explodes with a flicker effect at 10,43,-76 in world
-    // - firework l@10,43,-76,world random trail flicker
+    // Use to launch a firework which leaves a trail and explodes with a flicker effect at related location.
+    // - firework <context.location> random trail flicker
     // -->
 
     @Override

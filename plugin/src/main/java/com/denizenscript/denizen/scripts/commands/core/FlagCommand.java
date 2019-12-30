@@ -75,19 +75,19 @@ public class FlagCommand extends AbstractCommand implements Listener {
     //
     // @Usage
     // Use to add an item to a server flag as a new value without removing existing values.
-    // - flag server cool_people:->:p@stephen
+    // - flag server cool_people:->:<[player]>
     //
     // @Usage
     // Use to add both multiple items as individual new values to a server flag.
-    // - flag server cool_people:|:p@bob|p@steve
+    // - flag server cool_people:|:<[player]>|<[someplayer]>
     //
     // @Usage
     // Use to remove an entry from a server flag.
-    // - flag server cool_people:<-:p@steve
+    // - flag server cool_people:<-:<[someplayer]>
     //
     // @Usage
     // Use to clear a flag and fill it with a new list of values.
-    // - flag server cool_people:!|:p@bob|p@steve|p@joe
+    // - flag server cool_people:!|:<[player]>|<[someplayer]>|<[aplayer]>
     //
     // @Usage
     // Use to completely remove a flag.

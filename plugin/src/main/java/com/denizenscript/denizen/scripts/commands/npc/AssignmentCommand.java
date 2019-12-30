@@ -36,8 +36,8 @@ public class AssignmentCommand extends AbstractCommand {
     // - assignment set script:Bob_the_Builder
     //
     // @Usage
-    // Use to give an npc with the id of 3 an assignment.
-    // - assignment set script:Bob_the_Builder npc:n@3
+    // Use to give a different NPC an assignment.
+    // - assignment set script:Bob_the_Builder npc:<[some_npc]>
     //
     // @Usage
     // Use to remove an npc's assignment.

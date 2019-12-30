@@ -32,7 +32,7 @@ public class InventoryScriptContainer extends ScriptContainer {
     // Inventory scripts work with the InventoryTag object, and can be fetched with the Object Fetcher by using the
     // InventoryTag constructor InventoryTag_script_name.
     //
-    // Example: - inventory open d:in@MyInventoryScript
+    // Example: - inventory open d:MyInventoryScript
     //
     // The following is the format for the container.
     //
@@ -42,8 +42,8 @@ public class InventoryScriptContainer extends ScriptContainer {
     //
     // <code>
     // # The name of the script is the same name that you can use to construct a new
-    // # InventoryTag based on this inventory script. For example, an inventory script named 'Super Cool Inventory'
-    // # can be referred to as 'in@Super Cool Inventory'.
+    // # InventoryTag based on this inventory script. For example, an inventory script named 'Super_Cool_Inventory'
+    // # can be referred to as 'Super_Cool_Inventory'.
     // Inventory_Script_Name:
     //
     //   type: inventory

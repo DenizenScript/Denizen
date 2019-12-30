@@ -38,7 +38,7 @@ public class KickCommand extends AbstractCommand {
     //
     // @Usage
     // Use to kick another player with a reason.
-    // - kick p@bob "reason:Because I can."
+    // - kick <[player]> "reason:Because I can."
     // -->
 
     @Override
