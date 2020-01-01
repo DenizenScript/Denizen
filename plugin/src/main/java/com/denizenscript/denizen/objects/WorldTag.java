@@ -384,7 +384,7 @@ public class WorldTag implements ObjectTag, Adjustable {
             return new LocationTag(object.getWorld().getSpawnLocation());
         });
 
-        // <-- [tag]
+        // <--[tag]
         // @attribute <WorldTag.world_type>
         // @returns ElementTag
         // @description

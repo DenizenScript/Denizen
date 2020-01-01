@@ -96,7 +96,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity);
+        return new BukkitScriptEntryData(target);
     }
 
     @Override

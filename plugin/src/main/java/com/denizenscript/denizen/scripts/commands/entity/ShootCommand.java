@@ -56,7 +56,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
     //
     // Use the 'script:<name>' argument to run a task script when the projectiles land.
     // When that script runs, the following definitions will be available:
-    // <[shot_entities]> for all shot entities,
+    // <[shot_entities]> for all shot entities (as in, the projectiles),
     // <[last_entity]> for the last one (The controlling entity),
     // <[location]> for the last known location of the last shot entity, and
     // <[hit_entities]> for a list of any entities that were hit by fired projectiles.
@@ -68,7 +68,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
     // The shoot command is ~waitable. Refer to <@link language ~waitable>.
     //
     // @Tags
-    // <entry[saveName].shot_entities> returns a ListTag of entities that were shot.
+    // <entry[saveName].shot_entities> returns a ListTag of entities that were shot (as in, the projectiles).
     //
     // @Usage
     // Use to shoot an arrow from the NPC to perfectly hit the player.
