@@ -75,7 +75,7 @@ public class InventoryScriptContainer extends ScriptContainer {
     //   # If the slot is filled with air, it will no longer count as being empty.
     //   # | Most inventory scripts should exclude this key, but it may be useful in some cases.
     //   procedural items:
-    //     - define list li@
+    //     - define list <list[]>
     //     - foreach <server.list_online_players>:
     //       - define item human_skull[skull_skin=<[value].name>]
     //       - define list <[list].include[<[item]>]>

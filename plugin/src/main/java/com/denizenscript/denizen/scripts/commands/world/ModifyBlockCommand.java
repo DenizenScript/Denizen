@@ -64,15 +64,15 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
     //
     // @Usage
     // Use to modify an entire cuboid to half stone, half dirt.
-    // - modifyblock cu@<player.location>|<player.cursor_on> li@stone|dirt
+    // - modifyblock <cuboid[<player.location>|<player.cursor_on>]> stone|dirt
     //
     // @Usage
     // Use to modify an entire cuboid to some stone, some dirt, and some left as it is.
-    // - modifyblock cu@<player.location>|<player.cursor_on> li@stone|dirt li@25|25
+    // - modifyblock <cuboid[<player.location>|<player.cursor_on>]> stone|dirt 25|25
     //
     // @Usage
     // Use to modify the ground beneath the player's feet.
-    // - modifyblock cu@<player.location.add[2,-1,2]>|<player.location.add[-2,-1,-2]> WOOL,14
+    // - modifyblock <cuboid[<player.location.add[2,-1,2]>|<player.location.add[-2,-1,-2]>]> RED_WOOL
     // -->
 
     @Override
@@ -84,12 +84,14 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
             if (arg.matchesArgumentType(CuboidTag.class)
                     && !scriptEntry.hasObject("locations")
-                    && !scriptEntry.hasObject("location_list")) {
+                    && !scriptEntry.hasObject("location_list")
+                    && arg.startsWith("cu@")) {
                 scriptEntry.addObject("locations", arg.asType(CuboidTag.class).getBlockLocationsUnfiltered());
             }
             else if (arg.matchesArgumentType(EllipsoidTag.class)
                     && !scriptEntry.hasObject("locations")
-                    && !scriptEntry.hasObject("location_list")) {
+                    && !scriptEntry.hasObject("location_list")
+                    && arg.startsWith("ellipsoid@")) {
                 scriptEntry.addObject("locations", arg.asType(EllipsoidTag.class).getBlockLocationsUnfiltered());
             }
             else if (arg.matchesArgumentList(LocationTag.class)

@@ -107,7 +107,7 @@ public class EntityDisabledSlots implements Property {
         // @mechanism EntityTag.disabled_slots
         // @group properties
         // @description
-        // If the entity is an armor stand, returns a list of its disabled slots in the form li@slot/action|...
+        // If the entity is an armor stand, returns a list of its disabled slots in the form slot/action|...
         // -->
         if (attribute.startsWith("disabled_slots")) {
             return getDisabledSlots().getObjectAttribute(attribute.fulfill(1));
@@ -139,7 +139,7 @@ public class EntityDisabledSlots implements Property {
         // @name disabled_slots
         // @input ListTag
         // @description
-        // Sets the disabled slots of an armor stand in the form li@slot(/action)|...
+        // Sets the disabled slots of an armor stand in the form slot(/action)|...
         // Optionally include an action to disable specific interactions (defaults to ALL).
         // Leave empty to enable all slots.
         // Slots: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/EquipmentSlot.html>

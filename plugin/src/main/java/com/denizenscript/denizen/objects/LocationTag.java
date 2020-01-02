@@ -1068,7 +1068,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @group properties
         // @mechanism LocationTag.patterns
         // @description
-        // Lists the patterns of the banner at this location in the form "li@COLOR/PATTERN|COLOR/PATTERN" etc.
+        // Lists the patterns of the banner at this location in the form "COLOR/PATTERN|COLOR/PATTERN" etc.
         // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
         // For the list of possible patterns, see <@link url http://bit.ly/1MqRn7T>.
         // -->
@@ -3300,8 +3300,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @name patterns
         // @input ListTag
         // @description
-        // Changes the patterns of the banner at this location. Input must be in the form
-        // "li@COLOR/PATTERN|COLOR/PATTERN" etc.
+        // Changes the patterns of the banner at this location. Input must be in the form "COLOR/PATTERN|COLOR/PATTERN" etc.
         // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
         // For the list of possible patterns, see <@link url http://bit.ly/1MqRn7T>.
         // @tags

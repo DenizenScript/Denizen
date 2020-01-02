@@ -48,7 +48,7 @@ public class InventoryCommand extends AbstractCommand {
     // open random inventory:
     //   type: task
     //   script:
-    //   - inventory open "d:generic[size=18;title=<red>My <green>Awesome <blue>Inventory;contents=li@air|snow_ball]"
+    //   - inventory open "d:generic[size=18;title=<red>My <green>Awesome <blue>Inventory;contents=air|snow_ball]"
     // </code>
     //
     // -->
