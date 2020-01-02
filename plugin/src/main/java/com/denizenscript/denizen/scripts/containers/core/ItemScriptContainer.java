@@ -1,7 +1,5 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.nbt.LeatherColorer;
@@ -18,7 +16,6 @@ import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
-import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -274,14 +271,7 @@ public class ItemScriptContainer extends ScriptContainer {
                             enchantment = split[0].replace(" ", "");
                         }
                         // Add enchantment
-                        Enchantment ench = null;
-                        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                            NamespacedKey key = Utilities.parseNamespacedKey(enchantment);
-                            ench = Enchantment.getByKey(key);
-                        }
-                        if (ench == null) {
-                            ench = Enchantment.getByName(enchantment.toUpperCase());
-                        }
+                        Enchantment ench = Utilities.getEnchantmentByName(enchantment);
                         stack.getItemStack().addUnsafeEnchantment(ench, level);
                     }
                     catch (Exception ex) {

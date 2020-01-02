@@ -902,6 +902,38 @@ public class ServerTagBase {
         }
 
         // <--[tag]
+        // @attribute <server.enchantment_max_level[<enchantment>]>
+        // @returns ElementTag(Integer)
+        // @description
+        // Returns the max level (at an enchantment table) for the given enchantment.
+        // Refer also to <@link tag server.list_enchantments>.
+        // -->
+        if (attribute.startsWith("enchantment_max_level") && attribute.hasContext(1)) {
+            Enchantment ench = Utilities.getEnchantmentByName(attribute.getContext(1));
+            if (ench == null) {
+                attribute.echoError("Enchantment '" + attribute.getContext(1) + "' does not exist.");
+                return;
+            }
+            event.setReplaced(new ElementTag(ench.getMaxLevel()).getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.enchantment_start_level[<enchantment>]>
+        // @returns ElementTag(Integer)
+        // @description
+        // Returns the starting level (at an enchantment table) for the given enchantment.
+        // Refer also to <@link tag server.list_enchantments>.
+        // -->
+        if (attribute.startsWith("enchantment_start_level") && attribute.hasContext(1)) {
+            Enchantment ench = Utilities.getEnchantmentByName(attribute.getContext(1));
+            if (ench == null) {
+                attribute.echoError("Enchantment '" + attribute.getContext(1) + "' does not exist.");
+                return;
+            }
+            event.setReplaced(new ElementTag(ench.getStartLevel()).getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
         // @attribute <server.start_time>
         // @returns DurationTag
         // @description

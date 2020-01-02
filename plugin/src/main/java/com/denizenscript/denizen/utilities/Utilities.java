@@ -22,6 +22,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.*;
@@ -59,6 +60,18 @@ public class Utilities {
             }
         }
         return output.toString();
+    }
+
+    public static Enchantment getEnchantmentByName(String name) {
+        Enchantment ench = null;
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+            NamespacedKey key = Utilities.parseNamespacedKey(name);
+            ench = Enchantment.getByKey(key);
+        }
+        if (ench == null) {
+            ench = Enchantment.getByName(name.toUpperCase());
+        }
+        return ench;
     }
 
     public static boolean isRecipeOfType(Recipe recipe, String type) {
