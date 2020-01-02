@@ -532,12 +532,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         return entityScript;
     }
 
-    /**
-     * Returns the unique UUID of this entity
-     *
-     * @return The UUID
-     */
-
     public UUID getUUID() {
         return uuid;
     }
@@ -551,14 +545,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
     public EntityTag getDenizenEntity() {
         return this;
     }
-
-    /**
-     * Get the ObjectTag that most accurately describes this entity,
-     * useful for automatically saving dEntities to contexts as
-     * NPCTags and PlayerTags
-     *
-     * @return The ObjectTag
-     */
 
     public EntityFormObject getDenizenObject() {
 
@@ -577,21 +563,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         }
     }
 
-    /**
-     * Get the Bukkit entity corresponding to this EntityTag
-     *
-     * @return the underlying Bukkit entity
-     */
-
     public Entity getBukkitEntity() {
         return entity;
     }
-
-    /**
-     * Get the living entity corresponding to this EntityTag
-     *
-     * @return The living entity
-     */
 
     public LivingEntity getLivingEntity() {
         if (entity instanceof LivingEntity) {
@@ -602,12 +576,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         }
     }
 
-    /**
-     * Check whether this EntityTag is a living entity
-     *
-     * @return true or false
-     */
-
     public boolean isLivingEntity() {
         return (entity instanceof LivingEntity);
     }
@@ -615,12 +583,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
     public boolean hasInventory() {
         return getBukkitEntity() instanceof InventoryHolder || isCitizensNPC();
     }
-
-    /**
-     * Get the NPCTag corresponding to this EntityTag
-     *
-     * @return The NPCTag
-     */
 
     public NPCTag getDenizenNPC() {
         if (npc != null) {
@@ -631,12 +593,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         }
     }
 
-    /**
-     * Check whether this EntityTag is an NPC
-     *
-     * @return true or false
-     */
-
     public boolean isNPC() {
         return npc != null || isNPC(entity);
     }
@@ -644,12 +600,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
     public boolean isCitizensNPC() {
         return npc != null || isCitizensNPC(entity);
     }
-
-    /**
-     * Get the Player corresponding to this EntityTag
-     *
-     * @return The Player
-     */
 
     public Player getPlayer() {
         if (isPlayer()) {
@@ -660,12 +610,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         }
     }
 
-    /**
-     * Get the PlayerTag corresponding to this EntityTag
-     *
-     * @return The PlayerTag
-     */
-
     public PlayerTag getDenizenPlayer() {
         if (isPlayer()) {
             return new PlayerTag(getPlayer());
@@ -675,42 +619,18 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         }
     }
 
-    /**
-     * Check whether this EntityTag is a Player
-     *
-     * @return true or false
-     */
-
     public boolean isPlayer() {
         return entity instanceof Player && !isNPC();
     }
-
-    /**
-     * Get this EntityTag as a Projectile
-     *
-     * @return The Projectile
-     */
 
     public Projectile getProjectile() {
 
         return (Projectile) entity;
     }
 
-    /**
-     * Check whether this EntityTag is a Projectile
-     *
-     * @return true or false
-     */
-
     public boolean isProjectile() {
         return entity instanceof Projectile;
     }
-
-    /**
-     * Get this Projectile entity's shooter
-     *
-     * @return A EntityTag of the shooter
-     */
 
     public EntityTag getShooter() {
         if (hasShooter()) {
@@ -721,21 +641,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         }
     }
 
-    /**
-     * Set this Projectile entity's shooter
-     */
-
     public void setShooter(EntityTag shooter) {
         if (isProjectile() && shooter.isLivingEntity()) {
             getProjectile().setShooter(shooter.getLivingEntity());
         }
     }
-
-    /**
-     * Check whether this entity has a shooter.
-     *
-     * @return true or false
-     */
 
     public boolean hasShooter() {
         return isProjectile() && getProjectile().getShooter() != null && getProjectile().getShooter() instanceof LivingEntity;
@@ -750,12 +660,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         }
         return null;
     }
-
-    /**
-     * Returns this entity's InventoryTag.
-     *
-     * @return the entity's InventoryTag
-     */
 
     public InventoryTag getInventory() {
         return hasInventory() ? isCitizensNPC() ? getDenizenNPC().getDenizenInventory()
@@ -779,12 +683,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         return entity_type.getName();
     }
 
-    /**
-     * Returns this entity's equipment
-     *
-     * @return the entity's equipment
-     */
-
     public ListTag getEquipment() {
         ItemStack[] equipment = getLivingEntity().getEquipment().getArmorContents();
         ListTag equipmentList = new ListTag();
@@ -794,24 +692,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         return equipmentList;
     }
 
-    /**
-     * Whether this entity identifies as a generic
-     * entity type, for instance "e@cow", instead of
-     * a spawned entity
-     *
-     * @return true or false
-     */
-
     public boolean isGeneric() {
         return !isUnique();
     }
 
-    /**
-     * Get the location of this entity
-     *
-     * @return The Location
-     */
-
+    @Override
     public LocationTag getLocation() {
 
         if (entity != null) {
@@ -820,12 +705,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
 
         return null;
     }
-
-    /**
-     * Get the eye location of this entity
-     *
-     * @return The location
-     */
 
     public LocationTag getEyeLocation() {
 
@@ -852,12 +731,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         }
     }
 
-    /**
-     * Gets the velocity of this entity
-     *
-     * @return The velocity's vector
-     */
-
     public Vector getVelocity() {
 
         if (!isGeneric()) {
@@ -865,10 +738,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         }
         return null;
     }
-
-    /**
-     * Sets the velocity of this entity
-     */
 
     public void setVelocity(Vector vector) {
 
@@ -881,12 +750,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             }
         }
     }
-
-    /**
-     * Gets the world of this entity
-     *
-     * @return The entity's world
-     */
 
     public World getWorld() {
 

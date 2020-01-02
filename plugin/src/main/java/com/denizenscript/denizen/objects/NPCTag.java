@@ -250,6 +250,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         getCitizen().destroy();
     }
 
+    @Override
     public LocationTag getLocation() {
         if (isSpawned()) {
             return new LocationTag(getEntity().getLocation());

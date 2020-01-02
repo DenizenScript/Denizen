@@ -1981,11 +1981,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             // for the entity type.
             // -->
             else if (attribute.startsWith("entities", 2)) {
-                ListTag ent_list = new ListTag();
-                if (attribute.hasContext(2)) {
-                    ent_list = ListTag.valueOf(attribute.getContext(2));
-                }
-                ArrayList<EntityTag> found = new ArrayList<>();
+                ListTag ent_list = attribute.hasContext(2) ? ListTag.valueOf(attribute.getContext(2)) : new ListTag();
+                ListTag found = new ListTag();
                 attribute.fulfill(2);
                 for (Entity entity : new WorldTag(object.getWorld()).getEntitiesForTag()) {
                     if (Utilities.checkLocation(object, entity.getLocation(), radius)) {
@@ -1993,25 +1990,25 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                         if (!ent_list.isEmpty()) {
                             for (String ent : ent_list) {
                                 if (current.comparedTo(ent)) {
-                                    found.add(current);
+                                    found.addObject(current.getDenizenObject());
                                     break;
                                 }
                             }
                         }
                         else {
-                            found.add(current);
+                            found.addObject(current.getDenizenObject());
                         }
                     }
                 }
 
-                Collections.sort(found, new Comparator<EntityTag>() {
+                Collections.sort(found.objectForms, new Comparator<ObjectTag>() {
                     @Override
-                    public int compare(EntityTag ent1, EntityTag ent2) {
-                        return object.compare(ent1.getLocation(), ent2.getLocation());
+                    public int compare(ObjectTag ent1, ObjectTag ent2) {
+                        return object.compare(((EntityFormObject) ent1).getLocation(), ((EntityFormObject) ent2).getLocation());
                     }
                 });
 
-                return new ListTag(found);
+                return new ListTag(found.objectForms);
             }
 
             // <--[tag]
@@ -2021,23 +2018,23 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             // Returns a list of living entities within a radius.
             // -->
             else if (attribute.startsWith("living_entities", 2)) {
-                ArrayList<EntityTag> found = new ArrayList<>();
+                ListTag found = new ListTag();
                 attribute.fulfill(2);
                 for (Entity entity : new WorldTag(object.getWorld()).getEntitiesForTag()) {
                     if (entity instanceof LivingEntity
                             && Utilities.checkLocation(object, entity.getLocation(), radius)) {
-                        found.add(new EntityTag(entity));
+                        found.addObject(new EntityTag(entity).getDenizenObject());
                     }
                 }
 
-                Collections.sort(found, new Comparator<EntityTag>() {
+                Collections.sort(found.objectForms, new Comparator<ObjectTag>() {
                     @Override
-                    public int compare(EntityTag ent1, EntityTag ent2) {
-                        return object.compare(ent1.getLocation(), ent2.getLocation());
+                    public int compare(ObjectTag ent1, ObjectTag ent2) {
+                        return object.compare(((EntityFormObject) ent1).getLocation(), ((EntityFormObject) ent2).getLocation());
                     }
                 });
 
-                return new ListTag(found);
+                return new ListTag(found.objectForms);
             }
             return null;
         });

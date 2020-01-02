@@ -289,6 +289,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         return baseID.substring(0, 2) + "." + baseID;
     }
 
+    @Override
     public LocationTag getLocation() {
         if (isOnline()) {
             return new LocationTag(getPlayerEntity().getLocation());
