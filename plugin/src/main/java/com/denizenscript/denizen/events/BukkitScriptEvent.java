@@ -121,6 +121,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     @Override
     public void fire() {
         if (!Bukkit.isPrimaryThread()) {
+            if (Debug.verbose) {
+                Debug.log("Event is firing async: " + getName());
+            }
             BukkitScriptEvent altEvent = (BukkitScriptEvent) clone();
             new BukkitRunnable() {
                 @Override
