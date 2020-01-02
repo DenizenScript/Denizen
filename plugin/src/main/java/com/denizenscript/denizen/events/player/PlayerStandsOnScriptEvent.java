@@ -25,7 +25,7 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
     //
     // @Cancellable true
     //
-    // @Triggers when a player stands on a pressure plate, tripwire, or redstone ore.
+    // @Triggers when a player stands on a physical-interactable block (such as a pressure plate, tripwire, or redstone ore).
     // @Context
     // <context.location> returns the LocationTag the player is interacting with.
     // <context.material> returns the MaterialTag the player is interacting with.
