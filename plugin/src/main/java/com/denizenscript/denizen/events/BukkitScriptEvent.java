@@ -8,7 +8,6 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.events.ScriptEvent;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -309,11 +308,6 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return false;
         }
         return loc.getBlock().equals(location.getBlock());
-    }
-
-    @Deprecated
-    public boolean runWithCheck(ScriptContainer scriptContainer, String s, String lower, ItemTag held) {
-        return runWithCheck(new ScriptPath(scriptContainer, s), held);
     }
 
     public boolean runWithCheck(ScriptPath path, ItemTag held) {
