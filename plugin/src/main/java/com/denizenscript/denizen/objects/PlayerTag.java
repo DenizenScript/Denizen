@@ -418,6 +418,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         }
     }
 
+    public ItemTag getHeldItem() {
+        return new ItemTag(getPlayerEntity().getEquipment().getItemInMainHand());
+    }
+
     public void decrementStatistic(Statistic statistic, int amount) {
         if (isOnline()) {
             getPlayerEntity().decrementStatistic(statistic, amount);
@@ -1665,7 +1669,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 attribute.fulfill(1);
                 return new ElementTag(object.getPlayerEntity().getInventory().getHeldItemSlot() + 1);
             }
-            return new ItemTag(object.getPlayerEntity().getEquipment().getItemInMainHand());
+            return object.getHeldItem();
         });
 
         // <--[tag]

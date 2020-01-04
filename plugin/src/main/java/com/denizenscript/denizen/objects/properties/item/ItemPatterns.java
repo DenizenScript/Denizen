@@ -115,7 +115,7 @@ public class ItemPatterns implements Property {
         // @group properties
         // @mechanism ItemTag.patterns
         // @description
-        // Lists a banner's patterns in the form "OLOR/PATTERN|COLOR/PATTERN" etc.
+        // Lists a banner's patterns in the form "COLOR/PATTERN|COLOR/PATTERN" etc.
         // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
         // For the list of possible patterns, see <@link url http://bit.ly/1MqRn7T>.
         // -->

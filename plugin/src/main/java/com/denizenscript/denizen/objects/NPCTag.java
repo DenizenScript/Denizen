@@ -1255,14 +1255,19 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[mechanism]
         // @object NPCTag
         // @name owner
-        // @input Element
+        // @input PlayerTag
         // @description
         // Sets the owner of the NPC.
         // @tags
         // <NPCTag.owner>
         // -->
         if (mechanism.matches("owner")) {
-            getCitizen().getTrait(Owner.class).setOwner(mechanism.getValue().asString());
+            if (PlayerTag.matches(mechanism.getValue().asString())) {
+                getCitizen().getTrait(Owner.class).setOwner(mechanism.valueAsType(PlayerTag.class).getPlayerEntity());
+            }
+            else {
+                getCitizen().getTrait(Owner.class).setOwner(mechanism.getValue().asString());
+            }
         }
 
         // <--[mechanism]
