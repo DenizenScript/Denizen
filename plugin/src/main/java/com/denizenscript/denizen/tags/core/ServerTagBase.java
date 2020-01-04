@@ -95,9 +95,7 @@ public class ServerTagBase {
 
         if (attribute.startsWith("economy")) {
             if (Depends.economy == null) {
-                if (!attribute.hasAlternative()) {
-                    Debug.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
-                }
+                attribute.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
                 return;
             }
             attribute = attribute.fulfill(1);
@@ -1085,7 +1083,7 @@ public class ServerTagBase {
             List<WorldScriptContainer> EventsOne = OldEventManager.events.get("ON " + eventName);
             List<WorldScriptContainer> EventsTwo = OldEventManager.events.get("ON " + OldEventManager.StripIdentifiers(eventName));
             if (EventsOne == null && EventsTwo == null) {
-                Debug.echoError("No world scripts will handle the event '" + eventName + "'");
+                attribute.echoError("No world scripts will handle the event '" + eventName + "'");
             }
             else {
                 ListTag list = new ListTag();
@@ -1150,9 +1148,7 @@ public class ServerTagBase {
             File f = new File(DenizenAPI.getCurrentInstance().getDataFolder(), attribute.getContext(1));
             try {
                 if (!Utilities.canReadFile(f)) {
-                    if (!attribute.hasAlternative()) {
-                        Debug.echoError("Invalid path specified. Invalid paths have been denied by the server administrator.");
-                    }
+                    attribute.echoError("Invalid path specified. Invalid paths have been denied by the server administrator.");
                     return;
                 }
             }
@@ -1174,15 +1170,11 @@ public class ServerTagBase {
             File folder = new File(DenizenAPI.getCurrentInstance().getDataFolder(), attribute.getContext(1));
             try {
                 if (!Utilities.canReadFile(folder)) {
-                    if (!attribute.hasAlternative()) {
-                        Debug.echoError("Invalid path specified. Invalid paths have been denied by the server administrator.");
-                    }
+                    attribute.echoError("Invalid path specified. Invalid paths have been denied by the server administrator.");
                     return;
                 }
                 if (!folder.exists() || !folder.isDirectory()) {
-                    if (!attribute.hasAlternative()) {
-                        Debug.echoError("Invalid path specified. No directory exists at that path.");
-                    }
+                    attribute.echoError("Invalid path specified. No directory exists at that path.");
                     return;
                 }
             }
@@ -1322,14 +1314,14 @@ public class ServerTagBase {
         if (attribute.startsWith("group_prefix")) {
 
             if (Depends.permissions == null) {
-                Debug.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                attribute.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
                 return;
             }
 
             String group = attribute.getContext(1);
 
             if (!Arrays.asList(Depends.permissions.getGroups()).contains(group)) {
-                Debug.echoError("Invalid group! '" + (group != null ? group : "") + "' could not be found.");
+                attribute.echoError("Invalid group! '" + (group != null ? group : "") + "' could not be found.");
                 return;
             }
 
@@ -1363,14 +1355,14 @@ public class ServerTagBase {
         if (attribute.startsWith("group_suffix")) {
 
             if (Depends.permissions == null) {
-                Debug.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                attribute.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
                 return;
             }
 
             String group = attribute.getContext(1);
 
             if (!Arrays.asList(Depends.permissions.getGroups()).contains(group)) {
-                Debug.echoError("Invalid group! '" + (group != null ? group : "") + "' could not be found.");
+                attribute.echoError("Invalid group! '" + (group != null ? group : "") + "' could not be found.");
                 return;
             }
 
@@ -1403,7 +1395,7 @@ public class ServerTagBase {
         // -->
         if (attribute.startsWith("list_permission_groups")) {
             if (Depends.permissions == null) {
-                Debug.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                attribute.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
                 return;
             }
             event.setReplaced(new ListTag(Arrays.asList(Depends.permissions.getGroups())).getAttribute(attribute.fulfill(1)));
@@ -1501,7 +1493,7 @@ public class ServerTagBase {
                 && attribute.hasContext(1)) {
             ScriptTag script = ScriptTag.valueOf(attribute.getContext(1));
             if (script == null || !(script.getContainer() instanceof AssignmentScriptContainer)) {
-                Debug.echoError("Invalid script specified.");
+                attribute.echoError("Invalid script specified.");
             }
             else {
                 ListTag npcs = new ListTag();
