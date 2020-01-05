@@ -142,6 +142,9 @@ public class BreakCommand extends AbstractCommand implements Holdable {
             TaskRunnable run = new TaskRunnable(breaker);
             run.taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), run, 0, 1);
         }
+        else {
+            se.setFinished(true);
+        }
     }
 
     private static class TaskRunnable implements Runnable {
