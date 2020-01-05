@@ -68,6 +68,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
     // The shoot command is ~waitable. Refer to <@link language ~waitable>.
     //
     // @Tags
+    // <entry[saveName].shot_entity> returns the single entity that was shot (as in, the projectile) (if you only shot one).
     // <entry[saveName].shot_entities> returns a ListTag of entities that were shot (as in, the projectiles).
     //
     // @Usage
@@ -278,6 +279,9 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         // Add entities to context so that the specific entities created/spawned
         // can be fetched.
         scriptEntry.addObject("shot_entities", entityList);
+        if (entityList.size() == 1) {
+            scriptEntry.addObject("shot_entity", entityList.getObject(0));
+        }
 
         if (spread == null) {
             Position.mount(Conversion.convertEntities(entities));
