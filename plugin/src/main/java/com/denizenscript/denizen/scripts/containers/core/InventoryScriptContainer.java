@@ -241,7 +241,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                         ListTag list = ListTag.getListFor(queue.determinations.getObject(0));
                         if (list != null) {
                             int x = 0;
-                            for (ItemTag item : list.filter(ItemTag.class, this, true)) {
+                            for (ItemTag item : list.filter(ItemTag.class, context, true)) {
                                 while (x < filledSlots.length && filledSlots[x]) {
                                     x++;
                                 }

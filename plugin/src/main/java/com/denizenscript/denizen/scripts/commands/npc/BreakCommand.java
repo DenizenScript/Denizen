@@ -44,15 +44,15 @@ public class BreakCommand extends AbstractCommand implements Holdable {
     //
     // @Usage
     // Use to make the npc break a related block.
-    // - break <context.location>
+    // - ~break <context.location>
     //
     // @Usage
     // Use to make a different NPC break a related block.
-    // - break <context.location> <[some_npc]>
+    // - ~break <context.location> <[some_npc]>
     //
     // @Usage
     // Use to make a different NPC break a related block and start digging from 5 blocks away.
-    // - break <context.location> <[some_npc]> radius:5
+    // - ~break <context.location> <[some_npc]> radius:5
     // -->
 
     @Override

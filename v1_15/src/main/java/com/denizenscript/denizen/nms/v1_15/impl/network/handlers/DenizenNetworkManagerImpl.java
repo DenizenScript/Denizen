@@ -72,14 +72,14 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelhandlercontext, Packet packet) throws Exception { // TODO: Check mapping update. Previously overrode 'a', and channelRead0 was overriden separately.
+    protected void channelRead0(ChannelHandlerContext channelhandlercontext, Packet packet) throws Exception {
+        // TODO: Check mapping update. Previously overrode 'a', and channelRead0 was overriden separately.
         if (oldManager.channel.isOpen()) {
             try {
                 packet.a(this.packetListener);
             }
             catch (Exception e) {
                 // Do nothing
-                //dB.echoError(e);
             }
         }
     }
