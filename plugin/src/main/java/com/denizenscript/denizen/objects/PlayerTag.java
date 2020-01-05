@@ -9,6 +9,7 @@ import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.BossBarHelper;
+import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizen.utilities.packets.ItemChangeMessage;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.flags.FlagManager;
@@ -2454,6 +2455,26 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
 
         // <--[mechanism]
         // @object PlayerTag
+        // @name noclip
+        // @input ElementTag(Boolean)
+        // @description
+        // When true, causes the server to allow the player to noclip (ie, walk through blocks without being prevented).
+        // This is purely serverside. The client will still not walk through blocks.
+        // This is useful alongside <@link command showfake>.
+        // Note that this may sometimes be imperfect / sometimes momentarily continue to clip block.
+        // Note that this may also prevent other collisions (eg projectile impact) but is not guaranteed to.
+        // -->
+        if (mechanism.matches("noclip") && mechanism.hasValue()) {
+            if (mechanism.getValue().asBoolean()) {
+                DenizenPacketHandler.forceNoclip.add(getOfflinePlayer().getUniqueId());
+            }
+            else {
+                DenizenPacketHandler.forceNoclip.remove(getOfflinePlayer().getUniqueId());
+            }
+        }
+
+        // <--[mechanism]
+        // @object PlayerTag
         // @name respawn
         // @input None
         // @description
@@ -2466,7 +2487,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name vision
-        // @input Element
+        // @input ElementTag
         // @description
         // Changes the player's vision to the provided entity type. Valid types:
         // ENDERMAN, CAVE_SPIDER, SPIDER, CREEPER
@@ -2517,7 +2538,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name window_property
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets various properties of a window the player has open, such as the open page in a lectern.
         // Input is of the form PROPERTY,VALUE where the value is a number.
@@ -2559,7 +2580,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name award_advancement
-        // @input Element
+        // @input ElementTag
         // @description
         // Awards an advancement to the player.
         // @tags
@@ -2710,7 +2731,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name resource_pack
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the current resource pack by specifying a valid URL to a resource pack.
         // @tags
@@ -2833,7 +2854,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name gamemode
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the game mode of the player.
         // Valid gamemodes are survival, creative, adventure, and spectator.
@@ -2847,7 +2868,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name kick
-        // @input Element
+        // @input ElementTag
         // @description
         // Kicks the player, with the specified message.
         // @tags
@@ -2860,7 +2881,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name weather
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the weather condition for the player. This does NOT affect the weather
         // in the world, and will block any world weather changes until the 'reset_weather'
@@ -2889,7 +2910,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name player_list_name
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the entry that is shown in the 'player list' that is shown when pressing tab.
         // @tags
@@ -2902,7 +2923,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name display_name
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the name displayed for the player when chatting.
         // @tags
@@ -3238,7 +3259,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name item_message
-        // @input Element
+        // @input ElementTag
         // @description
         // Shows the player an item message as if the item they are carrying had
         // changed names to the specified Element.
@@ -3517,7 +3538,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name stop_sound
-        // @input Element
+        // @input ElementTag
         // @description
         // Stops all sounds of the specified type for the player.
         // Valid types are AMBIENT, BLOCKS, HOSTILE, MASTER, MUSIC,
@@ -3541,7 +3562,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name action_bar
-        // @input Element
+        // @input ElementTag
         // @description
         // Sends the player text in the action bar.
         // -->
@@ -3563,7 +3584,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name name
-        // @input Element
+        // @input ElementTag
         // @description
         // Changes the name on this player's nameplate.
         // @tags
@@ -3582,7 +3603,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name skin
-        // @input Element
+        // @input ElementTag
         // @description
         // Changes the skin of the player to the skin of the given
         // player name.
@@ -3600,7 +3621,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name skin_blob
-        // @input Element
+        // @input ElementTag
         // @description
         // Changes the skin of the player to the specified blob.
         // @tags
@@ -3661,7 +3682,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name chat_prefix
-        // @input Element
+        // @input ElementTag
         // @plugin Vault
         // @description
         // Set the player's chat prefix.
@@ -3680,7 +3701,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name chat_suffix
-        // @input Element
+        // @input ElementTag
         // @plugin Vault
         // @description
         // Set the player's chat suffix.

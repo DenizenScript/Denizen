@@ -45,6 +45,7 @@ public class ShowFakeCommand extends AbstractCommand {
     // This means that if the player, for example, stands atop a fake block that the server sees as air, that player will be seen as flying.
     // The reverse applies as well: if a player walks through fake air (that is actually solid), the server will see a player walking through walls.
     // This can easily lead to players getting kicked by anti-cheat systems or similar results.
+    // You can enable the player to walk through fake air via <@link mechanism PlayerTag.noclip>.
     // Note as well that some clientside block effects may occur (eg fake fire may appear momentarily to actually ignite things, but won't actually damage them).
     //
     // @Tags

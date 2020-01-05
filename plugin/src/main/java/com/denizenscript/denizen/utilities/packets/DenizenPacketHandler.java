@@ -33,6 +33,8 @@ import java.util.concurrent.FutureTask;
 
 public class DenizenPacketHandler {
 
+    public static HashSet<UUID> forceNoclip = new HashSet<>();
+
     public void receivePacket(final Player player, final PacketInResourcePackStatus resourcePackStatus) {
         Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), new Runnable() {
             @Override
