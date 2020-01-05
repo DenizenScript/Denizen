@@ -53,6 +53,14 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
         super.a(packet);
     }
 
+    @Override
+    public void a(PacketPlayInFlying packet) {
+        if (DenizenPacketHandler.forceNoclip.contains(player.getUniqueID())) {
+            player.noclip = true;
+        }
+        super.a(packet);
+    }
+
     // For compatibility with other plugins using Reflection weirdly...
     @Override
     public void sendPacket(Packet packet) {
