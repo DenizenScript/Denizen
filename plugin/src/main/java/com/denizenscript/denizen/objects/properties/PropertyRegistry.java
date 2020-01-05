@@ -78,6 +78,7 @@ public class PropertyRegistry {
             PropertyParser.registerProperty(EntityRiptide.class, EntityTag.class);
         }
         PropertyParser.registerProperty(EntityRotation.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityScoreboardTags.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySmall.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySilent.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySitting.class, EntityTag.class);
