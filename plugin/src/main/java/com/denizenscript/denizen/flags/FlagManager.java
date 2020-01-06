@@ -402,22 +402,15 @@ public class FlagManager {
         public void remove(Object obj, int index) {
             checkExpired();
             boolean isDouble = ArgumentHelper.matchesDouble((String) obj);
-
             value.mustBeList();
-            // No index? Match object and remove it.
             if (index <= 0 && obj != null) {
                 int x = 0;
                 for (String val : value.values) {
-
-                    // Evaluate as String
                     if (val.equalsIgnoreCase(String.valueOf(obj))) {
-
                         value.values.remove(x);
                         value.size--;
                         break;
                     }
-
-                    // Evaluate as number
                     try {
                         if (isDouble && ArgumentHelper.matchesDouble(val) && Double.valueOf(val).equals(Double.valueOf((String) obj))) {
                             value.values.remove(x);
@@ -428,17 +421,13 @@ public class FlagManager {
                     catch (NumberFormatException e) {
                         // Ignore
                     }
-
                     x++;
                 }
-
-                // Else, remove specified index
             }
-            else if (index <= size()) {
+            else if (index <= value.size()) {
                 value.values.remove(index - 1);
                 value.size--;
             }
-
             valid = true;
             save();
             rebuild();
