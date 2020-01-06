@@ -34,17 +34,7 @@ public class Injector {
                 return null;
             }
         }
-        catch (InvocationTargetException e) {
-            Debug.echoError("Error initializing commands class " + clazz + ": ");
-            Debug.echoError(e);
-            return null;
-        }
-        catch (InstantiationException e) {
-            Debug.echoError("Error initializing commands class " + clazz + ": ");
-            Debug.echoError(e);
-            return null;
-        }
-        catch (IllegalAccessException e) {
+        catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
             Debug.echoError("Error initializing commands class " + clazz + ": ");
             Debug.echoError(e);
             return null;

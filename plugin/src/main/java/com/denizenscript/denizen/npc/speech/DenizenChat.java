@@ -13,7 +13,6 @@ import net.citizensnpcs.api.ai.speech.VocalChord;
 import net.citizensnpcs.npc.ai.speech.TalkableEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -136,9 +135,7 @@ public class DenizenChat implements VocalChord {
         double range = context.getChatRange();
         List<Entity> bystanderEntities = new ArrayList<>();
         if (range == 0D) {
-            for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                bystanderEntities.add(player);
-            }
+            bystanderEntities.addAll(Bukkit.getServer().getOnlinePlayers());
         }
         else {
             bystanderEntities = talkable.getEntity().getNearbyEntities(range, range, range);

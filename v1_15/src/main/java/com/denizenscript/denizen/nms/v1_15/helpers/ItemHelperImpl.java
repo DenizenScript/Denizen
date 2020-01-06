@@ -28,6 +28,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class ItemHelperImpl extends ItemHelper {
 
@@ -83,7 +84,7 @@ public class ItemHelperImpl extends ItemHelper {
     @Override
     public void registerFurnaceRecipe(String keyName, String group, ItemStack result, ItemStack ingredient, float exp, int time, String type, boolean exact) {
         MinecraftKey key = new MinecraftKey("denizen", keyName);
-        RecipeItemStack itemRecipe = new RecipeItemStack(Arrays.asList(new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(ingredient))).stream());
+        RecipeItemStack itemRecipe = new RecipeItemStack(Stream.of(new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(ingredient))));
         itemRecipe.exact = exact;
         RecipeCooking recipe;
         if (type.equalsIgnoreCase("smoker")) {
@@ -104,7 +105,7 @@ public class ItemHelperImpl extends ItemHelper {
     @Override
     public void registerStonecuttingRecipe(String keyName, String group, ItemStack result, ItemStack ingredient, boolean exact) {
         MinecraftKey key = new MinecraftKey("denizen", keyName);
-        RecipeItemStack itemRecipe = new RecipeItemStack(Arrays.asList(new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(ingredient))).stream());
+        RecipeItemStack itemRecipe = new RecipeItemStack(Stream.of(new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(ingredient))));
         itemRecipe.exact = exact;
         RecipeStonecutting recipe = new RecipeStonecutting(key, group, itemRecipe, CraftItemStack.asNMSCopy(result));
         ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().addRecipe(recipe);
@@ -115,7 +116,7 @@ public class ItemHelperImpl extends ItemHelper {
         MinecraftKey key = new MinecraftKey("denizen", keyName);
         ArrayList<RecipeItemStack> ingredientList = new ArrayList<>();
         for (int i = 0; i < ingredients.length; i++) {
-            RecipeItemStack itemRecipe = new RecipeItemStack(Arrays.asList(new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(ingredients[i]))).stream());
+            RecipeItemStack itemRecipe = new RecipeItemStack(Stream.of(new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(ingredients[i]))));
             itemRecipe.exact = exact[i];
             ingredientList.add(itemRecipe);
         }

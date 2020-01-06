@@ -268,9 +268,8 @@ public class ChunkTag implements ObjectTag, Adjustable {
             }
             int x = Integer.parseInt(coords.get(0));
             int z = Integer.parseInt(coords.get(1));
-            ChunkTag chunk = object;
 
-            return new ChunkTag(chunk.world, chunk.chunkX + x, chunk.chunkZ + z);
+            return new ChunkTag(object.world, object.chunkX + x, object.chunkZ + z);
 
         });
 
@@ -296,9 +295,8 @@ public class ChunkTag implements ObjectTag, Adjustable {
             }
             int x = Integer.parseInt(coords.get(0));
             int z = Integer.parseInt(coords.get(1));
-            ChunkTag chunk = object;
 
-            return new ChunkTag(chunk.world, chunk.chunkX - x, chunk.chunkZ - z);
+            return new ChunkTag(object.world, object.chunkX - x, object.chunkZ - z);
 
         });
 
@@ -349,9 +347,8 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // Returns a cuboid of this chunk.
         // -->
         registerTag("cuboid", (attribute, object) -> {
-            ChunkTag chunk = object;
-            return new CuboidTag(new Location(chunk.getWorld(), chunk.getX() * 16, 0, chunk.getZ() * 16),
-                    new Location(chunk.getWorld(), chunk.getX() * 16 + 15, 255, chunk.getZ() * 16 + 15));
+            return new CuboidTag(new Location(object.getWorld(), object.getX() * 16, 0, object.getZ() * 16),
+                    new Location(object.getWorld(), object.getX() * 16 + 15, 255, object.getZ() * 16 + 15));
         });
 
         // <--[tag]

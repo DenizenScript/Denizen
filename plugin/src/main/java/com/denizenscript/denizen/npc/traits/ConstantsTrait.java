@@ -108,9 +108,7 @@ public class ConstantsTrait extends Trait {
      * @param name name of the constant, case in-sensitive
      */
     public void removeConstant(String name) {
-        if (constants.containsKey(CoreUtilities.toLowerCase(name))) {
-            constants.remove(CoreUtilities.toLowerCase(name));
-        }
+        constants.remove(CoreUtilities.toLowerCase(name));
     }
 
 

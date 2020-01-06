@@ -78,7 +78,7 @@ public class ItemChangeMessage implements Listener {
     @EventHandler
     public void blockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        if (player != null && slotChanged.containsKey(player.getUniqueId())) {
+        if (player != null) {
             slotChanged.remove(player.getUniqueId());
         }
     }
@@ -86,7 +86,7 @@ public class ItemChangeMessage implements Listener {
     @EventHandler
     public void playerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (player != null && slotChanged.containsKey(player.getUniqueId())) {
+        if (player != null) {
             slotChanged.remove(player.getUniqueId());
         }
     }

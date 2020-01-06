@@ -140,7 +140,7 @@ public class ScribeCommand extends AbstractCommand {
     }
 
     private void equipBook(Player player, ItemStack book) {
-        ItemStack currItem = player.getItemInHand();
+        ItemStack currItem = player.getEquipment().getItemInMainHand();
         Inventory inv = player.getInventory();
         int emptySpot = inv.firstEmpty();
 

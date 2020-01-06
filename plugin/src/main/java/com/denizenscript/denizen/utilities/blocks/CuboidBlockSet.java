@@ -26,7 +26,7 @@ public class CuboidBlockSet implements BlockSet {
         center_x = (int) (center.getX() - low.getX());
         center_y = (int) (center.getY() - low.getY());
         center_z = (int) (center.getZ() - low.getZ());
-        blocks = new BlockData[(int) (x_width * y_length * z_height)];
+        blocks = new BlockData[(x_width * y_length * z_height)];
         int index = 0;
         for (int x = 0; x < x_width; x++) {
             for (int y = 0; y < y_length; y++) {
@@ -170,7 +170,7 @@ public class CuboidBlockSet implements BlockSet {
         center_z = cx;
         for (int x = 0; x < z_height; x++) {
             for (int y = 0; y < y_length; y++) {
-                for (int z = (int) x_width - 1; z >= 0; z--) {
+                for (int z = x_width - 1; z >= 0; z--) {
                     bd[index++] = blockAt(z, y, x);
                 }
             }
@@ -185,7 +185,7 @@ public class CuboidBlockSet implements BlockSet {
         BlockData[] bd = new BlockData[blocks.length];
         int index = 0;
         center_x = x_width - center_x;
-        for (int x = (int) x_width - 1; x >= 0; x--) {
+        for (int x = x_width - 1; x >= 0; x--) {
             for (int y = 0; y < y_length; y++) {
                 for (int z = 0; z < z_height; z++) {
                     bd[index++] = blockAt(x, y, z);
@@ -200,7 +200,7 @@ public class CuboidBlockSet implements BlockSet {
         int index = 0;
         center_x = x_width - center_x;
         for (int x = 0; x < x_width; x++) {
-            for (int y = (int) y_length - 1; y >= 0; y--) {
+            for (int y = y_length - 1; y >= 0; y--) {
                 for (int z = 0; z < z_height; z++) {
                     bd[index++] = blockAt(x, y, z);
                 }
@@ -215,7 +215,7 @@ public class CuboidBlockSet implements BlockSet {
         center_x = x_width - center_x;
         for (int x = 0; x < x_width; x++) {
             for (int y = 0; y < y_length; y++) {
-                for (int z = (int) z_height - 1; z >= 0; z--) {
+                for (int z = z_height - 1; z >= 0; z--) {
                     bd[index++] = blockAt(x, y, z);
                 }
             }

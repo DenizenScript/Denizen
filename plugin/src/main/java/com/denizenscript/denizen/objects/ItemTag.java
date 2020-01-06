@@ -789,12 +789,11 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
             if (attribute.getAttribute(2).equals("formatted")) {
                 return object;
             }
-            ItemTag item = object;
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) &&
-                    item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof BlockStateMeta) {
-                return new MaterialTag(new ModernBlockData(((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()));
+                    object.getItemStack().hasItemMeta() && object.getItemStack().getItemMeta() instanceof BlockStateMeta) {
+                return new MaterialTag(new ModernBlockData(((BlockStateMeta) object.getItemStack().getItemMeta()).getBlockState()));
             }
-            return item.getMaterial();
+            return object.getMaterial();
         });
 
         // <--[tag]
@@ -858,10 +857,9 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         // -->
         registerTag("recipe_ids", (attribute, object) -> {
             String type = attribute.hasContext(1) ? CoreUtilities.toLowerCase(attribute.getContext(1)) : null;
-            ItemTag item = object;
-            ItemScriptContainer container = item.isItemscript() ? ItemScriptHelper.getItemScriptContainer(item.getItemStack()) : null;
+            ItemScriptContainer container = object.isItemscript() ? ItemScriptHelper.getItemScriptContainer(object.getItemStack()) : null;
             ListTag list = new ListTag();
-            for (Recipe recipe : Bukkit.getRecipesFor(item.getItemStack())) {
+            for (Recipe recipe : Bukkit.getRecipesFor(object.getItemStack())) {
                 if (!Utilities.isRecipeOfType(recipe, type)) {
                     continue;
                 }

@@ -29,7 +29,7 @@ public class BukkitTagContext extends TagContext {
     }
 
     public BukkitTagContext(ScriptEntry entry, boolean instant) {
-        super(instant, entry != null ? entry.shouldDebug() : true, entry, entry != null ? entry.getScript() : null);
+        super(instant, entry == null || entry.shouldDebug(), entry, entry != null ? entry.getScript() : null);
         player = entry != null ? ((BukkitScriptEntryData) entry.entryData).getPlayer() : null;
         npc = entry != null ? ((BukkitScriptEntryData) entry.entryData).getNPC() : null;
     }

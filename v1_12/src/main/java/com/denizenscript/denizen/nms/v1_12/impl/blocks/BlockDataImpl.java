@@ -37,7 +37,7 @@ public class BlockDataImpl implements BlockData {
     }
 
     public void setBlock(Block block, boolean physics) {
-        block.setTypeIdAndData(material.getId(), (byte) data, physics);
+        block.setTypeIdAndData(material.getId(), data, physics);
         if (ctag != null) {
             CompoundTagBuilder builder = ctag.createBuilder();
             builder.putInt("x", block.getX());

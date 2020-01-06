@@ -150,9 +150,7 @@ public class NoteBlockReceiver implements Receiver, MetaEventListener {
         }
         closing = true;
         Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), () -> {
-            if (MidiUtil.receivers.containsKey(key)) {
-                MidiUtil.receivers.remove(key);
-            }
+            MidiUtil.receivers.remove(key);
             if (sequencer != null) {
                 sequencer.close();
                 sequencer = null;

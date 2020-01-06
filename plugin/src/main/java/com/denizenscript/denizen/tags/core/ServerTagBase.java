@@ -477,10 +477,7 @@ public class ServerTagBase {
         // Returns a list of all registered command names in Bukkit.
         // -->
         if (attribute.startsWith("list_commands")) {
-            ListTag list = new ListTag();
-            for (String cmd : CommandScriptHelper.knownCommands.keySet()) {
-                list.add(cmd);
-            }
+            ListTag list = new ListTag(CommandScriptHelper.knownCommands.keySet());
             event.setReplaced(list.getAttribute(attribute.fulfill(1)));
             return;
         }
@@ -1915,10 +1912,7 @@ public class ServerTagBase {
         // Returns a list of all currently active boss bar IDs.
         // -->
         else if (attribute.startsWith("current_bossbars")) {
-            ListTag dl = new ListTag();
-            for (String str : BossBarCommand.bossBarMap.keySet()) {
-                dl.add(str);
-            }
+            ListTag dl = new ListTag(BossBarCommand.bossBarMap.keySet());
             event.setReplaced(dl.getAttribute(attribute.fulfill(1)));
         }
 

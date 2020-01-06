@@ -133,7 +133,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     public static boolean isPlayer(Entity entity) {
-        return entity != null && entity instanceof Player && !isNPC(entity);
+        return entity instanceof Player && !isNPC(entity);
     }
 
     public static PlayerTag getPlayerFrom(Entity entity) {

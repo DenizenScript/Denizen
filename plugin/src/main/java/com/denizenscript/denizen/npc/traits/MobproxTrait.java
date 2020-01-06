@@ -49,14 +49,11 @@ public class MobproxTrait extends Trait {
                     int range = frange.getLast().asInteger();
                     boolean acceptnpc = facceptnpc.getLast().asBoolean();
                     List<Entity> nearby = liveEnt.getNearbyEntities(range, range, range);
-                    List<Entity> removeme = new ArrayList<>();
-                    removeme.addAll(inrange);
+                    List<Entity> removeme = new ArrayList<>(inrange);
                     for (Entity ent : nearby) {
                         if (ent instanceof LivingEntity && (!(ent instanceof Player) || EntityTag.isCitizensNPC(ent))
                                 && (acceptnpc || (!EntityTag.isCitizensNPC(ent)))) {
-                            if (removeme.contains(ent)) {
-                                removeme.remove(ent);
-                            }
+                            removeme.remove(ent);
                             if (!inrange.contains(ent)) {
                                 inrange.add(ent);
                                 callAction("enter", ent);

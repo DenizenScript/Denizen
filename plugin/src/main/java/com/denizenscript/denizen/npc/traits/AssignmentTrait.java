@@ -274,7 +274,7 @@ public class AssignmentTrait extends Trait {
             }
             else if (killerEntity instanceof Projectile) {
                 ProjectileSource shooter = ((Projectile) killerEntity).getShooter();
-                if (shooter != null && shooter instanceof LivingEntity) {
+                if (shooter instanceof LivingEntity) {
 
                     context.put("shooter", new EntityTag((LivingEntity) shooter).getDenizenObject());
                     if (shooter instanceof Player) {

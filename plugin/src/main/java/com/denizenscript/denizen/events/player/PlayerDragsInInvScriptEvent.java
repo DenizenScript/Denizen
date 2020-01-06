@@ -137,7 +137,7 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
                 @Override
                 public void run() {
                     entity.getPlayerEntity().updateInventory();
-                    if (holder != null && holder instanceof Player) {
+                    if (holder instanceof Player) {
                         ((Player) holder).updateInventory();
                     }
                 }

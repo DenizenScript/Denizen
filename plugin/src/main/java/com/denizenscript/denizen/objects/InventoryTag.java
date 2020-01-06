@@ -2118,9 +2118,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // -->
         registerTag("location", (attribute, object) -> {
             LocationTag location = object.getLocation();
-            if (location == null) {
-                return null;
-            }
             return location;
         });
 
@@ -2250,9 +2247,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // -->
         registerTag("equipment", (attribute, object) -> {
             ListTag equipment = object.getEquipment();
-            if (equipment == null) {
-                return null;
-            }
             return equipment;
         });
 
@@ -2353,9 +2347,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // -->
         registerTag("fuel", (attribute, object) -> {
             ItemTag fuel = object.getFuel();
-            if (fuel == null) {
-                return null;
-            }
             return fuel;
         });
 
@@ -2368,9 +2359,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // -->
         registerTag("input", (attribute, object) -> {
             ItemTag smelting = object.getInput();
-            if (smelting == null) {
-                return null;
-            }
             return smelting;
         });
         registerTag("smelting", tagProcessor.registeredObjectTags.get("input"));

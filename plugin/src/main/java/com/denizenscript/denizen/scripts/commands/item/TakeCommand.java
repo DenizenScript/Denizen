@@ -198,7 +198,7 @@ public class TakeCommand extends AbstractCommand {
             }
 
             case ITEMINHAND: {
-                int inHandAmt = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().getItemInHand().getAmount();
+                int inHandAmt = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().getEquipment().getItemInMainHand().getAmount();
                 int theAmount = (int) qty.asDouble();
                 ItemStack newHandItem = new ItemStack(Material.AIR);
                 if (theAmount > inHandAmt) {
@@ -213,7 +213,7 @@ public class TakeCommand extends AbstractCommand {
                     }
                     else {
                         // amount is less than what's in hand, need to make a new itemstack of what's left...
-                        newHandItem = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().getItemInHand().clone();
+                        newHandItem = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().getEquipment().getItemInMainHand().clone();
                         newHandItem.setAmount(inHandAmt - theAmount);
                         Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().setItemInHand(newHandItem);
                         Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().updateInventory();

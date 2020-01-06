@@ -194,7 +194,7 @@ public class ExecuteCommand extends AbstractCommand {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Cannot EXECUTE AS_NPC unless the NPC is Player-Type.");
                     return;
                 }
-                ((Player) Utilities.getEntryNPC(scriptEntry).getEntity()).setOp(true);
+                Utilities.getEntryNPC(scriptEntry).getEntity().setOp(true);
                 try {
                     ((Player) Utilities.getEntryNPC(scriptEntry).getEntity()).performCommand(command);
                 }
@@ -202,7 +202,7 @@ public class ExecuteCommand extends AbstractCommand {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Exception while executing command as NPC-OP.");
                     Debug.echoError(scriptEntry.getResidingQueue(), e);
                 }
-                ((Player) Utilities.getEntryNPC(scriptEntry).getEntity()).setOp(false);
+                Utilities.getEntryNPC(scriptEntry).getEntity().setOp(false);
                 break;
 
             case AS_SERVER:

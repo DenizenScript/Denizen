@@ -134,7 +134,7 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
                     if (item == null) {
                         Debug.echoError("Invalid click trigger in script '" + script.getName() + "' (null trigger item)!");
                     }
-                    if (item != null && item.comparesTo(player.getPlayerEntity().getItemInHand()) >= 0) {
+                    if (item != null && item.comparesTo(player.getPlayerEntity().getEquipment().getItemInMainHand()) >= 0) {
                         id = entry.getKey();
                     }
                 }

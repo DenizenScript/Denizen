@@ -271,13 +271,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // x,y,z,pitch,yaw
         {
             try {
-                LocationTag output = new LocationTag(null,
+                return new LocationTag(null,
                         Double.valueOf(split.get(0)),
                         Double.valueOf(split.get(1)),
                         Double.valueOf(split.get(2)),
                         Float.valueOf(split.get(3)),
                         Float.valueOf(split.get(4)));
-                return output;
             }
             catch (Exception e) {
                 if (context == null || context.debug) {
@@ -1044,8 +1043,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (!object.isChunkLoadedSafe()) {
                 return null;
             }
-            ObjectTag obj = ElementTag.handleNull(object.identify() + ".inventory", object.getInventory(), "InventoryTag", attribute.hasAlternative());
-            return obj;
+            return ElementTag.handleNull(object.identify() + ".inventory", object.getInventory(), "InventoryTag", attribute.hasAlternative());
         });
 
         // <--[tag]

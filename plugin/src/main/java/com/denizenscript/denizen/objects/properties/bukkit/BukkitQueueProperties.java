@@ -57,12 +57,7 @@ public class BukkitQueueProperties implements Property {
             else if (!attribute.hasAlternative()) {
                 Debug.echoError(object.queue, "Can't determine a linked NPC.");
             }
-            if (npc == null) {
-                return null;
-            }
-            else {
-                return npc;
-            }
+            return npc;
         });
 
         // <--[tag]
@@ -83,12 +78,7 @@ public class BukkitQueueProperties implements Property {
             else {
                 Debug.echoError(object.queue, "Can't determine a linked player.");
             }
-            if (player == null) {
-                return null;
-            }
-            else {
-                return player;
-            }
+            return player;
         });
     }
 

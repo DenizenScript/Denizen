@@ -70,12 +70,12 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         if (!runInCheck(path, location)) {
             return false;
         }
-        if (!runWithCheck(path, new ItemTag(event.getPlayer().getItemInHand()))) {
+        if (!runWithCheck(path, new ItemTag(event.getPlayer().getEquipment().getItemInMainHand()))) {
             return false;
         }
         // Deprecated in favor of with: format
         if (path.eventArgLowerAt(3).equals("with")
-                && !tryItem(new ItemTag(event.getPlayer().getItemInHand()), path.eventArgLowerAt(4))) {
+                && !tryItem(new ItemTag(event.getPlayer().getEquipment().getItemInMainHand()), path.eventArgLowerAt(4))) {
             return false;
         }
         return super.matches(path);

@@ -27,11 +27,6 @@ public class ActionHandler {
         this.denizen = denizen;
     }
 
-    public String doAction(String actionName, NPCTag npc, PlayerTag player, AssignmentScriptContainer assignment) {
-        return doAction(actionName, npc, player, assignment, null);
-    }
-
-
     public String doAction(String actionName, NPCTag npc, PlayerTag player, AssignmentScriptContainer assignment, Map<String, ObjectTag> context) {
 
         if (context == null) {

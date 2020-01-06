@@ -135,7 +135,7 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
                 if (!idMap.isEmpty()) {
                     for (Map.Entry<String, String> entry : idMap.entrySet()) {
                         String entry_value = TagManager.tag(entry.getValue(), new BukkitTagContext(dplayer, npc, false, null, false, new ScriptTag(script)));
-                        if (ItemTag.valueOf(entry_value, script).comparesTo(dplayer.getPlayerEntity().getItemInHand()) >= 0) {
+                        if (ItemTag.valueOf(entry_value, script).comparesTo(dplayer.getPlayerEntity().getEquipment().getItemInMainHand()) >= 0) {
                             id = entry.getKey();
                         }
                     }

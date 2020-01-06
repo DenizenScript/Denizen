@@ -2725,7 +2725,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("attack_cooldown") && mechanism.requireObject(DurationTag.class)) {
             NMSHandler.getPlayerHelper().setAttackCooldown(getPlayerEntity(),
-                    mechanism.getValue().asType(DurationTag.class).getTicksAsInt());
+                    mechanism.getValue().asType(DurationTag.class, mechanism.context).getTicksAsInt());
         }
 
         // <--[mechanism]

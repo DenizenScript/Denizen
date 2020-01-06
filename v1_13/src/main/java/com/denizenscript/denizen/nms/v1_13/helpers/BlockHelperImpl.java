@@ -54,10 +54,7 @@ public class BlockHelperImpl implements BlockHelper {
             f.setAccessible(true);
             return (T) f.get(cbs);
         }
-        catch (IllegalAccessException e) {
-            Debug.echoError(e);
-        }
-        catch (NoSuchFieldException e) {
+        catch (IllegalAccessException | NoSuchFieldException e) {
             Debug.echoError(e);
         }
         return null;
@@ -107,7 +104,7 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public CompoundTag getNbtData(Block block) {
-        TileEntity tileEntity = getTE((CraftBlockEntityState) (CraftBlockState) block.getState());
+        TileEntity tileEntity = getTE((CraftBlockEntityState) block.getState());
         if (tileEntity == null) {
             return null;
         }
@@ -116,7 +113,7 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public void setNbtData(Block block, CompoundTag compoundTag) {
-        TileEntity tileEntity = getTE((CraftBlockEntityState) (CraftBlockState) block.getState());
+        TileEntity tileEntity = getTE((CraftBlockEntityState) block.getState());
         if (tileEntity == null) {
             return;
         }

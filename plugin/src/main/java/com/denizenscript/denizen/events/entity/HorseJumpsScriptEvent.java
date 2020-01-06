@@ -29,7 +29,6 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     // @Context
     // <context.entity> returns the EntityTag of the horse.
     // <context.color> returns an ElementTag of the horse's color.
-    // <context.variant> returns an ElementTag of the horse's variant.
     // <context.power> returns an ElementTag(Decimal) of the jump's power.
     //
     // @Determine
@@ -44,7 +43,6 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     public static HorseJumpsScriptEvent instance;
     public EntityTag entity;
     public ElementTag color;
-    public ElementTag variant;
     public Float power;
     public HorseJumpEvent event;
 
@@ -61,7 +59,7 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
         String arg2 = path.eventArgLowerAt(1);
         String tamed = arg2.equals("jumps") ? arg1 : arg2;
 
-        if (!tryEntity(entity, tamed) || !tamed.equals(CoreUtilities.toLowerCase(variant.toString()))) {
+        if (!tryEntity(entity, tamed)) {
             return false;
         }
 
@@ -98,9 +96,6 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
         else if (name.equals("color")) {
             return color;
         }
-        else if (name.equals("variant")) {
-            return variant;
-        }
         else if (name.equals("power")) {
             return new ElementTag(power);
         }
@@ -112,7 +107,6 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
         if (event.getEntity() instanceof Horse) {
             entity = new EntityTag(event.getEntity());
             color = new ElementTag(((Horse) event.getEntity()).getColor().name());
-            variant = new ElementTag(event.getEntity().getVariant().name());
             power = event.getPower();
             this.event = event;
             fire(event);

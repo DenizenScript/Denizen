@@ -102,7 +102,7 @@ public class CompoundTagImpl extends CompoundTag {
                 tags.put(key, new ShortTag(((NBTTagShort) base).asShort()));
             }
             else if (base instanceof NBTTagString) {
-                tags.put(key, new StringTag(((NBTTagString) base).asString()));
+                tags.put(key, new StringTag(base.asString()));
             }
             else if (base instanceof NBTTagList) {
                 NBTTagList list = (NBTTagList) base;

@@ -43,9 +43,7 @@ public class EntityBoundingBox implements Property {
     private static Set<UUID> modifiedBoxes = new HashSet<>();
 
     public static void remove(UUID uuid) {
-        if (modifiedBoxes.contains(uuid)) {
-            modifiedBoxes.remove(uuid);
-        }
+        modifiedBoxes.remove(uuid);
     }
 
     private EntityBoundingBox(EntityTag entity) {

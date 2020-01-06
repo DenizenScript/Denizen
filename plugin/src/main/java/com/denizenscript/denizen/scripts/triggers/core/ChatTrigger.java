@@ -262,8 +262,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         String messageLow = CoreUtilities.toLowerCase(message);
 
         // Use TreeMap to sort chat triggers alphabetically
-        TreeMap<String, String> idMap = new TreeMap<>();
-        idMap.putAll(script.getIdMapFor(ChatTrigger.class, denizenPlayer));
+        TreeMap<String, String> idMap = new TreeMap<>(script.getIdMapFor(ChatTrigger.class, denizenPlayer));
 
         if (!idMap.isEmpty()) {
             // Iterate through the different id entries in the step's chat trigger

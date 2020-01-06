@@ -36,13 +36,7 @@ public class EntityCustomName implements Property {
 
     @Override
     public String getPropertyString() {
-        String name = entity.getBukkitEntity().getCustomName();
-        if (name == null) {
-            return null;
-        }
-        else {
-            return name;
-        }
+        return entity.getBukkitEntity().getCustomName();
     }
 
     @Override

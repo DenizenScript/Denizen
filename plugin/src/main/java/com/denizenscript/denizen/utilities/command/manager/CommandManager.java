@@ -139,10 +139,7 @@ public class CommandManager {
         try {
             method.invoke(instance, methodArgs);
         }
-        catch (IllegalArgumentException e) {
-            Debug.echoError(e);
-        }
-        catch (IllegalAccessException e) {
+        catch (IllegalArgumentException | IllegalAccessException e) {
             Debug.echoError(e);
         }
         catch (InvocationTargetException e) {

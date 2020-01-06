@@ -74,9 +74,7 @@ public abstract class ProfileEditor {
         @EventHandler
         public void onPlayerQuit(PlayerQuitEvent event) {
             UUID uuid = event.getPlayer().getUniqueId();
-            if (fakeProfiles.containsKey(uuid)) {
-                fakeProfiles.remove(uuid);
-            }
+            fakeProfiles.remove(uuid);
         }
     }
 }

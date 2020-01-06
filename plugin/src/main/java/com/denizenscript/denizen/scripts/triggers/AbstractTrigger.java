@@ -74,11 +74,6 @@ public abstract class AbstractTrigger {
     }
 
 
-    public boolean parse(NPCTag npc, PlayerTag player, InteractScriptContainer script) {
-        return parse(npc, player, script, null, null);
-    }
-
-
     public boolean parse(NPCTag npc, PlayerTag player, InteractScriptContainer script, String id) {
         return parse(npc, player, script, id, null);
     }
@@ -121,32 +116,5 @@ public abstract class AbstractTrigger {
         queue.start();
 
         return true;
-    }
-
-    /**
-     * This method will find all NPCs within a certain range of a location that
-     * have a trigger, and the trigger is enabled.
-     *
-     * @param location the location to search around
-     * @param maxRange how far to search
-     * @return The Set of NPCs that are
-     */
-    // TODO: Delete?
-    public Set<NPC> getActiveNPCsWithinRangeWithTrigger(Location location, int maxRange) {
-        Set<NPC> closestNPCs = new HashSet<>();
-
-        Iterator<NPC> it = CitizensAPI.getNPCRegistry().iterator();
-        while (it.hasNext()) {
-            NPC npc = it.next();
-            if (npc.isSpawned()
-                    && npc.getEntity().getLocation().getWorld().equals(location.getWorld())
-                    && npc.getEntity().getLocation().distance(location) < maxRange
-                    && npc.hasTrait(TriggerTrait.class)
-                    && npc.getTrait(TriggerTrait.class).isEnabled(name)) {
-                closestNPCs.add(npc);
-            }
-        }
-
-        return closestNPCs;
     }
 }

@@ -114,7 +114,7 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
             return;
         }
         entity = new EntityTag(event.getRightClicked());
-        item = new ItemTag(event.getPlayer().getItemInHand());
+        item = new ItemTag(event.getPlayer().getEquipment().getItemInMainHand());
         this.event = event;
         fire(event);
     }

@@ -109,7 +109,7 @@ public class HeadCommand extends AbstractCommand {
         if (skin != null) {
             item = MaterialCompat.createPlayerHead();
             ItemMeta itemMeta = item.getItemMeta();
-            ((SkullMeta) itemMeta).setOwner(skin.asString().replaceAll("[pP]@", "")); // TODO: 1.12 and up - switch to setOwningPlayer?
+            ((SkullMeta) itemMeta).setOwner(skin.asString());
             item.setItemMeta(itemMeta);
 
         }

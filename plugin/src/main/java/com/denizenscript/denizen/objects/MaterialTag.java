@@ -800,12 +800,11 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // Returns the explosion resistance for all blocks of this material type.
         // -->
         registerTag("block_resistance", (attribute, object) -> {
-            MaterialTag material = object;
-            if (!NMSHandler.getBlockHelper().hasBlock(material.getMaterial())) {
+            if (!NMSHandler.getBlockHelper().hasBlock(object.getMaterial())) {
                 Debug.echoError("Provided material does not have a placeable block.");
                 return null;
             }
-            return new ElementTag(NMSHandler.getBlockHelper().getBlockResistance(material.getMaterial()));
+            return new ElementTag(NMSHandler.getBlockHelper().getBlockResistance(object.getMaterial()));
         });
 
         // <--[tag]
@@ -815,12 +814,11 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // Returns the value representing how hard a material, used as a basis for calculating the time it takes to break.
         // -->
         registerTag("hardness", (attribute, object) -> {
-            MaterialTag material = object;
-            if (!material.getMaterial().isBlock()) {
+            if (!object.getMaterial().isBlock()) {
                 Debug.echoError("Provided material does not have a placeable block.");
                 return null;
             }
-            return new ElementTag(material.getMaterial().getHardness());
+            return new ElementTag(object.getMaterial().getHardness());
         });
 
         // <--[tag]
@@ -892,11 +890,10 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // Returns an item of the material.
         // -->
         registerTag("item", (attribute, object) -> {
-            MaterialTag material = object;
-            ItemTag item = new ItemTag(material, 1);
+            ItemTag item = new ItemTag(object, 1);
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
                 if (item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof BlockStateMeta) {
-                    ((BlockStateMeta) item.getItemStack().getItemMeta()).setBlockState(material.modernData.getBlockState());
+                    ((BlockStateMeta) item.getItemStack().getItemMeta()).setBlockState(object.modernData.getBlockState());
                 }
             }
             return item;
