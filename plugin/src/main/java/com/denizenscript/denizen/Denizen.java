@@ -49,6 +49,7 @@ import com.denizenscript.denizencore.scripts.commands.core.AdjustCommand;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.SlowWarning;
+import com.denizenscript.denizencore.utilities.debugging.StrongWarning;
 import com.denizenscript.denizencore.utilities.text.ConfigUpdater;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -58,6 +59,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -474,6 +476,26 @@ public class Denizen extends JavaPlugin {
                 }
             }
         }.runTaskTimer(this, 100, 20 * 60 * 60);
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!StrongWarning.recentWarnings.isEmpty()) {
+                    StringBuilder warnText = new StringBuilder();
+                    warnText.append(ChatColor.YELLOW).append("[Denizen]").append(ChatColor.RED).append("Recent strong system warnings, scripters need to address ASAP (check earlier console logs for details):");
+                    for (StrongWarning warning : StrongWarning.recentWarnings) {
+                        warnText.append("\n- ").append(warning.message);
+                    }
+                    StrongWarning.recentWarnings.clear();
+                    Bukkit.getConsoleSender().sendMessage(warnText.toString());
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        if (player.isOp()) {
+                            player.sendMessage(warnText.toString());
+                        }
+                    }
+                }
+            }
+        }.runTaskTimer(this, 100, 20 * 60 * 5);
     }
 
     public boolean hasDisabled = false;
