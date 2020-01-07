@@ -88,10 +88,21 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     public String backupWorld;
 
     public String getWorldName() {
-        if (getWorld() != null) {
-            return getWorld().getName();
+        World w = super.getWorld();
+        if (w != null) {
+            return w.getName();
         }
         return backupWorld;
+    }
+
+    @Override
+    public World getWorld() {
+        World w = super.getWorld();
+        if (w != null) {
+            return w;
+        }
+        super.setWorld(Bukkit.getWorld(backupWorld));
+        return super.getWorld();
     }
 
     @Override

@@ -102,12 +102,14 @@ public class DenizenEntityType {
                         if (Settings.packetInterception()) {
                             String name = null;
                             String skin = null;
-                            for (Mechanism mechanism : mechanisms) {
+                            for (Mechanism mechanism : new ArrayList<>(mechanisms)) {
                                 if (mechanism.matches("name")) {
                                     name = mechanism.getValue().asString();
+                                    mechanisms.remove(mechanism);
                                 }
                                 else if (mechanism.matches("skin")) {
                                     skin = mechanism.getValue().asString();
+                                    mechanisms.remove(mechanism);
                                 }
                                 if (name != null && skin != null) {
                                     break;

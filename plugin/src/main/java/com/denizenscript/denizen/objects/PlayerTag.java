@@ -3605,8 +3605,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @name skin
         // @input ElementTag
         // @description
-        // Changes the skin of the player to the skin of the given
-        // player name.
+        // Changes the skin of the player to the skin of the given player name.
         // -->
         if (mechanism.matches("skin")) {
             String name = mechanism.getValue().asString();
