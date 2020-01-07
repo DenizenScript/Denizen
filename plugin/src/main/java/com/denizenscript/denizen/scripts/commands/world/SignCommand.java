@@ -163,6 +163,6 @@ public class SignCommand extends AbstractCommand {
         }
         BlockState signState = sign.getState();
 
-        Utilities.setSignLines((Sign) signState, text.toArray(4));
+        Utilities.setSignLines((Sign) signState, text.toArray(new String[4]));
     }
 }
