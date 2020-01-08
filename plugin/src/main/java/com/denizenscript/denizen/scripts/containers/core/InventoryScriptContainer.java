@@ -159,7 +159,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                 }
             }
             if (size == 0) {
-                if (contains("slots") && (getInventoryType().getDefaultSize() % 9) == 0) {
+                if (contains("slots") && getInventoryType().name().equalsIgnoreCase("chest")) {
                     size = getStringList("slots").size() * 9;
                 }
                 else {
