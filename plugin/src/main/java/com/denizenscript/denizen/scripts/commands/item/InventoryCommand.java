@@ -107,6 +107,10 @@ public class InventoryCommand extends AbstractCommand {
     // @Usage
     // Use to adjust a specific item in the player's inventory.
     // - inventory adjust slot:5 "lore:Item modified!"
+    //
+    // @Usage
+    // Use to set a single stick into slot 10 of the player's inventory.
+    // - inventory set d:<player.inventory> o:stick slot:10
     // -->
 
     private enum Action {OPEN, CLOSE, COPY, MOVE, SWAP, ADD, REMOVE, SET, KEEP, EXCLUDE, FILL, CLEAR, UPDATE, ADJUST}

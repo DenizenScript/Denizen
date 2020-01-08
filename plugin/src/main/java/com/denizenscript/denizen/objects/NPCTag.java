@@ -849,7 +849,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @returns ElementTag
         // @mechanism NPCTag.skin
         // @description
-        // Returns whether the NPC has a custom skinskin.
+        // Returns whether the NPC has a custom skin.
         // -->
         registerTag("has_skin", (attribute, object) -> {
             return new ElementTag(object.getCitizen().data().has(NPC.PLAYER_SKIN_UUID_METADATA));
