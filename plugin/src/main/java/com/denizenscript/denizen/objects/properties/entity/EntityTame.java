@@ -14,7 +14,6 @@ import org.bukkit.entity.Tameable;
 
 public class EntityTame implements Property {
 
-
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag &&
                 ((EntityTag) entity).getBukkitEntity() instanceof Tameable;

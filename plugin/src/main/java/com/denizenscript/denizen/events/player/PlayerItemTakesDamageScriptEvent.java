@@ -48,7 +48,6 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     ItemTag item;
     LocationTag location;
 
-
     public PlayerItemTakesDamageScriptEvent() {
         instance = this;
     }

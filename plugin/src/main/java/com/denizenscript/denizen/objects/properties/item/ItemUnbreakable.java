@@ -30,7 +30,6 @@ public class ItemUnbreakable implements Property {
             "unbreakable"
     };
 
-
     private ItemUnbreakable(ItemTag item) {
         this.item = item;
     }

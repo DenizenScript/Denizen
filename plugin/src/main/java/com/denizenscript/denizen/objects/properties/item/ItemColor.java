@@ -42,7 +42,6 @@ public class ItemColor implements Property {
             "color", "dye_color", "dye"
     };
 
-
     private ItemColor(ItemTag _item) {
         item = _item;
     }
@@ -80,7 +79,6 @@ public class ItemColor implements Property {
 
         return null;
     }
-
 
     @Override
     public String getPropertyString() {

@@ -93,7 +93,6 @@ public class BiomeTag implements ObjectTag, Adjustable {
         return false;
     }
 
-
     ///////////////
     //   Constructors
     /////////////
@@ -101,7 +100,6 @@ public class BiomeTag implements ObjectTag, Adjustable {
     public BiomeTag(Biome biome) {
         this.biome = NMSHandler.getInstance().getBiomeNMS(biome);
     }
-
 
     /////////////////////
     //   INSTANCE FIELDS/METHODS
@@ -152,7 +150,6 @@ public class BiomeTag implements ObjectTag, Adjustable {
         }
         return this;
     }
-
 
     public static void registerTags() {
 
@@ -288,7 +285,6 @@ public class BiomeTag implements ObjectTag, Adjustable {
     public ObjectTag getObjectAttribute(Attribute attribute) {
         return tagProcessor.getObjectAttribute(this, attribute);
     }
-
 
     @Override
     public void applyProperty(Mechanism mechanism) {

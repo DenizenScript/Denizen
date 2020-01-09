@@ -39,7 +39,6 @@ public class EntityBoundingBox implements Property {
             "bounding_box"
     };
 
-
     private static Set<UUID> modifiedBoxes = new HashSet<>();
 
     public static void remove(UUID uuid) {

@@ -74,11 +74,9 @@ public class PlayerTagBase implements Listener {
         }
     }
 
-
     //////////
     //  ReplaceableTagEvent handler
     ////////
-
 
     public void playerTags(ReplaceableTagEvent event) {
 
@@ -110,5 +108,4 @@ public class PlayerTagBase implements Listener {
         event.setReplacedObject(CoreUtilities.autoAttrib(p, attribute.fulfill(1)));
     }
 }
-
 

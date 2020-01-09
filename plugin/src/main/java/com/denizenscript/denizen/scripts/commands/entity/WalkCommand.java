@@ -127,7 +127,6 @@ public class WalkCommand extends AbstractCommand implements Holdable {
             }
         }
 
-
         // Check for required information
 
         if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("stop")) {
@@ -149,7 +148,6 @@ public class WalkCommand extends AbstractCommand implements Holdable {
         scriptEntry.defaultObject("stop", new ElementTag(false));
     }
 
-
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
@@ -162,7 +160,6 @@ public class WalkCommand extends AbstractCommand implements Holdable {
         ElementTag stop = scriptEntry.getElement("stop");
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         final LocationTag lookat = scriptEntry.getObjectTag("lookat");
-
 
         // Debug the execution
 
@@ -252,7 +249,6 @@ public class WalkCommand extends AbstractCommand implements Holdable {
         }
 
     }
-
 
     // Held script entries
     public static List<ScriptEntry> held = new ArrayList<>();

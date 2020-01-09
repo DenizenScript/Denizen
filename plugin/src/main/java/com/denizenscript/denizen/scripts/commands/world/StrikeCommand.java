@@ -9,7 +9,6 @@ import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
-
 public class StrikeCommand extends AbstractCommand {
 
     // <--[command]

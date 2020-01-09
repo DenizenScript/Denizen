@@ -150,7 +150,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // if enabled. Should the Player chat only when looking at the NPC? This may
         // reduce accidental chats with NPCs.
 
-
         if (Settings.chatMustSeeNPC()) {
             if (!player.hasLineOfSight(npc.getEntity())) {
                 if (HyperDebug) {
@@ -249,7 +248,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                 return new ChatContext(message, ret);
             }
         }
-
 
         // Parse the script and match Triggers.. if found, cancel the text! The
         // parser will take care of everything else.
@@ -377,7 +375,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         return new ChatContext(message, ret);
     }
 
-
     @EventHandler
     public void asyncChatTrigger(final AsyncPlayerChatEvent event) {
         if (HyperDebug) {
@@ -437,12 +434,10 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             event.setCancelled(true);
         }
 
-
         if (chat.hasChanges()) {
             event.setMessage(chat.getChanges());
         }
     }
-
 
     /**
      * Contains whether the chat trigger successfully 'triggered' and any context that was

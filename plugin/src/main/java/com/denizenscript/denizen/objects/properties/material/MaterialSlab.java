@@ -29,7 +29,6 @@ public class MaterialSlab implements Property {
             "slab_type"
     };
 
-
     private MaterialSlab(MaterialTag _material) {
         material = _material;
     }

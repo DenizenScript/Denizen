@@ -69,7 +69,6 @@ public class TriggerRegistry {
         Debug.echoApproval("Loaded core triggers: " + instances.keySet().toString());
     }
 
-
     /////////
     // Trigger Cooldowns
     ///////

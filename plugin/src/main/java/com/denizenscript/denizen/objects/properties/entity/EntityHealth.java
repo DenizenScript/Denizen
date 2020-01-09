@@ -189,7 +189,6 @@ public class EntityHealth implements Property {
             }
         }
 
-
         // <--[mechanism]
         // @object EntityTag
         // @name health_data

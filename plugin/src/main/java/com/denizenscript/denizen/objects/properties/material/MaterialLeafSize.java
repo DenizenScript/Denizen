@@ -29,7 +29,6 @@ public class MaterialLeafSize implements Property {
             "leaf_size"
     };
 
-
     private MaterialLeafSize(MaterialTag _material) {
         material = _material;
     }

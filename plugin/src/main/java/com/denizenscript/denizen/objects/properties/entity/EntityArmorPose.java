@@ -110,7 +110,6 @@ public class EntityArmorPose implements Property {
             }
         }
 
-
         return null;
     }
 

@@ -84,7 +84,6 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
-
     public static ItemTag valueOf(String string) {
         return valueOf(string, null);
     }
@@ -196,7 +195,6 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         // No match! Return null.
         return null;
     }
-
 
     public static boolean matches(String arg) {
 
@@ -530,7 +528,6 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         return item.getType().getMaxDurability() > 0;
     }
 
-
     //////////////////////////////
     //  DSCRIPT ARGUMENT METHODS
     /////////////////////////
@@ -572,7 +569,6 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         return "i@" + getMaterial().identifyNoPropertiesNoIdentifier().replace("m@", "") + PropertyParser.getPropertiesString(this);
     }
 
-
     @Override
     public String identifySimple() {
         if (item == null) {
@@ -611,18 +607,15 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         return "i@" + getMaterial().realName() + "," + item.getDurability() + PropertyParser.getPropertiesString(this);
     }
 
-
     @Override
     public String toString() {
         return identify();
     }
 
-
     @Override
     public boolean isUnique() {
         return NotableManager.isSaved(this);
     }
-
 
     @Override
     @Note("Items")
@@ -630,12 +623,10 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         return getFullString();
     }
 
-
     @Override
     public void makeUnique(String id) {
         NotableManager.saveAs(this, id);
     }
-
 
     @Override
     public void forget() {

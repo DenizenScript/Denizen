@@ -34,7 +34,6 @@ public class BukkitElementProperties implements Property {
         }
     }
 
-
     private BukkitElementProperties(ElementTag element) {
         this.element = element;
     }

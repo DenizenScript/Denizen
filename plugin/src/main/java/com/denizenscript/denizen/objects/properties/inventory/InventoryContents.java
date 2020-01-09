@@ -119,7 +119,6 @@ public class InventoryContents implements Property {
         return "contents";
     }
 
-
     public static void registerTags() {
 
         // <--[tag]

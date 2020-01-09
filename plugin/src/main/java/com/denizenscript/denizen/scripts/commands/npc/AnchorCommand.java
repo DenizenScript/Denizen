@@ -92,7 +92,6 @@ public class AnchorCommand extends AbstractCommand {
 
     }
 
-
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
@@ -172,7 +171,6 @@ public class AnchorCommand extends AbstractCommand {
                 }
             }
         }
-
 
     }
 }

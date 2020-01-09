@@ -16,7 +16,6 @@ import org.bukkit.event.Listener;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-
 public class ZapCommand extends AbstractCommand implements Listener {
 
     // <--[command]

@@ -133,7 +133,6 @@ public class ColorTag implements ObjectTag {
         return false;
     }
 
-
     ///////////////
     //   Constructors
     /////////////
@@ -158,7 +157,6 @@ public class ColorTag implements ObjectTag {
     public ColorTag(DyeColor dyeColor) {
         this.color = dyeColor.getColor();
     }
-
 
     /////////////////////
     //   INSTANCE FIELDS/METHODS

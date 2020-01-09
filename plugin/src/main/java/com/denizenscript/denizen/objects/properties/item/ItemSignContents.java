@@ -39,7 +39,6 @@ public class ItemSignContents implements Property {
             "sign_contents"
     };
 
-
     private ListTag getSignContents() {
         return new ListTag(Arrays.asList(((Sign) ((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()).getLines()));
     }
@@ -71,7 +70,6 @@ public class ItemSignContents implements Property {
 
         return null;
     }
-
 
     @Override
     public String getPropertyString() {

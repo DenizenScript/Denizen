@@ -34,7 +34,6 @@ public class ItemSpawnerPlayerRange implements Property {
             "spawner_player_range"
     };
 
-
     private ItemSpawnerPlayerRange(ItemTag _item) {
         item = _item;
     }

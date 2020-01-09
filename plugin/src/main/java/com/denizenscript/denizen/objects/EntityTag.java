@@ -156,7 +156,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         return null;
     }
 
-
     //////////////////
     //    OBJECT FETCHER
     ////////////////
@@ -194,7 +193,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         if (m.matches()) {
             return ObjectFetcher.getObjectFrom(EntityTag.class, string, context);
         }
-
 
         // Choose a random entity type if "RANDOM" is used
         if (string.equalsIgnoreCase("RANDOM")) {
@@ -387,7 +385,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         return false;
     }
 
-
     /////////////////////
     //   CONSTRUCTORS
     //////////////////
@@ -501,7 +498,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         }
 
     }
-
 
     /////////////////////
     //   INSTANCE FIELDS/METHODS
@@ -1023,7 +1019,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         return false;
     }
 
-
     /////////////////////
     //  ObjectTag Methods
     ///////////////////
@@ -1114,7 +1109,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         return "null";
     }
 
-
     @Override
     public String identifySimple() {
 
@@ -1139,7 +1133,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
 
         return "null";
     }
-
 
     public String identifyType() {
         if (isCitizensNPC()) {
@@ -1453,11 +1446,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             return new ElementTag(object.getName());
         });
 
-
         /////////////////////
         //   INVENTORY ATTRIBUTES
         /////////////////
-
 
         // <--[tag]
         // @attribute <EntityTag.saddle>
@@ -1557,7 +1548,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             }
             return null;
         });
-
 
         /////////////////////
         //   LOCATION ATTRIBUTES
@@ -1742,7 +1732,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         registerSpawnedOnlyTag("world", (attribute, object) -> {
             return new WorldTag(object.entity.getWorld());
         });
-
 
         /////////////////////
         //   STATE ATTRIBUTES

@@ -10,7 +10,6 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 
-
 public class NoteCommand extends AbstractCommand {
 
     // <--[command]
@@ -128,7 +127,6 @@ public class NoteCommand extends AbstractCommand {
             Debug.echoError(scriptEntry.getResidingQueue(), "Uh oh! Report this to the Denizen developers! Err: NoteCommandObjectReflection");
             Debug.echoError(scriptEntry.getResidingQueue(), e);
         }
-
 
     }
 }

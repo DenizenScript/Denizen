@@ -34,7 +34,6 @@ public class ItemSpawnerType implements Property {
             "spawner_type"
     };
 
-
     private ItemSpawnerType(ItemTag _item) {
         item = _item;
     }

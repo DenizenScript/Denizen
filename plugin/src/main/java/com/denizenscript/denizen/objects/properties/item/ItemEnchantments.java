@@ -42,7 +42,6 @@ public class ItemEnchantments implements Property {
             "remove_enchantments", "enchantments"
     };
 
-
     private ItemEnchantments(ItemTag _item) {
         item = _item;
     }
@@ -164,7 +163,6 @@ public class ItemEnchantments implements Property {
         }
         return new HashSet<>();
     }
-
 
     @Override
     public String getPropertyString() {

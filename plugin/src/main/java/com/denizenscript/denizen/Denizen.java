@@ -91,7 +91,6 @@ public class Denizen extends JavaPlugin {
     private TriggerRegistry triggerRegistry = new TriggerRegistry();
     private DenizenNPCHelper npcHelper;
 
-
     public BukkitCommandRegistry getCommandRegistry() {
         return commandRegistry;
     }
@@ -571,7 +570,6 @@ public class Denizen extends JavaPlugin {
         }
         SlowWarning.WARNING_RATE = Settings.warningRate();
     }
-
 
     /*
      * Reloads, retrieves and saves progress information in

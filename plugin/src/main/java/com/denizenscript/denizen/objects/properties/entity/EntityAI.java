@@ -71,7 +71,6 @@ public class EntityAI implements Property {
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
-
         return null;
     }
 

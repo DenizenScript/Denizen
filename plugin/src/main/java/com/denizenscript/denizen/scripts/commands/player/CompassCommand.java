@@ -74,7 +74,6 @@ public class CompassCommand extends AbstractCommand {
         scriptEntry.defaultObject("reset", new ElementTag(false));
     }
 
-
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
@@ -83,7 +82,6 @@ public class CompassCommand extends AbstractCommand {
         LocationTag location = scriptEntry.getObjectTag("location");
         ElementTag reset = scriptEntry.getElement("reset");
         Player player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
-
 
         // Debug the execution
 
@@ -100,7 +98,6 @@ public class CompassCommand extends AbstractCommand {
         else {
             player.setCompassTarget(location);
         }
-
 
     }
 }

@@ -108,7 +108,6 @@ public class ChunkTag implements ObjectTag, Adjustable {
         return null;
     }
 
-
     public static boolean matches(String string) {
         if (CoreUtilities.toLowerCase(string).startsWith("ch@")) {
             return true;

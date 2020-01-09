@@ -33,7 +33,6 @@ public class EntityDespawnScriptEvent extends BukkitScriptEvent {
     //
     // -->
 
-
     public EntityDespawnScriptEvent() {
         instance = this;
     }

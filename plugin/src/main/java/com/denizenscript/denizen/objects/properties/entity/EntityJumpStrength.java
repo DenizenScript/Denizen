@@ -10,7 +10,6 @@ import org.bukkit.entity.AbstractHorse;
 
 public class EntityJumpStrength implements Property {
 
-
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag &&
                 ((EntityTag) entity).getBukkitEntity() instanceof AbstractHorse;

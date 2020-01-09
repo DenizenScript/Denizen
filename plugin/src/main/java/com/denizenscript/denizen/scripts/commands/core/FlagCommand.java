@@ -169,7 +169,6 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 scriptEntry.addObject("flag_target", arg.asType(EntityTag.class));
             }
 
-
             // Check if setting a boolean
             else if (!scriptEntry.hasObject("flag_name") &&
                     arg.raw_value.split(":", 3).length == 1) {
@@ -265,7 +264,6 @@ public class FlagCommand extends AbstractCommand implements Listener {
             throw new InvalidArgumentsException("Must specify a flag target!");
         }
     }
-
 
     @Override
     public void execute(ScriptEntry scriptEntry) {

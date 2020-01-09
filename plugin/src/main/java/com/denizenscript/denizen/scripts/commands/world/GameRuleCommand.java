@@ -8,7 +8,6 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
-
 public class GameRuleCommand extends AbstractCommand {
 
     // <--[command]

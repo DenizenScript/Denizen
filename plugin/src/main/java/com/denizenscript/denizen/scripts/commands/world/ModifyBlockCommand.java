@@ -81,7 +81,6 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         // Parse arguments
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
-
             if (arg.matchesArgumentType(CuboidTag.class)
                     && !scriptEntry.hasObject("locations")
                     && !scriptEntry.hasObject("location_list")
@@ -158,7 +157,6 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                 .defaultObject("delayed", new ElementTag(false));
 
     }
-
 
     @Override
     public void execute(final ScriptEntry scriptEntry) {
@@ -417,7 +415,6 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             }
         }, 2, 2);
     }
-
 
     @EventHandler
     public void blockPhysics(BlockPhysicsEvent event) {

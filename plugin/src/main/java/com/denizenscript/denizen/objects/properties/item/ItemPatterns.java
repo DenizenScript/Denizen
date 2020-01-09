@@ -49,7 +49,6 @@ public class ItemPatterns implements Property {
             "patterns"
     };
 
-
     private ItemPatterns(ItemTag item) {
         this.item = item;
     }
@@ -125,7 +124,6 @@ public class ItemPatterns implements Property {
 
         return null;
     }
-
 
     @Override
     public String getPropertyString() {

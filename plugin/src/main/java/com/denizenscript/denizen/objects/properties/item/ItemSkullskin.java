@@ -40,7 +40,6 @@ public class ItemSkullskin implements Property {
             "skull_skin"
     };
 
-
     private ItemSkullskin(ItemTag _item) {
         item = _item;
     }
@@ -101,7 +100,6 @@ public class ItemSkullskin implements Property {
             return new ElementTag(getPropertyString() != null)
                     .getObjectAttribute(attribute.fulfill(1));
         }
-
 
         return null;
     }

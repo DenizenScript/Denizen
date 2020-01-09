@@ -43,7 +43,6 @@ public class ItemBook implements Property {
             "book", "book_raw_pages", "book_pages", "book_author", "book_title"
     };
 
-
     private ItemBook(ItemTag _item) {
         item = _item;
     }

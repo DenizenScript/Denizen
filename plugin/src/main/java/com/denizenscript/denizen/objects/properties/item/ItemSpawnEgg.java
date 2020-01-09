@@ -36,7 +36,6 @@ public class ItemSpawnEgg implements Property {
             "spawn_id", "spawn_egg", "spawn_type"
     };
 
-
     private ItemSpawnEgg(ItemTag _item) {
         item = _item;
     }
@@ -70,7 +69,6 @@ public class ItemSpawnEgg implements Property {
 
         return null;
     }
-
 
     @Override
     public String getPropertyString() {

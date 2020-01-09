@@ -13,7 +13,6 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
 import java.util.List;
 
-
 public class AgeCommand extends AbstractCommand {
 
     // <--[command]

@@ -35,7 +35,6 @@ public class ItemFlags implements Property {
             "flags"
     };
 
-
     private ItemFlags(ItemTag _item) {
         item = _item;
     }
@@ -77,7 +76,6 @@ public class ItemFlags implements Property {
 
         return null;
     }
-
 
     @Override
     public String getPropertyString() {

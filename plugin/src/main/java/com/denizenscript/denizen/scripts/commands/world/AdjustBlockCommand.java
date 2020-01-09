@@ -15,7 +15,6 @@ import org.bukkit.block.data.BlockData;
 
 import java.util.List;
 
-
 public class AdjustBlockCommand extends AbstractCommand {
 
     // <--[command]

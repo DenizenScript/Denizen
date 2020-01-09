@@ -30,7 +30,6 @@ public class MaterialSwitchFace implements Property {
             "switch_face"
     };
 
-
     private MaterialSwitchFace(MaterialTag _material) {
         material = _material;
     }

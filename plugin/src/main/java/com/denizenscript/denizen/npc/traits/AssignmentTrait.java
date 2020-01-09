@@ -299,7 +299,6 @@ public class AssignmentTrait extends Trait {
 
     private UUID entityId;
 
-
     // <--[action]
     // @Actions
     // hit

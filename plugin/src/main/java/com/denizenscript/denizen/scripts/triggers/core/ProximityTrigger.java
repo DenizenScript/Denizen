@@ -46,7 +46,6 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
     //
     private static int maxProximityDistance = 75; // TODO: is this reasonable to have?
 
-
     // <--[action]
     // @Actions
     // enter proximity
@@ -155,7 +154,6 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                         double entryRadius = triggerTrait.getRadius(name);
                         double exitRadius = triggerTrait.getRadius(name);
                         double moveRadius = triggerTrait.getRadius(name);
-
 
                         //
                         // If a script was found, it might have custom ranges.

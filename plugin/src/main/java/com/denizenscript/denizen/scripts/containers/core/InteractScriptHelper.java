@@ -209,7 +209,6 @@ public class InteractScriptHelper {
         return null;
     }
 
-
     /**
      * Returns the current step for a Player and specified script. If no current step is found, the default
      * step is used, 'Default', unless another default (used by ending the step-name with a '*') is specified
@@ -234,7 +233,6 @@ public class InteractScriptHelper {
         // No saved step found, so we'll just use the default
         return ScriptRegistry.getScriptContainerAs(scriptName, InteractScriptContainer.class).getDefaultStepName().toUpperCase();
     }
-
 
     /**
      * Used with the getInteractScript method. Overrides Java's compareTo to allow comparisons of

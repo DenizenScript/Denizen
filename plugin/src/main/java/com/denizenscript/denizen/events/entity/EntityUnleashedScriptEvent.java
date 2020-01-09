@@ -43,7 +43,6 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
     public ElementTag reason;
     public EntityUnleashEvent event;
 
-
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);

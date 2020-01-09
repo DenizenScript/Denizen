@@ -30,7 +30,6 @@ public class MaterialPickle implements Property {
             "pickle_count"
     };
 
-
     private MaterialPickle(MaterialTag _material) {
         material = _material;
     }

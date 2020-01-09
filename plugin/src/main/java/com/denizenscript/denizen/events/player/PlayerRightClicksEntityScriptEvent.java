@@ -12,7 +12,6 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
-
 public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -71,7 +70,6 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
     public String getName() {
         return "PlayerRightClicksEntity";
     }
-
 
     @Override
     public ScriptEntryData getScriptEntryData() {

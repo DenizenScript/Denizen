@@ -27,7 +27,6 @@ import java.util.Map;
 
 public class WorldTag implements ObjectTag, Adjustable {
 
-
     /////////////////////
     //   STATIC METHODS
     /////////////////
@@ -45,7 +44,6 @@ public class WorldTag implements ObjectTag, Adjustable {
             return new WorldTag(world);
         }
     }
-
 
     /////////////////////
     //   OBJECT FETCHER
@@ -72,7 +70,6 @@ public class WorldTag implements ObjectTag, Adjustable {
     //
     // For general info, see <@link language WorldTag Objects>
     // -->
-
 
     public static WorldTag valueOf(String string) {
         return valueOf(string, null);
@@ -117,7 +114,6 @@ public class WorldTag implements ObjectTag, Adjustable {
         return null;
     }
 
-
     public static boolean matches(String arg) {
 
         arg = arg.replace("w@", "");
@@ -132,7 +128,6 @@ public class WorldTag implements ObjectTag, Adjustable {
 
         return returnable != null;
     }
-
 
     public World getWorld() {
         return Bukkit.getWorld(world_name);
@@ -323,7 +318,6 @@ public class WorldTag implements ObjectTag, Adjustable {
             return new ListTag(npcs);
         });
 
-
         /////////////////////
         //   GEOGRAPHY ATTRIBUTES
         /////////////////
@@ -395,7 +389,6 @@ public class WorldTag implements ObjectTag, Adjustable {
             return new ElementTag(object.getWorld().getWorldType().getName());
         });
 
-
         /////////////////////
         //   IDENTIFICATION ATTRIBUTES
         /////////////////
@@ -419,7 +412,6 @@ public class WorldTag implements ObjectTag, Adjustable {
         registerTag("seed", (attribute, object) -> {
             return new ElementTag(object.getWorld().getSeed());
         });
-
 
         /////////////////////
         //   SETTINGS ATTRIBUTES

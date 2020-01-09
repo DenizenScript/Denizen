@@ -168,13 +168,11 @@ public class EntityAge implements Property {
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
-
         return null;
     }
 
     @Override
     public void adjust(Mechanism mechanism) {
-
 
         // <--[mechanism]
         // @object EntityTag

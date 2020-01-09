@@ -8,7 +8,6 @@ import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
 
-
 /**
  * <p>Adds the ability to 'nickname' an NPC. This is meant to extend the NPCs real
  * name to perhaps add more description. Similar to a Player's 'Display Name', but better.

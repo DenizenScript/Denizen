@@ -40,7 +40,6 @@ public class PluginTag implements ObjectTag {
     //    Object Fetcher
     ////////////////
 
-
     public static PluginTag valueOf(String string) {
         return valueOf(string, null);
     }
@@ -89,7 +88,6 @@ public class PluginTag implements ObjectTag {
         return false;
     }
 
-
     /////////////////////
     //   Constructors
     //////////////////
@@ -97,7 +95,6 @@ public class PluginTag implements ObjectTag {
     public PluginTag(Plugin plugin) {
         this.plugin = plugin;
     }
-
 
     /////////////////////
     //   Instance Fields/Methods
@@ -108,7 +105,6 @@ public class PluginTag implements ObjectTag {
     public Plugin getPlugin() {
         return plugin;
     }
-
 
     /////////////////////
     //  ObjectTag Methods

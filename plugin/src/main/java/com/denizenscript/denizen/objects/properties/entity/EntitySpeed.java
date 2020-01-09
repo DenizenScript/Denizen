@@ -90,7 +90,6 @@ public class EntitySpeed implements Property {
             return getSpeed().getObjectAttribute(attribute.fulfill(1));
         }
 
-
         return null;
     }
 

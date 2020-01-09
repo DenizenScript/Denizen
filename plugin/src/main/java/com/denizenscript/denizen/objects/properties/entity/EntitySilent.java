@@ -66,7 +66,6 @@ public class EntitySilent implements Property {
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
-
         return null;
     }
 

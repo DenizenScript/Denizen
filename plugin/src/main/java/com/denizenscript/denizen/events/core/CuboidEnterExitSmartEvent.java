@@ -26,11 +26,9 @@ import java.util.regex.Pattern;
 
 public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
 
-
     ///////////////////
     // SMARTEVENT METHODS
     ///////////////
-
 
     ArrayList<String> cuboids_to_watch = new ArrayList<>();
 
@@ -72,14 +70,12 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
 
     }
 
-
     @Override
     public void _initialize() {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
                 .registerEvents(this, DenizenAPI.getCurrentInstance());
         Debug.log("Loaded Cuboid Enter & Exit SmartEvent.");
     }
-
 
     @Override
     public void breakDown() {

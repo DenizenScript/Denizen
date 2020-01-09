@@ -25,7 +25,6 @@ public class NPCCommandHandler {
         this.citizens = citizens;
     }
 
-
     // <--[language]
     // @name /npc pushable command
     // @group Console Commands
@@ -192,7 +191,6 @@ public class NPCCommandHandler {
         }
     }
 
-
     /*
      * ASSIGNMENT
      */
@@ -255,7 +253,6 @@ public class NPCCommandHandler {
         }
     }
 
-
     /*
      * TRIGGER
      */
@@ -316,7 +313,6 @@ public class NPCCommandHandler {
         }
     }
 
-
     /*
      * NICKNAME
      */
@@ -348,7 +344,6 @@ public class NPCCommandHandler {
             Messaging.sendInfo(sender, npc.getName() + " does not have a nickname!");
         }
     }
-
 
     /*
      * Sit

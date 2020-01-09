@@ -77,7 +77,6 @@ public class EntityVisible implements Property {
             return new ElementTag(stand.isVisible()).getObjectAttribute(attribute.fulfill(1));
         }
 
-
         return null;
     }
 

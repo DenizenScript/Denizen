@@ -24,7 +24,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.Set;
 
-
 public class DenizenCommandHandler {
 
     private final Denizen denizen;
@@ -308,7 +307,6 @@ public class DenizenCommandHandler {
         Messaging.send(sender, "<7>version: <f>" + Denizen.versionTag + "<7>, core version: <f>" + DenizenCore.VERSION);
     }
 
-
     /*
      * DENIZEN SAVE
      */
@@ -322,7 +320,6 @@ public class DenizenCommandHandler {
 
         Messaging.send(sender, "Denizen/saves.yml saved to disk from memory.");
     }
-
 
     /*
      * DENIZEN RELOAD
@@ -379,7 +376,6 @@ public class DenizenCommandHandler {
         Messaging.send(sender, "");
 
     }
-
 
     /*
      * DENIZEN SCRIPTS

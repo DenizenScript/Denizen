@@ -39,12 +39,10 @@ public class ItemLore implements Property {
             "lore"
     };
 
-
     public boolean hasLore() {
         return item.getItemStack().hasItemMeta()
                 && (item.getItemStack().getItemMeta().hasLore());
     }
-
 
     private ItemLore(ItemTag _item) {
         item = _item;
@@ -96,7 +94,6 @@ public class ItemLore implements Property {
 
         return null;
     }
-
 
     @Override
     public String getPropertyString() {

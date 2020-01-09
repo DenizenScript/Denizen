@@ -196,7 +196,6 @@ public abstract class NMSHandler {
         return offsetPatched;
     }
 
-
     public HashMap<UUID, UUID> attachmentsA = new HashMap<>(); // Key follows value
     public HashMap<UUID, UUID> attachments2 = new HashMap<>(); // Value follows key
     public HashMap<UUID, Vector> attachmentOffsets = new HashMap<>();

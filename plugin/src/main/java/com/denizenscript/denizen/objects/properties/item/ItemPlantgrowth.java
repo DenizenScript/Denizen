@@ -45,7 +45,6 @@ public class ItemPlantgrowth implements Property {
             "plant_growth"
     };
 
-
     private ItemPlantgrowth(ItemTag _item) {
         item = _item;
     }
@@ -93,7 +92,6 @@ public class ItemPlantgrowth implements Property {
 
         return null;
     }
-
 
     @Override
     public String getPropertyString() {

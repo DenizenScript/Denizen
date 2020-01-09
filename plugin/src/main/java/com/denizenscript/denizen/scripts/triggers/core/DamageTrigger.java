@@ -25,7 +25,6 @@ import java.util.Map;
 
 public class DamageTrigger extends AbstractTrigger implements Listener {
 
-
     // <--[language]
     // @name Damage Triggers
     // @group NPC Interact Scripts

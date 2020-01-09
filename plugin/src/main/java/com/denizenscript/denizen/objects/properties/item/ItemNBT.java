@@ -38,7 +38,6 @@ public class ItemNBT implements Property {
             "remove_nbt", "nbt"
     };
 
-
     private ItemNBT(ItemTag item) {
         this.item = item;
     }

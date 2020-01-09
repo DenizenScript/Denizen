@@ -157,11 +157,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         NotableManager.remove(this);
     }
 
-
     //////////////////
     //    OBJECT FETCHER
     ////////////////
-
 
     public static LocationTag valueOf(String string) {
         return valueOf(string, null);
@@ -350,7 +348,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
         return LocationTag.valueOf(string, new BukkitTagContext(null, null, false, null, false, null)) != null;
     }
-
 
     /////////////////////
     //   CONSTRUCTORS
@@ -1223,7 +1220,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             return null;
         });
 
-
         // <--[tag]
         // @attribute <LocationTag.skull_type>
         // @returns ElementTag
@@ -1332,7 +1328,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                         + "," + object.getWorldName());
             }
         });
-
 
         /////////////////////
         //   DIRECTION ATTRIBUTES
@@ -1786,7 +1781,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             return new LocationTag(location);
         });
 
-
         /////////////////////
         //   ENTITY AND BLOCK LIST ATTRIBUTES
         /////////////////
@@ -2117,7 +2111,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             return list;
         });
 
-
         /////////////////////
         //   IDENTIFICATION ATTRIBUTES
         /////////////////
@@ -2329,7 +2322,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             return new ElementTag(notname);
         });
-
 
         /////////////////////
         //   MATHEMATICAL ATTRIBUTES
@@ -2588,7 +2580,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             return null;
         });
-
 
         /////////////////////
         //   STATE ATTRIBUTES

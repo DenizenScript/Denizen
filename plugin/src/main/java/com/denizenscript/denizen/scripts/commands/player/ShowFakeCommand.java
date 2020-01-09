@@ -117,7 +117,6 @@ public class ShowFakeCommand extends AbstractCommand {
         scriptEntry.defaultObject("cancel", new ElementTag(false));
     }
 
-
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
@@ -133,7 +132,6 @@ public class ShowFakeCommand extends AbstractCommand {
                     + ArgumentHelper.debugList("locations", locations)
                     + ArgumentHelper.debugList("players", players));
         }
-
 
         boolean shouldCancel = cancel.asBoolean();
 

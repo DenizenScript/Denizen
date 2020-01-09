@@ -75,7 +75,6 @@ public class EntityInventory implements Property {
             }
         }
 
-
         return null;
     }
 

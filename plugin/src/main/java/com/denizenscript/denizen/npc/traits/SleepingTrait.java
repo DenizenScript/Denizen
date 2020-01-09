@@ -101,7 +101,6 @@ public class SleepingTrait extends Trait {
         return bedLocation;
     }
 
-
     /**
      * If someone tries to break the poor
      * NPC's bed, we need to stop them!

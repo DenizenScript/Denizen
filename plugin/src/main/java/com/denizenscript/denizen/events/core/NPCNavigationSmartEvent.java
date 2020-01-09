@@ -13,11 +13,9 @@ import java.util.regex.Pattern;
  */
 public class NPCNavigationSmartEvent implements OldSmartEvent, Listener {
 
-
     ///////////////////
     // SMARTEVENT METHODS
     ///////////////
-
 
     @Override
     public boolean shouldInitialize(Set<String> events) {
@@ -36,13 +34,11 @@ public class NPCNavigationSmartEvent implements OldSmartEvent, Listener {
         return false;
     }
 
-
     @Override
     public void _initialize() {
         active = true;
         Debug.log("Loaded NPC Navigation SmartEvent.");
     }
-
 
     @Override
     public void breakDown() {

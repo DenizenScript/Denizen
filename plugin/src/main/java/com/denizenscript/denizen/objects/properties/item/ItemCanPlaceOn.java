@@ -38,7 +38,6 @@ public class ItemCanPlaceOn implements Property {
             "can_place_on"
     };
 
-
     private ItemCanPlaceOn(ItemTag item) {
         this.item = item;
     }

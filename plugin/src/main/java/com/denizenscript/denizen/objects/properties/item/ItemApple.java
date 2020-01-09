@@ -35,7 +35,6 @@ public class ItemApple implements Property {
             "apple_enchanted"
     };
 
-
     private ItemApple(ItemTag _item) {
         item = _item;
     }
@@ -69,7 +68,6 @@ public class ItemApple implements Property {
 
         return null;
     }
-
 
     @Override
     public String getPropertyString() {

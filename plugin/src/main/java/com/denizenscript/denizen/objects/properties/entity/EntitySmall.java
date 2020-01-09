@@ -10,7 +10,6 @@ import org.bukkit.entity.ArmorStand;
 
 public class EntitySmall implements Property {
 
-
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag &&
                 ((EntityTag) entity).getBukkitEntity() instanceof ArmorStand;

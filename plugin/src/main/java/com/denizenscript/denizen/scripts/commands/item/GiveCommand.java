@@ -19,7 +19,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-
 public class GiveCommand extends AbstractCommand {
 
     // <--[command]

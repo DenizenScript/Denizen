@@ -269,7 +269,6 @@ public class ItemScriptHelper implements Listener {
         }
     }
 
-
     @EventHandler
     public void scriptReload(ScriptReloadEvent event) {
         rebuildRecipes();
@@ -332,7 +331,6 @@ public class ItemScriptHelper implements Listener {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////// All the below is for the legacy crafting system, which is still used for 1.12 and some recipe types! ///////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
     public static Map<ItemScriptContainer, List<ItemTag>> specialrecipesMap = new HashMap<>();
     public static Map<ItemScriptContainer, List<ItemTag>> shapelessRecipesMap = new HashMap<>();

@@ -86,7 +86,6 @@ public class HealthCommand extends AbstractCommand {
             }
         }
 
-
         // Check for required information
 
         if (!scriptEntry.hasObject("qty") && !scriptEntry.hasObject("action")) {
@@ -100,7 +99,6 @@ public class HealthCommand extends AbstractCommand {
         }
 
     }
-
 
     @Override
     public void execute(ScriptEntry scriptEntry) {

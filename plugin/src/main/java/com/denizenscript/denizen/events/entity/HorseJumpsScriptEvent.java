@@ -46,7 +46,6 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     public Float power;
     public HorseJumpEvent event;
 
-
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);

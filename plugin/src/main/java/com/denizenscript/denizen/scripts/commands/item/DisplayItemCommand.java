@@ -21,7 +21,6 @@ import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import java.util.HashSet;
 import java.util.UUID;
 
-
 public class DisplayItemCommand extends AbstractCommand implements Listener {
 
     // <--[command]

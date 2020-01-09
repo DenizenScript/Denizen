@@ -87,7 +87,6 @@ public class HealthTrait extends Trait implements Listener {
     private Location loc;
     private UUID entityId = null;
 
-
     public DurationTag getRespawnDelay() {
         return DurationTag.valueOf(respawnDelay);
     }
@@ -128,7 +127,6 @@ public class HealthTrait extends Trait implements Listener {
     public boolean animatesOnDeath() {
         return animatedeath;
     }
-
 
     public Integer void_watcher_task = null;
 

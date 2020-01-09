@@ -21,7 +21,6 @@ import org.bukkit.entity.*;
 
 public class EntityColor implements Property {
 
-
     public static boolean describes(ObjectTag entity) {
         if (!(entity instanceof EntityTag)) {
             return false;

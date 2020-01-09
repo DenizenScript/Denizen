@@ -104,7 +104,6 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
 
     }
 
-
     @Override
     public String getName() {
         return "ProjectileHits";

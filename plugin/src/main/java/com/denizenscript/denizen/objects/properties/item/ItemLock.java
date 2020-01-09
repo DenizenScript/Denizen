@@ -36,7 +36,6 @@ public class ItemLock implements Property {
             "lock"
     };
 
-
     private String getItemLock() {
         return ((Lockable) ((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()).getLock();
     }
@@ -84,7 +83,6 @@ public class ItemLock implements Property {
 
         return null;
     }
-
 
     @Override
     public String getPropertyString() {

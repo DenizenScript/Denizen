@@ -121,7 +121,6 @@ public class EllipsoidTag implements ObjectTag, Notable {
         }
     }
 
-
     ///////////////
     //   Constructors
     /////////////

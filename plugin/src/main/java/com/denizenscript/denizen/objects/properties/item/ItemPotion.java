@@ -48,7 +48,6 @@ public class ItemPotion implements Property {
             "potion_effects"
     };
 
-
     private ItemPotion(ItemTag item) {
         this.item = item;
     }
@@ -135,7 +134,6 @@ public class ItemPotion implements Property {
         boolean has = item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof PotionMeta
                 && ((PotionMeta) item.getItemStack().getItemMeta()).hasCustomEffects();
 
-
         // <--[tag]
         // @attribute <ItemTag.potion_base>
         // @returns ElementTag
@@ -175,7 +173,6 @@ public class ItemPotion implements Property {
                 }
 
                 attribute = attribute.fulfill(1);
-
 
                 // <--[tag]
                 // @attribute <ItemTag.potion_effect[<#>].is_splash>

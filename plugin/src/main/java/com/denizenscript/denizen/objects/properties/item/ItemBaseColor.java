@@ -42,7 +42,6 @@ public class ItemBaseColor implements Property {
             "base_color"
     };
 
-
     private ItemBaseColor(ItemTag item) {
         this.item = item;
     }
@@ -101,7 +100,6 @@ public class ItemBaseColor implements Property {
 
         return null;
     }
-
 
     @Override
     public String getPropertyString() {

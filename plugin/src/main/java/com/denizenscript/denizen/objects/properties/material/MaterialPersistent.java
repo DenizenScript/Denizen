@@ -29,7 +29,6 @@ public class MaterialPersistent implements Property {
             "persistent"
     };
 
-
     private MaterialPersistent(MaterialTag _material) {
         material = _material;
     }

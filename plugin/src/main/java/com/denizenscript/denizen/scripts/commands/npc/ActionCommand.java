@@ -84,7 +84,6 @@ public class ActionCommand extends AbstractCommand {
 
     }
 
-
     @Override
     public void execute(ScriptEntry scriptEntry) {
 

@@ -27,7 +27,6 @@ public class FlagManager {
         DIVIDE, INSERT, REMOVE, SPLIT, SPLIT_NEW, DELETE
     }
 
-
     // Constructor
     private Denizen denizen;
 
@@ -753,7 +752,6 @@ public class FlagManager {
         }
 
     }
-
 
     /**
      * Value object that is in charge of holding values that belong to a flag.

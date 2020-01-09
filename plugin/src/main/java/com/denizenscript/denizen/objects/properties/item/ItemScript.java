@@ -34,7 +34,6 @@ public class ItemScript implements Property {
             "script"
     };
 
-
     private ItemScript(ItemTag _item) {
         item = _item;
     }
@@ -89,7 +88,6 @@ public class ItemScript implements Property {
         }
         return null;
     }
-
 
     @Override
     public String getPropertyString() {

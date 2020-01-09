@@ -138,7 +138,6 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         }
     }
 
-
     private enum Type {CREATE, LOAD, UNLOAD, ROTATE, PASTE, SAVE, FLIP_X, FLIP_Y, FLIP_Z}
 
     public static Map<String, CuboidBlockSet> schematics;
@@ -209,7 +208,6 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             throw new InvalidArgumentsException("Missing name argument!");
         }
     }
-
 
     @Override
     public void execute(final ScriptEntry scriptEntry) {

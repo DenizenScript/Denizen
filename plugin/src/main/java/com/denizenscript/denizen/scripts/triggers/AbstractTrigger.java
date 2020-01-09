@@ -33,12 +33,10 @@ public abstract class AbstractTrigger {
         return this;
     }
 
-
     public String getName() {
         // Return the name of the trigger specified upon registration.
         return name;
     }
-
 
     /**
      * Part of the Plugin disable sequence.
@@ -50,7 +48,6 @@ public abstract class AbstractTrigger {
         // Nothing to do here on this level of abstraction.
     }
 
-
     /**
      * Part of the Plugin enable sequence.
      * <p/>
@@ -60,7 +57,6 @@ public abstract class AbstractTrigger {
     public void onEnable() {
         // Nothing to do here on this level of abstraction.
     }
-
 
     /**
      * Part of the Plugin enable sequence.
@@ -72,7 +68,6 @@ public abstract class AbstractTrigger {
         // Nothing to do here on this level of abstraction.
         return this;
     }
-
 
     public boolean parse(NPCTag npc, PlayerTag player, InteractScriptContainer script, String id) {
         return parse(npc, player, script, id, null);

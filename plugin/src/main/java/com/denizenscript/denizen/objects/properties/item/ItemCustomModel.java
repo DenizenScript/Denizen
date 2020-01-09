@@ -31,7 +31,6 @@ public class ItemCustomModel implements Property {
             "custom_model_data"
     };
 
-
     private ItemCustomModel(ItemTag _item) {
         item = _item;
     }
@@ -78,7 +77,6 @@ public class ItemCustomModel implements Property {
 
         return null;
     }
-
 
     @Override
     public String getPropertyString() {

@@ -46,7 +46,6 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
     public EntityTag owner;
     public EntityTameEvent event;
 
-
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);

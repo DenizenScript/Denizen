@@ -93,7 +93,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         return cuboids;
     }
 
-
     //////////////////
     //    OBJECT FETCHER
     ////////////////
@@ -199,11 +198,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         return false;
     }
 
-
     ///////////////
     //  LocationPairs
     /////////////
-
 
     public static class LocationPair {
         public LocationTag low;
@@ -263,7 +260,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         }
     }
 
-
     ///////////////////
     //  Constructors/Instance Methods
     //////////////////
@@ -284,7 +280,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
     public CuboidTag(Location point_1, Location point_2) {
         addPair(point_1, point_2);
     }
-
 
     public void addPair(Location point_1, Location point_2) {
         if (point_1.getWorld() != point_2.getWorld()) {
@@ -325,24 +320,20 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         return false;
     }
 
-
     public CuboidTag addBlocksToFilter(List<MaterialTag> addl) {
         filter.addAll(addl);
         return this;
     }
-
 
     public CuboidTag removeBlocksFromFilter(List<MaterialTag> addl) {
         filter.removeAll(addl);
         return this;
     }
 
-
     public CuboidTag removeFilter() {
         filter.clear();
         return this;
     }
-
 
     public CuboidTag setAsFilter(List<MaterialTag> list) {
         filter.clear();
@@ -499,7 +490,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         return list;
     }
 
-
     public ListTag getBlocks(Attribute attribute) {
         return getBlocks(null, attribute);
     }
@@ -603,7 +593,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         return list;
     }
 
-
     public ListTag getSpawnableBlocks(Attribute attribute) {
         return getSpawnableBlocks(null, attribute);
     }
@@ -688,12 +677,10 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
     // Notable
     ///////////////////
 
-
     @Override
     public boolean isUnique() {
         return NotableManager.isSaved(this);
     }
-
 
     @Override
     @Note("Cuboids")
@@ -715,21 +702,17 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
     // ObjectTag
     ////////////////////
 
-
     String prefix = "Cuboid";
-
 
     @Override
     public String getObjectType() {
         return "cuboid";
     }
 
-
     @Override
     public String getPrefix() {
         return prefix;
     }
-
 
     @Override
     public CuboidTag setPrefix(String prefix) {
@@ -757,7 +740,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         }
     }
 
-
     @Override
     public String identifySimple() {
         return identify();
@@ -773,17 +755,14 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         return sb.toString();
     }
 
-
     @Override
     public String toString() {
         return identify();
     }
 
-
     /////////////////////
     // ObjectTag Tag Management
     /////////////////////
-
 
     public static void registerTags() {
 

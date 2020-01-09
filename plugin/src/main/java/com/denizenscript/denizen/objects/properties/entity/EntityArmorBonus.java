@@ -73,7 +73,6 @@ public class EntityArmorBonus implements Property {
             return getArmorBonus().getObjectAttribute(attribute.fulfill(1));
         }
 
-
         return null;
     }
 

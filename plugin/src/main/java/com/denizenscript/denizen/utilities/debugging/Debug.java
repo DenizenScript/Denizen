@@ -93,7 +93,6 @@ public class Debug {
         echoDebug(caller, element, null);
     }
 
-
     // Used by the various parts of Denizen that output debuggable information
     // to help scripters see what is going on. Debugging an element is usually
     // for formatting debug information.
@@ -116,7 +115,6 @@ public class Debug {
         echo(sb.toString(), caller);
     }
 
-
     // Used by the various parts of Denizen that output debuggable information
     // to help scripters see what is going on.
     public static void echoDebug(Debuggable caller, String message) {
@@ -133,7 +131,6 @@ public class Debug {
     // Other public debugging methods (Always show when debugger is enabled)
     ///////
 
-
     /**
      * Shows an approval message (always shows, regardless of script debug mode, excluding debug fully off - use sparingly)
      * Prefixed with "OKAY! "
@@ -147,7 +144,6 @@ public class Debug {
         finalOutputDebugText(ChatColor.LIGHT_PURPLE + " " + ChatColor.GREEN + "OKAY! "
                 + ChatColor.WHITE + message, null);
     }
-
 
     // <--[event]
     // @Events
@@ -386,7 +382,6 @@ public class Debug {
                 + ChatColor.WHITE + trimMessage(message), null);
     }
 
-
     public static void log(DebugElement element, String string) {
         if (!showDebug) {
             return;
@@ -413,7 +408,6 @@ public class Debug {
     // Private Helper Methods
     /////////
 
-
     // Some debug methods trim to keep super-long messages from hitting the console.
     private static String trimMessage(String message) {
         if (!shouldTrim) {
@@ -425,7 +419,6 @@ public class Debug {
         }
         return message;
     }
-
 
     public static boolean shouldDebug(Debuggable caller) {
         if (debugOverride) {

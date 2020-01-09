@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 public class NotableManager {
 
     public NotableManager() {
@@ -199,7 +198,6 @@ public class NotableManager {
     ///////////////////
     // Note Annotation Handler
     ///////////////////
-
 
     private static Map<Class, String> objects = new HashMap<>();
     private static Map<String, Class> reverse_objects = new HashMap<>();

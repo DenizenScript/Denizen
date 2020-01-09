@@ -32,7 +32,6 @@ public class ItemQuantity implements Property {
             "quantity"
     };
 
-
     private ItemQuantity(ItemTag _item) {
         item = _item;
     }
@@ -79,7 +78,6 @@ public class ItemQuantity implements Property {
 
         return null;
     }
-
 
     @Override
     public String getPropertyString() {

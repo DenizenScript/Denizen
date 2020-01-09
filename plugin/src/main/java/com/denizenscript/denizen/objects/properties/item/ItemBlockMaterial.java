@@ -33,7 +33,6 @@ public class ItemBlockMaterial implements Property {
             "block_material"
     };
 
-
     private ItemBlockMaterial(ItemTag _item) {
         item = _item;
     }

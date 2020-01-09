@@ -8,7 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-
 public class Depends {
 
     public static Citizens citizens = null;

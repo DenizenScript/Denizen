@@ -29,7 +29,6 @@ public class MaterialLightable implements Property {
             "lit"
     };
 
-
     private MaterialLightable(MaterialTag _material) {
         material = _material;
     }

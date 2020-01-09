@@ -35,7 +35,6 @@ public class ConstantsTrait extends Trait {
         super("constants");
     }
 
-
     /**
      * Returns the value of the specified Constant, unique to this NPC. Note:
      * Returns tags filled with the currently assigned NPC. See: Denizen TagManager
@@ -59,7 +58,6 @@ public class ConstantsTrait extends Trait {
         return null;
     }
 
-
     /**
      * Gets a map of the NPCs constants. Note: Does not include any constants
      * inherited by the NPCs Assignment. To grab a comprehensive map of both,
@@ -70,7 +68,6 @@ public class ConstantsTrait extends Trait {
     public Map<String, String> getNPCConstants() {
         return constants;
     }
-
 
     /**
      * Gets a map of the NPCs constants, including those inherited by the Assignment.
@@ -87,7 +84,6 @@ public class ConstantsTrait extends Trait {
         return allConstants;
     }
 
-
     /**
      * Sets the value of a constant, as identified by the name. This will
      * override any constants inherited from the NPCs Assignment.
@@ -98,7 +94,6 @@ public class ConstantsTrait extends Trait {
     public void setConstant(String name, String value) {
         constants.put(CoreUtilities.toLowerCase(name), value);
     }
-
 
     /**
      * Removes an NPC-specific constant, as identified by the name. This will
@@ -111,7 +106,6 @@ public class ConstantsTrait extends Trait {
         constants.remove(CoreUtilities.toLowerCase(name));
     }
 
-
     /**
      * Checks if this NPC has any unique constants, beyond what is inherited from
      * the NPCs Assignment.
@@ -121,7 +115,6 @@ public class ConstantsTrait extends Trait {
     public boolean hasNPCConstants() {
         return !constants.isEmpty();
     }
-
 
     public Map<String, String> getAssignmentConstants() {
         // Check to make sure NPC has an assignment
@@ -136,7 +129,6 @@ public class ConstantsTrait extends Trait {
         }
         return assignmentConstants;
     }
-
 
     public Map<String, String> rebuildAssignmentConstants() {
         // Builds a map of constants inherited from the NPCs current Assignment
@@ -171,7 +163,6 @@ public class ConstantsTrait extends Trait {
         return assignmentConstants;
     }
 
-
     /**
      * Rebuilds assignment constants on a script reload
      */
@@ -179,7 +170,6 @@ public class ConstantsTrait extends Trait {
     public void onScriptsReload(ScriptReloadEvent event) {
         rebuildAssignmentConstants();
     }
-
 
     public void describe(CommandSender sender, int page) throws CommandException {
         Paginator paginator = new Paginator().header("Constants for " + npc.getName());

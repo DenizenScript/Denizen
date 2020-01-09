@@ -80,7 +80,6 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
 
     public static String oldWarningMessage = Deprecations.oldStylePlayerBreaksItemEvent.message;
 
-
     @Override
     public String getName() {
         return "PlayerItemBreak";

@@ -42,7 +42,6 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
     public int count;
     public SlimeSplitEvent event;
 
-
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);

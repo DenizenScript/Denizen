@@ -29,7 +29,6 @@ public class MaterialCampfire implements Property {
             "signal_fire"
     };
 
-
     private MaterialCampfire(MaterialTag _material) {
         material = _material;
     }

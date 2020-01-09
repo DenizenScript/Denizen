@@ -38,7 +38,6 @@ public class ItemCanDestroy implements Property {
             "can_destroy"
     };
 
-
     private ItemCanDestroy(ItemTag item) {
         this.item = item;
     }

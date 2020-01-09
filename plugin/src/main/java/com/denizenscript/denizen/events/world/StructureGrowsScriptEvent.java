@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.events.world;
 
-
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.WorldTag;

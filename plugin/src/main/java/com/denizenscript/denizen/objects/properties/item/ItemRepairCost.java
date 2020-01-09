@@ -33,7 +33,6 @@ public class ItemRepairCost implements Property {
             "repair_cost"
     };
 
-
     private ItemRepairCost(ItemTag _item) {
         item = _item;
     }
@@ -63,7 +62,6 @@ public class ItemRepairCost implements Property {
 
         return null;
     }
-
 
     @Override
     public String getPropertyString() {

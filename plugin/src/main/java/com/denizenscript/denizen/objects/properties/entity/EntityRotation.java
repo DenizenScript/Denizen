@@ -14,7 +14,6 @@ import org.bukkit.entity.Hanging;
 
 public class EntityRotation implements Property {
 
-
     public static boolean describes(ObjectTag entity) {
         if (!(entity instanceof EntityTag)) {
             return false;

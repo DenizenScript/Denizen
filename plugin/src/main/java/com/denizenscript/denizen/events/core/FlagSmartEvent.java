@@ -13,11 +13,9 @@ import java.util.regex.Pattern;
  */
 public class FlagSmartEvent implements OldSmartEvent, Listener {
 
-
     ///////////////////
     // SMARTEVENT METHODS
     ///////////////
-
 
     @Override
     public boolean shouldInitialize(Set<String> events) {
@@ -37,13 +35,11 @@ public class FlagSmartEvent implements OldSmartEvent, Listener {
         return false;
     }
 
-
     @Override
     public void _initialize() {
         active = true;
         Debug.log("Loaded Flag SmartEvent.");
     }
-
 
     @Override
     public void breakDown() {

@@ -54,7 +54,6 @@ public class DenizenNPCHelper implements Listener {
         return actionHandler;
     }
 
-
     /**
      * Returns a NPCTag object when given a valid NPC. DenizenNPCs have some methods
      * specific to Denizen functionality as well as easy access to the attached NPC and LivingEntity.
@@ -134,7 +133,6 @@ public class DenizenNPCHelper implements Listener {
         new NPCTag(event.getNPC()).action("spawn", null);
     }
 
-
     // <--[action]
     // @Actions
     // despawn
@@ -163,7 +161,6 @@ public class DenizenNPCHelper implements Listener {
             npc.action("despawn", null);
         }
     }
-
 
     // <--[action]
     // @Actions

@@ -87,7 +87,6 @@ public class BukkitScriptProperties implements Property {
         });
     }
 
-
     @Override
     public String getPropertyString() {
         return null;

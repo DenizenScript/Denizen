@@ -36,7 +36,6 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
     //
     // -->
 
-
     public PlayerEmptiesBucketScriptEvent() {
         instance = this;
     }
@@ -47,7 +46,6 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
     public MaterialTag material;
     public LocationTag location;
     public PlayerBucketEmptyEvent event;
-
 
     @Override
     public boolean couldMatch(ScriptPath path) {

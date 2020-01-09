@@ -36,7 +36,6 @@ public class PlayerFillsBucketScriptEvent extends BukkitScriptEvent implements L
     //
     // -->
 
-
     public PlayerFillsBucketScriptEvent() {
         instance = this;
     }
@@ -48,7 +47,6 @@ public class PlayerFillsBucketScriptEvent extends BukkitScriptEvent implements L
     public MaterialTag material;
     public LocationTag location;
     public PlayerBucketFillEvent event;
-
 
     @Override
     public boolean couldMatch(ScriptPath path) {

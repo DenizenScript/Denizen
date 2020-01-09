@@ -84,7 +84,6 @@ public class NPCTagBase implements Listener {
 
     }
 
-
     ///////
     // Keep track of previous locations and fire navigation actions
     ////

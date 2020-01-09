@@ -212,7 +212,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
     // All of the inventory id types we use
     public final static String[] idTypes = {"npc", "player", "crafting", "enderchest", "workbench", "entity", "location", "generic"};
 
-
     /////////////////////
     //   NOTABLE METHODS
     /////////////////
@@ -385,7 +384,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
 
         return false;
     }
-
 
     ///////////////
     //   Constructors
@@ -1357,12 +1355,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         return "Inventory";
     }
 
-
     @Override
     public String getPrefix() {
         return prefix;
     }
-
 
     @Override
     public InventoryTag setPrefix(String prefix) {
@@ -1388,7 +1384,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         }
     }
 
-
     public String bestName() {
         if (isUnique()) {
             return NotableManager.getSavedId(this);
@@ -1398,7 +1393,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     ? idHolder : (idType));
         }
     }
-
 
     @Override
     public String identifySimple() {
@@ -1411,7 +1405,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         }
     }
 
-
     @Override
     public String toString() {
         return identify();
@@ -1420,7 +1413,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
     ////////////////////////
     //  Attributes
     /////////////////////
-
 
     public static void registerTags() {
 
@@ -1982,7 +1974,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             int val = object.firstEmpty(0);
             return new ElementTag(val >= 0 ? (val + 1) : -1);
         });
-
 
         // <--[tag]
         // @attribute <InventoryTag.find[<item>]>

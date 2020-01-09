@@ -34,7 +34,6 @@ public class ItemSpawnerRange implements Property {
             "spawner_range"
     };
 
-
     private ItemSpawnerRange(ItemTag _item) {
         item = _item;
     }

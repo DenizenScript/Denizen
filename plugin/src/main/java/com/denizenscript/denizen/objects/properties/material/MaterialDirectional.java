@@ -46,7 +46,6 @@ public class MaterialDirectional implements Property {
             "direction"
     };
 
-
     private MaterialDirectional(MaterialTag _material) {
         material = _material;
     }

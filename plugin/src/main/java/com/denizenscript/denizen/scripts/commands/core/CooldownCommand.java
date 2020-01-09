@@ -99,7 +99,6 @@ public class CooldownCommand extends AbstractCommand {
         }
     }
 
-
     @Override
     public void execute(ScriptEntry scriptEntry) {
         // Fetch objects
@@ -133,7 +132,6 @@ public class CooldownCommand extends AbstractCommand {
                 break;
         }
     }
-
 
     /**
      * Gets the duration of a script cool-down.
@@ -181,7 +179,6 @@ public class CooldownCommand extends AbstractCommand {
         return duration;
     }
 
-
     /**
      * Checks if a script is cooled-down. If a cool-down is currently in progress,
      * its requirements will fail and it will not trigger. If the script is being cooled down
@@ -226,7 +223,6 @@ public class CooldownCommand extends AbstractCommand {
 
         return false;
     }
-
 
     /**
      * Sets a cooldown for a Denizen Script. Can be for a specific Player, or GLOBAL.

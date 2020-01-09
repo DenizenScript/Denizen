@@ -45,7 +45,6 @@ public class WalkCommandCitizensEvents implements Listener {
 
     }
 
-
     public void checkHeld(NavigationEvent e) {
         if (e.getNPC() == null) {
             return;

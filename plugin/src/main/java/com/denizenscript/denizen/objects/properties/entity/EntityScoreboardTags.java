@@ -73,7 +73,6 @@ public class EntityScoreboardTags implements Property {
             return getTags().getObjectAttribute(attribute.fulfill(1));
         }
 
-
         return null;
     }
 

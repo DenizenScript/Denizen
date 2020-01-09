@@ -30,7 +30,6 @@ public class MaterialAge implements Property {
             "age", "plant_growth"
     };
 
-
     private MaterialAge(MaterialTag _material) {
         material = _material;
     }

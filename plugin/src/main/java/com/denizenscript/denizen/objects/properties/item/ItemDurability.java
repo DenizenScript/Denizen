@@ -31,7 +31,6 @@ public class ItemDurability implements Property {
             "durability"
     };
 
-
     private ItemDurability(ItemTag _item) {
         item = _item;
     }
@@ -73,7 +72,6 @@ public class ItemDurability implements Property {
 
         return null;
     }
-
 
     @Override
     public String getPropertyString() {

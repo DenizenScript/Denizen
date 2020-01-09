@@ -13,7 +13,6 @@ import org.bukkit.entity.ZombieVillager;
 
 public class EntityProfession implements Property {
 
-
     public static boolean describes(ObjectTag entity) {
         if (!(entity instanceof EntityTag)) {
             return false;

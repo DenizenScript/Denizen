@@ -23,7 +23,6 @@ public class BukkitListProperties implements Property {
         }
     }
 
-
     private BukkitListProperties(ListTag list) {
         this.list = list;
     }

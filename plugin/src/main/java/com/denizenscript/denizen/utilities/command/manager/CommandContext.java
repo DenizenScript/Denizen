@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 
 public class CommandContext {
 
-
     protected String[] args;
     protected final Set<Character> flags = new HashSet<>();
     private Location location = null;

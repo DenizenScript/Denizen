@@ -9,7 +9,6 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.entity.Player;
 
-
 public class ExperienceCommand extends AbstractCommand {
 
     // <--[command]
@@ -110,7 +109,6 @@ public class ExperienceCommand extends AbstractCommand {
                 .addObject("silent", silent);
 
     }
-
 
     @Override
     public void execute(ScriptEntry scriptEntry) {

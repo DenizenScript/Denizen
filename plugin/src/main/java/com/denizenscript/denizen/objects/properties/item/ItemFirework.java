@@ -42,7 +42,6 @@ public class ItemFirework implements Property {
             "firework"
     };
 
-
     private ItemFirework(ItemTag _item) {
         item = _item;
     }
@@ -99,7 +98,6 @@ public class ItemFirework implements Property {
 
         return null;
     }
-
 
     @Override
     public String getPropertyString() {

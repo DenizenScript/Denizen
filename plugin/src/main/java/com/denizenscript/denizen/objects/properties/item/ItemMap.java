@@ -37,7 +37,6 @@ public class ItemMap implements Property {
             "map"
     };
 
-
     private ItemMap(ItemTag _item) {
         item = _item;
     }

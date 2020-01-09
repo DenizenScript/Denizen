@@ -37,7 +37,6 @@ public class ItemInventory implements Property {
             "inventory"
     };
 
-
     private InventoryTag getItemInventory() {
         return InventoryTag.mirrorBukkitInventory(((InventoryHolder) ((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()).getInventory());
     }
@@ -69,7 +68,6 @@ public class ItemInventory implements Property {
 
         return null;
     }
-
 
     @Override
     public String getPropertyString() {

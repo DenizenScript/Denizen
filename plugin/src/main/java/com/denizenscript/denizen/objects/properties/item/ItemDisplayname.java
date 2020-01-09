@@ -33,7 +33,6 @@ public class ItemDisplayname implements Property {
             "display_name"
     };
 
-
     private ItemDisplayname(ItemTag _item) {
         item = _item;
     }
@@ -82,7 +81,6 @@ public class ItemDisplayname implements Property {
 
         return null;
     }
-
 
     @Override
     public String getPropertyString() {

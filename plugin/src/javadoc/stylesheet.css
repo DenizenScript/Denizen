@@ -29,7 +29,6 @@ a:link { color:#0066cc; }
 a:visited { color:#8b5caf; }
 a:hover { color:#6699cc; }
 
-
 /* Headings */
 h1 {
 	font-size: 145%;
@@ -44,11 +43,9 @@ h1 {
 	text-align:left;
 }
 
-
 /* Default Table elements and colors */
 
 th, table { border-collapse:collapse;border-color: #E6E7E8; }
-
 
 .TableHeadingColor     {
 	background:#000000 url(resources/bkg_blkheader.png) repeat-x scroll left top;
@@ -63,7 +60,6 @@ th, table { border-collapse:collapse;border-color: #E6E7E8; }
 .TableHeadingColor th {
 	padding-left: 10px;
 }
-
 
 .TableSubHeadingColor  { background: #EEEEFF } /* Light mauve */
 .TableRowColor { background: #FFFFFF; border-color: #E6E7E8;}

@@ -178,7 +178,6 @@ public class SittingTrait extends Trait implements Listener {
         return chairLocation;
     }
 
-
     /**
      * If someone tries to break the poor
      * NPC's chair, we need to stop them!
