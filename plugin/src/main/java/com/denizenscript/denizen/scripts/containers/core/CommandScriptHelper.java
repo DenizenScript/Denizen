@@ -25,11 +25,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class CommandScriptHelper implements Listener {
 
-    public static Map<String, DenizenCommand> denizenCommands = new ConcurrentHashMap<>(8, 0.9f, 1);
+    public static Map<String, DenizenCommand> denizenCommands = new HashMap<>();
     public static Map<String, Command> overriddenCommands = new HashMap<>();
     public static Map<String, HelpTopic> overriddenHelpTopics = new HashMap<>();
     public static Map<String, Command> knownCommands = null;

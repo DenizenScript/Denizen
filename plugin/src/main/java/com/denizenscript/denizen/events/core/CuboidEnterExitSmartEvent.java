@@ -20,7 +20,6 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -92,7 +91,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
     ///////////
 
     private boolean broad_detection = false;
-    private Map<String, List<CuboidTag>> player_cuboids = new ConcurrentHashMap<>();
+    private Map<String, List<CuboidTag>> player_cuboids = new HashMap<>();
 
     // <--[event]
     // @Events

@@ -14,11 +14,10 @@ import org.bukkit.inventory.PlayerInventory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class InventoryScriptHelper implements Listener {
 
-    public static Map<String, InventoryScriptContainer> inventory_scripts = new ConcurrentHashMap<>(8, 0.9f, 1);
+    public static Map<String, InventoryScriptContainer> inventory_scripts = new HashMap<>();
     public static Map<String, InventoryTag> notableInventories = new HashMap<>();
 
     public InventoryScriptHelper() {

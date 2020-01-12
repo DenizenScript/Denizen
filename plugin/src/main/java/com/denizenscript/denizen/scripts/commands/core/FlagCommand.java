@@ -78,7 +78,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
     // - flag server cool_people:->:<[player]>
     //
     // @Usage
-    // Use to add both multiple items as individual new values to a server flag.
+    // Use to add multiple items as individual new values to a server flag.
     // - flag server cool_people:|:<[player]>|<[someplayer]>
     //
     // @Usage

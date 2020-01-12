@@ -19,12 +19,11 @@ import org.bukkit.event.EventHandler;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class ConstantsTrait extends Trait {
 
     // Saved to C2 saves.yml
-    @Persist(value = "", collectionType = ConcurrentHashMap.class)
+    @Persist(value = "", collectionType = HashMap.class)
     private Map<String, String> constants = new HashMap<>();
 
     // Used internally

@@ -13,8 +13,8 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.event.Listener;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class ZapCommand extends AbstractCommand implements Listener {
 
@@ -100,7 +100,7 @@ public class ZapCommand extends AbstractCommand implements Listener {
     }
 
     //"PlayerName,ScriptName", TaskID
-    private static Map<String, Integer> durations = new ConcurrentHashMap<>(8, 0.9f, 1);
+    private static Map<String, Integer> durations = new HashMap<>();
 
     @Override
     public void execute(final ScriptEntry scriptEntry) {

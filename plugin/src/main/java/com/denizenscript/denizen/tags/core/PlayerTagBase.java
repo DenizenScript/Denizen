@@ -17,11 +17,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 
 public class PlayerTagBase implements Listener {
 
@@ -47,7 +43,7 @@ public class PlayerTagBase implements Listener {
     // Player Chat History
     /////////
 
-    public static Map<UUID, List<String>> playerChatHistory = new ConcurrentHashMap<>(8, 0.9f, 2);
+    public static Map<UUID, List<String>> playerChatHistory = new HashMap<>();
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void addMessage(final AsyncPlayerChatEvent event) {

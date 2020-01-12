@@ -12,8 +12,8 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.trait.waypoint.Waypoints;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class PauseCommand extends AbstractCommand {
 
@@ -73,7 +73,7 @@ public class PauseCommand extends AbstractCommand {
     // - resume waypoints
     // -->
 
-    private Map<String, Integer> durations = new ConcurrentHashMap<>(8, 0.9f, 1);
+    private Map<String, Integer> durations = new HashMap<>();
 
     enum PauseType {ACTIVITY, WAYPOINTS, NAVIGATION}
 

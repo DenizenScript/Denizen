@@ -17,7 +17,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class ProximityTrigger extends AbstractTrigger implements Listener {
 
@@ -300,7 +299,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
         //}
     }
 
-    private static Map<UUID, Set<Integer>> proximityTracker = new ConcurrentHashMap<>(8, 0.9f, 1);
+    private static Map<UUID, Set<Integer>> proximityTracker = new HashMap<>();
 
     //
     // Ensures that a Player who has entered proximity of an NPC also fires Exit Proximity.

@@ -10,7 +10,6 @@ import net.citizensnpcs.api.npc.NPC;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class TriggerRegistry {
 
@@ -73,8 +72,8 @@ public class TriggerRegistry {
     // Trigger Cooldowns
     ///////
 
-    Map<Integer, Map<String, Long>> npcCooldown = new ConcurrentHashMap<>(8, 0.9f, 1);
-    Map<String, Map<String, Long>> playerCooldown = new ConcurrentHashMap<>(8, 0.9f, 1);
+    Map<Integer, Map<String, Long>> npcCooldown = new HashMap<>();
+    Map<String, Map<String, Long>> playerCooldown = new HashMap<>();
 
     public enum CooldownType {NPC, PLAYER}
 
