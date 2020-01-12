@@ -88,7 +88,7 @@ public class ItemScriptHelper implements Listener {
             }
 
             for (String element : elements) {
-                String itemText = element.replaceAll("[iImM]@", "");
+                String itemText = element;
                 if (itemText.startsWith("material:")) {
                     exacts.add(false);
                     itemText = itemText.substring("material:".length());
@@ -137,7 +137,7 @@ public class ItemScriptHelper implements Listener {
         List<ItemTag> ingredients = new ArrayList<>();
         List<Boolean> exacts = new ArrayList<>();
         for (String element : ListTag.valueOf(list)) {
-            String itemText = element.replaceAll("[iImM]@", "");
+            String itemText = element;
             if (itemText.startsWith("material:")) {
                 exacts.add(false);
                 itemText = itemText.substring("material:".length());
