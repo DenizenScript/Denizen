@@ -92,7 +92,7 @@ public class EntityInventory implements Property {
         // <InventoryTag.list_contents>
         // -->
         if (mechanism.matches("inventory_contents")) {
-            ListTag list = ListTag.valueOf(mechanism.getValue().asString());
+            ListTag list = ListTag.valueOf(mechanism.getValue().asString(), mechanism.context);
             InventoryTag inv = entity.getInventory();
             inv.clear();
             int i = 0;

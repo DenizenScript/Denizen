@@ -122,7 +122,7 @@ public class TakeCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("items")
                     && !scriptEntry.hasObject("type")
                     && arg.matchesArgumentList(ItemTag.class)) {
-                scriptEntry.addObject("items", ListTag.valueOf(arg.raw_value.replace("item:", "")).filter(ItemTag.class, scriptEntry));
+                scriptEntry.addObject("items", ListTag.valueOf(arg.raw_value.replace("item:", ""), scriptEntry.getContext()).filter(ItemTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("inventory")
                     && arg.matchesPrefix("f", "from")

@@ -101,12 +101,12 @@ public class ChatCommand extends AbstractCommand {
 
         // Add default recipient as the attached Player if no recipients set otherwise
         if (!scriptEntry.hasObject("targets") && Utilities.entryHasPlayer(scriptEntry) && !specified_targets) {
-            scriptEntry.defaultObject("targets", new ListTag(Utilities.getEntryPlayer(scriptEntry).identify()));
+            scriptEntry.defaultObject("targets", new ListTag(Utilities.getEntryPlayer(scriptEntry)));
         }
 
         // Add default talker as the attached NPC if no recipients set otherwise
         if (!scriptEntry.hasObject("talkers") && Utilities.entryHasNPC(scriptEntry) && !specified_talker) {
-            scriptEntry.defaultObject("talkers", new ListTag(Utilities.getEntryNPC(scriptEntry).identify()));
+            scriptEntry.defaultObject("talkers", new ListTag(Utilities.getEntryNPC(scriptEntry)));
         }
 
         // Verify essential fields are set

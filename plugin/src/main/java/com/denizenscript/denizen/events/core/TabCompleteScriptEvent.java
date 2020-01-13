@@ -80,7 +80,7 @@ public class TabCompleteScriptEvent extends BukkitScriptEvent implements Listene
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         if (determination.length() > 0 && !isDefaultDetermination(determinationObj)) {
-            completions = ListTag.valueOf(determination);
+            completions = ListTag.valueOf(determination, getTagContext(path));
             return true;
         }
         return super.applyDetermination(path, determinationObj);

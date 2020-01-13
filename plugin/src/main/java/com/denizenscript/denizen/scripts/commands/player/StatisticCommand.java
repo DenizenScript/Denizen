@@ -115,7 +115,7 @@ public class StatisticCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("players") && Utilities.entryHasPlayer(scriptEntry) && !specified_players) {
-            scriptEntry.addObject("players", new ListTag(Utilities.getEntryPlayer(scriptEntry).identify()));
+            scriptEntry.addObject("players", new ListTag(Utilities.getEntryPlayer(scriptEntry)));
         }
 
         if (!scriptEntry.hasObject("players")) {

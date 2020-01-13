@@ -69,7 +69,7 @@ public class NarrateCommand extends AbstractCommand {
         for (Argument arg : ArgumentHelper.interpret(scriptEntry.getOriginalArguments())) {
             if (!scriptEntry.hasObject("format")
                     && arg.matchesPrefix("format", "f")) {
-                String formatStr = TagManager.tag(arg.getValue(), new BukkitTagContext(scriptEntry, false));
+                String formatStr = TagManager.tag(arg.getValue(), scriptEntry.getContext());
                 FormatScriptContainer format = ScriptRegistry.getScriptContainer(formatStr);
                 if (format == null) {
                     Debug.echoError("Could not find format script matching '" + formatStr + "'");
@@ -78,7 +78,7 @@ public class NarrateCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("targets")
                     && arg.matchesPrefix("target", "targets", "t")) {
-                scriptEntry.addObject("targets", ListTag.getListFor(TagManager.tagObject(arg.getValue(), new BukkitTagContext(scriptEntry, false))).filter(PlayerTag.class, scriptEntry));
+                scriptEntry.addObject("targets", ListTag.getListFor(TagManager.tagObject(arg.getValue(), scriptEntry.getContext()), scriptEntry.getContext()).filter(PlayerTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("per_player")
                     && arg.matches("per_player")) {
@@ -109,7 +109,7 @@ public class NarrateCommand extends AbstractCommand {
         ElementTag perPlayerObj = scriptEntry.getElement("per_player");
 
         boolean perPlayer = perPlayerObj != null && perPlayerObj.asBoolean();
-        BukkitTagContext context = new BukkitTagContext(scriptEntry, false);
+        BukkitTagContext context = (BukkitTagContext) scriptEntry.getContext();
         if (!perPlayer || targets == null) {
             text = TagManager.tag(text, context);
         }

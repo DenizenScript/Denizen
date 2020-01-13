@@ -1805,7 +1805,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 ArrayList<LocationTag> found = new ArrayList<>();
                 List<MaterialTag> materials = new ArrayList<>();
                 if (attribute.hasContext(2)) {
-                    materials = ListTag.valueOf(attribute.getContext(2)).filter(MaterialTag.class, attribute.context);
+                    materials = ListTag.valueOf(attribute.getContext(2), attribute.context).filter(MaterialTag.class, attribute.context);
                 }
                 // Avoid NPE from invalid materials
                 if (materials == null) {
@@ -1873,7 +1873,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 ArrayList<LocationTag> found = new ArrayList<>();
                 List<MaterialTag> materials = new ArrayList<>();
                 if (attribute.hasContext(2)) {
-                    materials = ListTag.valueOf(attribute.getContext(2)).filter(MaterialTag.class, attribute.context);
+                    materials = ListTag.valueOf(attribute.getContext(2), attribute.context).filter(MaterialTag.class, attribute.context);
                 }
                 // Avoid NPE from invalid materials
                 if (materials == null) {
@@ -1987,7 +1987,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             // for the entity type.
             // -->
             else if (attribute.startsWith("entities", 2)) {
-                ListTag ent_list = attribute.hasContext(2) ? ListTag.valueOf(attribute.getContext(2)) : new ListTag();
+                ListTag ent_list = attribute.hasContext(2) ? ListTag.valueOf(attribute.getContext(2), attribute.context) : new ListTag();
                 ListTag found = new ListTag();
                 attribute.fulfill(2);
                 for (Entity entity : new WorldTag(object.getWorld()).getEntitiesForTag()) {

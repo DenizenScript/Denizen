@@ -167,7 +167,7 @@ public class ScoreboardCommand extends AbstractCommand {
 
         List<PlayerTag> viewers = (List<PlayerTag>) scriptEntry.getObject("viewers");
         ListTag lines = scriptEntry.hasObject("lines") ?
-                ListTag.valueOf(scriptEntry.getElement("lines").asString()) :
+                ListTag.valueOf(scriptEntry.getElement("lines").asString(), scriptEntry.getContext()) :
                 new ListTag();
 
         ElementTag action = scriptEntry.getElement("action");

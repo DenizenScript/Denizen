@@ -3,8 +3,10 @@ package com.denizenscript.denizen.events;
 import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.objects.notable.NotableManager;
+import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
+import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.events.ScriptEvent;
@@ -49,6 +51,12 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return true;
         }
         return false;
+    }
+
+    public BukkitTagContext getTagContext(ScriptPath path) {
+        BukkitTagContext context = (BukkitTagContext) getScriptEntryData().getTagContext();
+        context.script = new ScriptTag(path.container);
+        return context;
     }
 
     public static Class<? extends Event> getRegistrationClass(Class<? extends Event> clazz) {

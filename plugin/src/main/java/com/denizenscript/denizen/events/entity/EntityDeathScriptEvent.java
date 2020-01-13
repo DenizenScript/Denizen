@@ -142,7 +142,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         else if (Argument.valueOf(lower).matchesArgumentList(ItemTag.class)) {
             List<ItemStack> drops = event.getDrops();
             drops.clear();
-            for (ItemTag item : ListTag.getListFor(determinationObj).filter(ItemTag.class, path.container, true)) {
+            for (ItemTag item : ListTag.getListFor(determinationObj, getTagContext(path)).filter(ItemTag.class, path.container, true)) {
                 if (item != null) {
                     drops.add(item.getItemStack());
                 }

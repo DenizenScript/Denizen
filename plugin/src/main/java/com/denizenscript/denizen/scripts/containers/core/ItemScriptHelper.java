@@ -13,6 +13,7 @@ import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptBuilder;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
@@ -133,10 +134,11 @@ public class ItemScriptHelper implements Listener {
     }
 
     public void registerShapelessRecipe(ItemScriptContainer container, ItemStack item, String shapelessString, String internalId, String group) {
-        String list = TagManager.tag(shapelessString, new BukkitTagContext(null, null, new ScriptTag(container)));
+        TagContext context = new BukkitTagContext(null, null, new ScriptTag(container));
+        String list = TagManager.tag(shapelessString, context);
         List<ItemTag> ingredients = new ArrayList<>();
         List<Boolean> exacts = new ArrayList<>();
-        for (String element : ListTag.valueOf(list)) {
+        for (String element : ListTag.valueOf(list, context)) {
             String itemText = element;
             if (itemText.startsWith("material:")) {
                 exacts.add(false);

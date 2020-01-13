@@ -107,7 +107,7 @@ public class FollowCommand extends AbstractCommand {
             }
             else {
                 scriptEntry.addObject("entities",
-                        new ListTag(Utilities.getEntryNPC(scriptEntry).identify()));
+                        new ListTag(Utilities.getEntryNPC(scriptEntry)));
             }
         }
 

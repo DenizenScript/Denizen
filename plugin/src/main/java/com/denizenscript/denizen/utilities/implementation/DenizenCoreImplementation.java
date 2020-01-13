@@ -332,6 +332,8 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     @Override
     public boolean matchesType(String comparable, String comparedto) {
 
+        // Part of Deprecations.oldMatchesOperator
+
         boolean outcome = false;
 
         if (comparedto.equalsIgnoreCase("location")) {

@@ -213,7 +213,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
                 }
             }
             for (CuboidTag cuboid : exits) {
-                if (Fire(event, new ListTag(cuboid.identify()), "player exits " + cuboid.identifySimple(), cause)) {
+                if (Fire(event, new ListTag(cuboid), "player exits " + cuboid.identifySimple(), cause)) {
                     return;
                 }
             }
@@ -230,7 +230,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
                 }
             }
             for (CuboidTag cuboid : enters) {
-                if (Fire(event, new ListTag(cuboid.identify()), "player enters " + cuboid.identifySimple(), cause)) {
+                if (Fire(event, new ListTag(cuboid), "player enters " + cuboid.identifySimple(), cause)) {
                     return;
                 }
             }

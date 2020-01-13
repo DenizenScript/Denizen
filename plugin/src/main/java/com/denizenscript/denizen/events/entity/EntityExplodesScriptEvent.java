@@ -91,7 +91,7 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
         if (ListTag.matches(determination)) {
             blocks = new ListTag();
             blockSet = true;
-            for (String loc : ListTag.valueOf(determination)) {
+            for (String loc : ListTag.valueOf(determination, getTagContext(path))) {
                 LocationTag location = LocationTag.valueOf(loc);
                 if (location == null) {
                     Debug.echoError("Invalid location '" + loc + "' check [" + getName() + "]: '  for " + path.container.getName());

@@ -53,7 +53,7 @@ public class PlayerReceivesCommandsScriptEvent extends BukkitScriptEvent impleme
         String determination = determinationObj.toString();
         if (determination.length() > 0 && !isDefaultDetermination(determinationObj)) {
             event.getCommands().clear();
-            event.getCommands().addAll(ListTag.getListFor(determinationObj));
+            event.getCommands().addAll(ListTag.getListFor(determinationObj, getTagContext(path)));
             return true;
         }
         return super.applyDetermination(path, determinationObj);

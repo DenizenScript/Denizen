@@ -195,7 +195,8 @@ public class CommandScriptContainer extends ScriptContainer {
         }
         queue.start();
         if (queue.determinations != null && queue.determinations.size() > 0) {
-            return ListTag.getListFor(queue.determinations.getObject(0));
+            BukkitTagContext tagContext = new BukkitTagContext(player, npc, new ScriptTag(this));
+            return ListTag.getListFor(queue.determinations.getObject(0), tagContext);
         }
         else {
             return new ArrayList<>();

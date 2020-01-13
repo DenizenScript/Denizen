@@ -313,7 +313,7 @@ public class PlayEffectCommand extends AbstractCommand {
                             Debug.echoError(scriptEntry.getResidingQueue(), "Missing required special data for particle: " + particleEffect.getName());
                         }
                         else if (clazz == org.bukkit.Particle.DustOptions.class) {
-                            ListTag dataList = ListTag.valueOf(special_data.asString());
+                            ListTag dataList = ListTag.valueOf(special_data.asString(), scriptEntry.getContext());
                             if (dataList.size() != 2) {
                                 Debug.echoError(scriptEntry.getResidingQueue(), "DustOptions special_data must have 2 list entries for particle: " + particleEffect.getName());
                             }

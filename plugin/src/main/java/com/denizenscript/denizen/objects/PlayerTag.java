@@ -907,7 +907,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 }
             }
             else {
-                ListTag list = ListTag.getListFor(attribute.getContextObject(1));
+                ListTag list = ListTag.getListFor(attribute.getContextObject(1), attribute.context);
                 for (Entity entity : entities) {
                     if (entity instanceof LivingEntity) {
                         for (ObjectTag obj : list.objectForms) {
@@ -3457,7 +3457,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             if (!mechanism.getValue().asString().isEmpty()) {
                 String[] split = mechanism.getValue().asString().split("[\\|" + ListTag.internal_escape + "]", 2);
                 if (LocationTag.matches(split[0]) && split.length > 1) {
-                    ListTag lines = ListTag.valueOf(split[1]);
+                    ListTag lines = ListTag.valueOf(split[1], mechanism.context);
                     getPlayerEntity().sendSignChange(LocationTag.valueOf(split[0]), lines.toArray(new String[4]));
                 }
                 else {

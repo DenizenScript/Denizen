@@ -163,7 +163,7 @@ public class EntityEquipment implements Property {
         // <EntityTag.equipment>
         // -->
         if (mechanism.matches("equipment")) {
-            ListTag list = ListTag.valueOf(mechanism.getValue().asString());
+            ListTag list = ListTag.valueOf(mechanism.getValue().asString(), mechanism.context);
             ItemStack[] stacks = new ItemStack[list.size()];
             for (int i = 0; i < list.size(); i++) {
                 stacks[i] = ItemTag.valueOf(list.get(i), mechanism.context).getItemStack();

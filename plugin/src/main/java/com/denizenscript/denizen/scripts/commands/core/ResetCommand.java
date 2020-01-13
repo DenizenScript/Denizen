@@ -93,7 +93,7 @@ public class ResetCommand extends AbstractCommand {
         ObjectTag player = scriptEntry.getObjectTag("players");
         ListTag players;
         if (player instanceof PlayerTag) {
-            players = new ListTag(player.identify());
+            players = new ListTag(player);
         }
         else {
             players = scriptEntry.getObjectTag("players");

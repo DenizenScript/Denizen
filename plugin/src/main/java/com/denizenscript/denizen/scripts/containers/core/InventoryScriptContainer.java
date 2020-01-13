@@ -238,7 +238,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                     }
                     queue.start();
                     if (queue.determinations != null) {
-                        ListTag list = ListTag.getListFor(queue.determinations.getObject(0));
+                        ListTag list = ListTag.getListFor(queue.determinations.getObject(0), context);
                         if (list != null) {
                             int x = 0;
                             for (ItemTag item : list.filter(ItemTag.class, context, true)) {
