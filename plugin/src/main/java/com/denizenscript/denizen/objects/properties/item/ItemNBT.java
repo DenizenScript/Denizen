@@ -54,9 +54,10 @@ public class ItemNBT implements Property {
         // <--[tag]
         // @attribute <ItemTag.has_nbt[<key>]>
         // @returns ElementTag(Boolean)
+        // @mechanism ItemTag.nbt
         // @group properties
         // @description
-        // Returns whether this item has the specified NBT key.
+        // Returns whether this item has the specified Denizen NBT key.
         // -->
         if (attribute.startsWith("has_nbt")) {
             return new ElementTag(CustomNBT.hasCustomNBT(item.getItemStack(), attribute.getContext(1), CustomNBT.KEY_DENIZEN))
@@ -66,9 +67,10 @@ public class ItemNBT implements Property {
         // <--[tag]
         // @attribute <ItemTag.nbt_keys>
         // @returns ListTag
+        // @mechanism ItemTag.nbt
         // @group properties
         // @description
-        // Returns all of this item's NBT keys as a ListTag.
+        // Returns all of this item's Denizen NBT keys as a ListTag.
         // -->
         if (attribute.startsWith("nbt_keys")) {
             return new ListTag(CustomNBT.listNBT(item.getItemStack(), CustomNBT.KEY_DENIZEN))
@@ -81,7 +83,7 @@ public class ItemNBT implements Property {
         // @mechanism ItemTag.nbt
         // @group properties
         // @description
-        // Returns the value of this item's NBT key as an ElementTag as best it can.
+        // Returns the value of this item's Denizen NBT key as an ElementTag as best it can.
         // If no key is specified, returns the full list of NBT key/value pairs (valid for input to nbt mechanism).
         // See also <@link language property escaping>.
         // -->
