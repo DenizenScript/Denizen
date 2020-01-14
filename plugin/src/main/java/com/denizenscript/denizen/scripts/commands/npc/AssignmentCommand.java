@@ -23,8 +23,10 @@ public class AssignmentCommand extends AbstractCommand {
     //
     // @Description
     // Changes an NPC's assignment as though you used the '/npc assignment' command.
-    // Uses the script: argument, which accepts an assignment script type. For this command to work an npc must
-    // be attached to the script queue or an npc specified with npc:NPCTag.
+    //
+    // Uses the script: argument, which accepts an assignment-type script.
+    //
+    // For this command to work an npc must be attached to the script queue or an npc specified with npc:NPCTag.
     //
     // @Tags
     // <NPCTag.script>

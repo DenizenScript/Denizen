@@ -69,11 +69,11 @@ public class LookCommand extends AbstractCommand {
             }
         }
 
-        // Use the NPC or player as the entity if no entities are specified
-
-        scriptEntry.defaultObject("entities",
-                Utilities.entryHasNPC(scriptEntry) ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null,
-                Utilities.entryHasPlayer(scriptEntry) ? Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()) : null);
+        if (!scriptEntry.hasObject("entities")) {
+            scriptEntry.defaultObject("entities",
+                    Utilities.entryHasNPC(scriptEntry) && Utilities.getEntryNPC(scriptEntry).isSpawned() ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null,
+                    Utilities.entryHasPlayer(scriptEntry) && Utilities.getEntryPlayer(scriptEntry).isOnline() ? Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()) : null);
+        }
 
         if (!scriptEntry.hasObject("location") || !scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Must specify a location and entity!");

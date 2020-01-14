@@ -223,7 +223,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             String entityGroup = m.group(1).toUpperCase();
 
             // NPC entity
-            if (entityGroup.matches("N@")) {
+            if (entityGroup.equals("N@")) {
 
                 NPCTag npc = NPCTag.valueOf(string);
 
