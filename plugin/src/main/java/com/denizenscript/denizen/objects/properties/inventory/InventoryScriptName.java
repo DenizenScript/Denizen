@@ -38,7 +38,7 @@ public class InventoryScriptName implements Property {
 
     @Override
     public String getPropertyId() {
-        return "contents";
+        return "script_name";
     }
 
     public static void registerTags() {
