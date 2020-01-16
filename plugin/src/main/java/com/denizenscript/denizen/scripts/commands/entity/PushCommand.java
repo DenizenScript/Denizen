@@ -278,30 +278,24 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
             @Override
             public void run() {
-
                 if (runs < maxTicks && lastEntity.isValid()) {
-
                     Vector v1 = lastEntity.getLocation().toVector();
                     Vector v3 = v2.clone().subtract(v1).normalize();
-                    Vector newVel = v3.multiply(speed);
-
-                    lastEntity.setVelocity(newVel);
-
                     if (forceAlong) {
                         Vector newDest = v2.clone().subtract(Origin).normalize().multiply(runs / 20).add(Origin);
                         lastEntity.teleport(new Location(lastEntity.getLocation().getWorld(),
                                 newDest.getX(), newDest.getY(), newDest.getZ(),
                                 lastEntity.getLocation().getYaw(), lastEntity.getLocation().getPitch()));
                     }
-
                     runs += prec;
-
                     // Check if the entity is close to its destination
                     if (Math.abs(v2.getX() - v1.getX()) < 1.5f && Math.abs(v2.getY() - v1.getY()) < 1.5f
                             && Math.abs(v2.getZ() - v1.getZ()) < 1.5f) {
                         runs = maxTicks;
+                        return;
                     }
-
+                    Vector newVel = v3.multiply(speed);
+                    lastEntity.setVelocity(newVel);
                     // Check if the entity has collided with something
                     // using the most basic possible calculation
                     BlockHelper blockHelper = NMSHandler.getBlockHelper();
@@ -309,19 +303,15 @@ public class PushCommand extends AbstractCommand implements Holdable {
                             || !blockHelper.isSafeBlock(lastEntity.getLocation().add(newVel).getBlock().getType()))) {
                         runs = maxTicks;
                     }
-
                     if (no_damage && lastEntity.isLivingEntity()) {
                         lastEntity.getLivingEntity().setFallDistance(0);
                     }
-
                     // Record the location in case the entity gets lost (EG, if a pushed arrow hits a mob)
                     lastLocation = lastEntity.getLocation();
                 }
                 else {
                     this.cancel();
-
                     if (script != null) {
-
                         List<ScriptEntry> entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
                         ScriptQueue queue = new InstantQueue(script.getContainer().getName())
                                 .addEntries(entries);
