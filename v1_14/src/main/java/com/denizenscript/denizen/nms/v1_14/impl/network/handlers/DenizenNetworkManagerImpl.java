@@ -345,15 +345,6 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         else if (packet instanceof PacketPlayOutEntityMetadata) {
             return packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadataImpl((PacketPlayOutEntityMetadata) packet));
         }
-        else if (packet instanceof PacketPlayOutSetSlot) {
-            return packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutSetSlotImpl((PacketPlayOutSetSlot) packet));
-        }
-        else if (packet instanceof PacketPlayOutWindowItems) {
-            return packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutWindowItemsImpl((PacketPlayOutWindowItems) packet));
-        }
-        else if (packet instanceof PacketPlayOutOpenWindowMerchant) {
-            return packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutTradeListImpl((PacketPlayOutOpenWindowMerchant) packet));
-        }
         return false;
     }
 

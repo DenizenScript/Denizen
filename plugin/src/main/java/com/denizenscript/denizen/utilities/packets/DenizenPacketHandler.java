@@ -7,25 +7,17 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.player.PlayerReceivesMessageScriptEvent;
 import com.denizenscript.denizen.events.player.PlayerSteersEntityScriptEvent;
 import com.denizenscript.denizen.events.player.ResourcePackStatusScriptEvent;
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.util.TradeOffer;
-import com.denizenscript.denizen.nms.util.jnbt.StringTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.player.GlowCommand;
 import com.denizenscript.denizen.scripts.commands.server.ExecuteCommand;
-import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -148,53 +140,5 @@ public class DenizenPacketHandler {
     public boolean sendPacket(Player player, PacketOutEntityMetadata entityMetadata) {
         HashSet<UUID> players = GlowCommand.glowViewers.get(entityMetadata.getEntityId());
         return players != null && entityMetadata.checkForGlow() && !players.contains(player.getUniqueId());
-    }
-
-    public boolean sendPacket(Player player, PacketOutSetSlot setSlot) {
-        setSlot.setItemStack(removeItemScriptLore(setSlot.getItemStack()));
-        return false;
-    }
-
-    public boolean sendPacket(Player player, PacketOutWindowItems windowItems) {
-        ItemStack[] contents = windowItems.getContents();
-        for (int i = 0; i < contents.length; i++) {
-            contents[i] = removeItemScriptLore(contents[i]);
-        }
-        windowItems.setContents(contents);
-        return false;
-    }
-
-    public boolean sendPacket(Player player, PacketOutTradeList tradeList) {
-        List<TradeOffer> tradeOffers = tradeList.getTradeOffers();
-        for (TradeOffer tradeOffer : tradeOffers) {
-            tradeOffer.setFirstCost(removeItemScriptLore(tradeOffer.getFirstCost()));
-            tradeOffer.setSecondCost(removeItemScriptLore(tradeOffer.getSecondCost()));
-            tradeOffer.setProduct(removeItemScriptLore(tradeOffer.getProduct()));
-        }
-        tradeList.setTradeOffers(tradeOffers);
-        return false;
-    }
-
-    private static ItemStack removeItemScriptLore(ItemStack itemStack) {
-        if (itemStack != null && itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()) {
-            ItemMeta meta = itemStack.getItemMeta();
-            List<String> lore = meta.getLore();
-            Iterator<String> iter = lore.iterator();
-            String hash = null;
-            while (iter.hasNext()) {
-                String line = iter.next();
-                if (line.startsWith(ItemScriptHelper.ItemScriptHashID)) {
-                    hash = line;
-                    iter.remove();
-                    break;
-                }
-            }
-            if (hash != null) {
-                meta.setLore(lore);
-                itemStack.setItemMeta(meta);
-                return NMSHandler.getItemHelper().addNbtData(itemStack, "Denizen Item Script", new StringTag(hash));
-            }
-        }
-        return itemStack;
     }
 }

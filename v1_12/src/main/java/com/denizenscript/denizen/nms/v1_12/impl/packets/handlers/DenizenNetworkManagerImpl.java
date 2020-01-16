@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.nms.v1_12.impl.packets.handlers;
 
-import com.denizenscript.denizen.nms.v1_12.impl.packets.PacketOutSetSlotImpl;
 import com.denizenscript.denizen.nms.v1_12.impl.entities.EntityFakePlayerImpl;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import io.netty.buffer.Unpooled;
@@ -12,8 +11,6 @@ import com.denizenscript.denizen.nms.v1_12.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_12.impl.packets.PacketOutChatImpl;
 import com.denizenscript.denizen.nms.v1_12.impl.packets.PacketOutEntityMetadataImpl;
 import com.denizenscript.denizen.nms.v1_12.impl.packets.PacketOutSpawnEntityImpl;
-import com.denizenscript.denizen.nms.v1_12.impl.packets.PacketOutTradeListImpl;
-import com.denizenscript.denizen.nms.v1_12.impl.packets.PacketOutWindowItemsImpl;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -292,16 +289,6 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 oldManager.sendPacket(packet);
             }
         }
-        else if (packet instanceof PacketPlayOutSetSlot) {
-            if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutSetSlotImpl((PacketPlayOutSetSlot) packet))) {
-                oldManager.sendPacket(packet);
-            }
-        }
-        else if (packet instanceof PacketPlayOutWindowItems) {
-            if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutWindowItemsImpl((PacketPlayOutWindowItems) packet))) {
-                oldManager.sendPacket(packet);
-            }
-        }
         else if (packet instanceof PacketPlayOutCustomPayload) {
             PacketPlayOutCustomPayload payload = (PacketPlayOutCustomPayload) packet;
             PacketDataSerializer original = new PacketDataSerializer(Unpooled.buffer());
@@ -312,15 +299,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                         new byte[original.readableBytes()]));
                 // Write the original back to avoid odd errors
                 payload.a(original);
-                String name = serializer.e(20);
-                if (name != null && name.equals("MC|TrList")) {
-                    if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutTradeListImpl(payload, serializer))) {
-                        oldManager.sendPacket(packet);
-                    }
-                }
-                else {
-                    oldManager.sendPacket(packet);
-                }
+                oldManager.sendPacket(packet);
             }
             catch (Exception e) {
                 oldManager.sendPacket(packet);
