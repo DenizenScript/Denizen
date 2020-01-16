@@ -364,10 +364,9 @@ public class Denizen extends JavaPlugin {
             // Register all the modern script events
             ScriptEventRegistry.registerMainEvents();
 
-            CommonRegistries.registerMainObjects();
-
             // Register Core ObjectTags with the ObjectFetcher
             ObjectFetcher.registerCoreObjects();
+            CommonRegistries.registerMainObjects();
         }
         catch (Exception e) {
             Debug.echoError(e);

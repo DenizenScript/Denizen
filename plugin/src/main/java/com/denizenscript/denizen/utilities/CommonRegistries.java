@@ -2,6 +2,7 @@ package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.tags.core.*;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 
@@ -194,7 +195,6 @@ public class CommonRegistries {
         new PluginTagBase();
         new TradeTagBase();
         new WorldTagBase();
-
         // Other bases
         new ServerTagBase();
         new TextTagBase();
@@ -202,22 +202,27 @@ public class CommonRegistries {
     }
 
     public static void registerMainObjects() {
-        ObjectFetcher.registerWithObjectFetcher(BiomeTag.class, BiomeTag.tagProcessor);     // b@
-        ObjectFetcher.registerWithObjectFetcher(ChunkTag.class, ChunkTag.tagProcessor);     // ch@
-        ObjectFetcher.registerWithObjectFetcher(ColorTag.class, ColorTag.tagProcessor);     // co@
-        ObjectFetcher.registerWithObjectFetcher(CuboidTag.class, CuboidTag.tagProcessor);    // cu@
+        ObjectFetcher.registerWithObjectFetcher(BiomeTag.class, BiomeTag.tagProcessor); // b@
+        ObjectFetcher.registerWithObjectFetcher(ChunkTag.class, ChunkTag.tagProcessor); // ch@
+        ObjectFetcher.registerWithObjectFetcher(ColorTag.class, ColorTag.tagProcessor); // co@
+        ObjectFetcher.registerWithObjectFetcher(CuboidTag.class, CuboidTag.tagProcessor); // cu@
         ObjectFetcher.registerWithObjectFetcher(EllipsoidTag.class, EllipsoidTag.tagProcessor); // ellipsoid@
-        ObjectFetcher.registerWithObjectFetcher(EntityTag.class, EntityTag.tagProcessor);    // e@
+        ObjectFetcher.registerWithObjectFetcher(EntityTag.class, EntityTag.tagProcessor); // e@
         ObjectFetcher.registerWithObjectFetcher(InventoryTag.class, InventoryTag.tagProcessor); // in@
-        ObjectFetcher.registerWithObjectFetcher(ItemTag.class, ItemTag.tagProcessor);      // i@
-        ObjectFetcher.registerWithObjectFetcher(LocationTag.class, LocationTag.tagProcessor);  // l@
-        ObjectFetcher.registerWithObjectFetcher(MaterialTag.class, MaterialTag.tagProcessor);  // m@
+        ObjectFetcher.registerWithObjectFetcher(ItemTag.class, ItemTag.tagProcessor); // i@
+        ObjectFetcher.registerWithObjectFetcher(LocationTag.class, LocationTag.tagProcessor); // l@
+        ObjectFetcher.registerWithObjectFetcher(MaterialTag.class, MaterialTag.tagProcessor); // m@
         if (Depends.citizens != null) {
-            ObjectFetcher.registerWithObjectFetcher(NPCTag.class, NPCTag.tagProcessor);   // n@
+            ObjectFetcher.registerWithObjectFetcher(NPCTag.class, NPCTag.tagProcessor); // n@
         }
-        ObjectFetcher.registerWithObjectFetcher(PlayerTag.class, PlayerTag.tagProcessor);    // p@
-        ObjectFetcher.registerWithObjectFetcher(PluginTag.class, PluginTag.tagProcessor);    // pl@
-        ObjectFetcher.registerWithObjectFetcher(TradeTag.class, TradeTag.tagProcessor);     // trade@
-        ObjectFetcher.registerWithObjectFetcher(WorldTag.class, WorldTag.tagProcessor);     // w@
+        ObjectFetcher.registerWithObjectFetcher(PlayerTag.class, PlayerTag.tagProcessor); // p@
+        ObjectFetcher.registerWithObjectFetcher(PluginTag.class, PluginTag.tagProcessor); // pl@
+        ObjectFetcher.registerWithObjectFetcher(TradeTag.class, TradeTag.tagProcessor); // trade@
+        ObjectFetcher.registerWithObjectFetcher(WorldTag.class, WorldTag.tagProcessor); // w@
+        StringBuilder debug = new StringBuilder(256);
+        for (ObjectFetcher.ObjectType<?> objectType : ObjectFetcher.objectsByPrefix.values()) {
+            debug.append(objectType.clazz.getSimpleName()).append(" as ").append(objectType.prefix).append(", ");
+        }
+        Debug.echoApproval("Loaded core object types: [" + debug.substring(0, debug.length() - 2) + "]");
     }
 }
