@@ -147,6 +147,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new PlayerPicksUpScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerPlacesBlockScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerPlacesHangingScriptEvent());
+        ScriptEvent.registerScriptEvent(new PlayerPreLoginScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerPreparesAnvilCraftScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerQuitsScriptEvent());
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {

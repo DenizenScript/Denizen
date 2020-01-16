@@ -43,7 +43,8 @@ public class PlayerLoginScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player") && (path.eventLower.contains("logs in") || path.eventLower.contains("login"));
+        return path.eventLower.startsWith("player login") || path.eventLower.startsWith("player first login")
+                || path.eventLower.startsWith("player logs in");
     }
 
     @Override
