@@ -652,6 +652,9 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // @input None
         // @description
         // Causes the chunk to be entirely deleted and reformed from the world's seed.
+        // The underlying method for this was disabled in recent Spigot versions with a vile message from user-hating Spigot dev md_5,
+        // "Not supported in this Minecraft version! Unless you can fix it, this is not a bug :)"
+        // Unfortunately due to md_5's attitude on this problem, this mechanism will not work for the time being.
         // @tags
         // None
         // -->

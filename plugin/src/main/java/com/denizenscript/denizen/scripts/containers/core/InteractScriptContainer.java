@@ -37,7 +37,7 @@ public class InteractScriptContainer extends ScriptContainer {
     // Any triggers used must be enabled in <@link action assignment> by <@link command trigger>.
     //
     // Note that script commands ran in interact scripts by default have a delay between each command.
-    // To override this delay, put a '^' in front of each command name, or set 'speed: 0' on the container.
+    // To override this delay, set 'speed: 0' on the container or change the relevant config setting.
     //
     // <code>
     // Interact_Script_Name:

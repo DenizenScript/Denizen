@@ -1592,6 +1592,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the inventory contains all of the specified items.
+        // Note that this is usually a poor option, and a more specific option like <@link tag inventorytag.contains.material> is usually better.
         // -->
         registerTag("contains", (attribute, object) -> {
             // <--[tag]
@@ -2118,6 +2119,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Returns the combined quantity of itemstacks that match an item if one is specified,
         // or the combined quantity of all itemstacks if one is not.
+        // Note that this is usually a poor option, and a more specific option like <@link tag inventorytag.quantity.material> is usually better.
         // -->
         registerTag("quantity", (attribute, object) -> {
             // <--[tag]

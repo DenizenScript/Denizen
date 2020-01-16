@@ -49,6 +49,7 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
     // None
     //
     // -->
+
     // Technically defined in TriggerTrait, but placing here instead.
     // <--[action]
     // @Actions
@@ -63,6 +64,7 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
     // "cancelled" to cancel the damage event.
     //
     // -->
+
     // <--[action]
     // @Actions
     // damaged
