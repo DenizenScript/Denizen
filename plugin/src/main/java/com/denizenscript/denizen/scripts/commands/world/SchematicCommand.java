@@ -82,7 +82,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     // block set, instead of actually modifying the blocks in the world.
     // This takes an optional duration as "fake_duration" for how long the fake blocks should remain.
     //
-    // The schematic command is ~waitable when 'load' or 'save' are used. Refer to <@link language ~waitable>.
+    // The schematic command is ~waitable as an alternative to 'delayed' argument. Refer to <@link language ~waitable>.
     //
     // @Tags
     // <schematic[<name>].height>
@@ -199,11 +199,12 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                 arg.reportUnhandled();
             }
         }
-
+        if (scriptEntry.shouldWaitFor()) {
+            scriptEntry.addObject("delayed", new ElementTag("true"));
+        }
         if (!scriptEntry.hasObject("type")) {
             throw new InvalidArgumentsException("Missing type argument!");
         }
-
         if (!scriptEntry.hasObject("name")) {
             throw new InvalidArgumentsException("Missing name argument!");
         }
@@ -326,8 +327,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     Bukkit.getScheduler().runTaskAsynchronously(DenizenAPI.getCurrentInstance(), loadRunnable);
                 }
                 else {
-                    scriptEntry.setFinished(true);
                     loadRunnable.run();
+                    scriptEntry.setFinished(true);
                 }
                 break;
             }
