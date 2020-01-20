@@ -19,10 +19,7 @@ import org.bukkit.entity.Player;
 
 public class NPCCommandHandler {
 
-    private final Citizens citizens;
-
     public NPCCommandHandler(Citizens citizens) {
-        this.citizens = citizens;
     }
 
     // <--[language]
@@ -432,7 +429,8 @@ public class NPCCommandHandler {
         SleepingTrait trait = npc.getTrait(SleepingTrait.class);
 
         if (trait.isSleeping()) {
-            Messaging.sendError(sender, npc.getName() + " is already sleeping!");
+            Messaging.send(sender, npc.getName() + " was already sleeping, and is now standing!");
+            trait.wakeUp();
             return;
         }
 
@@ -554,7 +552,7 @@ public class NPCCommandHandler {
 
         if (!trait.isFishing()) {
             npc.removeTrait(FishingTrait.class);
-            Messaging.sendError(sender, npc.getName() + " isnt fishing!");
+            Messaging.sendError(sender, npc.getName() + " isn't fishing!");
             return;
         }
 
@@ -584,7 +582,7 @@ public class NPCCommandHandler {
 
         if (trait.isSneaking()) {
             trait.stand();
-            Messaging.sendError(sender, npc.getName() + " is already sneaking!");
+            Messaging.send(sender, npc.getName() + " was already sneaking, and is now standing.");
         }
         else {
             trait.sneak();

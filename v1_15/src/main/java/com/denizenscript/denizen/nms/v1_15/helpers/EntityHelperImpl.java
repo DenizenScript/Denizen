@@ -63,7 +63,6 @@ public class EntityHelperImpl extends EntityHelper {
         catch (Throwable ex) {
             Debug.echoError(ex);
         }
-
     }
 
     @Override
