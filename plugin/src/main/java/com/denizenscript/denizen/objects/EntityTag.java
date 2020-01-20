@@ -1416,15 +1416,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         //   IDENTIFICATION ATTRIBUTES
         /////////////////
 
-        // <--[tag]
-        // @attribute <EntityTag.custom_id>
-        // @returns ScriptTag/Element
-        // @group data
-        // @description
-        // If the entity has a script ID, returns the ScriptTag of that ID.
-        // Otherwise, returns the name of the entity type.
-        // -->
         registerSpawnedOnlyTag("custom_id", (attribute, object) -> {
+            Deprecations.entityCustomIdTag.warn(attribute.context);
             if (CustomNBT.hasCustomNBT(object.getLivingEntity(), "denizen-script-id")) {
                 return new ScriptTag(CustomNBT.getCustomNBT(object.getLivingEntity(), "denizen-script-id"));
             }
