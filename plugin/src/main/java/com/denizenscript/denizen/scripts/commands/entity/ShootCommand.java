@@ -96,10 +96,10 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                     && arg.matchesPrefix("origin", "o", "source", "s")) {
 
                 if (arg.matchesArgumentType(EntityTag.class)) {
-                    scriptEntry.addObject("originEntity", arg.asType(EntityTag.class));
+                    scriptEntry.addObject("origin_entity", arg.asType(EntityTag.class));
                 }
                 else if (arg.matchesArgumentType(LocationTag.class)) {
-                    scriptEntry.addObject("originLocation", arg.asType(LocationTag.class));
+                    scriptEntry.addObject("origin_location", arg.asType(LocationTag.class));
                 }
                 else {
                     Debug.echoError("Ignoring unrecognized argument: " + arg.raw_value);
@@ -171,9 +171,9 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
 
         // Use the NPC or player's locations as the origin if one is not specified
 
-        if (!scriptEntry.hasObject("originlocation")) {
+        if (!scriptEntry.hasObject("origin_location")) {
 
-            scriptEntry.defaultObject("originentity",
+            scriptEntry.defaultObject("origin_entity",
                     Utilities.entryHasNPC(scriptEntry) ? Utilities.getEntryNPC(scriptEntry).getDenizenEntity() : null,
                     Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getDenizenEntity() : null);
         }
@@ -186,7 +186,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
             throw new InvalidArgumentsException("Must specify entity/entities!");
         }
 
-        if (!scriptEntry.hasObject("originentity") && !scriptEntry.hasObject("originlocation")) {
+        if (!scriptEntry.hasObject("origin_entity") && !scriptEntry.hasObject("origin_location")) {
             throw new InvalidArgumentsException("Must specify an origin location!");
         }
     }
@@ -196,8 +196,8 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
     public void execute(final ScriptEntry scriptEntry) {
 
         EntityTag originEntity = (EntityTag) scriptEntry.getObject("originentity");
-        LocationTag originLocation = scriptEntry.hasObject("originlocation") ?
-                (LocationTag) scriptEntry.getObject("originlocation") :
+        LocationTag originLocation = scriptEntry.hasObject("origin_location") ?
+                (LocationTag) scriptEntry.getObject("origin_location") :
                 new LocationTag(originEntity.getEyeLocation()
                         .add(originEntity.getEyeLocation().getDirection()));
         boolean no_rotate = scriptEntry.hasObject("no_rotate") && scriptEntry.getElement("no_rotate").asBoolean();

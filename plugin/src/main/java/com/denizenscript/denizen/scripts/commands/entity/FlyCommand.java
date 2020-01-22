@@ -92,11 +92,11 @@ public class FlyCommand extends AbstractCommand {
 
                 scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
-            else if (!scriptEntry.hasObject("rotationthreshold")
+            else if (!scriptEntry.hasObject("rotation_threshold")
                     && arg.matchesPrefix("rotationthreshold", "rotation", "r")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Float)) {
 
-                scriptEntry.addObject("rotationThreshold", arg.asElement());
+                scriptEntry.addObject("rotation_threshold", arg.asElement());
             }
             else if (!scriptEntry.hasObject("speed")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
@@ -115,7 +115,7 @@ public class FlyCommand extends AbstractCommand {
 
         // Use a default speed and rotation threshold if they are not specified
         scriptEntry.defaultObject("speed", new ElementTag(1.2));
-        scriptEntry.defaultObject("rotationThreshold", new ElementTag(15));
+        scriptEntry.defaultObject("rotation_threshold", new ElementTag(15));
 
         // Check to make sure required arguments have been filled
         if (!scriptEntry.hasObject("entities")) {
@@ -195,7 +195,7 @@ public class FlyCommand extends AbstractCommand {
         }
 
         final double speed = ((ElementTag) scriptEntry.getObject("speed")).asDouble();
-        final float rotationThreshold = ((ElementTag) scriptEntry.getObject("rotationthreshold")).asFloat();
+        final float rotationThreshold = ((ElementTag) scriptEntry.getObject("rotation_threshold")).asFloat();
         boolean cancel = scriptEntry.hasObject("cancel");
 
         // Report to dB

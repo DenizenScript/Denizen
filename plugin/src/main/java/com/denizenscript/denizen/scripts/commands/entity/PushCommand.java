@@ -81,10 +81,10 @@ public class PushCommand extends AbstractCommand implements Holdable {
                     && arg.matchesPrefix("origin", "o", "source", "shooter", "s")) {
 
                 if (arg.matchesArgumentType(EntityTag.class)) {
-                    scriptEntry.addObject("originEntity", arg.asType(EntityTag.class));
+                    scriptEntry.addObject("origin_entity", arg.asType(EntityTag.class));
                 }
                 else if (arg.matchesArgumentType(LocationTag.class)) {
-                    scriptEntry.addObject("originLocation", arg.asType(LocationTag.class));
+                    scriptEntry.addObject("origin_location", arg.asType(LocationTag.class));
                 }
                 else {
                     Debug.echoError("Ignoring unrecognized argument: " + arg.raw_value);
@@ -148,9 +148,9 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
         // Use the NPC or player's locations as the origin if one is not specified
 
-        if (!scriptEntry.hasObject("originlocation")) {
+        if (!scriptEntry.hasObject("origin_location")) {
 
-            scriptEntry.defaultObject("originentity",
+            scriptEntry.defaultObject("origin_entity",
                     Utilities.entryHasNPC(scriptEntry) ? Utilities.getEntryNPC(scriptEntry).getDenizenEntity() : null,
                     Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getDenizenEntity() : null);
         }
@@ -166,7 +166,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
             throw new InvalidArgumentsException("Must specify entity/entities!");
         }
 
-        if (!scriptEntry.hasObject("originentity") && !scriptEntry.hasObject("originlocation")) {
+        if (!scriptEntry.hasObject("origin_entity") && !scriptEntry.hasObject("origin_location")) {
             throw new InvalidArgumentsException("Must specify an origin location!");
         }
     }
@@ -175,9 +175,9 @@ public class PushCommand extends AbstractCommand implements Holdable {
     @Override
     public void execute(final ScriptEntry scriptEntry) {
 
-        EntityTag originEntity = (EntityTag) scriptEntry.getObject("originentity");
-        LocationTag originLocation = scriptEntry.hasObject("originlocation") ?
-                (LocationTag) scriptEntry.getObject("originlocation") :
+        EntityTag originEntity = (EntityTag) scriptEntry.getObject("origin_entity");
+        LocationTag originLocation = scriptEntry.hasObject("origin_location") ?
+                (LocationTag) scriptEntry.getObject("origin_location") :
                 new LocationTag(originEntity.getEyeLocation()
                         .add(originEntity.getEyeLocation().getDirection())
                         .subtract(0, 0.4, 0));
