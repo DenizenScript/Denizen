@@ -23,7 +23,7 @@ import org.bukkit.craftbukkit.v1_15_R1.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_15_R1.block.CraftSkull;
 import org.bukkit.craftbukkit.v1_15_R1.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_15_R1.util.CraftLegacy;
+import org.bukkit.craftbukkit.v1_15_R1.legacy.CraftLegacy;
 import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.material.MaterialData;
 
