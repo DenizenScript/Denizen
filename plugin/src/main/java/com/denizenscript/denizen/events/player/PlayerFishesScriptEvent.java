@@ -8,6 +8,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
@@ -30,10 +31,10 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     // @Triggers when a player uses a fishing rod.
     //
     // @Context
-    // <context.hook> returns a EntityTag of the hook.
+    // <context.hook> returns an EntityTag of the hook.
     // <context.state> returns an ElementTag of the fishing state. Valid states: <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/event/player/PlayerFishEvent.State.html>
-    // <context.entity> returns a EntityTag of the entity that got caught.
-    // <context.item> returns a ItemTag of the item gotten, if any.
+    // <context.entity> returns an EntityTag of the entity that got caught.
+    // <context.item> returns an ItemTag of the item gotten, if any.
     //
     // @Determine
     // "CAUGHT:" + ItemTag to change the the item that was caught (only if an item was already being caught).
@@ -94,7 +95,7 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (!isDefaultDetermination(determinationObj) && determinationObj instanceof ElementTag) {
             String determination = determinationObj.toString();
-            if (determination.startsWith("caught:")) {
+            if (CoreUtilities.toLowerCase(determination).startsWith("caught:")) {
                 item = ItemTag.valueOf(determination.substring("caught:".length()));
                 if (entity != null && entity.getBukkitEntityType() == EntityType.DROPPED_ITEM) {
                     ((Item) entity.getBukkitEntity()).setItemStack(item.getItemStack());
