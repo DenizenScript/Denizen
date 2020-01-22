@@ -45,8 +45,6 @@ public interface PacketHelper {
 
     void showTitle(Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut);
 
-    void sendActionBarMessage(Player player, String message);
-
     void showEquipment(Player player, LivingEntity entity, EquipmentSlot equipmentSlot, ItemStack itemStack);
 
     void resetEquipment(Player player, LivingEntity entity);

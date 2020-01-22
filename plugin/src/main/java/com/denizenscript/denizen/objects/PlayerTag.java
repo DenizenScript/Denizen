@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
 import com.denizenscript.denizen.objects.properties.entity.EntityHealth;
 import com.denizenscript.denizen.scripts.commands.player.SidebarCommand;
 import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -30,6 +31,7 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import net.md_5.bungee.api.ChatMessageType;
 import org.bukkit.*;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
@@ -3539,15 +3541,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             }
         }
 
-        // <--[mechanism]
-        // @object PlayerTag
-        // @name action_bar
-        // @input ElementTag
-        // @description
-        // Sends the player text in the action bar.
-        // -->
         if (mechanism.matches("action_bar")) {
-            NMSHandler.getPacketHelper().sendActionBarMessage(getPlayerEntity(), mechanism.getValue().asString());
+            Deprecations.playerActionBarMech.warn(mechanism.context);
+            getPlayerEntity().spigot().sendMessage(ChatMessageType.ACTION_BAR, FormattedTextHelper.parse(mechanism.getValue().asString()));
         }
 
         // <--[mechanism]
