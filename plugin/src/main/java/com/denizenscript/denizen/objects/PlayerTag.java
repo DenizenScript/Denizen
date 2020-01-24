@@ -2011,7 +2011,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @returns ElementTag(Number)
         // @mechanism PlayerTag.food_level
         // @description
-        // Returns the current food level of the player.
+        // Returns the current food level (aka hunger) of the player.
         // -->
         registerOnlineOnlyTag("food_level", (attribute, object) -> {
             if (attribute.startsWith("formatted", 2)) {

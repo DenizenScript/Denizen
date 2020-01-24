@@ -155,6 +155,15 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
     }
 
     @Override
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        if (!isDefaultDetermination(determinationObj) && ItemTag.matches(determinationObj.toString())) {
+            event.setCurrentItem(ItemTag.valueOf(determinationObj.toString()).getItemStack());
+            return true;
+        }
+        return super.applyDetermination(path, determinationObj);
+    }
+
+    @Override
     public String getName() {
         return "PlayerClicksInInventory";
     }

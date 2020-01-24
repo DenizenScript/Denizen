@@ -36,8 +36,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         File file = null;
         // Get the script directory
         if (Settings.useDefaultScriptPath()) {
-            file = new File(DenizenAPI.getCurrentInstance()
-                    .getDataFolder() + File.separator + "scripts");
+            file = new File(DenizenAPI.getCurrentInstance().getDataFolder() + File.separator + "scripts");
         }
         else {
             file = new File(Settings.getAlternateScriptPath().replace("/", File.separator));
