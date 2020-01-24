@@ -17,7 +17,12 @@ public class PathFinder {
     public static AStarMachine ASTAR = AStarMachine.createWithDefaultStorage();
 
     public static List<LocationTag> getPath(Location start, Location dest) {
-        VectorGoal goal = new VectorGoal(dest, 1);
+        /*
+            BitBucket said that the Pathing was off by 1 block and he was right
+            but MCMonkey mocked him with a meme and said "Pathing isn't my job"
+            and so BitBucket fixed the pathing himself.
+        */
+        VectorGoal goal = new VectorGoal(dest, 0.1F);// off by 1 block == VectorGoal goal = new VectorGoal(dest, 1);
         Path plan = (Path) ASTAR.runFully(goal,
                 new VectorNode(goal, start, new ChunkBlockSource(start, 100), new MinecraftBlockExaminer()),
                 50000);
