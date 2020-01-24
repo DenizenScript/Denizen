@@ -93,6 +93,9 @@ public class DenizenPacketHandler {
         if (ExecuteCommand.silencedPlayers.contains(player.getUniqueId())) {
             return true;
         }
+        if (chat.getMessage() == null) {
+            return false;
+        }
         final PlayerReceivesMessageScriptEvent event = PlayerReceivesMessageScriptEvent.instance;
         if (event.loaded) {
             Callable<Boolean> eventCall = new Callable<Boolean>() {

@@ -31,8 +31,10 @@ public class PacketOutChatImpl implements PacketOutChat {
                 rawJson = IChatBaseComponent.ChatSerializer.a(baseComponent);
             }
             else {
-                message = BaseComponent.toPlainText(internal.components);
-                rawJson = ComponentSerializer.toString(internal.components);
+                if (internal.components != null) {
+                    message = BaseComponent.toPlainText(internal.components);
+                    rawJson = ComponentSerializer.toString(internal.components);
+                }
                 bungee = true;
             }
             position = (ChatMessageType) POSITION.get(internal);
