@@ -158,6 +158,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
         ElementTag auto_range = scriptEntry.getElement("auto_range");
         ElementTag radius = scriptEntry.getElement("radius");
         ElementTag stop = scriptEntry.getElement("stop");
+        ElementTag leeway = scriptEntry.getElement("leeway");
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         final LocationTag lookat = scriptEntry.getObjectTag("lookat");
 
@@ -170,6 +171,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                     + (auto_range != null ? auto_range.debug() : "")
                     + (radius != null ? radius.debug() : "")
                     + (lookat != null ? lookat.debug() : "")
+                    + (leeway != null ? leeway.debug() : "")
                     + stop.debug()
                     + (ArgumentHelper.debugObj("entities", entities)));
 
@@ -203,6 +205,11 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                     }
                 }
 
+                if (leeway != null) {
+                    double margin = leeway.asDouble();                    
+                    npc.getNavigator().getLocalParameters().pathDistanceMargin(margin);
+                }
+                
                 npc.getNavigator().setTarget(loc);
 
                 if (lookat != null) {
