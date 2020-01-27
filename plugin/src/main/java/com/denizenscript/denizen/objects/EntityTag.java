@@ -2586,6 +2586,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Optionally, specify an offset vector as well.
         // Optionally specify a boolean indicating whether offset should match the target entity's rotation (defaults to true).
         // Note that because this is client-visible motion, it does not take effect server-side. You may wish to occasionally teleport the entity to its attachment.
+        // Note that if a player is involved as either input entity, that player will not see the attachment - only other players will.
         // Tracking may be a bit off with a large (8 blocks is large in this context) offset on a rotating entity.
         // Run with no value to disable attachment.
         // -->

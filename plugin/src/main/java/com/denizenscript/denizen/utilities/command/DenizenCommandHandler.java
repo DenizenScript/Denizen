@@ -143,13 +143,6 @@ public class DenizenCommandHandler {
     // '-v' enables/disables advanced verbose log output. This will *flood* your console super hard.
     // '-o' enables/disables 'override' mode. This will display all script debug, even when 'debug: false' is set for scripts.
     // '-l' enables/disables script loading information. When enabled, '/ex reload' will produce a potentially large amount of debug output.
-    // '-x' clears the debug filter (see below).
-    //
-    // The debugger also allows the targeting of specific scripts by using the '--filter script_name' argument. For
-    // example: /denizen debug --filter 'my script|my other script' will instruct the debugger to only debug the
-    // scripts named 'my script' and 'my other script'. Multiple scripts should be separated by a pipe character (|).
-    // The --filter argument is cumulative, that is, scripts specified are added to the filter. To add more scripts,
-    // simply use the command again. To clear the filter, use the -x option. Example: /denizen debug -x
     //
     // -->
 
@@ -159,7 +152,7 @@ public class DenizenCommandHandler {
     @Command(
             aliases = {"denizen"}, usage = "debug",
             desc = "Toggles debug mode for Denizen.", modifiers = {"debug", "de", "db", "dbug"},
-            min = 1, max = 5, permission = "denizen.debug", flags = "scebrxovnipfl")
+            min = 1, max = 5, permission = "denizen.debug", flags = "scebrovnipfl")
     public void debug(CommandContext args, CommandSender sender) throws CommandException {
         if (args.hasFlag('s')) {
             if (!Debug.showDebug) {
@@ -226,10 +219,6 @@ public class DenizenCommandHandler {
             Messaging.sendInfo(sender, (FutureWarning.futureWarningsEnabled ? "Denizen debugger is now showing future warnings." :
                     "Denizen debugger future-warnings disabled."));
         }
-        if (args.hasFlag('x')) {
-            Debug.filter = new ArrayList<>();
-            Messaging.sendInfo(sender, "Denizen debugger filter removed.");
-        }
         if (args.hasFlag('n')) {
             if (!Debug.showDebug) {
                 Debug.toggle();
@@ -262,20 +251,9 @@ public class DenizenCommandHandler {
             Messaging.sendInfo(sender, (com.denizenscript.denizencore.utilities.debugging.Debug.showLoading ? "Denizen debugger is now showing script loading information."
                     : "Denizen debugger is no longer showing script loading information."));
         }
-        if (args.hasValueFlag("filter")) {
-            if (!Debug.showDebug) {
-                Debug.toggle();
-            }
-            for (String filter : args.getFlag("filter").split("\\|")) { // TODO: addAll?
-                Debug.filter.add(filter);
-            }
-            Messaging.sendInfo(sender, "Denizen debugger filter now: " + Debug.filter.toString());
-
-        }
-        else if (args.getFlags().isEmpty()) {
+        if (args.getFlags().isEmpty()) {
             Debug.toggle();
-            Messaging.sendInfo(sender, "Denizen debugger is now: "
-                    + (Debug.showDebug ? "<a>ENABLED" : "<c>DISABLED"));
+            Messaging.sendInfo(sender, "Denizen debugger is now: " + (Debug.showDebug ? "<a>ENABLED" : "<c>DISABLED"));
         }
 
     }

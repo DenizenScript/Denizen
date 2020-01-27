@@ -34,8 +34,6 @@ public class Debug {
     public static boolean debugOverride = false;
     public static boolean showSources = false;
 
-    public static List<String> filter = new ArrayList<>();
-
     public static boolean shouldTrim = true;
     public static boolean record = false;
     public static StringBuilder Recording = new StringBuilder();
@@ -427,33 +425,10 @@ public class Debug {
         if (!showDebug) {
             return false;
         }
-        boolean should_send = true;
-
-        // Attempt to see if the debug should even be sent by checking the
-        // script container's 'debug' node.
         if (caller != null) {
-            try {
-
-                if (filter.isEmpty()) {
-                    should_send = caller.shouldDebug();
-                }
-                else {
-                    should_send = false;
-                    for (String criteria : filter) {
-                        if (caller.shouldFilter(criteria)) {
-                            should_send = true;
-                            break;
-                        }
-                    }
-                }
-
-            }
-            catch (Exception e) {
-                // Had a problem determining whether it should debug, assume true.
-                should_send = true;
-            }
+            return caller.shouldDebug();
         }
-        return should_send;
+        return true;
     }
 
     // Handles checking whether the provided debuggable should submit to the debugger
