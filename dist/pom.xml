@@ -128,6 +128,12 @@
                                     </includes>
                                 </filter>
                             </filters>
+                            <relocations>
+                                <relocation>
+                                    <pattern>com.freneticllc</pattern>
+                                    <shadedPattern>com.denizenscript.shaded.com.freneticllc</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
