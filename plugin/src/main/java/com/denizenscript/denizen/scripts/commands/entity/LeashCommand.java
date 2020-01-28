@@ -95,8 +95,6 @@ public class LeashCommand extends AbstractCommand {
     @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-
-        // Get objects
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         EntityTag holder = null;
         LocationTag holderLoc = null;
@@ -122,7 +120,6 @@ public class LeashCommand extends AbstractCommand {
         }
         Boolean cancel = scriptEntry.hasObject("cancel");
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
                     ArgumentHelper.debugObj("entities", entities.toString()) +

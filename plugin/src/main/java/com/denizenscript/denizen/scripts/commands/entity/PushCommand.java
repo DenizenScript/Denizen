@@ -214,7 +214,6 @@ public class PushCommand extends AbstractCommand implements Holdable {
         ElementTag ignore_collision = scriptEntry.getElement("ignore_collision");
         final boolean ignoreCollision = ignore_collision != null && ignore_collision.asBoolean();
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("origin", originEntity != null ? originEntity : originLocation) +
                     ArgumentHelper.debugObj("entities", entities.toString()) +

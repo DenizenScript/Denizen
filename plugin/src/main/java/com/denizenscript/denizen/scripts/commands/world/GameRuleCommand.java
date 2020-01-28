@@ -70,12 +70,10 @@ public class GameRuleCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-        // Fetch objects
         WorldTag world = scriptEntry.getObjectTag("world");
         ElementTag gamerule = scriptEntry.getElement("gamerule");
         ElementTag value = scriptEntry.getElement("value");
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), world.debug() + gamerule.debug() + value.debug());
         }

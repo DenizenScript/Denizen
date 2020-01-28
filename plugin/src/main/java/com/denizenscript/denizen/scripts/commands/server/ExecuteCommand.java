@@ -115,7 +115,6 @@ public class ExecuteCommand extends AbstractCommand {
         ElementTag type = scriptEntry.getElement("type");
         ElementTag silent = scriptEntry.getElement("silent");
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     type.debug()

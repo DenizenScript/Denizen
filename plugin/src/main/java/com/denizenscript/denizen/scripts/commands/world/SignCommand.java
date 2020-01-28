@@ -114,15 +114,12 @@ public class SignCommand extends AbstractCommand {
 
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-
-        // Get objects
         String direction = scriptEntry.hasObject("direction") ? ((ElementTag) scriptEntry.getObject("direction")).asString() : null;
         ElementTag typeElement = scriptEntry.getElement("type");
         ListTag text = scriptEntry.getObjectTag("text");
         LocationTag location = scriptEntry.getObjectTag("location");
         MaterialTag material = scriptEntry.getObjectTag("material");
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), typeElement.debug()
                     + location.debug()

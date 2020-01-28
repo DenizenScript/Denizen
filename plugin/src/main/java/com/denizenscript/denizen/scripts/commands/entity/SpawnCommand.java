@@ -104,15 +104,12 @@ public class SpawnCommand extends AbstractCommand {
     @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-
-        // Get objects
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         LocationTag location = (LocationTag) scriptEntry.getObject("location");
         EntityTag target = (EntityTag) scriptEntry.getObject("target");
         ElementTag spread = scriptEntry.getElement("spread");
         boolean persistent = scriptEntry.hasObject("persistent");
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("entities", entities.toString()) +
                     location.debug() +

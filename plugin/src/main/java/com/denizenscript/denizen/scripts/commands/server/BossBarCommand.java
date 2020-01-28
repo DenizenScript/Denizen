@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.server;
 
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
@@ -121,9 +121,8 @@ public class BossBarCommand extends AbstractCommand {
 
         if ((!scriptEntry.hasObject("action") || scriptEntry.getElement("action").asString().equalsIgnoreCase("CREATE"))
                 && !scriptEntry.hasObject("players")) {
-            BukkitScriptEntryData data = (BukkitScriptEntryData) scriptEntry.entryData;
-            if (data.hasPlayer() && data.getPlayer().isOnline()) {
-                scriptEntry.addObject("players", new ListTag(Collections.singleton(data.getPlayer().identify())));
+            if (Utilities.entryHasPlayer(scriptEntry) && Utilities.getEntryPlayer(scriptEntry).isOnline()) {
+                scriptEntry.addObject("players", new ListTag(Collections.singleton(Utilities.getEntryPlayer(scriptEntry).identify())));
             }
             else {
                 throw new InvalidArgumentsException("Must specify valid player(s)!");

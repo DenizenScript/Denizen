@@ -102,7 +102,6 @@ public class ScoreboardCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Initialize necessary fields
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (!scriptEntry.hasObject("action")
@@ -163,7 +162,6 @@ public class ScoreboardCommand extends AbstractCommand {
     @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-        // Get objects
 
         List<PlayerTag> viewers = (List<PlayerTag>) scriptEntry.getObject("viewers");
         ListTag lines = scriptEntry.hasObject("lines") ?
@@ -187,7 +185,6 @@ public class ScoreboardCommand extends AbstractCommand {
             criteria = new ElementTag("sidebar");
         }
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), action.debug() +
                     id.debug() +

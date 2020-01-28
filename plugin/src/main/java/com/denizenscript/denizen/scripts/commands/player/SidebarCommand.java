@@ -3,7 +3,6 @@ package com.denizenscript.denizen.scripts.commands.player;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -162,9 +161,8 @@ public class SidebarCommand extends AbstractCommand {
 
         scriptEntry.addObject("action", new ElementTag(action.name()));
 
-        BukkitScriptEntryData entryData = (BukkitScriptEntryData) scriptEntry.entryData;
         scriptEntry.defaultObject("per_player", new ElementTag(false))
-                .defaultObject("players", new ElementTag(entryData.hasPlayer() ? entryData.getPlayer().identify() : "li@"));
+                .defaultObject("players", new ElementTag(Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).identify() : "li@"));
     }
 
     public static boolean hasScoreAlready(List<Sidebar.SidebarLine> lines, int score) {

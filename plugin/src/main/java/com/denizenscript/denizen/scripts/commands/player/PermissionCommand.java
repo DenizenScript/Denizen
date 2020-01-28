@@ -102,7 +102,6 @@ public class PermissionCommand extends AbstractCommand {
         ElementTag group = scriptEntry.getElement("group");
         WorldTag world = (WorldTag) scriptEntry.getObject("world");
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), action.debug() + permission.debug()
                     + (group != null ? group.debug() : "") + (world != null ? world.debug() : ""));

@@ -92,7 +92,6 @@ public class EngageCommand extends AbstractCommand {
         DurationTag duration = scriptEntry.getObjectTag("duration");
         NPCTag npc = Utilities.getEntryNPC(scriptEntry);
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), npc.debug() + duration.debug());
         }

@@ -94,7 +94,6 @@ public class AssignmentCommand extends AbstractCommand {
 
         ScriptTag script = scriptEntry.getObjectTag("script");
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("action", scriptEntry.getObject("action")) + (script != null ? script.debug() : ""));
         }

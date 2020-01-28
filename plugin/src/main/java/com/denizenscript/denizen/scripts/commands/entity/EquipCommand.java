@@ -70,7 +70,6 @@ public class EquipCommand extends AbstractCommand {
 
         Map<String, ItemTag> equipment = new HashMap<>();
 
-        // Initialize necessary fields
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (!scriptEntry.hasObject("entities")
@@ -140,7 +139,6 @@ public class EquipCommand extends AbstractCommand {
         Map<String, ItemTag> equipment = (Map<String, ItemTag>) scriptEntry.getObject("equipment");
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("entities", entities.toString()) +
                     ArgumentHelper.debugObj("equipment", equipment.toString()));

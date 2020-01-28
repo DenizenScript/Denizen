@@ -93,14 +93,12 @@ public class ExplodeCommand extends AbstractCommand {
 
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-        // Get objects
 
         final LocationTag location = (LocationTag) scriptEntry.getObject("location");
         ElementTag power = (ElementTag) scriptEntry.getObject("power");
         boolean breakblocks = scriptEntry.hasObject("breakblocks");
         boolean fire = scriptEntry.hasObject("fire");
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     (ArgumentHelper.debugObj("location", location.toString()) +

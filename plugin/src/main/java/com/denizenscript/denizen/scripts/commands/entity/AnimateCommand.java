@@ -98,8 +98,6 @@ public class AnimateCommand extends AbstractCommand {
     @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-
-        // Get objects
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         PlayerAnimation animation = scriptEntry.hasObject("animation") ?
                 (PlayerAnimation) scriptEntry.getObject("animation") : null;
@@ -108,7 +106,6 @@ public class AnimateCommand extends AbstractCommand {
         String nmsAnimation = scriptEntry.hasObject("nms_animation") ?
                 (String) scriptEntry.getObject("nms_animation") : null;
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), (animation != null ?
                     ArgumentHelper.debugObj("animation", animation.name()) : effect != null ?

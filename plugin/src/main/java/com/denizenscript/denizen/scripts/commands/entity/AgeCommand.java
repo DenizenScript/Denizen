@@ -88,14 +88,11 @@ public class AgeCommand extends AbstractCommand {
     @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-
-        // Get objects
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         AgeType ageType = (AgeType) scriptEntry.getObject("agetype");
         int age = scriptEntry.getElement("age").asInt();
         boolean lock = scriptEntry.hasObject("lock");
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), (lock ? ArgumentHelper.debugObj("lock", lock) : "") +
                     (ageType != null ? ArgumentHelper.debugObj("agetype", ageType)

@@ -103,13 +103,10 @@ public class AttackCommand extends AbstractCommand {
     @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-
-        // Get objects
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         EntityTag target = (EntityTag) scriptEntry.getObject("target");
         boolean cancel = scriptEntry.hasObject("cancel");
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", "true") : "") +
                     ArgumentHelper.debugObj("entities", entities.toString()) +

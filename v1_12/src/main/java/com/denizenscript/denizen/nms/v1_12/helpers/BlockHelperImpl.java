@@ -19,7 +19,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.FlowerPot;
 import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_12_R1.block.CraftBlockEntityState;
-import org.bukkit.craftbukkit.v1_12_R1.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_12_R1.block.CraftSkull;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.event.world.PortalCreateEvent;

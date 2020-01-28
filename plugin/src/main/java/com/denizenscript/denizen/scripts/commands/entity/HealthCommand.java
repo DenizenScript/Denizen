@@ -58,8 +58,6 @@ public class HealthCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Interpret arguments
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (!scriptEntry.hasObject("target")
@@ -85,8 +83,6 @@ public class HealthCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
-        // Check for required information
 
         if (!scriptEntry.hasObject("qty") && !scriptEntry.hasObject("action")) {
             throw new InvalidArgumentsException("Must specify a quantity!");

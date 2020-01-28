@@ -54,8 +54,6 @@ public class MountCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Initialize necessary fields
-
         List<EntityTag> entities = null;
 
         for (Argument arg : scriptEntry.getProcessedArgs()) {
@@ -107,13 +105,11 @@ public class MountCommand extends AbstractCommand {
     @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-        // Get objects
 
         LocationTag location = (LocationTag) scriptEntry.getObject("location");
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         boolean cancel = scriptEntry.hasObject("cancel");
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
                     ArgumentHelper.debugObj("location", location) +

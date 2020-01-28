@@ -135,7 +135,6 @@ public class RotateCommand extends AbstractCommand implements Holdable {
         boolean cancel = scriptEntry.hasObject("cancel");
         final boolean infinite = scriptEntry.hasObject("infinite");
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
                     ArgumentHelper.debugObj("entities", entities.toString()) +

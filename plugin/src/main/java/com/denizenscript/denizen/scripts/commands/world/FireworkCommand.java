@@ -65,7 +65,6 @@ public class FireworkCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Initialize necessary fields
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (!scriptEntry.hasObject("location")
@@ -120,7 +119,6 @@ public class FireworkCommand extends AbstractCommand {
     @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-        // Get objects
 
         final LocationTag location = scriptEntry.hasObject("location") ?
                 (LocationTag) scriptEntry.getObject("location") :
@@ -133,7 +131,6 @@ public class FireworkCommand extends AbstractCommand {
         List<ColorTag> primary = (List<ColorTag>) scriptEntry.getObject("primary");
         List<ColorTag> fade = (List<ColorTag>) scriptEntry.getObject("fade");
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), location.debug() +
                     type.debug() +

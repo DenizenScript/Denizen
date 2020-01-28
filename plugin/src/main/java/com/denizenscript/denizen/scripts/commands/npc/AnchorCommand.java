@@ -94,15 +94,12 @@ public class AnchorCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
-        // Get objects
         Action action = (Action) scriptEntry.getObject("action");
         LocationTag location = (LocationTag) scriptEntry.getObject("location");
         ElementTag range = (ElementTag) scriptEntry.getObject("range");
         ElementTag id = (ElementTag) scriptEntry.getObject("id");
         NPCTag npc = Utilities.getEntryNPC(scriptEntry);
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     npc.debug() + action.name() + id.debug()

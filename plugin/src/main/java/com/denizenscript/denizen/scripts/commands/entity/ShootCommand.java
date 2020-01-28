@@ -231,7 +231,6 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
 
         LocationTag lead = (LocationTag) scriptEntry.getObject("lead");
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("origin", originEntity != null ? originEntity : originLocation) +
                     ArgumentHelper.debugObj("entities", entities.toString()) +

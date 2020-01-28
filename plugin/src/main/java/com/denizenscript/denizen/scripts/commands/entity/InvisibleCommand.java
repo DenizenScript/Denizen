@@ -84,11 +84,9 @@ public class InvisibleCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-        // Get objects
         ElementTag state = scriptEntry.getElement("state");
         EntityTag target = (EntityTag) scriptEntry.getObject("target");
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), state.debug() + target.debug());
         }

@@ -100,15 +100,12 @@ public class PoseCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
-        // Get objects
         TargetType target = (TargetType) scriptEntry.getObject("target");
         NPCTag npc = Utilities.getEntryNPC(scriptEntry);
         Action action = (Action) scriptEntry.getObject("action");
         String id = (String) scriptEntry.getObject("pose_id");
         LocationTag pose_loc = (LocationTag) scriptEntry.getObject("pose_loc");
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     ArgumentHelper.debugObj("Target", target.toString())

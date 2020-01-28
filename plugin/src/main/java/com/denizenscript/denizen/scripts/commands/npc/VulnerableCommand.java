@@ -2,7 +2,6 @@ package com.denizenscript.denizen.scripts.commands.npc;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -41,7 +40,6 @@ public class VulnerableCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Initialize fields
         for (Argument arg : scriptEntry.getProcessedArgs()) {
             if (!scriptEntry.hasObject("action") && arg.matchesEnum(Toggle.values())) {
                 scriptEntry.addObject("action", arg.asElement());
@@ -59,17 +57,13 @@ public class VulnerableCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-        // Fetch objects
         ElementTag action = scriptEntry.getElement("action");
 
-        BukkitScriptEntryData entryData = (BukkitScriptEntryData) scriptEntry.entryData;
-
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), entryData.getNPC().debug() + action.debug());
+            Debug.report(scriptEntry, getName(), Utilities.getEntryNPC(scriptEntry).debug() + action.debug());
         }
 
-        NPC npc = entryData.getNPC().getCitizen();
+        NPC npc = Utilities.getEntryNPC(scriptEntry).getCitizen();
         Toggle toggle = Toggle.valueOf(action.asString().toUpperCase());
 
         npc.setProtected(!(toggle == Toggle.TOGGLE ? npc.isProtected() : action.asBoolean()));

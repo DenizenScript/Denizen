@@ -53,8 +53,6 @@ public class CreateWorldCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Interpret arguments
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (!scriptEntry.hasObject("generator")
@@ -92,7 +90,6 @@ public class CreateWorldCommand extends AbstractCommand {
             }
         }
 
-        // Check for required information
         if (!scriptEntry.hasObject("world_name")) {
             throw new InvalidArgumentsException("Must specify a world name.");
         }

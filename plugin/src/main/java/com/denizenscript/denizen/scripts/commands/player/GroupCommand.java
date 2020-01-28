@@ -95,7 +95,6 @@ public class GroupCommand extends AbstractCommand {
         WorldTag world = (WorldTag) scriptEntry.getObject("world");
         ElementTag group = scriptEntry.getElement("group");
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), action.debug() + (world != null ? world.debug() : "") + group.debug());
         }

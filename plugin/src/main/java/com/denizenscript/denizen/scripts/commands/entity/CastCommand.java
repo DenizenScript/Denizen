@@ -116,7 +116,6 @@ public class CastCommand extends AbstractCommand {
     @SuppressWarnings("unchecked")
     @Override
     public void execute(ScriptEntry scriptEntry) {
-        // Fetch objects
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         PotionEffectType effect = (PotionEffectType) scriptEntry.getObject("effect");
         int amplifier = scriptEntry.getElement("amplifier").asInt();
@@ -125,7 +124,6 @@ public class CastCommand extends AbstractCommand {
         ElementTag showParticles = scriptEntry.getElement("show_particles");
         ElementTag ambient = scriptEntry.getElement("ambient");
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     ArgumentHelper.debugObj("Target(s)", entities.toString())

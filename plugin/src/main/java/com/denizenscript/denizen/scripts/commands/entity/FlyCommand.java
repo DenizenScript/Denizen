@@ -61,8 +61,6 @@ public class FlyCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Initialize necessary fields
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (!scriptEntry.hasObject("cancel")
@@ -129,7 +127,6 @@ public class FlyCommand extends AbstractCommand {
     @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-        // Get objects
 
         LocationTag origin = (LocationTag) scriptEntry.getObject("origin");
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
@@ -198,7 +195,6 @@ public class FlyCommand extends AbstractCommand {
         final float rotationThreshold = ((ElementTag) scriptEntry.getObject("rotation_threshold")).asFloat();
         boolean cancel = scriptEntry.hasObject("cancel");
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
                     ArgumentHelper.debugObj("origin", origin) +

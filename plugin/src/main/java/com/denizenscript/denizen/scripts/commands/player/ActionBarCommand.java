@@ -4,7 +4,6 @@ import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
@@ -81,13 +80,11 @@ public class ActionBarCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("targets")) {
-            BukkitScriptEntryData data = (BukkitScriptEntryData) scriptEntry.entryData;
-            if (!data.hasPlayer()) {
+            if (!Utilities.entryHasPlayer(scriptEntry)) {
                 throw new InvalidArgumentsException("Must specify valid player Targets!");
             }
             else {
-                scriptEntry.addObject("targets",
-                        Arrays.asList(data.getPlayer()));
+                scriptEntry.addObject("targets", Arrays.asList(Utilities.getEntryPlayer(scriptEntry)));
             }
         }
     }

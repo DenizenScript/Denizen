@@ -197,8 +197,6 @@ public class InventoryCommand extends AbstractCommand {
     @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-
-        // Get objects
         List<String> actions = (List<String>) scriptEntry.getObject("actions");
         AbstractMap.SimpleEntry<Integer, InventoryTag> originentry = (AbstractMap.SimpleEntry<Integer, InventoryTag>) scriptEntry.getObject("origin");
         InventoryTag origin = originentry != null ? originentry.getValue() : null;

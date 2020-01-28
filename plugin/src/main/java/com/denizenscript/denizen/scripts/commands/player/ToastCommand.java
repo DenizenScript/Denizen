@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
 import com.denizenscript.denizen.nms.util.Advancement;
@@ -94,12 +94,11 @@ public class ToastCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("targets")) {
-            BukkitScriptEntryData data = (BukkitScriptEntryData) scriptEntry.entryData;
-            if (!data.hasPlayer()) {
+            if (!Utilities.entryHasPlayer(scriptEntry)) {
                 throw new InvalidArgumentsException("Must specify valid player targets!");
             }
             else {
-                scriptEntry.addObject("targets", Collections.singletonList(data.getPlayer()));
+                scriptEntry.addObject("targets", Collections.singletonList(Utilities.getEntryPlayer(scriptEntry)));
             }
         }
 

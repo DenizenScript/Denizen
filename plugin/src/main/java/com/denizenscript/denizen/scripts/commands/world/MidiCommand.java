@@ -135,7 +135,6 @@ public class MidiCommand extends AbstractCommand implements Holdable {
         float tempo = scriptEntry.getElement("tempo").asFloat();
         float volume = scriptEntry.getElement("volume").asFloat();
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
                     (file != null ? ArgumentHelper.debugObj("file", file.getPath()) : "") +

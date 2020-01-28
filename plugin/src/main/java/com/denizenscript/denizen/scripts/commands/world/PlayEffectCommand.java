@@ -242,7 +242,6 @@ public class PlayEffectCommand extends AbstractCommand {
         LocationTag offset = scriptEntry.getObjectTag("offset");
         ElementTag special_data = scriptEntry.getElement("special_data");
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), (effect != null ? ArgumentHelper.debugObj("effect", effect.name()) :
                     particleEffect != null ? ArgumentHelper.debugObj("special effect", particleEffect.getName()) :

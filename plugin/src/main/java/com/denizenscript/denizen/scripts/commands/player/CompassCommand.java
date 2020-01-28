@@ -49,8 +49,6 @@ public class CompassCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Interpret arguments
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (!scriptEntry.hasObject("location")
@@ -66,7 +64,6 @@ public class CompassCommand extends AbstractCommand {
             }
         }
 
-        // Check for required information
         if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("reset")) {
             throw new InvalidArgumentsException("Missing location argument!");
         }
@@ -77,18 +74,12 @@ public class CompassCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        // Fetch required objects
-
         LocationTag location = scriptEntry.getObjectTag("location");
         ElementTag reset = scriptEntry.getElement("reset");
         Player player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
 
-        // Debug the execution
-
         if (scriptEntry.dbCallShouldDebug()) {
-
             Debug.report(scriptEntry, getName(), (location != null ? location.debug() : "") + reset.debug());
-
         }
 
         if (reset.asBoolean()) {

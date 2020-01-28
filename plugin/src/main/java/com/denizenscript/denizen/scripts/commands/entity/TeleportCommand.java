@@ -55,7 +55,6 @@ public class TeleportCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Initialize necessary fields
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (!scriptEntry.hasObject("location")
@@ -91,12 +90,10 @@ public class TeleportCommand extends AbstractCommand {
     @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-        // Get objects
 
         LocationTag location = (LocationTag) scriptEntry.getObject("location");
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
 
-        // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("location", location) +
                     ArgumentHelper.debugObj("entities", entities.toString()));
