@@ -2,7 +2,7 @@ package com.denizenscript.denizen.events.player;
 
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -14,6 +14,7 @@ import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChatEvent;
@@ -83,17 +84,22 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
         return "Chat";
     }
 
-    boolean async = false;
-
     @Override
     public void init() {
-        async = Settings.worldScriptChatEventAsynchronous();
-        if (async) {
-            initListener(asch);
-        }
-        else {
-            initListener(sch);
-        }
+        initListener(Settings.worldScriptChatEventAsynchronous() ? asch : sch);
+    }
+
+    @Override
+    public void initForPriority(EventPriority priority, Listener listener) {
+        super.initForPriority(priority, Settings.worldScriptChatEventAsynchronous() ? asch : sch);
+    }
+
+    @Override
+    public ChatScriptEvent clone() {
+        ChatScriptEvent event = (ChatScriptEvent) super.clone();
+        event.sch = event.new SyncChatHandler();
+        event.asch = event.new AsyncChatHandler();
+        return event;
     }
 
     @Override
@@ -109,7 +115,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
                 }
                 else {
                     String formatstr = formatscr.getFormatText(null, player);
-                    if (com.denizenscript.denizencore.utilities.debugging.Debug.verbose) {
+                    if (Debug.verbose) {
                         Debug.log("Setting format to " + formatstr);
                     }
                     if (pcEvent != null) {
