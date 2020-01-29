@@ -1744,10 +1744,28 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @returns ElementTag
         // @description
         // Returns the player's current skin blob.
+        // In the format: "texture;signature" (two values separated by a semicolon).
         // @mechanism PlayerTag.skin_blob
         // -->
         registerOnlineOnlyTag("skin_blob", (attribute, object) -> {
             return new ElementTag(NMSHandler.getInstance().getProfileEditor().getPlayerSkinBlob(object.getPlayerEntity()));
+        });
+
+        // <--[tag]
+        // @attribute <PlayerTag.skull_skin>
+        // @returns ElementTag
+        // @description
+        // Returns the player's current skin blob, formatted for input to a Player Skull item.
+        // In the format: "UUID|Texture|Name" (three values separated by pipes).
+        // See also <@link tag PlayerTag.skin_blob>.
+        // -->
+        registerOnlineOnlyTag("skull_skin", (attribute, object) -> {
+            String skin = NMSHandler.getInstance().getProfileEditor().getPlayerSkinBlob(object.getPlayerEntity());
+            if (skin == null) {
+                return null;
+            }
+            int semicolon = skin.indexOf(';');
+            return new ElementTag(object.getPlayerEntity().getUniqueId() + "|" + skin.substring(0, semicolon) + "|" + object.getName());
         });
 
         // <--[tag]
@@ -3599,6 +3617,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @input ElementTag
         // @description
         // Changes the skin of the player to the specified blob.
+        // In the format: "texture;signature" (two values separated by a semicolon).
         // @tags
         // <PlayerTag.skin_blob>
         // -->

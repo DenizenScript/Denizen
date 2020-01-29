@@ -856,6 +856,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @mechanism NPCTag.skin_blob
         // @description
         // Returns the NPC's custom skin blob, if any.
+        // In the format: "texture;signature" (two values separated by a semicolon).
         // -->
         registerTag("skin_blob", (attribute, object) -> {
             if (object.getCitizen().data().has(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA)) {
@@ -867,6 +868,23 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 return new ElementTag(tex + sign);
             }
             return null;
+        });
+
+        // <--[tag]
+        // @attribute <NPCTag.skull_skin>
+        // @returns ElementTag
+        // @description
+        // Returns the NPC's current skin blob, formatted for input to a Player Skull item.
+        // In the format: "UUID|Texture" (two values separated by pipes).
+        // See also <@link tag NPCTag.skin_blob>.
+        // -->
+        registerTag("skull_skin", (attribute, object) -> {
+            if (!object.getCitizen().data().has(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA)) {
+                return null;
+            }
+            String uuid = object.getCitizen().data().get(NPC.PLAYER_SKIN_UUID_METADATA).toString();
+            String tex = object.getCitizen().data().get(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA).toString();
+            return new ElementTag(uuid + "|" + tex);
         });
 
         // <--[tag]
