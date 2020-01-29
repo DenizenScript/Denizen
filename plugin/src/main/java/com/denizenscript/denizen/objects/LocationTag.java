@@ -1300,6 +1300,108 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
+        // @attribute <LocationTag.round>
+        // @returns ElementTag
+        // @description
+        // Returns a rounded version of the LocationTag's coordinates.
+        // That is, each component (X, Y, Z, Yaw, Pitch) is rounded
+        // (eg, 0.1 becomes 0.0, 0.5 becomes 1.0, 0.9 becomes 1.0).
+        // This is NOT equivalent to the block coordinates. For that, use <@link tag LocationTag.round_down>.
+        // -->
+        registerTag("round", (attribute, object) -> {
+            LocationTag result = object.clone();
+            result.setX(Math.round(result.getX()));
+            result.setY(Math.round(result.getY()));
+            result.setZ(Math.round(result.getZ()));
+            result.setYaw(Math.round(result.getYaw()));
+            result.setPitch(Math.round(result.getPitch()));
+            return result;
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.round_up>
+        // @returns ElementTag
+        // @description
+        // Returns a rounded-upward version of the LocationTag's coordinates.
+        // That is, each component (X, Y, Z, Yaw, Pitch) is rounded upward
+        // (eg, 0.1 becomes 1.0, 0.5 becomes 1.0, 0.9 becomes 1.0).
+        // -->
+        registerTag("round_up", (attribute, object) -> {
+            LocationTag result = object.clone();
+            result.setX(Math.ceil(result.getX()));
+            result.setY(Math.ceil(result.getY()));
+            result.setZ(Math.ceil(result.getZ()));
+            result.setYaw((float) Math.ceil((result.getYaw())));
+            result.setPitch((float) Math.ceil(result.getPitch()));
+            return result;
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.round_down>
+        // @returns ElementTag
+        // @description
+        // Returns a rounded-downward version of the LocationTag's coordinates.
+        // That is, each component (X, Y, Z, Yaw, Pitch) is rounded downward
+        // (eg, 0.1 becomes 0.0, 0.5 becomes 0.0, 0.9 becomes 0.0).
+        // This is equivalent to the block coordinates of the location.
+        // -->
+        registerTag("round_down", (attribute, object) -> {
+            LocationTag result = object.clone();
+            result.setX(Math.floor(result.getX()));
+            result.setY(Math.floor(result.getY()));
+            result.setZ(Math.floor(result.getZ()));
+            result.setYaw((float) Math.floor((result.getYaw())));
+            result.setPitch((float) Math.floor(result.getPitch()));
+            return result;
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.round_to[<#>]>
+        // @returns ElementTag
+        // @description
+        // Returns a rounded-to-precision version of the LocationTag's coordinates.
+        // That is, each component (X, Y, Z, Yaw, Pitch) is rounded to the specified decimal place
+        // (eg, 0.12345 .round_to[3] returns "0.123").
+        // -->
+        registerTag("round_to", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("The tag LocationTag.round_to[...] must have a value.");
+                return null;
+            }
+            LocationTag result = object.clone();
+            int ten = (int) Math.pow(10, attribute.getIntContext(1));
+            result.setX(((double) Math.round(result.getX() * ten)) / ten);
+            result.setY(((double) Math.round(result.getY() * ten)) / ten);
+            result.setZ(((double) Math.round(result.getZ() * ten)) / ten);
+            result.setYaw(((float) Math.round(result.getYaw() * ten)) / ten);
+            result.setPitch(((float) Math.round(result.getPitch() * ten)) / ten);
+            return result;
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.round_to_precision[<#.#>]>
+        // @returns ElementTag
+        // @description
+        // Returns a rounded-to-precision version of the LocationTag's coordinates.
+        // That is, each component (X, Y, Z, Yaw, Pitch) is rounded to the specified precision value
+        // (0.12345 .round_to_precision[0.005] returns "0.125").
+        // -->
+        registerTag("round_to_precision", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("The tag LocationTag.round_to_precision[...] must have a value.");
+                return null;
+            }
+            LocationTag result = object.clone();
+            float precision = (float) attribute.getDoubleContext(1);
+            result.setX(((double) Math.round(result.getX() * precision)) / precision);
+            result.setY(((double) Math.round(result.getY() * precision)) / precision);
+            result.setZ(((double) Math.round(result.getZ() * precision)) / precision);
+            result.setYaw(((float) Math.round(result.getYaw() * precision)) / precision);
+            result.setPitch(((float) Math.round(result.getPitch() * precision)) / precision);
+            return result;
+        });
+
+        // <--[tag]
         // @attribute <LocationTag.simple>
         // @returns ElementTag
         // @description
