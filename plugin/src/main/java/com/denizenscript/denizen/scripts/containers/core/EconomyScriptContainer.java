@@ -20,6 +20,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.ServicePriority;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -90,7 +91,16 @@ public class EconomyScriptContainer extends ScriptContainer {
         public EconomyScriptContainer backingScript;
 
         public String autoTagAmount(String value, OfflinePlayer player, double amount) {
-            return autoTag(value.replace("<amount", "<element[" + amount + "]"), player);
+            int digits = fractionalDigits();
+            String amountText;
+            if (digits <= 0) {
+                amountText = String.valueOf((long) amount);
+            }
+            else {
+                DecimalFormat d = new DecimalFormat("0." + new String(new char[digits]).replace('\0', '0'));
+                amountText = d.format(amount);
+            }
+            return autoTag(value.replace("<amount", "<element[" + amountText + "]"), player);
         }
 
         public String autoTag(String value, OfflinePlayer player) {
