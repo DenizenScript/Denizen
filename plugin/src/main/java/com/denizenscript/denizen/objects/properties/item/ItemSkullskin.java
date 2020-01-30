@@ -61,6 +61,7 @@ public class ItemSkullskin implements Property {
         // @description
         // Returns the UUID of the player whose skin a skull item uses.
         // Note: Item must be a 'skull_item' with a skin.
+        // In format: UUID|Texture|Name.
         // -->
         if (attribute.startsWith("skin")) {
             String skin = getPropertyString();

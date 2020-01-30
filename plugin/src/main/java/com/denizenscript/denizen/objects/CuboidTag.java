@@ -228,7 +228,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         }
 
         public void regenerate() {
-            World world = point_1.getWorld();
+            String world = point_1.getWorldName();
 
             // Find the low and high locations based on the points
             // specified
@@ -248,8 +248,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                     ? point_1.getBlockZ() : point_2.getBlockZ());
 
             // Specify defining locations to the pair
-            low = new LocationTag(world, x_low, y_low, z_low);
-            high = new LocationTag(world, x_high, y_high, z_high);
+            low = new LocationTag(x_low, y_low, z_low, world);
+            high = new LocationTag(x_high, y_high, z_high, world);
             generateDistances();
         }
 
@@ -278,10 +278,10 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
     }
 
     public CuboidTag(Location point_1, Location point_2) {
-        addPair(point_1, point_2);
+        addPair(new LocationTag(point_1), new LocationTag(point_2));
     }
 
-    public void addPair(Location point_1, Location point_2) {
+    public void addPair(LocationTag point_1, LocationTag point_2) {
         if (point_1.getWorld() != point_2.getWorld()) {
             Debug.echoError("Tried to make cross-world cuboid!");
             return;
@@ -291,7 +291,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
             return;
         }
         // Make a new pair
-        LocationPair pair = new LocationPair(new LocationTag(point_1), new LocationTag(point_2));
+        LocationPair pair = new LocationPair(point_1, point_2);
         // Add it to the Cuboid pairs list
         pairs.add(pair);
     }
