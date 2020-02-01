@@ -2821,6 +2821,21 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
+        // @attribute <LocationTag.lectern_page>
+        // @returns ElementTag(Number)
+        // @mechanism lectern_page
+        // @description
+        // Returns the current page on display in the book on this Lectern block.
+        // -->
+        registerTag("lectern_page", (attribute, object) -> {
+            BlockState state = object.getBlockStateForTag(attribute);
+            if (state instanceof Lectern) {
+                return new ElementTag(((Lectern) state).getPage());
+            }
+            return null;
+        });
+
+        // <--[tag]
         // @attribute <LocationTag.tree_distance>
         // @returns ElementTag(Number)
         // @group properties
@@ -3554,6 +3569,29 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             else if (state instanceof Dropper) {
                 ((Dropper) state).drop();
+            }
+            else {
+                Debug.echoError("'activate' mechanism does not work for blocks of type: " + state.getType().name());
+            }
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name lectern_page
+        // @input ElementTag(Number)
+        // @description
+        // Changes the page currently displayed on the book in a lectern block.
+        // @tags
+        // <LocationTag.lectern_page>
+        // -->
+        if (mechanism.matches("lectern_page") && mechanism.requireInteger()) {
+            BlockState state = getBlockState();
+            if (state instanceof Lectern) {
+                ((Lectern) state).setPage(mechanism.getValue().asInt());
+                state.update();
+            }
+            else {
+                Debug.echoError("'lectern_page' mechanism can only be called on a lectern block.");
             }
         }
 
