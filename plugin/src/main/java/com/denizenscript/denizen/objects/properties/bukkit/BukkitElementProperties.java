@@ -359,6 +359,9 @@ public class BukkitElementProperties implements Property {
         // @group text manipulation
         // @description
         // Adds a click command to the element, which makes the element execute the input command when clicked.
+        // To execute a command "/" should be used at the start. Otherwise, it will display as chat.
+        // For example: - narrate "You can <element[click here].on_click[wow]> to say wow!"
+        // For example: - narrate "You can <element[click here].on_click[/help]> to for help!"
         //
         // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
         // -->
@@ -376,6 +379,7 @@ public class BukkitElementProperties implements Property {
             // @description
             // Adds a click command to the element, which makes the element execute the input command when clicked.
             // Optionally specify the hover type as one of: OPEN_URL, OPEN_FILE, RUN_COMMAND, SUGGEST_COMMAND, or CHANGE_PAGE.
+            // For example: - narrate "You can <element[click here].on_click[https://denizenscript.com].type[OPEN_URL]> to learn about Denizen!"
             //
             // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
             // -->
