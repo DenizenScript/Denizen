@@ -195,7 +195,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
     @Override
     public void execute(final ScriptEntry scriptEntry) {
 
-        EntityTag originEntity = (EntityTag) scriptEntry.getObject("originentity");
+        EntityTag originEntity = (EntityTag) scriptEntry.getObject("origin_entity");
         LocationTag originLocation = scriptEntry.hasObject("origin_location") ?
                 (LocationTag) scriptEntry.getObject("origin_location") :
                 new LocationTag(originEntity.getEyeLocation()
