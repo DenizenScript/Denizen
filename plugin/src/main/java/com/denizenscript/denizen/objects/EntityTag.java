@@ -1624,7 +1624,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <EntityTag.cursor_on[(<range>)]>
-        // @returns ElementTag(Boolean)
+        // @returns LocationTag
         // @group location
         // @description
         // Returns the location of the block the entity is looking at.

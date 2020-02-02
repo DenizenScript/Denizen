@@ -35,19 +35,8 @@ import java.util.UUID;
 
 public class BlockHelperImpl implements BlockHelper {
 
-    public static final Field craftBlockEntityState_tileEntity;
-
-    static {
-        Field f = null;
-        try {
-            f = CraftBlockEntityState.class.getDeclaredField("tileEntity");
-            f.setAccessible(true);
-        }
-        catch (NoSuchFieldException e) {
-            Debug.echoError(e);
-        }
-        craftBlockEntityState_tileEntity = f;
-    }
+    public static final Field craftBlockEntityState_tileEntity = ReflectionHelper.getFields(CraftBlockEntityState.class).get("tileEntity");
+    public static final Field craftSkull_profile = ReflectionHelper.getFields(CraftSkull.class).get("profile");
 
     @Override
     public ModernBlockData parseBlockData(Material material, String otherData) {
@@ -111,8 +100,12 @@ public class BlockHelperImpl implements BlockHelper {
             gameProfile.getProperties().put("textures",
                     new Property("textures", playerProfile.getTexture(), playerProfile.getTextureSignature()));
         }
-        TileEntitySkull tileEntity = getTE((CraftSkull) skull);
-        tileEntity.setGameProfile(gameProfile);
+        try {
+            craftSkull_profile.set(skull, gameProfile);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
         skull.update();
     }
 
