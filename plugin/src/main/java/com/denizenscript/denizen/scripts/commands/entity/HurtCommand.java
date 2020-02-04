@@ -85,7 +85,7 @@ public class HurtCommand extends AbstractCommand {
                 scriptEntry.addObject("cause", arg.asElement());
             }
             else if (!scriptEntry.hasObject("source_once")
-                    && arg.matchesOne("source_once")) {
+                    && arg.matches("source_once")) {
                 scriptEntry.addObject("source_once", new ElementTag(true));
             }
             else {

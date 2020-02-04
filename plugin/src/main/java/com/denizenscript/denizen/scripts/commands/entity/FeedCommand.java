@@ -79,13 +79,13 @@ public class FeedCommand extends AbstractCommand {
             }
 
             // Backwards compatibility
-            else if (arg.matches("NPC")
+            else if (arg.matches("npc")
                     && !scriptEntry.hasObject("targetplayer")
                     && !scriptEntry.hasObject("targetnpc")
                     && Utilities.entryHasNPC(scriptEntry)) {
                 scriptEntry.addObject("targetnpc", Utilities.getEntryNPC(scriptEntry));
             }
-            else if (arg.matches("PLAYER")
+            else if (arg.matches("player")
                     && !scriptEntry.hasObject("targetplayer")
                     && !scriptEntry.hasObject("targetnpc")
                     && Utilities.entryHasPlayer(scriptEntry)) {

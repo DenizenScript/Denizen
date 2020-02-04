@@ -58,7 +58,7 @@ public class FollowCommand extends AbstractCommand {
         // Parse Arguments
         for (Argument arg : scriptEntry.getProcessedArgs()) {
             if (!scriptEntry.hasObject("stop") &&
-                    arg.matches("STOP")) {
+                    arg.matches("stop")) {
                 scriptEntry.addObject("stop", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("lead") &&

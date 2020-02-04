@@ -149,7 +149,7 @@ public class InventoryCommand extends AbstractCommand {
 
             // Check for specified slot number
             else if (!scriptEntry.hasObject("slot")
-                    && arg.matchesPrefix("slot, s")) {
+                    && arg.matchesPrefix("slot", "s")) {
                 scriptEntry.addObject("slot", arg.asElement());
             }
 

@@ -88,7 +88,7 @@ public class PlayEffectCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentList(LocationTag.class)) {
-                if (arg.matchesOnePrefix("at")) {
+                if (arg.matchesPrefix("at")) {
                     scriptEntry.addObject("no_offset", new ElementTag(true));
                 }
 
@@ -166,7 +166,7 @@ public class PlayEffectCommand extends AbstractCommand {
                 scriptEntry.addObject("data", arg.asElement());
             }
             else if (!scriptEntry.hasObject("special_data")
-                    && arg.matchesOnePrefix("special_data")) {
+                    && arg.matchesPrefix("special_data")) {
                 scriptEntry.addObject("special_data", arg.asElement());
             }
             else if (!scriptEntry.hasObject("qty")

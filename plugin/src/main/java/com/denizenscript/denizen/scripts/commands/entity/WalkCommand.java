@@ -96,7 +96,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
             }
             else if (!scriptEntry.hasObject("speed")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Percentage)
-                    && arg.matchesPrefix("s, speed")) {
+                    && arg.matchesPrefix("s", "speed")) {
                 scriptEntry.addObject("speed", arg.asElement());
             }
             else if (!scriptEntry.hasObject("auto_range")

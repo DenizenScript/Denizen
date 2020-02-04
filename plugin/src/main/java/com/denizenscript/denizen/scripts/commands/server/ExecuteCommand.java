@@ -59,28 +59,28 @@ public class ExecuteCommand extends AbstractCommand {
         // Parse arguments
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
-            if (arg.matches("ASPLAYER", "AS_PLAYER", "PLAYER")
+            if (arg.matches("asplayer", "as_player")
                     && !scriptEntry.hasObject("type")) {
                 if (!Utilities.entryHasPlayer(scriptEntry)) {
                     throw new InvalidArgumentsException("Must have a Player link when using AS_PLAYER.");
                 }
                 scriptEntry.addObject("type", new ElementTag("AS_PLAYER"));
             }
-            else if (arg.matches("ASOPPLAYER", "ASOP", "AS_OP", "AS_OP_PLAYER", "OP")
+            else if (arg.matches("asop", "as_op")
                     && !scriptEntry.hasObject("type")) {
                 if (!Utilities.entryHasPlayer(scriptEntry)) {
                     throw new InvalidArgumentsException("Must have a Player link when using AS_OP.");
                 }
                 scriptEntry.addObject("type", new ElementTag("AS_OP"));
             }
-            else if (arg.matches("ASNPC", "AS_NPC", "NPC")
+            else if (arg.matches("asnpc", "as_npc")
                     && !scriptEntry.hasObject("type")) {
                 if (!Utilities.entryHasNPC(scriptEntry)) {
                     throw new InvalidArgumentsException("Must have a NPC link when using AS_NPC.");
                 }
                 scriptEntry.addObject("type", new ElementTag("AS_NPC"));
             }
-            else if (arg.matches("ASSERVER", "AS_SERVER", "SERVER")
+            else if (arg.matches("asserver", "as_server")
                     && !scriptEntry.hasObject("type")) {
                 scriptEntry.addObject("type", new ElementTag("AS_SERVER"));
             }

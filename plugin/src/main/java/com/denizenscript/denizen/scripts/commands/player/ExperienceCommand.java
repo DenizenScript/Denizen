@@ -89,13 +89,13 @@ public class ExperienceCommand extends AbstractCommand {
             if (arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
                 amount = arg.asElement().asInt();
             }
-            else if (arg.matches("SET", "GIVE", "TAKE")) {
+            else if (arg.matches("set", "give", "take")) {
                 type = Type.valueOf(arg.asElement().asString().toUpperCase());
             }
-            else if (arg.matches("LEVEL")) {
+            else if (arg.matches("level")) {
                 level = true;
             }
-            else if (arg.matches("SILENT")) {
+            else if (arg.matches("silent")) {
                 silent = true;
             }
             else {

@@ -76,12 +76,12 @@ public class PlaySoundCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("volume")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
-                    && arg.matchesPrefix("volume, v")) {
+                    && arg.matchesPrefix("volume", "v")) {
                 scriptEntry.addObject("volume", arg.asElement());
             }
             else if (!scriptEntry.hasObject("pitch")
                     && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
-                    && arg.matchesPrefix("pitch, p")) {
+                    && arg.matchesPrefix("pitch", "p")) {
                 scriptEntry.addObject("pitch", arg.asElement());
             }
             else if (!scriptEntry.hasObject("sound")
@@ -93,7 +93,7 @@ public class PlaySoundCommand extends AbstractCommand {
                 scriptEntry.addObject("custom", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("sound_category")
-                    && arg.matchesOnePrefix("sound_category")) {
+                    && arg.matchesPrefix("sound_category")) {
                 scriptEntry.addObject("sound_category", arg.asElement());
             }
             else {

@@ -78,7 +78,7 @@ public class ToastCommand extends AbstractCommand {
                 scriptEntry.addObject("frame", arg.asElement());
             }
             else if (!scriptEntry.hasObject("background")
-                    && arg.matchesOnePrefix("background")) {
+                    && arg.matchesPrefix("background")) {
                 scriptEntry.addObject("background", arg.asElement());
             }
             else if (!scriptEntry.hasObject("text")) {

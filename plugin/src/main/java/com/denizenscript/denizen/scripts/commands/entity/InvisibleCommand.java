@@ -55,12 +55,12 @@ public class InvisibleCommand extends AbstractCommand {
                 scriptEntry.addObject("state", arg.asElement());
             }
             else if (!scriptEntry.hasObject("target")
-                    && arg.matches("PLAYER")
+                    && arg.matches("player")
                     && Utilities.entryHasPlayer(scriptEntry)) {
                 scriptEntry.addObject("target", Utilities.getEntryPlayer(scriptEntry).getDenizenEntity());
             }
             else if (!scriptEntry.hasObject("target")
-                    && arg.matches("NPC")
+                    && arg.matches("npc")
                     && Utilities.entryHasNPC(scriptEntry)) {
                 scriptEntry.addObject("target", Utilities.getEntryNPC(scriptEntry).getDenizenEntity());
             }

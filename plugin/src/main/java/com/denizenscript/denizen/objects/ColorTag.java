@@ -67,7 +67,7 @@ public class ColorTag implements ObjectTag {
 
         string = string.toUpperCase().replace("CO@", "");
 
-        if (string.matches("RANDOM")) {
+        if (string.equals("RANDOM")) {
 
             // Get a color using random RGB values
             return new ColorTag(CoreUtilities.getRandom().nextInt(256),
@@ -114,7 +114,7 @@ public class ColorTag implements ObjectTag {
 
         arg = arg.toUpperCase().replace("CO@", "");
 
-        if (arg.toUpperCase().matches("RANDOM")) {
+        if (arg.toUpperCase().equals("RANDOM")) {
             return true;
         }
 
