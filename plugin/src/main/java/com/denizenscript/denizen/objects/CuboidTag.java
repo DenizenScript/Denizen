@@ -74,7 +74,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         for (LocationPair pair : pairs) {
             cuboid.pairs.add(new LocationPair(pair.point_1.clone(), pair.point_2.clone()));
         }
-        cuboid.filter = new ArrayList<>(filter);
         return cuboid;
     }
 
@@ -267,9 +266,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
     // Location Pairs (low, high) that make up the CuboidTag
     public List<LocationPair> pairs = new ArrayList<>();
 
-    // Only put MaterialTags in filter.
-    ArrayList<ObjectTag> filter = new ArrayList<>();
-
     /**
      * Construct the cuboid without adding pairs
      * ONLY use this if addPair will be called immediately after!
@@ -318,27 +314,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
 
         // Does not match any of the pairs
         return false;
-    }
-
-    public CuboidTag addBlocksToFilter(List<MaterialTag> addl) {
-        filter.addAll(addl);
-        return this;
-    }
-
-    public CuboidTag removeBlocksFromFilter(List<MaterialTag> addl) {
-        filter.removeAll(addl);
-        return this;
-    }
-
-    public CuboidTag removeFilter() {
-        filter.clear();
-        return this;
-    }
-
-    public CuboidTag setAsFilter(List<MaterialTag> list) {
-        filter.clear();
-        filter.addAll(list);
-        return this;
     }
 
     public ListTag getShell() {
@@ -517,7 +492,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
     }
 
     public List<LocationTag> getBlocks_internal(List<MaterialTag> materials, Attribute attribute) {
-        if (materials == null && filter.isEmpty()) {
+        if (materials == null) {
             return getBlockLocationsUnfiltered();
         }
         int max = Settings.blockTagsMaxBlocks();
@@ -539,20 +514,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                         if (loc.getY() < 0 || loc.getY() > 255) {
                             continue;
                         }
-                        if (!filter.isEmpty()) { // TODO: Should 'filter' exist?
-                            // Check filter
-                            for (ObjectTag material : filter) {
-                                if (((MaterialTag) material).matchesBlock(loc.getBlockForTag(attribute))) {
-                                    if (matchesMaterialList(loc, materials, attribute)) {
-                                        list.add(loc);
-                                    }
-                                }
-                            }
-                        }
-                        else {
-                            if (matchesMaterialList(loc, materials, attribute)) {
-                                list.add(loc);
-                            }
+                        if (matchesMaterialList(loc, materials, attribute)) {
+                            list.add(loc);
                         }
                         index++;
                         if (index > max) {
@@ -830,16 +793,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         registerTag("outline", (attribute, cuboid) -> {
             return cuboid.getOutline();
         }, "get_outline");
-
-        // <--[tag]
-        // @attribute <CuboidTag.filter>
-        // @returns ListTag(LocationTag)
-        // @description
-        // Returns the block locations from the CuboidTag's filter.
-        // -->
-        registerTag("filter", (attribute, cuboid) -> {
-            return new ListTag(cuboid.filter);
-        });
 
         // <--[tag]
         // @attribute <CuboidTag.intersects[<cuboid>]>
