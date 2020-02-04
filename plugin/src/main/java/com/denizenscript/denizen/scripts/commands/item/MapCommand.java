@@ -165,7 +165,7 @@ public class MapCommand extends AbstractCommand {
 
         }
 
-        MapView map = null;
+        MapView map;
         if (create != null) {
             map = Bukkit.getServer().createMap(create.getWorld());
             scriptEntry.addObject("created_map", new ElementTag(map.getId()));

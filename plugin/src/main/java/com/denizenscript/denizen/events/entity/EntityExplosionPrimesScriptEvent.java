@@ -6,8 +6,6 @@ import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
@@ -44,8 +42,8 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
     public ExplosionPrimeEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.toLowerCase(s).contains("explosion primes");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.contains("explosion primes");
     }
 
     @Override

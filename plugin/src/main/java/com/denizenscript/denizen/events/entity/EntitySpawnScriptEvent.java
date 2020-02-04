@@ -7,8 +7,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -52,9 +50,8 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     public CreatureSpawnEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return CoreUtilities.xthArgEquals(1, lower, "spawns") && !lower.startsWith("item") && !lower.startsWith("spawner");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventArgLowerAt(1).equals("spawns") && !path.eventLower.startsWith("item") && !path.eventLower.startsWith("spawner");
     }
 
     @Override

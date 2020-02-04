@@ -5,8 +5,6 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
@@ -50,9 +48,8 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
     public VehicleDestroyEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String cmd = CoreUtilities.getXthArg(1, lower);
+    public boolean couldMatch(ScriptPath path) {
+        String cmd = path.eventArgLowerAt(1);
         return cmd.equals("destroyed") || cmd.equals("destroys");
     }
 

@@ -6,8 +6,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityAirChangeEvent;
@@ -50,8 +48,8 @@ public class EntityAirLevelChangeScriptEvent extends BukkitScriptEvent implement
     public EntityAirChangeEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return (CoreUtilities.toLowerCase(s).contains("changes air level"));
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.contains("changes air level");
     }
 
     @Override

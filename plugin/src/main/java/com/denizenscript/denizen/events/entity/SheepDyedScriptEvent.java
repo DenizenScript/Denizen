@@ -6,7 +6,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.DyeColor;
 import org.bukkit.event.EventHandler;
@@ -51,9 +50,8 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
     public SheepDyeWoolEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("sheep dyed") || lower.startsWith("player dyes sheep");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.startsWith("sheep dyed") || path.eventLower.startsWith("player dyes sheep");
     }
 
     @Override

@@ -7,7 +7,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -61,9 +60,8 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
     public PlayerTeleportEvent pEvent;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return CoreUtilities.xthArgEquals(1, lower, "teleports");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventArgLowerAt(1).equals("teleports");
     }
 
     @Override

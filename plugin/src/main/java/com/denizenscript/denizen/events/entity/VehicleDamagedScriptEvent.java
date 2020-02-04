@@ -6,13 +6,9 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
-
-import java.util.List;
 
 public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -57,19 +53,14 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
     public VehicleDamageEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        List<String> split = CoreUtilities.split(lower, ' ');
-        if (split.size() > 5) {
+    public boolean couldMatch(ScriptPath path) {
+        if (path.eventArgLowerAt(3).equals("by")) {
             return false;
         }
-        if (split.size() > 3 && split.get(3).equals("by")) {
-            return false;
-        }
-        String tid = CoreUtilities.getXthArg(0, lower);
-        String cmd = CoreUtilities.getXthArg(1, lower);
+        String tid = path.eventArgLowerAt(0);
+        String cmd = path.eventArgAt(1);
         return !tid.equals("entity") && (cmd.equals("damaged")
-                || (cmd.equals("damages") && !CoreUtilities.getXthArg(2, lower).equals("entity")));
+                || (cmd.equals("damages") && !path.eventArgLowerAt(2).equals("entity")));
     }
 
     @Override

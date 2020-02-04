@@ -4,7 +4,6 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Horse;
 import org.bukkit.event.EventHandler;
@@ -47,9 +46,8 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     public HorseJumpEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.equals("horse jumps") || lower.endsWith("jumps");
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.equals("horse jumps") || path.eventLower.endsWith("jumps");
     }
 
     @Override

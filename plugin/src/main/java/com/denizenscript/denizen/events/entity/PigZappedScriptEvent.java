@@ -3,8 +3,6 @@ package com.denizenscript.denizen.events.entity;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -42,9 +40,8 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
     public PigZapEvent event;
 
     @Override
-    public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return (lower.equals("pig zapped"));
+    public boolean couldMatch(ScriptPath path) {
+        return path.eventLower.equals("pig zapped");
     }
 
     @Override

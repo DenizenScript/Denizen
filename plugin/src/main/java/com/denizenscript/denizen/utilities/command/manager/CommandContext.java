@@ -91,7 +91,7 @@ public class CommandContext {
             }
             copied.add(arg.trim());
         }
-        this.args = copied.toArray(new String[copied.size()]);
+        this.args = copied.toArray(new String[0]);
     }
 
     public CommandContext(String[] args) {
@@ -246,7 +246,7 @@ public class CommandContext {
         String[] parts = flag.replaceFirst("l@", "").split("[,]|[:]");
         if (parts.length > 0) {
             String worldName = currentLocation != null ? currentLocation.getWorld().getName() : "";
-            double x = 0, y = 0, z = 0;
+            double x, y, z;
             float yaw = 0F, pitch = 0F;
             switch (parts.length) {
                 case 6:
