@@ -141,7 +141,7 @@ public class ChatCommand extends AbstractCommand {
         }
 
         // Create new speech context
-        DenizenSpeechContext context = new DenizenSpeechContext(TagManager.cleanOutputFully(message.asString()),
+        DenizenSpeechContext context = new DenizenSpeechContext(message.asString(),
                 scriptEntry, chatRange.asDouble());
 
         if (!targets.isEmpty()) {

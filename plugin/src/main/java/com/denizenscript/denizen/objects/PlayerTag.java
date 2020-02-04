@@ -3062,22 +3062,22 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("hide_entity")) {
             if (!mechanism.getValue().asString().isEmpty()) {
-                String[] split = mechanism.getValue().asString().split("[\\|" + ListTag.internal_escape + "]", 2);
-                if (split.length > 0 && new ElementTag(split[0]).matchesType(EntityTag.class)) {
+                ListTag split = mechanism.valueAsType(ListTag.class);
+                if (split.size() > 0 && new ElementTag(split.get(0)).matchesType(EntityTag.class)) {
                     EntityTag entity = mechanism.valueAsType(EntityTag.class);
                     if (!entity.isSpawnedOrValidForTag()) {
-                        Debug.echoError("Can't hide the unspawned entity '" + split[0] + "'!");
+                        Debug.echoError("Can't hide the unspawned entity '" + split.get(0) + "'!");
                     }
-                    else if (split.length > 1 && new ElementTag(split[1]).isBoolean()) {
+                    else if (split.size() > 1 && new ElementTag(split.get(1)).isBoolean()) {
                         NMSHandler.getEntityHelper().hideEntity(getPlayerEntity(), entity.getBukkitEntity(),
-                                new ElementTag(split[1]).asBoolean());
+                                new ElementTag(split.get(1)).asBoolean());
                     }
                     else {
                         NMSHandler.getEntityHelper().hideEntity(getPlayerEntity(), entity.getBukkitEntity(), false);
                     }
                 }
                 else {
-                    Debug.echoError("'" + split[0] + "' is not a valid entity!");
+                    Debug.echoError("'" + split.get(0) + "' is not a valid entity!");
                 }
             }
             else {
@@ -3100,7 +3100,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("show_boss_bar")) {
             if (!mechanism.getValue().asString().isEmpty()) {
-                String[] split = mechanism.getValue().asString().split("[\\|" + ListTag.internal_escape + "]", 2);
+                String[] split = mechanism.getValue().asString().split("\\|", 2);
                 if (split.length == 2 && new ElementTag(split[0]).isDouble()) {
                     BossBarHelper.showSimpleBossBar(getPlayerEntity(), split[1], new ElementTag(split[0]).asDouble() * (1.0 / 200.0));
                 }
@@ -3126,7 +3126,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("fake_experience")) {
             if (!mechanism.getValue().asString().isEmpty()) {
-                String[] split = mechanism.getValue().asString().split("[\\|" + ListTag.internal_escape + "]", 2);
+                String[] split = mechanism.getValue().asString().split("\\|", 2);
                 if (split.length > 0 && new ElementTag(split[0]).isFloat()) {
                     if (split.length > 1 && new ElementTag(split[1]).isInt()) {
                         NMSHandler.getPacketHelper().showExperience(getPlayerEntity(),
@@ -3162,7 +3162,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("fake_health")) {
             if (!mechanism.getValue().asString().isEmpty()) {
-                String[] split = mechanism.getValue().asString().split("[\\|" + ListTag.internal_escape + "]", 3);
+                String[] split = mechanism.getValue().asString().split("\\|", 3);
                 if (split.length > 0 && new ElementTag(split[0]).isFloat()) {
                     if (split.length > 1 && new ElementTag(split[1]).isInt()) {
                         if (split.length > 2 && new ElementTag(split[2]).isFloat()) {
@@ -3203,7 +3203,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("fake_equipment")) {
             if (!mechanism.getValue().asString().isEmpty()) {
-                String[] split = mechanism.getValue().asString().split("[\\|" + ListTag.internal_escape + "]", 3);
+                String[] split = mechanism.getValue().asString().split("\\|", 3);
                 if (split.length > 0 && new ElementTag(split[0]).matchesType(EntityTag.class)) {
                     String slot = split.length > 1 ? split[1].toUpperCase() : null;
                     if (split.length > 1 && (new ElementTag(slot).matchesEnum(EquipmentSlot.values())
@@ -3448,7 +3448,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("tab_list_info")) {
             if (!mechanism.getValue().asString().isEmpty()) {
-                String[] split = mechanism.getValue().asString().split("[\\|" + ListTag.internal_escape + "]", 2);
+                String[] split = mechanism.getValue().asString().split("\\|", 2);
                 if (split.length > 0) {
                     String header = split[0];
                     String footer = "";
@@ -3475,7 +3475,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("sign_update")) {
             if (!mechanism.getValue().asString().isEmpty()) {
-                String[] split = mechanism.getValue().asString().split("[\\|" + ListTag.internal_escape + "]", 2);
+                String[] split = mechanism.getValue().asString().split("\\|", 2);
                 if (LocationTag.matches(split[0]) && split.length > 1) {
                     ListTag lines = ListTag.valueOf(split[1], mechanism.context);
                     getPlayerEntity().sendSignChange(LocationTag.valueOf(split[0]), lines.toArray(new String[4]));
@@ -3501,7 +3501,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("banner_update")) {
             if (mechanism.getValue().asString().length() > 0) {
-                String[] split = mechanism.getValue().asString().split("[\\|" + ListTag.internal_escape + "]");
+                String[] split = mechanism.getValue().asString().split("\\|");
                 List<org.bukkit.block.banner.Pattern> patterns = new ArrayList<>();
                 if (split.length > 2) {
                     List<String> splitList;

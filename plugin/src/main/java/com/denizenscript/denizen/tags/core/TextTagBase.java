@@ -54,7 +54,7 @@ public class TextTagBase {
                 }
                 else if (lower.equals("&sc")) {
                     Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplaced(new ElementTag(String.valueOf((char) 0x2011)).getAttribute(attribute.fulfill(1)));
+                    event.setReplaced(new ElementTag(";").getAttribute(attribute.fulfill(1)));
                 }
                 else if (lower.equals("&pipe")) {
                     Deprecations.pointlessTextTags.warn(event.getScriptEntry());
@@ -257,7 +257,7 @@ public class TextTagBase {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
-                event.setReplaced(new ElementTag(String.valueOf((char) 0x01)).getAttribute(event.getAttributes().fulfill(1)));
+                event.setReplaced(new ElementTag("<").getAttribute(event.getAttributes().fulfill(1)));
             }
         }, "&lt");
 
@@ -270,7 +270,7 @@ public class TextTagBase {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
-                event.setReplaced(new ElementTag(String.valueOf((char) 0x02)).getAttribute(event.getAttributes().fulfill(1)));
+                event.setReplaced(new ElementTag(">").getAttribute(event.getAttributes().fulfill(1)));
             }
         }, "&gt");
 

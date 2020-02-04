@@ -50,7 +50,7 @@ public class WalkCommandCitizensEvents implements Listener {
             return;
         }
 
-        // Check each held entry -- the scriptExecuter is waiting on
+        // Check each held entry -- the scriptExecutor is waiting on
         // the entry to be marked 'waited for'.
         for (int i = 0; i < WalkCommand.held.size(); i++) {
             ScriptEntry entry = WalkCommand.held.get(i);

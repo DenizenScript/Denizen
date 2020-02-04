@@ -953,7 +953,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
                     Debug.echoError("Invalid property string '" + properties.get(i) + "'!");
                 }
                 else {
-                    mat.safeApplyProperty(new Mechanism(new ElementTag(data.get(0)), new ElementTag((data.get(1)).replace((char) 0x2011, ';')), attribute.context));
+                    mat.safeApplyProperty(new Mechanism(new ElementTag(data.get(0)), new ElementTag(data.get(1)), attribute.context));
                 }
             }
             return mat;

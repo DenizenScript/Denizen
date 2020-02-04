@@ -67,7 +67,7 @@ public class ActionBarCommand extends AbstractCommand {
                 scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("text")) {
-                scriptEntry.addObject("text", new ElementTag(TagManager.cleanOutputFully(arg.raw_value)));
+                scriptEntry.addObject("text", new ElementTag(arg.raw_value));
             }
         }
 

@@ -5,12 +5,14 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;
 
+import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -57,11 +59,11 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         if (determination.length() > 0 && !determination.equalsIgnoreCase("none")) {
-            String[] values = determination.split("[\\|" + ListTag.internal_escape + "]", 2);
-            if (new ElementTag(values[0]).isInt()) {
-                event.setMaxPlayers(new ElementTag(values[0]).asInt());
-                if (values.length == 2) {
-                    event.setMotd(values[1]);
+            List<String> values = CoreUtilities.split(determination, '|', 2);
+            if (new ElementTag(values.get(0)).isInt()) {
+                event.setMaxPlayers(new ElementTag(values.get(0)).asInt());
+                if (values.size() == 2) {
+                    event.setMotd(values.get(1));
                 }
             }
             else {
