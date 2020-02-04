@@ -33,7 +33,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
 
     @Override
     public File getScriptFolder() {
-        File file = null;
+        File file;
         // Get the script directory
         if (Settings.useDefaultScriptPath()) {
             file = new File(DenizenAPI.getCurrentInstance().getDataFolder() + File.separator + "scripts");

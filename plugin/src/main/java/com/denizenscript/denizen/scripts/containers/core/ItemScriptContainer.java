@@ -186,7 +186,7 @@ public class ItemScriptContainer extends ScriptContainer {
             context.script = new ScriptTag(this);
         }
         // Try to use this script to make an item.
-        ItemTag stack = null;
+        ItemTag stack;
         isProcessing = true;
         try {
             if (!contains("material")) {

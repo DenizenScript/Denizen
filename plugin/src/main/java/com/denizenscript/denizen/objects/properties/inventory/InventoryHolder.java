@@ -156,8 +156,7 @@ public class InventoryHolder implements Property {
         // Returns Denizen's holder ID for this inventory. (player object, location object, etc.)
         // -->
         PropertyParser.<InventoryHolder>registerTag("id_holder", (attribute, object) -> {
-            ObjectTag holder = object.holder;
-            return holder;
+            return object.holder;
         });
     }
 

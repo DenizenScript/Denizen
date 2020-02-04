@@ -94,7 +94,7 @@ public class BukkitWorldScriptHelper implements Listener {
                 doEvents(Arrays.asList
                                 ("time changes",
                                         "time changes in " + currentWorld.identifySimple(),
-                                        "time " + String.valueOf(hour) + " in " + currentWorld.identifySimple()),
+                                        "time " + hour + " in " + currentWorld.identifySimple()),
                         null, null, context, true);
 
                 current_time.put(currentWorld.identifySimple(), hour);

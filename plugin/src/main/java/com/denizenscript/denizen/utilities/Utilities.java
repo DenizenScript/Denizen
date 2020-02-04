@@ -203,17 +203,6 @@ public class Utilities {
                 && blockHelper.isSafeBlock(location.clone().add(0, 1, 0).getBlock().getType());
     }
 
-    public static String[] wrapWords(String text, int width) {
-        StringBuilder sb = new StringBuilder(text);
-
-        int i = 0;
-        while (i + width < sb.length() && (i = sb.lastIndexOf(" ", i + width)) != -1) {
-            sb.replace(i, i + 1, "\n");
-        }
-
-        return sb.toString().split("\n");
-    }
-
     /**
      * @param player the player doing the talking
      * @param npc    the npc being talked to

@@ -57,7 +57,7 @@ public class ScoreboardHelper {
             return;
         }
 
-        Scoreboard board = null;
+        Scoreboard board;
 
         // Iterate through scoreboards
         for (String id : rootSection.getKeys(false)) {

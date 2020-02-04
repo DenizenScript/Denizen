@@ -15,7 +15,6 @@ import java.util.ListIterator;
 public class FakeBlockHelper {
 
     public static Field BITMASK_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("c");
-    public static Field HEIGHTMAPS_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("d");
     public static Field DATA_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("f");
     public static Field BLOCKENTITIES_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("g");
     public static Field BIOMESTORAGE_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("e");
@@ -145,10 +144,6 @@ public class FakeBlockHelper {
                             }
                             bits.a(blockIndex, subPaletteId);
                         }
-                    }
-                    int[] testOut = new int[bits.b()];
-                    for (int i = 0; i < testOut.length; i++) {
-                        testOut[i] = bits.a(i);
                     }
                     outputSerial.writeByte(width);
                     outputSerial.d(paletteLen);

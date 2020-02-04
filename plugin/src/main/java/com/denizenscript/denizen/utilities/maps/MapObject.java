@@ -14,7 +14,7 @@ public abstract class MapObject {
 
     protected String xTag;
     protected String yTag;
-    protected String visibilityTag = "true";
+    protected String visibilityTag;
     protected Map<UUID, Integer> currentX = new HashMap<>();
     protected Map<UUID, Integer> currentY = new HashMap<>();
     protected Map<UUID, Boolean> currentVisibility = new HashMap<>();

@@ -1558,7 +1558,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             EntityHelper.MapTraceResult mtr = NMSHandler.getEntityHelper().mapTrace(object.getLivingEntity(), 200);
             if (mtr != null) {
                 double x = 0;
-                double y = 0;
+                double y;
                 double basex = mtr.hitLocation.getX() - Math.floor(mtr.hitLocation.getX());
                 double basey = mtr.hitLocation.getY() - Math.floor(mtr.hitLocation.getY());
                 double basez = mtr.hitLocation.getZ() - Math.floor(mtr.hitLocation.getZ());

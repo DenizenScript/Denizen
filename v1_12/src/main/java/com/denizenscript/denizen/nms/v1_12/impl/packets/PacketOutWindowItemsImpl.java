@@ -33,7 +33,7 @@ public class PacketOutWindowItemsImpl implements PacketOutWindowItems {
 
     @Override
     public org.bukkit.inventory.ItemStack[] getContents() {
-        return contents.toArray(new org.bukkit.inventory.ItemStack[contents.size()]);
+        return contents.toArray(new org.bukkit.inventory.ItemStack[0]);
     }
 
     @Override

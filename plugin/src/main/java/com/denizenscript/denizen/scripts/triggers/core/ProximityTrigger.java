@@ -3,7 +3,6 @@ package com.denizenscript.denizen.scripts.triggers.core;
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
 import com.denizenscript.denizen.npc.traits.TriggerTrait;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -13,7 +12,6 @@ import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.*;
@@ -279,24 +277,6 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Checks all proximity ranges in scripts and finds the largest number. No need to
-     * calculate distances that exceed the largest number.
-     *
-     * @param event dScriptReloadEvent, fired upon server startup or '/denizen reload scripts'
-     */
-    @EventHandler // TODO: Does this have any point?
-    public void checkMaxProximities(ScriptReloadEvent event) {
-
-        //for (String script : ScriptRegistry._getScriptNames()) {
-            //
-            // TODO: Check interact scripts for proximity triggers and ranges.
-            // Find largest number, add 10, and set it as maxProximityRange.
-            // For now, let's assume 25.
-            //
-        //}
     }
 
     private static Map<UUID, Set<Integer>> proximityTracker = new HashMap<>();

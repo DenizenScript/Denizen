@@ -85,7 +85,7 @@ public class AnnounceCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("format")
                     && arg.matchesPrefix("format")) {
-                FormatScriptContainer format = null;
+                FormatScriptContainer format;
                 String formatStr = arg.getValue();
                 format = ScriptRegistry.getScriptContainer(formatStr);
                 if (format == null) {

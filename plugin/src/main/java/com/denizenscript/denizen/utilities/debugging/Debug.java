@@ -433,54 +433,54 @@ public class Debug {
 
     // Handles checking whether the provided debuggable should submit to the debugger
     private static void echo(String string, Debuggable caller) {
-        if (shouldDebug(caller)) {
-            if (showSources && caller != null) {
-                String callerId;
-                if (caller instanceof ScriptContainer) {
-                    callerId = "Script:" + ((ScriptContainer) caller).getName();
-                }
-                else if (caller instanceof ScriptEntry) {
-                    if (((ScriptEntry) caller).getScript() != null) {
-                        callerId = "Command:" + ((ScriptEntry) caller).getCommandName() + " in Script:" + ((ScriptEntry) caller).getScript().getName();
-                    }
-                    else {
-                        callerId = "Command:" + ((ScriptEntry) caller).getCommandName();
-                    }
-                }
-                else if (caller instanceof ScriptQueue) {
-                    if (((ScriptQueue) caller).script != null) {
-                        callerId = "Queue:" + ((ScriptQueue) caller).id + " running Script:" + ((ScriptQueue) caller).script.getName();
-                    }
-                    else {
-                        callerId = "Queue:" + ((ScriptQueue) caller).id;
-                    }
-                }
-                else if (caller instanceof TagContext) {
-                    if (((TagContext) caller).entry != null) {
-                        ScriptEntry sent = ((TagContext) caller).entry;
-                        if (sent.getScript() != null) {
-                            callerId = "Tag in Command:" + sent.getCommandName() + " in Script:" + sent.getScript().getName();
-                        }
-                        else {
-                            callerId = "Tag in Command:" + sent.getCommandName();
-                        }
-                    }
-                    else if (((TagContext) caller).script != null) {
-                        callerId = "Tag in Script:" + ((TagContext) caller).script.getName();
-                    }
-                    else {
-                        callerId = "Tag:" + caller.toString();
-                    }
-                }
-                else {
-                    callerId = caller.toString();
-                }
-                finalOutputDebugText(ChatColor.DARK_GRAY + "[Src:" + ChatColor.GRAY + callerId + ChatColor.DARK_GRAY + "]" + ChatColor.WHITE + string, caller);
+        if (!shouldDebug(caller)) {
+            return;
+        }
+        if (!showSources || caller == null) {
+            finalOutputDebugText(string, caller);
+            return;
+        }
+        String callerId;
+        if (caller instanceof ScriptContainer) {
+            callerId = "Script:" + ((ScriptContainer) caller).getName();
+        }
+        else if (caller instanceof ScriptEntry) {
+            if (((ScriptEntry) caller).getScript() != null) {
+                callerId = "Command:" + ((ScriptEntry) caller).getCommandName() + " in Script:" + ((ScriptEntry) caller).getScript().getName();
             }
             else {
-                finalOutputDebugText(string, caller);
+                callerId = "Command:" + ((ScriptEntry) caller).getCommandName();
             }
         }
+        else if (caller instanceof ScriptQueue) {
+            if (((ScriptQueue) caller).script != null) {
+                callerId = "Queue:" + ((ScriptQueue) caller).id + " running Script:" + ((ScriptQueue) caller).script.getName();
+            }
+            else {
+                callerId = "Queue:" + ((ScriptQueue) caller).id;
+            }
+        }
+        else if (caller instanceof TagContext) {
+            if (((TagContext) caller).entry != null) {
+                ScriptEntry sent = ((TagContext) caller).entry;
+                if (sent.getScript() != null) {
+                    callerId = "Tag in Command:" + sent.getCommandName() + " in Script:" + sent.getScript().getName();
+                }
+                else {
+                    callerId = "Tag in Command:" + sent.getCommandName();
+                }
+            }
+            else if (((TagContext) caller).script != null) {
+                callerId = "Tag in Script:" + ((TagContext) caller).script.getName();
+            }
+            else {
+                callerId = "Tag:" + caller.toString();
+            }
+        }
+        else {
+            callerId = caller.toString();
+        }
+        finalOutputDebugText(ChatColor.DARK_GRAY + "[Src:" + ChatColor.GRAY + callerId + ChatColor.DARK_GRAY + "]" + ChatColor.WHITE + string, caller);
     }
 
     static void finalOutputDebugText(String message, Debuggable caller) {

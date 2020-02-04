@@ -26,7 +26,7 @@ public class NoteBlockReceiver implements Receiver, MetaEventListener {
     private List<EntityTag> entities;
     private LocationTag location;
     private Map<Integer, Integer> channelPatches;
-    public String key = null;
+    public String key;
     public Sequencer sequencer;
     public boolean closing = false;
 

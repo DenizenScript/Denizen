@@ -94,7 +94,7 @@ public class AgeCommand extends AbstractCommand {
         boolean lock = scriptEntry.hasObject("lock");
 
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (lock ? ArgumentHelper.debugObj("lock", lock) : "") +
+            Debug.report(scriptEntry, getName(), (lock ? ArgumentHelper.debugObj("lock", true) : "") +
                     (ageType != null ? ArgumentHelper.debugObj("agetype", ageType)
                             : ArgumentHelper.debugObj("age", age)) +
                     ArgumentHelper.debugObj("entities", entities.toString()));

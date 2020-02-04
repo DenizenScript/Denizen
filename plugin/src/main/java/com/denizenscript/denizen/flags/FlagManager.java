@@ -623,16 +623,16 @@ public class FlagManager {
             String timeString = "";
 
             if (days > 0) {
-                timeString = String.valueOf(days) + "d ";
+                timeString = days + "d ";
             }
             if (hours > 0) {
-                timeString = timeString + String.valueOf(hours) + "h ";
+                timeString = timeString + hours + "h ";
             }
             if (minutes > 0 && days == 0) {
-                timeString = timeString + String.valueOf(minutes) + "m ";
+                timeString = timeString + minutes + "m ";
             }
             if (seconds > 0 && minutes < 10 && hours == 0 && days == 0) {
-                timeString = timeString + String.valueOf(seconds) + "s";
+                timeString = timeString + seconds + "s";
             }
 
             return timeString.trim();

@@ -120,7 +120,7 @@ public class ItemHelperImpl extends ItemHelper {
             itemRecipe.exact = exact[i];
             ingredientList.add(itemRecipe);
         }
-        ShapelessRecipes recipe = new ShapelessRecipes(key, group, CraftItemStack.asNMSCopy(result), NonNullList.a(null, ingredientList.toArray(new RecipeItemStack[ingredientList.size()])));
+        ShapelessRecipes recipe = new ShapelessRecipes(key, group, CraftItemStack.asNMSCopy(result), NonNullList.a(null, ingredientList.toArray(new RecipeItemStack[0])));
         ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().addRecipe(recipe);
     }
 

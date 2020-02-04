@@ -233,7 +233,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
     //   INSTANCE FIELDS/METHODS
     /////////////////
 
-    OfflinePlayer offlinePlayer = null;
+    OfflinePlayer offlinePlayer;
 
     public boolean isValid() {
         return getPlayerEntity() != null || getOfflinePlayer() != null;

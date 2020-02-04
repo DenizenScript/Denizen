@@ -34,8 +34,7 @@ public class ItemHelperImpl extends ItemHelper {
     public static IRecipe getNMSRecipe(NamespacedKey key) {
         MinecraftKey nmsKey = CraftNamespacedKey.toMinecraft(key);
         Object2ObjectLinkedOpenHashMap<MinecraftKey, IRecipe> recipeMap = ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().recipes;
-        IRecipe recipe = recipeMap.get(nmsKey);
-        return recipe;
+        return recipeMap.get(nmsKey);
     }
 
     @Override
@@ -92,7 +91,7 @@ public class ItemHelperImpl extends ItemHelper {
             itemRecipe.exact = exact[i];
             ingredientList.add(itemRecipe);
         }
-        ShapelessRecipes recipe = new ShapelessRecipes(key, group, CraftItemStack.asNMSCopy(result), NonNullList.a(null, ingredientList.toArray(new RecipeItemStack[ingredientList.size()])));
+        ShapelessRecipes recipe = new ShapelessRecipes(key, group, CraftItemStack.asNMSCopy(result), NonNullList.a(null, ingredientList.toArray(new RecipeItemStack[0])));
         ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().a(recipe);
     }
 

@@ -2109,8 +2109,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // Returns the location of this inventory's holder.
         // -->
         registerTag("location", (attribute, object) -> {
-            LocationTag location = object.getLocation();
-            return location;
+            return object.getLocation();
         });
 
         // <--[tag]
@@ -2239,8 +2238,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // For horses, the order is saddle|armor.
         // -->
         registerTag("equipment", (attribute, object) -> {
-            ListTag equipment = object.getEquipment();
-            return equipment;
+            return object.getEquipment();
         });
 
         // <--[tag]
@@ -2339,8 +2337,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // Returns the item currently in the fuel section of a furnace or brewing stand inventory.
         // -->
         registerTag("fuel", (attribute, object) -> {
-            ItemTag fuel = object.getFuel();
-            return fuel;
+            return object.getFuel();
         });
 
         // <--[tag]
@@ -2351,8 +2348,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // Returns the item currently in the smelting slot of a furnace inventory, or the ingredient slot of a brewing stand inventory.
         // -->
         registerTag("input", (attribute, object) -> {
-            ItemTag smelting = object.getInput();
-            return smelting;
+            return object.getInput();
         });
         registerTag("smelting", tagProcessor.registeredObjectTags.get("input"));
 

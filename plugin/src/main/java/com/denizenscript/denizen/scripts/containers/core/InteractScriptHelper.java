@@ -72,7 +72,7 @@ public class InteractScriptHelper {
             entry = entry.toUpperCase();
 
             // Initialize the fields that will make up the PriorityPair
-            String name = null;
+            String name;
             int priority;
 
             // Make sure a priority exists, deal with it if it doesn't.

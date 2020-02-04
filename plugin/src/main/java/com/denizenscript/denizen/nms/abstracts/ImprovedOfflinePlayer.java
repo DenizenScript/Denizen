@@ -52,7 +52,7 @@ public abstract class ImprovedOfflinePlayer {
     protected UUID player;
     protected File file;
     protected CompoundTag compound;
-    protected boolean exists = false;
+    protected boolean exists;
     protected boolean autosave = true;
     public static Map<UUID, PlayerInventory> offlineInventories = new HashMap<>();
     public static Map<UUID, Inventory> offlineEnderChests = new HashMap<>();
