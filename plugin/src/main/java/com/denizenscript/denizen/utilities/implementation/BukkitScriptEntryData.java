@@ -70,7 +70,7 @@ public class BukkitScriptEntryData extends ScriptEntryData {
 
     @Override
     public TagContext getTagContext() {
-        return new BukkitTagContext(player, npc, false, scriptEntry,
+        return new BukkitTagContext(player, npc, scriptEntry,
                 scriptEntry == null || scriptEntry.shouldDebug(),
                 scriptEntry != null ? scriptEntry.getScript() : null);
     }

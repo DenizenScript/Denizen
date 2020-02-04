@@ -77,7 +77,7 @@ public class TradeTag implements ObjectTag, Adjustable {
         Matcher m = ObjectFetcher.DESCRIBED_PATTERN.matcher(string);
         if (m.matches()) {
             return ObjectFetcher.getObjectFrom(TradeTag.class, string, new BukkitTagContext(((BukkitTagContext) context).player,
-                    ((BukkitTagContext) context).npc, false, null, !context.debug, null));
+                    ((BukkitTagContext) context).npc, null, !context.debug, null));
         }
 
         string = CoreUtilities.toLowerCase(string).replace("trade@", "");

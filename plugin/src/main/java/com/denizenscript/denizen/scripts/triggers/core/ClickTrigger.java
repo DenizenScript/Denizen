@@ -126,8 +126,7 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
                 for (Map.Entry<String, String> entry : idMap.entrySet()) {
                     // Tag the entry value to account for replaceables
                     // TODO: script arg?
-                    String entry_value = TagManager.tag(entry.getValue(), new BukkitTagContext
-                            (player, npc, false, null, false, null));
+                    String entry_value = TagManager.tag(entry.getValue(), new BukkitTagContext(player, npc, null, false, null));
                     // Check if the item specified in the specified id's 'trigger:' key
                     // matches the item that the player is holding.
                     ItemTag item = ItemTag.valueOf(entry_value, script);

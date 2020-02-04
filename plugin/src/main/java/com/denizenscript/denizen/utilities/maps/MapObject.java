@@ -72,7 +72,7 @@ public abstract class MapObject {
 
     protected String tag(String arg, PlayerTag player) {
         // Short, reusable TagManager call
-        return TagManager.tag(arg, new BukkitTagContext(player, player.getSelectedNPC(), false, null, debug, null));
+        return TagManager.tag(arg, new BukkitTagContext(player, player.getSelectedNPC(), null, debug, null));
     }
 
     public Map<String, Object> getSaveData() {

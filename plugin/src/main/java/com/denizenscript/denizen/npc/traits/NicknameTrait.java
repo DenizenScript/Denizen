@@ -54,7 +54,7 @@ public class NicknameTrait extends Trait implements Listener {
         }
         else {
             return TagManager.tag(nickname, // TODO: debug option?
-                    new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), false, null, true, null));
+                    new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), null, true, null));
         }
     }
 

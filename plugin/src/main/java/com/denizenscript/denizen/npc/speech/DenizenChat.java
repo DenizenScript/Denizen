@@ -57,14 +57,14 @@ public class DenizenChat implements VocalChord {
 
         // Chat to the world using Denizen chat settings
         if (!context.hasRecipients()) {
-            String text = TagManager.tag(Settings.chatNoTargetFormat(), new BukkitTagContext(entry, false));
+            String text = TagManager.tag(Settings.chatNoTargetFormat(), new BukkitTagContext(entry));
             talkToBystanders(talker, text, context);
         }
 
         // Single recipient
         else if (context.size() <= 1) {
             // Send chat to target
-            String text = TagManager.tag(Settings.chatToTargetFormat(), new BukkitTagContext(entry, false));
+            String text = TagManager.tag(Settings.chatToTargetFormat(), new BukkitTagContext(entry));
             for (Talkable entity : context) {
                 entity.talkTo(context, text, this);
             }
@@ -75,7 +75,7 @@ public class DenizenChat implements VocalChord {
                     defTarget = queue.getDefinition("target");
                 }
                 queue.addDefinition("target", new EntityTag(context.iterator().next().getEntity()).identify());
-                String bystanderText = TagManager.tag(Settings.chatWithTargetToBystandersFormat(), new BukkitTagContext(entry, false));
+                String bystanderText = TagManager.tag(Settings.chatWithTargetToBystandersFormat(), new BukkitTagContext(entry));
                 talkToBystanders(talker, bystanderText, context);
                 if (defTarget != null) {
                     queue.addDefinition("target", defTarget);
@@ -86,7 +86,7 @@ public class DenizenChat implements VocalChord {
         // Multiple recipients
         else {
             // Send chat to targets
-            String text = TagManager.tag(Settings.chatToTargetFormat(), new BukkitTagContext(entry, false));
+            String text = TagManager.tag(Settings.chatToTargetFormat(), new BukkitTagContext(entry));
             for (Talkable entity : context) {
                 entity.talkTo(context, text, this);
             }
@@ -106,7 +106,7 @@ public class DenizenChat implements VocalChord {
                     parsed.append(format[i]).append(new EntityTag(iter.next().getEntity()).getName());
                     i++;
                 }
-                String targets = TagManager.tag(parsed.toString(), new BukkitTagContext(entry, false));
+                String targets = TagManager.tag(parsed.toString(), new BukkitTagContext(entry));
 
                 String defTargets = null;
                 if (queue.hasDefinition("targets")) {
@@ -114,7 +114,7 @@ public class DenizenChat implements VocalChord {
                 }
                 queue.addDefinition("targets", targets);
 
-                String bystanderText = TagManager.tag(Settings.chatWithTargetsToBystandersFormat(), new BukkitTagContext(entry, false));
+                String bystanderText = TagManager.tag(Settings.chatWithTargetsToBystandersFormat(), new BukkitTagContext(entry));
                 talkToBystanders(talker, bystanderText, context);
 
                 if (defTargets != null) {

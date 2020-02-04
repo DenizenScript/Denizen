@@ -309,7 +309,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         Matcher describedMatcher = ObjectFetcher.DESCRIBED_PATTERN.matcher(string);
         if (describedMatcher.matches()) {
             InventoryTag result = ObjectFetcher.getObjectFrom(InventoryTag.class, string,
-                    new BukkitTagContext(player, npc, false, null, false, null));
+                    new BukkitTagContext(player, npc, null, false, null));
             if (result != null && result.uniquifier != null) {
                 InventoryTag fixedResult = InventoryTrackerSystem.idTrackedInventories.get(result.uniquifier);
                 if (fixedResult != null) {

@@ -97,7 +97,7 @@ public class DenizenCommand extends Command {
             }
             // <permission> is built into Bukkit... let's keep it here
             for (String line : TagManager.tag(permissionMessage.replace("<permission>", getPermission()),
-                    new BukkitTagContext(player, npc, false, null, false, new ScriptTag(script))).split("\n")) {
+                    new BukkitTagContext(player, npc, null, false, new ScriptTag(script))).split("\n")) {
                 target.sendMessage(line);
             }
         }

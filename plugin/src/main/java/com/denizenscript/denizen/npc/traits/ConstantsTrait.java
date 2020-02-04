@@ -48,11 +48,11 @@ public class ConstantsTrait extends Trait {
         if (constants.containsKey(CoreUtilities.toLowerCase(name))) // TODO: shouldDebug
         {
             return TagManager.tag(constants.get(CoreUtilities.toLowerCase(name)),
-                    new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), false, null, true, null));
+                    new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), null, true, null));
         }
         else if (getAssignmentConstants().containsKey(CoreUtilities.toLowerCase(name))) {
             return TagManager.tag(assignmentConstants.get(CoreUtilities.toLowerCase(name)),
-                    new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), false, null, true, null));
+                    new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), null, true, null));
         }
         return null;
     }

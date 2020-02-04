@@ -268,7 +268,7 @@ public class SidebarCommand extends AbstractCommand {
                     List<Sidebar.SidebarLine> current = sidebar.getLines();
                     if (per_player) {
                         TagContext context = new BukkitTagContext(player, Utilities.getEntryNPC(scriptEntry),
-                                false, scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
+                                scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
                         value = ListTag.getListFor(TagManager.tagObject(perValue, context), context);
                         if (perScores != null) {
                             scores = ListTag.getListFor(TagManager.tagObject(perScores, context), context);
@@ -307,7 +307,7 @@ public class SidebarCommand extends AbstractCommand {
                     List<Sidebar.SidebarLine> current = sidebar.getLines();
                     if (per_player) {
                         TagContext context = new BukkitTagContext(player, Utilities.getEntryNPC(scriptEntry),
-                                false, scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
+                                scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
                         if (perValue != null) {
                             value = ListTag.getListFor(TagManager.tagObject(perValue, context), context);
                         }
@@ -372,7 +372,7 @@ public class SidebarCommand extends AbstractCommand {
                     List<Sidebar.SidebarLine> current = sidebar.getLines();
                     if (per_player) {
                         TagContext context = new BukkitTagContext(player, Utilities.getEntryNPC(scriptEntry),
-                                false, scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
+                                scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
                         if (perValue != null) {
                             value = ListTag.getListFor(TagManager.tagObject(perValue, context), context);
                         }
@@ -422,7 +422,7 @@ public class SidebarCommand extends AbstractCommand {
                     List<Sidebar.SidebarLine> current = new ArrayList<>();
                     if (per_player) {
                         TagContext context = new BukkitTagContext(player, Utilities.getEntryNPC(scriptEntry),
-                                false, scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
+                                scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
                         if (perValue != null) {
                             value = ListTag.getListFor(TagManager.tagObject(perValue, context), context);
                         }

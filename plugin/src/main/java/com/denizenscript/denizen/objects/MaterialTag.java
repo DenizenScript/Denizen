@@ -187,7 +187,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         return null;
     }
 
-    public static TagContext noDebugContext = new BukkitTagContext(null, null, false, null, false, null);
+    public static TagContext noDebugContext = new BukkitTagContext(null, null, null, false, null);
 
     /**
      * Determine whether a string is a valid material.

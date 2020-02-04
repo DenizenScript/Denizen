@@ -228,8 +228,8 @@ public class Utilities {
                 .replaceAll("(?i)<TEXT>", replacer);
 
         // Fill in tags // TODO: Debug option?
-        talkFormat = TagManager.tag(talkFormat, new BukkitTagContext(player, npc, false, null, true, null)).replace(replacer, message);
-        bystanderFormat = TagManager.tag(bystanderFormat, new BukkitTagContext(player, npc, false, null, true, null)).replace(replacer, message);
+        talkFormat = TagManager.tag(talkFormat, new BukkitTagContext(player, npc, null, true, null)).replace(replacer, message);
+        bystanderFormat = TagManager.tag(bystanderFormat, new BukkitTagContext(player, npc, null, true, null)).replace(replacer, message);
 
         // Send message to player
         player.getPlayerEntity().sendMessage(talkFormat);

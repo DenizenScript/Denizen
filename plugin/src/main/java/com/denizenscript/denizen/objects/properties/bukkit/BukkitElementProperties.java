@@ -54,7 +54,7 @@ public class BukkitElementProperties implements Property {
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("as_chunk", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), ChunkTag.valueOf(object.asString(),
-                    new BukkitTagContext(attribute.getScriptEntry(), false)), "ChunkTag", attribute.hasAlternative());
+                    new BukkitTagContext(attribute.getScriptEntry())), "ChunkTag", attribute.hasAlternative());
         }, "aschunk");
 
         // <--[tag]
@@ -66,7 +66,7 @@ public class BukkitElementProperties implements Property {
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("as_color", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), ColorTag.valueOf(object.asString(),
-                    new BukkitTagContext(attribute.getScriptEntry(), false)), "ColorTag", attribute.hasAlternative());
+                    new BukkitTagContext(attribute.getScriptEntry())), "ColorTag", attribute.hasAlternative());
         }, "ascolor");
 
         // <--[tag]
@@ -78,7 +78,7 @@ public class BukkitElementProperties implements Property {
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("as_cuboid", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), CuboidTag.valueOf(object.asString(),
-                    new BukkitTagContext(attribute.getScriptEntry(), false)), "CuboidTag", attribute.hasAlternative());
+                    new BukkitTagContext(attribute.getScriptEntry())), "CuboidTag", attribute.hasAlternative());
         }, "ascuboid");
 
         // <--[tag]
@@ -90,7 +90,7 @@ public class BukkitElementProperties implements Property {
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("as_entity", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), EntityTag.valueOf(object.asString(),
-                    new BukkitTagContext(attribute.getScriptEntry(), false)), "EntityTag", attribute.hasAlternative());
+                    new BukkitTagContext(attribute.getScriptEntry())), "EntityTag", attribute.hasAlternative());
         }, "asentity");
 
         // <--[tag]
@@ -102,7 +102,7 @@ public class BukkitElementProperties implements Property {
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("as_inventory", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), InventoryTag.valueOf(object.asString(),
-                    new BukkitTagContext(attribute.getScriptEntry(), false)), "InventoryTag", attribute.hasAlternative());
+                    new BukkitTagContext(attribute.getScriptEntry())), "InventoryTag", attribute.hasAlternative());
         }, "asinventory");
 
         // <--[tag]
@@ -114,7 +114,7 @@ public class BukkitElementProperties implements Property {
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("as_item", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), ItemTag.valueOf(object.asString(),
-                    new BukkitTagContext(attribute.getScriptEntry(), false)), "ItemTag", attribute.hasAlternative());
+                    new BukkitTagContext(attribute.getScriptEntry())), "ItemTag", attribute.hasAlternative());
         }, "asitem");
 
         // <--[tag]
@@ -126,7 +126,7 @@ public class BukkitElementProperties implements Property {
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("as_location", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), LocationTag.valueOf(object.asString(),
-                    new BukkitTagContext(attribute.getScriptEntry(), false)), "LocationTag", attribute.hasAlternative());
+                    new BukkitTagContext(attribute.getScriptEntry())), "LocationTag", attribute.hasAlternative());
         }, "aslocation");
 
         // <--[tag]
@@ -138,7 +138,7 @@ public class BukkitElementProperties implements Property {
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("as_material", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), MaterialTag.valueOf(object.asString(),
-                    new BukkitTagContext(attribute.getScriptEntry(), false)), "MaterialTag", attribute.hasAlternative());
+                    new BukkitTagContext(attribute.getScriptEntry())), "MaterialTag", attribute.hasAlternative());
         }, "asmaterial");
 
         // <--[tag]
@@ -150,7 +150,7 @@ public class BukkitElementProperties implements Property {
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("as_npc", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), NPCTag.valueOf(object.asString(),
-                    new BukkitTagContext(attribute.getScriptEntry(), false)), "NPCTag", attribute.hasAlternative());
+                    new BukkitTagContext(attribute.getScriptEntry())), "NPCTag", attribute.hasAlternative());
         }, "asnpc");
 
         // <--[tag]
@@ -162,7 +162,7 @@ public class BukkitElementProperties implements Property {
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("as_player", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), PlayerTag.valueOf(object.asString(),
-                    new BukkitTagContext(attribute.getScriptEntry(), false)), "PlayerTag", attribute.hasAlternative());
+                    new BukkitTagContext(attribute.getScriptEntry())), "PlayerTag", attribute.hasAlternative());
         }, "asplayer");
 
         // <--[tag]
@@ -174,7 +174,7 @@ public class BukkitElementProperties implements Property {
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("as_world", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), WorldTag.valueOf(object.asString(),
-                    new BukkitTagContext(attribute.getScriptEntry(), false)), "WorldTag", attribute.hasAlternative());
+                    new BukkitTagContext(attribute.getScriptEntry())), "WorldTag", attribute.hasAlternative());
         }, "asworld");
 
         // <--[tag]
@@ -186,7 +186,7 @@ public class BukkitElementProperties implements Property {
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("as_plugin", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), PluginTag.valueOf(object.asString(),
-                    new BukkitTagContext(attribute.getScriptEntry(), false)), "PluginTag", attribute.hasAlternative());
+                    new BukkitTagContext(attribute.getScriptEntry())), "PluginTag", attribute.hasAlternative());
         }, "asplugin");
 
         // <--[tag]

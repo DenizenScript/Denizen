@@ -108,8 +108,7 @@ public class HealthTrait extends Trait implements Listener {
     }
 
     public Location getRespawnLocation() {
-        return LocationTag.valueOf(TagManager.tag(respawnLocation, new BukkitTagContext(null,
-                NPCTag.mirrorCitizensNPC(npc), false, null, false, null)));
+        return LocationTag.valueOf(TagManager.tag(respawnLocation, new BukkitTagContext(null, NPCTag.mirrorCitizensNPC(npc), null, false, null)));
     }
 
     public void setRespawnable(boolean respawnable) {
@@ -268,7 +267,7 @@ public class HealthTrait extends Trait implements Listener {
         }
 
         loc = LocationTag.valueOf(TagManager.tag(respawnLocation, // TODO: debug option?
-                new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), false, null, true, null)));
+                new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), null, true, null)));
 
         if (loc == null) {
             loc = npc.getEntity().getLocation();
