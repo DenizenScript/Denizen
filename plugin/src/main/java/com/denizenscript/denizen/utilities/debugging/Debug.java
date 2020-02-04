@@ -10,7 +10,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.QueueTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
-import com.denizenscript.denizencore.scripts.commands.CommandExecuter;
+import com.denizenscript.denizencore.scripts.commands.CommandExecutor;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 import com.denizenscript.denizencore.tags.TagContext;
@@ -49,7 +49,7 @@ public class Debug {
 
     public static Consumer<String> getDebugSender(Debuggable caller) {
         if (caller == null) {
-            caller = CommandExecuter.currentQueue;
+            caller = CommandExecutor.currentQueue;
         }
         if (caller instanceof TagContext) {
             if (((TagContext) caller).entry != null) {
@@ -169,7 +169,7 @@ public class Debug {
 
     public static void echoError(ScriptQueue sourceQueue, String message, boolean reformat) {
         if (sourceQueue == null) {
-            sourceQueue = CommandExecuter.currentQueue;
+            sourceQueue = CommandExecutor.currentQueue;
         }
         ScriptEntry sourceEntry = null;
         if (sourceQueue != null && sourceQueue.getLastEntryExecuted() != null) {
@@ -278,7 +278,7 @@ public class Debug {
 
     public static void echoError(ScriptQueue source, Throwable ex) {
         if (source == null) {
-            source = CommandExecuter.currentQueue;
+            source = CommandExecutor.currentQueue;
         }
         String errorMessage = getFullExceptionMessage(ex);
         if (throwErrorEvent) {

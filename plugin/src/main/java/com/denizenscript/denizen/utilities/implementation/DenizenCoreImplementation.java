@@ -201,8 +201,8 @@ public class DenizenCoreImplementation implements DenizenImplementation {
             return true;
         }
 
-        // Fill NPCID/NPC argument
-        else if (arg.matchesPrefix("npc, npcid") && !if_ignore) {
+        // Fill NPC argument
+        else if (arg.matchesPrefix("npc") && !if_ignore) {
             Debug.echoDebug(scriptEntry, "...replacing the linked NPC with " + arg.getValue());
             String value = TagManager.tag(arg.getValue(), new BukkitTagContext(scriptEntry));
             NPCTag npc = NPCTag.valueOf(value);
