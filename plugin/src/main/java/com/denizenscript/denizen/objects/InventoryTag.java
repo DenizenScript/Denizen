@@ -2188,7 +2188,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 return null;
             }
             ListTag slots = ListTag.getListFor(attribute.getContextObject(1), attribute.context);
-            if (slots.size() == 0) {
+            if (slots.isEmpty()) {
                 if (!attribute.hasAlternative()) {
                     Debug.echoError("Cannot get a list of zero slots.");
                 }

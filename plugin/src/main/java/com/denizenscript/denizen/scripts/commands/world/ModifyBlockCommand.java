@@ -213,10 +213,10 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             Debug.echoError("Must specify a valid location!");
             return;
         }
-        if ((location_list != null && location_list.size() == 0) || (locations != null && locations.size() == 0)) {
+        if ((location_list != null && location_list.isEmpty()) || (locations != null && locations.isEmpty())) {
             return;
         }
-        if (materialList.size() == 0) {
+        if (materialList.isEmpty()) {
             Debug.echoError("Must specify a valid material!");
             return;
         }

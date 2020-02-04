@@ -210,7 +210,7 @@ public class EntityAge implements Property {
         // -->
         if (mechanism.matches("age")) {
             ListTag list = mechanism.valueAsType(ListTag.class);
-            if (list.size() == 0) {
+            if (list.isEmpty()) {
                 Debug.echoError("Missing value for 'age' mechanism!");
                 return;
             }

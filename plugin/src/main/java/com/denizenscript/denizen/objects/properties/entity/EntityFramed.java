@@ -146,7 +146,7 @@ public class EntityFramed implements Property {
         // -->
         if (mechanism.matches("framed")) {
             ListTag list = mechanism.valueAsType(ListTag.class);
-            if (list.size() == 0) {
+            if (list.isEmpty()) {
                 Debug.echoError("Missing value for 'framed' mechanism!");
                 return;
             }

@@ -647,7 +647,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
     }
 
     public World getWorld() {
-        if (pairs.size() == 0) {
+        if (pairs.isEmpty()) {
             return null;
         }
         return pairs.get(0).high.getWorld();

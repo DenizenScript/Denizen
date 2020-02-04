@@ -120,7 +120,7 @@ public class EntityTame implements Property {
         // -->
         if (mechanism.matches("tame")) {
             ListTag list = mechanism.valueAsType(ListTag.class);
-            if (list.size() == 0) {
+            if (list.isEmpty()) {
                 Debug.echoError("Missing value for 'tame' mechanism!");
                 return;
             }

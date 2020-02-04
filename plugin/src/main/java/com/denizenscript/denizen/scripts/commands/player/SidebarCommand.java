@@ -357,7 +357,7 @@ public class SidebarCommand extends AbstractCommand {
                         Debug.echoError("Invalid player!");
                         continue;
                     }
-                    if ((scores == null || scores.size() == 0) && perScores == null) {
+                    if ((scores == null || scores.isEmpty()) && perScores == null) {
                         Debug.echoError("Missing or invalid 'scores' parameter.");
                         return;
                     }

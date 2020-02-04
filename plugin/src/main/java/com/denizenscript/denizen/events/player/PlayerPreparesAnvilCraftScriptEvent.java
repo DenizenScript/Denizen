@@ -110,7 +110,7 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
 
     @EventHandler
     public void onCraftItem(PrepareAnvilEvent event) {
-        if (event.getInventory().getViewers().size() == 0) {
+        if (event.getInventory().getViewers().isEmpty()) {
             return;
         }
         HumanEntity humanEntity = event.getInventory().getViewers().get(0);
