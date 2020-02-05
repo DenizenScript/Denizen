@@ -102,6 +102,7 @@ public class ItemFlags implements Property {
         // @input ListTag
         // @description
         // Sets the item's meta flag set.
+        // Use "HIDE_ALL" to automatically apply all flags.
         // @tags
         // <ItemTag.flags>
         // -->
@@ -110,7 +111,12 @@ public class ItemFlags implements Property {
             meta.removeItemFlags(ItemFlag.values());
             ListTag new_flags = mechanism.valueAsType(ListTag.class);
             for (String str : new_flags) {
-                meta.addItemFlags(ItemFlag.valueOf(str.toUpperCase()));
+                if (str.equalsIgnoreCase("HIDE_ALL")) {
+                    meta.addItemFlags(ItemFlag.values());
+                }
+                else {
+                    meta.addItemFlags(ItemFlag.valueOf(str.toUpperCase()));
+                }
             }
             item.getItemStack().setItemMeta(meta);
         }
