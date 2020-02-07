@@ -226,19 +226,30 @@ public class WorldTag implements ObjectTag, Adjustable {
         /////////////////
 
         // <--[tag]
-        // @attribute <WorldTag.entities>
+        // @attribute <WorldTag.entities[<entity>|...]>
         // @returns ListTag(EntityTag)
         // @description
         // Returns a list of entities in this world.
+        // Optionally specify entity types to filter down to.
         // -->
         registerTag("entities", (attribute, object) -> {
-            ArrayList<EntityTag> entities = new ArrayList<>();
-
+            ListTag entities = new ListTag();
+            ListTag typeFilter = attribute.hasContext(1) ? ListTag.valueOf(attribute.getContext(1), attribute.context) : null;
             for (Entity entity : object.getEntitiesForTag()) {
-                entities.add(new EntityTag(entity));
+                EntityTag current = new EntityTag(entity);
+                if (typeFilter != null) {
+                    for (String type : typeFilter) {
+                        if (current.comparedTo(type)) {
+                            entities.addObject(current.getDenizenObject());
+                            break;
+                        }
+                    }
+                }
+                else {
+                    entities.addObject(current.getDenizenObject());
+                }
             }
-
-            return new ListTag(entities);
+            return entities;
         });
 
         // <--[tag]

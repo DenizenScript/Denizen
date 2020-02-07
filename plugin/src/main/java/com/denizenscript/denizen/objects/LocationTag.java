@@ -2085,17 +2085,16 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             // @attribute <LocationTag.find.entities[<entity>|...].within[<#.#>]>
             // @returns ListTag
             // @description
-            // Returns a list of entities within a radius, with an optional search parameter
-            // for the entity type.
+            // Returns a list of entities within a radius, with an optional search parameter for the entity type.
             // -->
             else if (attribute.startsWith("entities", 2)) {
-                ListTag ent_list = attribute.hasContext(2) ? ListTag.valueOf(attribute.getContext(2), attribute.context) : new ListTag();
+                ListTag ent_list = attribute.hasContext(2) ? ListTag.valueOf(attribute.getContext(2), attribute.context) : null;
                 ListTag found = new ListTag();
                 attribute.fulfill(2);
                 for (Entity entity : new WorldTag(object.getWorld()).getEntitiesForTag()) {
                     if (Utilities.checkLocation(object, entity.getLocation(), radius)) {
                         EntityTag current = new EntityTag(entity);
-                        if (!ent_list.isEmpty()) {
+                        if (ent_list != null) {
                             for (String ent : ent_list) {
                                 if (current.comparedTo(ent)) {
                                     found.addObject(current.getDenizenObject());
