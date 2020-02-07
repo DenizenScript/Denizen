@@ -1373,6 +1373,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @returns ListTag(EntityTag)
         // @description
         // Gets a list of all living entities currently within the CuboidTag.
+        // This includes Players, mobs, NPCs, etc., but excludes dropped items, experience orbs, etc.
         // -->
         registerTag("list_living_entities", (attribute, cuboid) -> {
             ArrayList<EntityTag> entities = new ArrayList<>();

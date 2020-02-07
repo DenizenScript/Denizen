@@ -246,6 +246,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @returns ListTag(EntityTag)
         // @description
         // Returns a list of living entities in this world.
+        // This includes Players, mobs, NPCs, etc., but excludes dropped items, experience orbs, etc.
         // -->
         registerTag("living_entities", (attribute, object) -> {
             ArrayList<EntityTag> entities = new ArrayList<>();

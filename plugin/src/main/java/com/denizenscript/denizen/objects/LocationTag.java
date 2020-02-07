@@ -2124,6 +2124,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             // @returns ListTag
             // @description
             // Returns a list of living entities within a radius.
+            // This includes Players, mobs, NPCs, etc., but excludes dropped items, experience orbs, etc.
             // -->
             else if (attribute.startsWith("living_entities", 2)) {
                 ListTag found = new ListTag();

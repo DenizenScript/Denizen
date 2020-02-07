@@ -402,8 +402,8 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // @attribute <ChunkTag.living_entities>
         // @returns ListTag(EntityTag)
         // @description
-        // Returns a list of living entities in the chunk. This includes Players, mobs, NPCs, etc., but excludes
-        // dropped items, experience orbs, etc.
+        // Returns a list of living entities in the chunk.
+        // This includes Players, mobs, NPCs, etc., but excludes dropped items, experience orbs, etc.
         // -->
         registerTag("living_entities", (attribute, object) -> {
             ListTag entities = new ListTag();
