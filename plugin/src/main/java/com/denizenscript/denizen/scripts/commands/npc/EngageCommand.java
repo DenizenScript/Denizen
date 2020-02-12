@@ -41,7 +41,7 @@ public class EngageCommand extends AbstractCommand {
     // See <@link command Disengage>
     //
     // @Tags
-    // <NPCTag.is_engaged>
+    // <NPCTag.engaged>
     //
     // @Usage
     // Use to make an NPC appear 'busy'.

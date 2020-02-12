@@ -2823,7 +2823,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <--[tag]
         // @attribute <LocationTag.lectern_page>
         // @returns ElementTag(Number)
-        // @mechanism lectern_page
+        // @mechanism LocationTag.lectern_page
         // @description
         // Returns the current page on display in the book on this Lectern block.
         // -->
