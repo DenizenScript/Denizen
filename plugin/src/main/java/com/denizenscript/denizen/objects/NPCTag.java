@@ -787,7 +787,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         });
 
         // <--[tag]
-        // @attribute <NPCTag.is_engaged>
+        // @attribute <NPCTag.engaged>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the NPC is currently engaged.

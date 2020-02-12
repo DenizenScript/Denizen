@@ -45,14 +45,14 @@ public class EllipsoidTag implements ObjectTag, Notable {
     // -->
 
     public static List<EllipsoidTag> getNotableEllipsoidsContaining(Location location) {
-        List<EllipsoidTag> cuboids = new ArrayList<>();
+        List<EllipsoidTag> ellipsoids = new ArrayList<>();
         for (EllipsoidTag ellipsoid : NotableManager.getAllType(EllipsoidTag.class)) {
             if (ellipsoid.contains(location)) {
-                cuboids.add(ellipsoid);
+                ellipsoids.add(ellipsoid);
             }
         }
 
-        return cuboids;
+        return ellipsoids;
     }
 
     //////////////////
