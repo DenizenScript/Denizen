@@ -215,7 +215,7 @@ public class EllipsoidTag implements ObjectTag, Notable {
 
     @Override
     public boolean isUnique() {
-        return false;
+        return NotableManager.isSaved(this);
     }
 
     @Override
