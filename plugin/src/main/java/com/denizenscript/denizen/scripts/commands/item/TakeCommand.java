@@ -137,7 +137,9 @@ public class TakeCommand extends AbstractCommand {
                     && arg.matches("npc")) {
                 scriptEntry.addObject("inventory", Utilities.getEntryNPC(scriptEntry).getDenizenEntity().getInventory());
             }
-
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         scriptEntry.defaultObject("type", Type.ITEM)
@@ -318,11 +320,20 @@ public class TakeCommand extends AbstractCommand {
 
             case SLOT: {
                 int slotId = SlotHelper.nameToIndex(slot.asString());
-                if (slotId == -1) {
+                if (slotId == -1 || slotId >= inventory.getSize()) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "The input '" + slot.asString() + "' is not a valid slot!");
                     return;
                 }
-                inventory.setSlots(slotId, new ItemStack(Material.AIR));
+                ItemStack original = inventory.getInventory().getItem(slotId);
+                if (original != null && original.getType() != Material.AIR) {
+                    if (original.getAmount() > qty.asInt()) {
+                        original.setAmount(original.getAmount() - qty.asInt());
+                        inventory.setSlots(slotId, original);
+                    }
+                    else {
+                        inventory.setSlots(slotId, new ItemStack(Material.AIR));
+                    }
+                }
                 break;
             }
 
