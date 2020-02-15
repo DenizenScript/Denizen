@@ -64,7 +64,7 @@ public class AnchorCommand extends AbstractCommand {
                 scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));
             }
             else if (!scriptEntry.hasObject("range")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
+                    && arg.matchesFloat()
                     && arg.matchesPrefix("range", "r")) {
                 scriptEntry.addObject("range", arg.asElement());
             }

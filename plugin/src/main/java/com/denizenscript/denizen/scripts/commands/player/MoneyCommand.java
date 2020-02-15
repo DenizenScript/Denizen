@@ -70,7 +70,7 @@ public class MoneyCommand extends AbstractCommand {
                 scriptEntry.addObject("action", arg.asElement());
             }
             else if (!scriptEntry.hasObject("quantity") && arg.matchesPrefix("quantity", "qty", "q")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
+                    && arg.matchesFloat()) {
                 scriptEntry.addObject("quantity", arg.asElement());
             }
             else if (!scriptEntry.hasObject("players") && arg.matchesPrefix("to", "from", "players", "player") &&

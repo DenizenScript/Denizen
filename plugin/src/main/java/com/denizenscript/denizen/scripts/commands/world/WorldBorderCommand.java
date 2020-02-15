@@ -72,22 +72,22 @@ public class WorldBorderCommand extends AbstractCommand {
                 scriptEntry.addObject("center", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("damage")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
+                    && arg.matchesFloat()
                     && arg.matchesPrefix("damage")) {
                 scriptEntry.addObject("damage", arg.asElement());
             }
             else if (!scriptEntry.hasObject("damagebuffer")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
+                    && arg.matchesFloat()
                     && arg.matchesPrefix("damagebuffer")) {
                 scriptEntry.addObject("damagebuffer", arg.asElement());
             }
             else if (!scriptEntry.hasObject("size")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
+                    && arg.matchesFloat()
                     && arg.matchesPrefix("size")) {
                 scriptEntry.addObject("size", arg.asElement());
             }
             else if (!scriptEntry.hasObject("current_size")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
+                    && arg.matchesFloat()
                     && arg.matchesPrefix("current_size")) {
                 scriptEntry.addObject("current_size", arg.asElement());
             }
@@ -97,7 +97,7 @@ public class WorldBorderCommand extends AbstractCommand {
                 scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
             else if (!scriptEntry.hasObject("warningdistance")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)
+                    && arg.matchesInteger()
                     && arg.matchesPrefix("warningdistance")) {
                 scriptEntry.addObject("warningdistance", arg.asElement());
             }

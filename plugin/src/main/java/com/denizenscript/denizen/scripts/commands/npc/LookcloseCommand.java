@@ -55,10 +55,10 @@ public class LookcloseCommand extends AbstractCommand {
             if (arg.matches("realistic", "realistically")) {
                 scriptEntry.addObject("realistic", new ElementTag(true));
             }
-            else if (arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
+            else if (arg.matchesInteger()) {
                 scriptEntry.addObject("range", arg.asElement());
             }
-            else if (arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Boolean)) {
+            else if (arg.matchesBoolean()) {
                 scriptEntry.addObject("toggle", arg.asElement());
             }
             else if (arg.matchesArgumentType(NPCTag.class)) // TODO: better way of handling this?

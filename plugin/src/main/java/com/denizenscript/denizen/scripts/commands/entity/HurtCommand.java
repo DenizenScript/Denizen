@@ -67,8 +67,8 @@ public class HurtCommand extends AbstractCommand {
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (!scriptEntry.hasObject("amount")
-                    && (arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
-                    || arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer))) {
+                    && (arg.matchesFloat()
+                    || arg.matchesInteger())) {
                 scriptEntry.addObject("amount", arg.asElement());
             }
             else if (!scriptEntry.hasObject("source")

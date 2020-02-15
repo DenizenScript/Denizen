@@ -74,12 +74,12 @@ public class MidiCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("volume") &&
-                    arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double) &&
+                    arg.matchesFloat() &&
                     arg.matchesPrefix("volume", "vol", "v")) {
                 scriptEntry.addObject("volume", arg.asElement());
             }
             else if (!scriptEntry.hasObject("tempo") &&
-                    arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
+                    arg.matchesFloat()) {
                 scriptEntry.addObject("tempo", arg.asElement());
             }
             else if (!scriptEntry.hasObject("file")) {

@@ -118,13 +118,13 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                 scriptEntry.addObject("lead", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("height")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
+                    && arg.matchesFloat()
                     && arg.matchesPrefix("height", "h")) {
 
                 scriptEntry.addObject("height", arg.asElement());
             }
             else if (!scriptEntry.hasObject("speed")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
+                    && arg.matchesFloat()
                     && arg.matchesPrefix("speed")) {
 
                 scriptEntry.addObject("speed", arg.asElement());
@@ -147,13 +147,13 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
 
             // Don't document this argument; it is for debug purposes only
             else if (!scriptEntry.hasObject("gravity")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
+                    && arg.matchesFloat()
                     && arg.matchesPrefix("gravity", "g")) {
 
                 scriptEntry.addObject("gravity", arg.asElement());
             }
             else if (!scriptEntry.hasObject("spread")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
+                    && arg.matchesFloat()
                     && arg.matchesPrefix("spread")) {
                 scriptEntry.addObject("spread", arg.asElement());
             }

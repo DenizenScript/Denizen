@@ -68,7 +68,7 @@ public class HealthCommand extends AbstractCommand {
                 scriptEntry.addObject("target", Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()));
             }
             else if (!scriptEntry.hasObject("qty")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
+                    && arg.matchesFloat()) {
                 scriptEntry.addObject("qty", arg.asElement());
             }
             else if (!scriptEntry.hasObject("target")

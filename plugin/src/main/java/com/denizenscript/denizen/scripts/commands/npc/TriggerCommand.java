@@ -74,7 +74,7 @@ public class TriggerCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("radius")
                     && arg.matchesPrefix("radius", "r")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
+                    && arg.matchesInteger()) {
                 scriptEntry.addObject("radius", arg.asElement());
             }
             else if (!scriptEntry.hasObject("toggle")

@@ -161,7 +161,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             }
             else if (!scriptEntry.hasObject("angle")
                     && arg.matchesPrefix("angle")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
+                    && arg.matchesInteger()) {
                 scriptEntry.addObject("angle", arg.asElement());
             }
             else if (!scriptEntry.hasObject("delayed")

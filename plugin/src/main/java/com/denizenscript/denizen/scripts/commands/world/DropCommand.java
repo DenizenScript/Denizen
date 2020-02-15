@@ -95,11 +95,11 @@ public class DropCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("speed")
                     && arg.matchesPrefix("speed")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
+                    && arg.matchesFloat()) {
                 scriptEntry.addObject("speed", arg.asElement());
             }
             else if (!scriptEntry.hasObject("qty")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer))
+                    && arg.matchesInteger())
             // Quantity arg
             {
                 scriptEntry.addObject("qty", arg.asElement().setPrefix("qty"));

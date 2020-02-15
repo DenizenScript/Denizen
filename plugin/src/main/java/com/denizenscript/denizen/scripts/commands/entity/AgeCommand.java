@@ -63,7 +63,7 @@ public class AgeCommand extends AbstractCommand {
                 scriptEntry.addObject("agetype", AgeType.valueOf(arg.getValue().toUpperCase()));
             }
             else if (!scriptEntry.hasObject("age")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
+                    && arg.matchesInteger()) {
                 scriptEntry.addObject("age", arg.asElement());
             }
             else if (!scriptEntry.hasObject("lock")

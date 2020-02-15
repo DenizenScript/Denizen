@@ -79,7 +79,7 @@ public class CreateWorldCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("seed")
                     && arg.matchesPrefix("seed", "s")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
+                    && arg.matchesInteger()) {
                 scriptEntry.addObject("seed", arg.asElement());
             }
             else if (!scriptEntry.hasObject("world_name")) {

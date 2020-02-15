@@ -60,7 +60,7 @@ public class ExplodeCommand extends AbstractCommand {
                 scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("power")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Float)
+                    && arg.matchesFloat()
                     && arg.matchesPrefix("power", "p")) {
 
                 scriptEntry.addObject("power", arg.asElement());

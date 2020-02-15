@@ -154,13 +154,13 @@ public class PlayEffectCommand extends AbstractCommand {
                 }
             }
             if (!scriptEntry.hasObject("radius")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
+                    && arg.matchesFloat()
                     && arg.matchesPrefix("visibility", "v", "radius", "r")) {
 
                 scriptEntry.addObject("radius", arg.asElement());
             }
             else if (!scriptEntry.hasObject("data")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
+                    && arg.matchesFloat()
                     && arg.matchesPrefix("data", "d")) {
 
                 scriptEntry.addObject("data", arg.asElement());
@@ -170,13 +170,13 @@ public class PlayEffectCommand extends AbstractCommand {
                 scriptEntry.addObject("special_data", arg.asElement());
             }
             else if (!scriptEntry.hasObject("qty")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)
+                    && arg.matchesInteger()
                     && arg.matchesPrefix("qty", "q", "quantity")) {
 
                 scriptEntry.addObject("qty", arg.asElement());
             }
             else if (!scriptEntry.hasObject("offset")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
+                    && arg.matchesFloat()
                     && arg.matchesPrefix("offset", "o")) {
 
                 double offset = arg.asElement().asDouble();

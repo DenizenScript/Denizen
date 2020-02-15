@@ -60,7 +60,7 @@ public class OxygenCommand extends AbstractCommand {
                 scriptEntry.addObject("mode", arg.asElement());
             }
             else if (!scriptEntry.hasObject("amount")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
+                    && arg.matchesInteger()) {
                 scriptEntry.addObject("amount", arg.asElement());
             }
 

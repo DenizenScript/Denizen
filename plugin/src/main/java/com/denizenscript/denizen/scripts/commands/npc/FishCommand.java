@@ -64,7 +64,7 @@ public class FishCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("percent")
                     && arg.matchesPrefix("catchpercent", "percent", "chance", "c")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
+                    && arg.matchesInteger()) {
                 scriptEntry.addObject("percent", arg.asElement());
             }
 

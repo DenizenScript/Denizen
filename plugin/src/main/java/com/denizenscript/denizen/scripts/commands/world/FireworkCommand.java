@@ -80,7 +80,7 @@ public class FireworkCommand extends AbstractCommand {
                 scriptEntry.addObject("type", arg.asElement());
             }
             else if (!scriptEntry.hasObject("power")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
+                    && arg.matchesInteger()) {
                 scriptEntry.addObject("power", arg.asElement());
             }
             else if (!scriptEntry.hasObject("flicker")

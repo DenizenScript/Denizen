@@ -52,7 +52,7 @@ public class HealCommand extends AbstractCommand {
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (!scriptEntry.hasObject("amount")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
+                    && arg.matchesFloat()) {
                 scriptEntry.addObject("amount", arg.asElement());
             }
             else if (!scriptEntry.hasObject("entities")

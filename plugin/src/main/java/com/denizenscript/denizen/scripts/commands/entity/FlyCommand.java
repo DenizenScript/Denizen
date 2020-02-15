@@ -92,12 +92,12 @@ public class FlyCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("rotation_threshold")
                     && arg.matchesPrefix("rotationthreshold", "rotation", "r")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Float)) {
+                    && arg.matchesFloat()) {
 
                 scriptEntry.addObject("rotation_threshold", arg.asElement());
             }
             else if (!scriptEntry.hasObject("speed")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
+                    && arg.matchesFloat()) {
 
                 scriptEntry.addObject("speed", arg.asElement());
             }

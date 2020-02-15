@@ -86,7 +86,7 @@ public class ExperienceCommand extends AbstractCommand {
 
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
-            if (arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
+            if (arg.matchesInteger()) {
                 amount = arg.asElement().asInt();
             }
             else if (arg.matches("set", "give", "take")) {

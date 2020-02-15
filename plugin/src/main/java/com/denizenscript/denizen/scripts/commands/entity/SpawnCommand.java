@@ -73,7 +73,7 @@ public class SpawnCommand extends AbstractCommand {
                 scriptEntry.addObject("target", arg.asType(EntityTag.class));
             }
             else if (!scriptEntry.hasObject("spread")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
+                    && arg.matchesInteger()) {
                 scriptEntry.addObject("spread", arg.asElement());
             }
             else if (!scriptEntry.hasObject("persistent")

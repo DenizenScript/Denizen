@@ -87,13 +87,13 @@ public class RotateCommand extends AbstractCommand implements Holdable {
             }
             else if (!scriptEntry.hasObject("yaw")
                     && arg.matchesPrefix("yaw", "y", "rotation", "r")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Float)) {
+                    && arg.matchesFloat()) {
 
                 scriptEntry.addObject("yaw", arg.asElement());
             }
             else if (!scriptEntry.hasObject("pitch")
                     && arg.matchesPrefix("pitch", "p", "tilt", "t")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Float)) {
+                    && arg.matchesFloat()) {
 
                 scriptEntry.addObject("pitch", arg.asElement());
             }

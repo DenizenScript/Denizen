@@ -74,7 +74,7 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
             return true;
         }
         if (Argument.valueOf(determination)
-                .matchesPrimitive(ArgumentHelper.PrimitiveType.Boolean)) {
+                .matchesBoolean()) {
             fire = determination.equalsIgnoreCase("true");
             return true;
         }

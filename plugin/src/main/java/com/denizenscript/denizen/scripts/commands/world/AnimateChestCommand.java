@@ -78,7 +78,7 @@ public class AnimateChestCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("sound")
                     && arg.matchesPrefix("sound")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Boolean)) {
+                    && arg.matchesBoolean()) {
                 scriptEntry.addObject("sound", arg.asElement());
             }
             else if (!scriptEntry.hasObject("players")

@@ -95,7 +95,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("lookat", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("speed")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Percentage)
+                    && arg.matchesFloat()
                     && arg.matchesPrefix("s", "speed")) {
                 scriptEntry.addObject("speed", arg.asElement());
             }
@@ -104,7 +104,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("auto_range", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("radius")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
+                    && arg.matchesFloat()
                     && arg.matchesPrefix("radius")) {
                 scriptEntry.addObject("radius", arg.asElement());
             }

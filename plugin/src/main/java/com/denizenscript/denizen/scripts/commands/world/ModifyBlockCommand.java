@@ -104,17 +104,17 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             }
             else if (!scriptEntry.hasObject("radius")
                     && arg.matchesPrefix("radius", "r")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
+                    && arg.matchesInteger()) {
                 scriptEntry.addObject("radius", new ElementTag(arg.getValue()));
             }
             else if (!scriptEntry.hasObject("height")
                     && arg.matchesPrefix("height", "h")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
+                    && arg.matchesInteger()) {
                 scriptEntry.addObject("height", new ElementTag(arg.getValue()));
             }
             else if (!scriptEntry.hasObject("depth")
                     && arg.matchesPrefix("depth", "d")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
+                    && arg.matchesInteger()) {
                 scriptEntry.addObject("depth", new ElementTag(arg.getValue()));
             }
             else if (arg.matches("no_physics")) {

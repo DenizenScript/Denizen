@@ -125,7 +125,7 @@ public class ScoreboardCommand extends AbstractCommand {
                 scriptEntry.addObject("criteria", arg.asElement());
             }
             else if (!scriptEntry.hasObject("score")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
+                    && arg.matchesInteger()) {
                 scriptEntry.addObject("score", arg.asElement());
             }
             else if (!scriptEntry.hasObject("displayslot")

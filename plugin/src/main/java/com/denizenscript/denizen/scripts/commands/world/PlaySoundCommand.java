@@ -75,17 +75,16 @@ public class PlaySoundCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("volume")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
+                    && arg.matchesFloat()
                     && arg.matchesPrefix("volume", "v")) {
                 scriptEntry.addObject("volume", arg.asElement());
             }
             else if (!scriptEntry.hasObject("pitch")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
+                    && arg.matchesFloat()
                     && arg.matchesPrefix("pitch", "p")) {
                 scriptEntry.addObject("pitch", arg.asElement());
             }
-            else if (!scriptEntry.hasObject("sound")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.String)) {
+            else if (!scriptEntry.hasObject("sound")) {
                 scriptEntry.addObject("sound", arg.asElement());
             }
             else if (!scriptEntry.hasObject("custom")

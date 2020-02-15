@@ -86,7 +86,7 @@ public class ChatCommand extends AbstractCommand {
 
             }
             else if (arg.matchesPrefix("range", "r")) {
-                if (arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
+                if (arg.matchesFloat()) {
                     scriptEntry.addObject("range", arg.asElement());
                 }
             }

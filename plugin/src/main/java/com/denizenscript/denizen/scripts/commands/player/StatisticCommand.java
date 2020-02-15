@@ -76,7 +76,7 @@ public class StatisticCommand extends AbstractCommand {
                 scriptEntry.addObject("statistic", arg.asElement());
             }
             else if (!scriptEntry.hasObject("amount")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
+                    && arg.matchesInteger()) {
                 scriptEntry.addObject("amount", arg.asElement());
             }
             else if (arg.matchesPrefix("qualifier", "q")

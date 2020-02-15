@@ -57,12 +57,12 @@ public class FeedCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-            if (arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)
+            if (arg.matchesInteger()
                     && arg.matchesPrefix("amount", "amt", "quantity", "qty", "a", "q")
                     && !scriptEntry.hasObject("amount")) {
                 scriptEntry.addObject("amount", arg.asElement());
             }
-            else if (arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)
+            else if (arg.matchesInteger()
                     && arg.matchesPrefix("saturation", "sat", "s")
                     && !scriptEntry.hasObject("saturation")) {
                 scriptEntry.addObject("saturation", arg.asElement());

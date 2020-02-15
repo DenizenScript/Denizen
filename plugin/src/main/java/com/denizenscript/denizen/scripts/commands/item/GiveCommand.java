@@ -66,7 +66,7 @@ public class GiveCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("qty")
                     && arg.matchesPrefix("q", "qty", "quantity")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
+                    && arg.matchesFloat()) {
                 scriptEntry.addObject("qty", arg.asElement());
                 scriptEntry.addObject("set_quantity", new ElementTag(true));
             }

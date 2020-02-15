@@ -80,7 +80,7 @@ public class BossBarCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("progress")
                     && arg.matchesPrefix("progress", "health", "p", "h")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
+                    && arg.matchesFloat()) {
                 scriptEntry.addObject("progress", arg.asElement());
             }
             else if (!scriptEntry.hasObject("color")

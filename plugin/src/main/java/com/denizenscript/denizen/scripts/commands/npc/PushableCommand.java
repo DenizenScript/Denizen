@@ -55,7 +55,7 @@ public class PushableCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("return")
                     && arg.matchesPrefix("return", "r")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Boolean)) {
+                    && arg.matchesBoolean()) {
                 scriptEntry.addObject("return", arg.asElement());
             }
 

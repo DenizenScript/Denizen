@@ -86,7 +86,7 @@ public class TakeCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("qty")
                     && arg.matchesPrefix("q", "qty", "quantity")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
+                    && arg.matchesFloat()) {
                 scriptEntry.addObject("qty", arg.asElement());
             }
             else if (!scriptEntry.hasObject("items")

@@ -95,12 +95,12 @@ public class MapCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("width")
                     && arg.matchesPrefix("width")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
+                    && arg.matchesInteger()) {
                 scriptEntry.addObject("width", arg.asElement());
             }
             else if (!scriptEntry.hasObject("height")
                     && arg.matchesPrefix("height")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
+                    && arg.matchesInteger()) {
                 scriptEntry.addObject("height", arg.asElement());
             }
             else if (!scriptEntry.hasObject("script")
@@ -110,16 +110,16 @@ public class MapCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("x-value")
                     && arg.matchesPrefix("x")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
+                    && arg.matchesFloat()) {
                 scriptEntry.addObject("x-value", arg.asElement());
             }
             else if (!scriptEntry.hasObject("y-value")
                     && arg.matchesPrefix("y")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
+                    && arg.matchesFloat()) {
                 scriptEntry.addObject("y-value", arg.asElement());
             }
             else if (!scriptEntry.hasObject("map-id")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
+                    && arg.matchesInteger()) {
                 scriptEntry.addObject("map-id", arg.asElement());
             }
 

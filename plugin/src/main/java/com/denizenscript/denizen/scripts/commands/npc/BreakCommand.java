@@ -69,7 +69,7 @@ public class BreakCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("npc", arg.asType(NPCTag.class));
             }
             else if (!scriptEntry.hasObject("radius")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
+                    && arg.matchesFloat()) {
                 scriptEntry.addObject("radius", arg.asElement());
             }
             else {

@@ -54,7 +54,7 @@ public class LightCommand extends AbstractCommand {
                 scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("light")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Integer)) {
+                    && arg.matchesInteger()) {
                 scriptEntry.addObject("light", arg.asElement());
             }
             else if (!scriptEntry.hasObject("reset")

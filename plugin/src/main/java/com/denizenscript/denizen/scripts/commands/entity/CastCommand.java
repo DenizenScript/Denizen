@@ -77,7 +77,7 @@ public class CastCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("amplifier")
                     && arg.matchesPrefix("power", "p", "amplifier", "a")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)) {
+                    && arg.matchesFloat()) {
                 scriptEntry.addObject("amplifier", arg.asElement());
             }
             else if (!scriptEntry.hasObject("effect")

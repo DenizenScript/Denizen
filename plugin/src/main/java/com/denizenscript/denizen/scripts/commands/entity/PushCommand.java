@@ -103,7 +103,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
             else if (!scriptEntry.hasObject("speed")
-                    && arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double)
+                    && arg.matchesFloat()
                     && arg.matchesPrefix("speed", "s")) {
 
                 scriptEntry.addObject("speed", arg.asElement());

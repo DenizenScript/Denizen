@@ -62,12 +62,12 @@ public class FollowCommand extends AbstractCommand {
                 scriptEntry.addObject("stop", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("lead") &&
-                    arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double) &&
+                    arg.matchesFloat() &&
                     arg.matchesPrefix("l", "lead")) {
                 scriptEntry.addObject("lead", arg.asElement());
             }
             else if (!scriptEntry.hasObject("max") &&
-                    arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Double) &&
+                    arg.matchesFloat() &&
                     arg.matchesPrefix("max")) {
                 scriptEntry.addObject("max", arg.asElement());
             }
@@ -76,7 +76,7 @@ public class FollowCommand extends AbstractCommand {
                 scriptEntry.addObject("allow_wander", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("speed") &&
-                    arg.matchesPrimitive(ArgumentHelper.PrimitiveType.Percentage) &&
+                    arg.matchesFloat() &&
                     arg.matchesPrefix("s", "speed")) {
                 scriptEntry.addObject("speed", arg.asElement());
             }
