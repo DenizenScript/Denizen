@@ -108,7 +108,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
 
         ItemTag stack = null;
 
-        if (ObjectFetcher.DESCRIBED_PATTERN.matcher(string).matches()) {
+        if (ObjectFetcher.isObjectWithProperties(string)) {
             return ObjectFetcher.getObjectFrom(ItemTag.class, string, context);
         }
 

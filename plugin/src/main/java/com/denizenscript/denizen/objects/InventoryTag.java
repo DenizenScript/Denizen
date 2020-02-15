@@ -43,7 +43,6 @@ import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.BookMeta;
 
 import java.util.*;
-import java.util.regex.Matcher;
 
 public class InventoryTag implements ObjectTag, Notable, Adjustable {
 
@@ -306,8 +305,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
 
         ///////
         // Handle objects with properties through the object fetcher
-        Matcher describedMatcher = ObjectFetcher.DESCRIBED_PATTERN.matcher(string);
-        if (describedMatcher.matches()) {
+        if (ObjectFetcher.isObjectWithProperties(string)) {
             InventoryTag result = ObjectFetcher.getObjectFrom(InventoryTag.class, string,
                     new BukkitTagContext(player, npc, null, false, null));
             if (result != null && result.uniquifier != null) {

@@ -84,7 +84,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
 
         ///////
         // Handle objects with properties through the object fetcher
-        if (ObjectFetcher.DESCRIBED_PATTERN.matcher(string).matches()) {
+        if (ObjectFetcher.isObjectWithProperties(string)) {
             return ObjectFetcher.getObjectFrom(MaterialTag.class, string, context);
         }
 

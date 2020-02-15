@@ -12,7 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 
 import java.util.Arrays;
-import java.util.regex.Matcher;
 
 public class TradeTag implements ObjectTag, Adjustable {
 
@@ -74,8 +73,7 @@ public class TradeTag implements ObjectTag, Adjustable {
 
         ///////
         // Handle objects with properties through the object fetcher
-        Matcher m = ObjectFetcher.DESCRIBED_PATTERN.matcher(string);
-        if (m.matches()) {
+        if (ObjectFetcher.isObjectWithProperties(string)) {
             return ObjectFetcher.getObjectFrom(TradeTag.class, string, new BukkitTagContext(((BukkitTagContext) context).player,
                     ((BukkitTagContext) context).npc, null, !context.debug, null));
         }
