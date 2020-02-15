@@ -13,7 +13,6 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import com.denizenscript.denizencore.tags.TagManager;
 import net.md_5.bungee.api.ChatMessageType;
 
 import java.util.Arrays;

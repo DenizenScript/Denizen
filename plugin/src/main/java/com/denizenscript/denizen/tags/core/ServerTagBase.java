@@ -1961,7 +1961,7 @@ public class ServerTagBase {
         else if (attribute.matches("list_plugins_handling_event")
                 && attribute.hasContext(1)) {
             String eventName = attribute.getContext(1);
-            if (eventName.contains(".")) {
+            if (CoreUtilities.contains(eventName, '.')) {
                 try {
                     Class clazz = Class.forName(eventName, false, ServerTagBase.class.getClassLoader());
                     ListTag result = getHandlerPluginList(clazz);

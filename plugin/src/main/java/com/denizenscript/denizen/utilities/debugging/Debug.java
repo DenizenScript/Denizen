@@ -14,7 +14,6 @@ import com.denizenscript.denizencore.scripts.commands.CommandExecutor;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 import com.denizenscript.denizencore.tags.TagContext;
-import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.debugging.Debuggable;
 import com.denizenscript.denizencore.utilities.debugging.Debug.DebugElement;
 import org.bukkit.Bukkit;

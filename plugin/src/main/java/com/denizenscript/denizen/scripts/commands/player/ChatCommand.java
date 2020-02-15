@@ -13,7 +13,6 @@ import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import com.denizenscript.denizencore.tags.TagManager;
 import org.bukkit.entity.Entity;
 
 public class ChatCommand extends AbstractCommand {

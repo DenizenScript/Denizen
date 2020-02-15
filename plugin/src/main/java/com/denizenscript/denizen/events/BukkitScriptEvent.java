@@ -35,14 +35,14 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (MaterialTag.matches(text) || ItemTag.matches(text)) {
             return true;
         }
-        if (text.contains("*")) {
+        if (CoreUtilities.contains(text, '*')) {
             return true;
         }
         if (text.startsWith("regex:")) {
             return true;
         }
         // This one must be last.
-        if (text.contains("|")) {
+        if (CoreUtilities.contains(text, '|')) {
             for (String subMatch : text.split("\\|")) {
                 if (!couldMatchItem(subMatch)) {
                     return false;

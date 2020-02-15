@@ -157,7 +157,7 @@ public class ItemSkullskin implements Property {
                 texture = list.get(1);
             }
             PlayerProfile profile;
-            if (idString.contains("-")) {
+            if (CoreUtilities.contains(idString, '-')) {
                 UUID uuid = UUID.fromString(idString);
                 String name = null;
                 if (list.size() > 2) {

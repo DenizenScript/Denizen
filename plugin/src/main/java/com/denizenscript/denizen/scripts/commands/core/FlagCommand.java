@@ -15,6 +15,7 @@ import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.event.Listener;
 
@@ -278,7 +279,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
         // Set working index, if specified.
         // Usage example: - FLAG FLAGNAME[3]:VALUE specifies an index of 3 should be set with VALUE.
-        if (name.asString().contains("[")) {
+        if (CoreUtilities.contains(name.asString(), '[')) {
             try {
                 index = Integer.valueOf(name.asString().split("\\[")[1].replace("]", ""));
             }

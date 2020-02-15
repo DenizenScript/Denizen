@@ -108,7 +108,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         if (CoreUtilities.toLowerCase(string).startsWith("cu@")) {
             string = string.substring("cu@".length());
         }
-        if (string.contains("|")) {
+        if (CoreUtilities.contains(string, '|')) {
             ListTag positions = ListTag.valueOf(string, context);
             if (positions.size() > 1
                     && LocationTag.matches(positions.get(0))
@@ -142,7 +142,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 }
             }
         }
-        else if (string.contains(",")) {
+        else if (CoreUtilities.contains(string, ',')) {
             List<String> subStrs = CoreUtilities.split(string, ',');
             if (subStrs.size() < 7 || (subStrs.size() - 1) % 6 != 0) {
                 if (context == null || context.debug) {
@@ -213,16 +213,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         public LocationPair(LocationTag point_1, LocationTag point_2) {
             this.point_1 = point_1;
             this.point_2 = point_2;
-            regenerate();
-        }
-
-        public void changePoint(int number, LocationTag point) {
-            if (number == 1) {
-                this.point_1 = point;
-            }
-            else if (number == 2) {
-                this.point_2 = point;
-            }
             regenerate();
         }
 
