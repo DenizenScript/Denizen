@@ -1672,6 +1672,30 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
+        // @attribute <LocationTag.rotate_yaw[<#.#>]>
+        // @returns LocationTag
+        // @description
+        // Returns the location with the yaw rotated the specified amount (eg 180 to face the location backwards).
+        // -->
+        registerTag("rotate_yaw", (attribute, object) -> {
+            LocationTag loc = LocationTag.valueOf(object.identify());
+            loc.setYaw(loc.getYaw() + (float) attribute.getDoubleContext(1));
+            return loc;
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.rotate_pitch[<#.#>]>
+        // @returns LocationTag
+        // @description
+        // Returns the location with the pitch rotated the specified amount. Note that this is capped to +/- 90.
+        // -->
+        registerTag("rotate_pitch", (attribute, object) -> {
+            LocationTag loc = LocationTag.valueOf(object.identify());
+            loc.setPitch(Math.max(-90, Math.min(90, loc.getPitch() + (float) attribute.getDoubleContext(1))));
+            return loc;
+        });
+
+        // <--[tag]
         // @attribute <LocationTag.face[<location>]>
         // @returns LocationTag
         // @description
@@ -1699,7 +1723,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 int degrees = 45;
                 LocationTag facingLoc;
                 if (LocationTag.matches(attribute.getContext(1))) {
-                    facingLoc = LocationTag.valueOf(attribute.getContext(1));
+                    facingLoc = object.clone();
                 }
                 else if (EntityTag.matches(attribute.getContext(1))) {
                     facingLoc = EntityTag.valueOf(attribute.getContext(1)).getLocation();
@@ -1771,7 +1795,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 pitch = Float.parseFloat(split[0]);
                 yaw = Float.parseFloat(split[1]);
             }
-            LocationTag loc = LocationTag.valueOf(object.identify());
+            LocationTag loc = object.clone();
             loc.setPitch(pitch);
             loc.setYaw(yaw);
             return loc;
