@@ -192,7 +192,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         // Fill player/off-line player
         if (arg.matchesPrefix("player") && !if_ignore) {
             Debug.echoDebug(scriptEntry, "...replacing the linked player with " + arg.getValue());
-            String value = TagManager.tag(arg.getValue(), new BukkitTagContext(scriptEntry));
+            String value = TagManager.tag(arg.getValue(), scriptEntry.getContext());
             PlayerTag player = PlayerTag.valueOf(value);
             if (player == null || !player.isValid()) {
                 Debug.echoError(scriptEntry.getResidingQueue(), value + " is an invalid player!");
@@ -204,7 +204,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         // Fill NPC argument
         else if (arg.matchesPrefix("npc") && !if_ignore) {
             Debug.echoDebug(scriptEntry, "...replacing the linked NPC with " + arg.getValue());
-            String value = TagManager.tag(arg.getValue(), new BukkitTagContext(scriptEntry));
+            String value = TagManager.tag(arg.getValue(), scriptEntry.getContext());
             NPCTag npc = NPCTag.valueOf(value);
             if (npc == null || !npc.isValid()) {
                 Debug.echoError(scriptEntry.getResidingQueue(), value + " is an invalid NPC!");

@@ -479,7 +479,7 @@ public class Denizen extends JavaPlugin {
             public void run() {
                 if (!StrongWarning.recentWarnings.isEmpty()) {
                     StringBuilder warnText = new StringBuilder();
-                    warnText.append(ChatColor.YELLOW).append("[Denizen]").append(ChatColor.RED).append("Recent strong system warnings, scripters need to address ASAP (check earlier console logs for details):");
+                    warnText.append(ChatColor.YELLOW).append("[Denizen] ").append(ChatColor.RED).append("Recent strong system warnings, scripters need to address ASAP (check earlier console logs for details):");
                     for (StrongWarning warning : StrongWarning.recentWarnings) {
                         warnText.append("\n- ").append(warning.message);
                     }
