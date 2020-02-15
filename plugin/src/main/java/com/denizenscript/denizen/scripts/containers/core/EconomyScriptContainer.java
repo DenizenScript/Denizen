@@ -97,7 +97,7 @@ public class EconomyScriptContainer extends ScriptContainer {
                 amountText = String.valueOf((long) amount);
             }
             else {
-                DecimalFormat d = new DecimalFormat("0." + new String(new char[digits]).replace('\0', '0'));
+                DecimalFormat d = new DecimalFormat("0." + new String(new char[digits]).replace('\0', '0'), CoreUtilities.decimalFormatSymbols);
                 amountText = d.format(amount);
             }
             return autoTag(value.replace("<amount", "<element[" + amountText + "]"), player);
