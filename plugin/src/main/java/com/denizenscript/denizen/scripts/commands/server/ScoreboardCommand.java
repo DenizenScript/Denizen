@@ -30,6 +30,8 @@ public class ScoreboardCommand extends AbstractCommand {
     //
     // @Description
     // Lets you make players see a certain scoreboard and then a certain objective in that scoreboard.
+    // Please note that a 'scoreboard' is NOT a 'sidebar' - if you want that thing where text is on the right side of the screen, use <@link command sidebar>.
+    // 'Scoreboard' is the underlying internal system that powers sidebars, below_name plates, team prefixing, and a lot of other systems. Generally, you should avoid using this command directly.
     //
     // There are currently three slots where objectives can be displayed:
     // in the sidebar on the right of the screen, below player names and in the player list that shows up when you press Tab.
@@ -182,9 +184,8 @@ public class ScoreboardCommand extends AbstractCommand {
             criteria = new ElementTag("dummy");
         }
         if (!hadDisplaySlot) {
-            criteria = new ElementTag("sidebar");
+            displaySlot = new ElementTag("sidebar");
         }
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), action.debug() +
                     id.debug() +
@@ -199,7 +200,6 @@ public class ScoreboardCommand extends AbstractCommand {
                                     + (displayName == null ? "" : displayName.debug())
                                     ))));
         }
-
         Scoreboard board = null;
 
         // Get the main scoreboard by default

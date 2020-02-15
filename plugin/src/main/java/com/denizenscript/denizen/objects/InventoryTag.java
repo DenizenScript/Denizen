@@ -1515,7 +1515,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // Returns a copy of the InventoryTag with items added.
         // -->
         registerTag("include", (attribute, object) -> {
-            if (!attribute.hasContext(1) || !ItemTag.matches(attribute.getContext(1))) {
+            if (!attribute.hasContext(1)) {
                 return null;
             }
             List<ItemTag> items = ListTag.getListFor(attribute.getContextObject(1), attribute.context).filter(ItemTag.class, attribute.context);
@@ -1545,6 +1545,48 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             for (ItemTag item: items) {
                 dummyInv.add(0, item.getItemStack());
             }
+            return dummyInv;
+        });
+
+        // <--[tag]
+        // @attribute <InventoryTag.exclude[<item>|...]>
+        // @returns InventoryTag
+        // @description
+        // Returns a copy of the InventoryTag with items excluded.
+        // -->
+        registerTag("exclude", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
+            List<ItemTag> items = ListTag.getListFor(attribute.getContextObject(1), attribute.context).filter(ItemTag.class, attribute.context);
+            if (items.isEmpty()) {
+                return null;
+            }
+            InventoryTag dummyInv = new InventoryTag(Bukkit.createInventory(null, object.inventory.getType(), NMSHandler.getInstance().getTitle(object.inventory)));
+            if (object.inventory.getType() == InventoryType.CHEST) {
+                dummyInv.setSize(object.inventory.getSize());
+            }
+            dummyInv.setContents(object.getContents());
+
+            // <--[tag]
+            // @attribute <InventoryTag.exclude[<item>].quantity[<#>]>
+            // @returns InventoryTag
+            // @description
+            // Returns the InventoryTag with a certain quantity of an item excluded.
+            // -->
+            if ((attribute.startsWith("quantity", 2) || attribute.startsWith("qty", 2)) && attribute.hasContext(2)) {
+                if (attribute.startsWith("qty", 2)) {
+                    Deprecations.qtyTags.warn(attribute.context);
+                }
+                int qty = attribute.getIntContext(2);
+                items.get(0).setAmount(qty);
+                attribute.fulfill(1);
+            }
+            ItemStack[] itemArray = new ItemStack[items.size()];
+            for (int i = 0; i < items.size(); i++) {
+                itemArray[i] = items.get(i).getItemStack().clone();
+            }
+            dummyInv.exclude(itemArray);
             return dummyInv;
         });
 
