@@ -1254,7 +1254,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @attribute <PlayerTag.last_played>
         // @returns DurationTag
         // @description
-        // Returns the datestamp of when the player was last seen in duration.
+        // Returns the datestamp of when the player was last seen as a DurationTag date/time object.
         // Works with offline players.
         // -->
         registerTag("last_played", (attribute, object) -> {
