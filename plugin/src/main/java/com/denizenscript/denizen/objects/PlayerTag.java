@@ -1256,6 +1256,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the datestamp of when the player was last seen as a DurationTag date/time object.
         // Works with offline players.
+        // Not very useful for online players.
         // -->
         registerTag("last_played", (attribute, object) -> {
             if (object.isOnline()) {
@@ -1517,7 +1518,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the name of the player as shown in the player list.
         // -->
-        registerTag("list_name", (attribute, object) -> {
+        registerOnlineOnlyTag("list_name", (attribute, object) -> {
             return new ElementTag(object.getPlayerEntity().getPlayerListName());
         });
 
@@ -1526,10 +1527,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @returns ElementTag
         // @mechanism PlayerTag.display_name
         // @description
-        // Returns the display name of the player, which may contain
-        // prefixes and suffixes, colors, etc.
+        // Returns the display name of the player, which may contain prefixes and suffixes, colors, etc.
         // -->
-        registerTag("display_name", (attribute, object) -> {
+        registerOnlineOnlyTag("display_name", (attribute, object) -> {
             return new ElementTag(object.getPlayerEntity().getDisplayName());
         });
 
