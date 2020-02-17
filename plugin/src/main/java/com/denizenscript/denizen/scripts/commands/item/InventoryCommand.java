@@ -97,8 +97,8 @@ public class InventoryCommand extends AbstractCommand {
     // - inventory keep d:<context.location.inventory> o:snow_ball|ItemScript
     //
     // @Usage
-    // Use to remove items specified in a chest from the current player's inventory, regardless of the item count.
-    // - inventory exclude origin:<context.location.inventory>
+    // Use to remove all sticks and stones from the player's inventory.
+    // - inventory exclude origin:stick|stone
     //
     // @Usage
     // Use to swap two players' inventories.

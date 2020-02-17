@@ -1583,7 +1583,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 attribute.fulfill(1);
             }
             for (ItemTag item : items) {
-                dummyInv.remove(item.getItemStack());
+                dummyInv.inventory.removeItem(item.getItemStack().clone());
             }
             return dummyInv;
         });
