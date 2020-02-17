@@ -99,6 +99,7 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
                 item = ItemTag.valueOf(determination.substring("caught:".length()));
                 if (entity != null && entity.getBukkitEntityType() == EntityType.DROPPED_ITEM) {
                     ((Item) entity.getBukkitEntity()).setItemStack(item.getItemStack());
+                    return true;
                 }
             }
         }
