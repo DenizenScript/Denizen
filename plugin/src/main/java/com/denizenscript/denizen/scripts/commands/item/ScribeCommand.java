@@ -12,6 +12,7 @@ import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -19,36 +20,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class ScribeCommand extends AbstractCommand {
-
-    // <--[command]
-    // @Name Scribe
-    // @Syntax scribe [<script>] (<item>/give/equip/{drop <location>})
-    // @Required 1
-    // @Short Writes information to a book from a book-type script or a book item.
-    // @Group item
-    //
-    // @Description
-    // Create a book item from a book-type script or book item.
-    // This can then be directly given to a player, or dropped at a specific location
-    // Read more about book-scripts here: <@link language book script containers>
-    //
-    // @Tags
-    // <ItemTag.book_author>
-    // <ItemTag.book_title>
-    // <ItemTag.book_pages>
-    //
-    // @Usage
-    // Gives the book "Cosmos Book" to the player
-    // - scribe Cosmos_Book give
-    //
-    // @Usage
-    // Drops the "Cosmos Book" at the players location
-    // - scribe Cosmos_Book drop <player.location>
-    //
-    // @Usage
-    // Puts the "Cosmos Book" in the players hand
-    // - scribe Cosmos_Book equip
-    // -->
 
     private enum BookAction {GIVE, DROP, EQUIP, NONE}
 
@@ -92,6 +63,8 @@ public class ScribeCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
+
+        Deprecations.scribeCommand.warn(scriptEntry);
 
         // Retrieve objects from ScriptEntry
         BookAction action = (BookAction) scriptEntry.getObject("action");
