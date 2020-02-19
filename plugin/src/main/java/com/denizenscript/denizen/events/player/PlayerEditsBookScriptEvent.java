@@ -69,6 +69,7 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
         String determination = determinationObj.toString();
         if (determination.toUpperCase().equals("NOT_SIGNING")) {
             event.setSigning(false);
+            return true;
         }
         else if (ScriptTag.matches(determination)) {
             ScriptTag script = ScriptTag.valueOf(determination);
@@ -79,9 +80,11 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
                     event.setSigning(false);
                 }
                 event.setNewBookMeta(bookMeta);
+                return true;
             }
             else {
                 Debug.echoError("Script '" + determination + "' is valid, but not of type 'book'!");
+                return true;
             }
         }
         return super.applyDetermination(path, determinationObj);
