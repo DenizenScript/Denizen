@@ -203,11 +203,12 @@ public class ServerTagBase {
         if (attribute.startsWith("list_recipe_ids")) {
             String type = attribute.hasContext(1) ? CoreUtilities.toLowerCase(attribute.getContext(1)) : null;
             ListTag list = new ListTag();
-            Bukkit.recipeIterator().forEachRemaining((recipe) -> {
+            Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
+            for (Recipe recipe : (Iterable<Recipe>) (() -> recipeIterator)) {
                 if (Utilities.isRecipeOfType(recipe, type) && recipe instanceof Keyed) {
                     list.add(((Keyed) recipe).getKey().toString());
                 }
-            });
+            }
             event.setReplacedObject(list.getObjectAttribute(attribute.fulfill(1)));
             return;
         }
