@@ -84,6 +84,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //           # If not specified, will be of the form "<type>_<script.name>_<id>" where ID is the recipe list index (starting at 1, counting up).
     //           # IDs will always have the namespace "denizen". So, for the below, the full ID is "denizen:my_custom_item_id"
     //           # Note that most users should not set a custom ID. If you choose to set a custom one, be careful to avoid duplicates or invalid text.
+    //           # Note that the internal rules for Recipe IDs are very strict (limited to "a-z", "0-9", "/", ".", "_", or "-").
     //           recipe_id: my_custom_item_id
     //           # You can optional add a group as well. If unspecified, the item will have no group.
     //           # Groups are used to merge together similar recipes (in particular, multiple recipes for one item).

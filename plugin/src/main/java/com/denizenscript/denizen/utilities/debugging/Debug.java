@@ -166,7 +166,14 @@ public class Debug {
         echoError(sourceQueue, message, true);
     }
 
+    public static boolean errorDuplicatePrevention = false;
+
     public static void echoError(ScriptQueue sourceQueue, String message, boolean reformat) {
+        if (errorDuplicatePrevention) {
+            finalOutputDebugText("Error within error (??!!!! REPORT THIS, SOMETHING WENT SUPER WRONG!): " + message, sourceQueue, reformat);
+            return;
+        }
+        errorDuplicatePrevention = true;
         if (sourceQueue == null) {
             sourceQueue = CommandExecutor.currentQueue;
         }
@@ -205,11 +212,13 @@ public class Debug {
             throwErrorEvent = true;
             for (String Determination : Determinations) {
                 if (Determination.equalsIgnoreCase("CANCELLED")) {
+                    errorDuplicatePrevention = false;
                     return;
                 }
             }
         }
         if (!showDebug) {
+            errorDuplicatePrevention = false;
             return;
         }
         StringBuilder fullMessage = new StringBuilder();
@@ -249,6 +258,7 @@ public class Debug {
             }
             depthCorrectError--;
         }
+        errorDuplicatePrevention = false;
     }
 
     static long depthCorrectError = 0;
