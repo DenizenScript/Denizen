@@ -1519,9 +1519,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 return null;
             }
             List<ItemTag> items = ListTag.getListFor(attribute.getContextObject(1), attribute.context).filter(ItemTag.class, attribute.context);
-            if (items.isEmpty()) {
-                return null;
-            }
             InventoryTag dummyInv = new InventoryTag(Bukkit.createInventory(null, object.inventory.getType(), NMSHandler.getInstance().getTitle(object.inventory)));
             if (object.inventory.getType() == InventoryType.CHEST) {
                 dummyInv.setSize(object.inventory.getSize());
@@ -1559,9 +1556,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 return null;
             }
             List<ItemTag> items = ListTag.getListFor(attribute.getContextObject(1), attribute.context).filter(ItemTag.class, attribute.context);
-            if (items.isEmpty()) {
-                return null;
-            }
             InventoryTag dummyInv = new InventoryTag(Bukkit.createInventory(null, object.inventory.getType(), NMSHandler.getInstance().getTitle(object.inventory)));
             if (object.inventory.getType() == InventoryType.CHEST) {
                 dummyInv.setSize(object.inventory.getSize());

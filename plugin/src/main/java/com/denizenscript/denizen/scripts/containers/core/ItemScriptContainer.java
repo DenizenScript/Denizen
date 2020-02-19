@@ -75,6 +75,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //   - ...
     //
     //   # You can optionally add crafting recipes for your item script.
+    //   # Note that recipes won't show in the recipe book when you add a new item script, until you either reconnect or use the "resend_recipes" mechanism.
     //   # | Most item scripts should exclude this key, unless you're specifically building craftable items.
     //   recipes:
     //       1:
