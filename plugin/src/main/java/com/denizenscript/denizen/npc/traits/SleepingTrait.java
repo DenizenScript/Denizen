@@ -31,6 +31,13 @@ public class SleepingTrait extends Trait {
         }
     }
 
+    @Override
+    public void onSpawn() {
+        if (sleeping) {
+            PlayerAnimation.SLEEP.play((Player) npc.getEntity());
+        }
+    }
+
     /**
      * Makes the NPC sleep
      */
