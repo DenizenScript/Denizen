@@ -77,7 +77,7 @@ public class InventoryScriptContainer extends ScriptContainer {
     //   procedural items:
     //     - define list <list[]>
     //     - foreach <server.list_online_players>:
-    //       - define item human_skull[skull_skin=<[value].name>]
+    //       - define item player_head[skull_skin=<[value].name>]
     //       - define list <[list].include[<[item]>]>
     //     - determine <[list]>
     //
@@ -85,9 +85,9 @@ public class InventoryScriptContainer extends ScriptContainer {
     //   # Note the quotes around the entire lines.
     //   # | Most inventory scripts SHOULD have this key!
     //   slots:
-    //     - "[] [] [] [my item] [ItemTag] [] [other item] [] []"
-    //     - "[my item] [] [] [] [] [ItemTag] [ItemTag] [] []"
-    //     - "[] [] [] [] [] [] [] [] [other item]"
+    //     - [] [] [] [my item] [ItemTag] [] [other item] [] []
+    //     - [my item] [] [] [] [] [ItemTag] [ItemTag] [] []
+    //     - [] [] [] [] [] [] [] [] [other item]
     // </code>
     //
     // -->

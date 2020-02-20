@@ -119,7 +119,7 @@ public class CommandScriptContainer extends ScriptContainer {
     //   - if !<player.is_op||<context.server>>:
     //     - narrate "<red>You do not have permission for that command."
     //     - stop
-    //   - narrate "Yay!"
+    //   - narrate Yay!
     //   - narrate "My command worked!"
     //   - narrate "And I typed '/<context.alias> <context.raw_args>'!"
     // </code>
