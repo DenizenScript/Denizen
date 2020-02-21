@@ -28,19 +28,9 @@ public class EllipsoidTag implements ObjectTag, Notable {
     // The word 'ellipsoid' means a less strict sphere.
     // Basically: an "ellipsoid" is to a 3D "sphere" what an "ellipse" (or "oval") is to a 2D "circle".
     //
-    // For format info, see <@link language ellipsoid@>
-    //
-    // -->
-
-    // <--[language]
-    // @name ellipsoid@
-    // @group Object Fetcher System
-    // @description
-    // ellipsoid@ refers to the 'object identifier' of an EllipsoidTag. The 'ellipsoid@' is notation for Denizen's Object
-    // Fetcher. The constructor for an EllipsoidTag is <x>,<y>,<z>,<world>,<x-radius>,<y-radius>,<z-radius>
+    // These use the object notation "ellipsoid@".
+    // The identity format for ellipsoids is <x>,<y>,<z>,<world>,<x-radius>,<y-radius>,<z-radius>
     // For example, 'ellipsoid@1,2,3,space,7,7,7'.
-    //
-    // For general info, see <@link language EllipsoidTag Objects>
     //
     // -->
 

@@ -30,16 +30,8 @@ public class ChunkTag implements ObjectTag, Adjustable {
     // @description
     // A ChunkTag represents a chunk in the world.
     //
-    // For format info, see <@link language ch@>
-    //
-    // -->
-
-    // <--[language]
-    // @name ch@
-    // @group Object Fetcher System
-    // @description
-    // ch@ refers to the 'object identifier' of a ChunkTag. The 'ch@' is notation for Denizen's Object
-    // Fetcher. The constructor for a ChunkTag is <x>,<z>,<world>.
+    // These use the object notation "ch@".
+    // The identity format for chunks is <x>,<z>,<world>
     // For example, 'ch@5,3,world'.
     //
     // Note that the X/Z pair are chunk coordinates, not block coordinates.
@@ -53,8 +45,6 @@ public class ChunkTag implements ObjectTag, Adjustable {
     //
     // For example, block at X,Z 32,67 is in the chunk at X,Z 2,4
     // And the block at X,Z -32,-67 is in the chunk at X,Z -2,-5
-    //
-    // For general info, see <@link language ChunkTag Objects>
     //
     // -->
 

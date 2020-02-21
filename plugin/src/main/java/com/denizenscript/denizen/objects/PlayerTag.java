@@ -63,7 +63,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
     // @description
     // A PlayerTag represents a player in the game.
     //
-    // For format info, see <@link language p@>
+    // These use the object notation "p@".
+    // The identity format for players is the UUID of the relevant player.
     //
     // -->
 
@@ -106,18 +107,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
     /////////////////////
     //   OBJECT FETCHER
     /////////////////
-
-    // <--[language]
-    // @name p@
-    // @group Object Fetcher System
-    // @description
-    // p@ refers to the 'object identifier' of a PlayerTag. The 'p@' is notation for Denizen's Object
-    // Fetcher. The only valid constructor for a PlayerTag is the UUID of the player the object should be
-    // associated with.
-    //
-    // For general info, see <@link language PlayerTag Objects>
-    //
-    // -->
 
     public static PlayerTag valueOf(String string) {
         return valueOf(string, null);

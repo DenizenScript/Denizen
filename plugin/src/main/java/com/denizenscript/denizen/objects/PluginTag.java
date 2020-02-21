@@ -20,19 +20,9 @@ public class PluginTag implements ObjectTag {
     // @description
     // A PluginTag represents a Bukkit plugin on the server.
     //
-    // For format info, see <@link language pl@>
-    //
-    // -->
-
-    // <--[language]
-    // @name pl@
-    // @group Object Fetcher System
-    // @description
-    // pl@ refers to the 'object identifier' of a PluginTag. The 'pl@' is notation for Denizen's Object
-    // Fetcher. The constructor for a PluginTag is the plugin's registered name.
+    // These use the object notation "in@".
+    // The identity format for plugins is the plugin's registered name.
     // For example, 'pl@Denizen'.
-    //
-    // For general info, see <@link language PluginTag Objects>
     //
     // -->
 

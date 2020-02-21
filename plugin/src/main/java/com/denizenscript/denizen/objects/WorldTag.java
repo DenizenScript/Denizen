@@ -56,20 +56,11 @@ public class WorldTag implements ObjectTag, Adjustable {
     // @description
     // A WorldTag represents a world on the server.
     //
-    // For format info, see <@link language w@>
-    //
-    // -->
-
-    // <--[language]
-    // @name w@
-    // @group Object Fetcher System
-    // @description
-    // w@ refers to the 'object identifier' of a WorldTag. The 'w@' is notation for Denizen's Object
-    // Fetcher. The only valid constructor for a WorldTag is the name of the world it should be
-    // associated with. For example, to reference the world named 'world1', use WorldTag1.
+    // These use the object notation "w@".
+    // The identity format for worlds is the name of the world it should be
+    // associated with. For example, to reference the world named 'world1', use simply 'world1'.
     // World names are case insensitive.
     //
-    // For general info, see <@link language WorldTag Objects>
     // -->
 
     public static WorldTag valueOf(String string) {

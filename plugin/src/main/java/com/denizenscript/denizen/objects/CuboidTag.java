@@ -42,20 +42,10 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
     // One 'cuboid' consists of two points: the low point and a high point.
     // a CuboidTag can contain as many cuboids within itself as needed (this allows forming more complex shapes from a single CuboidTag).
     //
-    // For format info, see <@link language cu@>
-    //
-    // -->
-
-    // <--[language]
-    // @name cu@
-    // @group Object Fetcher System
-    // @description
-    // cu@ refers to the 'object identifier' of a CuboidTag. The 'cu@' is notation for Denizen's Object
-    // Fetcher. The constructor for a CuboidTag is <world>,<x1>,<y1>,<z1>,<x2>,<y2>,<z2>
+    // These use the object notation "cu@".
+    // The identity format for cuboids is <world>,<x1>,<y1>,<z1>,<x2>,<y2>,<z2>
     // Multi-member cuboids can simply continue listing x,y,z pairs.
     // For example, 'cu@space,1,2,3,4,5,6'.
-    //
-    // For general info, see <@link language CuboidTag Objects>
     //
     // -->
 

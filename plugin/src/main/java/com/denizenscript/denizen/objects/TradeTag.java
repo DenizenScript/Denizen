@@ -16,7 +16,7 @@ import java.util.Arrays;
 public class TradeTag implements ObjectTag, Adjustable {
 
     // <--[language]
-    // @name Merchant Trades
+    // @name Merchant Trade Objects
     // @group Object System
     // @description
     // Merchant trades are the parts of a special merchant inventory that is typically viewed by right clicking
@@ -30,7 +30,7 @@ public class TradeTag implements ObjectTag, Adjustable {
     // input=<item>(|<item>)
     // uses=<number of uses>
     // max_uses=<maximum number of uses>
-    // has_xp=<true/false>
+    // has_xp=true/false
     //
     // For example, the following task script opens a virtual merchant inventory with two merchant trades. The
     // first trade offers a sponge for two emeralds for a sponge, can be used up to 10 times, and offers XP upon a
@@ -43,17 +43,8 @@ public class TradeTag implements ObjectTag, Adjustable {
     //     - opentrades trade@trade[max_uses=10;inputs=emerald[quantity=2];result=sponge|trade@trade[result=barrier]
     // </code>
     //
-    // For format info, see <@link language trade@>
-    // -->
-
-    // <--[language]
-    // @name trade@
-    // @group Object Fetcher System
-    // @description
-    // trade@ refers to the 'object identifier' of a TradeTag. The 'trade@' is notation for Denizen's Object
-    // Fetcher. The constructor for a TradeTag is just the text 'trade'. All other data is specified through properties.
-    //
-    // For general info, see <@link language Merchant Trades>
+    // These use the object notation "trade@".
+    // The identity format for trades is just the text 'trade'. All other data is specified through properties.
     //
     // -->
 

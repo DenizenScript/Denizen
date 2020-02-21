@@ -58,19 +58,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
     // Note that players and NPCs are valid EntityTags, but are generally represented by the more specific
     // PlayerTag and NPCTag objects.
     //
-    // For format info, see <@link language e@>
-    //
-    // -->
-
-    // <--[language]
-    // @name e@
-    // @group Object Fetcher System
-    // @description
-    // e@ refers to the 'object identifier' of an EntityTag. The 'e@' is notation for Denizen's Object
-    // Fetcher. The constructor for an EntityTag is a spawned entity's UUID, or an entity type.
+    // These use the object notation "e@".
+    // The identity format for entities is a spawned entity's UUID, or an entity type.
     // For example, 'e@zombie'.
-    //
-    // For general info, see <@link language EntityTag Objects>
     //
     // -->
 

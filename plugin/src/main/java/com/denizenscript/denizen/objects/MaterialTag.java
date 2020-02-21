@@ -34,19 +34,12 @@ public class MaterialTag implements ObjectTag, Adjustable {
     // @description
     // A MaterialTag represents a material (a type of block or item).
     //
-    // For format info, see <@link language m@>
-    //
-    // -->
-
-    // <--[language]
-    // @name m@
-    // @group Object Fetcher System
-    // @description
-    // m@ refers to the 'object identifier' of a MaterialTag. The 'm@' is notation for Denizen's Object
-    // Fetcher. The constructor for a MaterialTag is the material type name.
+    // These use the object notation "m@".
+    // The identity format for materials is the material type name.
     // For example, 'm@stick'.
     //
-    // For general info, see <@link language MaterialTag Objects>
+    // Block materials may sometimes also contain property data,
+    // for specific values on the block material such as the growth stage of a plant or the orientation of a stair block.
     //
     // -->
 

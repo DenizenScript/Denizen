@@ -55,19 +55,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
     // @description
     // An NPCTag represents an NPC configured through Citizens.
     //
-    // For format info, see <@link language n@>
-    //
-    // -->
-
-    // <--[language]
-    // @name n@
-    // @group Object Fetcher System
-    // @description
-    // n@ refers to the 'object identifier' of an NPCTag. The 'n@' is notation for Denizen's Object
-    // Fetcher. The constructor for an NPCTag is the NPC's id number.
+    // These use the object notation "n@".
+    // The identity format for NPCs is the NPC's id number.
     // For example, 'n@5'.
-    //
-    // For general info, see <@link language NPCTag Objects>
     //
     // -->
 

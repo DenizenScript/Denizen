@@ -55,21 +55,11 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
     // Inventories can be generically designed using inventory script containers,
     // and can be modified using the inventory command.
     //
-    // For format info, see <@link language in@>
-    //
-    // -->
-
-    // <--[language]
-    // @name in@
-    // @group Object Fetcher System
-    // @description
-    // in@ refers to the 'object identifier' of an InventoryTag. The 'in@' is notation for Denizen's Object
-    // Fetcher. The constructor for an InventoryTag is a the classification type of inventory to use. All other data is specified through properties.
+    // These use the object notation "in@".
+    // The identity format for inventories is a the classification type of inventory to use. All other data is specified through properties.
     //
     // Valid inventory type classifications:
     // "npc", "player", "crafting", "enderchest", "workbench", "entity", "location", "generic"
-    //
-    // For general info, see <@link language InventoryTag Objects>
     //
     // -->
 

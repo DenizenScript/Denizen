@@ -58,23 +58,13 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
     // ItemTags do NOT remember where they came from. If you read an item from an inventory, changing it
     // does not change the original item in the original inventory. You must set it back in.
     //
-    // For format info, see <@link language i@>
-    //
-    // -->
-
-    // <--[language]
-    // @name i@
-    // @group Object Fetcher System
-    // @description
-    // i@ refers to the 'object identifier' of an ItemTag. The 'i@' is notation for Denizen's Object
-    // Fetcher. The constructor for an ItemTag is the basic material type name, or an item script name. Other data is specified in properties.
+    // These use the object notation "i@".
+    // The identity format for items is the basic material type name, or an item script name. Other data is specified in properties.
     // For example, 'i@stick'.
     //
     // Find a list of valid materials at:
     // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html>
     // Note that some materials on that list are exclusively for use with blocks, and cannot be held as items.
-    //
-    // For general info, see <@link language ItemTag Objects>
     //
     // -->
 

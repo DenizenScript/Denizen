@@ -63,22 +63,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     // @description
     // A LocationTag represents a point in the world.
     //
-    // For format info, see <@link language l@>
-    //
-    // -->
-
-    // <--[language]
-    // @name l@
-    // @group Object Fetcher System
-    // @description
-    // l@ refers to the 'object identifier' of a LocationTag. The 'l@' is notation for Denizen's Object
-    // Fetcher. Note that 'l' is a lowercase 'L', the first letter in 'location'.
-    // The full constructor for a LocationTag is: 'l@<x>,<y>,<z>,<pitch>,<yaw>,<world>'
+    // These use the object notation "l@".
+    // Note that 'l' is a lowercase 'L', the first letter in 'location'.
+    // The identity format for locations is <x>,<y>,<z>,<pitch>,<yaw>,<world>
     // Note that you can leave off the world, and/or pitch and yaw, and/or the z value.
     // You cannot leave off both the z and the pitch+yaw at the same time.
     // For example, 'l@1,2.15,3,45,90,space' or 'l@7.5,99,3.2'
-    //
-    // For general info, see <@link language LocationTag Objects>
     //
     // -->
 

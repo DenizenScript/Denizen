@@ -27,19 +27,8 @@ public class BiomeTag implements ObjectTag, Adjustable {
     // A list of all valid Bukkit biomes can found be at
     // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Biome.html>
     //
-    // For format info, see <@link language b@>
-    //
-    // -->
-
-    // <--[language]
-    // @name b@
-    // @group Object Fetcher System
-    // @description
-    // b@ refers to the 'object identifier' of a BiomeTag. The 'b@' is notation for Denizen's Object
-    // Fetcher. The constructor for a BiomeTag is the name of a valid biome (in Bukkit).
-    // For example, 'b@desert'.
-    //
-    // For general info, see <@link language BiomeTag Objects>
+    // These use the object notation "b@".
+    // The identity format for biomes is simply the biome name, as registered in Bukkit, for example: 'desert'.
     //
     // -->
 
