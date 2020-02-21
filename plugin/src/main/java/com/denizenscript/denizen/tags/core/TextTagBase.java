@@ -80,6 +80,19 @@ public class TextTagBase {
         }, "&auml", "&Auml", "&ouml", "&Ouml", "&uuml", "&Uuml", "&amp", "&cm", "&sc", "&pipe", "&ds", "&at", "&dot", "&hrt");
 
         // <--[tag]
+        // @attribute <empty>
+        // @returns ElementTag
+        // @description
+        // Returns an empty element.
+        // -->
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                event.setReplaced(new ElementTag("").getAttribute(event.getAttributes().fulfill(1)));
+            }
+        }, "empty");
+
+        // <--[tag]
         // @attribute <&pc>
         // @returns ElementTag
         // @description
