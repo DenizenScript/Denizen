@@ -325,7 +325,10 @@ public class BukkitElementProperties implements Property {
         // @description
         // Adds a hover message to the element, which makes the element display the input hover text when the mouse is left over it.
         //
-        // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
+        // Note that this is a magic Denizen tool, and unlike other format codes (like 'bold') does not appear in Spigot's API or the old Minecraft chat system.
+        // This instead generates the special modern Minecraft JSON codes for hoverable text through the Denizen message processor.
+        // As such, it only works when sent through certain Denizen commands (narrate, announce, etc) or mechanisms (like ItemTag.book).
+        // This will not be valid anywhere that isn't in the chat bar or a book (titles, items, etc. will not work).
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("on_hover", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
@@ -343,7 +346,10 @@ public class BukkitElementProperties implements Property {
             // Optionally specify the hover type as one of: SHOW_TEXT, SHOW_ACHIEVEMENT, SHOW_ITEM, or SHOW_ENTITY.
             // Note: for "SHOW_ITEM", replace the text with a valid ItemTag. For "SHOW_ENTITY", replace the text with a valid spawned EntityTag (requires F3+H to see entities).
             //
-            // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
+            // Note that this is a magic Denizen tool, and unlike other format codes (like 'bold') does not appear in Spigot's API or the old Minecraft chat system.
+            // This instead generates the special modern Minecraft JSON codes for hoverable text through the Denizen message processor.
+            // As such, it only works when sent through certain Denizen commands (narrate, announce, etc) or mechanisms (like ItemTag.book).
+            // This will not be valid anywhere that isn't in the chat bar or a book (titles, items, etc. will not work).
             // -->
             if (attribute.startsWith("type", 2)) {
                 type = attribute.getContext(2);
@@ -363,7 +369,10 @@ public class BukkitElementProperties implements Property {
         // For example: - narrate "You can <element[click here].on_click[wow]> to say wow!"
         // For example: - narrate "You can <element[click here].on_click[/help]> to for help!"
         //
-        // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
+        // Note that this is a magic Denizen tool, and unlike other format codes (like 'bold') does not appear in Spigot's API or the old Minecraft chat system.
+        // This instead generates the special modern Minecraft JSON codes for clickable text through the Denizen message processor.
+        // As such, it only works when sent through certain Denizen commands (narrate, announce, etc) or mechanisms (like ItemTag.book).
+        // This will not be valid anywhere that isn't in the chat bar or a book (titles, items, etc. will not work).
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("on_click", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
@@ -381,7 +390,10 @@ public class BukkitElementProperties implements Property {
             // Optionally specify the hover type as one of: OPEN_URL, OPEN_FILE, RUN_COMMAND, SUGGEST_COMMAND, or CHANGE_PAGE.
             // For example: - narrate "You can <element[click here].on_click[https://denizenscript.com].type[OPEN_URL]> to learn about Denizen!"
             //
-            // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
+            // Note that this is a magic Denizen tool, and unlike other format codes (like 'bold') does not appear in Spigot's API or the old Minecraft chat system.
+            // This instead generates the special modern Minecraft JSON codes for clickable text through the Denizen message processor.
+            // As such, it only works when sent through certain Denizen commands (narrate, announce, etc) or mechanisms (like ItemTag.book).
+            // This will not be valid anywhere that isn't in the chat bar or a book (titles, items, etc. will not work).
             // -->
             if (attribute.startsWith("type", 2)) {
                 type = attribute.getContext(2);
@@ -398,7 +410,10 @@ public class BukkitElementProperties implements Property {
         // @description
         // Adds an insertion message to the element, which makes the element insert the input message to chat when shift-clicked.
         //
-        // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
+        // Note that this is a magic Denizen tool, and unlike other format codes (like 'bold') does not appear in Spigot's API or the old Minecraft chat system.
+        // This instead generates the special modern Minecraft JSON codes for insertion text through the Denizen message processor.
+        // As such, it only works when sent through certain Denizen commands (narrate, announce, etc) or mechanisms (like ItemTag.book).
+        // This will not be valid anywhere that isn't in the chat bar or a book (titles, items, etc. will not work).
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("with_insertion", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
@@ -417,7 +432,9 @@ public class BukkitElementProperties implements Property {
         // Makes a color code (&0123456789abcdef) not reset other formatting details.
         // Use like '<&c.no_reset>' or '<red.no_reset>'.
         //
-        // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
+        // Note that end_format is a magic Denizen tool, and unlike other format codes (like 'bold') does not appear in Spigot's API or the old Minecraft chat system.
+        // As such, it only works when sent through certain Denizen commands (narrate, announce, etc) or mechanisms (like ItemTag.book).
+        // This will not be valid anywhere that isn't in the chat bar or a book (titles, items, etc. will not work).
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("no_reset", (attribute, object) -> {
             if (object.asString().length() == 2 && object.asString().charAt(0) == ChatColor.COLOR_CHAR) {
@@ -434,7 +451,9 @@ public class BukkitElementProperties implements Property {
         // Makes a chat format code (&klmno) be the end of a format, as opposed to the start.
         // Use like '<&o.end_format>' or '<italic.end_format>'.
         //
-        // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
+        // Note that end_format is a magic Denizen tool, and unlike other format codes (like 'bold') does not appear in Spigot's API or the old Minecraft chat system.
+        // As such, it only works when sent through certain Denizen commands (narrate, announce, etc) or mechanisms (like ItemTag.book).
+        // This will not be valid anywhere that isn't in the chat bar or a book (titles, items, etc. will not work).
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("end_format", (attribute, object) -> {
             if (object.asString().length() == 2 && object.asString().charAt(0) == ChatColor.COLOR_CHAR) {
@@ -450,7 +469,9 @@ public class BukkitElementProperties implements Property {
         // @description
         // Makes the input text italic. Equivalent to "<&o><ELEMENT_HERE><&o.end_format>"
         //
-        // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
+        // Note that end_format is a magic Denizen tool, and unlike other format codes (like 'bold') does not appear in Spigot's API or the old Minecraft chat system.
+        // As such, it only works when sent through certain Denizen commands (narrate, announce, etc) or mechanisms (like ItemTag.book).
+        // This will not be valid anywhere that isn't in the chat bar or a book (titles, items, etc. will not work).
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("italicize", (attribute, object) -> {
             return new ElementTag(ChatColor.ITALIC + object.asString() + ChatColor.COLOR_CHAR + "[reset=o]");
@@ -463,7 +484,9 @@ public class BukkitElementProperties implements Property {
         // @description
         // Makes the input text bold. Equivalent to "<&l><ELEMENT_HERE><&l.end_format>"
         //
-        // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
+        // Note that end_format is a magic Denizen tool, and unlike other format codes (like 'bold') does not appear in Spigot's API or the old Minecraft chat system.
+        // As such, it only works when sent through certain Denizen commands (narrate, announce, etc) or mechanisms (like ItemTag.book).
+        // This will not be valid anywhere that isn't in the chat bar or a book (titles, items, etc. will not work).
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("bold", (attribute, object) -> {
             return new ElementTag(ChatColor.BOLD + object.asString() + ChatColor.COLOR_CHAR + "[reset=l]");
@@ -476,7 +499,9 @@ public class BukkitElementProperties implements Property {
         // @description
         // Makes the input text underlined. Equivalent to "<&n><ELEMENT_HERE><&n.end_format>"
         //
-        // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
+        // Note that end_format is a magic Denizen tool, and unlike other format codes (like 'bold') does not appear in Spigot's API or the old Minecraft chat system.
+        // As such, it only works when sent through certain Denizen commands (narrate, announce, etc) or mechanisms (like ItemTag.book).
+        // This will not be valid anywhere that isn't in the chat bar or a book (titles, items, etc. will not work).
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("underline", (attribute, object) -> {
             return new ElementTag(ChatColor.UNDERLINE + object.asString() + ChatColor.COLOR_CHAR + "[reset=n]");
@@ -489,7 +514,9 @@ public class BukkitElementProperties implements Property {
         // @description
         // Makes the input text struck-through. Equivalent to "<&m><ELEMENT_HERE><&m.end_format>"
         //
-        // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
+        // Note that end_format is a magic Denizen tool, and unlike other format codes (like 'bold') does not appear in Spigot's API or the old Minecraft chat system.
+        // As such, it only works when sent through certain Denizen commands (narrate, announce, etc) or mechanisms (like ItemTag.book).
+        // This will not be valid anywhere that isn't in the chat bar or a book (titles, items, etc. will not work).
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("strikethrough", (attribute, object) -> {
             return new ElementTag(ChatColor.STRIKETHROUGH + object.asString() + ChatColor.COLOR_CHAR + "[reset=m]");
@@ -502,7 +529,9 @@ public class BukkitElementProperties implements Property {
         // @description
         // Makes the input text obfuscated. Equivalent to "<&k><ELEMENT_HERE><&k.end_format>"
         //
-        // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
+        // Note that end_format is a magic Denizen tool, and unlike other format codes (like 'bold') does not appear in Spigot's API or the old Minecraft chat system.
+        // As such, it only works when sent through certain Denizen commands (narrate, announce, etc) or mechanisms (like ItemTag.book).
+        // This will not be valid anywhere that isn't in the chat bar or a book (titles, items, etc. will not work).
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("obfuscate", (attribute, object) -> {
             return new ElementTag(ChatColor.MAGIC + object.asString() + ChatColor.COLOR_CHAR + "[reset=k]");
@@ -514,10 +543,11 @@ public class BukkitElementProperties implements Property {
         // @group text manipulation
         // @description
         // Makes the input text colored by the input color. Equivalent to "<COLOR><ELEMENT_HERE><COLOR.end_format>"
-        // Color can be either a color name, or code.
-        // That is: ".color[gold]" and ".color[6]" are both valid.
+        // Color can be either a color name, or code... that is: ".color[gold]" and ".color[6]" are both valid.
         //
-        // This tag works for chat outputs and books. It does not work in other places (inside an item, title command, etc. this is not valid).
+        // Note that end_format is a magic Denizen tool, and unlike other format codes (like 'bold') does not appear in Spigot's API or the old Minecraft chat system.
+        // As such, it only works when sent through certain Denizen commands (narrate, announce, etc) or mechanisms (like ItemTag.book).
+        // This will not be valid anywhere that isn't in the chat bar or a book (titles, items, etc. will not work).
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("color", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
