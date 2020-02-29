@@ -32,6 +32,7 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
     // @Context
     // <context.vehicle> returns the EntityTag of the vehicle.
     // <context.entity> returns the EntityTag of the attacking entity.
+    // <context.damage> returns the amount of damage to be received.
     //
     // @Determine
     // ElementTag(Decimal) to set the value of the damage received by the vehicle.
@@ -49,7 +50,6 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
     public static VehicleDamagedScriptEvent instance;
     public EntityTag vehicle;
     public EntityTag entity;
-    private double damage;
     public VehicleDamageEvent event;
 
     @Override
@@ -91,7 +91,7 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isDouble()) {
-            damage = ((ElementTag) determinationObj).asDouble();
+            event.setDamage(((ElementTag) determinationObj).asDouble());
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -113,6 +113,9 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
         else if (name.equals("entity") && entity != null) {
             return entity.getDenizenObject();
         }
+        else if (name.equals("damage")) {
+            return new ElementTag(event.getDamage());
+        }
         return super.getContext(name);
     }
 
@@ -120,9 +123,7 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
     public void onVehicleDestroyed(VehicleDamageEvent event) {
         vehicle = new EntityTag(event.getVehicle());
         entity = event.getAttacker() != null ? new EntityTag(event.getAttacker()) : null;
-        damage = event.getDamage();
         this.event = event;
         fire(event);
-        event.setDamage(damage);
     }
 }
