@@ -128,6 +128,7 @@ public class FormattedTextHelper {
     }
 
     public static BaseComponent[] parse(String str) {
+        str = str.replace((char) 0xA0, ' ');
         char[] chars = str.toCharArray();
         List<BaseComponent> outputList = new ArrayList<>();
         int started = 0;
