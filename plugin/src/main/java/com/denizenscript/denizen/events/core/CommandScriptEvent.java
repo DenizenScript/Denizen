@@ -146,6 +146,7 @@ public class CommandScriptEvent extends BukkitScriptEvent implements Listener {
         if (cancelled && serverEvent != null) {
             serverEvent.setCommand("denizen do_nothing");
         }
+        super.cancellationChanged();
     }
 
     @EventHandler

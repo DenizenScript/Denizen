@@ -42,7 +42,7 @@ public class EntityGlideScriptEvent extends BukkitScriptEvent implements Listene
 
     public static EntityGlideScriptEvent instance;
     public EntityTag entity;
-    public Boolean state;
+    public boolean state;
 
     @Override
     public boolean couldMatch(ScriptPath path) {

@@ -93,6 +93,7 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
     @Override
     public void cancellationChanged() {
         event.setBuildable(!cancelled);
+        super.cancellationChanged();
     }
 
     @Override

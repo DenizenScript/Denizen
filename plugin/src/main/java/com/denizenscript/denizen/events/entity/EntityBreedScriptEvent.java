@@ -82,6 +82,7 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
             experience = ((ElementTag) determinationObj).asInt();
+            event.setExperience(experience);
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -115,6 +116,16 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
         return super.getContext(name);
     }
 
+    @Override
+    public void cancellationChanged() {
+        // Prevent entities from continuing to breed with each other
+        if (cancelled) {
+            NMSHandler.getEntityHelper().setBreeding((Animals) father.getLivingEntity(), false);
+            NMSHandler.getEntityHelper().setBreeding((Animals) mother.getLivingEntity(), false);
+        }
+        super.cancellationChanged();
+    }
+
     @EventHandler
     public void onEntityBreeds(EntityBreedEvent event) {
         Entity entity = event.getEntity();
@@ -124,17 +135,9 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
         mother = new EntityTag(event.getMother());
         item = new ItemTag(event.getBredWith());
         experience = event.getExperience();
-        boolean wasCancelled = event.isCancelled();
         this.event = event;
         EntityTag.rememberEntity(entity);
         fire(event);
         EntityTag.forgetEntity(entity);
-        event.setExperience(experience);
-
-        // Prevent entities from continuing to breed with each other
-        if (cancelled && !wasCancelled) {
-            NMSHandler.getEntityHelper().setBreeding((Animals) father.getLivingEntity(), false);
-            NMSHandler.getEntityHelper().setBreeding((Animals) mother.getLivingEntity(), false);
-        }
     }
 }

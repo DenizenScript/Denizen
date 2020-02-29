@@ -37,8 +37,6 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
 
     public static EntityExplosionPrimesScriptEvent instance;
     public EntityTag entity;
-    public Float radius;
-    public Boolean fire;
     public ExplosionPrimeEvent event;
 
     @Override
@@ -70,12 +68,11 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         if (ArgumentHelper.matchesDouble(determination)) {
-            radius = Float.parseFloat(determination);
+            event.setRadius(Float.parseFloat(determination));
             return true;
         }
-        if (Argument.valueOf(determination)
-                .matchesBoolean()) {
-            fire = determination.equalsIgnoreCase("true");
+        if (Argument.valueOf(determination).matchesBoolean()) {
+            event.setFire(determination.equalsIgnoreCase("true"));
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -87,10 +84,10 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
             return entity;
         }
         else if (name.equals("radius")) {
-            return new ElementTag(radius);
+            return new ElementTag(event.getRadius());
         }
         else if (name.equals("fire")) {
-            return new ElementTag(fire);
+            return new ElementTag(event.getFire());
         }
         return super.getContext(name);
     }
@@ -98,11 +95,7 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
     @EventHandler
     public void onEntityExplosionPrimes(ExplosionPrimeEvent event) {
         entity = new EntityTag(event.getEntity());
-        radius = event.getRadius();
-        fire = event.getFire();
         this.event = event;
         fire(event);
-        event.setFire(fire);
-        event.setRadius(radius);
     }
 }

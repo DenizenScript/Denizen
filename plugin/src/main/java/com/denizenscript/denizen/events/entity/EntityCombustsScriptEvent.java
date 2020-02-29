@@ -51,7 +51,6 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
 
     public static EntityCombustsScriptEvent instance;
     public EntityTag entity;
-    private int burntime;
     public EntityCombustEvent event;
 
     @Override
@@ -81,7 +80,7 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
-            burntime = ((ElementTag) determinationObj).asInt();
+            event.setDuration(((ElementTag) determinationObj).asInt());
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -98,7 +97,7 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
             return entity;
         }
         else if (name.equals("duration")) {
-            return new DurationTag(burntime);
+            return new DurationTag(event.getDuration());
         }
         else if (name.equals("source")) {
             if (event instanceof EntityCombustByEntityEvent) {
@@ -126,9 +125,7 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
     @EventHandler
     public void onEntityCombusts(EntityCombustEvent event) {
         entity = new EntityTag(event.getEntity());
-        burntime = event.getDuration();
         this.event = event;
         fire(event);
-        event.setDuration(burntime);
     }
 }

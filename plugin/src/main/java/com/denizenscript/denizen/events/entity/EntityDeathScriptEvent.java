@@ -189,6 +189,14 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         return super.getContext(name);
     }
 
+    @Override
+    public void cancellationChanged() {
+        if (cancelled && event instanceof PlayerDeathEvent) {
+            ((PlayerDeathEvent) event).setDeathMessage(null); // Historical no_message was by cancelling.
+        }
+        super.cancellationChanged();
+    }
+
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
         LivingEntity livingEntity = event.getEntity();
@@ -217,9 +225,6 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         cancelled = false;
         this.event = event;
         fire(event);
-        if (cancelled && event instanceof PlayerDeathEvent) {
-            ((PlayerDeathEvent) event).setDeathMessage(null); // Historical no_message was by cancelling.
-        }
         EntityTag.forgetEntity(livingEntity);
     }
 }

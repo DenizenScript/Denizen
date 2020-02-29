@@ -72,7 +72,6 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
 
     public EntityTag entity;
     public ElementTag cause;
-    public ElementTag damage;
     public ElementTag final_damage;
     public EntityTag damager;
     public EntityTag projectile;
@@ -128,7 +127,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isDouble()) {
-            damage = new ElementTag(((ElementTag) determinationObj).asDouble());
+            event.setDamage(((ElementTag) determinationObj).asDouble());
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -146,7 +145,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
             return entity.getDenizenObject();
         }
         else if (name.equals("damage")) {
-            return damage;
+            return new ElementTag(event.getDamage());
         }
         else if (name.equals("final_damage")) {
             return final_damage;
@@ -173,7 +172,6 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     @EventHandler
     public void onEntityDamaged(EntityDamageEvent event) {
         entity = new EntityTag(event.getEntity());
-        damage = new ElementTag(event.getDamage());
         final_damage = new ElementTag(event.getFinalDamage());
         cause = new ElementTag(CoreUtilities.toLowerCase(event.getCause().name()));
         damager = null;
@@ -196,6 +194,5 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
         }
         this.event = event;
         fire(event);
-        event.setDamage(damage.asDouble());
     }
 }

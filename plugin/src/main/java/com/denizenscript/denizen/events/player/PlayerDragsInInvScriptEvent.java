@@ -119,19 +119,9 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
         return super.getContext(name);
     }
 
-    @EventHandler
-    public void onPlayerDragsInInv(InventoryDragEvent event) {
-        if (EntityTag.isCitizensNPC(event.getWhoClicked())) {
-            return;
-        }
-        entity = EntityTag.getPlayerFrom(event.getWhoClicked());
-        inventory = event.getInventory();
-        dInv = InventoryTag.mirrorBukkitInventory(inventory);
-        item = new ItemTag(event.getOldCursor());
-        boolean wasCancelled = event.isCancelled();
-        this.event = event;
-        fire(event);
-        if (cancelled && !wasCancelled) {
+    @Override
+    public void cancellationChanged() {
+        if (cancelled) {
             final InventoryHolder holder = inventory.getHolder();
             new BukkitRunnable() {
                 @Override
@@ -143,5 +133,19 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
                 }
             }.runTaskLater(DenizenAPI.getCurrentInstance(), 1);
         }
+        super.cancellationChanged();
+    }
+
+    @EventHandler
+    public void onPlayerDragsInInv(InventoryDragEvent event) {
+        if (EntityTag.isCitizensNPC(event.getWhoClicked())) {
+            return;
+        }
+        entity = EntityTag.getPlayerFrom(event.getWhoClicked());
+        inventory = event.getInventory();
+        dInv = InventoryTag.mirrorBukkitInventory(inventory);
+        item = new ItemTag(event.getOldCursor());
+        this.event = event;
+        fire(event);
     }
 }

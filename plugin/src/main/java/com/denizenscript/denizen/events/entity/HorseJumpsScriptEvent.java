@@ -42,7 +42,6 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     public static HorseJumpsScriptEvent instance;
     public EntityTag entity;
     public ElementTag color;
-    public Float power;
     public HorseJumpEvent event;
 
     @Override
@@ -79,7 +78,7 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isFloat()) {
-            power = ((ElementTag) determinationObj).asFloat();
+            event.setPower(((ElementTag) determinationObj).asFloat());
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -94,7 +93,7 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
             return color;
         }
         else if (name.equals("power")) {
-            return new ElementTag(power);
+            return new ElementTag(event.getPower());
         }
         return super.getContext(name);
     }
@@ -104,10 +103,8 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
         if (event.getEntity() instanceof Horse) {
             entity = new EntityTag(event.getEntity());
             color = new ElementTag(((Horse) event.getEntity()).getColor().name());
-            power = event.getPower();
             this.event = event;
             fire(event);
-            event.setPower(power);
         }
     }
 

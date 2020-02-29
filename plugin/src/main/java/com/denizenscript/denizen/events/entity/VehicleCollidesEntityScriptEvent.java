@@ -51,7 +51,6 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
 
     public EntityTag vehicle;
     public EntityTag entity;
-    private Boolean pickup_cancel;
     public VehicleEntityCollisionEvent event;
 
     @Override
@@ -86,7 +85,7 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
         if (determinationObj instanceof ElementTag) {
             Argument arg = Argument.valueOf(determinationObj.toString());
             if (arg.matchesPrefix("pickup")) {
-                pickup_cancel = !arg.asElement().asBoolean();
+                event.setPickupCancelled(!arg.asElement().asBoolean());
                 return true;
             }
         }
@@ -107,7 +106,7 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
             return entity;
         }
         else if (name.equals("pickup")) {
-            return new ElementTag(!pickup_cancel);
+            return new ElementTag(!event.isPickupCancelled());
         }
         return super.getContext(name);
     }
@@ -116,9 +115,7 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
     public void onVehicleCollidesEntity(VehicleEntityCollisionEvent event) {
         entity = new EntityTag(event.getEntity());
         vehicle = new EntityTag(event.getVehicle());
-        pickup_cancel = event.isPickupCancelled();
         this.event = event;
         fire(event);
-        event.setPickupCancelled(pickup_cancel);
     }
 }

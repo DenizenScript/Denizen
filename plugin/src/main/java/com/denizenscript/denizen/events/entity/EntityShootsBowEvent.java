@@ -56,7 +56,6 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
     public static EntityShootsBowEvent instance;
 
     public EntityTag entity;
-    public Float force;
     public ItemTag bow;
     public EntityTag projectile;
     public EntityShootBowEvent event;
@@ -114,13 +113,11 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
             Position.mount(Conversion.convertEntities(newProjectiles));
             // Get the last entity on the list, i.e. the one at the bottom
             // if there are many mounted on top of each other
-            Entity lastProjectile = newProjectiles.get
-                    (newProjectiles.size() - 1).getBukkitEntity();
+            Entity lastProjectile = newProjectiles.get(newProjectiles.size() - 1).getBukkitEntity();
             // Give it the same velocity as the arrow that would
             // have been shot by the bow
             // Note: No, I can't explain why this has to be multiplied by three, it just does.
-            lastProjectile.setVelocity(event.getEntity().getLocation()
-                    .getDirection().multiply(force));
+            lastProjectile.setVelocity(event.getEntity().getLocation().getDirection().multiply(event.getForce() * 3));
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -137,7 +134,7 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
             return entity;
         }
         else if (name.equals("force")) {
-            return new ElementTag(force);
+            return new ElementTag(event.getForce() * 3);
         }
         else if (name.equals("bow")) {
             return bow;
@@ -151,7 +148,6 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
     @EventHandler
     public void onEntityShootsBow(EntityShootBowEvent event) {
         entity = new EntityTag(event.getEntity());
-        force = event.getForce() * 3;
         bow = new ItemTag(event.getBow());
         Entity projectileEntity = event.getProjectile();
         EntityTag.rememberEntity(projectileEntity);

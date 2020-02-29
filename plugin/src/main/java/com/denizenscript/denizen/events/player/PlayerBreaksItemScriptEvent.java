@@ -101,15 +101,8 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
         return super.getContext(name);
     }
 
-    @EventHandler
-    public void onPlayerItemBreak(PlayerItemBreakEvent event) {
-        if (EntityTag.isNPC(event.getPlayer())) {
-            return;
-        }
-        item = new ItemTag(event.getBrokenItem());
-        this.event = event;
-        cancelled = false;
-        fire(event);
+    @Override
+    public void cancellationChanged() {
         if (cancelled) { // Hacked-in cancellation helper
             final Player player = event.getPlayer();
             final ItemStack itemstack = event.getBrokenItem();
@@ -121,5 +114,17 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
                 }
             }.runTaskLater(DenizenAPI.getCurrentInstance(), 1);
         }
+        super.cancellationChanged();
+    }
+
+    @EventHandler
+    public void onPlayerItemBreak(PlayerItemBreakEvent event) {
+        if (EntityTag.isNPC(event.getPlayer())) {
+            return;
+        }
+        item = new ItemTag(event.getBrokenItem());
+        this.event = event;
+        cancelled = false;
+        fire(event);
     }
 }

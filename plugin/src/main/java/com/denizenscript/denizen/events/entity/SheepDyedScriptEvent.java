@@ -80,6 +80,7 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
         if (!isDefaultDetermination(determinationObj)) {
             try {
                 color = DyeColor.valueOf(determinationObj.toString().toUpperCase());
+                event.setColor(color);
                 return true;
             }
             catch (IllegalArgumentException e) {
@@ -110,6 +111,5 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
         color = DyeColor.valueOf(event.getColor().toString());
         this.event = event;
         fire(event);
-        event.setColor(color);
     }
 }

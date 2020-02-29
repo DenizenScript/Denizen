@@ -118,6 +118,14 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
         return super.getContext(name);
     }
 
+    @Override
+    public void cancellationChanged() {
+        if (cancelled) { // Hacked-in cancellation helper
+            event.getInventory().setResult(null);
+        }
+        super.cancellationChanged();
+    }
+
     @EventHandler
     public void onRecipeFormed(PrepareItemCraftEvent event) {
         this.event = event;
@@ -128,8 +136,5 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
         result = new ItemTag(eRecipe.getResult());
         cancelled = false;
         fire(event);
-        if (cancelled) { // Hacked-in cancellation helper
-            event.getInventory().setResult(null);
-        }
     }
 }

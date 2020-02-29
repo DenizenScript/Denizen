@@ -44,7 +44,6 @@ public class EntityAirLevelChangeScriptEvent extends BukkitScriptEvent implement
 
     public static EntityAirLevelChangeScriptEvent instance;
     public EntityTag entity;
-    public Integer air;
     public EntityAirChangeEvent event;
 
     @Override
@@ -75,7 +74,7 @@ public class EntityAirLevelChangeScriptEvent extends BukkitScriptEvent implement
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
-            air = ((ElementTag) determinationObj).asInt();
+            event.setAmount(((ElementTag) determinationObj).asInt());
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -92,7 +91,7 @@ public class EntityAirLevelChangeScriptEvent extends BukkitScriptEvent implement
             return entity.getDenizenObject();
         }
         else if (name.equals("air")) {
-            return new ElementTag(air);
+            return new ElementTag(event.getAmount());
         }
         return super.getContext(name);
     }
@@ -100,9 +99,7 @@ public class EntityAirLevelChangeScriptEvent extends BukkitScriptEvent implement
     @EventHandler
     public void onEntityAirLevelChanged(EntityAirChangeEvent event) {
         entity = new EntityTag(event.getEntity());
-        air = event.getAmount();
         this.event = event;
         fire(event);
-        event.setAmount(air);
     }
 }

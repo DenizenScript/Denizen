@@ -44,7 +44,6 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
 
     public static EntityFoodLevelChangeScriptEvent instance;
     public EntityTag entity;
-    public Integer food;
     public FoodLevelChangeEvent event;
 
     @Override
@@ -75,7 +74,7 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
-            food = ((ElementTag) determinationObj).asInt();
+            event.setFoodLevel(((ElementTag) determinationObj).asInt());
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -92,7 +91,7 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
             return entity.getDenizenObject();
         }
         else if (name.equals("food")) {
-            return new ElementTag(food);
+            return new ElementTag(event.getFoodLevel());
         }
         return super.getContext(name);
     }
@@ -100,9 +99,7 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
     @EventHandler
     public void onEntityFoodLevelChanged(FoodLevelChangeEvent event) {
         entity = new EntityTag(event.getEntity());
-        food = event.getFoodLevel();
         this.event = event;
         fire(event);
-        event.setFoodLevel(food);
     }
 }

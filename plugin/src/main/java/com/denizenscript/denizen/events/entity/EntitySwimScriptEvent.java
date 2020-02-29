@@ -41,7 +41,7 @@ public class EntitySwimScriptEvent extends BukkitScriptEvent implements Listener
 
     public static EntitySwimScriptEvent instance;
     public EntityTag entity;
-    public Boolean state;
+    public boolean state;
 
     @Override
     public boolean couldMatch(ScriptPath path) {

@@ -148,6 +148,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (currentEvent instanceof Cancellable) {
             ((Cancellable) currentEvent).setCancelled(cancelled);
         }
+        super.cancellationChanged();
     }
 
     public Event currentEvent = null;

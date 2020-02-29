@@ -42,7 +42,7 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
     // @Determine
     // ElementTag(Number) to set the experience level cost of the enchantment.
     // "RESULT:" + ItemTag to change the item result (only affects metadata (like enchantments), not material/quantity/etc!).
-    // "ENCHANTS:" + ItemTag to change the resultant enchantments based on a ItemTag.
+    // "ENCHANTS:" + ItemTag to change the resultant enchantments based on an ItemTag.
     // -->
 
     public ItemEnchantedScriptEvent() {
@@ -57,8 +57,6 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
     public ElementTag button;
     public int cost;
     public EnchantItemEvent event;
-    public boolean itemEdited;
-    public ItemTag enchantsRes;
 
     @Override
     public boolean couldMatch(ScriptPath path) {
@@ -90,6 +88,7 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
         if (determinationObj instanceof ElementTag) {
             if (((ElementTag) determinationObj).isInt()) {
                 cost = ((ElementTag) determinationObj).asInt();
+                event.setExpLevelCost(cost);
                 return true;
             }
             String determination = determinationObj.toString();
@@ -97,12 +96,14 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
             if (lower.startsWith("result:")) {
                 String itemText = determination.substring("result:".length());
                 item = ItemTag.valueOf(itemText, path.container);
-                itemEdited = true;
+                event.getItem().setItemMeta(item.getItemStack().getItemMeta());
                 return true;
             }
             else if (lower.startsWith("enchants:")) {
                 String itemText = determination.substring("enchants:".length());
-                enchantsRes = ItemTag.valueOf(itemText, path.container);
+                ItemTag enchantsRes = ItemTag.valueOf(itemText, path.container);
+                event.getEnchantsToAdd().clear();
+                event.getEnchantsToAdd().putAll(enchantsRes.getItemStack().getItemMeta().getEnchants());
                 return true;
             }
         }
@@ -145,17 +146,7 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
         item = new ItemTag(event.getItem());
         button = new ElementTag(event.whichButton());
         cost = event.getExpLevelCost();
-        itemEdited = false;
         this.event = event;
-        enchantsRes = null;
         fire(event);
-        event.setExpLevelCost(cost);
-        if (itemEdited) {
-            event.getItem().setItemMeta(item.getItemStack().getItemMeta());
-        }
-        if (enchantsRes != null) {
-            event.getEnchantsToAdd().clear();
-            event.getEnchantsToAdd().putAll(enchantsRes.getItemStack().getItemMeta().getEnchants());
-        }
     }
 }

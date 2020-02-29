@@ -84,6 +84,14 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
         return super.getContext(name);
     }
 
+    @Override
+    public void cancellationChanged() {
+        if (cancelled) {
+            event.setAmount(0);
+        }
+        super.cancellationChanged();
+    }
+
     @EventHandler
     public void onPlayerChangesXP(PlayerExpChangeEvent event) {
         if (EntityTag.isNPC(event.getPlayer())) {
@@ -93,8 +101,5 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
         this.event = event;
         cancelled = false;
         fire(event);
-        if (cancelled) {
-            event.setAmount(0);
-        }
     }
 }

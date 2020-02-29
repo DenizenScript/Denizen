@@ -48,10 +48,7 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
 
     public static EntityExplodesScriptEvent instance;
     public EntityTag entity;
-    public ListTag blocks;
     public LocationTag location;
-    public float strength;
-    private Boolean blockSet;
     public EntityExplodeEvent event;
 
     @Override
@@ -83,19 +80,18 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         if (ArgumentHelper.matchesDouble(determination)) {
-            strength = Float.parseFloat(determination);
+            event.setYield(Float.parseFloat(determination));
             return true;
         }
         if (ListTag.matches(determination)) {
-            blocks = new ListTag();
-            blockSet = true;
+            event.blockList().clear();
             for (String loc : ListTag.valueOf(determination, getTagContext(path))) {
                 LocationTag location = LocationTag.valueOf(loc);
                 if (location == null) {
                     Debug.echoError("Invalid location '" + loc + "' check [" + getName() + "]: '  for " + path.container.getName());
                 }
                 else {
-                    blocks.addObject(location);
+                    event.blockList().add(location.getWorld().getBlockAt(location));
                 }
             }
             return true;
@@ -117,10 +113,14 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
             return location;
         }
         else if (name.equals("blocks")) {
+            ListTag blocks = new ListTag();
+            for (Block block : event.blockList()) {
+                blocks.addObject(new LocationTag(block.getLocation()));
+            }
             return blocks;
         }
         else if (name.equals("strength")) {
-            return new ElementTag(strength);
+            return new ElementTag(event.getYield());
         }
         return super.getContext(name);
     }
@@ -129,24 +129,7 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
     public void onEntityExplodes(EntityExplodeEvent event) {
         entity = new EntityTag(event.getEntity());
         location = new LocationTag(event.getLocation());
-        strength = event.getYield();
-        blocks = new ListTag();
-        blockSet = false;
-        for (Block block : event.blockList()) {
-            blocks.addObject(new LocationTag(block.getLocation()));
-        }
         this.event = event;
         fire(event);
-        if (blockSet) {
-            event.blockList().clear();
-            if (blocks.size() > 0) {
-                event.blockList().clear();
-                for (String loc : blocks) {
-                    LocationTag location = LocationTag.valueOf(loc);
-                    event.blockList().add(location.getWorld().getBlockAt(location));
-                }
-            }
-        }
-        event.setYield(strength);
     }
 }

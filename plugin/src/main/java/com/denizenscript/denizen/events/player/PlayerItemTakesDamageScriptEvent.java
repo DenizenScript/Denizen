@@ -105,18 +105,10 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
         return super.getContext(name);
     }
 
-    @EventHandler
-    public void onPlayerItemTakesDamage(PlayerItemDamageEvent event) {
-        if (EntityTag.isNPC(event.getPlayer())) {
-            return;
-        }
-        item = new ItemTag(event.getItem());
-        location = new LocationTag(event.getPlayer().getLocation());
-        boolean wasCancelled = event.isCancelled();
-        this.event = event;
-        fire(event);
-        final Player p = event.getPlayer();
-        if (cancelled && !wasCancelled) {
+    @Override
+    public void cancellationChanged() {
+        if (cancelled) {
+            final Player p = event.getPlayer();
             Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
                 @Override
                 public void run() {
@@ -124,5 +116,17 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
                 }
             }, 1);
         }
+        super.cancellationChanged();
+    }
+
+    @EventHandler
+    public void onPlayerItemTakesDamage(PlayerItemDamageEvent event) {
+        if (EntityTag.isNPC(event.getPlayer())) {
+            return;
+        }
+        item = new ItemTag(event.getItem());
+        location = new LocationTag(event.getPlayer().getLocation());
+        this.event = event;
+        fire(event);
     }
 }

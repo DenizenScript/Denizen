@@ -463,7 +463,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             return changed_text != null ? changed_text : DetermineCommand.DETERMINE_NONE;
         }
 
-        public Boolean wasTriggered() {
+        public boolean wasTriggered() {
             return triggered;
         }
 

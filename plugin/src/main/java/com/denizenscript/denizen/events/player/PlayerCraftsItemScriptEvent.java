@@ -110,6 +110,14 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
         return super.getContext(name);
     }
 
+    @Override
+    public void cancellationChanged() {
+        if (cancelled) { // This event has a weird cancellation handler
+            event.setCancelled(true);
+        }
+        super.cancellationChanged();
+    }
+
     @EventHandler
     public void onCraftItem(CraftItemEvent event) {
         HumanEntity humanEntity = event.getWhoClicked();
@@ -122,8 +130,5 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
         this.player = EntityTag.getPlayerFrom(humanEntity);
         this.cancelled = false;
         fire(event);
-        if (cancelled) { // This event has a weird cancellation handler
-            event.setCancelled(true);
-        }
     }
 }

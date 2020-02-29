@@ -46,7 +46,6 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
 
     public static EntityHealsScriptEvent instance;
     public EntityTag entity;
-    public ElementTag amount;
     public ElementTag reason;
     public EntityRegainHealthEvent event;
 
@@ -81,8 +80,8 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
-            amount = (ElementTag) determinationObj;
+        if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isDouble()) {
+            event.setAmount(((ElementTag) determinationObj).asDouble());
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -102,7 +101,7 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
             return reason;
         }
         else if (name.equals("amount")) {
-            return amount;
+            return new ElementTag(event.getAmount());
         }
         return super.getContext(name);
     }
@@ -110,10 +109,8 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
     @EventHandler
     public void onEntityHeals(EntityRegainHealthEvent event) {
         entity = new EntityTag(event.getEntity());
-        amount = new ElementTag(event.getAmount());
         reason = new ElementTag(event.getRegainReason().toString());
         this.event = event;
         fire(event);
-        event.setAmount(amount.asDouble());
     }
 }
