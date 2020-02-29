@@ -44,7 +44,7 @@ public class ServerPrestartScriptEvent extends BukkitScriptEvent {
         for (WorldScriptContainer container : ScriptEvent.worldContainers) {
             if (container.contains("events.on server prestart")) {
                 ScriptPath path = new ScriptPath(container, "server prestart", "on server prestart");
-                run(path);
+                clone().run(path);
             }
         }
     }

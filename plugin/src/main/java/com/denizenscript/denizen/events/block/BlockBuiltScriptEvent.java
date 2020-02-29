@@ -91,6 +91,11 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
+    public void cancellationChanged() {
+        event.setBuildable(!cancelled);
+    }
+
+    @Override
     public ObjectTag getContext(String name) {
         if (name.equals("location")) {
             return location;
@@ -117,6 +122,5 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
         cancelled = !event.isBuildable();
         this.event = event;
         fire(event);
-        event.setBuildable(!cancelled);
     }
 }

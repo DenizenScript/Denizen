@@ -46,22 +46,19 @@ public class TabCompleteScriptEvent extends BukkitScriptEvent implements Listene
 
     public static TabCompleteScriptEvent instance;
     public TabCompleteEvent event;
-    public String buffer;
-    public ListTag completions;
-    public CommandSender sender;
 
     public String getCommand() {
-        String[] args = buffer.trim().split(" ");
+        String[] args = event.getBuffer().trim().split(" ");
         String cmd = args.length > 0 ? args[0] : "";
-        if (sender instanceof Player) {
+        if (event.getSender() instanceof Player) {
             cmd = cmd.replaceFirst("/", "");
         }
         return cmd;
     }
 
     public String getCurrentArg() {
-        int i = buffer.lastIndexOf(' ');
-        return i > 0 ? buffer.substring(i + 1) : getCommand();
+        int i = event.getBuffer().lastIndexOf(' ');
+        return i > 0 ? event.getBuffer().substring(i + 1) : getCommand();
     }
 
     @Override
@@ -78,7 +75,7 @@ public class TabCompleteScriptEvent extends BukkitScriptEvent implements Listene
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         if (determination.length() > 0 && !isDefaultDetermination(determinationObj)) {
-            completions = ListTag.valueOf(determination, getTagContext(path));
+            event.setCompletions(ListTag.valueOf(determination, getTagContext(path)));
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -86,13 +83,13 @@ public class TabCompleteScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(sender instanceof Player ? new PlayerTag((Player) sender) : null, null);
+        return new BukkitScriptEntryData(event.getSender() instanceof Player ? new PlayerTag((Player) event.getSender()) : null, null);
     }
 
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("buffer")) {
-            return new ElementTag(buffer);
+            return new ElementTag(event.getBuffer());
         }
         else if (name.equals("command")) {
             return new ElementTag(getCommand());
@@ -101,21 +98,17 @@ public class TabCompleteScriptEvent extends BukkitScriptEvent implements Listene
             return new ElementTag(getCurrentArg());
         }
         else if (name.equals("completions")) {
-            return completions;
+            return new ListTag(event.getCompletions());
         }
         else if (name.equals("server")) {
-            return new ElementTag(sender instanceof ConsoleCommandSender);
+            return new ElementTag(event.getSender() instanceof ConsoleCommandSender);
         }
         return super.getContext(name);
     }
 
     @EventHandler
     public void onTabComplete(TabCompleteEvent event) {
-        buffer = event.getBuffer();
-        completions = new ListTag(event.getCompletions());
-        sender = event.getSender();
         this.event = event;
         fire(event);
-        event.setCompletions(completions);
     }
 }

@@ -74,6 +74,8 @@ public class CommandScriptContainer extends ScriptContainer {
     //   # The permission node to check for permissions plugins. This will automatically
     //   # block players without the permission from accessing the command and help for
     //   # the command.
+    //   # Note that you can include multiple permission nodes (a player only needs to have any one permission from the list)
+    //   # by separating them with a semicolon, like: perm.one;perm.two;third.perm
     //   # | Most command scripts should have this key!
     //   permission: my.permission.node
     //
