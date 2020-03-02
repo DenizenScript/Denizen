@@ -29,7 +29,6 @@ public class NoteCommand extends AbstractCommand {
     // <server.list_notables[<type>]>
     // <CuboidTag.notable_name>
     // <InventoryTag.notable_name>
-    // <ItemTag.notable_name>
     // <LocationTag.notable_name>
     //
     // @Usage

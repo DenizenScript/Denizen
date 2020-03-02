@@ -104,6 +104,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
 
         Notable noted = NotableManager.getSavedObject(string);
         if (noted instanceof ItemTag) {
+            Deprecations.notableItems.warn();
             return (ItemTag) noted;
         }
         if (string.startsWith("i@")) {
@@ -549,6 +550,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
 
         // If saved item, return that
         if (isUnique()) {
+            Deprecations.notableItems.warn();
             return "i@" + NotableManager.getSavedId(this) + PropertyParser.getPropertiesString(this);
         }
 
@@ -569,6 +571,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
 
             // If saved item, return that
             if (isUnique()) {
+                Deprecations.notableItems.warn();
                 return "i@" + NotableManager.getSavedId(this);
             }
 
@@ -604,7 +607,11 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
 
     @Override
     public boolean isUnique() {
-        return NotableManager.isSaved(this);
+        if (NotableManager.isSaved(this)) {
+            Deprecations.notableItems.warn();
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -615,11 +622,13 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
 
     @Override
     public void makeUnique(String id) {
+        Deprecations.notableItems.warn();
         NotableManager.saveAs(this, id);
     }
 
     @Override
     public void forget() {
+        Deprecations.notableItems.warn();
         NotableManager.remove(this);
     }
 
@@ -860,14 +869,8 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
             return list;
         });
 
-        // <--[tag]
-        // @attribute <ItemTag.notable_name>
-        // @returns ElementTag
-        // @description
-        // Gets the name of a Notable ItemTag. If the item isn't noted,
-        // this is null.
-        // -->
         registerTag("notable_name", (attribute, object) -> {
+            Deprecations.notableItems.warn();
             String notname = NotableManager.getSavedId(object);
             if (notname == null) {
                 return null;
@@ -973,6 +976,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
 
     public void applyProperty(Mechanism mechanism) {
         if (NotableManager.isExactSavedObject(this)) {
+            Deprecations.notableItems.warn();
             Debug.echoError("Cannot apply properties to noted objects.");
             return;
         }
