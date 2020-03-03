@@ -296,42 +296,45 @@ public class ItemBook implements Property {
         if (mechanism.matches("book")) {
             BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
             ListTag data = mechanism.valueAsType(ListTag.class);
-            if (data.size() < 2) {
+            if (data.size() < 1) {
                 Debug.echoError("Invalid book input!");
+                return;
             }
-            else {
-                if (data.size() > 4 && data.get(0).equalsIgnoreCase("author")
-                        && data.get(2).equalsIgnoreCase("title")) {
-                    if (!item.getItemStack().getType().equals(Material.WRITTEN_BOOK)) {
-                        Debug.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
-                    }
-                    else {
-                        meta.setAuthor(EscapeTagBase.unEscape(data.get(1)));
-                        meta.setTitle(EscapeTagBase.unEscape(data.get(3)));
-                        for (int i = 0; i < 4; i++) {
-                            data.remove(0); // No .removeRange?
-                        }
-                    }
-                }
-                if (data.get(0).equalsIgnoreCase("raw_pages")) {
-                    ArrayList<BaseComponent[]> newPages = new ArrayList<>();
-                    for (int i = 1; i < data.size(); i++) {
-                        newPages.add(ComponentSerializer.parse(EscapeTagBase.unEscape(data.get(i))));
-                    }
-                    meta.spigot().setPages(newPages);
-                }
-                else if (data.get(0).equalsIgnoreCase("pages")) {
-                    ArrayList<BaseComponent[]> newPages = new ArrayList<>();
-                    for (int i = 1; i < data.size(); i++) {
-                        newPages.add(FormattedTextHelper.parse(EscapeTagBase.unEscape(data.get(i))));
-                    }
-                    meta.spigot().setPages(newPages);
+            if (data.size() < 2) {
+                // Nothing to do, but not necessarily invalid.
+                return;
+            }
+            if (data.size() > 4 && data.get(0).equalsIgnoreCase("author")
+                    && data.get(2).equalsIgnoreCase("title")) {
+                if (!item.getItemStack().getType().equals(Material.WRITTEN_BOOK)) {
+                    Debug.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
                 }
                 else {
-                    Debug.echoError("Invalid book input!");
+                    meta.setAuthor(EscapeTagBase.unEscape(data.get(1)));
+                    meta.setTitle(EscapeTagBase.unEscape(data.get(3)));
+                    for (int i = 0; i < 4; i++) {
+                        data.remove(0); // No .removeRange?
+                    }
                 }
-                item.getItemStack().setItemMeta(meta);
             }
+            if (data.get(0).equalsIgnoreCase("raw_pages")) {
+                ArrayList<BaseComponent[]> newPages = new ArrayList<>();
+                for (int i = 1; i < data.size(); i++) {
+                    newPages.add(ComponentSerializer.parse(EscapeTagBase.unEscape(data.get(i))));
+                }
+                meta.spigot().setPages(newPages);
+            }
+            else if (data.get(0).equalsIgnoreCase("pages")) {
+                ArrayList<BaseComponent[]> newPages = new ArrayList<>();
+                for (int i = 1; i < data.size(); i++) {
+                    newPages.add(FormattedTextHelper.parse(EscapeTagBase.unEscape(data.get(i))));
+                }
+                meta.spigot().setPages(newPages);
+            }
+            else {
+                Debug.echoError("Invalid book input!");
+            }
+            item.getItemStack().setItemMeta(meta);
         }
     }
 }
