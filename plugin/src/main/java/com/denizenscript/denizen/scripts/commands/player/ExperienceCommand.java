@@ -54,14 +54,6 @@ public class ExperienceCommand extends AbstractCommand {
         player.setTotalExperience(exp);
     }
 
-    public static void setLevel(Player player, int level) {
-        player.setLevel(level);
-    }
-
-    public static void giveExperience(Player player, int exp) {
-        player.giveExp(exp);
-    }
-
     public static void takeExperience(Player player, int toTake) {
         int pastLevelStart = (int) (player.getExp() * player.getExpToLevel());
         while (toTake >= pastLevelStart) {

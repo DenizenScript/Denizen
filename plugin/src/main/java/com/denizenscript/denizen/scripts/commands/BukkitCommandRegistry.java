@@ -201,7 +201,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCoreMember(StatisticCommand.class, "STATISTIC", "statistic [<statistic>] [add/take/set] (<#>) (qualifier:<material>/<entity>) (players:<player>|...)", 2);
         registerCoreMember(StrikeCommand.class, "STRIKE", "strike (no_damage) [<location>]", 1);
         registerCoreMember(SwitchCommand.class, "SWITCH", "switch [<location>|...] (state:[{toggle}/on/off]) (duration:<value>)", 1);
-        registerCoreMember(TakeCommand.class, "TAKE", "take [money/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/nbt:<key>/<item>|...] (quantity:<#>) (from:<inventory>)", 1);
+        registerCoreMember(TakeCommand.class, "TAKE", "take [money/xp/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/nbt:<key>/<item>|...] (quantity:<#>) (from:<inventory>)", 1);
         registerCoreMember(TeamCommand.class, "TEAM", "team (id:<scoreboard>/{main}) [name:<team>] (add:<entry>|...) (remove:<entry>|...) (prefix:<prefix>) (suffix:<suffix>)", 2);
         registerCoreMember(TeleportCommand.class, "TELEPORT", "teleport (<entity>|...) [<location>]", 1);
         registerCoreMember(TimeCommand.class, "TIME", "time ({global}/player) [<time-duration>/reset] (<world>) (reset:<duration>) (freeze)", 1);

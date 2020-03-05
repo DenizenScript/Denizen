@@ -23,7 +23,7 @@ public class TakeCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Take
-    // @Syntax take [money/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/nbt:<key>/<item>|...] (quantity:<#>) (from:<inventory>)
+    // @Syntax take [money/xp/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/nbt:<key>/<item>|...] (quantity:<#>) (from:<inventory>)
     // @Required 1
     // @Short Takes an item from the player.
     // @Group item
@@ -44,6 +44,8 @@ public class TakeCommand extends AbstractCommand {
     // Using 'bydisplay:' will take items with the specified display name.
     //
     // Using 'bycover:' will take a written book by the specified book title + author pair.
+    //
+    // Using 'xp' will take experience from the player.
     //
     // If an economy is registered, using 'money' instead of an item will take money from the player's economy balance.
     //
@@ -69,7 +71,7 @@ public class TakeCommand extends AbstractCommand {
     // - take emerald quantity:5
     // -->
 
-    private enum Type {MONEY, ITEMINHAND, ITEM, INVENTORY, BYDISPLAY, SLOT, BYCOVER, SCRIPTNAME, NBT}
+    private enum Type {MONEY, XP, ITEMINHAND, ITEM, INVENTORY, BYDISPLAY, SLOT, BYCOVER, SCRIPTNAME, NBT}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -79,6 +81,10 @@ public class TakeCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("type")
                     && arg.matches("money", "coins")) {
                 scriptEntry.addObject("type", Type.MONEY);
+            }
+            else if (!scriptEntry.hasObject("type")
+                    && arg.matches("xp", "exp")) {
+                scriptEntry.addObject("type", Type.XP);
             }
             else if (!scriptEntry.hasObject("type")
                     && arg.matches("item_in_hand", "iteminhand")) {
@@ -231,6 +237,11 @@ public class TakeCommand extends AbstractCommand {
                 else {
                     Debug.echoError(scriptEntry.getResidingQueue(), "No economy loaded! Have you installed Vault and a compatible economy plugin?");
                 }
+                break;
+            }
+
+            case XP: {
+                Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().giveExp(-qty.asInt());
                 break;
             }
 
