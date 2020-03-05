@@ -204,7 +204,8 @@ public class ServerTagBase {
             String type = attribute.hasContext(1) ? CoreUtilities.toLowerCase(attribute.getContext(1)) : null;
             ListTag list = new ListTag();
             Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
-            for (Recipe recipe : (Iterable<Recipe>) (() -> recipeIterator)) {
+            while (recipeIterator.hasNext()) {
+                Recipe recipe = recipeIterator.next();
                 if (Utilities.isRecipeOfType(recipe, type) && recipe instanceof Keyed) {
                     list.add(((Keyed) recipe).getKey().toString());
                 }
