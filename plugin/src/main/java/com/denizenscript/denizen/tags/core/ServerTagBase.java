@@ -197,8 +197,9 @@ public class ServerTagBase {
         // @description
         // Returns a list of all recipe IDs on the server.
         // Returns a list in the Namespace:Key format, for example "minecraft:gold_nugget".
-        // Optionally, specify a recipe type (CRAFTING, FURNACE, COOKING, BLASTING, SHAPED, SHAPELESS, SMOKING, STONECUTTING)
+        // Optionally, specify a recipe type (CRAFTING, FURNACE, COOKING, BLASTING, SHAPED, SHAPELESS, SMOKING, CAMPFIRE, STONECUTTING)
         // to limit to just recipes of that type.
+        // Note: this will produce an error if all recipes of any one type have been removed from the server, due to an error in Spigot.
         // -->
         if (attribute.startsWith("list_recipe_ids")) {
             String type = attribute.hasContext(1) ? CoreUtilities.toLowerCase(attribute.getContext(1)) : null;

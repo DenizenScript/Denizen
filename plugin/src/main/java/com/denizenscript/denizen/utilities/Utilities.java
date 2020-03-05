@@ -80,6 +80,7 @@ public class Utilities {
                         (type.equals("furnace") && recipe instanceof FurnaceRecipe) ||
                         (type.equals("cooking") && recipe instanceof CookingRecipe) ||
                         (type.equals("blasting") && recipe instanceof BlastingRecipe) ||
+                        (type.equals("campfire") && recipe instanceof CampfireRecipe) ||
                         (type.equals("shaped") && recipe instanceof ShapedRecipe) ||
                         (type.equals("shapeless") && recipe instanceof ShapelessRecipe) ||
                         (type.equals("smoking") && recipe instanceof SmokingRecipe) ||
