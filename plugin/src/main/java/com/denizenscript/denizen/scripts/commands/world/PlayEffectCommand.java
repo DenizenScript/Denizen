@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -14,7 +15,9 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.Effect;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
@@ -30,9 +33,6 @@ public class PlayEffectCommand extends AbstractCommand {
     // All of the effects listed here can be used by <@link command PlayEffect> to display visual effects or play sounds
     //
     // Effects:
-    // - iconcrack_[item] (item break effect - examples: iconcrack_stone, iconcrack_grass)
-    // - blockcrack_[material] (block break effect - examples: blockcrack_stone, blockcrack_grass)
-    // - blockdust_[material] (block break effect - examples: blockdust_stone, blockdust_grass)
     // - Everything on <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html>
     // - Everything on <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Effect.html>
     // - RANDOM (chooses a random visual effect from the list starting with 'huge_explosion')
@@ -61,6 +61,8 @@ public class PlayEffectCommand extends AbstractCommand {
     //
     // Some particles will require input to the "special_data" argument. The data input is unique per particle.
     // - For REDSTONE particles, the input is of format: <size>|<color>, for example: "1.2|red". Color input is any valid ColorTag object.
+    // - For FALLING_DUST, BLOCK_CRACK, or BLOCK_DUST particles, the input is any valid MaterialTag, eg "stone".
+    // - For ITEM_CRACK particles, the input is any valid ItemTag, eg "stick".
     //
     // @Tags
     // None
@@ -112,6 +114,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     continue;
                 }
                 else if (arg.startsWith("iconcrack_")) {
+                    Deprecations.oldPlayEffectSpecials.warn(scriptEntry);
                     // Allow iconcrack_[item] for item break effects (ex: iconcrack_stone)
                     String shrunk = arg.getValue().substring("iconcrack_".length());
                     ItemTag item = ItemTag.valueOf(shrunk, scriptEntry.entryData.getTagContext());
@@ -124,6 +127,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     continue;
                 }
                 else if (arg.startsWith("blockcrack_")) {
+                    Deprecations.oldPlayEffectSpecials.warn(scriptEntry);
                     String shrunk = arg.getValue().substring("blockcrack_".length());
                     MaterialTag material = MaterialTag.valueOf(shrunk);
                     if (material != null) {
@@ -135,6 +139,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     continue;
                 }
                 else if (arg.startsWith("blockdust_")) {
+                    Deprecations.oldPlayEffectSpecials.warn(scriptEntry);
                     String shrunk = arg.getValue().substring("blockdust_".length());
                     MaterialTag material = MaterialTag.valueOf(shrunk);
                     if (material != null) {
@@ -321,6 +326,14 @@ public class PlayEffectCommand extends AbstractCommand {
                                 ColorTag color = ColorTag.valueOf(dataList.get(1));
                                 dataObject = new org.bukkit.Particle.DustOptions(color.getColor(), size);
                             }
+                        }
+                        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && clazz == BlockData.class) {
+                            MaterialTag blockMaterial = MaterialTag.valueOf(special_data.asString(), scriptEntry.getContext());
+                            dataObject = blockMaterial.getModernData().data;
+                        }
+                        else if (clazz == ItemStack.class) {
+                            ItemTag itemType = ItemTag.valueOf(special_data.asString(), scriptEntry.getContext());
+                            dataObject = itemType.getItemStack();
                         }
                         else {
                             Debug.echoError(scriptEntry.getResidingQueue(), "Unknown particle data type: " + clazz.getCanonicalName() + " for particle: " + particleEffect.getName());
