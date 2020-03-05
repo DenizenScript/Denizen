@@ -1776,7 +1776,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns the entity's shooter, if any.
         // -->
         registerSpawnedOnlyTag("shooter", (attribute, object) -> {
-            return object.getShooter();
+            return object.getShooter().getDenizenObject();
         }, "get_shooter");
 
         // <--[tag]
