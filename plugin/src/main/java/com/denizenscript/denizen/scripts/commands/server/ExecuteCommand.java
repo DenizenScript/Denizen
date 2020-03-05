@@ -33,8 +33,16 @@ public class ExecuteCommand extends AbstractCommand {
     // @Group server
     //
     // @Description
-    // Allows the execution of server commands through a Denizen Script. Commands can be executed as the server,
-    // as an npc, an op or as a player, as though it was typed by the respective source.
+    // Allows the execution of server commands through a Denizen script.
+    // Commands can be executed as the server, as an npc, as an opped player, or as a player, as though it was typed by the respective source.
+    //
+    // Note: do not include the slash at the start. A slash at the start will be interpreted equivalent to typing two slashes at the front in-game.
+    //
+    // Note that this is a Denizen script command that executes Bukkit commands.
+    // This can be considered the inverse of '/ex' (a Bukkit command that executes Denizen script commands).
+    //
+    // Generally, you should never use this to execute a vanilla command, there is almost always a script command that should be used instead.
+    // Usually the 'execute' command should be reserved for interacting with external plugins.
     //
     // @Tags
     // <entry[saveName].output> returns the output to an as_server sender.
