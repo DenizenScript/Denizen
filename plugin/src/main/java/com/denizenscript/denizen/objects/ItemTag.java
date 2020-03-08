@@ -781,6 +781,11 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
             }
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) &&
                     object.getItemStack().hasItemMeta() && object.getItemStack().getItemMeta() instanceof BlockStateMeta) {
+                if (object.getItemStack().getType() == Material.SHIELD) {
+                    MaterialTag material = new MaterialTag(Material.SHIELD);
+                    material.setModernData(new ModernBlockData(((BlockStateMeta) object.getItemStack().getItemMeta()).getBlockState()));
+                    return material;
+                }
                 return new MaterialTag(new ModernBlockData(((BlockStateMeta) object.getItemStack().getItemMeta()).getBlockState()));
             }
             return object.getMaterial();
