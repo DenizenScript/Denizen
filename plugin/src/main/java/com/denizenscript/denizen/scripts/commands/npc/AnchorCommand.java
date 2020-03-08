@@ -9,6 +9,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import net.citizensnpcs.trait.Anchors;
 import net.citizensnpcs.util.Anchor;
 
@@ -18,20 +19,17 @@ public class AnchorCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Anchor
-    // @Syntax anchor [id:<name>] [assume/remove/add <location>/walkto/walknear (r:#)]
+    // @Syntax anchor [id:<name>] [remove/add <location>]
     // @Required 2
     // @Short Controls an NPC's Anchor Trait.
     // @Group npc
     //
     // @Description
-    // The anchor system inside Citizens2 allows locations to be 'bound' to an NPC, saved by an 'id'. The anchor
-    // command can add and remove new anchors, as well as the ability to teleport NPCs to anchors with the 'assume'
-    // argument.
-    // The Anchors Trait can also be used as a sort of 'waypoints' system. For ease of use, the anchor command
-    // provides function for NPCs to walk to or walk near an anchor.
+    // The anchor system inside Citizens2 allows locations to be 'bound' to an NPC, saved by an 'id'.
+    // The anchor command can add and remove new anchors.
+    // The Anchors Trait can also be used as a sort of 'waypoints' system.
     // As the Anchor command is an NPC specific command, a valid npc object must be referenced in the script entry.
-    // If none is provided by default, the use of the 'npc:n@id' argument, replacing the id with the npcid of the
-    // NPC desired, can create a link, or alternatively override the default linked npc.
+    // If none is provided by default, use the 'npc:<npc>' argument.
     //
     // @Tags
     // <NPCTag.anchor[anchor_name]>
@@ -43,21 +41,13 @@ public class AnchorCommand extends AbstractCommand {
     // - define location_name <context.message>
     // - chat "I have saved this location as <[location_name]>.'
     // - anchor add <npc.location> id:<[location_name]>
-    //
-    // @Usage
-    // Use to make an NPC walk to or walk near a saved anchor.
-    // - anchor walkto i:waypoint_1
-    // - anchor walknear i:waypoint_2 r:5
     // -->
 
     private enum Action {ADD, REMOVE, ASSUME, WALKTO, WALKNEAR}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
-        // Parse Arguments
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("action")
                     && arg.matchesEnum(Action.values())) {
                 scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));
@@ -79,16 +69,15 @@ public class AnchorCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
-        // Check required arguments
         if (!Utilities.entryHasNPC(scriptEntry)) {
             throw new InvalidArgumentsException("NPC linked was missing or invalid.");
         }
-
         if (!scriptEntry.hasObject("action")) {
             throw new InvalidArgumentsException("Must specify an 'Anchor Action'. Valid: " + Arrays.asList(Action.values()));
         }
-
+        if (!scriptEntry.hasObject("id")) {
+            throw new InvalidArgumentsException("Must specify an ID.");
+        }
     }
 
     @Override
@@ -111,14 +100,16 @@ public class AnchorCommand extends AbstractCommand {
         }
 
         switch (action) {
-
             case ADD:
+                if (location == null) {
+                    Debug.echoError("Must specify a location!");
+                    return;
+                }
                 npc.getCitizen().getTrait(Anchors.class).addAnchor(id.asString(), location);
                 return;
-
             case ASSUME: {
-                Anchor n = npc.getCitizen().getTrait(Anchors.class)
-                        .getAnchor(id.asString());
+                Deprecations.anchorWalk.warn(scriptEntry);
+                Anchor n = npc.getCitizen().getTrait(Anchors.class).getAnchor(id.asString());
                 if (n == null) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
                 }
@@ -127,10 +118,9 @@ public class AnchorCommand extends AbstractCommand {
                 }
             }
             return;
-
             case WALKNEAR: {
-                Anchor n = npc.getCitizen().getTrait(Anchors.class)
-                        .getAnchor(id.asString());
+                Deprecations.anchorWalk.warn(scriptEntry);
+                Anchor n = npc.getCitizen().getTrait(Anchors.class).getAnchor(id.asString());
                 if (n == null) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
                 }
@@ -138,15 +128,13 @@ public class AnchorCommand extends AbstractCommand {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Must specify a range!");
                 }
                 else {
-                    npc.getNavigator().setTarget(
-                            Utilities.getWalkableLocationNear(n.getLocation(), range.asInt()));
+                    npc.getNavigator().setTarget(Utilities.getWalkableLocationNear(n.getLocation(), range.asInt()));
                 }
             }
             return;
-
             case WALKTO: {
-                Anchor n = npc.getCitizen().getTrait(Anchors.class)
-                        .getAnchor(id.asString());
+                Deprecations.anchorWalk.warn(scriptEntry);
+                Anchor n = npc.getCitizen().getTrait(Anchors.class).getAnchor(id.asString());
                 if (n == null) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
                 }
@@ -155,10 +143,8 @@ public class AnchorCommand extends AbstractCommand {
                 }
             }
             return;
-
             case REMOVE: {
-                Anchor n = npc.getCitizen().getTrait(Anchors.class)
-                        .getAnchor(id.asString());
+                Anchor n = npc.getCitizen().getTrait(Anchors.class).getAnchor(id.asString());
                 if (n == null) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
                 }
@@ -167,6 +153,5 @@ public class AnchorCommand extends AbstractCommand {
                 }
             }
         }
-
     }
 }

@@ -49,7 +49,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         }
         registerCoreMember(AdvancementCommand.class, "ADVANCEMENT", "advancement [id:<name>] (delete/grant:<players>/revoke:<players>/{create}) (parent:<name>) (icon:<item>) (title:<text>) (description:<text>) (background:<key>) (frame:<type>) (toast:<boolean>) (announce:<boolean>) (hidden:<boolean>)", 1);
         registerCoreMember(AgeCommand.class, "AGE", "age [<entity>|...] (adult/baby/<age>) (lock)", 1);
-        registerCoreMember(AnchorCommand.class, "ANCHOR", "anchor [id:<name>] [assume/remove/add <location>/walkto/walknear (r:#)]", 2);
+        registerCoreMember(AnchorCommand.class, "ANCHOR", "anchor [id:<name>] [remove/add <location>]", 2);
         if (Depends.citizens != null) {
             registerCoreMember(AnimateCommand.class, "ANIMATE", "animate [<entity>|...] [animation:<name>]", 2);
         }
