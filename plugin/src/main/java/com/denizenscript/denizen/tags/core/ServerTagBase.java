@@ -1681,6 +1681,7 @@ public class ServerTagBase {
         // @returns ListTag(PlayerTag)
         // @description
         // Returns a list of all offline players.
+        // This specifically excludes currently online players.
         // -->
         if (attribute.startsWith("list_offline_players")) {
             ListTag players = new ListTag();

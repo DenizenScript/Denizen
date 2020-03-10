@@ -99,6 +99,11 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
         return super.getContext(name);
     }
 
+    @Override
+    public void cancellationChanged() {
+        event.setHatching(!cancelled);
+    }
+
     @EventHandler
     public void onPlayerThrowsEgg(PlayerEggThrowEvent event) {
         if (EntityTag.isNPC(event.getPlayer())) {
