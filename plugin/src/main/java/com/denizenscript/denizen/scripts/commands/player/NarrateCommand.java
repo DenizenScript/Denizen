@@ -66,7 +66,7 @@ public class NarrateCommand extends AbstractCommand {
         if (scriptEntry.getArguments().size() > 4) { // TODO: Use this more often!
             throw new InvalidArgumentsException("Too many arguments! Did you forget a 'quote'?");
         }
-        for (Argument arg : ArgumentHelper.interpret(scriptEntry.getOriginalArguments())) {
+        for (Argument arg : ArgumentHelper.interpret(scriptEntry, scriptEntry.getOriginalArguments())) {
             if (!scriptEntry.hasObject("format")
                     && arg.matchesPrefix("format", "f")) {
                 String formatStr = TagManager.tag(arg.getValue(), scriptEntry.getContext());
