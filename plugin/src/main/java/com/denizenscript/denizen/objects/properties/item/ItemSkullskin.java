@@ -137,7 +137,7 @@ public class ItemSkullskin implements Property {
         // @name skull_skin
         // @input ElementTag(|ElementTag(|ElementTag))
         // @description
-        // Sets the player skin on a skull_item.
+        // Sets the player skin on a player_head.
         // The first ElementTag is a UUID.
         // Optionally, use the second ElementTag for the skin texture cache.
         // Optionally, use the third ElementTag for a player name.

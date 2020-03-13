@@ -16,6 +16,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.MemorySection;
 
 import java.util.*;
 
@@ -648,7 +649,11 @@ public class FlagManager {
                 this.expiration = (denizen.getSaves().getLong(flagPath + "-expiration"));
             }
             Object obj = denizen.getSaves().get(flagPath);
-            if (obj instanceof List) {
+            if (obj instanceof Map || obj instanceof MemorySection) {
+                valid = false;
+                value = new Value();
+            }
+            else if (obj instanceof List) {
                 ArrayList<String> val = new ArrayList<>(((List) obj).size());
                 for (Object subObj : (List) obj) {
                     val.add(String.valueOf(subObj));
