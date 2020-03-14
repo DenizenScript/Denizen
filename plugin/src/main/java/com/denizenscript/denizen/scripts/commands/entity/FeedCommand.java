@@ -14,6 +14,12 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
 public class FeedCommand extends AbstractCommand {
 
+    public FeedCommand() {
+        setName("feed");
+        setSyntax("feed (<entity>) (amount:<#>) (saturation:<#.#>)");
+        setRequiredArguments(0, 3);
+    }
+
     // <--[command]
     // @Name Feed
     // @Syntax feed (<entity>) (amount:<#>) (saturation:<#.#>)

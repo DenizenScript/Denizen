@@ -11,6 +11,12 @@ import org.bukkit.entity.Player;
 
 public class ExperienceCommand extends AbstractCommand {
 
+    public ExperienceCommand() {
+        setName("experience");
+        setSyntax("experience [{set}/give/take] (level) [<#>]");
+        setRequiredArguments(2, 3);
+    }
+
     // <--[command]
     // @Name Experience
     // @Syntax experience [{set}/give/take] (level) [<#>]

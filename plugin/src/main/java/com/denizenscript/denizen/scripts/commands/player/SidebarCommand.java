@@ -25,6 +25,14 @@ import java.util.*;
 
 public class SidebarCommand extends AbstractCommand {
 
+    public SidebarCommand() {
+        setName("sidebar");
+        setSyntax("sidebar (add/remove/{set}/set_line) (title:<title>) (scores:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...) (per_player)");
+        setRequiredArguments(1, 8);
+        setParseArgs(false);
+        DenizenAPI.getCurrentInstance().getServer().getPluginManager().registerEvents(new SidebarEvents(), DenizenAPI.getCurrentInstance());
+    }
+
     // <--[command]
     // @Name Sidebar
     // @Syntax sidebar (add/remove/{set}/set_line) (title:<title>) (scores:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...) (per_player)
@@ -95,13 +103,6 @@ public class SidebarCommand extends AbstractCommand {
     // TODO: Clean me!
 
     private enum Action {ADD, REMOVE, SET, SET_LINE}
-
-    @Override
-    public void onEnable() {
-        setParseArgs(false);
-        DenizenAPI.getCurrentInstance().getServer().getPluginManager()
-                .registerEvents(new SidebarEvents(), DenizenAPI.getCurrentInstance());
-    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

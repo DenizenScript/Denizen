@@ -17,6 +17,12 @@ import java.util.List;
 
 public class MountCommand extends AbstractCommand {
 
+    public MountCommand() {
+        setName("mount");
+        setSyntax("mount (cancel) [<entity>|...] (<location>)");
+        setRequiredArguments(0, 3);
+    }
+
     // <--[command]
     // @Name Mount
     // @Syntax mount (cancel) [<entity>|...] (<location>)

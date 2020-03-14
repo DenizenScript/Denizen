@@ -27,6 +27,12 @@ import java.util.List;
 
 public class FlyCommand extends AbstractCommand {
 
+    public FlyCommand() {
+        setName("fly");
+        setSyntax("fly (cancel) [<entity>|...] (controller:<player>) (origin:<location>) (destinations:<location>|...) (speed:<#.#>) (rotationthreshold:<#.#>)");
+        setRequiredArguments(1, 7);
+    }
+
     // <--[command]
     // @Name Fly
     // @Syntax fly (cancel) [<entity>|...] (controller:<player>) (origin:<location>) (destinations:<location>|...) (speed:<#.#>) (rotationthreshold:<#.#>)

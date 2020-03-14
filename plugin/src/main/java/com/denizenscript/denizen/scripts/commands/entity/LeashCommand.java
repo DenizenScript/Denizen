@@ -19,6 +19,12 @@ import java.util.List;
 
 public class LeashCommand extends AbstractCommand {
 
+    public LeashCommand() {
+        setName("leash");
+        setSyntax("leash (cancel) [<entity>|...] (holder:<entity>/<location>)");
+        setRequiredArguments(1, 3);
+    }
+
     // <--[command]
     // @Name Leash
     // @Syntax leash (cancel) [<entity>|...] (holder:<entity>/<location>)

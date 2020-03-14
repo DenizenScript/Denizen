@@ -17,6 +17,12 @@ import java.util.List;
 
 public class AttackCommand extends AbstractCommand {
 
+    public AttackCommand() {
+        setName("attack");
+        setSyntax("attack (<entity>|...) (target:<entity>/cancel)");
+        setRequiredArguments(0, 2);
+    }
+
     // <--[command]
     // @Name Attack
     // @Syntax attack (<entity>|...) (target:<entity>/cancel)

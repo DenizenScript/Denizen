@@ -24,6 +24,12 @@ import java.util.UUID;
 
 public class BlockCrackCommand extends AbstractCommand {
 
+    public BlockCrackCommand() {
+        setName("blockcrack");
+        setSyntax("blockcrack [<location>] [progress:<#>] (stack) (players:<player>|...)");
+        setRequiredArguments(2, 4);
+    }
+
     // <--[command]
     // @Name BlockCrack
     // @Syntax blockcrack [<location>] [progress:<#>] (stack) (players:<player>|...)

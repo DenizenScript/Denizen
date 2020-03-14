@@ -19,6 +19,12 @@ import java.util.*;
 
 public class RotateCommand extends AbstractCommand implements Holdable {
 
+    public RotateCommand() {
+        setName("rotate");
+        setSyntax("rotate (cancel) (<entity>|...) (yaw:<#.#>) (pitch:<#.#>) (infinite/duration:<duration>) (frequency:<duration>)");
+        setRequiredArguments(1, 6);
+    }
+
     // <--[command]
     // @Name Rotate
     // @Syntax rotate (cancel) (<entity>|...) (yaw:<#.#>) (pitch:<#.#>) (infinite/duration:<duration>) (frequency:<duration>)

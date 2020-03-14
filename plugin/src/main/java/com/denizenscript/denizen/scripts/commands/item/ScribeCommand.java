@@ -21,6 +21,12 @@ import org.bukkit.inventory.ItemStack;
 
 public class ScribeCommand extends AbstractCommand {
 
+    public ScribeCommand() {
+        setName("scribe");
+        setSyntax("(Deprecated)");
+        setRequiredArguments(0, -1);
+    }
+
     private enum BookAction {GIVE, DROP, EQUIP, NONE}
 
     @Override

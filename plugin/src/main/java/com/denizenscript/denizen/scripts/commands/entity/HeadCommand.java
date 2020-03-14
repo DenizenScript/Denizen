@@ -22,6 +22,12 @@ import java.util.List;
 
 public class HeadCommand extends AbstractCommand {
 
+    public HeadCommand() {
+        setName("head");
+        setSyntax("head (<entity>|...) [skin:<player_name>]");
+        setRequiredArguments(1, 2);
+    }
+
     // <--[command]
     // @Name Head
     // @Syntax head (<entity>|...) [skin:<player_name>]

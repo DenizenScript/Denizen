@@ -13,6 +13,12 @@ import org.bukkit.entity.*;
 
 public class StandCommand extends AbstractCommand {
 
+    public StandCommand() {
+        setName("stand");
+        setSyntax("stand");
+        setRequiredArguments(0, 0);
+    }
+
     // <--[command]
     // @Name Stand
     // @Syntax stand

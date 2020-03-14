@@ -13,11 +13,18 @@ import org.bukkit.entity.*;
 
 public class SitCommand extends AbstractCommand {
 
+    public SitCommand() {
+        setName("sit");
+        setSyntax("sit (<location>)");
+        setRequiredArguments(0, 1);
+    }
+
     // <--[command]
     // @Name Sit
     // @Syntax sit (<location>)
     // @Required 0
     // @Maximum 1
+    // @Plugin Citizens
     // @Short Causes the NPC to sit. To make them stand, see <@link command Stand>.
     // @Group npc
     //

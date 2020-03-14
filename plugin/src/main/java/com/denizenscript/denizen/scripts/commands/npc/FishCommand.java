@@ -16,11 +16,18 @@ import org.bukkit.inventory.ItemStack;
 
 public class FishCommand extends AbstractCommand {
 
+    public FishCommand() {
+        setName("fish");
+        setSyntax("fish [<location>] (catch:{none}/default/junk/treasure/fish) (stop) (chance:<#>)");
+        setRequiredArguments(1, 4);
+    }
+
     // <--[command]
     // @Name Fish
     // @Syntax fish [<location>] (catch:{none}/default/junk/treasure/fish) (stop) (chance:<#>)
     // @Required 1
     // @Maximum 4
+    // @Plugin Citizens
     // @Short Causes an NPC to begin fishing around a specified location.
     // @Group npc
     //

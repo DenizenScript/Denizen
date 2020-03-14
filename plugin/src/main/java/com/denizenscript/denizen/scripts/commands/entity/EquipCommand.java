@@ -25,6 +25,12 @@ import java.util.Map;
 
 public class EquipCommand extends AbstractCommand {
 
+    public EquipCommand() {
+        setName("equip");
+        setSyntax("equip (<entity>|...) (hand:<item>) (offhand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>) (saddle:<item>) (horse_armor:<item>)");
+        setRequiredArguments(1, 9);
+    }
+
     // <--[command]
     // @Name Equip
     // @Syntax equip (<entity>|...) (hand:<item>) (offhand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>) (saddle:<item>) (horse_armor:<item>)

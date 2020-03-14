@@ -17,6 +17,12 @@ import java.util.List;
 
 public class HealCommand extends AbstractCommand {
 
+    public HealCommand() {
+        setName("heal");
+        setSyntax("heal (<#.#>) ({player}/<entity>|...)");
+        setRequiredArguments(0, 2);
+    }
+
     // <--[command]
     // @Name Heal
     // @Syntax heal (<#.#>) ({player}/<entity>|...)

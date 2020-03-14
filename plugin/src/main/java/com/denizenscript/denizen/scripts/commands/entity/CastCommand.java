@@ -18,6 +18,12 @@ import java.util.List;
 
 public class CastCommand extends AbstractCommand {
 
+    public CastCommand() {
+        setName("cast");
+        setSyntax("cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...) (no_ambient) (hide_particles)");
+        setRequiredArguments(1, 7);
+    }
+
     // <--[command]
     // @Name Cast
     // @Syntax cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...) (no_ambient) (hide_particles)

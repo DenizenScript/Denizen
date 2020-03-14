@@ -20,10 +20,16 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
     public static class AutoNoCitizensCommand extends AbstractCommand {
 
+        public static void registerMany(String... names) {
+            for (String name : names) {
+                registerFor(name);
+            }
+        }
+
         public static void registerFor(String name) {
             AutoNoCitizensCommand cmd = new AutoNoCitizensCommand();
             cmd.name = name;
-            cmd.as(name).withOptions("Requires Citizens", 0);
+            cmd.syntax = "(Citizens Required)";
         }
 
         public String name;
@@ -42,188 +48,130 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         registerCoreCommands();
 
-        registerCoreMember(ActionCommand.class,"ACTION", "action [<action name>|...] (<npc>|...) (context:<name>|<object>|...)", 1);
-        registerCoreMember(ActionBarCommand.class, "ACTIONBAR", "actionbar [<text>] (targets:<player>|...)", 1);
+        //core
+        registerCommand(CooldownCommand.class);
+        registerCommand(FlagCommand.class);
+        registerCommand(NoteCommand.class);
+        registerCommand(ResetCommand.class);
+        registerCommand(ZapCommand.class);
+        // entity
+        registerCommand(AgeCommand.class);
+        if (Depends.citizens != null) {
+            registerCommand(AnimateCommand.class);
+        }
+        registerCommand(AttackCommand.class);
+        registerCommand(BurnCommand.class);
+        registerCommand(CastCommand.class);
+        registerCommand(EquipCommand.class);
+        registerCommand(FeedCommand.class);
+        registerCommand(FlyCommand.class);
+        registerCommand(FollowCommand.class);
+        registerCommand(HeadCommand.class);
+        registerCommand(HealCommand.class);
+        registerCommand(HealthCommand.class);
+        registerCommand(HurtCommand.class);
+        registerCommand(InvisibleCommand.class);
+        registerCommand(LeashCommand.class);
+        registerCommand(LookCommand.class);
+        registerCommand(MountCommand.class);
+        registerCommand(PushCommand.class);
+        registerCommand(RemoveCommand.class);
+        registerCommand(RotateCommand.class);
+        registerCommand(ShootCommand.class);
+        registerCommand(SpawnCommand.class);
+        registerCommand(TeleportCommand.class);
+        registerCommand(WalkCommand.class);
+        // item
+        registerCommand(DisplayItemCommand.class);
+        registerCommand(FakeItemCommand.class);
+        registerCommand(GiveCommand.class);
+        registerCommand(InventoryCommand.class);
+        registerCommand(MapCommand.class);
+        registerCommand(NBTCommand.class);
+        registerCommand(ScribeCommand.class);
+        registerCommand(TakeCommand.class);
+        // npc
+        if (Depends.citizens != null) {
+            registerCommand(ActionCommand.class);
+            registerCommand(AnchorCommand.class);
+            registerCommand(AssignmentCommand.class);
+            registerCommand(BreakCommand.class);
+            registerCommand(CreateCommand.class);
+            registerCommand(DespawnCommand.class);
+            registerCommand(DisengageCommand.class);
+            registerCommand(EngageCommand.class);
+            registerCommand(FishCommand.class);
+            registerCommand(LookcloseCommand.class);
+            registerCommand(PauseCommand.class);
+            registerCommand(PauseCommand.ResumeCommand.class);
+            registerCommand(PoseCommand.class);
+            registerCommand(PushableCommand.class);
+            registerCommand(RenameCommand.class);
+            registerCommand(SitCommand.class);
+            registerCommand(StandCommand.class);
+            registerCommand(TraitCommand.class);
+            registerCommand(TriggerCommand.class);
+            registerCommand(VulnerableCommand.class);
+        }
+        // player
+        registerCommand(ActionBarCommand.class);
+        registerCommand(AdvancementCommand.class);
+        registerCommand(BlockCrackCommand.class);
+        if (Depends.citizens != null) {
+            registerCommand(ChatCommand.class);
+        }
+        registerCommand(CompassCommand.class);
+        registerCommand(ExperienceCommand.class);
+        registerCommand(GlowCommand.class);
+        registerCommand(GroupCommand.class);
+        registerCommand(ItemCooldownCommand.class);
+        registerCommand(KickCommand.class);
+        registerCommand(MoneyCommand.class);
+        registerCommand(NarrateCommand.class);
+        registerCommand(OpenTradesCommand.class);
+        registerCommand(OxygenCommand.class);
+        registerCommand(PermissionCommand.class);
+        registerCommand(ShowFakeCommand.class);
+        registerCommand(SidebarCommand.class);
+        registerCommand(StatisticCommand.class);
+        registerCommand(TeamCommand.class);
+        registerCommand(TitleCommand.class);
+        registerCommand(ToastCommand.class);
+        // server
+        registerCommand(AnnounceCommand.class);
+        registerCommand(BanCommand.class);
+        registerCommand(BossBarCommand.class);
+        registerCommand(ExecuteCommand.class);
+        registerCommand(ScoreboardCommand.class);
+        // world
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            registerCoreMember(AdjustBlockCommand.class, "ADJUSTBLOCK", "adjustblock [<location>|...] [<mechanism>](:<value>)", 2);
+            registerCommand(AdjustBlockCommand.class);
         }
-        registerCoreMember(AdvancementCommand.class, "ADVANCEMENT", "advancement [id:<name>] (delete/grant:<players>/revoke:<players>/{create}) (parent:<name>) (icon:<item>) (title:<text>) (description:<text>) (background:<key>) (frame:<type>) (toast:<boolean>) (announce:<boolean>) (hidden:<boolean>)", 1);
-        registerCoreMember(AgeCommand.class, "AGE", "age [<entity>|...] (adult/baby/<age>) (lock)", 1);
-        registerCoreMember(AnchorCommand.class, "ANCHOR", "anchor [id:<name>] [remove/add <location>]", 2);
-        if (Depends.citizens != null) {
-            registerCoreMember(AnimateCommand.class, "ANIMATE", "animate [<entity>|...] [animation:<name>]", 2);
+        registerCommand(AnimateChestCommand.class);
+        registerCommand(ChunkLoadCommand.class);
+        registerCommand(CopyBlockCommand.class);
+        registerCommand(CreateWorldCommand.class);
+        registerCommand(DropCommand.class);
+        registerCommand(ExplodeCommand.class);
+        registerCommand(FireworkCommand.class);
+        registerCommand(GameRuleCommand.class);
+        registerCommand(LightCommand.class);
+        registerCommand(MidiCommand.class);
+        registerCommand(ModifyBlockCommand.class);
+        registerCommand(PlayEffectCommand.class);
+        registerCommand(PlaySoundCommand.class);
+        registerCommand(SchematicCommand.class);
+        registerCommand(SignCommand.class);
+        registerCommand(StrikeCommand.class);
+        registerCommand(SwitchCommand.class);
+        registerCommand(TimeCommand.class);
+        registerCommand(WeatherCommand.class);
+        registerCommand(WorldBorderCommand.class);
+
+        if (Depends.citizens == null) {
+            AutoNoCitizensCommand.registerMany("ACTION", "ANCHOR", "ANIMATE", "ASSIGNMENT", "BREAK", "CHAT", "CREATE", "DESPAWN",
+                    "DISENGAGE", "ENGAGE", "FISH", "LOOKCLOSE", "PAUSE", "RESUME", "POSE", "PUSHABLE", "RENAME", "SIT", "STAND", "TRAIT", "TRIGGER", "VULNERABLE");
         }
-        else {
-            AutoNoCitizensCommand.registerFor("ANIMATE");
-        }
-        registerCoreMember(AnimateChestCommand.class, "ANIMATECHEST", "animatechest [<location>] ({open}/close) (sound:{true}/false) (<player>|...)", 1);
-        registerCoreMember(AnnounceCommand.class, "ANNOUNCE", "announce [<text>] (to_ops/to_console/to_flagged:<flag_name>) (format:<name>)", 1);
-        if (Depends.citizens != null) {
-            registerCoreMember(AssignmentCommand.class, "ASSIGNMENT", "assignment [set/remove] (script:<name>)", 1);
-        }
-        else {
-            AutoNoCitizensCommand.registerFor("ASSIGNMENT");
-        }
-        registerCoreMember(AttackCommand.class, "ATTACK", "attack (<entity>|...) (target:<entity>/cancel)", 0);
-        registerCoreMember(BanCommand.class, "BAN", "ban ({add}/remove) [<player>|.../addresses:<address>|...] (reason:<text>) (duration:<duration>) (source:<text>)", 1);
-        registerCoreMember(BlockCrackCommand.class, "BLOCKCRACK", "blockcrack [<location>] [progress:<#>] (stack) (players:<player>|...)", 2);
-        if (Depends.citizens != null) {
-            registerCoreMember(BreakCommand.class, "BREAK", "break [<location>] (<npc>) (radius:<#.#>)", 1);
-        }
-        else {
-            AutoNoCitizensCommand.registerFor("BREAK");
-        }
-        registerCoreMember(BossBarCommand.class, "BOSSBAR", "bossbar ({create}/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (flags:<flag>|...)", 1);
-        registerCoreMember(BurnCommand.class, "BURN", "burn [<entity>|...] (duration:<value>)", 1);
-        registerCoreMember(CastCommand.class, "CAST", "cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...) (no_ambient) (hide_particles)", 1);
-        if (Depends.citizens != null) {
-            registerCoreMember(ChatCommand.class, "CHAT", "chat [<text>] (no_target/targets:<entity>|...) (talkers:<entity>|...) (range:<#.#>)", 1);
-        }
-        else {
-            AutoNoCitizensCommand.registerFor("CHAT");
-        }
-        registerCoreMember(ChunkLoadCommand.class, "CHUNKLOAD", "chunkload ({add}/remove/removeall) [<chunk>] (duration:<value>)", 1);
-        registerCoreMember(CompassCommand.class, "COMPASS", "compass [<location>/reset]", 1);
-        registerCoreMember(CooldownCommand.class, "COOLDOWN", "cooldown [<duration>] (global) (script:<script>)", 1);
-        registerCoreMember(CopyBlockCommand.class, "COPYBLOCK", "copyblock [<location>/<cuboid>] [to:<location>] (remove_original)", 1);
-        if (Depends.citizens != null) {
-            registerCoreMember(CreateCommand.class, "CREATE", "create [<entity>] [<name>] (<location>)", 1);
-        }
-        else {
-            AutoNoCitizensCommand.registerFor("CREATE");
-        }
-        registerCoreMember(CreateWorldCommand.class, "CREATEWORLD", "createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>) (seed:<seed>) (settings:<json>)", 1);
-        if (Depends.citizens != null) {
-            registerCoreMember(DespawnCommand.class, "DESPAWN", "despawn (<npc>)", 0);
-        }
-        else {
-            AutoNoCitizensCommand.registerFor("DESPAWN");
-        }
-        if (Depends.citizens != null) {
-            registerCoreMember(DisengageCommand.class, "DISENGAGE", "disengage", 0);
-        }
-        else {
-            AutoNoCitizensCommand.registerFor("DISENGAGE");
-        }
-        registerCoreMember(DisplayItemCommand.class, "DISPLAYITEM", "displayitem [<item>] [<location>] (duration:<value>)", 2);
-        registerCoreMember(DropCommand.class, "DROP", "drop [<entity_type>/xp/<item>|...] (<location>) (quantity:<#>) (speed:<#.#>) (delay:<duration>)", 1);
-        if (Depends.citizens != null) {
-            registerCoreMember(EngageCommand.class, "ENGAGE", "engage (<duration>)", 0);
-        }
-        else {
-            AutoNoCitizensCommand.registerFor("ENGAGE");
-        }
-        registerCoreMember(EquipCommand.class, "EQUIP", "equip (<entity>|...) (offhand:<item>) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>) (saddle:<item>) (horse_armor:<item>)", 1);
-        registerCoreMember(ExecuteCommand.class, "EXECUTE", "execute [as_player/as_op/as_npc/as_server] [<Bukkit-command>] (silent)", 2);
-        registerCoreMember(ExperienceCommand.class, "EXPERIENCE", "experience [{set}/give/take] (level) [<#>]", 2);
-        registerCoreMember(ExplodeCommand.class, "EXPLODE", "explode (power:<#.#>) (<location>) (fire) (breakblocks)", 0);
-        registerCoreMember(FakeItemCommand.class, "FAKEITEM", "fakeitem [<item>] [slot:<slot>] (duration:<duration>) (players:<player>|...) (player_only)", 2);
-        registerCoreMember(FeedCommand.class, "FEED", "feed (<entity>) (amount:<#>) (saturation:<#.#>)", 0);
-        registerCoreMember(FireworkCommand.class, "FIREWORK", "firework (<location>) (power:<#>) (<type>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)", 0);
-        registerCoreMember(FishCommand.class, "FISH", "fish [<location>] (catch:{none}/default/junk/treasure/fish) (stop) (chance:<#>)", 1);
-        registerCoreMember(FlagCommand.class, "FLAG", "flag ({player}/npc/server/<entity>) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)", 1);
-        registerCoreMember(FlyCommand.class, "FLY", "fly (cancel) [<entity>|...] (controller:<player>) (origin:<location>) (destinations:<location>|...) (speed:<#.#>) (rotationthreshold:<#.#>)", 1);
-        registerCoreMember(FollowCommand.class, "FOLLOW", "follow (followers:<entity>|...) (stop/target:<entity>) (lead:<#.#>) (max:<#.#>) (speed:<#.#>) (allow_wander)", 0);
-        registerCoreMember(GameRuleCommand.class, "GAMERULE", "gamerule [<world>] [<rule>] [<value>]", 3);
-        registerCoreMember(GiveCommand.class, "GIVE", "give [money/xp/<item>|...] (quantity:<#>) (unlimit_stack_size) (to:<inventory>) (slot:<slot>)", 1);
-        registerCoreMember(GlowCommand.class, "GLOW", "glow [<entity>|...] (<should glow>)", 1);
-        registerCoreMember(GroupCommand.class, "GROUP", "group [add/remove/set] [<group>] (<world>)", 2);
-        registerCoreMember(HeadCommand.class, "HEAD", "head (<entity>|...) [skin:<player_name>]", 1);
-        registerCoreMember(HealCommand.class, "HEAL", "heal (<#.#>) ({player}/<entity>|...)", 0);
-        registerCoreMember(HealthCommand.class, "HEALTH", "health ({npc}/<entity>|...) [<#>] (state:{true}/false/toggle)", 1);
-        registerCoreMember(HurtCommand.class, "HURT", "hurt (<#.#>) (<entity>|...) (cause:<cause>)", 0);
-        registerCoreMember(InventoryCommand.class, "INVENTORY", "inventory [open/close/copy/move/swap/add/remove/set/keep/exclude/fill/clear/update/adjust <mechanism>:<value>] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)", 1);
-        registerCoreMember(InvisibleCommand.class, "INVISIBLE", "invisible [<entity>] (state:true/false/toggle)", 1);
-        registerCoreMember(ItemCooldownCommand.class, "ITEMCOOLDOWN", "itemcooldown [<material>|...] (duration:<duration>)", 1);
-        registerCoreMember(KickCommand.class, "KICK", "kick [<player>|...] (reason:<text>)", 1);
-        registerCoreMember(LeashCommand.class, "LEASH", "leash (cancel) [<entity>|...] (holder:<entity>/<location>)", 1);
-        registerCoreMember(LightCommand.class, "LIGHT", "light [<location>] [<#>/reset] (duration:<duration>)", 2);
-        registerCoreMember(LookCommand.class, "LOOK", "look (<entity>|...) [<location>] (duration:<duration>)", 1);
-        if (Depends.citizens != null) {
-            registerCoreMember(LookcloseCommand.class, "LOOKCLOSE", "lookclose (<npc>) (state:<true/false>) (range:<#>) (realistic)", 0);
-        }
-        else {
-            AutoNoCitizensCommand.registerFor("LOOKCLOSE");
-        }
-        registerCoreMember(MapCommand.class, "MAP", "map [<#>/new:<world>] [reset:<location>/image:<file> (resize)/script:<script>] (x:<#>) (y:<#>)", 2);
-        registerCoreMember(MidiCommand.class, "MIDI", "midi (cancel) [<file>] (<location>/<entity>|...) (tempo:<#.#>) (volume:<#.#>)", 1);
-        registerCoreMember(MoneyCommand.class, "MONEY", "money [give/take/set] (quantity:<#.#>) (players:<player>|...)", 1);
-        registerCoreMember(MountCommand.class, "MOUNT", "mount (cancel) [<entity>|...] (<location>)", 0);
-        registerCoreMember(ModifyBlockCommand.class, "MODIFYBLOCK", "modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (no_physics/naturally) (delayed) (<script>) (<percent chance>|...)", 2);
-        registerCoreMember(NarrateCommand.class, "NARRATE", "narrate [<text>] (targets:<player>|...) (format:<name>) (per_player)", 1);
-        registerCoreMember(NBTCommand.class, "NBT", "nbt [<item>] [<key>:<value>]", 2);
-        registerCoreMember(NoteCommand.class, "NOTE", "note [<Notable ObjectTag>/remove] [as:<name>]", 2);
-        registerCoreMember(OpenTradesCommand.class, "OPENTRADES", "opentrades [<entity>/<trade>|...] (title:<title>) (players:<player>|...)", 1);
-        registerCoreMember(OxygenCommand.class, "OXYGEN", "oxygen [<#>] (type:{remaining}/maximum) (mode:{set}/add/remove)", 1);
-        if (Depends.citizens != null) {
-            registerCoreMember(PauseCommand.class, "PAUSE", "pause [waypoints/activity] (<duration>)", 1);
-            registerCoreMember(PauseCommand.class, "RESUME", "resume [waypoints/activity] (<duration>)", 1);
-        }
-        else {
-            AutoNoCitizensCommand.registerFor("PAUSE");
-            AutoNoCitizensCommand.registerFor("RESUME");
-        }
-        registerCoreMember(PlayEffectCommand.class, "PLAYEFFECT", "playeffect [effect:<name>] [at:<location>|...] (data:<#.#>) (visibility:<#.#>) (quantity:<#>) (offset:<#.#>,<#.#>,<#.#>) (targets:<player>|...)", 2);
-        registerCoreMember(PlaySoundCommand.class, "PLAYSOUND", "playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>) (custom) (sound_category:<category name>)", 2);
-        registerCoreMember(PermissionCommand.class, "PERMISSION", "permission [add/remove] [permission] (group:<name>) (<world>)", 2);
-        if (Depends.citizens != null) {
-            registerCoreMember(PoseCommand.class, "POSE", "pose (add/remove/{assume}) [id:<name>] (player/{npc}) (<location>)", 1);
-        }
-        else {
-            AutoNoCitizensCommand.registerFor("POSE");
-        }
-        registerCoreMember(PushCommand.class, "PUSH", "push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (duration:<duration>) (script:<name>) (def:<element>|...) (force_along) (precision:<#>) (no_rotate) (no_damage) (ignore_collision)", 1);
-        registerCoreMember(PushableCommand.class, "PUSHABLE", "pushable (state:true/false/{toggle}) (delay:<duration>) (returnable:true/false)", 0);
-        registerCoreMember(RemoveCommand.class, "REMOVE", "remove [<entity>|...] (<world>)", 1);
-        if (Depends.citizens != null) {
-            registerCoreMember(RenameCommand.class, "RENAME", "rename [<name>]", 1);
-        }
-        else {
-            AutoNoCitizensCommand.registerFor("RENAME");
-        }
-        registerCoreMember(ResetCommand.class, "RESET", "reset (<player>|...) [cooldown/saves/global_cooldown] (<script>)", 1);
-        registerCoreMember(RotateCommand.class, "ROTATE", "rotate (cancel) (<entity>|...) (yaw:<#.#>) (pitch:<#.#>) (infinite/duration:<duration>) (frequency:<duration>)", 0);
-        registerCoreMember(SchematicCommand.class, "SCHEMATIC", "schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material>|...)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed)", 2);
-        registerCoreMember(ScoreboardCommand.class, "SCOREBOARD", "scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar}/none) (displayname:<name>)", 1);
-        registerCoreMember(ScribeCommand.class, "SCRIBE", "scribe [<script>] (<item>/give/equip/{drop <location>})", 1);
-        registerCoreMember(ShootCommand.class, "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (speed:<#.#>) (script:<name>) (def:<element>|...) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)", 1);
-        registerCoreMember(ShowFakeCommand.class, "SHOWFAKE", "showfake [<material>|.../cancel] [<location>|...] (players:<player>|...) (d:<duration>{10s})", 2);
-        registerCoreMember(SidebarCommand.class, "SIDEBAR", "sidebar (add/remove/{set}/set_line) (title:<title>) (scores:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...) (per_player)", 1);
-        registerCoreMember(SignCommand.class, "SIGN", "sign (type:{automatic}/sign_post/wall_sign) (material:<material>) [<line>|...] [<location>] (direction:n/s/e/w)", 1);
-        registerCoreMember(SitCommand.class, "SIT", "sit (<location>)", 0);
-        registerCoreMember(SpawnCommand.class, "SPAWN", "spawn [<entity>|...] (<location>) (target:<entity>) (persistent)", 1);
-        if (Depends.citizens != null) {
-            registerCoreMember(StandCommand.class, "STAND", "stand", 0);
-        }
-        else {
-            AutoNoCitizensCommand.registerFor("STAND");
-        }
-        registerCoreMember(StatisticCommand.class, "STATISTIC", "statistic [<statistic>] [add/take/set] (<#>) (qualifier:<material>/<entity>) (players:<player>|...)", 2);
-        registerCoreMember(StrikeCommand.class, "STRIKE", "strike (no_damage) [<location>]", 1);
-        registerCoreMember(SwitchCommand.class, "SWITCH", "switch [<location>|...] (state:[{toggle}/on/off]) (duration:<value>)", 1);
-        registerCoreMember(TakeCommand.class, "TAKE", "take [money/xp/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/nbt:<key>/<item>|...] (quantity:<#>) (from:<inventory>)", 1);
-        registerCoreMember(TeamCommand.class, "TEAM", "team (id:<scoreboard>/{main}) [name:<team>] (add:<entry>|...) (remove:<entry>|...) (prefix:<prefix>) (suffix:<suffix>)", 2);
-        registerCoreMember(TeleportCommand.class, "TELEPORT", "teleport (<entity>|...) [<location>]", 1);
-        registerCoreMember(TimeCommand.class, "TIME", "time ({global}/player) [<time-duration>/reset] (<world>) (reset:<duration>) (freeze)", 1);
-        registerCoreMember(TitleCommand.class, "TITLE", "title (title:<text>) (subtitle:<text>) (fade_in:<duration>/{1s}) (stay:<duration>/{3s}) (fade_out:<duration>/{1s}) (targets:<player>|...)", 1);
-        registerCoreMember(ToastCommand.class, "TOAST", "toast [<text>] (targets:<player>|...) (icon:<item>) (frame:{task}/challenge/goal) (background:<texture>)", 1);
-        if (Depends.citizens != null) {
-            registerCoreMember(TraitCommand.class, "TRAIT", "trait (state:true/false/{toggle}) [<trait>]", 1);
-        }
-        else {
-            AutoNoCitizensCommand.registerFor("TRAIT");
-        }
-        registerCoreMember(TriggerCommand.class, "TRIGGER", "trigger [name:<trigger>] (state:{toggle}/true/false) (cooldown:<duration>) (radius:<#>)", 1);
-        if (Depends.citizens != null) {
-            registerCoreMember(VulnerableCommand.class, "VULNERABLE", "vulnerable (state:{true}/false/toggle)", 0);
-        }
-        else {
-            AutoNoCitizensCommand.registerFor("VULNERABLE");
-        }
-        registerCoreMember(WalkCommand.class, "WALK", "walk (<entity>|...) [<location>/stop] (speed:<#>) (auto_range) (radius:<#.#>) (lookat:<location>)", 1);
-        registerCoreMember(WeatherCommand.class, "WEATHER", "weather [{global}/player] [sunny/storm/thunder/reset] (<world>) (reset:<duration>)", 1);
-        registerCoreMember(WorldBorderCommand.class, "WORLDBORDER", "worldborder [<world>/<player>|...] (center:<location>) (size:<#.#>) (current_size:<#.#>) (damage:<#.#>) (damagebuffer:<#.#>) (warningdistance:<#>) (warningtime:<duration>) (duration:<duration>) (reset)", 2);
-        registerCoreMember(ZapCommand.class, "ZAP", "zap (<script>) [<step>] (<duration>)", 0);
 
         Debug.echoApproval("Loaded core commands: " + instances.keySet().toString());
     }

@@ -13,6 +13,12 @@ import org.bukkit.Location;
 
 public class RenameCommand extends AbstractCommand {
 
+    public RenameCommand() {
+        setName("rename");
+        setSyntax("rename [<name>]");
+        setRequiredArguments(1, 1);
+    }
+
     // <--[command]
     // @Name Rename
     // @Syntax rename [<name>]

@@ -14,6 +14,12 @@ import org.bukkit.scoreboard.Team;
 
 public class TeamCommand extends AbstractCommand {
 
+    public TeamCommand() {
+        setName("team");
+        setSyntax("team (id:<scoreboard>/{main}) [name:<team>] (add:<entry>|...) (remove:<entry>|...) (prefix:<prefix>) (suffix:<suffix>)");
+        setRequiredArguments(2, 6);
+    }
+
     // <--[command]
     // @Name Team
     // @Syntax team (id:<scoreboard>/{main}) [name:<team>] (add:<entry>|...) (remove:<entry>|...) (prefix:<prefix>) (suffix:<suffix>)

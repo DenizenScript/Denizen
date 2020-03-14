@@ -16,6 +16,12 @@ import java.util.ArrayList;
 
 public class ItemCooldownCommand extends AbstractCommand {
 
+    public ItemCooldownCommand() {
+        setName("itemcooldown");
+        setSyntax("itemcooldown [<material>|...] (duration:<duration>)");
+        setRequiredArguments(1, 2);
+    }
+
     // <--[command]
     // @Name ItemCooldown
     // @Syntax itemcooldown [<material>|...] (duration:<duration>)

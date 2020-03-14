@@ -20,6 +20,12 @@ import java.util.List;
 
 public class ActionBarCommand extends AbstractCommand {
 
+    public ActionBarCommand() {
+        setName("actionbar");
+        setSyntax("actionbar [<text>] (targets:<player>|...) (format:<name>)");
+        setRequiredArguments(1, 3);
+    }
+
     // <--[command]
     // @Name ActionBar
     // @Syntax actionbar [<text>] (targets:<player>|...) (format:<name>)

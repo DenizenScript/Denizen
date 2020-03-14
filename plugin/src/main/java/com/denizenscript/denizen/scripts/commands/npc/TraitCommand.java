@@ -13,6 +13,12 @@ import net.citizensnpcs.api.trait.Trait;
 
 public class TraitCommand extends AbstractCommand {
 
+    public TraitCommand() {
+        setName("trait");
+        setSyntax("trait (state:true/false/{toggle}) [<trait>]");
+        setRequiredArguments(1, 2);
+    }
+
     // <--[command]
     // @Name Trait
     // @Syntax trait (state:true/false/{toggle}) [<trait>]

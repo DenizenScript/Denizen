@@ -13,11 +13,18 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
 public class TriggerCommand extends AbstractCommand {
 
+    public TriggerCommand() {
+        setName("trigger");
+        setSyntax("trigger [name:<trigger>] (state:{toggle}/true/false) (cooldown:<duration>) (radius:<#>)");
+        setRequiredArguments(1, 4);
+    }
+
     // <--[command]
     // @Name Trigger
     // @Syntax trigger [name:<trigger>] (state:{toggle}/true/false) (cooldown:<duration>) (radius:<#>)
     // @Required 1
     // @Maximum 4
+    // @Plugin Citizens
     // @Short Enables or disables a trigger.
     // @Group npc
     // @Guide https://guide.denizenscript.com/guides/npcs/interact-scripts.html

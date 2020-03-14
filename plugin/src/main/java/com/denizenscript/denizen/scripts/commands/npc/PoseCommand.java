@@ -15,6 +15,12 @@ import org.bukkit.entity.Player;
 
 public class PoseCommand extends AbstractCommand {
 
+    public PoseCommand() {
+        setName("pose");
+        setSyntax("pose (add/remove/{assume}) [id:<name>] (player/{npc}) (<location>)");
+        setRequiredArguments(1, 4);
+    }
+
     // <--[command]
     // @Name Pose
     // @Syntax pose (add/remove/{assume}) [id:<name>] (player/{npc}) (<location>)

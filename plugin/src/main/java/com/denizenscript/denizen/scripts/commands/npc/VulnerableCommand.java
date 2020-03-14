@@ -11,6 +11,12 @@ import net.citizensnpcs.api.npc.NPC;
 
 public class VulnerableCommand extends AbstractCommand {
 
+    public VulnerableCommand() {
+        setName("vulnerable");
+        setSyntax("vulnerable (state:{true}/false/toggle)");
+        setRequiredArguments(0, 1);
+    }
+
     // <--[command]
     // @Name Vulnerable
     // @Syntax vulnerable (state:{true}/false/toggle)

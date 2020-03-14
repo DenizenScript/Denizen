@@ -17,11 +17,18 @@ import java.util.Arrays;
 
 public class AnchorCommand extends AbstractCommand {
 
+    public AnchorCommand() {
+        setName("anchor");
+        setSyntax("anchor [id:<name>] [remove/add <location>]");
+        setRequiredArguments(2, 3);
+    }
+
     // <--[command]
     // @Name Anchor
     // @Syntax anchor [id:<name>] [remove/add <location>]
     // @Required 2
     // @Maximum 3
+    // @Plugin Citizens
     // @Short Controls an NPC's Anchor Trait.
     // @Group npc
     //

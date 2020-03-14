@@ -12,6 +12,12 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
 public class AssignmentCommand extends AbstractCommand {
 
+    public AssignmentCommand() {
+        setName("assignment");
+        setSyntax("assignment [set/remove] (script:<name>)");
+        setRequiredArguments(1, 2);
+    }
+
     // <--[command]
     // @Name Assignment
     // @Syntax assignment [set/remove] (script:<name>)

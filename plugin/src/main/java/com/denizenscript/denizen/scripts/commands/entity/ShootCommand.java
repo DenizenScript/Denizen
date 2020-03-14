@@ -36,6 +36,13 @@ import java.util.UUID;
 
 public class ShootCommand extends AbstractCommand implements Listener, Holdable {
 
+    public ShootCommand() {
+        setName("shoot");
+        setSyntax("shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (speed:<#.#>) (script:<name>) (def:<element>|...) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)");
+        setRequiredArguments(1, 11);
+        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+    }
+
     // <--[command]
     // @Name Shoot
     // @Syntax shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (speed:<#.#>) (script:<name>) (def:<element>|...) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)
@@ -82,11 +89,6 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
     // -->
 
     Map<UUID, EntityTag> arrows = new HashMap<>();
-
-    @Override
-    public void onEnable() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

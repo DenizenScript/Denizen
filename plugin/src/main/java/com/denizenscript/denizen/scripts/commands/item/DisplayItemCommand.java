@@ -23,6 +23,13 @@ import java.util.UUID;
 
 public class DisplayItemCommand extends AbstractCommand implements Listener {
 
+    public DisplayItemCommand() {
+        setName("displayitem");
+        setSyntax("displayitem [<item>] [<location>] (duration:<value>)");
+        setRequiredArguments(2, 3);
+        Bukkit.getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+    }
+
     // <--[command]
     // @Name DisplayItem
     // @Syntax displayitem [<item>] [<location>] (duration:<value>)
@@ -56,11 +63,6 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
     // Use to save the dropped item to save entry 'item_dropped'.
     // - displayitem redstone <context.location> duration:10s save:item_dropped
     // -->
-
-    @Override
-    public void onEnable() {
-        Bukkit.getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

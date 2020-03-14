@@ -13,6 +13,12 @@ import org.bukkit.inventory.ItemStack;
 
 public class NBTCommand extends AbstractCommand {
 
+    public NBTCommand() {
+        setName("nbt");
+        setSyntax("(Deprecated)");
+        setRequiredArguments(0, -1);
+    }
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

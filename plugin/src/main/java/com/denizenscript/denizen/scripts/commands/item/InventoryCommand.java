@@ -21,6 +21,12 @@ import java.util.List;
 
 public class InventoryCommand extends AbstractCommand {
 
+    public InventoryCommand() {
+        setName("inventory");
+        setSyntax("inventory [open/close/copy/move/swap/add/remove/set/keep/exclude/fill/clear/update/adjust <mechanism>:<value>] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)");
+        setRequiredArguments(1, 6);
+    }
+
     // <--[language]
     // @name Virtual Inventories
     // @group Inventory System

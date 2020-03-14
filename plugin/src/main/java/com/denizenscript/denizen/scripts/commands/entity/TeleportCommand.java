@@ -21,6 +21,12 @@ import java.util.List;
 
 public class TeleportCommand extends AbstractCommand {
 
+    public TeleportCommand() {
+        setName("teleport");
+        setSyntax("teleport (<entity>|...) [<location>]");
+        setRequiredArguments(1, 2);
+    }
+
     // <--[command]
     // @Name Teleport
     // @Syntax teleport (<entity>|...) [<location>]

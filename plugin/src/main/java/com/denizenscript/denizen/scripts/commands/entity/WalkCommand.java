@@ -26,6 +26,15 @@ import java.util.List;
 
 public class WalkCommand extends AbstractCommand implements Holdable {
 
+    public WalkCommand() {
+        setName("walk");
+        setSyntax("walk (<entity>|...) [<location>/stop] (speed:<#.#>) (auto_range) (radius:<#.#>) (lookat:<location>)");
+        setRequiredArguments(1, 6);
+        if (Depends.citizens != null) {
+            DenizenAPI.getCurrentInstance().getServer().getPluginManager().registerEvents(new WalkCommandCitizensEvents(), DenizenAPI.getCurrentInstance());
+        }
+    }
+
     // <--[command]
     // @Name Walk
     // @Syntax walk (<entity>|...) [<location>/stop] (speed:<#.#>) (auto_range) (radius:<#.#>) (lookat:<location>)
@@ -259,14 +268,6 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                     i--;
                 }
             }
-        }
-    }
-
-    @Override
-    public void onEnable() {
-        if (Depends.citizens != null) {
-            DenizenAPI.getCurrentInstance().getServer().getPluginManager()
-                    .registerEvents(new WalkCommandCitizensEvents(), DenizenAPI.getCurrentInstance());
         }
     }
 }

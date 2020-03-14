@@ -17,6 +17,12 @@ import java.util.List;
 
 public class HealthCommand extends AbstractCommand {
 
+    public HealthCommand() {
+        setName("health");
+        setSyntax("health ({npc}/<entity>|...) [<#>] (state:{true}/false/toggle)");
+        setRequiredArguments(1, 3);
+    }
+
     // <--[command]
     // @Name Health
     // @Syntax health ({npc}/<entity>|...) [<#>] (state:{true}/false/toggle)

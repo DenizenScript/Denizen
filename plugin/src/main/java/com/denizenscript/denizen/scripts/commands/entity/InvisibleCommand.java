@@ -16,6 +16,12 @@ import org.bukkit.potion.PotionEffectType;
 
 public class InvisibleCommand extends AbstractCommand {
 
+    public InvisibleCommand() {
+        setName("invisible");
+        setSyntax("invisible [<entity>] (state:true/false/toggle)");
+        setRequiredArguments(1, 2);
+    }
+
     // <--[command]
     // @Name Invisible
     // @Syntax invisible [<entity>] (state:true/false/toggle)

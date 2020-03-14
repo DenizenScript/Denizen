@@ -16,6 +16,12 @@ import java.util.List;
 
 public class BurnCommand extends AbstractCommand {
 
+    public BurnCommand() {
+        setName("burn");
+        setSyntax("burn [<entity>|...] (duration:<value>)");
+        setRequiredArguments(1, 2);
+    }
+
     // <--[command]
     // @Name Burn
     // @Syntax burn [<entity>|...] (duration:<value>)

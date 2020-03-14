@@ -17,6 +17,12 @@ import java.util.List;
 
 public class TitleCommand extends AbstractCommand {
 
+    public TitleCommand() {
+        setName("debug");
+        setSyntax("title (title:<text>) (subtitle:<text>) (fade_in:<duration>/{1s}) (stay:<duration>/{3s}) (fade_out:<duration>/{1s}) (targets:<player>|...)");
+        setRequiredArguments(1, 6);
+    }
+
     // <--[command]
     // @Name Title
     // @Syntax title (title:<text>) (subtitle:<text>) (fade_in:<duration>/{1s}) (stay:<duration>/{3s}) (fade_out:<duration>/{1s}) (targets:<player>|...)

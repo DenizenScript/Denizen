@@ -21,6 +21,12 @@ import java.util.List;
 
 public class GiveCommand extends AbstractCommand {
 
+    public GiveCommand() {
+        setName("give");
+        setSyntax("give [money/xp/<item>|...] (quantity:<#>) (unlimit_stack_size) (to:<inventory>) (slot:<slot>)");
+        setRequiredArguments(1, 5);
+    }
+
     // <--[command]
     // @Name Give
     // @Syntax give [money/xp/<item>|...] (quantity:<#>) (unlimit_stack_size) (to:<inventory>) (slot:<slot>)

@@ -28,6 +28,12 @@ import java.util.List;
 
 public class PushCommand extends AbstractCommand implements Holdable {
 
+    public PushCommand() {
+        setName("push");
+        setSyntax("push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (duration:<duration>) (script:<name>) (def:<element>|...) (force_along) (precision:<#>) (no_rotate) (no_damage) (ignore_collision)");
+        setRequiredArguments(1, 12);
+    }
+
     // <--[command]
     // @Name Push
     // @Syntax push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (duration:<duration>) (script:<name>) (def:<element>|...) (force_along) (precision:<#>) (no_rotate) (no_damage) (ignore_collision)

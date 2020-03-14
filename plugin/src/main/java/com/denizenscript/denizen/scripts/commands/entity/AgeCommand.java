@@ -15,6 +15,12 @@ import java.util.List;
 
 public class AgeCommand extends AbstractCommand {
 
+    public AgeCommand() {
+        setName("age");
+        setSyntax("age [<entity>|...] (adult/baby/<age>) (lock)");
+        setRequiredArguments(1, 3);
+    }
+
     // <--[command]
     // @Name Age
     // @Syntax age [<entity>|...] (adult/baby/<age>) (lock)

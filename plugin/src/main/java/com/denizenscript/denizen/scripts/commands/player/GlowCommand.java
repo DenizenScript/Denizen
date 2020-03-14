@@ -22,6 +22,12 @@ import java.util.UUID;
 
 public class GlowCommand extends AbstractCommand {
 
+    public GlowCommand() {
+        setName("glow");
+        setSyntax("glow [<entity>|...] (<should glow>)");
+        setRequiredArguments(1, 2);
+    }
+
     // <--[command]
     // @Name Glow
     // @Syntax glow [<entity>|...] (<should glow>)

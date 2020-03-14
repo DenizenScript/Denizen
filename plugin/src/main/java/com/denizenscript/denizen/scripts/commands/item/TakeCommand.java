@@ -21,6 +21,12 @@ import java.util.List;
 
 public class TakeCommand extends AbstractCommand {
 
+    public TakeCommand() {
+        setName("take");
+        setSyntax("take [money/xp/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/nbt:<key>/<item>|...] (quantity:<#>) (from:<inventory>)");
+        setRequiredArguments(1, 3);
+    }
+
     // <--[command]
     // @Name Take
     // @Syntax take [money/xp/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/nbt:<key>/<item>|...] (quantity:<#>) (from:<inventory>)

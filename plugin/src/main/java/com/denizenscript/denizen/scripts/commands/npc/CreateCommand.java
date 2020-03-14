@@ -16,6 +16,12 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class CreateCommand extends AbstractCommand {
 
+    public CreateCommand() {
+        setName("create");
+        setSyntax("create [<entity>] [<name>] (<location>) (traits:<trait>|...)");
+        setRequiredArguments(1, 4);
+    }
+
     // <--[command]
     // @Name Create
     // @Syntax create [<entity>] [<name>] (<location>) (traits:<trait>|...)

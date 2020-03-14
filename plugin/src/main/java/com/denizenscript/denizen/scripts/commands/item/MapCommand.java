@@ -23,6 +23,12 @@ import java.util.List;
 
 public class MapCommand extends AbstractCommand {
 
+    public MapCommand() {
+        setName("map");
+        setSyntax("map [<#>/new:<world>] [reset:<location>/image:<file> (resize)/script:<script>] (x:<#>) (y:<#>)");
+        setRequiredArguments(2, 5);
+    }
+
     // <--[command]
     // @Name Map
     // @Syntax map [<#>/new:<world>] [reset:<location>/image:<file> (resize)/script:<script>] (x:<#>) (y:<#>)

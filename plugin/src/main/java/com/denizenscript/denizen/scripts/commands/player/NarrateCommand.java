@@ -23,6 +23,13 @@ import java.util.List;
 
 public class NarrateCommand extends AbstractCommand {
 
+    public NarrateCommand() {
+        setName("narrate");
+        setSyntax("narrate [<text>] (targets:<player>|...) (format:<script>) (per_player)");
+        setRequiredArguments(1, 4);
+        setParseArgs(false);
+    }
+
     // <--[command]
     // @Name Narrate
     // @Syntax narrate [<text>] (targets:<player>|...) (format:<script>) (per_player)
@@ -56,11 +63,6 @@ public class NarrateCommand extends AbstractCommand {
     // Use to narrate text to a unique message to every player on the server.
     // - narrate "Hello <player.name>, your secret code is <util.random.duuid>." targets:<server.list_online_players> per_player
     // -->
-
-    @Override
-    public void onEnable() {
-        setParseArgs(false);
-    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

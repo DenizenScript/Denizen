@@ -17,6 +17,12 @@ import org.bukkit.entity.EntityType;
 
 public class StatisticCommand extends AbstractCommand {
 
+    public StatisticCommand() {
+        setName("statistic");
+        setSyntax("statistic [<statistic>] [add/take/set] (<#>) (qualifier:<material>/<entity>)");
+        setRequiredArguments(2, 4);
+    }
+
     // <--[command]
     // @Name Statistic
     // @Syntax statistic [<statistic>] [add/take/set] (<#>) (qualifier:<material>/<entity>)

@@ -17,11 +17,26 @@ import java.util.Map;
 
 public class PauseCommand extends AbstractCommand {
 
+    public static class ResumeCommand extends PauseCommand {
+
+        public ResumeCommand() {
+            setName("resume");
+            setSyntax("resume [waypoints/activity] (<duration>)");
+        }
+    }
+
+    public PauseCommand() {
+        setName("pause");
+        setSyntax("pause [waypoints/activity] (<duration>)");
+        setRequiredArguments(1, 2);
+    }
+
     // <--[command]
     // @Name Pause
     // @Syntax pause [waypoints/activity] (<duration>)
     // @Required 1
     // @Maximum 2
+    // @Plugin Citizens
     // @Short Pauses an NPC's waypoint navigation or goal activity temporarily or indefinitely.
     // @Group npc
     //

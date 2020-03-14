@@ -21,6 +21,12 @@ import java.util.HashMap;
 
 public class BreakCommand extends AbstractCommand implements Holdable {
 
+    public BreakCommand() {
+        setName("break");
+        setSyntax("break [<location>] (<npc>) (radius:<#.#>)");
+        setRequiredArguments(1, 3);
+    }
+
     // <--[command]
     // @Name Break
     // @Syntax break [<location>] (<npc>) (radius:<#.#>)

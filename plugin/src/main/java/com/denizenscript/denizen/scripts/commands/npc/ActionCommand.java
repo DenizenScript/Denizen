@@ -16,11 +16,18 @@ import java.util.Map;
 
 public class ActionCommand extends AbstractCommand {
 
+    public ActionCommand() {
+        setName("action");
+        setSyntax("action [<action name>|...] (<npc>|...) (context:<name>|<object>|...)");
+        setRequiredArguments(1, 3);
+    }
+
     // <--[command]
     // @Name Action
     // @Syntax action [<action name>|...] (<npc>|...) (context:<name>|<object>|...)
     // @Required 1
     // @Maximum 3
+    // @Plugin Citizens
     // @Short Manually fires an NPC action.
     // @Group npc
     //

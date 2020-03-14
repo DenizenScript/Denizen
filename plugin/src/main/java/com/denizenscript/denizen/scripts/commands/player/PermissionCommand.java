@@ -14,6 +14,12 @@ import org.bukkit.World;
 
 public class PermissionCommand extends AbstractCommand {
 
+    public PermissionCommand() {
+        setName("permission");
+        setSyntax("permission [add/remove] [permission] (group:<name>) (<world>)");
+        setRequiredArguments(2, 4);
+    }
+
     // <--[command]
     // @Name Permission
     // @Syntax permission [add/remove] [permission] (group:<name>) (<world>)

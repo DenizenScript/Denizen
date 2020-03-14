@@ -18,6 +18,12 @@ import java.util.List;
 
 public class MoneyCommand extends AbstractCommand {
 
+    public MoneyCommand() {
+        setName("money");
+        setSyntax("money [give/take/set] (quantity:<#.#>) (players:<player>|...)");
+        setRequiredArguments(1, 3);
+    }
+
     // <--[command]
     // @Name Money
     // @Syntax money [give/take/set] (quantity:<#.#>) (players:<player>|...)

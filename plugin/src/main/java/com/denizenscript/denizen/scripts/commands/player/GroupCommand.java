@@ -14,6 +14,12 @@ import org.bukkit.World;
 
 public class GroupCommand extends AbstractCommand {
 
+    public GroupCommand() {
+        setName("group");
+        setSyntax("group [add/remove/set] [<group>] (<world>)");
+        setRequiredArguments(2, 3);
+    }
+
     // <--[command]
     // @Name Group
     // @Syntax group [add/remove/set] [<group>] (<world>)

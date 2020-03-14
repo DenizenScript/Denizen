@@ -24,6 +24,12 @@ import java.util.Map;
 
 public class AdvancementCommand extends AbstractCommand {
 
+    public AdvancementCommand() {
+        setName("advancement");
+        setSyntax("advancement [id:<name>] (delete/grant:<players>/revoke:<players>/{create}) (parent:<name>) (icon:<item>) (title:<text>) (description:<text>) (background:<key>) (frame:<type>) (toast:<boolean>) (announce:<boolean>) (hidden:<boolean>) (x:<offset>) (y:<offset>)");
+        setRequiredArguments(1, 13);
+    }
+
     // <--[command]
     // @Name Advancement
     // @Syntax advancement [id:<name>] (delete/grant:<players>/revoke:<players>/{create}) (parent:<name>) (icon:<item>) (title:<text>) (description:<text>) (background:<key>) (frame:<type>) (toast:<boolean>) (announce:<boolean>) (hidden:<boolean>) (x:<offset>) (y:<offset>)

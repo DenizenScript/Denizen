@@ -16,6 +16,12 @@ import java.util.Map;
 
 public class EngageCommand extends AbstractCommand {
 
+    public EngageCommand() {
+        setName("engage");
+        setSyntax("engage (<duration>)");
+        setRequiredArguments(0, 1);
+    }
+
     // <--[command]
     // @Name Engage
     // @Syntax engage (<duration>)

@@ -8,6 +8,12 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
 public class DisengageCommand extends AbstractCommand {
 
+    public DisengageCommand() {
+        setName("disengage");
+        setSyntax("disengage");
+        setRequiredArguments(0, 0);
+    }
+
     // <--[command]
     // @Name Disengage
     // @Syntax disengage

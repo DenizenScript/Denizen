@@ -18,6 +18,12 @@ import java.util.List;
 
 public class RemoveCommand extends AbstractCommand {
 
+    public RemoveCommand() {
+        setName("remove");
+        setSyntax("remove [<entity>|...] (world:<world>)");
+        setRequiredArguments(1, 2);
+    }
+
     // <--[command]
     // @Name Remove
     // @Syntax remove [<entity>|...] (world:<world>)

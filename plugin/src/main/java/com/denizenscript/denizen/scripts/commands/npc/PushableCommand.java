@@ -13,11 +13,18 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
 public class PushableCommand extends AbstractCommand {
 
+    public PushableCommand() {
+        setName("pushable");
+        setSyntax("pushable (state:true/false/{toggle}) (delay:<duration>) (returnable:true/false)");
+        setRequiredArguments(0, 3);
+    }
+
     // <--[command]
     // @Name Pushable
     // @Syntax pushable (state:true/false/{toggle}) (delay:<duration>) (returnable:true/false)
     // @Required 0
     // @Maximum 3
+    // @Plugin Citizens
     // @Short Edits the pushable trait for NPCs.
     // @Group npc
     //

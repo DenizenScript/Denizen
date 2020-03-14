@@ -15,6 +15,12 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
 public class FollowCommand extends AbstractCommand {
 
+    public FollowCommand() {
+        setName("follow");
+        setSyntax("follow (followers:<entity>|...) (stop/target:<entity>) (lead:<#.#>) (max:<#.#>) (speed:<#.#>) (allow_wander)");
+        setRequiredArguments(0, 6);
+    }
+
     // <--[command]
     // @Name Follow
     // @Syntax follow (followers:<entity>|...) (stop/target:<entity>) (lead:<#.#>) (max:<#.#>) (speed:<#.#>) (allow_wander)

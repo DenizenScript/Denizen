@@ -25,6 +25,12 @@ import java.util.UUID;
 
 public class ToastCommand extends AbstractCommand {
 
+    public ToastCommand() {
+        setName("toast");
+        setSyntax("toast [<text>] (targets:<player>|...) (icon:<item>) (frame:{task}/challenge/goal) (background:<texture>)");
+        setRequiredArguments(1, 5);
+    }
+
     // <--[command]
     // @Name Toast
     // @Syntax toast [<text>] (targets:<player>|...) (icon:<item>) (frame:{task}/challenge/goal) (background:<texture>)

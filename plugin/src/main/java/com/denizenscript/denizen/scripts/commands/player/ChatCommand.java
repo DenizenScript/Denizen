@@ -16,6 +16,12 @@ import org.bukkit.entity.Entity;
 
 public class ChatCommand extends AbstractCommand {
 
+    public ChatCommand() {
+        setName("chat");
+        setSyntax("chat [<text>] (no_target/targets:<entity>|...) (talkers:<entity>|...) (range:<#.#>)");
+        setRequiredArguments(1, 4);
+    }
+
     // TODO: Should the chat command be in the NPC group instead?
     // <--[command]
     // @Name Chat

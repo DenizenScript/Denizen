@@ -19,6 +19,12 @@ import java.util.List;
 
 public class HurtCommand extends AbstractCommand {
 
+    public HurtCommand() {
+        setName("hurt");
+        setSyntax("hurt (<#.#>) ({player}/<entity>|...) (cause:<cause>)");
+        setRequiredArguments(0, 3);
+    }
+
     // <--[command]
     // @Name Hurt
     // @Syntax hurt (<#.#>) ({player}/<entity>|...) (cause:<cause>)

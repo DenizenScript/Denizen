@@ -19,6 +19,12 @@ import java.util.List;
 
 public class AnimateCommand extends AbstractCommand {
 
+    public AnimateCommand() {
+        setName("animate");
+        setSyntax("animate [<entity>|...] [animation:<name>]");
+        setRequiredArguments(2, 2);
+    }
+
     // <--[command]
     // @Name Animate
     // @Syntax animate [<entity>|...] [animation:<name>]

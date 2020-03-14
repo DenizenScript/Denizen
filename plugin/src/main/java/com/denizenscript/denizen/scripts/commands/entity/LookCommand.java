@@ -20,6 +20,12 @@ import java.util.List;
 
 public class LookCommand extends AbstractCommand {
 
+    public LookCommand() {
+        setName("look");
+        setSyntax("look (<entity>|...) [<location>] (duration:<duration>)");
+        setRequiredArguments(1, 3);
+    }
+
     // <--[command]
     // @Name Look
     // @Syntax look (<entity>|...) [<location>] (duration:<duration>)

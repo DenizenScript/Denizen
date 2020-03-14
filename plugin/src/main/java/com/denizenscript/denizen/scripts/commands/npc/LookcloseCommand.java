@@ -14,6 +14,12 @@ import net.citizensnpcs.trait.LookClose;
 
 public class LookcloseCommand extends AbstractCommand {
 
+    public LookcloseCommand() {
+        setName("lookclose");
+        setSyntax("lookclose (<npc>) (state:<true/false>) (range:<#>) (realistic)");
+        setRequiredArguments(0, 4);
+    }
+
     // <--[command]
     // @Name LookClose
     // @Syntax lookclose (<npc>) (state:<true/false>) (range:<#>) (realistic)

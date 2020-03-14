@@ -19,6 +19,12 @@ import java.util.List;
 
 public class ShowFakeCommand extends AbstractCommand {
 
+    public ShowFakeCommand() {
+        setName("showfake");
+        setSyntax("showfake [<material>|.../cancel] [<location>|...] (players:<player>|...) (d:<duration>{10s})");
+        setRequiredArguments(2, 4);
+    }
+
     // <--[command]
     // @Name ShowFake
     // @Syntax showfake [<material>|.../cancel] [<location>|...] (players:<player>|...) (d:<duration>{10s})

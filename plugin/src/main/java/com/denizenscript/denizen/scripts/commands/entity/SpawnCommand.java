@@ -18,6 +18,12 @@ import java.util.List;
 
 public class SpawnCommand extends AbstractCommand {
 
+    public SpawnCommand() {
+        setName("spawn");
+        setSyntax("spawn [<entity>|...] [<location>] (target:<entity>) (persistent)");
+        setRequiredArguments(2, 4);
+    }
+
     // <--[command]
     // @Name Spawn
     // @Syntax spawn [<entity>|...] [<location>] (target:<entity>) (persistent)

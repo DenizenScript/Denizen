@@ -13,6 +13,12 @@ import org.bukkit.entity.Player;
 
 public class CompassCommand extends AbstractCommand {
 
+    public CompassCommand() {
+        setName("compass");
+        setSyntax("compass [<location>/reset]");
+        setRequiredArguments(1, 1);
+    }
+
     // <--[command]
     // @Name Compass
     // @Syntax compass [<location>/reset]
