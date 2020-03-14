@@ -23,6 +23,7 @@ public class LeashCommand extends AbstractCommand {
     // @Name Leash
     // @Syntax leash (cancel) [<entity>|...] (holder:<entity>/<location>)
     // @Required 1
+    // @Maximum 3
     // @Short Sticks a leash on target entity, held by a fence or another entity.
     // @Group entity
     //

@@ -19,6 +19,7 @@ public class FollowCommand extends AbstractCommand {
     // @Name Follow
     // @Syntax follow (followers:<entity>|...) (stop/target:<entity>) (lead:<#.#>) (max:<#.#>) (speed:<#.#>) (allow_wander)
     // @Required 0
+    // @Maximum 6
     // @Short Causes a list of entities to follow a target.
     // @Group entity
     //

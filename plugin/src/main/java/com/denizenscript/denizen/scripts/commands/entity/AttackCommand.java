@@ -21,6 +21,7 @@ public class AttackCommand extends AbstractCommand {
     // @Name Attack
     // @Syntax attack (<entity>|...) (target:<entity>/cancel)
     // @Required 0
+    // @Maximum 2
     // @Short Makes an entity, or list of entities, attack a target.
     // @Group entity
     //

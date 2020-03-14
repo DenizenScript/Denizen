@@ -27,6 +27,7 @@ public class MapCommand extends AbstractCommand {
     // @Name Map
     // @Syntax map [<#>/new:<world>] [reset:<location>/image:<file> (resize)/script:<script>] (x:<#>) (y:<#>)
     // @Required 2
+    // @Maximum 5
     // @Short Modifies a new or existing map by adding images or text.
     // @Group item
     //

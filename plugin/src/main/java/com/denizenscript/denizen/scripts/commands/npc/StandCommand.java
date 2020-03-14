@@ -17,6 +17,7 @@ public class StandCommand extends AbstractCommand {
     // @Name Stand
     // @Syntax stand
     // @Required 0
+    // @Maximum 0
     // @Plugin Citizens
     // @Short Causes the NPC to stand. To make them sit, see <@link command Sit>.
     // @Group npc

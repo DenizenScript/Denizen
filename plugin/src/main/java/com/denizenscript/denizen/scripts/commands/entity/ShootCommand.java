@@ -40,6 +40,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
     // @Name Shoot
     // @Syntax shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (speed:<#.#>) (script:<name>) (def:<element>|...) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)
     // @Required 1
+    // @Maximum 11
     // @Short Shoots an entity through the air, useful for things like firing arrows.
     // @Group entity
     //

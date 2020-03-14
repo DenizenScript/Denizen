@@ -21,6 +21,7 @@ public class MountCommand extends AbstractCommand {
     // @Name Mount
     // @Syntax mount (cancel) [<entity>|...] (<location>)
     // @Required 0
+    // @Maximum 3
     // @Short Mounts one entity onto another.
     // @Group entity
     //

@@ -20,6 +20,7 @@ public class InvisibleCommand extends AbstractCommand {
     // @Name Invisible
     // @Syntax invisible [<entity>] (state:true/false/toggle)
     // @Required 1
+    // @Maximum 2
     // @Short Makes an NPC or entity go invisible
     // @Group entity
     //

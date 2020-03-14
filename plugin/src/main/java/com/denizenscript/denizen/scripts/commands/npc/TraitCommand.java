@@ -17,6 +17,7 @@ public class TraitCommand extends AbstractCommand {
     // @Name Trait
     // @Syntax trait (state:true/false/{toggle}) [<trait>]
     // @Required 1
+    // @Maximum 2
     // @Plugin Citizens
     // @Short Adds or removes a trait from an NPC.
     // @Group npc

@@ -20,6 +20,7 @@ public class BurnCommand extends AbstractCommand {
     // @Name Burn
     // @Syntax burn [<entity>|...] (duration:<value>)
     // @Required 1
+    // @Maximum 2
     // @Short Sets a list of entities on fire.
     // @Group entity
     //

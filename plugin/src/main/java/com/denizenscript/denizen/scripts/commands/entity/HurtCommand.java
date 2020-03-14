@@ -23,6 +23,7 @@ public class HurtCommand extends AbstractCommand {
     // @Name Hurt
     // @Syntax hurt (<#.#>) ({player}/<entity>|...) (cause:<cause>)
     // @Required 0
+    // @Maximum 3
     // @Short Hurts the player or a list of entities.
     // @Group entity
     //

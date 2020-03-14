@@ -12,6 +12,7 @@ public class DisengageCommand extends AbstractCommand {
     // @Name Disengage
     // @Syntax disengage
     // @Required 0
+    // @Maximum 0
     // @Plugin Citizens
     // @Short Enables an NPCs triggers that have been temporarily disabled by the engage command.
     // @Group npc

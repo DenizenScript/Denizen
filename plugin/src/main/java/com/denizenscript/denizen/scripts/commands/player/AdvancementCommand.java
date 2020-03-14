@@ -28,6 +28,7 @@ public class AdvancementCommand extends AbstractCommand {
     // @Name Advancement
     // @Syntax advancement [id:<name>] (delete/grant:<players>/revoke:<players>/{create}) (parent:<name>) (icon:<item>) (title:<text>) (description:<text>) (background:<key>) (frame:<type>) (toast:<boolean>) (announce:<boolean>) (hidden:<boolean>) (x:<offset>) (y:<offset>)
     // @Required 1
+    // @Maximum 13
     // @Short Controls a custom advancement.
     // @Group player
     //

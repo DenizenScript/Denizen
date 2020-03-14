@@ -20,6 +20,7 @@ public class CreateCommand extends AbstractCommand {
     // @Name Create
     // @Syntax create [<entity>] [<name>] (<location>) (traits:<trait>|...)
     // @Required 1
+    // @Maximum 4
     // @Plugin Citizens
     // @Short Creates a new NPC, and optionally spawns it at a location.
     // @Group npc

@@ -29,6 +29,7 @@ public class ToastCommand extends AbstractCommand {
     // @Name Toast
     // @Syntax toast [<text>] (targets:<player>|...) (icon:<item>) (frame:{task}/challenge/goal) (background:<texture>)
     // @Required 1
+    // @Maximum 5
     // @Short Shows the player a custom advancement toast.
     // @Group player
     //

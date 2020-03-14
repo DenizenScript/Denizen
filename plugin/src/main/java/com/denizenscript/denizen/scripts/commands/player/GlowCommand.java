@@ -26,6 +26,7 @@ public class GlowCommand extends AbstractCommand {
     // @Name Glow
     // @Syntax glow [<entity>|...] (<should glow>)
     // @Required 1
+    // @Maximum 2
     // @Short Makes the linked player see the chosen entities as glowing.
     // @Group player
     //

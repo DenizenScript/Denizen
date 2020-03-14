@@ -17,6 +17,7 @@ public class SitCommand extends AbstractCommand {
     // @Name Sit
     // @Syntax sit (<location>)
     // @Required 0
+    // @Maximum 1
     // @Short Causes the NPC to sit. To make them stand, see <@link command Stand>.
     // @Group npc
     //

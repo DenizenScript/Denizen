@@ -21,6 +21,7 @@ public class StatisticCommand extends AbstractCommand {
     // @Name Statistic
     // @Syntax statistic [<statistic>] [add/take/set] (<#>) (qualifier:<material>/<entity>)
     // @Required 2
+    // @Maximum 4
     // @Short Changes the specified statistic value for a player.
     // @Group player
     //

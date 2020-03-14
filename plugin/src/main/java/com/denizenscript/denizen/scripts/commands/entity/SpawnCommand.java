@@ -22,6 +22,7 @@ public class SpawnCommand extends AbstractCommand {
     // @Name Spawn
     // @Syntax spawn [<entity>|...] [<location>] (target:<entity>) (persistent)
     // @Required 2
+    // @Maximum 4
     // @Short Spawns a list of entities at a certain location.
     // @Group entity
     //

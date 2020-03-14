@@ -21,6 +21,7 @@ public class TitleCommand extends AbstractCommand {
     // @Name Title
     // @Syntax title (title:<text>) (subtitle:<text>) (fade_in:<duration>/{1s}) (stay:<duration>/{3s}) (fade_out:<duration>/{1s}) (targets:<player>|...)
     // @Required 1
+    // @Maximum 6
     // @Short Displays a title to specified players.
     // @Group player
     //

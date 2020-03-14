@@ -18,6 +18,7 @@ public class FeedCommand extends AbstractCommand {
     // @Name Feed
     // @Syntax feed (<entity>) (amount:<#>) (saturation:<#.#>)
     // @Required 0
+    // @Maximum 3
     // @Short Feed the player or npc.
     // @Group entity
     //

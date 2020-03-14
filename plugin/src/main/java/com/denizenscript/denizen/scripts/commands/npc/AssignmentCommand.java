@@ -16,6 +16,7 @@ public class AssignmentCommand extends AbstractCommand {
     // @Name Assignment
     // @Syntax assignment [set/remove] (script:<name>)
     // @Required 1
+    // @Maximum 2
     // @Plugin Citizens
     // @Short Changes an NPC's assignment.
     // @Group npc

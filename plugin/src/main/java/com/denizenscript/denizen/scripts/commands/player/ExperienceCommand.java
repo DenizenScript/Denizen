@@ -15,6 +15,7 @@ public class ExperienceCommand extends AbstractCommand {
     // @Name Experience
     // @Syntax experience [{set}/give/take] (level) [<#>]
     // @Required 2
+    // @Maximum 3
     // @Short Gives or takes experience points to the player.
     // @Group player
     //

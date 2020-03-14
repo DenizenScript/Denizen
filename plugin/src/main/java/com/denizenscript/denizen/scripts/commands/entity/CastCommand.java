@@ -22,6 +22,7 @@ public class CastCommand extends AbstractCommand {
     // @Name Cast
     // @Syntax cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...) (no_ambient) (hide_particles)
     // @Required 1
+    // @Maximum 7
     // @Short Casts a potion effect to a list of entities.
     // @Group entity
     //

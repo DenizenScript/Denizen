@@ -18,6 +18,7 @@ public class TeamCommand extends AbstractCommand {
     // @Name Team
     // @Syntax team (id:<scoreboard>/{main}) [name:<team>] (add:<entry>|...) (remove:<entry>|...) (prefix:<prefix>) (suffix:<suffix>)
     // @Required 2
+    // @Maximum 6
     // @Short Controls scoreboard teams.
     // @Group player
     //

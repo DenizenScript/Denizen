@@ -18,6 +18,7 @@ public class LookcloseCommand extends AbstractCommand {
     // @Name LookClose
     // @Syntax lookclose (<npc>) (state:<true/false>) (range:<#>) (realistic)
     // @Required 0
+    // @Maximum 4
     // @Plugin Citizens
     // @Short Interacts with an NPCs 'lookclose' trait as provided by Citizens2.
     // @Group npc

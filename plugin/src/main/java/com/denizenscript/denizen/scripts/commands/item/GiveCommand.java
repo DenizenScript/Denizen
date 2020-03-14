@@ -25,6 +25,7 @@ public class GiveCommand extends AbstractCommand {
     // @Name Give
     // @Syntax give [money/xp/<item>|...] (quantity:<#>) (unlimit_stack_size) (to:<inventory>) (slot:<slot>)
     // @Required 1
+    // @Maximum 5
     // @Short Gives the player an item, xp, or money.
     // @Group item
     //

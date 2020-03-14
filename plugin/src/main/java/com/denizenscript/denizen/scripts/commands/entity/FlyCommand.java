@@ -31,6 +31,7 @@ public class FlyCommand extends AbstractCommand {
     // @Name Fly
     // @Syntax fly (cancel) [<entity>|...] (controller:<player>) (origin:<location>) (destinations:<location>|...) (speed:<#.#>) (rotationthreshold:<#.#>)
     // @Required 1
+    // @Maximum 7
     // @Short Make an entity fly where its controller is looking or fly to waypoints.
     // @Group entity
     //

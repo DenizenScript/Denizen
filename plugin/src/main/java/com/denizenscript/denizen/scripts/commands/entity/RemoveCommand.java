@@ -22,6 +22,7 @@ public class RemoveCommand extends AbstractCommand {
     // @Name Remove
     // @Syntax remove [<entity>|...] (world:<world>)
     // @Required 1
+    // @Maximum 2
     // @Short Despawns an entity or list of entities, permanently removing any NPCs.
     // @Group entity
     // @Description

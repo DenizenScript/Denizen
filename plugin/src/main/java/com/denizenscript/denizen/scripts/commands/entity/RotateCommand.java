@@ -23,6 +23,7 @@ public class RotateCommand extends AbstractCommand implements Holdable {
     // @Name Rotate
     // @Syntax rotate (cancel) (<entity>|...) (yaw:<#.#>) (pitch:<#.#>) (infinite/duration:<duration>) (frequency:<duration>)
     // @Required 1
+    // @Maximum 6
     // @Short Rotates a list of entities.
     // @Group entity
     //

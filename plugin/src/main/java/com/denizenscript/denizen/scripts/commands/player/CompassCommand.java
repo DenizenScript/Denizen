@@ -17,6 +17,7 @@ public class CompassCommand extends AbstractCommand {
     // @Name Compass
     // @Syntax compass [<location>/reset]
     // @Required 1
+    // @Maximum 1
     // @Short Redirects the player's compass to target the given location.
     // @Group player
     //

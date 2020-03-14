@@ -18,6 +18,7 @@ public class KickCommand extends AbstractCommand {
     // @Name kick
     // @Syntax kick [<player>|...] (reason:<text>)
     // @Required 1
+    // @Maximum 2
     // @Short Kicks a player from the server.
     // @Group player
     //

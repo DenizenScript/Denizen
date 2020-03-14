@@ -21,6 +21,7 @@ public class PauseCommand extends AbstractCommand {
     // @Name Pause
     // @Syntax pause [waypoints/activity] (<duration>)
     // @Required 1
+    // @Maximum 2
     // @Short Pauses an NPC's waypoint navigation or goal activity temporarily or indefinitely.
     // @Group npc
     //

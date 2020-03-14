@@ -20,6 +20,7 @@ public class FishCommand extends AbstractCommand {
     // @Name Fish
     // @Syntax fish [<location>] (catch:{none}/default/junk/treasure/fish) (stop) (chance:<#>)
     // @Required 1
+    // @Maximum 4
     // @Short Causes an NPC to begin fishing around a specified location.
     // @Group npc
     //

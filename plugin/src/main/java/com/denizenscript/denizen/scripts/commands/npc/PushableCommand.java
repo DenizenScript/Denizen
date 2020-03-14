@@ -17,6 +17,7 @@ public class PushableCommand extends AbstractCommand {
     // @Name Pushable
     // @Syntax pushable (state:true/false/{toggle}) (delay:<duration>) (returnable:true/false)
     // @Required 0
+    // @Maximum 3
     // @Short Edits the pushable trait for NPCs.
     // @Group npc
     //

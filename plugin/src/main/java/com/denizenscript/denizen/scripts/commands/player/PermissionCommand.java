@@ -18,6 +18,7 @@ public class PermissionCommand extends AbstractCommand {
     // @Name Permission
     // @Syntax permission [add/remove] [permission] (group:<name>) (<world>)
     // @Required 2
+    // @Maximum 4
     // @Short Gives or takes a permission node to/from the player or group.
     // @Group player
     // @Plugin Vault

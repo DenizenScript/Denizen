@@ -22,6 +22,7 @@ public class DespawnCommand extends AbstractCommand {
     // @Syntax despawn (<npc>|...)
     // @Plugin Citizens
     // @Required 0
+    // @Maximum 1
     // @Short Temporarily despawns the linked NPC or a list of NPCs.
     // @Group npc
     //

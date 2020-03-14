@@ -29,6 +29,7 @@ public class SidebarCommand extends AbstractCommand {
     // @Name Sidebar
     // @Syntax sidebar (add/remove/{set}/set_line) (title:<title>) (scores:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...) (per_player)
     // @Required 1
+    // @Maximum 8
     // @Short Controls clientside-only sidebars.
     // @Group player
     //

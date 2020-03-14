@@ -25,6 +25,7 @@ public class BreakCommand extends AbstractCommand implements Holdable {
     // @Name Break
     // @Syntax break [<location>] (<npc>) (radius:<#.#>)
     // @Required 1
+    // @Maximum 3
     // @Plugin Citizens
     // @Short Makes an NPC walk over and break a block.
     // @Group npc

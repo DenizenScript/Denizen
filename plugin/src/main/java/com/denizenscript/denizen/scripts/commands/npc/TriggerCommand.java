@@ -17,6 +17,7 @@ public class TriggerCommand extends AbstractCommand {
     // @Name Trigger
     // @Syntax trigger [name:<trigger>] (state:{toggle}/true/false) (cooldown:<duration>) (radius:<#>)
     // @Required 1
+    // @Maximum 4
     // @Short Enables or disables a trigger.
     // @Group npc
     // @Guide https://guide.denizenscript.com/guides/npcs/interact-scripts.html

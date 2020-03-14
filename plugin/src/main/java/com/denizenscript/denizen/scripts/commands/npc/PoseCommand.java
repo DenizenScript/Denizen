@@ -19,6 +19,7 @@ public class PoseCommand extends AbstractCommand {
     // @Name Pose
     // @Syntax pose (add/remove/{assume}) [id:<name>] (player/{npc}) (<location>)
     // @Required 1
+    // @Maximum 4
     // @Plugin Citizens
     // @Short Rotates the player or NPC to match a pose, or adds/removes an NPC's poses.
     // @Group npc

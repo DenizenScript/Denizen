@@ -21,6 +21,7 @@ public class HealthCommand extends AbstractCommand {
     // @Name Health
     // @Syntax health ({npc}/<entity>|...) [<#>] (state:{true}/false/toggle)
     // @Required 1
+    // @Maximum 3
     // @Short Changes the target's maximum health.
     // @Group entity
     //

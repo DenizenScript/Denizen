@@ -21,6 +21,7 @@ public class ChatCommand extends AbstractCommand {
     // @Name Chat
     // @Syntax chat [<text>] (no_target/targets:<entity>|...) (talkers:<entity>|...) (range:<#.#>)
     // @Required 1
+    // @Maximum 4
     // @Plugin Citizens
     // @Short Causes an NPC/NPCs to send a chat message to nearby players.
     // @Group player

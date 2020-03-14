@@ -27,6 +27,7 @@ public class NarrateCommand extends AbstractCommand {
     // @Name Narrate
     // @Syntax narrate [<text>] (targets:<player>|...) (format:<script>) (per_player)
     // @Required 1
+    // @Maximum 4
     // @Short Shows some text to the player.
     // @Group player
     //
@@ -63,9 +64,6 @@ public class NarrateCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        if (scriptEntry.getArguments().size() > 4) { // TODO: Use this more often!
-            throw new InvalidArgumentsException("Too many arguments! Did you forget a 'quote'?");
-        }
         for (Argument arg : ArgumentHelper.interpret(scriptEntry, scriptEntry.getOriginalArguments())) {
             if (!scriptEntry.hasObject("format")
                     && arg.matchesPrefix("format", "f")) {

@@ -28,6 +28,7 @@ public class FakeItemCommand extends AbstractCommand {
     // @Name FakeItem
     // @Syntax fakeitem [<item>|...] [slot:<slot>] (duration:<duration>) (players:<player>|...) (player_only)
     // @Required 2
+    // @Maximum 5
     // @Short Show a fake item in a player's inventory.
     // @Group item
     //

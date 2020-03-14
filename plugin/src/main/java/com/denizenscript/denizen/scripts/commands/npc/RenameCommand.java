@@ -17,6 +17,7 @@ public class RenameCommand extends AbstractCommand {
     // @Name Rename
     // @Syntax rename [<name>]
     // @Required 1
+    // @Maximum 1
     // @Plugin Citizens
     // @Short Renames the linked NPC.
     // @Group npc

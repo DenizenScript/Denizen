@@ -26,6 +26,7 @@ public class HeadCommand extends AbstractCommand {
     // @Name Head
     // @Syntax head (<entity>|...) [skin:<player_name>]
     // @Required 1
+    // @Maximum 2
     // @Short Makes players or NPCs wear a specific player's head.
     // @Group entity
     //

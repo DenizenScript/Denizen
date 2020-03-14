@@ -15,6 +15,7 @@ public class VulnerableCommand extends AbstractCommand {
     // @Name Vulnerable
     // @Syntax vulnerable (state:{true}/false/toggle)
     // @Required 0
+    // @Maximum 1
     // @Plugin Citizens
     // @Short Sets whether an NPC is vulnerable.
     // @Group npc

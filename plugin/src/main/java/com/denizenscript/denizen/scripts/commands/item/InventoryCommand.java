@@ -57,6 +57,7 @@ public class InventoryCommand extends AbstractCommand {
     // @Name Inventory
     // @Syntax inventory [open/close/copy/move/swap/add/remove/set/keep/exclude/fill/clear/update/adjust <mechanism>:<value>] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)
     // @Required 1
+    // @Maximum 6
     // @Short Edits the inventory of a player, NPC, or chest.
     // @Group item
     //

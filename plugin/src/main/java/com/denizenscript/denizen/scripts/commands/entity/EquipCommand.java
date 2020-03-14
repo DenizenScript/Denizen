@@ -29,6 +29,7 @@ public class EquipCommand extends AbstractCommand {
     // @Name Equip
     // @Syntax equip (<entity>|...) (hand:<item>) (offhand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>) (saddle:<item>) (horse_armor:<item>)
     // @Required 1
+    // @Maximum 9
     // @Short Equips items and armor on a list of entities.
     // @Group entity
     //

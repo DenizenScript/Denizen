@@ -24,6 +24,7 @@ public class ActionBarCommand extends AbstractCommand {
     // @Name ActionBar
     // @Syntax actionbar [<text>] (targets:<player>|...) (format:<name>)
     // @Required 1
+    // @Maximum 3
     // @Short Sends a message to a player's action bar.
     // @group player
     //

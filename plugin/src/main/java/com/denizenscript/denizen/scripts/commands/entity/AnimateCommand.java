@@ -23,6 +23,7 @@ public class AnimateCommand extends AbstractCommand {
     // @Name Animate
     // @Syntax animate [<entity>|...] [animation:<name>]
     // @Required 2
+    // @Maximum 2
     // @Plugin Citizens
     // @Short Makes a list of entities perform a certain animation.
     // @Group entity

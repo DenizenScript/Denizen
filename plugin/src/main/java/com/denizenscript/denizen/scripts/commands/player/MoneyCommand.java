@@ -22,6 +22,7 @@ public class MoneyCommand extends AbstractCommand {
     // @Name Money
     // @Syntax money [give/take/set] (quantity:<#.#>) (players:<player>|...)
     // @Required 1
+    // @Maximum 3
     // @Short Manage a player's money.
     // @Group player
     // @Plugin Vault

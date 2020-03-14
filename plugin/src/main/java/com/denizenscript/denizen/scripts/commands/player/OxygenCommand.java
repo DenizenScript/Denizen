@@ -15,6 +15,7 @@ public class OxygenCommand extends AbstractCommand {
     // @Name Oxygen
     // @Syntax oxygen [<#>] (type:{remaining}/maximum) (mode:{set}/add/remove)
     // @Required 1
+    // @Maximum 3
     // @Short Gives or takes breath from the player.
     // @Group player
     //

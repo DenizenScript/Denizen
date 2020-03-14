@@ -20,6 +20,7 @@ public class ActionCommand extends AbstractCommand {
     // @Name Action
     // @Syntax action [<action name>|...] (<npc>|...) (context:<name>|<object>|...)
     // @Required 1
+    // @Maximum 3
     // @Short Manually fires an NPC action.
     // @Group npc
     //

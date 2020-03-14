@@ -20,6 +20,7 @@ public class EngageCommand extends AbstractCommand {
     // @Name Engage
     // @Syntax engage (<duration>)
     // @Required 0
+    // @Maximum 1
     // @Plugin Citizens
     // @Short Temporarily disables an NPCs toggled interact script-container triggers.
     // @Group npc

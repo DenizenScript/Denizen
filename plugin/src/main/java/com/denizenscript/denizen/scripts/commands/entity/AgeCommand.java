@@ -19,6 +19,7 @@ public class AgeCommand extends AbstractCommand {
     // @Name Age
     // @Syntax age [<entity>|...] (adult/baby/<age>) (lock)
     // @Required 1
+    // @Maximum 3
     // @Short Sets the ages of a list of entities, optionally locking them in those ages.
     // @Group entity
     //

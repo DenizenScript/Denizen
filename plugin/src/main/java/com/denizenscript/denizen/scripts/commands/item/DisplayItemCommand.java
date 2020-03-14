@@ -27,6 +27,7 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
     // @Name DisplayItem
     // @Syntax displayitem [<item>] [<location>] (duration:<value>)
     // @Required 2
+    // @Maximum 3
     // @Short Makes a non-touchable item spawn for players to view.
     // @Group item
     //

@@ -21,6 +21,7 @@ public class AnchorCommand extends AbstractCommand {
     // @Name Anchor
     // @Syntax anchor [id:<name>] [remove/add <location>]
     // @Required 2
+    // @Maximum 3
     // @Short Controls an NPC's Anchor Trait.
     // @Group npc
     //

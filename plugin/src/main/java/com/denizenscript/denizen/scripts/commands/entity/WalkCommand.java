@@ -30,6 +30,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
     // @Name Walk
     // @Syntax walk (<entity>|...) [<location>/stop] (speed:<#.#>) (auto_range) (radius:<#.#>) (lookat:<location>)
     // @Required 1
+    // @Maximum 6
     // @Short Causes an entity or list of entities to walk to another location.
     // @Group entity
     //

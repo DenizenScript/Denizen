@@ -25,6 +25,7 @@ public class TeleportCommand extends AbstractCommand {
     // @Name Teleport
     // @Syntax teleport (<entity>|...) [<location>]
     // @Required 1
+    // @Maximum 2
     // @Short Teleports the entity(s) to a new location.
     // @Group entity
     //

@@ -25,6 +25,7 @@ public class TakeCommand extends AbstractCommand {
     // @Name Take
     // @Syntax take [money/xp/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/nbt:<key>/<item>|...] (quantity:<#>) (from:<inventory>)
     // @Required 1
+    // @Maximum 3
     // @Short Takes an item from the player.
     // @Group item
     //

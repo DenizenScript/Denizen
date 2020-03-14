@@ -18,6 +18,7 @@ public class GroupCommand extends AbstractCommand {
     // @Name Group
     // @Syntax group [add/remove/set] [<group>] (<world>)
     // @Required 2
+    // @Maximum 3
     // @Short Adds a player to, removes a player from, or sets a player's permissions group.
     // @Group player
     // @Plugin Vault

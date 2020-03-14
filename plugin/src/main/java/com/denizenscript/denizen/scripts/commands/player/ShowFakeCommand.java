@@ -23,6 +23,7 @@ public class ShowFakeCommand extends AbstractCommand {
     // @Name ShowFake
     // @Syntax showfake [<material>|.../cancel] [<location>|...] (players:<player>|...) (d:<duration>{10s})
     // @Required 2
+    // @Maximum 4
     // @Short Makes the player see a block change that didn't actually happen.
     // @Group player
     //

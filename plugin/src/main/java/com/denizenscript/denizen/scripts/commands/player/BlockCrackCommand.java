@@ -28,6 +28,7 @@ public class BlockCrackCommand extends AbstractCommand {
     // @Name BlockCrack
     // @Syntax blockcrack [<location>] [progress:<#>] (stack) (players:<player>|...)
     // @Required 2
+    // @Maximum 4
     // @Short Shows the player(s) a block cracking animation.
     // @Group player
     //

@@ -21,6 +21,7 @@ public class HealCommand extends AbstractCommand {
     // @Name Heal
     // @Syntax heal (<#.#>) ({player}/<entity>|...)
     // @Required 0
+    // @Maximum 2
     // @Short Heals the player or list of entities.
     // @Group entity
     //
