@@ -23,7 +23,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         public static void registerFor(String name) {
             AutoNoCitizensCommand cmd = new AutoNoCitizensCommand();
             cmd.name = name;
-            cmd.activate().as(name).withOptions("Requires Citizens", 0);
+            cmd.as(name).withOptions("Requires Citizens", 0);
         }
 
         public String name;

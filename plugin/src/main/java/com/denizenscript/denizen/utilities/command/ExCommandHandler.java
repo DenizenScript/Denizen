@@ -198,12 +198,12 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
         }
         String lowArg = CoreUtilities.toLowerCase(rawArgs[rawArgs.length - 1]);
         ArrayList<String> output = new ArrayList<>();
-        for (String flat : dcmd.getOptions().flatArgs) {
+        for (String flat : dcmd.flatArgs) {
             if (flat.startsWith(lowArg)) {
                 output.add(flat);
             }
         }
-        for (String prefix : dcmd.getOptions().prefixes) {
+        for (String prefix : dcmd.prefixes) {
             if (prefix.startsWith(lowArg)) {
                 output.add(prefix + ":");
             }
