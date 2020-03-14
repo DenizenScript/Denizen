@@ -44,11 +44,27 @@ import java.util.Map;
 
 public class SchematicCommand extends AbstractCommand implements Holdable, Listener {
 
+    public SchematicCommand() {
+        setName("schematic");
+        setSyntax("schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material>|...)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed)");
+        setRequiredArguments(2, 10);
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                schematicTags(event);
+            }
+        }, "schematic", "schem");
+        schematics = new HashMap<>();
+        noPhys = false;
+        Bukkit.getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+    }
+
     // <--[command]
     // @Name Schematic
     // @Syntax schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material>|...)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed)
     // @Group World
     // @Required 2
+    // @Maximum 10
     // @Short Creates, loads, pastes, and saves schematics (Sets of blocks).
     //
     // @Description
@@ -115,19 +131,6 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     // Use to save a created schematic.
     // - ~schematic save name:MySchematic
     // -->
-
-    @Override
-    public void onEnable() {
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                schematicTags(event);
-            }
-        }, "schematic", "schem");
-        schematics = new HashMap<>();
-        noPhys = false;
-        Bukkit.getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
 
     public static boolean noPhys = false;
 

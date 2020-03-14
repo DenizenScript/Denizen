@@ -49,7 +49,6 @@ public class LookcloseCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Parse Arguments
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (arg.matches("realistic", "realistically")) {

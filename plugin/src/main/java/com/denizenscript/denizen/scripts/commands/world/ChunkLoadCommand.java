@@ -27,10 +27,22 @@ import java.util.Map;
 
 public class ChunkLoadCommand extends AbstractCommand implements Listener {
 
+    public ChunkLoadCommand() {
+        setName("chunkload");
+        setSyntax("chunkload ({add}/remove/removeall) [<chunk>] (duration:<value>)");
+        setRequiredArguments(1, 3);
+        Denizen denizen = DenizenAPI.getCurrentInstance();
+        denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        if (Depends.citizens != null) {
+            denizen.getServer().getPluginManager().registerEvents(new ChunkLoadCommandNPCEvents(), denizen);
+        }
+    }
+
     // <--[command]
     // @Name ChunkLoad
     // @Syntax chunkload ({add}/remove/removeall) [<chunk>] (duration:<value>)
     // @Required 1
+    // @Maximum 3
     // @Short Keeps a chunk actively loaded and allowing activity.
     // @Group world
     //
@@ -61,15 +73,6 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
     // Use to stop loading all chunks.
     // - chunkload removeall
     // -->
-
-    @Override
-    public void onEnable() {
-        Denizen denizen = DenizenAPI.getCurrentInstance();
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
-        if (Depends.citizens != null) {
-            denizen.getServer().getPluginManager().registerEvents(new ChunkLoadCommandNPCEvents(), denizen);
-        }
-    }
 
     /*
      * Keeps a chunk loaded

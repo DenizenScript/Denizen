@@ -19,10 +19,17 @@ import java.util.List;
 
 public class CopyBlockCommand extends AbstractCommand {
 
+    public CopyBlockCommand() {
+        setName("copyblock");
+        setSyntax("copyblock [<location>] [to:<location>] (remove_original)");
+        setRequiredArguments(2, 3);
+    }
+
     // <--[command]
     // @Name CopyBlock
     // @Syntax copyblock [<location>] [to:<location>] (remove_original)
-    // @Required 1
+    // @Required 2
+    // @Maximum 3
     // @Short Copies a block to another location, keeping metadata when possible.
     // @Group world
     //
@@ -65,7 +72,6 @@ public class CopyBlockCommand extends AbstractCommand {
             }
         }
 
-        // Check required arguments
         if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Must specify a source location.");
         }

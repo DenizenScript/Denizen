@@ -13,10 +13,17 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
 public class LightCommand extends AbstractCommand {
 
+    public LightCommand() {
+        setName("light");
+        setSyntax("light [<location>] [<#>/reset] (duration:<duration>)");
+        setRequiredArguments(2, 3);
+    }
+
     // <--[command]
     // @Name Light
     // @Syntax light [<location>] [<#>/reset] (duration:<duration>)
     // @Required 2
+    // @Maximum 3
     // @Short Creates a light source at the location with a specified brightness.
     // @Group world
     //

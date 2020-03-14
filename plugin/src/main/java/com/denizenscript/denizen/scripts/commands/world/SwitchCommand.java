@@ -30,10 +30,17 @@ import java.util.Map;
 
 public class SwitchCommand extends AbstractCommand {
 
+    public SwitchCommand() {
+        setName("switch");
+        setSyntax("switch [<location>|...] (state:[{toggle}/on/off]) (duration:<value>)");
+        setRequiredArguments(1, 3);
+    }
+
     // <--[command]
     // @Name Switch
     // @Syntax switch [<location>|...] (state:[{toggle}/on/off]) (duration:<value>)
     // @Required 1
+    // @Maximum 3
     // @Short Switches state of the block.
     // @Group world
     //

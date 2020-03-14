@@ -16,10 +16,17 @@ import java.io.File;
 
 public class CreateWorldCommand extends AbstractCommand {
 
+    public CreateWorldCommand() {
+        setName("createworld");
+        setSyntax("createworld [<name>] (generator:<id>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>) (seed:<seed>) (settings:<json>)");
+        setRequiredArguments(1, 7);
+    }
+
     // <--[command]
     // @Name CreateWorld
-    // @Syntax createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>) (seed:<seed>) (settings:<json>)
+    // @Syntax createworld [<name>] (generator:<id>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>) (seed:<seed>) (settings:<json>)
     // @Required 1
+    // @Maximum 7
     // @Short Creates a new world, or loads an existing world.
     // @Group world
     //

@@ -21,10 +21,17 @@ import java.util.List;
 
 public class ScoreboardCommand extends AbstractCommand {
 
+    public ScoreboardCommand() {
+        setName("scoreboard");
+        setSyntax("scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar}/none) (displayname:<name>)");
+        setRequiredArguments(1, 9);
+    }
+
     // <--[command]
     // @Name Scoreboard
     // @Syntax scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar}/none) (displayname:<name>)
     // @Required 1
+    // @Maximum 9
     // @Short Add or removes viewers, objectives and scores from scoreboards.
     // @Group server
     //
@@ -67,7 +74,7 @@ public class ScoreboardCommand extends AbstractCommand {
     // <server.scoreboard[(<board>)].team[<team>].members>
     //
     // @Usage
-    // Add a score for the player "joe" to the default scoreboard under the objective "cookies" and let him see it
+    // Add a score for the defined player to the default scoreboard under the objective "cookies" and let him see it
     // - scoreboard add obj:cookies lines:joe score:1000 viewers:<[aplayer]>
     //
     // @Usage
@@ -91,7 +98,7 @@ public class ScoreboardCommand extends AbstractCommand {
     // - scoreboard remove viewers:<[aplayer]>
     //
     // @Usage
-    // Make the player "bob" see the health of other players below their names
+    // Make the defined player see the health of other players below their names
     // - scoreboard add viewers:<[player]> id:test obj:anything criteria:health displayslot:below_name
     //
     // @Usage

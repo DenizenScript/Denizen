@@ -51,7 +51,6 @@ public class AssignmentCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Parse Arguments
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (arg.matchesEnum(Action.values())
@@ -74,7 +73,6 @@ public class AssignmentCommand extends AbstractCommand {
             }
         }
 
-        // Check required arguments
         if (!Utilities.entryHasNPC(scriptEntry)) {
             throw new InvalidArgumentsException("NPC linked was missing or invalid.");
         }

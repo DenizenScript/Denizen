@@ -23,10 +23,17 @@ import java.util.Map;
 
 public class BossBarCommand extends AbstractCommand {
 
+    public BossBarCommand() {
+        setName("bossbar");
+        setSyntax("bossbar ({create}/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (flags:<flag>|...)");
+        setRequiredArguments(1, 8);
+    }
+
     // <--[command]
     // @Name BossBar
     // @Syntax bossbar ({create}/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (flags:<flag>|...)
     // @Required 1
+    // @Maximum 8
     // @Short Shows players a boss bar.
     // @Group server
     //
@@ -57,7 +64,7 @@ public class BossBarCommand extends AbstractCommand {
     //
     // @Usage
     // Remove a player from the boss bar.
-    // - bossbar remove MyMessageID players:<server.match_player[joe]>
+    // - bossbar remove MyMessageID players:<[player]>
     //
     // @Usage
     // Delete the boss bar.

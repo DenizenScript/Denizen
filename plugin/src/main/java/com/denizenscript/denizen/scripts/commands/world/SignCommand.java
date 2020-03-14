@@ -23,10 +23,17 @@ import org.bukkit.block.Sign;
 
 public class SignCommand extends AbstractCommand {
 
+    public SignCommand() {
+        setName("sign");
+        setSyntax("sign (type:{automatic}/sign_post/wall_sign) (material:<material>) [<line>|...] [<location>] (direction:north/east/south/west)");
+        setRequiredArguments(1, 5);
+    }
+
     // <--[command]
     // @Name Sign
     // @Syntax sign (type:{automatic}/sign_post/wall_sign) (material:<material>) [<line>|...] [<location>] (direction:north/east/south/west)
     // @Required 1
+    // @Maximum 5
     // @Short Modifies a sign.
     // @Group world
     //

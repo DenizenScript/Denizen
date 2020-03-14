@@ -22,20 +22,26 @@ import java.util.List;
 
 public class DropCommand extends AbstractCommand {
 
+    public DropCommand() {
+        setName("drop");
+        setSyntax("drop [<entity_type>/xp/<item>|...] (<location>) (quantity:<#>) (speed:<#.#>) (delay:<duration>)");
+        setRequiredArguments(1, 5);
+    }
+
     // <--[command]
     // @Name Drop
     // @Syntax drop [<entity_type>/xp/<item>|...] (<location>) (quantity:<#>) (speed:<#.#>) (delay:<duration>)
     // @Required 1
+    // @Maximum 5
     // @Short Drops an item, entity, or experience orb on a location.
     // @Group world
     //
     // @Description
-    // To drop an item, just specify a valid item object. To drop
-    // an entity, specify a generic entity object. Drop can also reward players
-    // with experience orbs by using the 'xp' argument.
+    // To drop an item, just specify a valid item object. To drop an entity, specify a generic entity object.
+    // Drop can also reward players with experience orbs by using the 'xp' argument.
     //
-    // For all three usages, you can optionally specify an integer with 'quantity:'
-    // prefix to drop multiple items/entities/xp.
+    // For all three usages, you can optionally specify an integer with 'quantity:' prefix to drop multiple items/entities/xp.
+    //
     // For items, you can add 'speed:' to modify the launch velocity.
     // You can also add 'delay:' to set the pickup delay of the item.
     //

@@ -21,10 +21,17 @@ import org.bukkit.event.Listener;
 
 public class FlagCommand extends AbstractCommand implements Listener {
 
+    public FlagCommand() {
+        setName("flag");
+        setSyntax("flag ({player}/npc/server/<entity>) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)");
+        setRequiredArguments(1, 3);
+    }
+
     // <--[command]
     // @Name Flag
     // @Syntax flag ({player}/npc/server/<entity>) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)
     // @Required 1
+    // @Maximum 3
     // @Short Sets or modifies a flag on the player, NPC, entity, or server.
     // @Group core
     // @Guide https://guide.denizenscript.com/guides/basics/flags.html
@@ -256,7 +263,6 @@ public class FlagCommand extends AbstractCommand implements Listener {
             scriptEntry.defaultObject("flag_target", Utilities.getEntryPlayer(scriptEntry));
         }
 
-        // Check required arguments
         if (!scriptEntry.hasObject("action")) {
             throw new InvalidArgumentsException("Must specify a flag action or value.");
         }

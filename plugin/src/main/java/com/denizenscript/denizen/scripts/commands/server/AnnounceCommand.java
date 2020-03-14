@@ -18,10 +18,17 @@ import org.bukkit.entity.Player;
 
 public class AnnounceCommand extends AbstractCommand {
 
+    public AnnounceCommand() {
+        setName("announce");
+        setSyntax("announce [<text>] (to_ops/to_console/to_flagged:<flag_name>) (format:<name>)");
+        setRequiredArguments(1, 3);
+    }
+
     // <--[command]
     // @Name Announce
     // @Syntax announce [<text>] (to_ops/to_console/to_flagged:<flag_name>) (format:<name>)
     // @Required 1
+    // @Maximum 3
     // @Short Announces a message for everyone online to read.
     // @Group server
     //

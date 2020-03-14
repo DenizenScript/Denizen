@@ -18,10 +18,17 @@ import java.util.UUID;
 
 public class TimeCommand extends AbstractCommand {
 
+    public TimeCommand() {
+        setName("time");
+        setSyntax("time ({global}/player) [<time-duration>/reset] (<world>) (reset:<duration>) (freeze)");
+        setRequiredArguments(1, 5);
+    }
+
     // <--[command]
     // @Name Time
     // @Syntax time ({global}/player) [<time-duration>/reset] (<world>) (reset:<duration>) (freeze)
     // @Required 1
+    // @Maximum 5
     // @Short Changes the current time in the minecraft world.
     // @Group world
     //

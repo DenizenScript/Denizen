@@ -24,20 +24,29 @@ import java.util.List;
 
 public class FireworkCommand extends AbstractCommand {
 
+    public FireworkCommand() {
+        setName("firework");
+        setSyntax("firework (<location>) (power:<#>) (<type>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)");
+        setRequiredArguments(0, 7);
+    }
+
     // <--[command]
     // @Name Firework
     // @Syntax firework (<location>) (power:<#>) (<type>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)
     // @Required 0
+    // @Maximum 7
     // @Short Launches a firework with specific coloring
     // @Group world
     //
     // @Description
-    // This command launches a firework from the specified location. The power option, which defaults to 1
-    // if left empty, specifies how high the firework will go before exploding. The type option
-    // which specifies the shape the firework will explode with. The primary option specifies what colour the
-    // firework will initially explode as. The fade option specifies what colour the firework will
-    // fade into after exploding. The flicker option means the firework will leave a trail behind it, and the
-    // flicker option means the firework will explode with a flicker effect.
+    // This command launches a firework from the specified location.
+    // If no location is given, the linked NPC or player's location will be used by default.
+    // The power option, which defaults to 1 if left empty, specifies how high the firework will go before exploding.
+    // The type option which specifies the shape the firework will explode with. If unspecified, 'ball' will be used.
+    // The primary option specifies what colour the firework will initially explode as. If unspecified, 'yellow' will be used.
+    // The fade option specifies a colour that the firework will fade into after exploding.
+    // The trail option means the firework will leave a trail behind it.
+    // The flicker option means the firework will explode with a flicker effect.
     //
     // @Tags
     // <EntityTag.firework_item>

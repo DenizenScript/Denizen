@@ -69,7 +69,6 @@ public class EngageCommand extends AbstractCommand {
             throw new InvalidArgumentsException("This command requires a linked NPC!");
         }
 
-        // Parse arguments
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (!scriptEntry.hasObject("duration")

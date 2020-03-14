@@ -26,6 +26,12 @@ import java.util.*;
 
 public class PlayEffectCommand extends AbstractCommand {
 
+    public PlayEffectCommand() {
+        setName("playeffect");
+        setSyntax("playeffect [effect:<name>] [at:<location>|...] (data:<#.#>) (special_data:<data>) (visibility:<#.#>) (quantity:<#>) (offset:<#.#>,<#.#>,<#.#>) (targets:<player>|...)");
+        setRequiredArguments(2, 8);
+    }
+
     // <--[language]
     // @name Particle Effects
     // @group Useful Lists
@@ -42,6 +48,7 @@ public class PlayEffectCommand extends AbstractCommand {
     // @Name PlayEffect
     // @Syntax playeffect [effect:<name>] [at:<location>|...] (data:<#.#>) (special_data:<data>) (visibility:<#.#>) (quantity:<#>) (offset:<#.#>,<#.#>,<#.#>) (targets:<player>|...)
     // @Required 2
+    // @Maximum 8
     // @Short Plays a visible or audible effect at the location.
     // @Group world
     //
@@ -85,7 +92,6 @@ public class PlayEffectCommand extends AbstractCommand {
 
         ParticleHelper particleHelper = NMSHandler.getParticleHelper();
 
-        // Iterate through arguments
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (!scriptEntry.hasObject("location")

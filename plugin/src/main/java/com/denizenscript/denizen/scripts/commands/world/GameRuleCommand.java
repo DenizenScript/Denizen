@@ -10,10 +10,17 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
 public class GameRuleCommand extends AbstractCommand {
 
+    public GameRuleCommand() {
+        setName("gamerule");
+        setSyntax("gamerule [<world>] [<rule>] [<value>]");
+        setRequiredArguments(3, 3);
+    }
+
     // <--[command]
     // @Name Gamerule
     // @Syntax gamerule [<world>] [<rule>] [<value>]
     // @Required 3
+    // @Maximum 3
     // @Short Sets a gamerule on the world.
     // @Group world
     //

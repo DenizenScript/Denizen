@@ -12,20 +12,27 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
 public class ExplodeCommand extends AbstractCommand {
 
+    public ExplodeCommand() {
+        setName("explode");
+        setSyntax("explode (power:<#.#>) (<location>) (fire) (breakblocks)");
+        setRequiredArguments(0, 4);
+    }
+
     // <--[command]
     // @Name Explode
     // @Syntax explode (power:<#.#>) (<location>) (fire) (breakblocks)
     // @Required 0
+    // @Maximum 4
     // @Short Causes an explosion at the location.
     // @Group world
     //
     // @Description
-    // This command causes an explosion at the location specified (or the npc / player location) which does not
-    // destroy blocks or set fire to blocks within the explosion. It accepts a 'fire' option which will set blocks
-    // on fire within the explosion radius. It also accepts a 'breakblocks' option which will cause the explosion to
-    // break blocks within the power radius as well as creating an animation and sounds.
-    // Default power: 1
-    // Default location: npc.location, or if no NPC link, player.location.
+    // This command causes an explosion at the location specified (or the npc / player location).
+    // By default, this will not destroy blocks or set fire to blocks within the explosion.
+    // Specify the 'fire' argument to set blocks on fire within the explosion radius.
+    // Specify the 'breakblocks' argument to cause the explosion to break blocks within the power radius.
+    // If no power is specified, the default power will be 1.
+    // If no location is given, the default will be the linked NPC or player's location.
     // It is highly recommended you specify a location to be safe.
     //
     // @Tags
@@ -51,7 +58,6 @@ public class ExplodeCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Iterate through arguments
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (!scriptEntry.hasObject("location")

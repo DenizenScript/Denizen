@@ -21,10 +21,17 @@ import java.util.List;
 
 public class AnimateChestCommand extends AbstractCommand {
 
+    public AnimateChestCommand() {
+        setName("animatechest");
+        setSyntax("animatechest [<location>] ({open}/close) (sound:{true}/false) (<player>|...)");
+        setRequiredArguments(1, 4);
+    }
+
     // <--[command]
     // @Name AnimateChest
     // @Syntax animatechest [<location>] ({open}/close) (sound:{true}/false) (<player>|...)
     // @Required 1
+    // @Maximum 4
     // @Short Makes a chest appear to open or close.
     // @Group world
     //

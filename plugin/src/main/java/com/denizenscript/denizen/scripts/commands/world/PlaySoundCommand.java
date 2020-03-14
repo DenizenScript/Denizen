@@ -17,10 +17,17 @@ import java.util.List;
 
 public class PlaySoundCommand extends AbstractCommand {
 
+    public PlaySoundCommand() {
+        setName("playsound");
+        setSyntax("playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>) (custom) (sound_category:<category name>)");
+        setRequiredArguments(2, 6);
+    }
+
     // <--[command]
     // @Name PlaySound
     // @Syntax playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>) (custom) (sound_category:<category name>)
     // @Required 2
+    // @Maximum 6
     // @Short Plays a sound at the location or to a list of players.
     // @Group world
     //
@@ -61,7 +68,6 @@ public class PlaySoundCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Iterate through arguments
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (!scriptEntry.hasObject("locations")

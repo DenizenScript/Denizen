@@ -35,10 +35,28 @@ import java.util.List;
 
 public class ModifyBlockCommand extends AbstractCommand implements Listener, Holdable {
 
+    public ModifyBlockCommand() {
+        setName("modifyblock");
+        setSyntax("modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (no_physics/naturally) (delayed) (<script>) (<percent chance>|...)");
+        setRequiredArguments(2, 6);
+        DenizenAPI.getCurrentInstance().getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+        // Keep the list empty automatically - we don't want to still block physics so much later that something else edited the block!
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+            @Override
+            public void run() {
+                tick++;
+                if (physitick < tick - 1) {
+                    block_physics.clear();
+                }
+            }
+        }, 2, 2);
+    }
+
     // <--[command]
     // @Name ModifyBlock
     // @Syntax modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (no_physics/naturally) (delayed) (<script>) (<percent chance>|...)
     // @Required 2
+    // @Maximum 6
     // @Short Modifies blocks.
     // @Group world
     //
@@ -78,7 +96,6 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Parse arguments
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (arg.matchesArgumentType(CuboidTag.class)
@@ -399,22 +416,6 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
     long tick = 0;
 
     long physitick = 0;
-
-    @Override
-    public void onEnable() {
-        DenizenAPI.getCurrentInstance().getServer().getPluginManager()
-                .registerEvents(this, DenizenAPI.getCurrentInstance());
-        // Keep the list empty automatically - we don't want to still block physics so much later that something else edited the block!
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
-            @Override
-            public void run() {
-                tick++;
-                if (physitick < tick - 1) {
-                    block_physics.clear();
-                }
-            }
-        }, 2, 2);
-    }
 
     @EventHandler
     public void blockPhysics(BlockPhysicsEvent event) {

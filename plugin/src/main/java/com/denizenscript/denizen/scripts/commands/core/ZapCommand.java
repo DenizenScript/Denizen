@@ -18,10 +18,17 @@ import java.util.Map;
 
 public class ZapCommand extends AbstractCommand implements Listener {
 
+    public ZapCommand() {
+        setName("zap");
+        setSyntax("zap (<script>) [<step>] (<duration>)");
+        setRequiredArguments(0, 3);
+    }
+
     // <--[command]
     // @Name Zap
     // @Syntax zap (<script>) [<step>] (<duration>)
     // @Required 0
+    // @Maximum 3
     // @Short Changes the current interact script step.
     // @Group core
     // @Guide https://guide.denizenscript.com/guides/npcs/interact-scripts.html
@@ -51,7 +58,7 @@ public class ZapCommand extends AbstractCommand implements Listener {
     // - zap 3 Interact_Example
     //
     // @Usage
-    // Use to change the step to 1 for player bob in a script called InteractScript.
+    // Use to change the step to 1 for the defined player in a script called InteractScript.
     // - zap 1 InteractScript player:<[player]>
     // -->
 

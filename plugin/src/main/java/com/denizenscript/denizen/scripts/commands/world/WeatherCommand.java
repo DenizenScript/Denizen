@@ -20,10 +20,17 @@ import java.util.UUID;
 
 public class WeatherCommand extends AbstractCommand {
 
+    public WeatherCommand() {
+        setName("weather");
+        setSyntax("weather ({global}/player) [sunny/storm/thunder/reset] (<world>) (reset:<duration>)");
+        setRequiredArguments(1, 4);
+    }
+
     // <--[command]
     // @Name Weather
-    // @Syntax weather [{global}/player] [sunny/storm/thunder/reset] (<world>) (reset:<duration>)
+    // @Syntax weather ({global}/player) [sunny/storm/thunder/reset] (<world>) (reset:<duration>)
     // @Required 1
+    // @Maximum 4
     // @Short Changes the current weather in the minecraft world.
     // @Group world
     //

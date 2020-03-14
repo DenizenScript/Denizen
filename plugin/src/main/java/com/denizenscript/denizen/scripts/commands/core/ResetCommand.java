@@ -14,10 +14,17 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
 public class ResetCommand extends AbstractCommand {
 
+    public ResetCommand() {
+        setName("reset");
+        setSyntax("reset (<player>|...) [cooldown/saves/global_cooldown] (<script>)");
+        setRequiredArguments(1, 3);
+    }
+
     // <--[command]
     // @Name Reset
     // @Syntax reset (<player>|...) [cooldown/saves/global_cooldown] (<script>)
     // @Required 1
+    // @Maximum 3
     // @Short Resets various parts of Denizen's save data, including a script's cooldowns or general player saves.
     // @Group core
     //

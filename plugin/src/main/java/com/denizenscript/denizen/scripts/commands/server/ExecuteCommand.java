@@ -25,10 +25,17 @@ import java.util.UUID;
 
 public class ExecuteCommand extends AbstractCommand {
 
+    public ExecuteCommand() {
+        setName("execute");
+        setSyntax("execute [as_player/as_op/as_npc/as_server] [<Bukkit-command>] (silent)");
+        setRequiredArguments(2, 3);
+    }
+
     // <--[command]
     // @Name Execute
     // @Syntax execute [as_player/as_op/as_npc/as_server] [<Bukkit-command>] (silent)
     // @Required 2
+    // @Maximum 3
     // @Short Executes an arbitrary server command as if the player, NPC, or server typed it in.
     // @Group server
     //
@@ -64,7 +71,6 @@ public class ExecuteCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Parse arguments
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (arg.matches("asplayer", "as_player")

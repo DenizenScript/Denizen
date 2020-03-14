@@ -18,10 +18,17 @@ import java.util.List;
 
 public class WorldBorderCommand extends AbstractCommand {
 
+    public WorldBorderCommand() {
+        setName("worldborder");
+        setSyntax("worldborder [<world>/<player>|...] (center:<location>) (size:<#.#>) (current_size:<#.#>) (damage:<#.#>) (damagebuffer:<#.#>) (warningdistance:<#>) (warningtime:<duration>) (duration:<duration>) (reset)");
+        setRequiredArguments(2, 10);
+    }
+
     // <--[command]
     // @Name WorldBorder
     // @Syntax worldborder [<world>/<player>|...] (center:<location>) (size:<#.#>) (current_size:<#.#>) (damage:<#.#>) (damagebuffer:<#.#>) (warningdistance:<#>) (warningtime:<duration>) (duration:<duration>) (reset)
     // @Required 2
+    // @Maximum 10
     // @Short Modifies a world border.
     // @Group world
     //

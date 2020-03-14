@@ -17,10 +17,17 @@ import java.util.List;
 
 public class AdjustBlockCommand extends AbstractCommand {
 
+    public AdjustBlockCommand() {
+        setName("adjustblock");
+        setSyntax("adjustblock [<location>|...] [<mechanism>](:<value>)");
+        setRequiredArguments(2, 2);
+    }
+
     // <--[command]
     // @Name AdjustBlock
     // @Syntax adjustblock [<location>|...] [<mechanism>](:<value>)
     // @Required 2
+    // @Maximum 2
     // @Short Adjusts a mechanism on the material of a block at the location.
     // @Group core
     // @Guide https://guide.denizenscript.com/guides/basics/mechanisms.html

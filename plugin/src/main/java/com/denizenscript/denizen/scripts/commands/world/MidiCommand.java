@@ -22,10 +22,17 @@ import java.util.List;
 
 public class MidiCommand extends AbstractCommand implements Holdable {
 
+    public MidiCommand() {
+        setName("midi");
+        setSyntax("midi [cancel/<file> (tempo:<#.#>) (volume:<#.#>)] (<location>/<entity>|...)");
+        setRequiredArguments(1, 4);
+    }
+
     // <--[command]
     // @Name Midi
-    // @Syntax midi (cancel) [<file>] (<location>/<entity>|...) (tempo:<#.#>) (volume:<#.#>)
+    // @Syntax midi [cancel/<file> (tempo:<#.#>) (volume:<#.#>)] (<location>/<entity>|...)
     // @Required 1
+    // @Maximum 4
     // @Short Plays a midi file at a given location or to a list of players using note block sounds.
     // @Group world
     //

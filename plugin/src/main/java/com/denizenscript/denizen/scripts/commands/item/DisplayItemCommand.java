@@ -83,7 +83,6 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
             }
         }
 
-        // Check required args
         if (!scriptEntry.hasObject("item")) {
             throw new InvalidArgumentsException("Must specify an item to display.");
         }
