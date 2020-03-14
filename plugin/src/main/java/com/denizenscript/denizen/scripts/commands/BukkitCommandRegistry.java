@@ -108,6 +108,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
             registerCommand(PushableCommand.class);
             registerCommand(RenameCommand.class);
             registerCommand(SitCommand.class);
+            registerCommand(SleepCommand.class);
             registerCommand(StandCommand.class);
             registerCommand(TraitCommand.class);
             registerCommand(TriggerCommand.class);

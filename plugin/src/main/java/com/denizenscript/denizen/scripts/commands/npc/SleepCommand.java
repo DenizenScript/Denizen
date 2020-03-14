@@ -1,44 +1,44 @@
 package com.denizenscript.denizen.scripts.commands.npc;
 
+import com.denizenscript.denizen.npc.traits.SleepingTrait;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.npc.traits.SittingTrait;
-import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import org.bukkit.entity.*;
+import org.bukkit.entity.EntityType;
 
-public class SitCommand extends AbstractCommand {
+public class SleepCommand extends AbstractCommand {
 
-    public SitCommand() {
-        setName("sit");
-        setSyntax("sit (<location>)");
+    public SleepCommand() {
+        setName("sleep");
+        setSyntax("sleep (<location>)");
         setRequiredArguments(0, 1);
     }
 
     // <--[command]
-    // @Name Sit
-    // @Syntax sit (<location>)
+    // @Name sleep
+    // @Syntax sleep (<location>)
     // @Required 0
     // @Maximum 1
     // @Plugin Citizens
-    // @Short Causes the NPC to sit. To make them stand, see <@link command Stand>.
+    // @Short Causes the NPC to sleep. To make them wake up, see <@link command Stand>.
     // @Group npc
     //
     // @Description
-    // Makes the linked NPC sit at the specified location.
-    // Use <@link command Stand> to make the NPC stand up again.
+    // Makes the linked NPC sleep at the specified location.
+    // Use <@link command Stand> to make the NPC wake back up.
     //
     // @Tags
     // None
     //
     // @Usage
-    // Make the linked NPC sit at the player's cursor location.
-    // - sit <player.cursor_on>
+    // Make the linked NPC sleep at the player's cursor location.
+    // - sleep <player.cursor_on>
     //
     // -->
 
@@ -64,8 +64,8 @@ public class SitCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
         LocationTag location = (LocationTag) scriptEntry.getObject("location");
         NPCTag npc = Utilities.getEntryNPC(scriptEntry);
-        if (!(npc.getEntity() instanceof Player || npc.getEntity() instanceof Sittable)) {
-            Debug.echoError("Entities of type " + npc.getEntityType().getName() + " cannot sit.");
+        if (Utilities.getEntryNPC(scriptEntry).getEntityType() != EntityType.PLAYER) {
+            Debug.echoError("Only Player type NPCs can sit!");
             return;
         }
 
@@ -74,18 +74,12 @@ public class SitCommand extends AbstractCommand {
                     + (location != null ? location.debug() : ""));
         }
 
-        Entity entity = npc.getEntity();
-        if (entity instanceof Sittable) {
-            ((Sittable) entity).setSitting(true);
+        SleepingTrait trait = npc.getCitizen().getTrait(SleepingTrait.class);
+        if (location != null) {
+            trait.toSleep(location);
         }
         else {
-            SittingTrait trait = npc.getCitizen().getTrait(SittingTrait.class);
-            if (location != null) {
-                trait.sit(location);
-            }
-            else {
-                trait.sit();
-            }
+            trait.toSleep();
         }
     }
 }

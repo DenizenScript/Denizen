@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.npc;
 
+import com.denizenscript.denizen.npc.traits.SleepingTrait;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.npc.traits.SittingTrait;
@@ -8,7 +10,6 @@ import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.entity.*;
 
 public class StandCommand extends AbstractCommand {
@@ -25,12 +26,13 @@ public class StandCommand extends AbstractCommand {
     // @Required 0
     // @Maximum 0
     // @Plugin Citizens
-    // @Short Causes the NPC to stand. To make them sit, see <@link command Sit>.
+    // @Short Causes the NPC to stand up from sitting or sleeping.
     // @Group npc
     //
     // @Description
-    // Makes the linked NPC stop sitting.
+    // Makes the linked NPC stop sitting or sleeping.
     // To make them sit, see <@link command Sit>.
+    // To make them sleep, see <@link command Sleep>.
     //
     // @Tags
     // None
@@ -42,8 +44,7 @@ public class StandCommand extends AbstractCommand {
     // -->
 
     @Override
-    public void parseArgs(ScriptEntry scriptEntry)
-            throws InvalidArgumentsException {
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         //stand should have no additional arguments
         for (Argument arg : scriptEntry.getProcessedArgs()) {
             arg.reportUnhandled();
@@ -51,23 +52,18 @@ public class StandCommand extends AbstractCommand {
         if (!Utilities.entryHasNPC(scriptEntry)) {
             throw new InvalidArgumentsException("This command requires a linked NPC!");
         }
-
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
-        if (Utilities.getEntryNPC(scriptEntry).getEntityType() != EntityType.PLAYER
-                && Utilities.getEntryNPC(scriptEntry).getEntityType() != EntityType.OCELOT
-                && Utilities.getEntryNPC(scriptEntry).getEntityType() != EntityType.WOLF) {
-            Debug.echoError(scriptEntry.getResidingQueue(), "...only Player, ocelot, or wolf type NPCs can sit!");
+        NPCTag npc = Utilities.getEntryNPC(scriptEntry);
+        if (!(npc.getEntity() instanceof Player || npc.getEntity() instanceof Sittable)) {
+            Debug.echoError("Entities of type " + npc.getEntityType().getName() + " cannot sit.");
             return;
         }
 
         if (scriptEntry.dbCallShouldDebug()) {
-
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("npc", Utilities.getEntryNPC(scriptEntry)));
-
         }
 
         Entity entity = Utilities.getEntryNPC(scriptEntry).getEntity();
@@ -75,16 +71,16 @@ public class StandCommand extends AbstractCommand {
             ((Sittable) entity).setSitting(false);
         }
         else {
-            NPC npc = Utilities.getEntryNPC(scriptEntry).getCitizen();
-            SittingTrait trait = npc.getTrait(SittingTrait.class);
-
-            if (!npc.hasTrait(SittingTrait.class)) {
-                npc.addTrait(SittingTrait.class);
-                Debug.echoDebug(scriptEntry, "...added sitting trait");
+            if (npc.getCitizen().hasTrait(SittingTrait.class)) {
+                SittingTrait trait = npc.getCitizen().getTrait(SittingTrait.class);
+                trait.stand();
+                npc.getCitizen().removeTrait(SittingTrait.class);
             }
-
-            trait.stand();
-            npc.removeTrait(SittingTrait.class);
+            if (npc.getCitizen().hasTrait(SleepingTrait.class)) {
+                SleepingTrait trait = npc.getCitizen().getTrait(SleepingTrait.class);
+                trait.wakeUp();
+                npc.getCitizen().removeTrait(SleepingTrait.class);
+            }
         }
     }
 }
