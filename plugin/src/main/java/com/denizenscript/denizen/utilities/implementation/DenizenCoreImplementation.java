@@ -159,7 +159,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
 
     @Override
     public boolean needsHandleArgPrefix(String prefix) {
-        return prefix.equals("player") || prefix.equals("npc") || prefix.equals("npcid");
+        return prefix.equals("player") || prefix.equals("npc");
     }
 
     // <--[language]
