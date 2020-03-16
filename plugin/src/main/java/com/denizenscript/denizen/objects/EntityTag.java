@@ -753,6 +753,24 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                                 material = MaterialTag.valueOf(data1).getMaterial();
                             }
                         }
+                        else {
+                            // <--[mechanism]
+                            // @object EntityTag
+                            // @name fallingblock_type
+                            // @input MaterialTag
+                            // @description
+                            // Sets the block type of a falling_block entity (only valid while spawning).
+                            // @tags
+                            // <EntityTag.fallingblock_material>
+                            // -->
+                            for (Mechanism mech : mechanisms) {
+                                if (mech.getName().equalsIgnoreCase("fallingblock_type")) {
+                                    material = mech.valueAsType(MaterialTag.class).getMaterial();
+                                    mechanisms.remove(mech);
+                                    break;
+                                }
+                            }
+                        }
 
                         // If material is null or not a block, default to SAND
                         if (material == null || (!material.isBlock())) {
@@ -1675,6 +1693,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <EntityTag.fallingblock_material>
         // @returns MaterialTag
+        // @mechanism EntityTag.fallingblock_type
         // @group attributes
         // @description
         // Returns the material of a fallingblock-type entity.
