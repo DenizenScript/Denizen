@@ -49,7 +49,7 @@ public class SleepingTrait extends Trait {
         PlayerAnimation.SLEEP.play((Player) npc.getEntity());
 
         sleeping = true;
-        bedLocation = npc.getEntity().getLocation();
+        bedLocation = npc.getEntity().getLocation().clone();
     }
 
     /**
@@ -67,7 +67,7 @@ public class SleepingTrait extends Trait {
          * playing sleep animation.
          */
         //TODO Adjust the .add()
-        npc.getEntity().teleport(location.add(0.5, 0, 0.5));
+        npc.getEntity().teleport(location.clone().add(0.5, 0, 0.5));
 
         PlayerAnimation.SLEEP.play((Player) npc.getEntity());
 

@@ -1343,18 +1343,16 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         if (mechanism.matches("item_type") && mechanism.requireObject(ItemTag.class)) {
             ItemTag item = mechanism.valueAsType(ItemTag.class);
             Material mat = item.getMaterial().getMaterial();
-            int data = item.getMaterial().getData((byte) 0);
             switch (getEntity().getType()) {
                 case DROPPED_ITEM:
                     ((org.bukkit.entity.Item) getEntity()).getItemStack().setType(mat);
-                    //((ItemController.ItemNPC) getEntity()).setType(mat, data);
                     break;
                 case ITEM_FRAME:
                     ((ItemFrame) getEntity()).getItem().setType(mat);
-                    //((ItemFrameController.ItemFrameNPC) getEntity()).setType(mat, data);
                     break;
                 case FALLING_BLOCK:
-                    //((FallingBlockController.FallingBlockNPC) getEntity()).setType(mat, data);
+                    getCitizen().data().setPersistent(NPC.ITEM_ID_METADATA, mat.name());
+                    getCitizen().data().setPersistent(NPC.ITEM_DATA_METADATA, 0);
                     break;
                 default:
                     Debug.echoError("NPC is the not an item type!");
