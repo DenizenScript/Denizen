@@ -113,7 +113,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     //
     // @Usage
     // Use to create a new schematic from a cuboid and an origin location.
-    // - schematic create name:MySchematic cu@<player.location.sub[5,5,5]>|<player.location.add[5,5,5]> <player.location>
+    // - schematic create name:MySchematic <[my_cuboid]> <player.location>
     //
     // @Usage
     // Use to load a schematic.

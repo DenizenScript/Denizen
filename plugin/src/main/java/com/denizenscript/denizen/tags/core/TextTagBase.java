@@ -389,7 +389,7 @@ public class TextTagBase {
         // To execute a command "/" should be used at the start. Otherwise, it will display as chat.
         // This tag must be followed by an <&end_click> tag.
         // For example: - narrate "You can <&click[wow]>click here<&end_click> to say wow!"
-        // For example: - narrate "You can <&click[/help]>click here<&end_click> to for help!"
+        // For example: - narrate "You can <&click[/help]>click here<&end_click> for help!"
         // Note that this is a magic Denizen tool, and unlike other format codes (like 'bold') does not appear in Spigot's API or the old Minecraft chat system.
         // This instead generates the special modern Minecraft JSON codes for clickable text through the Denizen message processor.
         // As such, it only works when sent through certain Denizen commands (narrate, announce, etc) or mechanisms (like ItemTag.book).

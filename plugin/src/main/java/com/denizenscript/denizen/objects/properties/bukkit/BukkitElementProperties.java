@@ -367,7 +367,7 @@ public class BukkitElementProperties implements Property {
         // Adds a click command to the element, which makes the element execute the input command when clicked.
         // To execute a command "/" should be used at the start. Otherwise, it will display as chat.
         // For example: - narrate "You can <element[click here].on_click[wow]> to say wow!"
-        // For example: - narrate "You can <element[click here].on_click[/help]> to for help!"
+        // For example: - narrate "You can <element[click here].on_click[/help]> for help!"
         //
         // Note that this is a magic Denizen tool, and unlike other format codes (like 'bold') does not appear in Spigot's API or the old Minecraft chat system.
         // This instead generates the special modern Minecraft JSON codes for clickable text through the Denizen message processor.
