@@ -19,27 +19,32 @@ public class HealthCommand extends AbstractCommand {
 
     public HealthCommand() {
         setName("health");
-        setSyntax("health ({npc}/<entity>|...) [<#>] (state:{true}/false/toggle)");
-        setRequiredArguments(1, 3);
+        setSyntax("health ({npc}/<entity>|...) [<#>] (state:{true}/false/toggle) (heal)");
+        setRequiredArguments(1, 4);
     }
 
     // <--[command]
     // @Name Health
-    // @Syntax health ({npc}/<entity>|...) [<#>] (state:{true}/false/toggle)
+    // @Syntax health ({npc}/<entity>|...) [<#>] (state:{true}/false/toggle) (heal)
     // @Required 1
-    // @Maximum 3
+    // @Maximum 4
     // @Short Changes the target's maximum health.
     // @Group entity
     //
     // @Description
-    // Use this command to modify an entity's maximum health. If the target is an NPC,
-    // you can use the 'state' argument to enable, disable, or toggle the Health trait
-    // (which is used to track the NPC's health, and handle actions such as 'on death')
-    // the Health trait will be enabled by default.
-    // By default, this command will target the linked NPC but can be set to target any
-    // other living entity, such as a player or mob.
-    // Additionally, you may input a list of entities, each one will calculate the effects
-    // explained above.
+    // Use this command to modify an entity's maximum health.
+    //
+    // If the target is an NPC, you can use the 'state' argument to enable, disable, or toggle the Health trait
+    // (which is used to track the NPC's health, and handle actions such as 'on death').
+    // The Health trait will be enabled by default.
+    //
+    // By default, this command will target the linked NPC but can be set to target any other living entity, such as a player or mob.
+    //
+    // Optionally specify the 'heal' argument to automatically heal the entity to the new health value.
+    // If not specified, the entity's health will remain wherever it was
+    // (so for example a change from 20 max to 50 max will leave an entity with 20 health out of 50 max).
+    //
+    // Additionally, you may input a list of entities, each one will calculate the effects explained above.
     //
     // @Tags
     // <EntityTag.health>
@@ -54,8 +59,8 @@ public class HealthCommand extends AbstractCommand {
     // - health state:false
     //
     // @Usage
-    // Use to change a player's health limit to 50.
-    // - health <player> 50
+    // Use to change a player's health limit and current health both to 50.
+    // - health <player> 50 heal
     //
     // @Usage
     // Use to change a list of entities' health limits all to 50.
@@ -86,6 +91,10 @@ public class HealthCommand extends AbstractCommand {
                     && arg.matchesPrefix("state")) {
                 scriptEntry.addObject("action", arg.asElement());
             }
+            else if (!scriptEntry.hasObject("heal")
+                    && arg.matches("heal")) {
+                scriptEntry.addObject("heal", new ElementTag(true));
+            }
             else {
                 arg.reportUnhandled();
             }
@@ -100,7 +109,7 @@ public class HealthCommand extends AbstractCommand {
             }
             scriptEntry.addObject("target", Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()));
         }
-
+        scriptEntry.defaultObject("heal", new ElementTag(false));
     }
 
     @Override
@@ -108,12 +117,14 @@ public class HealthCommand extends AbstractCommand {
 
         ElementTag qty = scriptEntry.getElement("qty");
         ElementTag action = scriptEntry.getElement("action");
+        ElementTag heal = scriptEntry.getElement("heal");
         List<EntityTag> targets = (List<EntityTag>) scriptEntry.getObject("target");
 
         if (scriptEntry.dbCallShouldDebug()) {
 
             Debug.report(scriptEntry, getName(), (qty != null ? qty.debug() : "") +
                     (action != null ? action.debug() : "") +
+                    heal.debug() +
                     ArgumentHelper.debugObj("target", targets.toString()));
 
         }
@@ -145,7 +156,11 @@ public class HealthCommand extends AbstractCommand {
             if (qty != null) {
                 if (target.isCitizensNPC()) {
                     if (target.getDenizenNPC().getCitizen().hasTrait(HealthTrait.class)) {
-                        target.getDenizenNPC().getCitizen().getTrait(HealthTrait.class).setMaxhealth((int) qty.asFloat());
+                        HealthTrait trait = target.getDenizenNPC().getCitizen().getTrait(HealthTrait.class);
+                        trait.setMaxhealth(qty.asInt());
+                        if (heal.asBoolean()) {
+                            trait.setHealth(qty.asDouble());
+                        }
                     }
                     else {
                         Debug.echoError(scriptEntry.getResidingQueue(), "NPC doesn't have health trait!");
@@ -153,6 +168,9 @@ public class HealthCommand extends AbstractCommand {
                 }
                 else if (target.isLivingEntity()) {
                     target.getLivingEntity().setMaxHealth(qty.asDouble());
+                    if (heal.asBoolean()) {
+                        target.getLivingEntity().setHealth(qty.asDouble());
+                    }
                 }
                 else {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Entity '" + target.identify() + "'is not alive!");
