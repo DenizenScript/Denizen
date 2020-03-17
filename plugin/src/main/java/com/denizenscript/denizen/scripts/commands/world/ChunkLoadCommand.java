@@ -12,6 +12,7 @@ import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.event.NPCDespawnEvent;
@@ -22,6 +23,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +31,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
 
     public ChunkLoadCommand() {
         setName("chunkload");
-        setSyntax("chunkload ({add}/remove/removeall) [<chunk>] (duration:<value>)");
+        setSyntax("chunkload ({add}/remove/removeall) [<chunk>|...] (duration:<value>)");
         setRequiredArguments(1, 3);
         Denizen denizen = DenizenAPI.getCurrentInstance();
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
@@ -40,7 +42,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
 
     // <--[command]
     // @Name ChunkLoad
-    // @Syntax chunkload ({add}/remove/removeall) [<chunk>] (duration:<value>)
+    // @Syntax chunkload ({add}/remove/removeall) [<chunk>|...] (duration:<value>)
     // @Required 1
     // @Maximum 3
     // @Short Keeps a chunk actively loaded and allowing activity.
@@ -48,7 +50,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
     //
     // @Description
     // Forces a chunk to load and stay loaded in the world for the duration specified or until removed.
-    // This will not over server restarts.
+    // This will not persist over server restarts.
     // If no duration is specified it defaults to 0 (forever).
     // While a chunk is loaded all normal activity such as crop growth and npc activity continues,
     // other than activity that requires a nearby player.
@@ -88,16 +90,16 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                     && !scriptEntry.hasObject("action")) {
                 scriptEntry.addObject("action", new ElementTag(arg.getValue().toUpperCase()));
                 if (arg.getValue().equalsIgnoreCase("removeall")) {
-                    scriptEntry.addObject("location", new LocationTag(Bukkit.getWorlds().get(0), 0, 0, 0));
+                    scriptEntry.addObject("location", new ListTag(Arrays.asList(new LocationTag(Bukkit.getWorlds().get(0), 0, 0, 0))));
                 }
             }
-            else if (arg.matchesArgumentType(ChunkTag.class)
+            else if (arg.matchesArgumentList(ChunkTag.class)
                     && !scriptEntry.hasObject("location")) {
-                scriptEntry.addObject("location", arg.asType(ChunkTag.class).getCenter());
+                scriptEntry.addObject("location", arg.asType(ListTag.class));
             }
-            else if (arg.matchesArgumentType(LocationTag.class)
+            else if (arg.matchesArgumentList(LocationTag.class)
                     && !scriptEntry.hasObject("location")) {
-                scriptEntry.addObject("location", arg.asType(LocationTag.class));
+                scriptEntry.addObject("location", arg.asType(ListTag.class));
             }
             else if (arg.matchesArgumentType(DurationTag.class)
                     && !scriptEntry.hasObject("duration")) {
@@ -124,70 +126,82 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
     @Override
     public void execute(ScriptEntry scriptEntry) {
         ElementTag action = scriptEntry.getElement("action");
-        LocationTag chunkloc = (LocationTag) scriptEntry.getObject("location");
+        ListTag chunklocs = (ListTag) scriptEntry.getObject("location");
         DurationTag length = (DurationTag) scriptEntry.getObject("duration");
 
         if (scriptEntry.dbCallShouldDebug()) {
 
             Debug.report(scriptEntry, getName(),
                     action.debug()
-                            + chunkloc.debug()
+                            + chunklocs.debug()
                             + length.debug());
 
         }
 
-        Chunk chunk = chunkloc.getChunk();
-        String chunkString = chunk.getX() + ", " + chunk.getZ() + "," + chunkloc.getWorldName();
+        for (String chunkText : chunklocs) {
+            Chunk chunk;
+            if (ChunkTag.matches(chunkText)) {
+                chunk = ChunkTag.valueOf(chunkText, scriptEntry.context).getChunk();
+            }
+            else if (LocationTag.matches(chunkText)) {
+                chunk = LocationTag.valueOf(chunkText, scriptEntry.context).getChunk();
+            }
+            else {
+                Debug.echoError("Chunk input '" + chunkText + "' is invalid.");
+                return;
+            }
+            String chunkString = chunk.getX() + ", " + chunk.getZ() + "," + chunk.getWorld().getName();
 
-        switch (Action.valueOf(action.asString())) {
-            case ADD:
-                if (length.getSeconds() != 0) {
-                    chunkDelays.put(chunkString, System.currentTimeMillis() + length.getMillis());
-                }
-                else {
-                    chunkDelays.put(chunkString, (long) 0);
-                }
-                Debug.echoDebug(scriptEntry, "...added chunk " + chunk.getX() + ", " + chunk.getZ() + " with a delay of " + length.getSeconds() + " seconds.");
-                if (!chunk.isLoaded()) {
-                    chunk.load();
-                }
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                    chunk.setForceLoaded(true);
-                    if (length.getSeconds() > 0) {
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
-                            @Override
-                            public void run() {
-                                if (chunkDelays.containsKey(chunkString) && chunkDelays.get(chunkString) <= System.currentTimeMillis()) {
-                                    chunk.setForceLoaded(false);
-                                    chunkDelays.remove(chunkString);
-                                }
-                            }
-                        }, length.getTicks() + 20);
+            switch (Action.valueOf(action.asString())) {
+                case ADD:
+                    if (length.getSeconds() != 0) {
+                        chunkDelays.put(chunkString, System.currentTimeMillis() + length.getMillis());
                     }
-                }
-                break;
-            case REMOVE:
-                if (chunkDelays.containsKey(chunkString)) {
-                    chunkDelays.remove(chunkString);
+                    else {
+                        chunkDelays.put(chunkString, (long) 0);
+                    }
+                    Debug.echoDebug(scriptEntry, "...added chunk " + chunk.getX() + ", " + chunk.getZ() + " with a delay of " + length.getSeconds() + " seconds.");
+                    if (!chunk.isLoaded()) {
+                        chunk.load();
+                    }
                     if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                        chunk.setForceLoaded(false);
+                        chunk.setForceLoaded(true);
+                        if (length.getSeconds() > 0) {
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (chunkDelays.containsKey(chunkString) && chunkDelays.get(chunkString) <= System.currentTimeMillis()) {
+                                        chunk.setForceLoaded(false);
+                                        chunkDelays.remove(chunkString);
+                                    }
+                                }
+                            }, length.getTicks() + 20);
+                        }
                     }
-                    Debug.echoDebug(scriptEntry, "...allowing unloading of chunk " + chunk.getX() + ", " + chunk.getZ());
-                }
-                else {
-                    Debug.echoError("Chunk was not on the load list!");
-                }
-                break;
-            case REMOVEALL:
-                Debug.echoDebug(scriptEntry, "...allowing unloading of all stored chunks");
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                    for (String chunkStr : chunkDelays.keySet()) {
-                        ChunkTag loopChunk = ChunkTag.valueOf(chunkStr);
-                        loopChunk.getChunk().setForceLoaded(false);
+                    break;
+                case REMOVE:
+                    if (chunkDelays.containsKey(chunkString)) {
+                        chunkDelays.remove(chunkString);
+                        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+                            chunk.setForceLoaded(false);
+                        }
+                        Debug.echoDebug(scriptEntry, "...allowing unloading of chunk " + chunk.getX() + ", " + chunk.getZ());
                     }
-                }
-                chunkDelays.clear();
-                break;
+                    else {
+                        Debug.echoError("Chunk was not on the load list!");
+                    }
+                    break;
+                case REMOVEALL:
+                    Debug.echoDebug(scriptEntry, "...allowing unloading of all stored chunks");
+                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+                        for (String chunkStr : chunkDelays.keySet()) {
+                            ChunkTag loopChunk = ChunkTag.valueOf(chunkStr);
+                            loopChunk.getChunk().setForceLoaded(false);
+                        }
+                    }
+                    chunkDelays.clear();
+                    break;
+            }
         }
     }
 

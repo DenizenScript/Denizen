@@ -1369,7 +1369,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @attribute <CuboidTag.list_chunks>
         // @returns ListTag(ChunkTag)
         // @description
-        // Gets a list of all chunks entirely within the CuboidTag.
+        // Gets a list of all chunks entirely within the CuboidTag (ignoring the Y axis).
         // -->
         registerTag("list_chunks", (attribute, cuboid) -> {
             ListTag chunks = new ListTag();
