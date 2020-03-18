@@ -169,7 +169,7 @@ public class DropCommand extends AbstractCommand {
             case DROP_EXP:
                 EntityTag orb = new EntityTag(location.getWorld().spawnEntity(location, EntityType.EXPERIENCE_ORB));
                 ((ExperienceOrb) orb.getBukkitEntity()).setExperience(qty.asInt());
-                entityList.add(orb.toString());
+                entityList.addObject(orb);
                 break;
 
             case DROP_ITEM:
@@ -188,7 +188,7 @@ public class DropCommand extends AbstractCommand {
                                 ((Item) e.getBukkitEntity()).setPickupDelay(delay.getTicksAsInt());
                             }
                         }
-                        entityList.add(e.toString());
+                        entityList.addObject(e);
                     }
                 }
                 break;
@@ -197,7 +197,7 @@ public class DropCommand extends AbstractCommand {
                 if (qty.asInt() > 1 && entity.isUnique()) {
                     Debug.echoDebug(scriptEntry, "Cannot drop multiples of this entity because it is Unique!");
                     entity.spawnAt(location);
-                    entityList.add(entity.toString());
+                    entityList.addObject(entity);
                     break;
                 }
                 for (int x = 0; x < qty.asInt(); x++) {
@@ -207,7 +207,7 @@ public class DropCommand extends AbstractCommand {
                     }
                     EntityTag ent = new EntityTag(entity.getEntityType(), mechanisms);
                     ent.spawnAt(location);
-                    entityList.add(ent.toString());
+                    entityList.addObject(ent);
                 }
                 break;
         }
@@ -215,7 +215,7 @@ public class DropCommand extends AbstractCommand {
         // Add entities to context so that the specific entities dropped can be fetched.
         scriptEntry.addObject("dropped_entities", entityList);
         if (entityList.size() == 1) {
-            scriptEntry.addObject("dropped_entity", entityList.get(0));
+            scriptEntry.addObject("dropped_entity", entityList.getObject(0));
         }
 
     }
