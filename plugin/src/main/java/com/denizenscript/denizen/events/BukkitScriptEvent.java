@@ -348,8 +348,10 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (player == null) {
             return false;
         }
-        if (!FlagManager.playerHasFlag(player, flagged)) {
-            return false;
+        for (String flag : CoreUtilities.split(flagged, '|')) {
+            if (!FlagManager.playerHasFlag(player, flag)) {
+                return false;
+            }
         }
         return true;
     }
@@ -366,8 +368,10 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (player == null || !player.isOnline()) {
             return false;
         }
-        if (!player.getPlayerEntity().hasPermission(perm)) {
-            return false;
+        for (String permName : CoreUtilities.split(perm, '|')) {
+            if (!player.getPlayerEntity().hasPermission(permName)) {
+                return false;
+            }
         }
         return true;
     }
@@ -386,6 +390,8 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     //
     // Note that these switches will be ignored for events that do not have a linked player.
     // Be cautious with events that will only sometimes have a linked player.
+    //
+    // For multiple flag or permission requirements, just list them separated by '|' pipes, like "flagged:a|b|c".
     // -->
 
     public boolean runAutomaticPlayerSwitches(ScriptPath path) {
