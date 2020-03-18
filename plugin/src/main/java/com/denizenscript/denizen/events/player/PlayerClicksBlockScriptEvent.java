@@ -193,6 +193,11 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         return super.getContext(name);
     }
 
+    @Override
+    public void cancellationChanged() {
+        event.setCancelled(cancelled); // Workaround for Spigot=Dumb!
+    }
+
     @EventHandler
     public void playerClicksBlock(PlayerInteractEvent event) {
         if (event.getAction() == Action.PHYSICAL) {
@@ -205,10 +210,6 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         click_type = new ElementTag(event.getAction().name());
         cancelled = event.isCancelled() && event.useItemInHand() == Event.Result.DENY; // Spigot is dumb!
         this.event = event;
-        wasCancellationAltered = false;
         fire(); // Explicitly don't use `fire(event)` due to spigot bork
-        if (wasCancellationAltered) { // Workaround for Spigot=Dumb!
-            event.setCancelled(cancelled);
-        }
     }
 }
