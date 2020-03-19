@@ -53,6 +53,7 @@ public class DenizenPacketHandler {
                             event.jump = new ElementTag(steerVehicle.getJumpInput());
                             event.dismount = new ElementTag(steerVehicle.getDismountInput());
                             event.cancelled = false;
+                            event.modifyCancellation = (c) -> event.cancelled = c;
                             event.fire();
                             return event.cancelled;
                         }
@@ -106,17 +107,12 @@ public class DenizenPacketHandler {
                         event.message = new ElementTag(chat.getMessage());
                         event.rawJson = new ElementTag(chat.getRawJson());
                         event.system = new ElementTag(pos == 1);
-                        event.messageModified = false;
-                        event.rawJsonModified = false;
                         event.player = PlayerTag.mirrorBukkitPlayer(player);
+                        event.modifyMessage = chat::setMessage;
+                        event.modifyRawJson = chat::setRawJson;
                         event.cancelled = false;
+                        event.modifyCancellation = (c) -> event.cancelled = c;
                         event.fire();
-                        if (event.messageModified) {
-                            chat.setMessage(event.message.asString());
-                        }
-                        else if (event.rawJsonModified) {
-                            chat.setRawJson(event.rawJson.asString());
-                        }
                         return event.cancelled;
                     }
                     return false;

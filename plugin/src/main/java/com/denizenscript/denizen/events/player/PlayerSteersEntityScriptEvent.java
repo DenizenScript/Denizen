@@ -8,6 +8,8 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 
+import java.util.function.Consumer;
+
 public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
 
     // <--[event]
@@ -46,6 +48,13 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
     public ElementTag forward;
     public ElementTag jump;
     public ElementTag dismount;
+
+    public Consumer<Boolean> modifyCancellation;
+
+    @Override
+    public void cancellationChanged() {
+        modifyCancellation.accept(cancelled);
+    }
 
     @Override
     public boolean couldMatch(ScriptPath path) {

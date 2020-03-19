@@ -1181,6 +1181,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @description
         // Returns what items the block at the location would drop if broken naturally.
         // Optionally specifier a breaker item.
+        // Not guaranteed to contain exactly correct or contain all possible drops (for things like plants that drop only when grown, ores that drop random amounts, etc).
         // -->
         registerTag("drops", (attribute, object) -> {
             ItemStack inputItem = null;

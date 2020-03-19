@@ -8,6 +8,8 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 
+import java.util.function.Consumer;
+
 public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
 
     // <--[event]
@@ -44,11 +46,16 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
     public ElementTag rawJson;
     public ElementTag system;
     public PlayerTag player;
-
-    public boolean messageModified;
-    public boolean rawJsonModified;
-
     public boolean loaded;
+
+    public Consumer<String> modifyMessage;
+    public Consumer<String> modifyRawJson;
+    public Consumer<Boolean> modifyCancellation;
+
+    @Override
+    public void cancellationChanged() {
+        modifyCancellation.accept(cancelled);
+    }
 
     @Override
     public boolean couldMatch(ScriptPath path) {
@@ -77,12 +84,12 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
             String lower = CoreUtilities.toLowerCase(determination);
             if (lower.startsWith("message:")) {
                 message = new ElementTag(determination.substring("message:".length()));
-                messageModified = true;
+                modifyMessage.accept(message.asString());
                 return true;
             }
             if (lower.startsWith("raw_json:")) {
                 rawJson = new ElementTag(determination.substring("raw_json:".length()));
-                rawJsonModified = true;
+                modifyRawJson.accept(rawJson.asString());
                 return true;
             }
         }
