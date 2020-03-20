@@ -377,14 +377,17 @@ public class NPCCommandHandler {
                 Anchors anchors = npc.getTrait(Anchors.class);
                 if (anchors.getAnchor(args.getFlag("anchor")) != null) {
                     trait.sit(anchors.getAnchor(args.getFlag("anchor")).getLocation());
+                    Messaging.send(sender, npc.getName() + " is now sitting.");
+                    return;
                 }
             }
             Messaging.sendError(sender, "The NPC does not have the specified anchor!");
+            return;
         }
         else {
             trait.sit();
         }
-
+        Messaging.send(sender, npc.getName() + " is now sitting.");
     }
 
     /*
@@ -401,6 +404,7 @@ public class NPCCommandHandler {
             SittingTrait trait = npc.getTrait(SittingTrait.class);
             trait.stand();
             npc.removeTrait(SittingTrait.class);
+            Messaging.send(sender, npc.getName() + " is now standing.");
         }
         else if (npc.hasTrait(SneakingTrait.class)) {
             SneakingTrait trait = npc.getTrait(SneakingTrait.class);
@@ -411,6 +415,21 @@ public class NPCCommandHandler {
             }
             trait.stand();
             npc.removeTrait(SneakingTrait.class);
+            Messaging.send(sender, npc.getName() + " is now standing.");
+        }
+        else if (npc.hasTrait(SleepingTrait.class)) {
+            SleepingTrait trait = npc.getTrait(SleepingTrait.class);
+            if (!trait.isSleeping()) {
+                npc.removeTrait(SleepingTrait.class);
+                Messaging.sendError(sender, npc.getName() + " is already standing!");
+                return;
+            }
+            trait.wakeUp();
+            npc.removeTrait(SleepingTrait.class);
+            Messaging.send(sender, npc.getName() + " is now standing.");
+        }
+        else {
+            Messaging.sendError(sender, npc.getName() + " is already standing!");
         }
     }
 
@@ -435,26 +454,29 @@ public class NPCCommandHandler {
         }
 
         if (args.hasValueFlag("location")) {
-            String[] argsArray = args.getFlag("location").split(",");
-            if (argsArray.length != 4) {
+            LocationTag location = LocationTag.valueOf(args.getFlag("location"));
+            if (location == null) {
                 Messaging.sendError(sender, "Usage: /npc sleep --location x,y,z,world");
                 return;
             }
-            trait.toSleep(LocationTag.valueOf(argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
+            trait.toSleep(location);
         }
         else if (args.hasValueFlag("anchor")) {
             if (npc.hasTrait(Anchors.class)) {
                 Anchors anchors = npc.getTrait(Anchors.class);
                 if (anchors.getAnchor(args.getFlag("anchor")) != null) {
                     trait.toSleep(anchors.getAnchor(args.getFlag("anchor")).getLocation());
+                    Messaging.send(sender, npc.getName() + " is now sleeping.");
+                    return;
                 }
             }
             Messaging.sendError(sender, "The NPC does not have the specified anchor!");
+            return;
         }
         else {
             trait.toSleep();
         }
-
+        Messaging.send(sender, npc.getName() + " is now sleeping.");
     }
 
     /*
@@ -479,6 +501,7 @@ public class NPCCommandHandler {
 
         trait.wakeUp();
         npc.removeTrait(SleepingTrait.class);
+        Messaging.send(sender, npc.getName() + " is no longer sleeping.");
     }
 
     /*
