@@ -58,9 +58,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
     // Note that players and NPCs are valid EntityTags, but are generally represented by the more specific
     // PlayerTag and NPCTag objects.
     //
+    // Note that a spawned entity can be a living entity (a player, NPC, or mob) or a nonliving entity (a painting, item frame, etc).
+    //
     // These use the object notation "e@".
     // The identity format for entities is a spawned entity's UUID, or an entity type.
-    // For example, 'e@zombie'.
+    // For example, 'e@abc123' or 'e@zombie'.
     //
     // -->
 
