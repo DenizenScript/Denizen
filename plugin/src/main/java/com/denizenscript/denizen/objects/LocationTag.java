@@ -2459,15 +2459,15 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             String[] ints = attribute.getContext(1).replace("l@", "").split(",", 4); // TODO: Just LocationTag.valueOf?
             if (ints.length >= 3) {
-                if ((ArgumentHelper.matchesDouble(ints[0]) || ArgumentHelper.matchesInteger(ints[0]))
-                        && (ArgumentHelper.matchesDouble(ints[1]) || ArgumentHelper.matchesInteger(ints[1]))
-                        && (ArgumentHelper.matchesDouble(ints[2]) || ArgumentHelper.matchesInteger(ints[2]))) {
+                if (ArgumentHelper.matchesDouble(ints[0])
+                        && ArgumentHelper.matchesDouble(ints[1])
+                        && ArgumentHelper.matchesDouble(ints[2])) {
                     return new LocationTag(object.clone().add(Double.valueOf(ints[0]),
                             Double.valueOf(ints[1]),
                             Double.valueOf(ints[2])));
                 }
             }
-            else if (LocationTag.matches(attribute.getContext(1))) {
+            if (LocationTag.matches(attribute.getContext(1))) {
                 return new LocationTag(object.clone().add(LocationTag.valueOf(attribute.getContext(1))));
             }
             return null;
@@ -2485,15 +2485,15 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             String[] ints = attribute.getContext(1).replace("l@", "").split(",", 4); // TODO: Just LocationTag.valueOf?
             if (ints.length == 3 || ints.length == 4) {
-                if ((ArgumentHelper.matchesDouble(ints[0]) || ArgumentHelper.matchesInteger(ints[0]))
-                        && (ArgumentHelper.matchesDouble(ints[1]) || ArgumentHelper.matchesInteger(ints[1]))
-                        && (ArgumentHelper.matchesDouble(ints[2]) || ArgumentHelper.matchesInteger(ints[2]))) {
+                if (ArgumentHelper.matchesDouble(ints[0])
+                        && ArgumentHelper.matchesDouble(ints[1])
+                        && ArgumentHelper.matchesDouble(ints[2])) {
                     return new LocationTag(object.clone().subtract(Double.valueOf(ints[0]),
                             Double.valueOf(ints[1]),
                             Double.valueOf(ints[2])));
                 }
             }
-            else if (LocationTag.matches(attribute.getContext(1))) {
+            if (LocationTag.matches(attribute.getContext(1))) {
                 return new LocationTag(object.clone().subtract(LocationTag.valueOf(attribute.getContext(1))));
             }
             return null;
