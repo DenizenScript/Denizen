@@ -57,8 +57,8 @@ public class StandCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
         NPCTag npc = Utilities.getEntryNPC(scriptEntry);
-        if (!(npc.getEntity() instanceof Player || npc.getEntity() instanceof Sittable)) {
-            Debug.echoError("Entities of type " + npc.getEntityType().getName() + " cannot sit.");
+        if (!(npc.getEntity() instanceof Player || npc.getEntity() instanceof Sittable || npc.getEntity() instanceof Villager)) {
+            Debug.echoError("Entities of type " + npc.getEntityType().getName() + " cannot sit or sleep.");
             return;
         }
 
@@ -66,7 +66,7 @@ public class StandCommand extends AbstractCommand {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("npc", Utilities.getEntryNPC(scriptEntry)));
         }
 
-        Entity entity = Utilities.getEntryNPC(scriptEntry).getEntity();
+        Entity entity = npc.getEntity();
         if (entity instanceof Sittable) {
             ((Sittable) entity).setSitting(false);
         }

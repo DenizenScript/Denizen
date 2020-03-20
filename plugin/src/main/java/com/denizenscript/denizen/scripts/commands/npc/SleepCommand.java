@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Villager;
 
 public class SleepCommand extends AbstractCommand {
 
@@ -64,8 +65,8 @@ public class SleepCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
         LocationTag location = (LocationTag) scriptEntry.getObject("location");
         NPCTag npc = Utilities.getEntryNPC(scriptEntry);
-        if (Utilities.getEntryNPC(scriptEntry).getEntityType() != EntityType.PLAYER) {
-            Debug.echoError("Only Player type NPCs can sit!");
+        if (npc.getEntityType() != EntityType.PLAYER && !(npc.getEntity() instanceof Villager)) {
+            Debug.echoError("Only Player or villager type NPCs can sit!");
             return;
         }
 
