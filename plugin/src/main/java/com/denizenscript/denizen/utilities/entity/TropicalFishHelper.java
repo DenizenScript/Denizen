@@ -2,6 +2,7 @@ package com.denizenscript.denizen.utilities.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.DyeColor;
 import org.bukkit.entity.TropicalFish;
 
@@ -15,7 +16,7 @@ public class TropicalFishHelper {
     }
 
     public static void setColor(EntityTag fishTag, String color) {
-        ListTag list = ListTag.valueOf(color);
+        ListTag list = ListTag.valueOf(color, CoreUtilities.basicContext);
         TropicalFish fish = ((TropicalFish) fishTag.getBukkitEntity());
         fish.setPattern(TropicalFish.Pattern.valueOf(list.get(0).toUpperCase()));
         if (list.size() > 1) {

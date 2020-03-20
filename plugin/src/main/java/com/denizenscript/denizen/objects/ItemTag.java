@@ -74,6 +74,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
+    @Deprecated
     public static ItemTag valueOf(String string) {
         return valueOf(string, null);
     }

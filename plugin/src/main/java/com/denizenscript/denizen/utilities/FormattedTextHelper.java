@@ -205,7 +205,7 @@ public class FormattedTextHelper {
                             HoverEvent.Action action = HoverEvent.Action.valueOf(innardBase.get(1).toUpperCase());
                             BaseComponent[] hoverValue;
                             if (action == HoverEvent.Action.SHOW_ITEM) {
-                                ItemTag item = ItemTag.valueOf(unescape(innardParts.get(0)));
+                                ItemTag item = ItemTag.valueOf(unescape(innardParts.get(0)), CoreUtilities.noDebugContext);
                                 if (item == null) {
                                     continue;
                                 }

@@ -96,7 +96,7 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
         if (!isDefaultDetermination(determinationObj) && determinationObj instanceof ElementTag) {
             String determination = determinationObj.toString();
             if (CoreUtilities.toLowerCase(determination).startsWith("caught:")) {
-                item = ItemTag.valueOf(determination.substring("caught:".length()));
+                item = ItemTag.valueOf(determination.substring("caught:".length()), path.context);
                 if (entity != null && entity.getBukkitEntityType() == EntityType.DROPPED_ITEM) {
                     ((Item) entity.getBukkitEntity()).setItemStack(item.getItemStack());
                     return true;

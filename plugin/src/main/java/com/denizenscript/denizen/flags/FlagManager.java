@@ -14,6 +14,8 @@ import com.denizenscript.denizencore.events.OldEventManager;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.scripts.ScriptEntry;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemorySection;
@@ -344,9 +346,9 @@ public class FlagManager {
          * Splits a dScript list into values that are then added to the flag.
          * Returns the index of the last value added to the flag.
          */
-        public int split(Object obj) {
+        public int split(Object obj, TagContext context) {
             checkExpired();
-            ListTag split = ListTag.valueOf(obj.toString());
+            ListTag split = ListTag.valueOf(obj.toString(), context);
             if (split.size() > 0) {
                 value.mustBeList();
                 for (String val : split) {
@@ -361,9 +363,9 @@ public class FlagManager {
             return size();
         }
 
-        public int splitNew(Object obj) {
+        public int splitNew(Object obj, TagContext context) {
             checkExpired();
-            ListTag split = ListTag.valueOf(obj.toString());
+            ListTag split = ListTag.valueOf(obj.toString(), context);
             if (split.size() > 0) {
                 value.mustBeList();
                 value.values.clear();
@@ -683,7 +685,7 @@ public class FlagManager {
          * @param value  the value specified for the action
          * @param index  the flag index, null if none
          */
-        public void doAction(Action action, ElementTag value, Integer index) {
+        public void doAction(Action action, ElementTag value, Integer index, ScriptEntry entry) {
 
             String val = (value != null ? value.asString() : null);
 
@@ -722,11 +724,11 @@ public class FlagManager {
                     break;
 
                 case SPLIT:
-                    split(val);
+                    split(val, entry.context);
                     break;
 
                 case SPLIT_NEW:
-                    splitNew(val);
+                    splitNew(val, entry.context);
                     break;
 
                 case DELETE:

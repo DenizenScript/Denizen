@@ -325,7 +325,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
         }
 
         // Do the action!
-        flag.doAction(action, value, index);
+        flag.doAction(action, value, index, scriptEntry);
 
         // Set flag duration
         if (flag.StillValid() && duration != null && duration.getSeconds() > 0) {

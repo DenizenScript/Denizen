@@ -17,6 +17,7 @@ import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
@@ -257,6 +258,11 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     }
 
     @Override
+    public TagContext getTagContext(ScriptContainer container) {
+        return new BukkitTagContext(container);
+    }
+
+    @Override
     public TagContext getTagContext(ScriptEntry scriptEntry) {
         return new BukkitTagContext(scriptEntry);
     }
@@ -328,7 +334,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
             outcome = MaterialTag.matches(comparable);
         }
         else if (comparedto.equalsIgnoreCase("materiallist")) {
-            outcome = ListTag.valueOf(comparable).containsObjectsFrom(MaterialTag.class);
+            outcome = ListTag.valueOf(comparable, CoreUtilities.basicContext).containsObjectsFrom(MaterialTag.class);
         }
         else if (comparedto.equalsIgnoreCase("entity")) {
             outcome = EntityTag.matches(comparable);
