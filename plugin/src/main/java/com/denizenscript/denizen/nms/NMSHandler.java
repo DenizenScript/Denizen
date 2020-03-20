@@ -19,10 +19,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class NMSHandler {
 
@@ -197,14 +194,19 @@ public abstract class NMSHandler {
     }
 
     public HashMap<UUID, UUID> attachmentsA = new HashMap<>(); // Key follows value
-    public HashMap<UUID, UUID> attachments2 = new HashMap<>(); // Value follows key
+    public HashMap<UUID, List<UUID>> attachments2 = new HashMap<>(); // Value follows key
     public HashMap<UUID, Vector> attachmentOffsets = new HashMap<>();
     public HashSet<UUID> attachmentRotations = new HashSet<>();
     public HashMap<UUID, Vector> visiblePositions = new HashMap<>();
 
     public void forceAttachMove(Entity a, Entity b, Vector offset, boolean matchRotation) {
         if (attachmentsA.containsKey(a.getUniqueId())) {
-            attachments2.remove(attachmentsA.get(a.getUniqueId()));
+            UUID bid = attachmentsA.get(a.getUniqueId());
+            List<UUID> subAttachments = attachments2.get(bid);
+            subAttachments.remove(a.getUniqueId());
+            if (subAttachments.isEmpty()) {
+                attachments2.remove(bid);
+            }
             attachmentsA.remove(a.getUniqueId());
             attachmentOffsets.remove(a.getUniqueId());
             attachmentRotations.remove(a.getUniqueId());
@@ -213,7 +215,12 @@ public abstract class NMSHandler {
             return;
         }
         attachmentsA.put(a.getUniqueId(), b.getUniqueId());
-        attachments2.put(b.getUniqueId(), a.getUniqueId());
+        List<UUID> subAttachments = attachments2.get(b.getUniqueId());
+        if (subAttachments == null) {
+            subAttachments = new ArrayList<>();
+            attachments2.put(b.getUniqueId(), subAttachments);
+        }
+        subAttachments.add(a.getUniqueId());
         attachmentOffsets.put(a.getUniqueId(), offset);
         if (matchRotation) {
             attachmentRotations.add(a.getUniqueId());
