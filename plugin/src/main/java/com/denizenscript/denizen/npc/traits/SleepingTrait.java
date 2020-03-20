@@ -50,7 +50,12 @@ public class SleepingTrait extends Trait {
             }
         }
         else { // Player
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && bedLocation.getBlock().getBlockData() instanceof Bed) {
+                ((Player) npc.getEntity()).sleep(bedLocation.clone(), true);
+            }
+            else {
                 PlayerAnimation.SLEEP.play((Player) npc.getEntity());
+            }
         }
         sleeping = true;
     }
@@ -100,6 +105,9 @@ public class SleepingTrait extends Trait {
             ((Villager) npc.getEntity()).wakeup();
         }
         else {
+            if (((Player) npc.getEntity()).isSleeping()) {
+                ((Player) npc.getEntity()).wakeup(false);
+            }
             PlayerAnimation.STOP_SLEEPING.play((Player) npc.getEntity());
         }
         bedLocation = null;
