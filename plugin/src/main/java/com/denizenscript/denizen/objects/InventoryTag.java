@@ -273,21 +273,16 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
-    @Fetchable("in")
-    public static InventoryTag valueOf(String string, TagContext context) {
-        if (context == null) {
-            return valueOf(string, null, null);
-        }
-        else {
-            return valueOf(string, ((BukkitTagContext) context).player, ((BukkitTagContext) context).npc, !context.debug);
-        }
+    public static InventoryTag valueOf(String string, PlayerTag player, NPCTag npc, boolean silent) {
+        return valueOf(string, new BukkitTagContext(player, npc, null, !silent, null));
     }
 
     public static InventoryTag valueOf(String string, PlayerTag player, NPCTag npc) {
         return valueOf(string, player, npc, false);
     }
 
-    public static InventoryTag valueOf(String string, PlayerTag player, NPCTag npc, boolean silent) {
+    @Fetchable("in")
+    public static InventoryTag valueOf(String string, TagContext context) {
 
         if (string == null) {
             return null;
@@ -296,8 +291,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         ///////
         // Handle objects with properties through the object fetcher
         if (ObjectFetcher.isObjectWithProperties(string)) {
-            InventoryTag result = ObjectFetcher.getObjectFrom(InventoryTag.class, string,
-                    new BukkitTagContext(player, npc, null, false, null));
+            InventoryTag result = ObjectFetcher.getObjectFrom(InventoryTag.class, string, context);
             if (result != null && result.uniquifier != null) {
                 InventoryTag fixedResult = InventoryTrackerSystem.idTrackedInventories.get(result.uniquifier);
                 if (fixedResult != null) {
@@ -314,7 +308,8 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         }
 
         if (ScriptRegistry.containsScript(string, InventoryScriptContainer.class)) {
-            return ScriptRegistry.getScriptContainerAs(string, InventoryScriptContainer.class).getInventoryFrom(player, npc);
+            return ScriptRegistry.getScriptContainerAs(string, InventoryScriptContainer.class).getInventoryFrom(
+                    context == null ? null : ((BukkitTagContext) context).player, context == null ? null : ((BukkitTagContext) context).npc);
         }
 
         Notable noted = NotableManager.getSavedObject(string);
@@ -330,7 +325,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             }
         }
 
-        if (!silent) {
+        if (context == null || context.debug) {
             Debug.echoError("Value of InventoryTag returning null. Invalid InventoryTag specified: " + string);
         }
         return null;
