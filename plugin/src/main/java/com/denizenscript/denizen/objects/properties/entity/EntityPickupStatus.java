@@ -78,7 +78,7 @@ public class EntityPickupStatus implements Property {
         // @input Element
         // @description
         // Changes the pickup status of an arrow/trident.
-        // Available pickup statuses can be found here: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Arrow.PickupStatus.html>
+        // Available pickup statuses can be found here: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/AbstractArrow.PickupStatus.html>
         // @tags
         // <EntityTag.pickup_status>
         // -->

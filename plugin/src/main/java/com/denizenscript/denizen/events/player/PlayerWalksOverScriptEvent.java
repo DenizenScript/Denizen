@@ -52,7 +52,7 @@ public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Lis
     @Override
     public boolean matches(ScriptPath path) {
         String loc = path.eventArgLowerAt(3);
-        if (!loc.equals(CoreUtilities.toLowerCase(notable)) || tryLocation(new LocationTag(event.getPlayer().getLocation()), loc)) {
+        if (!loc.equals("notable") && !loc.equals(notable)) {
             return false;
         }
         return super.matches(path);
@@ -88,6 +88,7 @@ public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Lis
         if (notable == null) {
             return;
         }
+        notable = CoreUtilities.toLowerCase(notable);
         this.event = event;
         fire(event);
     }

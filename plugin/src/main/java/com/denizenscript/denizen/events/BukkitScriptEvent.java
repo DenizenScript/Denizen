@@ -306,23 +306,6 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
     }
 
-    public boolean tryLocation(LocationTag location, String comparedto) {
-        if (comparedto == null || comparedto.length() == 0) {
-            Debug.echoError("Null or empty location string to compare");
-            return false;
-        }
-        if (comparedto.equals("notable")) {
-            return true;
-        }
-        comparedto = "l@" + comparedto;
-        LocationTag loc = LocationTag.valueOf(comparedto);
-        if (loc == null) {
-            Debug.echoError("Invalid location in location comparison string: " + comparedto);
-            return false;
-        }
-        return loc.getBlock().equals(location.getBlock());
-    }
-
     public boolean runWithCheck(ScriptPath path, ItemTag held) {
         String with = path.switches.get("with");
         if (with != null) {

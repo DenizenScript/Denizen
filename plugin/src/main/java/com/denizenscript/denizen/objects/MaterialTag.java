@@ -600,7 +600,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // @returns ElementTag(Boolean)
         // @group properties
         // @description
-        // Returns whether the material is a slab.
+        // Returns whether the material is a pickle.
         // When this returns true, <@link tag MaterialTag.pickle_count>,
         // <@link tag MaterialTag.pickle_max>, <@link tag MaterialTag.pickle_min>,
         // and <@link mechanism MaterialTag.pickle_count> are accessible.
