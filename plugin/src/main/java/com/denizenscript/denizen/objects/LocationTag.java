@@ -670,8 +670,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             return 0;
         }
         else {
-            double dist = distanceSquared(loc1) - distanceSquared(loc2);
-            return dist == 0 ? 0 : (dist > 0 ? 1 : -1);
+            return Double.compare(distanceSquared(loc1), distanceSquared(loc2));
         }
     }
 
