@@ -1003,7 +1003,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the location of the highest solid block at the location.
         // -->
         registerTag("highest", (attribute, object) -> {
-            return new LocationTag(object.getHighestBlockForTag(attribute).add(0, -1, 0));
+            Location result = object.getHighestBlockForTag(attribute);
+            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_14)) {
+                result = result.subtract(0, 1, 0);
+            }
+            return new LocationTag(result);
         });
 
         // <--[tag]
