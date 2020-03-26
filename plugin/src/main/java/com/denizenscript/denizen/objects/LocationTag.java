@@ -38,6 +38,7 @@ import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -1493,14 +1494,33 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @returns EntityTag
         // @description
         // Returns the entity this location is pointing at, using precise ray trace logic.
-        // Optionally, specify a maximum range to find the entity from (defaults to 200).
+        // Optionally, specify a maximum range to find the entity from (defaults to 100).
         // -->
         registerTag("precise_target", (attribute, object) -> {
             int range = attribute.getIntContext(1);
             if (range < 1) {
-                range = 200;
+                range = 100;
             }
-            RayTraceResult result = object.getWorld().rayTraceEntities(object, object.getDirection(), range);
+            RayTraceResult result;
+            // <--[tag]
+            // @attribute <LocationTag.precise_target[(<range>)].type[<entity_type>|...]>
+            // @returns EntityTag
+            // @description
+            // Returns the entity this location is pointing at, using precise ray trace logic.
+            // Optionally, specify a maximum range to find the entity from (defaults to 100).
+            // Accepts a list of types to trace against (types not listed will be ignored).
+            // -->
+            if (attribute.startsWith("type", 2) && attribute.hasContext(2)) {
+                attribute.fulfill(1);
+                Set<EntityType> types = new HashSet<>();
+                for (String str : ListTag.valueOf(attribute.getContext(1), attribute.context)) {
+                    types.add(EntityTag.valueOf(str).getBukkitEntityType());
+                }
+                result = object.getWorld().rayTraceEntities(object, object.getDirection(), range, (e) -> types.contains(e.getType()));
+            }
+            else {
+                result = object.getWorld().rayTraceEntities(object, object.getDirection(), range);
+            }
             if (result != null && result.getHitEntity() != null) {
                 return new EntityTag(result.getHitEntity());
             }
@@ -1512,12 +1532,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @returns LocationTag
         // @description
         // Returns the precise location this location is pointing at, when tracing against entities.
-        // Optionally, specify a maximum range to find the entity from (defaults to 200).
+        // Optionally, specify a maximum range to find the entity from (defaults to 100).
         // -->
         registerTag("precise_target_position", (attribute, object) -> {
             int range = attribute.getIntContext(1);
             if (range < 1) {
-                range = 200;
+                range = 100;
             }
             RayTraceResult result = object.getWorld().rayTraceEntities(object, object.getDirection(), range);
             if (result != null) {
