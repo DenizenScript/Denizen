@@ -47,7 +47,7 @@ public abstract class ProfileEditor {
         PlayerProfile profile = getFakeProfile(player);
         String[] split = blob.split(";");
         profile.setTexture(split[0]);
-        profile.setTextureSignature(split.length > 0 ? split[1] : null);
+        profile.setTextureSignature(split.length > 1 ? split[1] : null);
         updatePlayer(player, true);
     }
 
