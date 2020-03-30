@@ -141,7 +141,7 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
 
         // Drop the item
         final Item dropped = location.getWorld()
-                .dropItem(location.getBlock().getLocation().clone().add(0.5, 1.5, 0.5), item.getItemStack());
+                .dropItem(location.getBlockLocation().clone().add(0.5, 1.5, 0.5), item.getItemStack());
         dropped.setVelocity(dropped.getVelocity().multiply(0));
         dropped.setPickupDelay(duration.getTicksAsInt() + 1000);
         dropped.setTicksLived(duration.getTicksAsInt() + 1000);

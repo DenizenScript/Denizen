@@ -553,6 +553,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         return getBlockStateSafe(block);
     }
 
+    public static boolean isSameBlock(Location a, Location b) {
+        return a != null && b != null && a.getWorld() == b.getWorld() && a.getBlockX() == b.getBlockX()
+                && a.getBlockY() == b.getBlockY() && a.getBlockZ() == b.getBlockZ();
+    }
+
     public LocationTag getBlockLocation() {
         return new LocationTag(getWorld(), getBlockX(), getBlockY(), getBlockZ());
     }

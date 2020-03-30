@@ -305,8 +305,8 @@ public class PushCommand extends AbstractCommand implements Holdable {
                     // Check if the entity has collided with something
                     // using the most basic possible calculation
                     BlockHelper blockHelper = NMSHandler.getBlockHelper();
-                    if (!ignoreCollision && (!blockHelper.isSafeBlock(lastEntity.getLocation().add(v3).getBlock().getType())
-                            || !blockHelper.isSafeBlock(lastEntity.getLocation().add(newVel).getBlock().getType()))) {
+                    if (!ignoreCollision && (!blockHelper.isSafeBlock(lastEntity.getLocation().add(v3))
+                            || !blockHelper.isSafeBlock(lastEntity.getLocation().add(newVel)))) {
                         runs = maxTicks;
                     }
                     if (no_damage && lastEntity.isLivingEntity()) {

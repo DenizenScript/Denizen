@@ -96,10 +96,13 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
         if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        if (event.getTo().getBlock().getLocation().equals(event.getFrom().getBlock().getLocation())) {
+        if (LocationTag.isSameBlock(event.getFrom(), event.getTo())) {
             return;
         }
         location = new LocationTag(event.getTo().clone().subtract(0, 1, 0));
+        if (location.getBlockY() < 0 || location.getBlockY() > 255) {
+            return;
+        }
         previous_location = new LocationTag(event.getFrom());
         new_location = new LocationTag(event.getTo());
         this.event = event;

@@ -78,13 +78,13 @@ public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Lis
 
     @EventHandler
     public void onPlayerWalksOver(PlayerMoveEvent event) {
-        if (event.getFrom().getBlock().equals(event.getTo().getBlock())) {
+        if (LocationTag.isSameBlock(event.getFrom(), event.getTo())) {
             return;
         }
         if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        notable = NotableManager.getSavedId(new LocationTag(event.getTo().getBlock().getLocation()));
+        notable = NotableManager.getSavedId(new LocationTag(event.getTo()).getBlockLocation());
         if (notable == null) {
             return;
         }

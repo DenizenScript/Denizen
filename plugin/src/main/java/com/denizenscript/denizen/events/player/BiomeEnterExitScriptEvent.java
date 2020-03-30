@@ -8,6 +8,7 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -108,6 +109,13 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
 
     @EventHandler
     public void onPlayerEntersExitsBiome(PlayerMoveEvent event) {
+        if (LocationTag.isSameBlock(event.getFrom(), event.getTo())) {
+            return;
+        }
+        if (event.getFrom().getBlockY() < 0 || event.getFrom().getBlockY() > 255
+            || event.getTo().getBlockY() < 0 || event.getTo().getBlockY() > 255) {
+            return;
+        }
         from = new LocationTag(event.getFrom());
         to = new LocationTag(event.getTo());
         old_biome = new BiomeTag(from.getBlock().getBiome());

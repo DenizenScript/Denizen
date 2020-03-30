@@ -198,6 +198,9 @@ public class Utilities {
     }
 
     public static boolean isWalkable(Location location) {
+        if (location.getBlockY() < 1 || location.getBlockY() > 254) {
+            return false;
+        }
         BlockHelper blockHelper = NMSHandler.getBlockHelper();
         return !blockHelper.isSafeBlock(location.clone().subtract(0, 1, 0).getBlock().getType())
                 && blockHelper.isSafeBlock(location.getBlock().getType())

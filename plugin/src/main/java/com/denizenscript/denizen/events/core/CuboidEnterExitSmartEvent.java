@@ -179,7 +179,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
             return;
         }
 
-        if (event.getFrom().getBlock().equals(event.getTo().getBlock())) {
+        if (LocationTag.isSameBlock(event.getFrom(), event.getTo())) {
             return;
         }
 
