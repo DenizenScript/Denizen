@@ -37,10 +37,7 @@ import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.banner.PatternType;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -1221,6 +1218,27 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 return OldMaterialsHelper.getMaterialFrom(contents.getItemType(), contents.getData());
             }
             return null;
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.hive_bee_count>
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the number of bees inside a hive.
+        // -->
+        registerTag("hive_bee_count", (attribute, object) -> {
+            return new ElementTag(((Beehive) object.getBlockStateForTag(attribute)).getEntityCount());
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.hive_max_bees>
+        // @returns ElementTag(Number)
+        // @mechanism LocationTag.hive_max_bees
+        // @description
+        // Returns the maximum number of bees allowed inside a hive.
+        // -->
+        registerTag("hive_max_bees", (attribute, object) -> {
+            return new ElementTag(((Beehive) object.getBlockStateForTag(attribute)).getMaxEntities());
         });
 
         // <--[tag]
@@ -3341,6 +3359,53 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 MaterialData data = mechanism.valueAsType(MaterialTag.class).getMaterialData();
                 NMSHandler.getBlockHelper().setFlowerpotContents(getBlock(), data);
             }
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name hive_max_bees
+        // @input Element(Number)
+        // @description
+        // Sets the maximum allowed number of bees in a beehive.
+        // @tags
+        // <LocationTag.hive_max_bees>
+        // -->
+        if (mechanism.matches("hive_max_bees") && mechanism.requireInteger()) {
+            Beehive hive = (Beehive) getBlockState();
+            hive.setMaxEntities(mechanism.getValue().asInt());
+            hive.update();
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name release_bees
+        // @input None
+        // @description
+        // Causes a beehive to release all its bees.
+        // Will do nothing if the hive is empty.
+        // @tags
+        // <LocationTag.hive_bee_count>
+        // -->
+        if (mechanism.matches("release_bees")) {
+            Beehive hive = (Beehive) getBlockState();
+            hive.releaseEntities();
+            hive.update();
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name add_bee
+        // @input EntityTag
+        // @description
+        // Adds a bee into a beehive.
+        // Will do nothing if there's no room left in the hive.
+        // @tags
+        // <LocationTag.hive_bee_count>
+        // -->
+        if (mechanism.matches("add_bee") && mechanism.requireObject(EntityTag.class)) {
+            Beehive hive = (Beehive) getBlockState();
+            hive.addEntity((Bee) mechanism.valueAsType(EntityTag.class).getBukkitEntity());
+            hive.update();
         }
 
         // <--[mechanism]
