@@ -744,11 +744,12 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @attribute <PlayerTag.list_flags[(regex:)<search>]>
         // @returns ListTag
         // @description
-        // Returns a list of a player's flag names, with an optional search for
-        // names containing a certain pattern.
+        // Returns a list of a player's flag names, with an optional search for names containing a certain pattern.
         // Works with offline players.
+        // Note that this is exclusively for debug/testing reasons, and should never be used in a real script.
         // -->
         registerTag("list_flags", (attribute, object) -> {
+            FlagManager.listFlagsTagWarning.warn(attribute.context);
             ListTag allFlags = new ListTag(DenizenAPI.getCurrentInstance().flagManager().listPlayerFlags(object));
             ListTag searchFlags = null;
             if (!allFlags.isEmpty() && attribute.hasContext(1)) {

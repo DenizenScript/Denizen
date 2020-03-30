@@ -17,12 +17,16 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.SlowWarning;
+import com.denizenscript.denizencore.utilities.debugging.Warning;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemorySection;
 
 import java.util.*;
 
 public class FlagManager {
+
+    public static Warning listFlagsTagWarning = new SlowWarning("The list_flags tag is meant for testing/debugging only. Do not use it in scripts (ignore this warning if using for testing reasons).");
 
     // Valid flag actions
     public enum Action {

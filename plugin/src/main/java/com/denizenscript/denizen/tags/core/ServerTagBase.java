@@ -825,10 +825,11 @@ public class ServerTagBase {
         // @attribute <server.list_flags[(regex:)<search>]>
         // @returns ListTag
         // @description
-        // Returns a list of the server's flag names, with an optional search for
-        // names containing a certain pattern.
+        // Returns a list of the server's flag names, with an optional search for names containing a certain pattern.
+        // Note that this is exclusively for debug/testing reasons, and should never be used in a real script.
         // -->
         if (attribute.startsWith("list_flags")) {
+            FlagManager.listFlagsTagWarning.warn(attribute.context);
             ListTag allFlags = new ListTag(DenizenAPI.getCurrentInstance().flagManager().listGlobalFlags());
             ListTag searchFlags = null;
             if (!allFlags.isEmpty() && attribute.hasContext(1)) {
