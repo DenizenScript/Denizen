@@ -2529,7 +2529,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object EntityTag
         // @name attach_to
-        // @input EntityTag(|dLocation(|ElementTag(Boolean)))
+        // @input EntityTag(|LocationTag(|ElementTag(Boolean)))
         // @description
         // Attaches this entity's client-visible motion to another entity.
         // Optionally, specify an offset vector as well.

@@ -1380,11 +1380,15 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                     chunks.addObject(minChunk);
                 }
                 ChunkTag maxChunk = new ChunkTag(pair.high);
+                int maxX = maxChunk.getX();
+                int maxZ = maxChunk.getZ();
                 if (cuboid.isInsideCuboid(new Location(cuboid.getWorld(), maxChunk.getX() * 16 + 15, minY, maxChunk.getZ() * 16 + 15))) {
                     chunks.addObject(maxChunk);
+                    maxX++;
+                    maxZ++;
                 }
-                for (int x = minChunk.getX() + 1; x < maxChunk.getX(); x++) {
-                    for (int z = minChunk.getZ() + 1; z < maxChunk.getZ(); z++) {
+                for (int x = minChunk.getX() + 1; x < maxX; x++) {
+                    for (int z = minChunk.getZ() + 1; z < maxZ; z++) {
                         chunks.addObject(new ChunkTag(new WorldTag(cuboid.getWorld()), x, z));
                     }
                 }
