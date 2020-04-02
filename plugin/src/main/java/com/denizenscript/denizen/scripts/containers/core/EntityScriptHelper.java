@@ -10,6 +10,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.properties.entity.EntityBoundingBox;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import org.bukkit.Bukkit;
@@ -146,11 +147,11 @@ public class EntityScriptHelper implements Listener {
             if (!DataPersistenceHelper.hasDenizenKey(ent, "entity_script")) {
                 return null;
             }
-            ScriptTag script = (ScriptTag) DataPersistenceHelper.getDenizenKey(ent, "entity_script");
-            if (script == null) {
+            ObjectTag scriptObject = DataPersistenceHelper.getDenizenKey(ent, "entity_script");
+            if (!(scriptObject instanceof ScriptTag)) {
                 return null;
             }
-            return script.getName();
+            return ((ScriptTag) scriptObject).getName();
         }
         return getEntityScript(ent.getUniqueId());
     }
