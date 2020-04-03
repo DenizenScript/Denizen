@@ -147,7 +147,7 @@ public class WeatherCommand extends AbstractCommand {
                     world.getWorld().setStorm(true);
                     break;
                 case THUNDER:
-                    // Note: setThundering always creates a storm
+                    world.getWorld().setStorm(true);
                     world.getWorld().setThundering(true);
                     break;
                 case RESET:
