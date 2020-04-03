@@ -98,6 +98,7 @@ public class CommandScriptEvent extends BukkitScriptEvent implements Listener {
             String lower = CoreUtilities.toLowerCase(determination);
             if (lower.equals("fulfilled")) {
                 cancelled = true;
+                cancellationChanged();
                 return true;
             }
         }
