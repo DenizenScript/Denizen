@@ -3054,7 +3054,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             if (!mechanism.getValue().asString().isEmpty()) {
                 ListTag split = mechanism.valueAsType(ListTag.class);
                 if (split.size() > 0 && new ElementTag(split.get(0)).matchesType(EntityTag.class)) {
-                    EntityTag entity = mechanism.valueAsType(EntityTag.class);
+                    EntityTag entity = EntityTag.valueOf(split.get(0));
                     if (!entity.isSpawnedOrValidForTag()) {
                         Debug.echoError("Can't hide the unspawned entity '" + split.get(0) + "'!");
                     }
