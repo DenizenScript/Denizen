@@ -10,10 +10,7 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.Axis;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Directional;
-import org.bukkit.block.data.Orientable;
-import org.bukkit.block.data.Rotatable;
+import org.bukkit.block.data.*;
 import org.bukkit.util.Vector;
 
 public class MaterialDirectional implements Property {
@@ -27,7 +24,7 @@ public class MaterialDirectional implements Property {
             return false;
         }
         BlockData data = mat.getModernData().data;
-        if (!(data instanceof Directional || data instanceof Orientable || data instanceof Rotatable)) {
+        if (!(data instanceof Directional || data instanceof Orientable || data instanceof Rotatable || data instanceof Rail)) {
             return false;
         }
         return true;
@@ -70,10 +67,18 @@ public class MaterialDirectional implements Property {
                     toReturn.add(axis.name());
                 }
             }
-            else {
+            else if (material.isRail()) {
+                for (Rail.Shape shape : material.getRail().getShapes()) {
+                    toReturn.add(shape.name());
+                }
+            }
+            else if (material.isDirectional()) {
                 for (BlockFace face : material.getDirectional().getFaces()) {
                     toReturn.add(face.name());
                 }
+            }
+            else {
+                return null;
             }
             return toReturn;
         });
@@ -85,7 +90,7 @@ public class MaterialDirectional implements Property {
         // @group properties
         // @description
         // Returns the current facing direction for a directional material (like a door or a bed).
-        // Output is a direction name like "NORTH", or an axis like "X".
+        // Output is a direction name like "NORTH", or an axis like "X", or a rail direction like "ASCENDING_NORTH".
         // -->
         PropertyParser.<MaterialDirectional>registerTag("direction", (attribute, material) -> {
             return new ElementTag(material.getDirectionName());
@@ -106,6 +111,31 @@ public class MaterialDirectional implements Property {
         else if (isRotatable()) {
             return getRotatable().getRotation().getDirection();
         }
+        else if (isRail()) {
+            switch (getRail().getShape()) {
+                case ASCENDING_EAST:
+                    return new Vector(1, 1, 0);
+                case ASCENDING_NORTH:
+                    return new Vector(0, 1, -1);
+                case ASCENDING_SOUTH:
+                    return new Vector(0, 1, 1);
+                case ASCENDING_WEST:
+                    return new Vector(-1, 1, 0);
+                case EAST_WEST:
+                    return new Vector(1, 0, 0);
+                case NORTH_EAST:
+                    return new Vector(1, 0, -1);
+                case NORTH_SOUTH:
+                    return new Vector(0, 0, 1);
+                case NORTH_WEST:
+                    return new Vector(-1, 0, -1);
+                case SOUTH_EAST:
+                    return new Vector(1, 0, 1);
+                case SOUTH_WEST:
+                    return new Vector(-1, 0, 1);
+            }
+            return null; // Unreachable.
+        }
         else {
             return getDirectional().getFacing().getDirection();
         }
@@ -117,6 +147,9 @@ public class MaterialDirectional implements Property {
         }
         else if (isRotatable()) {
             return getRotatable().getRotation().name();
+        }
+        else if (isRail()) {
+            return getRail().getShape().name();
         }
         else {
             return getDirectional().getFacing().name();
@@ -135,6 +168,10 @@ public class MaterialDirectional implements Property {
         return material.getModernData().data instanceof Directional;
     }
 
+    public boolean isRail() {
+        return material.getModernData().data instanceof Rail;
+    }
+
     public Orientable getOrientable() {
         return (Orientable) material.getModernData().data;
     }
@@ -145,6 +182,10 @@ public class MaterialDirectional implements Property {
 
     public Directional getDirectional() {
         return (Directional) material.getModernData().data;
+    }
+
+    public Rail getRail() {
+        return (Rail) material.getModernData().data;
     }
 
     public void setFacing(BlockFace face) {
@@ -164,6 +205,26 @@ public class MaterialDirectional implements Property {
         }
         else if (isRotatable()) {
             getRotatable().setRotation(face);
+        }
+        else if (isRail()) {
+            switch (face) {
+                case EAST:
+                case WEST:
+                    getRail().setShape(Rail.Shape.EAST_WEST);
+                case NORTH:
+                case SOUTH:
+                    getRail().setShape(Rail.Shape.NORTH_SOUTH);
+                case NORTH_EAST:
+                    getRail().setShape(Rail.Shape.NORTH_EAST);
+                case NORTH_WEST:
+                    getRail().setShape(Rail.Shape.NORTH_WEST);
+                case SOUTH_EAST:
+                    getRail().setShape(Rail.Shape.SOUTH_EAST);
+                case SOUTH_WEST:
+                    getRail().setShape(Rail.Shape.SOUTH_WEST);
+                default:
+                    Debug.echoError("Unsupported rail direction '" + face + "'.");
+            }
         }
         else if (isDirectional()) {
             getDirectional().setFacing(face);
@@ -196,6 +257,9 @@ public class MaterialDirectional implements Property {
         if (mechanism.matches("direction")) {
             if (isOrientable() && mechanism.requireEnum(false, Axis.values())) {
                 getOrientable().setAxis(Axis.valueOf(mechanism.getValue().asString().toUpperCase()));
+            }
+            else if (isRail() && mechanism.requireEnum(false, Rail.Shape.values())) {
+                getRail().setShape(Rail.Shape.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (mechanism.requireEnum(false, BlockFace.values())) {
                 setFacing(BlockFace.valueOf(mechanism.getValue().asString().toUpperCase()));

@@ -800,7 +800,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (!MaterialDirectional.describes(material)) {
                 return null;
             }
-            return new LocationTag(object.getWorld(), MaterialDirectional.getFrom(material).getDirectionVector());
+            Vector vec = MaterialDirectional.getFrom(material).getDirectionVector();
+            if (vec == null) {
+                return null;
+            }
+            return new LocationTag(object.getWorld(), vec);
         });
 
         // <--[tag]
@@ -818,6 +822,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 return null;
             }
             Vector facing = MaterialDirectional.getFrom(material).getDirectionVector();
+            if (facing == null) {
+                return null;
+            }
             LocationTag result = object.clone();
             result.setDirection(facing);
             return result;
