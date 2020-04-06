@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.nbt.LeatherColorer;
 import com.denizenscript.denizen.objects.ItemTag;
@@ -175,7 +176,7 @@ public class ItemScriptContainer extends ScriptContainer {
 
     boolean isProcessing = false;
 
-    public ItemTag getItemFrom(BukkitTagContext context) {
+    public ItemTag getItemFrom(TagContext context) {
         if (isProcessing) {
             Debug.echoError("Item script contains (or chains to) a reference to itself. Cannot process.");
             return null;
@@ -184,7 +185,7 @@ public class ItemScriptContainer extends ScriptContainer {
             context = new BukkitTagContext(null, null, new ScriptTag(this));
         }
         else {
-            context = new BukkitTagContext(context);
+            context = new BukkitTagContext((BukkitTagContext) context);
             context.script = new ScriptTag(this);
         }
         // Try to use this script to make an item.
@@ -201,12 +202,10 @@ public class ItemScriptContainer extends ScriptContainer {
                 material = material.substring(2);
             }
             stack = ItemTag.valueOf(material, this);
-
             // Make sure we're working with a valid base ItemStack
             if (stack == null) {
                 return null;
             }
-
             // Handle listed mechanisms
             if (contains("mechanisms")) {
                 YamlConfiguration mechs = getConfigurationSection("mechanisms");
@@ -225,40 +224,34 @@ public class ItemScriptContainer extends ScriptContainer {
                     stack.safeAdjust(new Mechanism(new ElementTag(key.low), new ElementTag(val), context));
                 }
             }
-
-            ItemMeta meta = stack.getItemStack().getItemMeta();
-            List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
-
             // Set Display Name
             if (contains("display name")) {
+                ItemMeta meta = stack.getItemStack().getItemMeta();
                 String displayName = TagManager.tag(getString("display name"), context);
                 meta.setDisplayName(displayName);
+                stack.getItemStack().setItemMeta(meta);
             }
-
             // Set if the object is bound to the player
             if (contains("bound")) {
                 Deprecations.boundWarning.warn(context);
                 bound = Boolean.valueOf(TagManager.tag(getString("bound"), context));
             }
-
             // Set Lore
             if (contains("lore")) {
-
+                ItemMeta meta = stack.getItemStack().getItemMeta();
+                List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
                 for (String line : getStringList("lore")) {
                     line = TagManager.tag(line, context);
                     lore.add(line);
                 }
+                meta.setLore(lore);
+                stack.getItemStack().setItemMeta(meta);
             }
-
-            meta.setLore(lore);
-            stack.getItemStack().setItemMeta(meta);
-
             // Set Durability
             if (contains("durability")) {
                 short durability = Short.valueOf(getString("durability"));
                 stack.setDurability(durability);
             }
-
             // Set Enchantments
             if (contains("enchantments")) {
                 for (String enchantment : getStringList("enchantments")) {
@@ -285,22 +278,16 @@ public class ItemScriptContainer extends ScriptContainer {
                     }
                 }
             }
-
             // Set Color
             if (contains("color")) {
                 String color = TagManager.tag(getString("color"), context);
                 LeatherColorer.colorArmor(stack, color);
             }
-
             // Set Book
             if (contains("book")) {
-                BookScriptContainer book = ScriptRegistry
-                        .getScriptContainer(TagManager.tag(getString("book"),
-                                context).replace("s@", ""));
-
+                BookScriptContainer book = ScriptRegistry.getScriptContainer(TagManager.tag(getString("book"), context).replace("s@", ""));
                 stack = book.writeBookTo(stack, context);
             }
-
             stack.setItemScript(this);
         }
         catch (Exception e) {

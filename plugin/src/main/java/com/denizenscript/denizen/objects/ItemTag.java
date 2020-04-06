@@ -127,14 +127,14 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
             if (ScriptRegistry.containsScript(string, ItemScriptContainer.class)) {
                 ItemScriptContainer isc = ScriptRegistry.getScriptContainerAs(string, ItemScriptContainer.class);
                 // TODO: If a script does not contain tags, get the clean reference here.
-                stack = isc.getItemFrom(context == null ? null : (BukkitTagContext) context);
+                stack = isc.getItemFrom(context);
                 if (stack == null && (context == null || context.debug)) {
                     Debug.echoError("Item script '" + isc.getName() + "' returned a null item.");
                 }
             }
             else if (ScriptRegistry.containsScript(string, BookScriptContainer.class)) {
                 BookScriptContainer book = ScriptRegistry.getScriptContainerAs(string, BookScriptContainer.class);
-                stack = book.getBookFrom(context == null ? null : (BukkitTagContext) context);
+                stack = book.getBookFrom(context);
                 if (stack == null && (context == null || context.debug)) {
                     Debug.echoError("Book script '" + book.getName() + "' returned a null item.");
                 }

@@ -6,6 +6,7 @@ import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import org.bukkit.Material;
@@ -54,49 +55,39 @@ public class BookScriptContainer extends ScriptContainer {
         super(configurationSection, scriptContainerName);
     }
 
-    public ItemTag getBookFrom() {
-        return getBookFrom(null);
-    }
-
-    public ItemTag getBookFrom(BukkitTagContext context) {
+    public ItemTag getBookFrom(TagContext context) {
         ItemTag stack = new ItemTag(Material.WRITTEN_BOOK);
         return writeBookTo(stack, context);
     }
 
-    public ItemTag writeBookTo(ItemTag book, BukkitTagContext context) {
+    public ItemTag writeBookTo(ItemTag book, TagContext context) {
         if (context == null) {
             context = new BukkitTagContext(null, null, new ScriptTag(this));
         }
         // Get current ItemMeta from the book
         BookMeta bookInfo = (BookMeta) book.getItemStack().getItemMeta();
-
         if (contains("title")) {
             String title = getString("title");
             title = TagManager.tag(title, context);
             bookInfo.setTitle(title);
         }
-
         if (contains("signed")) {
             if (getString("signed").equalsIgnoreCase("false")) {
                 book.getItemStack().setType(MaterialCompat.WRITABLE_BOOK);
             }
         }
-
         if (contains("author")) {
             String author = getString("author");
             author = TagManager.tag(author, context);
             bookInfo.setAuthor(author);
         }
-
         if (contains("text")) {
             List<String> pages = getStringList("text");
-
             for (String page : pages) {
                 page = TagManager.tag(page, context);
                 bookInfo.spigot().addPage(FormattedTextHelper.parse(page));
             }
         }
-
         book.getItemStack().setItemMeta(bookInfo);
         return book;
     }
