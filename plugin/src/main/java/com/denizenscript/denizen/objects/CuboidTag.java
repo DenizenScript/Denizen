@@ -277,8 +277,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
     }
 
     public boolean isInsideCuboid(Location location) {
+        if (location.getWorld() == null) {
+            return false;
+        }
         for (LocationPair pair : pairs) {
-            if (!location.getWorld().equals(pair.low.getWorld())) {
+            if (!location.getWorld().getName().equals(pair.low.getWorldName())) {
                 continue;
             }
             if (!isBetween(pair.low.getBlockX(), pair.high.getBlockX() + 1, location.getBlockX())) {
