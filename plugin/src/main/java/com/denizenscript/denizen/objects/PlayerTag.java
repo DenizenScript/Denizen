@@ -3700,6 +3700,17 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             }
             Depends.chat.setPlayerSuffix(getPlayerEntity(), mechanism.getValue().asString());
         }
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name send_to
+        // @input ElementTag
+        // @plugin BungeeCord
+        // @description
+        // Sends the player to the specified Bungee server.
+        // -->
+        if ((mechanism.matches("send_to") && mechanism.hasValue())) {
+            Depends.bungeeSendPlayer(getPlayerEntity(), mechanism.getValue().asString());
+        }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);
 
