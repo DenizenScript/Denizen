@@ -20,6 +20,9 @@ public class PlayerSwapsItemsScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Regex ^on player swaps items$
     //
+    // @Switch main:<item> to only process the event if the item being put into the main hand matches the input item.
+    // @Switch offhand:<item> to only process the event if the item being put into the off-hand matches the input item.
+    //
     // @Cancellable true
     //
     // @Triggers when a player swaps the items in their main and off hands.
@@ -47,6 +50,17 @@ public class PlayerSwapsItemsScriptEvent extends BukkitScriptEvent implements Li
     @Override
     public boolean couldMatch(ScriptPath path) {
         return path.eventLower.startsWith("player swaps items");
+    }
+
+    @Override
+    public boolean matches(ScriptPath path) {
+        if (path.switches.containsKey("main") && !tryItem(new ItemTag(event.getMainHandItem()), path.switches.get("main"))) {
+            return false;
+        }
+        if (path.switches.containsKey("offhand") && !tryItem(new ItemTag(event.getOffHandItem()), path.switches.get("offhand"))) {
+            return false;
+        }
+        return super.matches(path);
     }
 
     @Override
