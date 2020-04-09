@@ -6,6 +6,7 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 
 public class EntityCustomName implements Property {
 
@@ -116,7 +117,7 @@ public class EntityCustomName implements Property {
         // <EntityTag.custom_name>
         // -->
         else if (mechanism.matches("custom_name")) {
-            entity.getBukkitEntity().setCustomName(mechanism.getValue().asString());
+            entity.getBukkitEntity().setCustomName(CoreUtilities.clearNBSPs(mechanism.getValue().asString()));
         }
 
     }

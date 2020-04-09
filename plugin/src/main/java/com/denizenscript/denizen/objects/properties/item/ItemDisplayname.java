@@ -7,6 +7,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.core.EscapeTagBase;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemDisplayname implements Property {
@@ -112,7 +113,7 @@ public class ItemDisplayname implements Property {
         // -->
         if (mechanism.matches("display_name")) {
             ItemMeta meta = item.getItemStack().getItemMeta();
-            meta.setDisplayName(mechanism.hasValue() ? EscapeTagBase.unEscape(mechanism.getValue().asString()) : null);
+            meta.setDisplayName(mechanism.hasValue() ? CoreUtilities.clearNBSPs(EscapeTagBase.unEscape(mechanism.getValue().asString())) : null);
             item.getItemStack().setItemMeta(meta);
         }
     }

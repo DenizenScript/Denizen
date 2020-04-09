@@ -10,6 +10,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.core.EscapeTagBase;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
@@ -139,7 +140,7 @@ public class ItemLore implements Property {
                 }
             }
             for (int i = 0; i < lore.size(); i++) {
-                lore.set(i, EscapeTagBase.unEscape(lore.get(i)));
+                lore.set(i, CoreUtilities.clearNBSPs(EscapeTagBase.unEscape(lore.get(i))));
             }
             meta.setLore(lore);
             item.getItemStack().setItemMeta(meta);

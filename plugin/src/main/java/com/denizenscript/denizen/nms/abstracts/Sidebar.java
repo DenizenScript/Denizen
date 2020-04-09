@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.nms.abstracts;
 
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ public abstract class Sidebar {
     public static class SidebarLine {
 
         public SidebarLine(String _text, int _score) {
-            text = _text;
+            text = CoreUtilities.clearNBSPs(_text);
             score = _score;
         }
 
