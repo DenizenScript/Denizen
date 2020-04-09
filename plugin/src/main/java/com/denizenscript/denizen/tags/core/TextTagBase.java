@@ -166,7 +166,7 @@ public class TextTagBase {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
-                event.setReplaced(new ElementTag(String.valueOf((char) 0x00A0)).getAttribute(event.getAttributes().fulfill(1)));
+                event.setReplaced(new ElementTag(CoreUtilities.NBSP).getAttribute(event.getAttributes().fulfill(1)));
             }
         }, "&nbsp");
 
