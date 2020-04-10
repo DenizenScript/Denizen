@@ -31,6 +31,7 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.npc.NPCSelector;
 import net.md_5.bungee.api.ChatMessageType;
 import org.bukkit.*;
 import org.bukkit.advancement.Advancement;
@@ -1827,6 +1828,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <PlayerTag.selected_npc>
         // @returns NPCTag
+        // @mechanism PlayerTag.selected_npc
         // @description
         // Returns the NPCTag that the player currently has selected with
         // '/npc select', null if no player selected.
@@ -3700,6 +3702,20 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             }
             Depends.chat.setPlayerSuffix(getPlayerEntity(), mechanism.getValue().asString());
         }
+
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name selected_npc
+        // @input NPCTag
+        // @description
+        // Sets the NPC that the player has selected.
+        // @tags
+        // <PlayerTag.selected_npc>
+        // -->
+        if (mechanism.matches("selected_npc") && Depends.citizens != null && mechanism.requireObject(NPCTag.class)) {
+            ((NPCSelector) CitizensAPI.getDefaultNPCSelector()).select(getPlayerEntity(), mechanism.valueAsType(NPCTag.class).getCitizen());
+        }
+
         // <--[mechanism]
         // @object PlayerTag
         // @name send_to
@@ -3708,7 +3724,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Sends the player to the specified Bungee server.
         // -->
-        if ((mechanism.matches("send_to") && mechanism.hasValue())) {
+        if (mechanism.matches("send_to") && mechanism.hasValue()) {
             Depends.bungeeSendPlayer(getPlayerEntity(), mechanism.getValue().asString());
         }
 

@@ -53,17 +53,14 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean matches(ScriptPath path) {
-
         String mat = path.eventArgLowerAt(3);
         MaterialTag material = new MaterialTag(location.getBlock());
         if (!tryMaterial(material, mat)) {
             return false;
         }
-
         if (!runInCheck(path, location)) {
             return false;
         }
-
         return super.matches(path);
     }
 

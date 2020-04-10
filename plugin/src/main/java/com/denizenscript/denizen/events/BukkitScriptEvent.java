@@ -301,7 +301,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return ellipsoid.contains(location);
         }
         else {
-            Debug.echoError("Invalid event 'in:<area>' switch [" + getName() + "] ('in:???'): '" + path.event + "' for " + path.container.getName());
+            Debug.echoError("Invalid event 'in:<area>' switch [" + getName() + "] ('in:???') (did you make a typo, or forget to make a notable by that name?): '" + path.event + "' for " + path.container.getName());
             return false;
         }
     }
