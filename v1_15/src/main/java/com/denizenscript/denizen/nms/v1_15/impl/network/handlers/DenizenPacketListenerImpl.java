@@ -3,6 +3,7 @@ package com.denizenscript.denizen.nms.v1_15.impl.network.handlers;
 import com.denizenscript.denizen.nms.v1_15.impl.network.packets.PacketInResourcePackStatusImpl;
 import com.denizenscript.denizen.nms.v1_15.impl.network.packets.PacketInSteerVehicleImpl;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -14,10 +15,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import javax.annotation.Nullable;
+import java.nio.charset.StandardCharsets;
 
 public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
 
     private static DenizenPacketHandler packetHandler;
+
+    public String brand = "unknown";
 
     public DenizenPacketListenerImpl(NetworkManager networkManager, EntityPlayer entityPlayer) {
         super(networkManager, entityPlayer, entityPlayer.playerConnection);
@@ -50,6 +54,18 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
     @Override
     public void a(PacketPlayInBlockDig packet) {
         packetHandler.receiveDigPacket(player.getBukkitEntity());
+        super.a(packet);
+    }
+
+    @Override
+    public void a(PacketPlayInCustomPayload packet) {
+        if (NMSHandler.debugPackets) {
+            Debug.log("Custom packet payload: " + packet.tag.toString() + " sent from " + player.getName());
+        }
+        if (packet.tag.getNamespace().equals("minecraft") && packet.tag.getKey().equals("brand")) {
+            int i = packet.data.i(); // read off the varInt of length to get rid of it
+            brand = StandardCharsets.UTF_8.decode(packet.data.nioBuffer()).toString();
+        }
         super.a(packet);
     }
 

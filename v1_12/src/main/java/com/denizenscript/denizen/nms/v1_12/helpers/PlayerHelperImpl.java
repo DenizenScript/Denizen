@@ -153,4 +153,9 @@ public class PlayerHelperImpl extends PlayerHelper {
     public void quietlyAddRecipe(Player player, NamespacedKey key) {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public String getPlayerBrand(Player player) {
+        return "UPDATE YOUR SERVER!";
+    }
 }

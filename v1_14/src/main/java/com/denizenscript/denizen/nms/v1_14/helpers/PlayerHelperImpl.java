@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.v1_14.helpers;
 
 import com.denizenscript.denizen.nms.v1_14.impl.ImprovedOfflinePlayerImpl;
 import com.denizenscript.denizen.nms.v1_14.impl.network.handlers.AbstractListenerPlayInImpl;
+import com.denizenscript.denizen.nms.v1_14.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.mojang.authlib.GameProfile;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
@@ -165,5 +166,10 @@ public class PlayerHelperImpl extends PlayerHelper {
         }
         recipeBook.a(recipe);
         recipeBook.f(recipe);
+    }
+
+    @Override
+    public String getPlayerBrand(Player player) {
+        return ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().playerConnection.networkManager).packetListener.brand;
     }
 }

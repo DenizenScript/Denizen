@@ -1539,6 +1539,17 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             return new ElementTag(object.getName());
         });
 
+        // <--[tag]
+        // @attribute <PlayerTag.client_brand>
+        // @returns ElementTag
+        // @description
+        // Returns the brand of the client, as sent via the "minecraft:brand" packet.
+        // On normal clients, will say "vanilla". On broken clients, will say "unknown". Modded clients will identify themselves (though not guaranteed!).
+        // -->
+        registerOnlineOnlyTag("client_brand", (attribute, object) -> {
+            return new ElementTag(NMSHandler.getPlayerHelper().getPlayerBrand(object.getPlayerEntity()));
+        });
+
         /////////////////////
         //   INVENTORY ATTRIBUTES
         /////////////////
