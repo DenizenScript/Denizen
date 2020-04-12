@@ -87,12 +87,13 @@ public class ChunkHelperImpl implements ChunkHelper {
 
     @Override
     public int[] getHeightMap(Chunk chunk) {
-        // TODO: 1.14 - is this a valid alternative to the removed LIGHT_BLOCKING?
-        long[] lightBlocking = ((CraftChunk) chunk).getHandle().heightMap.get(HeightMap.Type.MOTION_BLOCKING).a();
-        int[] heightmap = new int[lightBlocking.length];
-        for (int i = 0; i < lightBlocking.length; i++) {
-            heightmap[i] = (int) lightBlocking[i];
+        HeightMap map = ((CraftChunk) chunk).getHandle().heightMap.get(HeightMap.Type.MOTION_BLOCKING);
+        int[] outputMap = new int[256];
+        for (int x = 0; x < 16; x++) {
+            for (int y = 0; y < 16; y++) {
+                outputMap[x * 16 + y] = map.a(x, y);
+            }
         }
-        return heightmap;
+        return outputMap;
     }
 }
