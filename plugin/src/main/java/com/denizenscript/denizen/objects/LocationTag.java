@@ -2907,6 +2907,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <--[tag]
         // @attribute <LocationTag.has_loot_table>
         // @returns ElementTag(Boolean)
+        // @mechanism LocationTag.clear_loot_table
         // @description
         // Returns an element indicating whether the chest at this location has a loot-table set.
         // -->
@@ -3722,6 +3723,26 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             else {
                 Debug.echoError("'lectern_page' mechanism can only be called on a lectern block.");
+            }
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name clear_loot_table
+        // @input None
+        // @description
+        // Removes the loot table from the chest at this location.
+        // @tags
+        // <LocationTag.has_loot_table>
+        // -->
+        if (mechanism.matches("clear_loot_table")) {
+            BlockState state = getBlockState();
+            if (state instanceof Lootable) {
+                ((Lootable) state).setLootTable(null);
+                state.update();
+            }
+            else {
+                Debug.echoError("'clear_loot_table' mechanism can only be called on a lootable block (like a chest).");
             }
         }
 
