@@ -41,6 +41,7 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.loot.Lootable;
 import org.bukkit.material.Attachable;
 import org.bukkit.material.Door;
 import org.bukkit.material.MaterialData;
@@ -2899,6 +2900,20 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             BlockState state = object.getBlockStateForTag(attribute);
             if (state instanceof Lectern) {
                 return new ElementTag(((Lectern) state).getPage());
+            }
+            return null;
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.has_loot_table>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns an element indicating whether the chest at this location has a loot-table set.
+        // -->
+        registerTag("has_loot_table", (attribute, object) -> {
+            BlockState state = object.getBlockStateForTag(attribute);
+            if (state instanceof Lootable) {
+                return new ElementTag(((Lootable) state).getLootTable() != null);
             }
             return null;
         });

@@ -193,6 +193,29 @@ public class BukkitElementProperties implements Property {
         }, "asplugin");
 
         // <--[tag]
+        // @attribute <ElementTag.format[<script>]>
+        // @returns ElementTag
+        // @group text manipulation
+        // @description
+        // Returns the text re-formatted according to a format script.
+        // -->
+        PropertyParser.<BukkitElementProperties>registerTag("format", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
+            FormatScriptContainer format = ScriptRegistry.getScriptContainer(attribute.getContext(1));
+            if (format == null) {
+                Debug.echoError("Could not find format script matching '" + attribute.getContext(1) + "'");
+                return null;
+            }
+            else {
+                return new ElementTag(format.getFormattedText(object.asString(),
+                        attribute.getScriptEntry() != null ? ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getNPC() : null,
+                        attribute.getScriptEntry() != null ? ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer() : null));
+            }
+        });
+
+        // <--[tag]
         // @attribute <ElementTag.split_lines_by_width[<#>]>
         // @returns ElementTag
         // @group element manipulation
@@ -224,40 +247,6 @@ public class BukkitElementProperties implements Property {
         });
 
         // <--[tag]
-        // @attribute <ElementTag.last_color>
-        // @returns ElementTag
-        // @group text checking
-        // @description
-        // Returns the ChatColors used last in an element.
-        // -->
-        PropertyParser.<BukkitElementProperties>registerTag("last_color", (attribute, object) -> {
-            return new ElementTag(ChatColor.getLastColors(object.asString()));
-        });
-
-        // <--[tag]
-        // @attribute <ElementTag.format[<script>]>
-        // @returns ElementTag
-        // @group text manipulation
-        // @description
-        // Returns the text re-formatted according to a format script.
-        // -->
-        PropertyParser.<BukkitElementProperties>registerTag("format", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
-                return null;
-            }
-            FormatScriptContainer format = ScriptRegistry.getScriptContainer(attribute.getContext(1));
-            if (format == null) {
-                Debug.echoError("Could not find format script matching '" + attribute.getContext(1) + "'");
-                return null;
-            }
-            else {
-                return new ElementTag(format.getFormattedText(object.asString(),
-                        attribute.getScriptEntry() != null ? ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getNPC() : null,
-                        attribute.getScriptEntry() != null ? ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer() : null));
-            }
-        });
-
-        // <--[tag]
         // @attribute <ElementTag.lines_to_colored_list>
         // @returns ListTag
         // @group element manipulation
@@ -276,25 +265,14 @@ public class BukkitElementProperties implements Property {
         });
 
         // <--[tag]
-        // @attribute <ElementTag.rainbow[(<pattern>)]>
+        // @attribute <ElementTag.last_color>
         // @returns ElementTag
-        // @group text manipulation
+        // @group text checking
         // @description
-        // Returns the element with rainbow colors applied.
-        // Optionally, specify a color pattern to follow. By default, this is "4c6e2ab319d5".
-        // That is, a repeating color of: Red, Orange, Yellow, Green, Cyan, Blue, Purple.
+        // Returns the ChatColors used last in an element.
         // -->
-        PropertyParser.<BukkitElementProperties>registerTag("rainbow", (attribute, object) -> {
-            String str = object.asString();
-            String pattern = "4c6e2ab319d5";
-            if (attribute.hasContext(1)) {
-                pattern = attribute.getContext(1);
-            }
-            StringBuilder output = new StringBuilder(str.length() * 3);
-            for (int i = 0; i < str.length(); i++) {
-                output.append(ChatColor.COLOR_CHAR).append(pattern.charAt(i % pattern.length())).append(str.charAt(i));
-            }
-            return new ElementTag(output.toString());
+        PropertyParser.<BukkitElementProperties>registerTag("last_color", (attribute, object) -> {
+            return new ElementTag(ChatColor.getLastColors(object.asString()));
         });
 
         // <--[tag]
@@ -644,6 +622,28 @@ public class BukkitElementProperties implements Property {
                 }
             }
             return new ElementTag(color + object.asString() + ChatColor.COLOR_CHAR + "[reset=" + color.getChar() + "]");
+        });
+
+        // <--[tag]
+        // @attribute <ElementTag.rainbow[(<pattern>)]>
+        // @returns ElementTag
+        // @group text manipulation
+        // @description
+        // Returns the element with rainbow colors applied.
+        // Optionally, specify a color pattern to follow. By default, this is "4c6e2ab319d5".
+        // That is, a repeating color of: Red, Orange, Yellow, Green, Cyan, Blue, Purple.
+        // -->
+        PropertyParser.<BukkitElementProperties>registerTag("rainbow", (attribute, object) -> {
+            String str = object.asString();
+            String pattern = "4c6e2ab319d5";
+            if (attribute.hasContext(1)) {
+                pattern = attribute.getContext(1);
+            }
+            StringBuilder output = new StringBuilder(str.length() * 3);
+            for (int i = 0; i < str.length(); i++) {
+                output.append(ChatColor.COLOR_CHAR).append(pattern.charAt(i % pattern.length())).append(str.charAt(i));
+            }
+            return new ElementTag(output.toString());
         });
     }
 

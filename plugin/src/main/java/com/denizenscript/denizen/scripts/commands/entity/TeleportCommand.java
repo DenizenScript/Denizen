@@ -36,8 +36,8 @@ public class TeleportCommand extends AbstractCommand {
     // @Group entity
     //
     // @Description
-    // Teleports the entity or entities to the new location. Entities can be teleported between worlds using this
-    // command, assuming the location is valid.
+    // Teleports the entity or entities to the new location.
+    // Entities can be teleported between worlds using this command.
     //
     // @Tags
     // <EntityTag.location>
