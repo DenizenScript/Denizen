@@ -256,6 +256,28 @@ public class BukkitElementProperties implements Property {
         });
 
         // <--[tag]
+        // @attribute <ElementTag.rainbow[(<pattern>)]>
+        // @returns ElementTag
+        // @group text manipulation
+        // @description
+        // Returns the element with rainbow colors applied.
+        // Optionally, specify a color pattern to follow. By default, this is "4c6e2ab319d5".
+        // That is, a repeating color of: Red, Orange, Yellow, Green, Cyan, Blue, Purple.
+        // -->
+        PropertyParser.<BukkitElementProperties>registerTag("rainbow", (attribute, object) -> {
+            String str = object.asString();
+            String pattern = "4c6e2ab319d5";
+            if (attribute.hasContext(1)) {
+                pattern = attribute.getContext(1);
+            }
+            StringBuilder output = new StringBuilder(str.length() * 3);
+            for (int i = 0; i < str.length(); i++) {
+                output.append(ChatColor.COLOR_CHAR).append(pattern.charAt(i % pattern.length())).append(str.charAt(i));
+            }
+            return new ElementTag(output.toString());
+        });
+
+        // <--[tag]
         // @attribute <ElementTag.strip_color>
         // @returns ElementTag
         // @group text manipulation
