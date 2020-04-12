@@ -65,7 +65,7 @@ public class TextWidthHelper {
                         continue mainloop;
                     }
                 }
-                output.append(str, lineStart, i);
+                output.append(str, lineStart, i).append("\n");
                 curLineWidth = 0;
                 lineStart = i;
             }

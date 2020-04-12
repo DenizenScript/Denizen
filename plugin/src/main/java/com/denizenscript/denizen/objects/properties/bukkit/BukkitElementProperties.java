@@ -5,6 +5,7 @@ import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.TextWidthHelper;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -201,6 +202,7 @@ public class BukkitElementProperties implements Property {
         // The width used is based on the vanilla minecraft font. This will not be accurate for other fonts.
         // This only currently supports ASCII symbols properly. Unicode symbols will be estimated as 6 pixels.
         // Spaces will be preferred to become newlines, unless a line does not contain any spaces.
+        // This will transfer colors over to new lines as well.
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("split_lines_by_width", (attribute, object) -> {
             int width = attribute.getIntContext(1);
@@ -209,7 +211,7 @@ public class BukkitElementProperties implements Property {
 
         // <--[tag]
         // @attribute <ElementTag.text_width>
-        // @returns ElementTag
+        // @returns ElementTag(Number)
         // @group element manipulation
         // @description
         // Returns the width, in pixels, of the text.
@@ -253,6 +255,24 @@ public class BukkitElementProperties implements Property {
                         attribute.getScriptEntry() != null ? ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getNPC() : null,
                         attribute.getScriptEntry() != null ? ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer() : null));
             }
+        });
+
+        // <--[tag]
+        // @attribute <ElementTag.lines_to_colored_list>
+        // @returns ListTag
+        // @group element manipulation
+        // @description
+        // Returns a list of lines in the element, with colors spread over the lines manually.
+        // Useful for things like item lore.
+        // -->
+        PropertyParser.<BukkitElementProperties>registerTag("lines_to_colored_list", (attribute, object) -> {
+            ListTag output = new ListTag();
+            String colors = "";
+            for (String line : CoreUtilities.split(object.asString(), '\n')) {
+                output.add(colors + line);
+                colors = ChatColor.getLastColors(colors + line);
+            }
+            return output;
         });
 
         // <--[tag]
