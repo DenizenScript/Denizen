@@ -4,7 +4,9 @@ import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.TextWidthHelper;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.tags.BukkitTagContext;
@@ -188,6 +190,36 @@ public class BukkitElementProperties implements Property {
             return ElementTag.handleNull(object.asString(), PluginTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry())), "PluginTag", attribute.hasAlternative());
         }, "asplugin");
+
+        // <--[tag]
+        // @attribute <ElementTag.split_lines_by_width[<#>]>
+        // @returns ElementTag
+        // @group element manipulation
+        // @description
+        // Returns the element split into separate lines based on a maximum width in pixels per line.
+        // This uses character width, so for example 20 "W"s and 20 "i"s will be treated differently.
+        // The width used is based on the vanilla minecraft font. This will not be accurate for other fonts.
+        // This only currently supports ASCII symbols properly. Unicode symbols will be estimated as 6 pixels.
+        // Spaces will be preferred to become newlines, unless a line does not contain any spaces.
+        // -->
+        PropertyParser.<BukkitElementProperties>registerTag("split_lines_by_width", (attribute, object) -> {
+            int width = attribute.getIntContext(1);
+            return new ElementTag(TextWidthHelper.splitLines(object.asString(), width));
+        });
+
+        // <--[tag]
+        // @attribute <ElementTag.text_width>
+        // @returns ElementTag
+        // @group element manipulation
+        // @description
+        // Returns the width, in pixels, of the text.
+        // The width used is based on the vanilla minecraft font. This will not be accurate for other fonts.
+        // This only currently supports ASCII symbols properly. Unicode symbols will be estimated as 6 pixels.
+        // This will not work well with elements that contain newlines.
+        // -->
+        PropertyParser.<BukkitElementProperties>registerTag("text_width", (attribute, object) -> {
+            return new ElementTag(TextWidthHelper.getWidth(object.asString()));
+        });
 
         // <--[tag]
         // @attribute <ElementTag.last_color>
