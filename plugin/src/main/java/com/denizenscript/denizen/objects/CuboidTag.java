@@ -783,7 +783,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // -->
         registerTag("intersects", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
-                Debug.echoError("The tag CuboidTag.intersects[...] must have a value.");
+                attribute.echoError("The tag CuboidTag.intersects[...] must have a value.");
                 return null;
             }
             CuboidTag cub2 = CuboidTag.valueOf(attribute.getContext(1));
@@ -819,7 +819,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // -->
         registerTag("contains_location", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
-                Debug.echoError("The tag CuboidTag.contains_location[...] must have a value.");
+                attribute.echoError("The tag CuboidTag.contains_location[...] must have a value.");
                 return null;
             }
             LocationTag loc = LocationTag.valueOf(attribute.getContext(1));
@@ -834,7 +834,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // -->
         registerTag("is_within", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
-                Debug.echoError("The tag CuboidTag.is_within[...] must have a value.");
+                attribute.echoError("The tag CuboidTag.is_within[...] must have a value.");
                 return null;
             }
             CuboidTag cub2 = CuboidTag.valueOf(attribute.getContext(1));
@@ -892,7 +892,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // -->
         registerTag("get", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
-                Debug.echoError("The tag CuboidTag.get[...] must have a value.");
+                attribute.echoError("The tag CuboidTag.get[...] must have a value.");
                 return null;
             }
             else {
@@ -916,17 +916,17 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // -->
         registerTag("set", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
-                Debug.echoError("The tag CuboidTag.set[...] must have a value.");
+                attribute.echoError("The tag CuboidTag.set[...] must have a value.");
                 return null;
             }
             else {
                 CuboidTag subCuboid = CuboidTag.valueOf(attribute.getContext(1));
                 if (!attribute.startsWith("at", 2)) {
-                    Debug.echoError("The tag CuboidTag.set[...] must be followed by an 'at'.");
+                    attribute.echoError("The tag CuboidTag.set[...] must be followed by an 'at'.");
                     return null;
                 }
                 if (!attribute.hasContext(2)) {
-                    Debug.echoError("The tag CuboidTag.set[...].at[...] must have an 'at' value.");
+                    attribute.echoError("The tag CuboidTag.set[...].at[...] must have an 'at' value.");
                     return null;
                 }
                 int member = attribute.getIntContext(2);
@@ -953,7 +953,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // -->
         registerTag("add_member", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
-                Debug.echoError("The tag CuboidTag.add_member[...] must have a value.");
+                attribute.echoError("The tag CuboidTag.add_member[...] must have a value.");
                 return null;
             }
             cuboid = cuboid.clone();
@@ -969,7 +969,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
             // -->
             if (attribute.startsWith("at", 2)) {
                 if (!attribute.hasContext(2)) {
-                    Debug.echoError("The tag CuboidTag.add_member[...].at[...] must have an 'at' value.");
+                    attribute.echoError("The tag CuboidTag.add_member[...].at[...] must have an 'at' value.");
                     return null;
                 }
                 member = attribute.getIntContext(2);
@@ -995,7 +995,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // -->
         registerTag("remove_member", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
-                Debug.echoError("The tag CuboidTag.remove_member[...] must have a value.");
+                attribute.echoError("The tag CuboidTag.remove_member[...] must have a value.");
                 return null;
             }
             cuboid = cuboid.clone();
@@ -1129,7 +1129,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // -->
         registerTag("include", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
-                Debug.echoError("The tag CuboidTag.include[...] must have a value.");
+                attribute.echoError("The tag CuboidTag.include[...] must have a value.");
                 return null;
             }
             CuboidTag newCuboid = CuboidTag.valueOf(attribute.getContext(1), CoreUtilities.noDebugContext);
@@ -1152,7 +1152,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         registerTag("include_x", (attribute, cuboid) -> {
             cuboid = cuboid.clone();
             if (!attribute.hasContext(1)) {
-                Debug.echoError("The tag CuboidTag.include_x[...] must have a value.");
+                attribute.echoError("The tag CuboidTag.include_x[...] must have a value.");
                 return null;
             }
             double x = attribute.getDoubleContext(1);
@@ -1174,7 +1174,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         registerTag("include_y", (attribute, cuboid) -> {
             cuboid = cuboid.clone();
             if (!attribute.hasContext(1)) {
-                Debug.echoError("The tag CuboidTag.include_y[...] must have a value.");
+                attribute.echoError("The tag CuboidTag.include_y[...] must have a value.");
                 return null;
             }
             double y = attribute.getDoubleContext(1);
@@ -1196,7 +1196,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         registerTag("include_z", (attribute, cuboid) -> {
             cuboid = cuboid.clone();
             if (!attribute.hasContext(1)) {
-                Debug.echoError("The tag CuboidTag.include_z[...] must have a value.");
+                attribute.echoError("The tag CuboidTag.include_z[...] must have a value.");
                 return null;
             }
             double z = attribute.getDoubleContext(1);
@@ -1220,7 +1220,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // -->
         registerTag("with_min", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
-                Debug.echoError("The tag CuboidTag.with_min[...] must have a value.");
+                attribute.echoError("The tag CuboidTag.with_min[...] must have a value.");
                 return null;
             }
             LocationTag location = LocationTag.valueOf(attribute.getContext(1));
@@ -1238,7 +1238,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // -->
         registerTag("with_max", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
-                Debug.echoError("The tag CuboidTag.with_max[...] must have a value.");
+                attribute.echoError("The tag CuboidTag.with_max[...] must have a value.");
                 return null;
             }
             LocationTag location = LocationTag.valueOf(attribute.getContext(1));
@@ -1256,7 +1256,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // -->
         registerTag("expand", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
-                Debug.echoError("The tag CuboidTag.expand[...] must have a value.");
+                attribute.echoError("The tag CuboidTag.expand[...] must have a value.");
                 return null;
             }
             Vector expandBy;
