@@ -1124,37 +1124,23 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <CuboidTag.include[<location>]>
+        // @attribute <CuboidTag.include[<location>/<cuboid>]>
         // @returns CuboidTag
         // @description
-        // Expands the first member of the CuboidTag to contain the given location, and returns the expanded cuboid.
+        // Expands the first member of the CuboidTag to contain the given location (or entire cuboid), and returns the expanded cuboid.
         // -->
         registerTag("include", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
                 Debug.echoError("The tag CuboidTag.include[...] must have a value.");
                 return null;
             }
+            CuboidTag newCuboid = CuboidTag.valueOf(attribute.getContext(1), CoreUtilities.noDebugContext);
+            if (newCuboid != null) {
+                return cuboid.including(newCuboid.getLow(0)).including(newCuboid.getHigh(0));
+            }
             LocationTag loc = LocationTag.valueOf(attribute.getContext(1));
             if (loc != null) {
-                if (loc.getX() < cuboid.pairs.get(0).low.getX()) {
-                    cuboid.pairs.get(0).low = new LocationTag(cuboid.pairs.get(0).low.getWorld(), loc.getX(), cuboid.pairs.get(0).low.getY(), cuboid.pairs.get(0).low.getZ());
-                }
-                if (loc.getY() < cuboid.pairs.get(0).low.getY()) {
-                    cuboid.pairs.get(0).low = new LocationTag(cuboid.pairs.get(0).low.getWorld(), cuboid.pairs.get(0).low.getX(), loc.getY(), cuboid.pairs.get(0).low.getZ());
-                }
-                if (loc.getZ() < cuboid.pairs.get(0).low.getZ()) {
-                    cuboid.pairs.get(0).low = new LocationTag(cuboid.pairs.get(0).low.getWorld(), cuboid.pairs.get(0).low.getX(), cuboid.pairs.get(0).low.getY(), loc.getZ());
-                }
-                if (loc.getX() > cuboid.pairs.get(0).high.getX()) {
-                    cuboid.pairs.get(0).high = new LocationTag(cuboid.pairs.get(0).high.getWorld(), loc.getX(), cuboid.pairs.get(0).high.getY(), cuboid.pairs.get(0).high.getZ());
-                }
-                if (loc.getY() > cuboid.pairs.get(0).high.getY()) {
-                    cuboid.pairs.get(0).high = new LocationTag(cuboid.pairs.get(0).high.getWorld(), cuboid.pairs.get(0).high.getX(), loc.getY(), cuboid.pairs.get(0).high.getZ());
-                }
-                if (loc.getZ() > cuboid.pairs.get(0).high.getZ()) {
-                    cuboid.pairs.get(0).high = new LocationTag(cuboid.pairs.get(0).high.getWorld(), cuboid.pairs.get(0).high.getX(), cuboid.pairs.get(0).high.getY(), loc.getZ());
-                }
-                return cuboid;
+                return cuboid.including(loc);
             }
             return null;
         });
@@ -1166,6 +1152,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // Expands the first member of the CuboidTag to contain the given X value, and returns the expanded cuboid.
         // -->
         registerTag("include_x", (attribute, cuboid) -> {
+            cuboid = cuboid.clone();
             if (!attribute.hasContext(1)) {
                 Debug.echoError("The tag CuboidTag.include_x[...] must have a value.");
                 return null;
@@ -1187,6 +1174,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // Expands the first member of the CuboidTag to contain the given Y value, and returns the expanded cuboid.
         // -->
         registerTag("include_y", (attribute, cuboid) -> {
+            cuboid = cuboid.clone();
             if (!attribute.hasContext(1)) {
                 Debug.echoError("The tag CuboidTag.include_y[...] must have a value.");
                 return null;
@@ -1208,6 +1196,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // Expands the first member of the CuboidTag to contain the given Z value, and returns the expanded cuboid.
         // -->
         registerTag("include_z", (attribute, cuboid) -> {
+            cuboid = cuboid.clone();
             if (!attribute.hasContext(1)) {
                 Debug.echoError("The tag CuboidTag.include_z[...] must have a value.");
                 return null;
@@ -1457,6 +1446,29 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         registerTag("type", (attribute, cuboid) -> {
             return new ElementTag("Cuboid");
         });
+    }
+
+    public CuboidTag including(Location loc) {
+        CuboidTag cuboid = clone();
+        if (loc.getX() < cuboid.pairs.get(0).low.getX()) {
+            cuboid.pairs.get(0).low = new LocationTag(cuboid.pairs.get(0).low.getWorld(), loc.getX(), cuboid.pairs.get(0).low.getY(), cuboid.pairs.get(0).low.getZ());
+        }
+        if (loc.getY() < cuboid.pairs.get(0).low.getY()) {
+            cuboid.pairs.get(0).low = new LocationTag(cuboid.pairs.get(0).low.getWorld(), cuboid.pairs.get(0).low.getX(), loc.getY(), cuboid.pairs.get(0).low.getZ());
+        }
+        if (loc.getZ() < cuboid.pairs.get(0).low.getZ()) {
+            cuboid.pairs.get(0).low = new LocationTag(cuboid.pairs.get(0).low.getWorld(), cuboid.pairs.get(0).low.getX(), cuboid.pairs.get(0).low.getY(), loc.getZ());
+        }
+        if (loc.getX() > cuboid.pairs.get(0).high.getX()) {
+            cuboid.pairs.get(0).high = new LocationTag(cuboid.pairs.get(0).high.getWorld(), loc.getX(), cuboid.pairs.get(0).high.getY(), cuboid.pairs.get(0).high.getZ());
+        }
+        if (loc.getY() > cuboid.pairs.get(0).high.getY()) {
+            cuboid.pairs.get(0).high = new LocationTag(cuboid.pairs.get(0).high.getWorld(), cuboid.pairs.get(0).high.getX(), loc.getY(), cuboid.pairs.get(0).high.getZ());
+        }
+        if (loc.getZ() > cuboid.pairs.get(0).high.getZ()) {
+            cuboid.pairs.get(0).high = new LocationTag(cuboid.pairs.get(0).high.getWorld(), cuboid.pairs.get(0).high.getX(), cuboid.pairs.get(0).high.getY(), loc.getZ());
+        }
+        return cuboid;
     }
 
     public static ObjectTagProcessor<CuboidTag> tagProcessor = new ObjectTagProcessor<>();

@@ -71,7 +71,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
     //
     // @Usage
     // Use to create or set a flag on a player.
-    // - flag player playstyle:agressive
+    // - flag player playstyle:aggressive
     //
     // @Usage
     // Use to flag an npc with a given tag value.
