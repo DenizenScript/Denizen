@@ -1210,6 +1210,30 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <CuboidTag.with_world[<world>]>
+        // @returns CuboidTag
+        // @description
+        // Changes the CuboidTag to have the given world, and returns the changed cuboid.
+        // -->
+        registerTag("with_world", (attribute, cuboid) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("The tag CuboidTag.with_world[...] must have a value.");
+                return null;
+            }
+            WorldTag world = WorldTag.valueOf(attribute.getContext(1), attribute.context);
+            if (world == null) {
+                attribute.echoError("World '" + attribute.getContext(1) + "' does not exist.");
+                return null;
+            }
+            CuboidTag newCuboid = cuboid.clone();
+            for (LocationPair pair : newCuboid.pairs) {
+                pair.low.setWorld(world.getWorld());
+                pair.high.setWorld(world.getWorld());
+            }
+            return newCuboid;
+        });
+
+        // <--[tag]
         // @attribute <CuboidTag.with_min[<location>]>
         // @returns CuboidTag
         // @description
