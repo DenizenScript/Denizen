@@ -1452,7 +1452,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // @returns ElementTag
         // @group conversion
         // @description
-        // Returns a full reusable identification for this cuboid, with extra, generally useless data.
+        // Returns a full reusable identification for this cuboid, without applying the notable name or other special-case formats.
         // -->
         registerTag("full", (attribute, cuboid) -> {
             return new ElementTag(cuboid.identifyFull());
@@ -1535,7 +1535,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
             String value = mechanism.getValue().asString();
             int comma = value.indexOf(',');
             int member = 1;
-            if (comma > 0) {
+            if (comma > 0 && !value.startsWith("cu@")) {
                 member = new ElementTag(value.substring(0, comma)).asInt();
             }
             CuboidTag subCuboid = CuboidTag.valueOf(comma == -1 ? value : value.substring(comma + 1));
@@ -1566,7 +1566,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
             String value = mechanism.getValue().asString();
             int comma = value.indexOf(',');
             int member = pairs.size() + 1;
-            if (comma > 0) {
+            if (comma > 0 && !value.startsWith("cu@")) {
                 member = new ElementTag(value.substring(0, comma)).asInt();
             }
             CuboidTag subCuboid = CuboidTag.valueOf(comma == -1 ? value : value.substring(comma + 1));
