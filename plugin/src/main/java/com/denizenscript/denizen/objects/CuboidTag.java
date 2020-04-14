@@ -56,13 +56,13 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         try {
             cuboid = (CuboidTag) super.clone();
         }
-        catch (CloneNotSupportedException ex) { // Should never hpapen.
+        catch (CloneNotSupportedException ex) { // Should never happen.
             Debug.echoError(ex);
             cuboid = new CuboidTag();
         }
         cuboid.pairs = new ArrayList<>(pairs.size());
         for (LocationPair pair : pairs) {
-            cuboid.pairs.add(new LocationPair(pair.point_1.clone(), pair.point_2.clone()));
+            cuboid.pairs.add(new LocationPair(pair.low.clone(), pair.high.clone()));
         }
         return cuboid;
     }
@@ -194,19 +194,24 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
     public static class LocationPair {
         public LocationTag low;
         public LocationTag high;
-        LocationTag point_1;
-        LocationTag point_2;
-        int x_distance;
-        int y_distance;
-        int z_distance;
 
-        public LocationPair(LocationTag point_1, LocationTag point_2) {
-            this.point_1 = point_1;
-            this.point_2 = point_2;
-            regenerate();
+        public int xDistance() {
+            return high.getBlockX() - low.getBlockX();
         }
 
-        public void regenerate() {
+        public int yDistance() {
+            return high.getBlockY() - low.getBlockY();
+        }
+
+        public int zDistance() {
+            return high.getBlockZ() - low.getBlockZ();
+        }
+
+        public LocationPair(LocationTag point_1, LocationTag point_2) {
+            regenerate(point_1, point_2);
+        }
+
+        public void regenerate(LocationTag point_1, LocationTag point_2) {
             String world = point_1.getWorldName();
 
             // Find the low and high locations based on the points
@@ -229,13 +234,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
             // Specify defining locations to the pair
             low = new LocationTag(x_low, y_low, z_low, world);
             high = new LocationTag(x_high, y_high, z_high, world);
-            generateDistances();
-        }
-
-        public void generateDistances() {
-            x_distance = high.getBlockX() - low.getBlockX();
-            y_distance = high.getBlockY() - low.getBlockY();
-            z_distance = high.getBlockZ() - low.getBlockZ();
         }
     }
 
@@ -308,9 +306,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         for (LocationPair pair : pairs) {
             LocationTag low = pair.low;
             LocationTag high = pair.high;
-            int y_distance = pair.y_distance;
-            int z_distance = pair.z_distance;
-            int x_distance = pair.x_distance;
+            int y_distance = pair.yDistance();
+            int z_distance = pair.zDistance();
+            int x_distance = pair.xDistance();
 
             for (int x = 0; x < x_distance; x++) {
                 for (int y = 0; y < y_distance; y++) {
@@ -362,9 +360,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
 
             LocationTag loc_1 = pair.low;
             LocationTag loc_2 = pair.high;
-            int y_distance = pair.y_distance;
-            int z_distance = pair.z_distance;
-            int x_distance = pair.x_distance;
+            int y_distance = pair.yDistance();
+            int z_distance = pair.zDistance();
+            int x_distance = pair.xDistance();
 
             for (int y = loc_1.getBlockY(); y < loc_1.getBlockY() + y_distance; y++) {
                 list.addObject(new LocationTag(loc_1.getWorld(),
@@ -486,9 +484,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         for (LocationPair pair : pairs) {
 
             LocationTag loc_1 = pair.low;
-            int y_distance = pair.y_distance;
-            int z_distance = pair.z_distance;
-            int x_distance = pair.x_distance;
+            int y_distance = pair.yDistance();
+            int z_distance = pair.zDistance();
+            int x_distance = pair.xDistance();
 
             for (int x = 0; x != x_distance + 1; x++) {
                 for (int y = 0; y != y_distance + 1; y++) {
@@ -520,9 +518,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
 
         for (LocationPair pair : pairs) {
             LocationTag loc_1 = pair.low;
-            int y_distance = pair.y_distance;
-            int z_distance = pair.z_distance;
-            int x_distance = pair.x_distance;
+            int y_distance = pair.yDistance();
+            int z_distance = pair.zDistance();
+            int x_distance = pair.xDistance();
             for (int x = 0; x <= x_distance; x++) {
                 for (int z = 0; z <= z_distance; z++) {
                     for (int y = 0; y <= y_distance; y++) {
@@ -561,9 +559,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         for (LocationPair pair : pairs) {
 
             LocationTag loc_1 = pair.low;
-            int y_distance = pair.y_distance;
-            int z_distance = pair.z_distance;
-            int x_distance = pair.x_distance;
+            int y_distance = pair.yDistance();
+            int z_distance = pair.zDistance();
+            int x_distance = pair.xDistance();
 
             for (int x = 0; x != x_distance + 1; x++) {
                 for (int y = 0; y != y_distance + 1; y++) {
@@ -906,7 +904,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                     member = cuboid.pairs.size();
                 }
                 LocationPair pair = cuboid.pairs.get(member - 1);
-                return new CuboidTag(pair.point_1, pair.point_2);
+                return new CuboidTag(pair.low, pair.high);
             }
         }, "member", "get_member");
 
@@ -941,7 +939,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 attribute.fulfill(1);
                 LocationPair pair = subCuboid.pairs.get(0);
                 CuboidTag cloned = cuboid.clone();
-                cloned.pairs.set(member - 1, new LocationPair(pair.point_1, pair.point_2));
+                cloned.pairs.set(member - 1, new LocationPair(pair.low, pair.high));
                 return cloned;
             }
         });
@@ -984,7 +982,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 member = cuboid.pairs.size() + 1;
             }
             LocationPair pair = subCuboid.pairs.get(0);
-            cuboid.pairs.add(member - 1, new LocationPair(pair.point_1, pair.point_2));
+            cuboid.pairs.add(member - 1, new LocationPair(pair.low, pair.high));
             return cuboid;
         });
 
@@ -1449,25 +1447,29 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
     }
 
     public CuboidTag including(Location loc) {
+        loc = loc.clone();
         CuboidTag cuboid = clone();
-        if (loc.getX() < cuboid.pairs.get(0).low.getX()) {
-            cuboid.pairs.get(0).low = new LocationTag(cuboid.pairs.get(0).low.getWorld(), loc.getX(), cuboid.pairs.get(0).low.getY(), cuboid.pairs.get(0).low.getZ());
+        LocationTag low = cuboid.pairs.get(0).low;
+        LocationTag high = cuboid.pairs.get(0).high;
+        if (loc.getX() < low.getX()) {
+            low = new LocationTag(low.getWorld(), loc.getX(), low.getY(), low.getZ());
         }
-        if (loc.getY() < cuboid.pairs.get(0).low.getY()) {
-            cuboid.pairs.get(0).low = new LocationTag(cuboid.pairs.get(0).low.getWorld(), cuboid.pairs.get(0).low.getX(), loc.getY(), cuboid.pairs.get(0).low.getZ());
+        if (loc.getY() < low.getY()) {
+            low = new LocationTag(low.getWorld(), low.getX(), loc.getY(), low.getZ());
         }
-        if (loc.getZ() < cuboid.pairs.get(0).low.getZ()) {
-            cuboid.pairs.get(0).low = new LocationTag(cuboid.pairs.get(0).low.getWorld(), cuboid.pairs.get(0).low.getX(), cuboid.pairs.get(0).low.getY(), loc.getZ());
+        if (loc.getZ() < low.getZ()) {
+            low = new LocationTag(low.getWorld(), low.getX(), low.getY(), loc.getZ());
         }
-        if (loc.getX() > cuboid.pairs.get(0).high.getX()) {
-            cuboid.pairs.get(0).high = new LocationTag(cuboid.pairs.get(0).high.getWorld(), loc.getX(), cuboid.pairs.get(0).high.getY(), cuboid.pairs.get(0).high.getZ());
+        if (loc.getX() > high.getX()) {
+            high = new LocationTag(high.getWorld(), loc.getX(), high.getY(), high.getZ());
         }
-        if (loc.getY() > cuboid.pairs.get(0).high.getY()) {
-            cuboid.pairs.get(0).high = new LocationTag(cuboid.pairs.get(0).high.getWorld(), cuboid.pairs.get(0).high.getX(), loc.getY(), cuboid.pairs.get(0).high.getZ());
+        if (loc.getY() > high.getY()) {
+            high = new LocationTag(high.getWorld(), high.getX(), loc.getY(), high.getZ());
         }
-        if (loc.getZ() > cuboid.pairs.get(0).high.getZ()) {
-            cuboid.pairs.get(0).high = new LocationTag(cuboid.pairs.get(0).high.getWorld(), cuboid.pairs.get(0).high.getX(), cuboid.pairs.get(0).high.getY(), loc.getZ());
+        if (loc.getZ() > high.getZ()) {
+            high = new LocationTag(high.getWorld(), high.getX(), high.getY(), loc.getZ());
         }
+        cuboid.pairs.get(0).regenerate(low, high);
         return cuboid;
     }
 
@@ -1520,7 +1522,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 member = pairs.size();
             }
             LocationPair pair = subCuboid.pairs.get(0);
-            pairs.set(member - 1, new LocationPair(pair.point_1, pair.point_2));
+            pairs.set(member - 1, new LocationPair(pair.low, pair.high));
         }
 
         // <--[mechanism]
@@ -1551,7 +1553,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 member = pairs.size();
             }
             LocationPair pair = subCuboid.pairs.get(0);
-            pairs.add(member - 1, new LocationPair(pair.point_1, pair.point_2));
+            pairs.add(member - 1, new LocationPair(pair.low, pair.high));
         }
 
         // <--[mechanism]
