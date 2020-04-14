@@ -8,6 +8,7 @@ public class VersionScriptContainer extends ScriptContainer {
 
     public VersionScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
+        canRunScripts = false;
         Deprecations.versionScripts.warn(this);
     }
 }

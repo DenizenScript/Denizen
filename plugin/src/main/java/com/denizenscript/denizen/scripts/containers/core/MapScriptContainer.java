@@ -17,6 +17,7 @@ public class MapScriptContainer extends ScriptContainer {
 
     public MapScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
+        canRunScripts = false;
     }
 
     // <--[language]

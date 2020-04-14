@@ -60,6 +60,7 @@ public class EntityScriptContainer extends ScriptContainer {
 
     public EntityScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
+        canRunScripts = false;
     }
 
     public EntityTag getEntityFrom() {

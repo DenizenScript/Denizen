@@ -53,6 +53,7 @@ public class BookScriptContainer extends ScriptContainer {
     // -->
     public BookScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
+        canRunScripts = false;
     }
 
     public ItemTag getBookFrom(TagContext context) {

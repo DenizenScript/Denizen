@@ -149,6 +149,7 @@ public class ItemScriptContainer extends ScriptContainer {
 
     public ItemScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
+        canRunScripts = false;
 
         ItemScriptHelper.item_scripts.put(getName(), this);
         ItemScriptHelper.item_scripts_by_hash_id.put(ItemScriptHelper.createItemScriptID(this), this);

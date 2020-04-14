@@ -34,6 +34,7 @@ public class FormatScriptContainer extends ScriptContainer {
 
     public FormatScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
+        canRunScripts = false;
     }
 
     public String getFormat() {
