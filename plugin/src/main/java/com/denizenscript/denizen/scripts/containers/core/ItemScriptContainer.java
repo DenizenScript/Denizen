@@ -97,6 +97,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //           # You are allowed to have non-3x3 shapes (can be any value 1-3 x 1-3, so for example 1x3, 2x1, and 2x2 are fine).
     //           # For an empty slot, use "air".
     //           # By default, items require an exact match. For a material-based match, use the format "material:MaterialNameHere" like "material:stick".
+    //           # To make multiple different items match for any slot, use "multi:a/b/c", like "multi:stick/stone". To match multiple materials, use "material:multi:a/b/c".
     //           input:
     //           - ItemTag|ItemTag|ItemTag
     //           - ItemTag|ItemTag|ItemTag

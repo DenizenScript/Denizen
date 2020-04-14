@@ -28,7 +28,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 public class ItemHelperImpl extends ItemHelper {
 
@@ -72,20 +71,33 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public void setShapedRecipeIngredient(ShapedRecipe recipe, char c, ItemStack item, boolean exact) {
+    public void setShapedRecipeIngredient(ShapedRecipe recipe, char c, ItemStack[] item, boolean exact) {
         if (exact) {
             recipe.setIngredient(c, new RecipeChoice.ExactChoice(item));
         }
         else {
-            recipe.setIngredient(c, item.getType());
+            Material[] mats = new Material[item.length];
+            for (int i = 0; i < item.length; i++) {
+                mats[i] = item[i].getType();
+            }
+            recipe.setIngredient(c, new RecipeChoice.MaterialChoice(mats));
         }
     }
 
-    @Override
-    public void registerFurnaceRecipe(String keyName, String group, ItemStack result, ItemStack ingredient, float exp, int time, String type, boolean exact) {
-        MinecraftKey key = new MinecraftKey("denizen", keyName);
-        RecipeItemStack itemRecipe = new RecipeItemStack(Stream.of(new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(ingredient))));
+    public static RecipeItemStack itemArrayToRecipe(ItemStack[] items, boolean exact) {
+        RecipeItemStack.StackProvider[] stacks = new RecipeItemStack.StackProvider[items.length];
+        for (int i = 0; i < items.length; i++) {
+            stacks[i] = new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(items[i]));
+        }
+        RecipeItemStack itemRecipe = new RecipeItemStack(Arrays.stream(stacks));
         itemRecipe.exact = exact;
+        return itemRecipe;
+    }
+
+    @Override
+    public void registerFurnaceRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, float exp, int time, String type, boolean exact) {
+        MinecraftKey key = new MinecraftKey("denizen", keyName);
+        RecipeItemStack itemRecipe = itemArrayToRecipe(ingredient, exact);
         RecipeCooking recipe;
         if (type.equalsIgnoreCase("smoker")) {
             recipe = new RecipeSmoking(key, group, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
@@ -103,22 +115,19 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public void registerStonecuttingRecipe(String keyName, String group, ItemStack result, ItemStack ingredient, boolean exact) {
+    public void registerStonecuttingRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, boolean exact) {
         MinecraftKey key = new MinecraftKey("denizen", keyName);
-        RecipeItemStack itemRecipe = new RecipeItemStack(Stream.of(new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(ingredient))));
-        itemRecipe.exact = exact;
+        RecipeItemStack itemRecipe = itemArrayToRecipe(ingredient, exact);
         RecipeStonecutting recipe = new RecipeStonecutting(key, group, itemRecipe, CraftItemStack.asNMSCopy(result));
         ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().addRecipe(recipe);
     }
 
     @Override
-    public void registerShapelessRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredients, boolean[] exact) {
+    public void registerShapelessRecipe(String keyName, String group, ItemStack result, List<ItemStack[]> ingredients, boolean[] exact) {
         MinecraftKey key = new MinecraftKey("denizen", keyName);
         ArrayList<RecipeItemStack> ingredientList = new ArrayList<>();
-        for (int i = 0; i < ingredients.length; i++) {
-            RecipeItemStack itemRecipe = new RecipeItemStack(Stream.of(new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(ingredients[i]))));
-            itemRecipe.exact = exact[i];
-            ingredientList.add(itemRecipe);
+        for (int i = 0; i < ingredients.size(); i++) {
+            ingredientList.add(itemArrayToRecipe(ingredients.get(i), exact[i]));
         }
         ShapelessRecipes recipe = new ShapelessRecipes(key, group, CraftItemStack.asNMSCopy(result), NonNullList.a(null, ingredientList.toArray(new RecipeItemStack[0])));
         ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().addRecipe(recipe);

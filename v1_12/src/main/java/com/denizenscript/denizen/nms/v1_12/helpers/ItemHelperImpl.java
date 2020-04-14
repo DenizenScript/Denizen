@@ -40,7 +40,7 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public void setShapedRecipeIngredient(ShapedRecipe recipe, char c, ItemStack item, boolean exact) {
+    public void setShapedRecipeIngredient(ShapedRecipe recipe, char c, ItemStack[] item, boolean exact) {
         throw new UnsupportedOperationException();
     }
 

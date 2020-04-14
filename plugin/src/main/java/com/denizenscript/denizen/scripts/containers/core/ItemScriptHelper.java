@@ -61,6 +61,41 @@ public class ItemScriptHelper implements Listener {
         return newId;
     }
 
+    public static List<String> splitByNonBracketedSlashes(String str) {
+        boolean brackets = false;
+        int start = 0;
+        List<String> output = new ArrayList<>(4);
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (c == '[') {
+                brackets = true;
+            }
+            else if (c == ']') {
+                brackets = false;
+            }
+            else if (c == '/' && !brackets) {
+                output.add(str.substring(start, i));
+                start = i + 1;
+            }
+        }
+        output.add(str.substring(start));
+        return output;
+    }
+
+    public ItemStack[] textToItemArray(ItemScriptContainer container, String text) {
+        List<String> ingredientText = splitByNonBracketedSlashes(text);
+        ItemStack[] outputItems = new ItemStack[ingredientText.size()];
+        for (int i = 0; i < outputItems.length; i++) {
+            ItemTag ingredient = ItemTag.valueOf(ingredientText.get(i), container);
+            if (ingredient == null) {
+                Debug.echoError("Invalid ItemTag ingredient, recipe will not be registered for item script '" + container.getName() + "': " + text);
+                return null;
+            }
+            outputItems[i] = ingredient.getItemStack().clone();
+        }
+        return outputItems;
+    }
+
     public void registerShapedRecipe(ItemScriptContainer container, ItemStack item, List<String> recipeList, String internalId, String group) {
         for (int n = 0; n < recipeList.size(); n++) {
             recipeList.set(n, TagManager.tag(ScriptBuilder.stripLinePrefix(recipeList.get(n)), new BukkitTagContext(null, null, new ScriptTag(container))));
@@ -86,14 +121,11 @@ public class ItemScriptHelper implements Listener {
                 else {
                     exacts.add(true);
                 }
-                ItemTag ingredient = ItemTag.valueOf(itemText, container);
-                if (ingredient == null) {
-                    Debug.echoError("Invalid ItemTag ingredient, recipe will not be registered for item script '"
-                            + container.getName() + "': " + element);
+                ItemStack[] items = textToItemArray(container, itemText);
+                if (items == null) {
                     return;
                 }
-                ingredients.add(ingredient);
-                ingredients.add(outputItems);
+                ingredients.add(items);
             }
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
@@ -114,7 +146,7 @@ public class ItemScriptHelper implements Listener {
                 recipe = recipe.shape(shape1);
             }
             for (int i = 0; i < ingredients.size(); i++) {
-                NMSHandler.getItemHelper().setShapedRecipeIngredient(recipe, itemChars.charAt(i), ingredients.get(i).getItemStack().clone(), exacts.get(i));
+                NMSHandler.getItemHelper().setShapedRecipeIngredient(recipe, itemChars.charAt(i), ingredients.get(i), exacts.get(i));
             }
             Bukkit.addRecipe(recipe);
         }
@@ -123,7 +155,7 @@ public class ItemScriptHelper implements Listener {
     public void registerShapelessRecipe(ItemScriptContainer container, ItemStack item, String shapelessString, String internalId, String group) {
         TagContext context = new BukkitTagContext(null, null, new ScriptTag(container));
         String list = TagManager.tag(shapelessString, context);
-        List<ItemTag> ingredients = new ArrayList<>();
+        List<ItemStack[]> ingredients = new ArrayList<>();
         List<Boolean> exacts = new ArrayList<>();
         for (String element : ListTag.valueOf(list, context)) {
             String itemText = element;
@@ -134,24 +166,18 @@ public class ItemScriptHelper implements Listener {
             else {
                 exacts.add(true);
             }
-            ItemTag ingredient = ItemTag.valueOf(itemText, container);
-            if (ingredient == null) {
-                Debug.echoError("Invalid ItemTag ingredient, shapeless recipe will not be registered for item script '"
-                        + container.getName() + "': " + element);
+            ItemStack[] items = textToItemArray(container, itemText);
+            if (items == null) {
                 return;
             }
-            ingredients.add(ingredient);
+            ingredients.add(items);
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            ItemStack[] input = new ItemStack[ingredients.size()];
-            for (int i = 0; i < input.length; i++) {
-                input[i] = ingredients.get(i).getItemStack().clone();
-            }
             boolean[] bools = new boolean[exacts.size()];
             for (int i = 0; i < exacts.size(); i++) {
                 bools[i] = exacts.get(i);
             }
-            NMSHandler.getItemHelper().registerShapelessRecipe(internalId, group, item, input, bools);
+            NMSHandler.getItemHelper().registerShapelessRecipe(internalId, group, item, ingredients, bools);
         }
     }
 
@@ -161,14 +187,12 @@ public class ItemScriptHelper implements Listener {
             exact = false;
             furnaceItemString = furnaceItemString.substring("material:".length());
         }
-        ItemTag furnace_item = ItemTag.valueOf(furnaceItemString, container);
-        if (furnace_item == null) {
-            Debug.echoError("Invalid item '" + furnaceItemString + "', furnace recipe will not be registered for item script '" + container.getName() + "'.");
+        ItemStack[] items = textToItemArray(container, furnaceItemString);
+        if (items == null) {
             return;
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            ItemStack input = furnace_item.getItemStack().clone();
-            NMSHandler.getItemHelper().registerFurnaceRecipe(internalId, group, item, input, exp, time, type, exact);
+            NMSHandler.getItemHelper().registerFurnaceRecipe(internalId, group, item, items, exp, time, type, exact);
         }
     }
 
@@ -181,13 +205,11 @@ public class ItemScriptHelper implements Listener {
             exact = false;
             inputItemString = inputItemString.substring("material:".length());
         }
-        ItemTag stonecutting_item = ItemTag.valueOf(inputItemString, container);
-        if (stonecutting_item == null) {
-            Debug.echoError("Invalid item '" + inputItemString + "', stonecutting recipe will not be registered for item script '" + container.getName() + "'.");
+        ItemStack[] items = textToItemArray(container, inputItemString);
+        if (items == null) {
             return;
         }
-        ItemStack input = stonecutting_item.getItemStack().clone();
-        NMSHandler.getItemHelper().registerStonecuttingRecipe(internalId, group, item, input, exact);
+        NMSHandler.getItemHelper().registerStonecuttingRecipe(internalId, group, item, items, exact);
     }
 
     public void rebuildRecipes() {

@@ -13,6 +13,8 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.List;
+
 public abstract class ItemHelper {
 
     public abstract Recipe getRecipeById(NamespacedKey key);
@@ -21,15 +23,15 @@ public abstract class ItemHelper {
 
     public abstract void clearDenizenRecipes();
 
-    public void registerStonecuttingRecipe(String keyName, String group, ItemStack result, ItemStack ingredient, boolean exact) {
+    public void registerStonecuttingRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, boolean exact) {
         throw new UnsupportedOperationException();
     }
 
-    public abstract void registerFurnaceRecipe(String keyName, String group, ItemStack result, ItemStack ingredient, float exp, int time, String type, boolean exact);
+    public abstract void registerFurnaceRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, float exp, int time, String type, boolean exact);
 
-    public abstract void registerShapelessRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredients, boolean[] exact);
+    public abstract void registerShapelessRecipe(String keyName, String group, ItemStack result, List<ItemStack[]> ingredients, boolean[] exact);
 
-    public abstract void setShapedRecipeIngredient(ShapedRecipe recipe, char c, ItemStack item, boolean exact);
+    public abstract void setShapedRecipeIngredient(ShapedRecipe recipe, char c, ItemStack[] item, boolean exact);
 
     public abstract String getInternalNameFromMaterial(Material material);
 
