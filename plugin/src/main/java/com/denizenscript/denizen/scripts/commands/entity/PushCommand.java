@@ -19,12 +19,13 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.Holdable;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
-import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
+import com.denizenscript.denizencore.utilities.ScriptUtilities;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class PushCommand extends AbstractCommand implements Holdable {
 
@@ -318,35 +319,17 @@ public class PushCommand extends AbstractCommand implements Holdable {
                 else {
                     this.cancel();
                     if (script != null) {
-                        List<ScriptEntry> entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
-                        ScriptQueue queue = new InstantQueue(script.getContainer().getName())
-                                .addEntries(entries);
-                        if (lastEntity.getLocation() != null) {
-                            queue.addDefinition("location", lastEntity.getLocation());
-                        }
-                        else {
-                            queue.addDefinition("location", lastLocation);
-                        }
-                        queue.addDefinition("pushed_entities", entityList);
-                        queue.addDefinition("last_entity", lastEntity);
-                        if (definitions != null) {
-                            int x = 1;
-                            String[] definition_names = null;
-                            try {
-                                definition_names = script.getContainer().getString("definitions").split("\\|");
+                        Consumer<ScriptQueue> configure = (queue) -> {
+                            if (lastEntity.getLocation() != null) {
+                                queue.addDefinition("location", lastEntity.getLocation());
                             }
-                            catch (Exception e) {
-                                // TODO: less lazy handling
+                            else {
+                                queue.addDefinition("location", lastLocation);
                             }
-                            for (String definition : definitions) {
-                                String name = definition_names != null && definition_names.length >= x ?
-                                        definition_names[x - 1].trim() : String.valueOf(x);
-                                queue.addDefinition(name, definition);
-                                Debug.echoDebug(scriptEntry, "Adding definition %" + name + "% as " + definition);
-                                x++;
-                            }
-                        }
-                        queue.start();
+                            queue.addDefinition("pushed_entities", entityList);
+                            queue.addDefinition("last_entity", lastEntity);
+                        };
+                        ScriptUtilities.createAndStartQueue(script.getContainer(), null, scriptEntry.entryData, null, configure, null, null, definitions, scriptEntry);
                     }
                     scriptEntry.setFinished(true);
                 }

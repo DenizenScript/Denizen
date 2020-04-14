@@ -18,8 +18,8 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.Holdable;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
-import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.ScriptUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Projectile;
@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class ShootCommand extends AbstractCommand implements Listener, Holdable {
 
@@ -378,17 +379,6 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                         if (lastVelocity == null) {
                             lastVelocity = start_vel;
                         }
-
-                        // Build a queue out of the targeted script
-                        List<ScriptEntry> entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
-                        ScriptQueue queue = new InstantQueue(script.getContainer().getName()).addEntries(entries);
-
-                        // Add relevant definitions
-                        queue.addDefinition("location", lastLocation);
-                        queue.addDefinition("shot_entities", entityList);
-                        queue.addDefinition("last_entity", lastEntity);
-
-                        // Handle hit_entities definition
                         ListTag hitEntities = new ListTag();
                         for (EntityTag entity : entities) {
                             if (arrows.containsKey(entity.getUUID())) {
@@ -399,26 +389,13 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                                 }
                             }
                         }
-                        queue.addDefinition("hit_entities", hitEntities);
-                        if (definitions != null) {
-                            int x = 1;
-                            String[] definition_names = null;
-                            try {
-                                definition_names = script.getContainer().getString("definitions").split("\\|");
-                            }
-                            catch (Exception e) {
-                                // TODO: less lazy handling
-                            }
-                            for (String definition : definitions) {
-                                String name = definition_names != null && definition_names.length >= x ?
-                                        definition_names[x - 1].trim() : String.valueOf(x);
-                                queue.addDefinition(name, definition);
-                                Debug.echoDebug(scriptEntry, "Adding definition '" + name + "' as " + definition);
-                                x++;
-                            }
-                        }
-                        // Start it!
-                        queue.start();
+                        Consumer<ScriptQueue> configure = (queue) -> {
+                            queue.addDefinition("location", lastLocation);
+                            queue.addDefinition("shot_entities", entityList);
+                            queue.addDefinition("last_entity", lastEntity);
+                            queue.addDefinition("hit_entities", hitEntities);
+                        };
+                        ScriptUtilities.createAndStartQueue(script.getContainer(), null, scriptEntry.entryData, null, configure, null, null, definitions, scriptEntry);
                     }
 
                     scriptEntry.setFinished(true);
