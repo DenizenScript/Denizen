@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
 import com.denizenscript.denizen.objects.properties.entity.EntityAge;
 import com.denizenscript.denizen.objects.properties.entity.EntityColor;
 import com.denizenscript.denizen.objects.properties.entity.EntityTame;
@@ -2426,6 +2427,26 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
+        // @attribute <EntityTag.skin_layers>
+        // @returns ListTag
+        // @mechanism EntityTag.skin_layers
+        // @description
+        // Returns the skin layers currently visible on a player-type entity.
+        // Output is a list of values from the set of:
+        // CAPE, HAT, JACKET, LEFT_PANTS, LEFT_SLEEVE, RIGHT_PANTS, or RIGHT_SLEEVE.
+        // -->
+        registerSpawnedOnlyTag("skin_layers", (attribute, object) -> {
+            byte flags = NMSHandler.getPlayerHelper().getSkinLayers((Player) object.getBukkitEntity());
+            ListTag result = new ListTag();
+            for (PlayerHelper.SkinLayer layer : PlayerHelper.SkinLayer.values()) {
+                if ((flags & layer.flag) != 0) {
+                    result.add(layer.name());
+                }
+            }
+            return result;
+        });
+
+        // <--[tag]
         // @attribute <EntityTag.describe>
         // @returns ElementTag
         // @group properties
@@ -3103,6 +3124,32 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("hide_from_players")) {
             NMSHandler.getEntityHelper().hideEntity(null, getBukkitEntity(), false);
+        }
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name skin_layers
+        // @input ListTag
+        // @description
+        // Sets the visible skin layers on a player-type entity (PlayerTag or player-type NPCTag).
+        // Input is a list of values from the set of:
+        // CAPE, HAT, JACKET, LEFT_PANTS, LEFT_SLEEVE, RIGHT_PANTS, RIGHT_SLEEVE, or "ALL"
+        // @tags
+        // <EntityTag.skin_layers>
+        // -->
+        if (mechanism.matches("skin_layers")) {
+            int flags = 0;
+            for (String str : mechanism.valueAsType(ListTag.class)) {
+                String upper = str.toUpperCase();
+                if (upper.equals("ALL")) {
+                    flags = 0xFF;
+                }
+                else {
+                    PlayerHelper.SkinLayer layer = PlayerHelper.SkinLayer.valueOf(upper);
+                    flags |= layer.flag;
+                }
+            }
+            NMSHandler.getPlayerHelper().setSkinLayers((Player) getBukkitEntity(), (byte) flags);
         }
 
         // <--[mechanism]

@@ -706,8 +706,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 return new ElementTag(0);
             }
             if (FlagManager.playerHasFlag(object, flag_name)) {
-                FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager()
-                        .getPlayerFlag(object, flag_name);
+                FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag(object, flag_name);
 
                 // <--[tag]
                 // @attribute <PlayerTag.flag[<flag_name>].expiration>

@@ -31,6 +31,19 @@ public class PlayerHelperImpl extends PlayerHelper {
     public static final Field FLY_TICKS = PLAYER_CONNECTION_FIELDS.get("C");
     public static final Field VEHICLE_FLY_TICKS = PLAYER_CONNECTION_FIELDS.get("E");
 
+    public static final DataWatcherObject<Byte> ENTITY_HUMAN_SKINLAYERS_DATAWATCHER;
+
+    static {
+        DataWatcherObject<Byte> skinlayers = null;
+        try {
+            skinlayers = (DataWatcherObject<Byte>) ReflectionHelper.getFields(EntityHuman.class).get("bt").get(null);
+        }
+        catch (Throwable ex) {
+            ex.printStackTrace();
+        }
+        ENTITY_HUMAN_SKINLAYERS_DATAWATCHER = skinlayers;
+    }
+
     @Override
     public int getFlyKickCooldown(Player player) {
         PlayerConnection conn = ((CraftPlayer) player).getHandle().playerConnection;
@@ -171,5 +184,15 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public String getPlayerBrand(Player player) {
         return ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().playerConnection.networkManager).packetListener.brand;
+    }
+
+    @Override
+    public byte getSkinLayers(Player player) {
+        return ((CraftPlayer) player).getHandle().getDataWatcher().get(ENTITY_HUMAN_SKINLAYERS_DATAWATCHER);
+    }
+
+    @Override
+    public void setSkinLayers(Player player, byte flags) {
+        ((CraftPlayer) player).getHandle().getDataWatcher().set(ENTITY_HUMAN_SKINLAYERS_DATAWATCHER, flags);
     }
 }

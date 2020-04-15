@@ -41,4 +41,27 @@ public abstract class PlayerHelper {
     public abstract void resendRecipeDetails(Player player);
 
     public abstract String getPlayerBrand(Player player);
+
+    public enum SkinLayer {
+        CAPE(0),
+        HAT(6),
+        JACKET(1),
+        LEFT_PANTS(4),
+        LEFT_SLEEVE(2),
+        RIGHT_PANTS(5),
+        RIGHT_SLEEVE(3);
+
+        public int flag;
+
+        SkinLayer(int offset) {
+            this.flag = 1 << offset;
+        }
+    }
+    public byte getSkinLayers(Player player) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setSkinLayers(Player player, byte flags) {
+        throw new UnsupportedOperationException();
+    }
 }
