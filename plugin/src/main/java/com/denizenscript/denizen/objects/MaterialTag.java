@@ -858,7 +858,10 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // This will not be valid anywhere that isn't in the chat bar or a book (titles, items, etc. will not work).
         // -->
         registerTag("translated_name", (attribute, object) -> {
-            return new ElementTag(ChatColor.COLOR_CHAR + "[translate=item.minecraft." + object.material.getKey().getKey() + "]");
+            String key = object.material.getKey().getKey();
+            key = key.replace("wall_banner", "banner");
+            String type = object.material.isBlock() ? "block" : "item";
+            return new ElementTag(ChatColor.COLOR_CHAR + "[translate=" + type + ".minecraft." + key + "]");
         });
 
         // <--[tag]
