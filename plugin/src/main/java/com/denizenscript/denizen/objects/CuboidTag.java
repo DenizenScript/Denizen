@@ -1537,8 +1537,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
             int member = 1;
             if (comma > 0 && !value.startsWith("cu@")) {
                 member = new ElementTag(value.substring(0, comma)).asInt();
+                value = value.substring(comma + 1);
             }
-            CuboidTag subCuboid = CuboidTag.valueOf(comma == -1 ? value : value.substring(comma + 1));
+            CuboidTag subCuboid = CuboidTag.valueOf(value);
             if (member < 1) {
                 member = 1;
             }
@@ -1568,8 +1569,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
             int member = pairs.size() + 1;
             if (comma > 0 && !value.startsWith("cu@")) {
                 member = new ElementTag(value.substring(0, comma)).asInt();
+                value = value.substring(comma + 1);
             }
-            CuboidTag subCuboid = CuboidTag.valueOf(comma == -1 ? value : value.substring(comma + 1));
+            CuboidTag subCuboid = CuboidTag.valueOf(value);
             if (member < 1) {
                 member = 1;
             }
