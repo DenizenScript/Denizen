@@ -428,21 +428,33 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // the damaged entity just being gone now (when the event fires, it's *guaranteed* the entity is still present
     // but that remove command breaks the guarantee!).
     //
-    // The solution to this problem is simple: Just wait a tick. Literally.
+    // The solution to this problem is simple: Use "after" instead of "on".
+    // <code>
+    // after player clicks in inventory:
+    // - take iteminhand
+    // after entity damaged:
+    // - if <context.entity.is_spawned||false>:
+    //   - remove <context.entity>
+    // </code>
+    // This will delay the script until *after* the event is complete, and thus outside of the problem area.
+    // And thus should be fine. One limitation you should note is demonstrated in the second example event:
+    // The normal guarantees of the event are no longer present (eg that the entity is still valid) and as such
+    // you should validate these expectations remain true after the event (as seen with the 'if is_spawned' check).
+    //
+    // If you need determine changes to the event, you can instead use 'on' but add a 'wait 1t' after the determine but before other script logic.
+    // This allows the risky parts to be after the event and outside the problem area, but still determine changes to the event.
+    // Be sure to use 'passively' to allow the script to run in full.
     // <code>
     // on player clicks in inventory:
+    // - determine passively cancelled
     // - wait 1t
     // - take iteminhand
     // on entity damaged:
+    // - determine passively cancelled
     // - wait 1t
     // - if <context.entity.is_spawned||false>:
     //   - remove <context.entity>
     // </code>
-    //
-    // By waiting a tick, you cause your script to run *after* the event, and thus outside of the problem area.
-    // And thus should be fine. One limitation you should note is demonstrated in the second example event:
-    // The normal guarantees of the event are no longer present (eg that the entity is still valid) and as such
-    // you should validate these expectations remain true after the event (as seen with the 'if is_spawned' check).
     //
     // -->
 
