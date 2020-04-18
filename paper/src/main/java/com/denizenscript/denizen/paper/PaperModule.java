@@ -15,6 +15,7 @@ public class PaperModule {
 
         // Events
         ScriptEvent.registerScriptEvent(new EntityKnocksbackEntityScriptEvent());
+        ScriptEvent.registerScriptEvent(new PlayerBeaconEffectScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerEquipsArmorScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerJumpsPaperScriptEventImpl());
         ScriptEvent.registerScriptEvent(new PlayerSpectatesEntityScriptEvent());
