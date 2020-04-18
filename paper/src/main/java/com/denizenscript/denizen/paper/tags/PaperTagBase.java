@@ -29,8 +29,9 @@ public class PaperTagBase {
         // <--[tag]
         // @attribute <paper.tick_times>
         // @returns ListTag(DurationTag)
+        // @Plugin Paper
         // @description
-        // Returns a sample of the server's last 5s of tick times (in milliseconds).
+        // Returns a sample of the server's last 5s of tick times as a list of durations.
         // On average, a tick should take 50ms or less for a stable 20tps.
         // -->
         if (attribute.startsWith("tick_times")) {
