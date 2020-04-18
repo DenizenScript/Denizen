@@ -408,78 +408,51 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     public void decrementStatistic(Statistic statistic, int amount) {
-        if (isOnline()) {
-            getPlayerEntity().decrementStatistic(statistic, amount);
-        }
-        else {
-        }// TODO: write to JSON?
+        getOfflinePlayer().decrementStatistic(statistic, amount);
     }
 
     public void decrementStatistic(Statistic statistic, EntityType entity, int amount) {
-        if (isOnline() && statistic.getType() == Statistic.Type.ENTITY) {
-            getPlayerEntity().decrementStatistic(statistic, entity, amount);
+        if (statistic.getType() == Statistic.Type.ENTITY) {
+            getOfflinePlayer().decrementStatistic(statistic, entity, amount);
         }
-        else {
-        }// TODO: write to JSON?
     }
 
     public void decrementStatistic(Statistic statistic, Material material, int amount) {
-        if (isOnline() && (statistic.getType() == Statistic.Type.BLOCK
-                || statistic.getType() == Statistic.Type.ITEM)) {
-            getPlayerEntity().decrementStatistic(statistic, material, amount);
+        if (statistic.getType() == Statistic.Type.BLOCK || statistic.getType() == Statistic.Type.ITEM) {
+            getOfflinePlayer().decrementStatistic(statistic, material, amount);
         }
-        else {
-        }// TODO: write to JSON?
     }
 
     public void incrementStatistic(Statistic statistic, int amount) {
-        if (isOnline()) {
-            getPlayerEntity().incrementStatistic(statistic, amount);
-        }
-        else {
-        }// TODO: write to JSON?
+        getOfflinePlayer().incrementStatistic(statistic, amount);
     }
 
     public void incrementStatistic(Statistic statistic, EntityType entity, int amount) {
-        if (isOnline() && statistic.getType() == Statistic.Type.ENTITY) {
-            getPlayerEntity().incrementStatistic(statistic, entity, amount);
+        if (statistic.getType() == Statistic.Type.ENTITY) {
+            getOfflinePlayer().incrementStatistic(statistic, entity, amount);
         }
-        else {
-        }// TODO: write to JSON?
     }
 
     public void incrementStatistic(Statistic statistic, Material material, int amount) {
-        if (isOnline() && (statistic.getType() == Statistic.Type.BLOCK
-                || statistic.getType() == Statistic.Type.ITEM)) {
-            getPlayerEntity().incrementStatistic(statistic, material, amount);
+        if (statistic.getType() == Statistic.Type.BLOCK  || statistic.getType() == Statistic.Type.ITEM) {
+            getOfflinePlayer().incrementStatistic(statistic, material, amount);
         }
-        else {
-        }// TODO: write to JSON?
     }
 
     public void setStatistic(Statistic statistic, int amount) {
-        if (isOnline()) {
-            getPlayerEntity().setStatistic(statistic, amount);
-        }
-        else {
-        }// TODO: write to JSON?
+        getOfflinePlayer().setStatistic(statistic, amount);
     }
 
     public void setStatistic(Statistic statistic, EntityType entity, int amount) {
-        if (isOnline() && statistic.getType() == Statistic.Type.ENTITY) {
-            getPlayerEntity().setStatistic(statistic, entity, amount);
+        if (statistic.getType() == Statistic.Type.ENTITY) {
+            getOfflinePlayer().setStatistic(statistic, entity, amount);
         }
-        else {
-        }// TODO: write to JSON?
     }
 
     public void setStatistic(Statistic statistic, Material material, int amount) {
-        if (isOnline() && (statistic.getType() == Statistic.Type.BLOCK
-                || statistic.getType() == Statistic.Type.ITEM)) {
-            getPlayerEntity().setStatistic(statistic, material, amount);
+        if (statistic.getType() == Statistic.Type.BLOCK || statistic.getType() == Statistic.Type.ITEM) {
+            getOfflinePlayer().setStatistic(statistic, material, amount);
         }
-        else {
-        }// TODO: write to JSON?
     }
 
     public boolean isOnline() {
@@ -1492,6 +1465,64 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         }, "permission");
 
         // <--[tag]
+        // @attribute <PlayerTag.statistic[<statistic>]>
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the player's current value for the specified statistic.
+        // Valid statistics: <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Statistic.html>
+        // Works with offline players.
+        // -->
+        registerTag("statistic", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
+            Statistic statistic;
+            try {
+                statistic = Statistic.valueOf(attribute.getContext(1).toUpperCase());
+            }
+            catch (IllegalArgumentException ex) {
+                attribute.echoError("Statistic '" + attribute.getContext(1) + "' does not exist: " + ex.getMessage());
+                return null;
+            }
+
+            // <--[tag]
+            // @attribute <PlayerTag.statistic[<statistic>].qualifier[<material>/<entity>]>
+            // @returns ElementTag(Number)
+            // @description
+            // Returns the player's current value for the specified statistic, with the
+            // specified qualifier, which can be either an entity or material.
+            // Valid statistics: <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Statistic.html>
+            // To check a statistic type dynamically, refer to <@link tag server.statistic_type>.
+            // -->
+            if (attribute.startsWith("qualifier", 2)) {
+                ObjectTag obj = ObjectFetcher.pickObjectFor(attribute.getContext(2), attribute.context);
+                attribute.fulfill(1);
+                try {
+                    if (obj instanceof MaterialTag) {
+                        return new ElementTag(object.getOfflinePlayer().getStatistic(statistic, ((MaterialTag) obj).getMaterial()));
+                    }
+                    else if (obj instanceof EntityTag) {
+                        return new ElementTag(object.getOfflinePlayer().getStatistic(statistic, ((EntityTag) obj).getBukkitEntityType()));
+                    }
+                    else {
+                        return null;
+                    }
+                }
+                catch (Exception e) {
+                    Debug.echoError("Invalid statistic: " + statistic + " for this player!");
+                    return null;
+                }
+            }
+            try {
+                return new ElementTag(object.getOfflinePlayer().getStatistic(statistic));
+            }
+            catch (Exception e) {
+                Debug.echoError("Invalid statistic: " + statistic + " for this player!");
+                return null;
+            }
+        });
+
+        // <--[tag]
         // @attribute <PlayerTag.uuid>
         // @returns ElementTag
         // @description
@@ -2172,63 +2203,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 }
             });
             return list;
-        });
-
-        // <--[tag]
-        // @attribute <PlayerTag.statistic[<statistic>]>
-        // @returns ElementTag(Number)
-        // @description
-        // Returns the player's current value for the specified statistic.
-        // Valid statistics: <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Statistic.html>
-        // -->
-        registerOnlineOnlyTag("statistic", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
-                return null;
-            }
-            Statistic statistic;
-            try {
-                statistic = Statistic.valueOf(attribute.getContext(1).toUpperCase());
-            }
-            catch (IllegalArgumentException ex) {
-                attribute.echoError("Statistic '" + attribute.getContext(1) + "' does not exist: " + ex.getMessage());
-                return null;
-            }
-
-            // <--[tag]
-            // @attribute <PlayerTag.statistic[<statistic>].qualifier[<material>/<entity>]>
-            // @returns ElementTag(Number)
-            // @description
-            // Returns the player's current value for the specified statistic, with the
-            // specified qualifier, which can be either an entity or material.
-            // Valid statistics: <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Statistic.html>
-            // To check a statistic type dynamically, refer to <@link tag server.statistic_type>.
-            // -->
-            if (attribute.startsWith("qualifier", 2)) {
-                ObjectTag obj = ObjectFetcher.pickObjectFor(attribute.getContext(2), attribute.context);
-                attribute.fulfill(1);
-                try {
-                    if (obj instanceof MaterialTag) {
-                        return new ElementTag(object.getPlayerEntity().getStatistic(statistic, ((MaterialTag) obj).getMaterial()));
-                    }
-                    else if (obj instanceof EntityTag) {
-                        return new ElementTag(object.getPlayerEntity().getStatistic(statistic, ((EntityTag) obj).getBukkitEntityType()));
-                    }
-                    else {
-                        return null;
-                    }
-                }
-                catch (Exception e) {
-                    Debug.echoError("Invalid statistic: " + statistic + " for this player!");
-                    return null;
-                }
-            }
-            try {
-                return new ElementTag(object.getPlayerEntity().getStatistic(statistic));
-            }
-            catch (Exception e) {
-                Debug.echoError("Invalid statistic: " + statistic + " for this player!");
-                return null;
-            }
         });
 
         // <--[tag]
