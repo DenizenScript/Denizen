@@ -24,10 +24,7 @@ public class MaterialHalf implements Property {
     }
 
     public static boolean isHalfData(BlockData data) {
-        if (data instanceof Bisected || data instanceof Bed) {
-            return true;
-        }
-        if (data instanceof Chest && ((Chest) data).getType() != Chest.Type.SINGLE) {
+        if (data instanceof Bisected || data instanceof Bed || data instanceof Chest) {
             return true;
         }
         return false;
@@ -66,7 +63,11 @@ public class MaterialHalf implements Property {
         // Output for chests is "LEFT" or "RIGHT".
         // -->
         PropertyParser.<MaterialHalf>registerTag("half", (attribute, material) -> {
-            return new ElementTag(material.getHalfName());
+            String halfName = material.getHalfName();
+            if (halfName == null) {
+                return null;
+            }
+            return new ElementTag(halfName);
         });
 
         // <--[tag]
@@ -78,7 +79,11 @@ public class MaterialHalf implements Property {
         // Returns a vector location of the other block for a bisected material.
         // -->
         PropertyParser.<MaterialHalf>registerTag("relative_vector", (attribute, material) -> {
-            return new LocationTag(material.getRelativeBlockVector());
+            Vector vector = material.getRelativeBlockVector();
+            if (vector == null) {
+                return null;
+            }
+            return new LocationTag(vector);
         });
     }
 
@@ -90,6 +95,9 @@ public class MaterialHalf implements Property {
             return ((Bed) data).getPart().name();
         }
         else if (data instanceof Chest) {
+            if (((Chest) data).getType() == Chest.Type.SINGLE) {
+                return null;
+            }
             return ((Chest) data).getType().name();
         }
         return null;
@@ -128,6 +136,9 @@ public class MaterialHalf implements Property {
             return face.getDirection();
         }
         else if (data instanceof Chest) {
+            if (((Chest) data).getType() == Chest.Type.SINGLE) {
+                return null;
+            }
             Vector direction = ((Directional) data).getFacing().getDirection();
             if (((Chest) data).getType() == Chest.Type.LEFT) {
                 return new Vector(-direction.getZ(), 0, direction.getX());
