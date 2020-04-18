@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.paper.tags;
 
+import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
@@ -27,7 +28,7 @@ public class PaperTagBase {
 
         // <--[tag]
         // @attribute <paper.tick_times>
-        // @returns ListTag
+        // @returns ListTag(DurationTag)
         // @description
         // Returns a sample of the server's last 5s of tick times (in milliseconds).
         // On average, a tick should take 50ms or less for a stable 20tps.
@@ -35,7 +36,7 @@ public class PaperTagBase {
         if (attribute.startsWith("tick_times")) {
             ListTag list = new ListTag();
             for (long time : Bukkit.getServer().getTickTimes()) {
-                list.add(String.valueOf(time / 1000000D));
+                list.addObject(new DurationTag(time / 1000000000D));
             }
             event.setReplacedObject(list.getObjectAttribute(attribute.fulfill(1)));
             return;
