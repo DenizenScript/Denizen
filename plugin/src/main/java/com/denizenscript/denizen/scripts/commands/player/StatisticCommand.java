@@ -37,6 +37,7 @@ public class StatisticCommand extends AbstractCommand {
     // For statistic names, see <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Statistic.html>
     //
     // You can add, take, or set a numeric value to the statistic for the linked player.
+    // Works with offline players.
     //
     // Some statistics are unique per a material or entity - for those, use the "qualifier" argument.
     //
