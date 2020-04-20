@@ -33,7 +33,7 @@ public class TradeTag implements ObjectTag, Adjustable {
     // has_xp=true/false
     //
     // For example, the following command opens a virtual merchant inventory with two merchant trades.
-    // The first trade offers a sponge for two emeralds for a sponge, can be used up to 10 times,
+    // The first trade offers a sponge for two emeralds, can be used up to 10 times,
     // and offers XP upon a successful transaction.
     // The second trade has zero maximum uses and displays a barrier.
     // <code>

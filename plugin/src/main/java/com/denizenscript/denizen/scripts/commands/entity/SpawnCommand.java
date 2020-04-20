@@ -20,23 +20,23 @@ public class SpawnCommand extends AbstractCommand {
 
     public SpawnCommand() {
         setName("spawn");
-        setSyntax("spawn [<entity>|...] [<location>] (target:<entity>) (persistent)");
-        setRequiredArguments(2, 4);
+        setSyntax("spawn [<entity>|...] (<location>) (target:<entity>) (persistent)");
+        setRequiredArguments(1, 4);
     }
 
     // <--[command]
     // @Name Spawn
-    // @Syntax spawn [<entity>|...] [<location>] (target:<entity>) (persistent)
-    // @Required 2
+    // @Syntax spawn [<entity>|...] (<location>) (target:<entity>) (persistent)
+    // @Required 1
     // @Maximum 4
     // @Short Spawns a list of entities at a certain location.
     // @Group entity
     //
     // @Description
     // Spawn an entity or list of entities at the specified location. Accepts the 'target:<entity>' argument which
-    // will cause all spawned entities to follow and attack the targetted entity.
+    // will cause all spawned entities to follow and attack the targeted entity.
     // If the persistent argument is present, the entity will not despawn when no players are within range, causing
-    // the enity to remain until killed.
+    // the entity to remain until killed.
     //
     // @Tags
     // <EntityTag.is_spawned>
