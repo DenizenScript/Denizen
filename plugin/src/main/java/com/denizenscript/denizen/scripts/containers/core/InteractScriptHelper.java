@@ -7,11 +7,10 @@ import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.core.CooldownCommand;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug.DebugElement;
 import org.bukkit.ChatColor;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class InteractScriptHelper {
@@ -19,7 +18,7 @@ public class InteractScriptHelper {
     public static boolean debugGet = true;
 
     /**
-     * Gets the InteractScript from a NPC Denizen for a Player and returns the appropriate ScriptContainer.
+     * Gets the InteractScript from an NPC and returns the appropriate ScriptContainer.
      * Returns null if no script found.
      *
      * @param npc     the NPC involved
@@ -27,186 +26,56 @@ public class InteractScriptHelper {
      * @param trigger the class of the trigger being used
      * @return the highest priority InteractScriptContainer that meets requirements, if any.
      */
-    public static InteractScriptContainer getInteractScript(NPCTag npc, PlayerTag player,
-                                                            Class<? extends AbstractTrigger> trigger) {
-        // If no trigger, npc or player specified, return null.
-        // These objects are required to progress any further.
+    public static InteractScriptContainer getInteractScript(NPCTag npc, PlayerTag player, Class<? extends AbstractTrigger> trigger) {
         if (npc == null || player == null || trigger == null) {
             return null;
         }
-
-        // Find the assignmentScriptContainer currently assigned to the NPC
         AssignmentScriptContainer assignmentScript = npc.getAssignmentTrait().getAssignment();
-
         if (assignmentScript == null) {
             return null;
         }
-
-        // Get list of interact scripts from the assignment script.
-        // Note: this list includes the # priorities that prefix the script names.
-        List<String> assignedScripts = new ArrayList<>();
-        if (assignmentScript.contains("interact scripts")) {
-            assignedScripts = assignmentScript.getStringList("interact scripts");
+        if (!assignmentScript.contains("interact scripts")) {
+            return null;
         }
-
-        // No debug necessary if there are no Interact Scripts specified in this Assignment.
+        List<String> assignedScripts = assignmentScript.getStringList("interact scripts");
         if (assignedScripts.isEmpty()) {
             return null;
         }
-
-        // Alert the dBugger -- trying to find a good interact script!
         if (Debug.shouldDebug(assignmentScript) && debugGet) {
             Debug.log(DebugElement.Header, "Getting interact script: n@" + npc.getName() + "/p@" + player.getName());
         }
-
-        //
-        // Get scripts that meet requirements and add them to interactableScripts.
-        //
-
-        // Initialize list of interactable scripts as PriorityPair objects which help with sorting
-        List<PriorityPair> interactableScripts = new ArrayList<>();
-
-        // Iterate through all entries to check requirements for each
-        for (String entry : assignedScripts) {
-            // Entries should be uppercase for this process
-            entry = entry.toUpperCase();
-
-            // Initialize the fields that will make up the PriorityPair
-            String name;
-            int priority;
-
-            // Make sure a priority exists, deal with it if it doesn't.
-            if (Character.isDigit(entry.charAt(0))) {
-                try {
-                    priority = Integer.parseInt(entry.split(" ", 2)[0]);
-                    name = entry.split(" ", 2)[1].replace("^", "");
-                }
-                catch (Exception e) {
-                    Debug.echoError("Invalid Interact assignment for '" + entry + "'. Is the script name missing?");
-                    continue;
-                }
-            }
-            else {
-                //dB.echoError("Script '" + name + "' has an invalid priority! Assuming '0'.");
-                name = entry;
-                entry = "0 " + entry;
-                priority = 0;
-            }
-
-            //
-            // Start requirement checking
-            //
+        String script = assignedScripts.get(0);
+        if (script.contains(" ") && Character.isDigit(script.charAt(0))) {
+            Deprecations.interactScriptPriority.warn(assignmentScript);
             try {
-                InteractScriptContainer interactScript = ScriptRegistry.getScriptContainer(name);
-
-                if (interactScript != null) {
-                    // Check script cooldown
-                    if (CooldownCommand.checkCooldown(player, interactScript.getName())) {
-                        interactableScripts.add(new PriorityPair(priority, entry.split(" ", 2)[1]));
-                    }
-                    else {
-                        if (Debug.shouldDebug(interactScript) && debugGet) {
-                            Debug.log(ChatColor.GOLD + " ...but, isn't cooled down, yet! Skipping.");
-                        }
-                    }
-                }
-                else {
-                    // Alert the console
-                    Debug.echoError("'" + entry + "' is not a valid Interact Script. Is there a duplicate script by this name?");
-                }
+                script = script.split(" ", 2)[1].replace("^", "");
             }
             catch (Exception e) {
-                // Had a problem checking requirements, most likely a Legacy Requirement with bad syntax. Alert the console!
-                Debug.echoError(ChatColor.RED + "'" + entry + "' has a bad requirement, skipping.");
-                Debug.echoError(e);
+                Debug.echoError("Invalid Interact assignment for '" + script + "'. Is the script name missing?");
+                return null;
             }
-
-            if (Debug.shouldDebug(assignmentScript) && debugGet) {
-                Debug.log(DebugElement.Spacer, null);
-            }
-            // Next entry!
         }
-
-        //
-        // Sort scripts that met requirements and check which one has the highest priority
-        //
-
-        // If list has only one entry, this is it!
-        if (interactableScripts.size() == 1) {
-            String script = interactableScripts.get(0).getName();
-            InteractScriptContainer interactScript = ScriptRegistry.getScriptContainer(script.replace("^", ""));
-            if (Debug.shouldDebug(interactScript) && debugGet) {
-                Debug.echoApproval("Highest scoring script is " + script + ".");
-            }
-            if (Debug.shouldDebug(assignmentScript) && debugGet) {
-                Debug.log("Current step for this script is: " + getCurrentStep(player, script));
-            }
-            if (Debug.shouldDebug(interactScript) && debugGet) {
-                Debug.log(DebugElement.Footer, "");
-            }
-            return interactScript;
-        }
-
-        // Or, if list is empty.. no scripts meet requirements!
-        else if (interactableScripts.isEmpty()) {
-            if (Debug.shouldDebug(assignmentScript) && debugGet) {
-                Debug.log(ChatColor.YELLOW + "+> " + ChatColor.WHITE + "No scripts meet requirements!");
-                Debug.log(DebugElement.Footer, "");
-            }
+        InteractScriptContainer interactScript = ScriptRegistry.getScriptContainer(script);
+        if (interactScript == null) {
+            Debug.echoError("'" + script + "' is not a valid Interact Script. Is there a duplicate script by this name?");
             return null;
         }
-
-        // If we have more than 2 matches, let's sort the list from lowest to highest scoring script.
-        else {
-            Collections.sort(interactableScripts);
-        }
-
-        // Let's find which script to return since there are multiple.
-        for (int a = interactableScripts.size() - 1; a >= 0; a--) {
-
-            InteractScriptContainer interactScript = ScriptRegistry
-                    .getScriptContainer(interactableScripts.get(a).name.replace("^", ""));
-
+        if (!CooldownCommand.checkCooldown(player, interactScript.getName())) {
             if (Debug.shouldDebug(interactScript) && debugGet) {
-                Debug.log("Checking script '" + interactableScripts.get(a).getName() + "'.");
-            }
-
-            // Check for 'Overlay' assignment mode.
-            // If specified as an 'Overlay', the criteria for matching requires the
-            // specified trigger to have a script in the step.
-            if (interactableScripts.get(a).getName().startsWith("^")) {
-
-                // This is an Overlay Assignment, check for the appropriate Trigger Script...
-                // If Trigger exists, cool, this is our script.
-                if (interactScript.containsTriggerInStep(getCurrentStep(player, interactScript.getName()), trigger)) {
-                    if (Debug.shouldDebug(interactScript) && debugGet) {
-                        Debug.log("...found trigger!");
-                        Debug.echoApproval("Highest scoring script is " + interactScript.getName() + ".");
-                        Debug.log("Current step for this script is: " + getCurrentStep(player, interactScript.getName()));
-                        Debug.log(DebugElement.Footer, "");
-                    }
-                    return interactScript;
-                }
-                else {
-                    if (Debug.shouldDebug(interactScript) && debugGet) {
-                        Debug.log("...no trigger on this overlay assignment. Skipping.");
-                    }
-                }
-            }
-
-            // Not an Overlay Assignment, so return this script, which is the highest scoring.
-            else {
-                if (Debug.shouldDebug(interactScript) && debugGet) {
-                    Debug.log("...script is good!");
-                    Debug.echoApproval("Highest scoring script is " + interactScript.getName() + ".");
-                    Debug.log("Current step for this script is: " + getCurrentStep(player, interactScript.getName()));
-                    Debug.log(DebugElement.Footer, "");
-                }
-                return interactScript;
+                Debug.log(ChatColor.GOLD + " ...but, isn't cooled down, yet! Skipping.");
+                return null;
             }
         }
-
-        return null;
+        if (Debug.shouldDebug(assignmentScript) && debugGet) {
+            Debug.log(DebugElement.Spacer, null);
+        }
+        if (Debug.shouldDebug(assignmentScript) && debugGet) {
+            Debug.log("Interact script is " + script + ". Current step for this script is: " + getCurrentStep(player, script));
+        }
+        if (Debug.shouldDebug(interactScript) && debugGet) {
+            Debug.log(DebugElement.Footer, "");
+        }
+        return interactScript;
     }
 
     /**
@@ -223,38 +92,13 @@ public class InteractScriptHelper {
             return null;
         }
         // Probe 'saves.yml' for the current step
-        if (DenizenAPI.getSaves().contains("Players." + player.getSaveName()
-                + "." + "Scripts." + scriptName.toUpperCase()
-                + "." + "Current Step")) {
-            return DenizenAPI.getSaves().getString("Players." + player.getSaveName()
-                    + "." + "Scripts." + scriptName.toUpperCase()
-                    + "." + "Current Step").toUpperCase();
+        String step = DenizenAPI.getSaves().getString("Players." + player.getSaveName()
+                + "." + "Scripts." + scriptName.toUpperCase() + "." + "Current Step");
+        if (step != null) {
+            return step.toUpperCase();
         }
         // No saved step found, so we'll just use the default
         return ScriptRegistry.getScriptContainerAs(scriptName, InteractScriptContainer.class).getDefaultStepName().toUpperCase();
-    }
-
-    /**
-     * Used with the getInteractScript method. Overrides Java's compareTo to allow comparisons of
-     * possible interact scripts' priorities.
-     */
-    private static class PriorityPair implements Comparable<PriorityPair> {
-        int priority;
-        private String name;
-
-        public PriorityPair(int priority, String scriptName) {
-            this.priority = priority;
-            this.name = scriptName.toUpperCase();
-        }
-
-        @Override
-        public int compareTo(PriorityPair pair) {
-            return priority < pair.priority ? -1 : priority > pair.priority ? 1 : 0;
-        }
-
-        public String getName() {
-            return name;
-        }
     }
 }
 

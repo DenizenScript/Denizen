@@ -29,7 +29,7 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Warning This event may fire very rapidly.
     //
-    // @Triggers when an entity spawns.
+    // @Triggers when a mob spawns. Note that this is specifically for mobs, not any non-mob entity type.
     //
     // @Context
     // <context.entity> returns the EntityTag that spawned.

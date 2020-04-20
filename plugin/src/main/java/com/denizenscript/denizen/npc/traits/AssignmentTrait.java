@@ -174,13 +174,7 @@ public class AssignmentTrait extends Trait {
         if (assignmentScript.contains("INTERACT SCRIPTS")) {
             entriesPresent = true;
             for (String scriptEntry : assignmentScript.getStringList("INTERACT SCRIPTS")) {
-                String[] split = scriptEntry.split(" ", 2);
-                if (split.length == 2 && ArgumentHelper.matchesInteger(split[0])) {
-                    paginator.addLine("<a>" + split[0] + "<b> " + split[1]);
-                }
-                else {
-                    paginator.addLine("<b>" + scriptEntry);
-                }
+                paginator.addLine("<b>" + scriptEntry);
             }
         }
         if (!entriesPresent) {
