@@ -98,7 +98,7 @@ public class Conversion {
         else if (arg.matchesArgumentList(ItemTag.class)) {
             List<ItemTag> list = ListTag.valueOf(string, scriptEntry.getContext()).filter(ItemTag.class, scriptEntry);
             ItemStack[] items = convertItems(list).toArray(new ItemStack[list.size()]);
-            InventoryTag inventory = new InventoryTag(Math.max(InventoryTag.maxSlots, (items.length / 9) * 9 + 9));
+            InventoryTag inventory = new InventoryTag(Math.min(InventoryTag.maxSlots, (items.length / 9) * 9 + 9));
             inventory.setContents(items);
             return new AbstractMap.SimpleEntry<>(items.length, inventory);
         }
