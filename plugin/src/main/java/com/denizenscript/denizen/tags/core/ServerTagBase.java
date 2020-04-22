@@ -13,6 +13,7 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
+import com.denizenscript.denizencore.events.core.TickScriptEvent;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.Settings;
@@ -1056,6 +1057,18 @@ public class ServerTagBase {
         // -->
         if (attribute.startsWith("available_processors")) {
             event.setReplacedObject(new ElementTag(Runtime.getRuntime().availableProcessors())
+                    .getObjectAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.current_tick>
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the number of ticks since the server was started.
+        // Note that this is NOT an indicator for server uptime, as ticks fluctuate based on server lag.
+        // -->
+        if (attribute.startsWith("current_tick")) {
+            event.setReplacedObject(new ElementTag(TickScriptEvent.instance.ticks)
                     .getObjectAttribute(attribute.fulfill(1)));
         }
 
