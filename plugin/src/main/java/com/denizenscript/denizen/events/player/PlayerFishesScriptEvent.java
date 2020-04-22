@@ -35,9 +35,11 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     // <context.state> returns an ElementTag of the fishing state. Valid states: <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/event/player/PlayerFishEvent.State.html>
     // <context.entity> returns an EntityTag of the entity that got caught.
     // <context.item> returns an ItemTag of the item gotten, if any.
+    // <context.xp> returns the amount of experience that will drop.
     //
     // @Determine
     // "CAUGHT:" + ItemTag to change the item that was caught (only if an item was already being caught).
+    // "XP:" + ElementTag(Number) to change how much experience will drop.
     //
     // @Player Always.
     //
@@ -95,12 +97,18 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (!isDefaultDetermination(determinationObj) && determinationObj instanceof ElementTag) {
             String determination = determinationObj.toString();
-            if (CoreUtilities.toLowerCase(determination).startsWith("caught:")) {
+            String determinationLower = CoreUtilities.toLowerCase(determination);
+            if (determinationLower.startsWith("caught:")) {
                 item = ItemTag.valueOf(determination.substring("caught:".length()), path.context);
                 if (entity != null && entity.getBukkitEntityType() == EntityType.DROPPED_ITEM) {
                     ((Item) entity.getBukkitEntity()).setItemStack(item.getItemStack());
                     return true;
                 }
+            }
+            else if (determinationLower.startsWith("xp:")) {
+                int newXP = new ElementTag(determination.substring("xp:".length())).asInt();
+                event.setExpToDrop(newXP);
+                return true;
             }
         }
         return super.applyDetermination(path, determinationObj);
@@ -132,6 +140,9 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
         }
         else if (name.equals("state")) {
             return state;
+        }
+        else if (name.equals("xp")) {
+            return new ElementTag(event.getExpToDrop());
         }
         return super.getContext(name);
     }
