@@ -82,6 +82,8 @@ public class ServerTagBase {
         }, "server", "svr", "global");
     }
 
+    public static final long serverStartTimeMillis = System.currentTimeMillis();
+
     public void serverTag(ReplaceableTagEvent event) {
         if (!event.matches("server", "svr", "global") || event.replaced()) {
             return;
@@ -1065,10 +1067,38 @@ public class ServerTagBase {
         // @returns ElementTag(Number)
         // @description
         // Returns the number of ticks since the server was started.
-        // Note that this is NOT an indicator for server uptime, as ticks fluctuate based on server lag.
+        // Note that this is NOT an accurate indicator for real server uptime, as ticks fluctuate based on server lag.
         // -->
         if (attribute.startsWith("current_tick")) {
             event.setReplacedObject(new ElementTag(TickScriptEvent.instance.ticks)
+                    .getObjectAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.delta_time_since_start>
+        // @returns DurationTag
+        // @description
+        // Returns the duration of delta time since the server started.
+        // Note that this is delta time, not real time, meaning it is calculated based on the server tick,
+        // which may change longer or shorter than expected due to lag or other influences.
+        // If you want real time instead of delta time, use <@link tag server.real_time_since_start>.
+        // -->
+        if (attribute.startsWith("delta_time_since_start")) {
+            event.setReplacedObject(new DurationTag(TickScriptEvent.instance.ticks)
+                    .getObjectAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.real_time_since_start>
+        // @returns DurationTag
+        // @description
+        // Returns the duration of real time since the server started.
+        // Note that this is real time, not delta time, meaning that the it is accurate to the system clock, not the server's tick.
+        // System clock changes may cause this value to become inaccurate.
+        // In many cases <@link tag server.delta_time_since_start> is preferable.
+        // -->
+        if (attribute.startsWith("real_time_since_start")) {
+            event.setReplacedObject(new DurationTag((System.currentTimeMillis() - serverStartTimeMillis) / 1000.0)
                     .getObjectAttribute(attribute.fulfill(1)));
         }
 

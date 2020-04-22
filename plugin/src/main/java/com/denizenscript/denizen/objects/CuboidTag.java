@@ -171,7 +171,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         }
 
         if (context == null || context.debug) {
-            Debug.echoError("valueOf CuboidTag returning null: " + string);
+            Debug.echoError("Minor: valueOf CuboidTag returning null: " + string);
         }
         return null;
     }
