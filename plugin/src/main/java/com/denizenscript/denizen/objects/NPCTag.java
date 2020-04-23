@@ -32,6 +32,7 @@ import net.citizensnpcs.npc.skin.SkinnableEntity;
 import net.citizensnpcs.trait.Anchors;
 import net.citizensnpcs.trait.LookClose;
 import net.citizensnpcs.trait.Poses;
+import net.citizensnpcs.trait.SkinTrait;
 import net.citizensnpcs.trait.waypoint.*;
 import net.citizensnpcs.util.Anchor;
 import net.citizensnpcs.util.Pose;
@@ -45,6 +46,7 @@ import org.bukkit.inventory.InventoryHolder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFormObject {
@@ -838,7 +840,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns whether the NPC has a custom skin.
         // -->
         registerTag("has_skin", (attribute, object) -> {
-            return new ElementTag(object.getCitizen().data().has(NPC.PLAYER_SKIN_UUID_METADATA));
+            return new ElementTag(object.getCitizen().hasTrait(SkinTrait.class) && object.getCitizen().getTrait(SkinTrait.class).getSkinName() != null);
         });
 
         // <--[tag]
@@ -850,11 +852,12 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // In the format: "texture;signature" (two values separated by a semicolon).
         // -->
         registerTag("skin_blob", (attribute, object) -> {
-            if (object.getCitizen().data().has(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA)) {
-                String tex = object.getCitizen().data().get(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA).toString();
+            if (object.getCitizen().hasTrait(SkinTrait.class)) {
+                SkinTrait skin = object.getCitizen().getTrait(SkinTrait.class);
+                String tex = skin.getTexture();
                 String sign = "";
-                if (object.getCitizen().data().has(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA)) {
-                    sign = ";" + object.getCitizen().data().get(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA).toString();
+                if (skin.getSignature() != null) {
+                    sign = ";" + skin.getSignature();
                 }
                 return new ElementTag(tex + sign);
             }
@@ -870,12 +873,11 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // See also <@link tag NPCTag.skin_blob>.
         // -->
         registerTag("skull_skin", (attribute, object) -> {
-            if (!object.getCitizen().data().has(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA)) {
+            if (!object.getCitizen().hasTrait(SkinTrait.class)) {
                 return null;
             }
-            String uuid = object.getCitizen().data().get(NPC.PLAYER_SKIN_UUID_METADATA).toString();
-            String tex = object.getCitizen().data().get(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA).toString();
-            return new ElementTag(uuid + "|" + tex);
+            SkinTrait skin = object.getCitizen().getTrait(SkinTrait.class);
+            return new ElementTag(skin.getSkinName() + "|" + skin.getTexture());
         });
 
         // <--[tag]
@@ -886,8 +888,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns the NPC's custom skin, if any.
         // -->
         registerTag("skin", (attribute, object) -> {
-            if (object.getCitizen().data().has(NPC.PLAYER_SKIN_UUID_METADATA)) {
-                return new ElementTag(object.getCitizen().data().get(NPC.PLAYER_SKIN_UUID_METADATA).toString());
+            if (object.getCitizen().hasTrait(SkinTrait.class)) {
+                return new ElementTag(object.getCitizen().getTrait(SkinTrait.class).getSkinName());
             }
             return null;
         });
@@ -1286,24 +1288,23 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         if (mechanism.matches("skin_blob")) {
             if (!mechanism.hasValue()) {
-                getCitizen().data().remove("cached-skin-uuid");
-                getCitizen().data().remove(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA);
-                getCitizen().data().remove(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA);
-                if (getCitizen().isSpawned()) {
-                    getCitizen().despawn(DespawnReason.PENDING_RESPAWN);
-                    getCitizen().spawn(getCitizen().getStoredLocation());
+                if (getCitizen().hasTrait(SkinTrait.class)) {
+                    getCitizen().getTrait(SkinTrait.class).clearTexture();
+                    if (getCitizen().isSpawned()) {
+                        getCitizen().despawn(DespawnReason.PENDING_RESPAWN);
+                        getCitizen().spawn(getCitizen().getStoredLocation());
+                    }
                 }
             }
             else {
+                SkinTrait skinTrait = getCitizen().getTrait(SkinTrait.class);
                 String[] dat = mechanism.getValue().asString().split(";");
-                getCitizen().data().remove("cached-skin-uuid");
-                getCitizen().data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA, dat[0]);
-                getCitizen().data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA, dat.length > 1 ? dat[1] : null);
-                if (dat.length > 2) {
-                    getCitizen().data().setPersistent(NPC.PLAYER_SKIN_UUID_METADATA, dat[2]);
+                if (dat.length < 2) {
+                    Debug.echoError("Invalid skin_blob input. Must specify texture;signature;name in full.");
+                    return;
                 }
+                skinTrait.setSkinPersistent(dat.length > 2 ? dat[2] : UUID.randomUUID().toString(), dat[1], dat[0]);
                 if (getCitizen().isSpawned() && getCitizen().getEntity() instanceof SkinnableEntity) {
-                    ((SkinnableEntity) getCitizen().getEntity()).setSkinPersistent(dat.length > 2 ? dat[2] : "unspecified", dat.length > 1 ? dat[1] : null, dat[0]);
                     ((SkinnableEntity) getCitizen().getEntity()).getSkinTracker().notifySkinChange(true);
                 }
             }
@@ -1321,10 +1322,13 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         if (mechanism.matches("skin")) {
             if (!mechanism.hasValue()) {
-                getCitizen().data().remove(NPC.PLAYER_SKIN_UUID_METADATA);
+                if (getCitizen().hasTrait(SkinTrait.class)) {
+                    getCitizen().getTrait(SkinTrait.class).clearTexture();
+                }
             }
             else {
-                getCitizen().data().setPersistent(NPC.PLAYER_SKIN_UUID_METADATA, mechanism.getValue().asString());
+                SkinTrait skinTrait = getCitizen().getTrait(SkinTrait.class);
+                skinTrait.setSkinName(mechanism.getValue().asString());
             }
             if (getCitizen().isSpawned()) {
                 getCitizen().despawn(DespawnReason.PENDING_RESPAWN);
