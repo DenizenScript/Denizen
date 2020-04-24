@@ -65,9 +65,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     public boolean matches(ScriptPath path) {
 
         String mat = path.eventArgLowerAt(2);
-        if (!mat.equals("sign")
-                && (!(event.getBlock().getState() instanceof Sign)
-                && (!mat.equals(material.identifyNoIdentifier()) && !mat.equals(material.identifyFullNoIdentifier())))) {
+        if (!mat.equals("sign") && (!mat.equals(material.identifyNoIdentifier()) && !mat.equals(material.identifyFullNoIdentifier()))) {
             return false;
         }
 
