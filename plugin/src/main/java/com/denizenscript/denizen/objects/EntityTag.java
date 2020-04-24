@@ -2646,7 +2646,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object EntityTag
         // @name fire_time
-        // @input Duration
+        // @input DurationTag
         // @description
         // Sets the entity's current fire time (time before the entity stops being on fire).
         // @tags
@@ -2748,7 +2748,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object EntityTag
         // @name time_lived
-        // @input Duration
+        // @input DurationTag
         // @description
         // Sets the amount of time this entity has lived for.
         // @tags
@@ -2945,7 +2945,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object EntityTag
         // @name no_damage_duration
-        // @input Duration
+        // @input DurationTag
         // @description
         // Sets the duration in which the entity will take no damage.
         // @tags
@@ -2959,7 +2959,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object EntityTag
         // @name max_no_damage_duration
-        // @input Duration
+        // @input DurationTag
         // @description
         // Sets the maximum duration in which the entity will take no damage.
         // @tags
@@ -3020,7 +3020,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object EntityTag
         // @name pickup_delay
-        // @input Duration
+        // @input DurationTag
         // @description
         // Sets the pickup delay of this Item Entity.
         // @tags

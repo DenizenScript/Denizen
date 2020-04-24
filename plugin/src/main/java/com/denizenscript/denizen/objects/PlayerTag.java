@@ -2689,7 +2689,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name attack_cooldown
-        // @input Duration
+        // @input DurationTag
         // @description
         // Sets the player's time since their last attack. If the time is greater than the max duration of their
         // attack cooldown, then the cooldown is considered finished.
@@ -2706,11 +2706,12 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
 
         // <--[mechanism]
         // @object PlayerTag
-        // @name resource_pack(|<hash>)
-        // @input ElementTag
+        // @name resource_pack
+        // @input ElementTag(|ElementTag)
         // @description
         // Sets the current resource pack by specifying a valid URL to a resource pack.
         // Optionally, specify a 40-character (20 byte) hexadecimal SHA-1 hash value (without '0x') for the resource pack to prevent redownloading cached data.
+        // With a hash, the input is formatted like "https://example.com/pack.zip|0102030405060708090a0b0c0d0e0f1112131415"
         // -->
         if (mechanism.matches("resource_pack") || mechanism.matches("texture_pack")) {
             String pack = mechanism.getValue().asString();

@@ -992,7 +992,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[mechanism]
         // @object WorldTag
         // @name thunder_duration
-        // @input Duration
+        // @input DurationTag
         // @description
         // Sets the duration of thunder.
         // @tags
@@ -1018,7 +1018,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[mechanism]
         // @object WorldTag
         // @name ticks_per_animal_spawns
-        // @input Duration
+        // @input DurationTag
         // @description
         // Sets the time between animal spawns.
         // @tags
@@ -1031,7 +1031,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[mechanism]
         // @object WorldTag
         // @name ticks_per_monster_spawns
-        // @input Duration
+        // @input DurationTag
         // @description
         // Sets the time between monster spawns.
         // @tags
@@ -1082,7 +1082,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[mechanism]
         // @object WorldTag
         // @name weather_duration
-        // @input Duration
+        // @input DurationTag
         // @description
         // Set the remaining time in ticks of the current conditions.
         // @tags

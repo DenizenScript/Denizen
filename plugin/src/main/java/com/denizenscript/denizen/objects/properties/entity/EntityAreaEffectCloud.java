@@ -517,7 +517,7 @@ public class EntityAreaEffectCloud implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name duration
-        // @input Duration
+        // @input DurationTag
         // @description
         // Sets the Area Effect Cloud's duration.
         // @tags
@@ -530,7 +530,7 @@ public class EntityAreaEffectCloud implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name duration_on_use
-        // @input Duration
+        // @input DurationTag
         // @description
         // Sets the duration the Area Effect Cloud
         // will increase by when it applies an effect to an entity.
@@ -598,7 +598,7 @@ public class EntityAreaEffectCloud implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name reapplication_delay
-        // @input Duration
+        // @input DurationTag
         // @description
         // Sets the duration an entity will be immune
         // from the Area Effect Cloud's subsequent exposure.
@@ -625,7 +625,7 @@ public class EntityAreaEffectCloud implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name wait_time
-        // @input Duration
+        // @input DurationTag
         // @description
         // Sets the duration an entity must be exposed to
         // the Area Effect Cloud before its effect is applied.
