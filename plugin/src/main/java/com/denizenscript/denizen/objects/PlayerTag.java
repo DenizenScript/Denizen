@@ -2706,13 +2706,31 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
 
         // <--[mechanism]
         // @object PlayerTag
-        // @name resource_pack
+        // @name resource_pack(|<hash>)
         // @input ElementTag
         // @description
         // Sets the current resource pack by specifying a valid URL to a resource pack.
+        // Optionally, specify a 40-character (20 byte) hexadecimal SHA-1 hash value (without '0x') for the resource pack to prevent redownloading cached data.
         // -->
         if (mechanism.matches("resource_pack") || mechanism.matches("texture_pack")) {
-            getPlayerEntity().setResourcePack(mechanism.getValue().asString());
+            String pack = mechanism.getValue().asString();
+            int pipe = pack.indexOf('|');
+            if (pipe > 0) {
+                pack = pack.substring(0, pipe);
+                String hash = pack.substring(pipe + 1);
+                if (hash.length() != 40) {
+                    Debug.echoError("Invalid resource_pack hash. Should be 40 characters of hexadecimal data.");
+                    return;
+                }
+                byte[] hashData = new byte[20];
+                for (int i = 0; i < 20; i++) {
+                    hashData[i] = (byte) Integer.parseInt(hash.substring(i * 2, i * 2 + 2), 16);
+                }
+                getPlayerEntity().setResourcePack(pack, hashData);
+            }
+            else {
+                getPlayerEntity().setResourcePack(pack);
+            }
         }
 
         // <--[mechanism]
