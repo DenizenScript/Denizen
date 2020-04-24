@@ -1342,8 +1342,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @input ItemTag
         // @description
         // Sets the item type of the item.
-        // @tags
-        // None
         // -->
         if (mechanism.matches("item_type") && mechanism.requireObject(ItemTag.class)) {
             ItemTag item = mechanism.valueAsType(ItemTag.class);

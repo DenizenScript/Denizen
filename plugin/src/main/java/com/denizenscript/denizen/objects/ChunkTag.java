@@ -657,8 +657,6 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // The underlying method for this was disabled in recent Spigot versions with a vile message from user-hating Spigot dev md_5,
         // "Not supported in this Minecraft version! Unless you can fix it, this is not a bug :)"
         // Unfortunately due to md_5's attitude on this problem, this mechanism will not work for the time being.
-        // @tags
-        // None
         // -->
         if (mechanism.matches("regenerate")) {
             getWorld().regenerateChunk(getX(), getZ());
@@ -670,8 +668,6 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // @input None
         // @description
         // Refreshes the chunk, sending any changed properties to players.
-        // @tags
-        // None
         // -->
         if (mechanism.matches("refresh_chunk")) {
             final int chunkX = getX();
@@ -685,8 +681,6 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // @input None
         // @description
         // Refreshes all 16x16x16 chunk sections within the chunk.
-        // @tags
-        // None
         // -->
         if (mechanism.matches("refresh_chunk_sections")) {
             NMSHandler.getChunkHelper().refreshChunkSections(getChunk());

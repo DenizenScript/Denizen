@@ -869,8 +869,6 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @input None
         // @description
         // Saves the world to file.
-        // @tags
-        // None
         // -->
         if (mechanism.matches("save")) {
             getWorld().save();
@@ -883,8 +881,6 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @description
         // Unloads the world from the server without saving chunks, then destroys all data that is part of the world.
         // Require config setting 'Commands.Delete.Allow file deletion'.
-        // @tags
-        // None
         // -->
         if (mechanism.matches("destroy")) {
             if (!Settings.allowDelete()) {
@@ -908,8 +904,6 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @input None
         // @description
         // Unloads the world from the server without saving chunks.
-        // @tags
-        // None
         // -->
         if (mechanism.matches("force_unload")) {
             Bukkit.getServer().unloadWorld(getWorld(), false);
@@ -1066,8 +1060,6 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @input None
         // @description
         // Unloads the world from the server and saves chunks.
-        // @tags
-        // None
         // -->
         if (mechanism.matches("unload")) {
             Bukkit.getServer().unloadWorld(getWorld(), true);

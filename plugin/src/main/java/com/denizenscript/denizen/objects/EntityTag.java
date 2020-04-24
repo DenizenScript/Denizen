@@ -3000,8 +3000,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @input LocationTag
         // @description
         // Makes a player-type entity interact with a block.
-        // @tags
-        // None
         // -->
         if (mechanism.matches("interact_with") && mechanism.requireObject(LocationTag.class)) {
             LocationTag interactLocation = mechanism.valueAsType(LocationTag.class);
@@ -3014,8 +3012,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @input None
         // @description
         // Animates the entity dying.
-        // @tags
-        // None
         // -->
         if (mechanism.matches("play_death")) {
             getLivingEntity().playEffect(EntityEffect.DEATH);

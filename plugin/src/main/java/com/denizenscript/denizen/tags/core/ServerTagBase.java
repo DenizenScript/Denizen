@@ -2174,8 +2174,6 @@ public class ServerTagBase {
         // Immediately stops the server entirely (Plugins will still finalize, and the shutdown event will fire), then starts it again.
         // Requires setting "Commands.Restart.Allow server restart"!
         // Note that if your server is not configured to restart, this mechanism will simply stop the server without starting it again!
-        // @tags
-        // None
         // -->
         if (mechanism.matches("restart")) {
             if (!Settings.allowServerRestart()) {
@@ -2192,8 +2190,6 @@ public class ServerTagBase {
         // @input None
         // @description
         // Immediately saves the Denizen saves files.
-        // @tags
-        // None
         // -->
         if (mechanism.matches("save")) {
             DenizenAPI.getCurrentInstance().saveSaves();
@@ -2205,8 +2201,6 @@ public class ServerTagBase {
         // @input None
         // @description
         // Immediately saves the Citizens saves files.
-        // @tags
-        // None
         // -->
         if (Depends.citizens != null && mechanism.matches("save_citizens")) {
             Depends.citizens.storeNPCs(new CommandContext(new String[0]));
@@ -2220,8 +2214,6 @@ public class ServerTagBase {
         // Immediately stops the server entirely (Plugins will still finalize, and the shutdown event will fire).
         // The server will remain shutdown until externally started again.
         // Requires setting "Commands.Restart.Allow server stop"!
-        // @tags
-        // None
         // -->
         if (mechanism.matches("shutdown")) {
             if (!Settings.allowServerStop()) {

@@ -2710,8 +2710,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @input ElementTag
         // @description
         // Sets the current resource pack by specifying a valid URL to a resource pack.
-        // @tags
-        // None
         // -->
         if (mechanism.matches("resource_pack") || mechanism.matches("texture_pack")) {
             getPlayerEntity().setResourcePack(mechanism.getValue().asString());
@@ -2736,8 +2734,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @input ElementTag(Number)
         // @description
         // Forces a player to receive the entirety of the specified map ID instantly.
-        // @tags
-        // None
         // -->
         if (mechanism.matches("send_map") && mechanism.requireInteger()) {
             MapView map = Bukkit.getServer().getMap((short) mechanism.getValue().asInt());
@@ -2847,8 +2843,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @input ElementTag
         // @description
         // Kicks the player, with the specified message.
-        // @tags
-        // None
         // -->
         if (mechanism.matches("kick")) {
             getPlayerEntity().kickPlayer(mechanism.getValue().asString());
@@ -2916,8 +2910,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @input LocationTag
         // @description
         // Shows the player a workbench GUI corresponding to a given location.
-        // @tags
-        // None
         // -->
         if (mechanism.matches("show_workbench") && mechanism.requireObject(LocationTag.class)) {
             getPlayerEntity().openWorkbench(mechanism.valueAsType(LocationTag.class), true);
