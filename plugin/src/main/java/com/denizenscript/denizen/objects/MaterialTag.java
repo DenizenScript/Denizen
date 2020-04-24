@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.objects.properties.material.*;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.blocks.OldMaterialsHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
@@ -195,6 +194,16 @@ public class MaterialTag implements ObjectTag, Adjustable {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public ObjectTag duplicate() {
+        if (hasModernData()) {
+            return new MaterialTag(getModernData());
+        }
+        else {
+            return new MaterialTag(getMaterial());
+        }
     }
 
     /**

@@ -111,6 +111,17 @@ public class EllipsoidTag implements ObjectTag, Notable {
         }
     }
 
+    @Override
+    public ObjectTag duplicate() {
+        try {
+            return (ObjectTag) clone();
+        }
+        catch (CloneNotSupportedException ex) {
+            Debug.echoError(ex);
+            return null;
+        }
+    }
+
     ///////////////
     //   Constructors
     /////////////

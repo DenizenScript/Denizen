@@ -187,6 +187,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         return false;
     }
 
+    @Override
+    public ObjectTag duplicate() {
+        return clone();
+    }
+
     ///////////////
     //  LocationPairs
     /////////////

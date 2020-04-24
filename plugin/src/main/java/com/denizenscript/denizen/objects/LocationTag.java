@@ -341,6 +341,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         return LocationTag.valueOf(string, new BukkitTagContext(null, null, null, false, null)) != null;
     }
 
+    @Override
+    public ObjectTag duplicate() {
+        return clone();
+    }
+
     /////////////////////
     //   CONSTRUCTORS
     //////////////////

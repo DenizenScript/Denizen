@@ -214,6 +214,11 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         return false;
     }
 
+    @Override
+    public ObjectTag duplicate() {
+        return new ItemTag(item.clone());
+    }
+
     ///////////////
     //   Constructors
     /////////////
