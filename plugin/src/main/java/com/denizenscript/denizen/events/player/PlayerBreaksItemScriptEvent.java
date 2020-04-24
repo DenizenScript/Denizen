@@ -96,7 +96,7 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
             return item;
         }
         else if (name.equals("slot")) {
-            return new ElementTag(SlotHelper.slotForItem(event.getPlayer().getInventory(), item.getItemStack()));
+            return new ElementTag(SlotHelper.slotForItem(event.getPlayer().getInventory(), item.getItemStack()) + 1);
         }
         return super.getContext(name);
     }

@@ -52,12 +52,12 @@ public class SlotHelper {
             return BOOTS;
         }
         if (item.equals(inventory.getItemInMainHand())) {
-            return inventory.getHeldItemSlot() + 1;
+            return inventory.getHeldItemSlot();
         }
         ItemStack[] contents = inventory.getContents();
         for (int i = 0; i < contents.length; i++) {
             if (item.equals(contents[i])) {
-                return i + 1;
+                return i;
             }
         }
         return -1;
