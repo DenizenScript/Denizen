@@ -497,31 +497,16 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (comparedto.equals("potion") && CoreUtilities.toLowerCase(item.getItemStack().getType().name()).contains("potion")) {
             return true;
         }
-        MaterialTag quickOf = MaterialTag.quickOfNamed(comparedto);
-        if (quickOf != null) {
-            MaterialTag mat = item.getMaterial();
-            if (quickOf.getMaterial() != mat.getMaterial()) {
-                return false;
-            }
-            if (quickOf.equals(mat)) {
+        Pattern regexd = regexHandle(comparedto);
+        if (item.isItemscript()) {
+            if (equalityCheck(item.getScriptName(), comparedto, regexd)) {
                 return true;
             }
         }
-        Pattern regexd = regexHandle(comparedto);
-        item = new ItemTag(item.getItemStack().clone());
-        item.setAmount(1);
-        if (equalityCheck(item.identify().substring("i@".length()), comparedto, regexd)) {
-            return true;
-        }
-        else if (equalityCheck(item.identifyMaterialNoIdentifier(), comparedto, regexd)) {
-            return true;
-        }
-        else if (equalityCheck(item.identifySimple().substring("i@".length()), comparedto, regexd)) {
-            return true;
-        }
-        item.setDurability((short) 0);
-        if (equalityCheck(item.identifyMaterialNoIdentifier(), comparedto, regexd)) {
-            return true;
+        else {
+            if (equalityCheck(item.getMaterialName(), comparedto, regexd)) {
+                return true;
+            }
         }
         return false;
     }

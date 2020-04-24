@@ -55,7 +55,7 @@ public class TakeCommand extends AbstractCommand {
     //
     // Using 'bycover:' will take a written book by the specified book title + author pair.
     //
-    // Using 'material:' will take items of the specified material type.
+    // Using 'material:' will take items of the specified material type (except for script items).
     //
     // Using 'xp' will take experience from the player.
     //
@@ -310,7 +310,7 @@ public class TakeCommand extends AbstractCommand {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Must specify a valid material!");
                     return;
                 }
-                takeByMatcher(inventory, (item) -> item.getType() == material.getMaterial(), qty.asInt());
+                takeByMatcher(inventory, (item) -> item.getType() == material.getMaterial() && !(new ItemTag(item).isItemscript()), qty.asInt());
                 break;
             }
             case SLOT: {

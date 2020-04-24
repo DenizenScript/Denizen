@@ -1023,7 +1023,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         int qty = 0;
         for (ItemStack invStack : inventory) {
             if (invStack != null) {
-                if (invStack.getType() == material) {
+                if (invStack.getType() == material && !(new ItemTag(invStack).isItemscript())) {
                     qty += invStack.getAmount();
                 }
             }
@@ -1870,7 +1870,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             // @attribute <InventoryTag.contains.material[<material>]>
             // @returns ElementTag(Boolean)
             // @description
-            // Returns whether the inventory contains an item with the specified material.
+            // Returns whether the inventory contains an item with the specified material (except item script items).
             // -->
             if (attribute.startsWith("material", 2)) {
                 if (!attribute.hasContext(2) || !MaterialTag.matches(attribute.getContext(2))) {
@@ -1883,7 +1883,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 // @attribute <InventoryTag.contains.material[<material>].quantity[<#>]>
                 // @returns ElementTag(Boolean)
                 // @description
-                // Returns whether the inventory contains a certain quantity of an item with the specified material.
+                // Returns whether the inventory contains a certain quantity of an item with the specified material (except item script items).
                 // -->
                 if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
                     if (attribute.startsWith("qty", 3)) {
@@ -1896,7 +1896,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 int found_items = 0;
 
                 for (ItemStack item : object.getContents()) {
-                    if (item != null && item.getType() == material.getMaterial()) {
+                    if (item != null && item.getType() == material.getMaterial() && !(new ItemTag(item).isItemscript())) {
                         found_items += item.getAmount();
                         if (found_items >= qty) {
                             break;
@@ -2157,7 +2157,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             // @attribute <InventoryTag.quantity.material[<material>]>
             // @returns ElementTag(Number)
             // @description
-            // Returns the combined quantity of itemstacks that have the specified material.
+            // Returns the combined quantity of itemstacks that have the specified material (except for item script items).
             // -->
             if (attribute.startsWith("material", 2)) {
                 if (!attribute.hasContext(2) || !MaterialTag.matches(attribute.getContext(2))) {
