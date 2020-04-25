@@ -753,7 +753,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         // @description
         // Returns whether the item has an inventory.
         // If this returns true, it will enable access to:
-        // <@link mechanism ItemTag.inventory>, and <@link tag ItemTag.inventory>.
+        // <@link mechanism ItemTag.inventory_contents>, and <@link tag ItemTag.inventory_contents>.
         // -->
         registerTag("has_inventory", (attribute, object) -> {
             return new ElementTag(ItemInventory.describes(object));
