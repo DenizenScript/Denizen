@@ -1,10 +1,10 @@
 package com.denizenscript.denizen.utilities;
 
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
+import com.denizenscript.denizencore.tags.TagContext;
 import org.bukkit.Color;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
@@ -21,7 +21,6 @@ public class Conversion {
      * @param colors The list of ColorTags
      * @return The list of Colors
      */
-
     public static List<Color> convertColors(List<ColorTag> colors) {
 
         List<Color> newList = new ArrayList<>();
@@ -39,7 +38,6 @@ public class Conversion {
      * @param items The list of ItemTags
      * @return The list of ItemStacks
      */
-
     public static List<ItemStack> convertItems(List<ItemTag> items) {
 
         List<ItemStack> newList = new ArrayList<>();
@@ -57,7 +55,6 @@ public class Conversion {
      * @param entities The list of dEntities
      * @return The list of Entities
      */
-
     public static List<Entity> convertEntities(List<EntityTag> entities) {
 
         List<Entity> newList = new ArrayList<>();
@@ -76,14 +73,14 @@ public class Conversion {
      * @param arg An argument to parse
      * @return The InventoryTag retrieved by parsing the argument
      */
-
     public static AbstractMap.SimpleEntry<Integer, InventoryTag> getInventory(Argument arg, ScriptEntry scriptEntry) {
-        String string = arg.getValue();
+        return getInventory(arg.getValue(), scriptEntry.context);
+    }
 
+    public static AbstractMap.SimpleEntry<Integer, InventoryTag> getInventory(String string, TagContext context) {
         if (InventoryTag.matches(string)) {
-            BukkitScriptEntryData data = (BukkitScriptEntryData) scriptEntry.entryData;
-            if (data != null) {
-                InventoryTag inv = InventoryTag.valueOf(string, data.getTagContext());
+            if (context != null) {
+                InventoryTag inv = InventoryTag.valueOf(string, context);
                 if (inv != null) {
                     return new AbstractMap.SimpleEntry<>(inv.getContents().length, inv);
                 }
@@ -95,8 +92,8 @@ public class Conversion {
                 }
             }
         }
-        else if (arg.matchesArgumentList(ItemTag.class)) {
-            List<ItemTag> list = ListTag.valueOf(string, scriptEntry.getContext()).filter(ItemTag.class, scriptEntry);
+        else if (ListTag.valueOf(string, context).containsObjectsFrom(ItemTag.class)) {
+            List<ItemTag> list = ListTag.valueOf(string, context).filter(ItemTag.class, context);
             ItemStack[] items = convertItems(list).toArray(new ItemStack[list.size()]);
             InventoryTag inventory = new InventoryTag(Math.min(InventoryTag.maxSlots, (items.length / 9) * 9 + 9));
             inventory.setContents(items);

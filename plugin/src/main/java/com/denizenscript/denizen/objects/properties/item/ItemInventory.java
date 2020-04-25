@@ -1,16 +1,22 @@
 package com.denizenscript.denizen.objects.properties.item;
 
+import com.denizenscript.denizen.objects.properties.inventory.InventoryContents;
+import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
+
+import java.util.Map;
 
 public class ItemInventory implements Property {
 
@@ -30,11 +36,11 @@ public class ItemInventory implements Property {
     }
 
     public static final String[] handledTags = new String[] {
-            "inventory"
+            "inventory", "inventory_contents"
     };
 
     public static final String[] handledMechs = new String[] {
-            "inventory"
+            "inventory", "inventory_contents"
     };
 
     private InventoryTag getItemInventory() {
@@ -55,29 +61,41 @@ public class ItemInventory implements Property {
         }
 
         // <--[tag]
-        // @attribute <ItemTag.inventory>
-        // @returns InventoryTag
-        // @mechanism ItemTag.inventory
+        // @attribute <ItemTag.inventory_contents>
+        // @returns ListTag(ItemTag)
+        // @mechanism ItemTag.inventory_contents
         // @group properties
         // @description
-        // Returns a InventoryTag of a container item.
+        // Returns a list of the contents of the inventory of a container item.
         // -->
+        if (attribute.startsWith("inventory_contents")) {
+            return getInventoryContents().getObjectAttribute(attribute.fulfill(1));
+        }
         if (attribute.startsWith("inventory")) {
+            Deprecations.itemInventoryTag.warn(attribute.context);
             return getItemInventory().getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;
     }
 
+    public ListTag getInventoryContents() {
+        InventoryTag inventory = getItemInventory();
+        if (inventory == null) {
+            return null;
+        }
+        return InventoryContents.getFrom(inventory).getContents(0);
+    }
+
     @Override
     public String getPropertyString() {
-        InventoryTag inv = getItemInventory();
+        ListTag inv = getInventoryContents();
         return inv != null ? inv.identify() : null;
     }
 
     @Override
     public String getPropertyId() {
-        return "inventory";
+        return "inventory_contents";
     }
 
     @Override
@@ -85,16 +103,19 @@ public class ItemInventory implements Property {
 
         // <--[mechanism]
         // @object ItemTag
-        // @name inventory
-        // @input InventoryTag
+        // @name inventory_contents
+        // @input ListTag(ItemTag)
         // @description
         // Sets the item's inventory contents.
         // @tags
-        // <ItemTag.inventory>
+        // <ItemTag.inventory_contents>
         // -->
-        if (mechanism.matches("inventory") && mechanism.requireObject(InventoryTag.class)) {
-            InventoryTag inventory = mechanism.valueAsType(InventoryTag.class);
-            if (inventory == null || inventory.getInventory() == null) {
+        if ((mechanism.matches("inventory_contents") || mechanism.matches("inventory")) && mechanism.hasValue()) {
+            if (mechanism.matches("inventory")) {
+                Deprecations.itemInventoryTag.warn(mechanism.context);
+            }
+            Map.Entry<Integer, InventoryTag> inventoryPair = Conversion.getInventory(mechanism.getValue().asString(), mechanism.context);
+            if (inventoryPair == null || inventoryPair.getValue().getInventory() == null) {
                 return;
             }
 
@@ -102,12 +123,17 @@ public class ItemInventory implements Property {
             BlockStateMeta bsm = ((BlockStateMeta) itemStack.getItemMeta());
             InventoryHolder invHolder = (InventoryHolder) bsm.getBlockState();
 
-            if (inventory.getSize() > invHolder.getInventory().getSize()) {
-                Debug.echoError("Invalid InventoryTag size; expected " + invHolder.getInventory().getSize() + " or less.");
+            ListTag items = InventoryContents.getFrom(inventoryPair.getValue()).getContents(0);
+            if (items.size() > invHolder.getInventory().getSize()) {
+                Debug.echoError("Invalid inventory_contents input size; expected " + invHolder.getInventory().getSize() + " or less.");
                 return;
             }
+            ItemStack[] itemArray = new ItemStack[items.size()];
+            for (int i = 0; i < itemArray.length; i++) {
+                itemArray[i] = ((ItemTag) items.objectForms.get(i)).getItemStack().clone();
+            }
 
-            invHolder.getInventory().setContents(inventory.getContents());
+            invHolder.getInventory().setContents(itemArray);
             bsm.setBlockState((BlockState) invHolder);
             itemStack.setItemMeta(bsm);
         }
