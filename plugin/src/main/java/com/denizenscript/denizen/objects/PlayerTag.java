@@ -2717,8 +2717,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             String pack = mechanism.getValue().asString();
             int pipe = pack.indexOf('|');
             if (pipe > 0) {
-                pack = pack.substring(0, pipe);
                 String hash = pack.substring(pipe + 1);
+                pack = pack.substring(0, pipe);
                 if (hash.length() != 40) {
                     Debug.echoError("Invalid resource_pack hash. Should be 40 characters of hexadecimal data.");
                     return;
