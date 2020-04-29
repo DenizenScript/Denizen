@@ -51,6 +51,10 @@ public class FollowCommand extends AbstractCommand {
     // - follow
     //
     // @Usage
+    // To make an NPC stop following.
+    // - follow stop
+    //
+    // @Usage
     // To explicitly make an NPC follow the player.
     // - follow followers:<npc> target:<player>
     //

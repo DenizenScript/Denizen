@@ -35,9 +35,12 @@ public class LookCommand extends AbstractCommand {
     // @Group entity
     //
     // @Description
-    // Makes the entity look towards the location, can be used on players. If a duration is set, the entity cannot
-    // look away from the location until the duration has expired unless they are forces to look at a different
-    // location.
+    // Makes the entity look towards the location.
+    //
+    // Can be used on players.
+    //
+    // If a duration is set, the entity cannot look away from the location until the duration has expired
+    // (unless they are forced to look at a different location).
     //
     // @Tags
     // <LocationTag.yaw>
