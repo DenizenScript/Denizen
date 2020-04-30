@@ -129,7 +129,11 @@ public class NarrateCommand extends AbstractCommand {
         }
 
         for (PlayerTag player : targets) {
-            if (player != null && player.isOnline()) {
+            if (player != null) {
+                if (!player.isOnline()) {
+                    Debug.echoDebug(scriptEntry, "Player is offline, can't narrate to them. Skipping.");
+                    continue;
+                }
                 String personalText = text;
                 if (perPlayer) {
                     context.player = player;
@@ -138,7 +142,7 @@ public class NarrateCommand extends AbstractCommand {
                 player.getPlayerEntity().spigot().sendMessage(FormattedTextHelper.parse(format != null ? format.getFormattedText(personalText, scriptEntry) : personalText));
             }
             else {
-                Debug.echoError("Narrated to non-existent or offline player!");
+                Debug.echoError("Narrated to non-existent player!?");
             }
         }
     }
