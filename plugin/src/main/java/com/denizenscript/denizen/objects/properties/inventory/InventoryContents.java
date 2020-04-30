@@ -7,6 +7,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -144,17 +145,9 @@ public class InventoryContents implements Property {
                 return contents.getContents(1);
             }
 
-            // <--[tag]
-            // @attribute <InventoryTag.list_contents.full>
-            // @returns ListTag(ItemTag)
-            // @group properties
-            // @mechanism InventoryTag.contents
-            // @description
-            // Returns a list of all items in the inventory, with the tag item.full used.
-            // Irrelevant on modern (1.13+) servers.
-            // -->
             if (attribute.startsWith("full", 2)) {
                 attribute.fulfill(1);
+                Deprecations.fullTags.warn(attribute.context);
                 return contents.getContents(2);
             }
 

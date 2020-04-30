@@ -823,15 +823,8 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
             return new ElementTag(config.saveToString());
         });
 
-        // <--[tag]
-        // @attribute <ItemTag.full>
-        // @returns ElementTag
-        // @group conversion
-        // @description
-        // Returns a full reusable item identification for this item, with extra, generally useless data.
-        // Irrelevant on modern (1.13+) servers.
-        // -->
         registerTag("full", (attribute, object) -> {
+            Deprecations.fullTags.warn(attribute.context);
             return new ElementTag(object.getFullString());
         });
 
