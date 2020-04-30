@@ -130,7 +130,7 @@ public class MaterialHalf implements Property {
         }
         else if (data instanceof Bed) {
             BlockFace face = ((Directional) data).getFacing();
-            if (((Bed) data).getPart() == Bed.Part.FOOT) {
+            if (((Bed) data).getPart() == Bed.Part.HEAD) {
                 face = face.getOppositeFace();
             }
             return face.getDirection();

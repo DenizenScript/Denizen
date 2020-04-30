@@ -56,7 +56,7 @@ public class EquipCommand extends AbstractCommand {
     // - equip <player> head:stone
     //
     // @Usage
-    // Use to equip a iron helmet on two players named Bob and Steve.
+    // Use to equip an iron helmet on two defined players.
     // - equip <[player]>|<[someplayer]> head:iron_helmet
     //
     // @Usage
@@ -64,12 +64,12 @@ public class EquipCommand extends AbstractCommand {
     // - equip <player> head:air chest:air legs:air boots:air
     //
     // @Usage
-    // Use to equip a saddle on a horse.
-    // - equip e@horse saddle:saddle
+    // Use to equip a saddle on the horse the player is riding.
+    // - equip <player.vehicle> saddle:saddle
     //
     // @Usage
-    // Use to equip a saddle on a pig.
-    // - equip e@pig saddle:saddle
+    // Use to equip a saddle on all nearby pigs.
+    // - equip <player.location.find.entities[pig].within[10]> saddle:saddle
     // -->
 
     @Override
