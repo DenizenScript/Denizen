@@ -73,7 +73,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
 
     // List a mechanism here if it can be safely run before spawn.
     public static HashSet<String> earlyValidMechanisms = new HashSet<>(Arrays.asList(
-            "max_health", "health_data", "health"
+            "max_health", "health_data", "health", "visible"
     ));
 
     private static final Map<UUID, Entity> rememberedEntities = new HashMap<>();
