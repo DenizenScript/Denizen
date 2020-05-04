@@ -723,6 +723,21 @@ public class MaterialTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <MaterialTag.is_egg>
+        // @returns ElementTag(Boolean)
+        // @group properties
+        // @description
+        // Returns whether the material is a turtle egg.
+        // When this returns true, <@link tag MaterialTag.egg_count>,
+        // <@link tag MaterialTag.egg_max>, <@link tag MaterialTag.egg_min>,
+        // <@link tag MaterialTag.egg_stage>, and
+        // <@link tag MaterialTag.egg_stage_max> are accessible.
+        // -->
+        registerTag("is_egg", (attribute, object) -> {
+            return new ElementTag(MaterialTurtleEggCount.describes(object));
+        });
+
+        // <--[tag]
         // @attribute <MaterialTag.is_flammable>
         // @returns ElementTag(Boolean)
         // @description
