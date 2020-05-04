@@ -51,7 +51,7 @@ public class MaterialLevel implements Property {
         // @returns ElementTag(Number)
         // @group properties
         // @description
-        // Returns the maximum level for a Levelled material (like water, lava, and cauldrons), cake, beehives, and snow.
+        // Returns the maximum level for a Levelled material (like water, lava, cauldrons, cake, beehives, and snow).
         // -->
         PropertyParser.<MaterialLevel>registerTag("maximum_level", (attribute, material) -> {
             return new ElementTag(material.getMax());
