@@ -144,6 +144,15 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
                 @Override
                 public void run() {
+                    if (idTrackedInventories.size() > 300) {
+                        idTrackedInventories.clear();
+                        for (InventoryTag retained : retainedInventoryLinks.values()) {
+                            idTrackedInventories.put(retained.uniquifier, retained);
+                        }
+                        for (InventoryTag temp : temporaryInventoryLinks.values()) {
+                            idTrackedInventories.put(temp.uniquifier, temp);
+                        }
+                    }
                     InventoryTrackerSystem.temporaryInventoryLinks.clear();
                 }
             }, 20, 20);
