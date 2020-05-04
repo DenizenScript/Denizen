@@ -98,6 +98,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             }
             InventoryTag tagForm = getTagFormFor(event.getInventory());
             if (isGenericTrackable(tagForm)) {
+                trackTemporaryInventory(event.getInventory(), tagForm);
                 retainedInventoryLinks.put(event.getInventory(), tagForm);
             }
         }
@@ -143,6 +144,15 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
                 @Override
                 public void run() {
+                    if (idTrackedInventories.size() > 300) {
+                        idTrackedInventories.clear();
+                        for (InventoryTag retained : retainedInventoryLinks.values()) {
+                            idTrackedInventories.put(retained.uniquifier, retained);
+                        }
+                        for (InventoryTag temp : temporaryInventoryLinks.values()) {
+                            idTrackedInventories.put(temp.uniquifier, temp);
+                        }
+                    }
                     InventoryTrackerSystem.temporaryInventoryLinks.clear();
                 }
             }, 20, 20);
@@ -366,6 +376,18 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         }
 
         return false;
+    }
+
+    @Override
+    public InventoryTag fixAfterProperties() {
+        if (uniquifier != null) {
+            InventoryTag fixedResult = InventoryTrackerSystem.idTrackedInventories.get(uniquifier);
+            if (fixedResult != null) {
+                trackTemporaryInventory(fixedResult);
+                return fixedResult;
+            }
+        }
+        return this;
     }
 
     ///////////////
@@ -2402,7 +2424,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         if (idType == null) {
             mechanisms.add(mechanism);
         }
-        else if (idType.equals("generic") || mechanism.matches("holder") || mechanism.getName().equals("uniquifier")) {
+        else if (idType.equals("generic") || mechanism.getName().equals("holder") || mechanism.getName().equals("uniquifier")) {
             adjust(mechanism);
         }
         else if (!(idType.equals("location") && mechanism.matches("title"))) {

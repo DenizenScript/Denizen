@@ -192,6 +192,36 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         return clone();
     }
 
+    @Override
+    public int hashCode() {
+        return pairs.size() + pairs.get(0).low.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof CuboidTag)) {
+            return false;
+        }
+        CuboidTag cuboid2 = (CuboidTag) other;
+        if (cuboid2.pairs.size() != pairs.size()) {
+            return false;
+        }
+        for (int i = 0; i < pairs.size(); i++) {
+            LocationPair pair1 = pairs.get(i);
+            LocationPair pair2 = cuboid2.pairs.get(i);
+            if (!pair1.low.getWorldName().equals(pair2.low.getWorldName())) {
+                return false;
+            }
+            if (pair1.low.distanceSquared(pair2.low) >= 0.5) {
+                return false;
+            }
+            if (pair1.high.distanceSquared(pair2.high) >= 0.5) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     ///////////////
     //  LocationPairs
     /////////////
