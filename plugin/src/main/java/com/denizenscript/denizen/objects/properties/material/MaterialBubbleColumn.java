@@ -43,7 +43,7 @@ public class MaterialBubbleColumn implements Property {
         // @mechanism MaterialTag.drags
         // @group properties
         // @description
-        // Returns whether to apply force on entities moving through this material.
+        // Returns whether force is applied on entities moving through this material.
         // -->
         PropertyParser.<MaterialBubbleColumn>registerTag("drags", (attribute, material) -> {
             return new ElementTag(material.isDrag());
@@ -76,7 +76,7 @@ public class MaterialBubbleColumn implements Property {
         // @name drags
         // @input ElementTag(Boolean)
         // @description
-        // Sets this material to apply force on entities moving through this block.
+        // Sets wether this material will apply force on entities moving through this block.
         // @tags
         // <MaterialTag.drags>
         // -->
