@@ -40,7 +40,7 @@ public class MaterialBubbleColumn implements Property {
         // <--[tag]
         // @attribute <MaterialTag.drags>
         // @returns ElementTag(Boolean)
-        // @mechanism MaterialTag.snowy
+        // @mechanism MaterialTag.drags
         // @group properties
         // @description
         // Returns whether to apply force on entities moving through this material.
@@ -73,12 +73,12 @@ public class MaterialBubbleColumn implements Property {
 
         // <--[mechanism]
         // @object MaterialTag
-        // @name snowy
+        // @name drags
         // @input ElementTag(Boolean)
         // @description
         // Sets this material to apply force on entities moving through this block.
         // @tags
-        // <MaterialTag.snowy>
+        // <MaterialTag.drags>
         // -->
         if (mechanism.matches("drags") && mechanism.requireBoolean()) {
             getBubbleColumn().setDrag(mechanism.getValue().asBoolean());
