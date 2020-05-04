@@ -53,7 +53,7 @@ public class GroupCommand extends AbstractCommand {
     //
     // @Usage
     // Use to set a player to the Member group in the Creative world.
-    // - group set Member w@Creative
+    // - group set Member <world[Creative]>
     // -->
 
     private enum Action {ADD, REMOVE, SET}
