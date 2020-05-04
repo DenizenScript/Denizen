@@ -33,11 +33,11 @@ public class GameRuleCommand extends AbstractCommand {
     //
     // @Usage
     // Use to disable fire spreading in world "Adventure".
-    // - gamerule w@Adventure doFireTick false
+    // - gamerule <world[Adventure]> doFireTick false
     //
     // @Usage
     // Use to avoid mobs from destroying blocks (creepers, endermen...) and picking items up (zombies, skeletons...) in world "Adventure".
-    // - gamerule w@Adventure mobGriefing false
+    // - gamerule <world[Adventure]> mobGriefing false
     // -->
 
     @Override
