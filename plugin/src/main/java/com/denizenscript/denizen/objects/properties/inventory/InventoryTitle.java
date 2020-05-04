@@ -94,7 +94,8 @@ public class InventoryTitle implements Property {
         // <InventoryTag.title>
         // -->
         if (mechanism.matches("title")) {
-            if (inventory.getIdType().equals("generic") || (inventory.getIdType().equals("script") && !mechanism.isProperty)) {
+            if (inventory.getIdType().equals("generic") || inventory.getIdType().equals("script")) {
+                String oldInv = inventory.getInventory().toString();
                 inventory.setTitle(mechanism.getValue().asString());
             }
             else {
