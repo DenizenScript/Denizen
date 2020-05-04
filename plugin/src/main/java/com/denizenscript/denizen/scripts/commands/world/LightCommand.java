@@ -43,11 +43,11 @@ public class LightCommand extends AbstractCommand {
     //
     // @Usage
     // Use to create a bright light at a noted location.
-    // - light l@MyFancyLightOfWool 15
+    // - light MyFancyLightOfWool 15
     //
     // @Usage
     // Use to reset the brightness of the location to its original state.
-    // - light l@MyFancyLightOfWool reset
+    // - light MyFancyLightOfWool reset
     // -->
 
     @Override
