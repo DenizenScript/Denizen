@@ -15,6 +15,9 @@ import java.util.List;
 
 public interface BlockHelper {
 
+
+    void applyPhysics(Location location);
+
     int idFor(Material mat);
 
     MaterialData getFlowerpotContents(Block block);

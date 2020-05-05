@@ -3307,6 +3307,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 state.setLine(i, "");
             }
             ListTag list = mechanism.valueAsType(ListTag.class);
+            CoreUtilities.fixNewLinesToListSeparation(list);
             if (list.size() > 4) {
                 Debug.echoError("Sign can only hold four lines!");
             }

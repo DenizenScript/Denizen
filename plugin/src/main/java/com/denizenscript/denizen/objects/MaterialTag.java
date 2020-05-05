@@ -493,11 +493,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // -->
         registerTag("is_ageable", (attribute, object) -> {
             return new ElementTag(MaterialAge.describes(object));
-        });
-
-        registerTag("is_plant", (attribute, object) -> {
-            return new ElementTag(MaterialAge.describes(object));
-        });
+        }, "is_plant");
 
         // <--[tag]
         // @attribute <MaterialTag.is_campfire>
@@ -536,6 +532,19 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // -->
         registerTag("has_multiple_faces", (attribute, object) -> {
             return new ElementTag(MaterialFaces.describes(object));
+        });
+
+        // <--[tag]
+        // @attribute <MaterialTag.can_drag>
+        // @returns ElementTag(Boolean)
+        // @group properties
+        // @description
+        // Returns whether the material is a material that can cause dragging (like bubble columns).
+        // When this returns true, <@link tag MaterialTag.drags>
+        // and <@link mechanism MaterialTag.drags> are accessible.
+        // -->
+        registerTag("can_drag", (attribute, object) -> {
+            return new ElementTag(MaterialDrags.describes(object));
         });
 
         // <--[tag]
@@ -605,18 +614,18 @@ public class MaterialTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <MaterialTag.is_pickle>
+        // @attribute <MaterialTag.has_count>
         // @returns ElementTag(Boolean)
         // @group properties
         // @description
-        // Returns whether the material is a pickle.
-        // When this returns true, <@link tag MaterialTag.pickle_count>,
-        // <@link tag MaterialTag.pickle_max>, <@link tag MaterialTag.pickle_min>,
-        // and <@link mechanism MaterialTag.pickle_count> are accessible.
+        // Returns whether the material has a 'count' value, which applies to SeaPickles and TurtleEggs.
+        // When this returns true, <@link tag MaterialTag.count>,
+        // <@link tag MaterialTag.count_max>, <@link tag MaterialTag.count_min>,
+        // and <@link mechanism MaterialTag.count> are accessible.
         // -->
-        registerTag("is_pickle", (attribute, object) -> {
-            return new ElementTag(MaterialPickle.describes(object));
-        });
+        registerTag("has_count", (attribute, object) -> {
+            return new ElementTag(MaterialCount.describes(object));
+        }, "is_pickle");
 
         // <--[tag]
         // @attribute <MaterialTag.is_slab>
@@ -667,7 +676,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // and <@link mechanism MaterialTag.waterlogged> are accessible.
         // -->
         registerTag("is_waterloggable", (attribute, object) -> {
-            return new ElementTag(MaterialSnowable.describes(object));
+            return new ElementTag(MaterialWaterlogged.describes(object));
         });
 
         // <--[tag]
