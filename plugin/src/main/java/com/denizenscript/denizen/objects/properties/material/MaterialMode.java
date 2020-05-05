@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.objects.properties.material;
 
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -9,7 +8,7 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.type.Comparator;
 
-public class MaterialComparator implements Property {
+public class MaterialMode implements Property {
 
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
@@ -17,12 +16,12 @@ public class MaterialComparator implements Property {
                 && ((MaterialTag) material).getModernData().data instanceof Comparator;
     }
 
-    public static MaterialComparator getFrom(ObjectTag _material) {
+    public static MaterialMode getFrom(ObjectTag _material) {
         if (!describes(_material)) {
             return null;
         }
         else {
-            return new MaterialComparator((MaterialTag) _material);
+            return new MaterialMode((MaterialTag) _material);
         }
     }
 
@@ -30,7 +29,7 @@ public class MaterialComparator implements Property {
             "mode"
     };
 
-    private MaterialComparator(MaterialTag _material) {
+    private MaterialMode(MaterialTag _material) {
         material = _material;
     }
 
@@ -47,7 +46,7 @@ public class MaterialComparator implements Property {
         // Returns a comparator's mode.
         // Output is COMPARISON or SUBTRACTION.
         // -->
-        PropertyParser.<MaterialComparator>registerTag("mode", (attribute, material) -> {
+        PropertyParser.<MaterialMode>registerTag("mode", (attribute, material) -> {
             return new ElementTag(material.getComparator().getMode().name());
         });
     }
@@ -56,8 +55,9 @@ public class MaterialComparator implements Property {
         return (Comparator) material.getModernData().data;
     }
 
-    public void setMode(String mode) { getComparator().setMode(Comparator.Mode.valueOf(mode)); }
-
+    public void setMode(String mode) {
+        getComparator().setMode(Comparator.Mode.valueOf(mode));
+    }
 
     @Override
     public String getPropertyString() {
