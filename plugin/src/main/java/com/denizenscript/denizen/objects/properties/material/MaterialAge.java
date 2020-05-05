@@ -8,13 +8,15 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.Ageable;
+import org.bukkit.block.data.type.TurtleEgg;
 
 public class MaterialAge implements Property {
 
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData().data instanceof Ageable;
+                && (((MaterialTag) material).getModernData().data instanceof Ageable
+                || ((MaterialTag) material).getModernData().data instanceof TurtleEgg);
     }
 
     public static MaterialAge getFrom(ObjectTag _material) {
@@ -66,16 +68,34 @@ public class MaterialAge implements Property {
         PropertyParser.registerTag("plant_growth", runnable);
     }
 
+    public TurtleEgg getTurtleEgg() {
+        return (TurtleEgg) material.getModernData().data;
+    }
+
+    public boolean isTurtleEgg() {
+        return material.getModernData().data instanceof TurtleEgg;
+    }
+
     public Ageable getAgeable() {
         return (Ageable) material.getModernData().data;
     }
 
     public int getCurrent() {
-        return getAgeable().getAge();
+        if (isTurtleEgg()) {
+            return getTurtleEgg().getHatch();
+        }
+        else {
+            return getAgeable().getAge();
+        }
     }
 
     public int getMax() {
-        return getAgeable().getMaximumAge();
+        if (isTurtleEgg()) {
+            return getTurtleEgg().getMaximumHatch();
+        }
+        else {
+            return getAgeable().getMaximumAge();
+        }
     }
 
     @Override
@@ -107,7 +127,12 @@ public class MaterialAge implements Property {
                 Debug.echoError("Age value '" + age + "' is not valid. Must be between 0 and " + getMax() + " for material '" + material.realName() + "'.");
                 return;
             }
-            getAgeable().setAge(age);
+            if (isTurtleEgg()) {
+                getTurtleEgg().setHatch(age);
+            }
+            else {
+                getAgeable().setAge(age);
+            }
         }
     }
 }

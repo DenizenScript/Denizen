@@ -8,7 +8,7 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.type.BubbleColumn;
 
-public class MaterialBubbleColumn implements Property {
+public class MaterialDrags implements Property {
 
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
@@ -16,12 +16,12 @@ public class MaterialBubbleColumn implements Property {
                 && ((MaterialTag) material).getModernData().data instanceof BubbleColumn;
     }
 
-    public static MaterialBubbleColumn getFrom(ObjectTag _material) {
+    public static MaterialDrags getFrom(ObjectTag _material) {
         if (!describes(_material)) {
             return null;
         }
         else {
-            return new MaterialBubbleColumn((MaterialTag) _material);
+            return new MaterialDrags((MaterialTag) _material);
         }
     }
 
@@ -29,7 +29,7 @@ public class MaterialBubbleColumn implements Property {
             "drags"
     };
 
-    private MaterialBubbleColumn(MaterialTag _material) {
+    private MaterialDrags(MaterialTag _material) {
         material = _material;
     }
 
@@ -43,9 +43,9 @@ public class MaterialBubbleColumn implements Property {
         // @mechanism MaterialTag.drags
         // @group properties
         // @description
-        // Returns whether force is applied on entities moving through this material.
+        // Returns whether force is applied on entities moving through this BubbleColumn material.
         // -->
-        PropertyParser.<MaterialBubbleColumn>registerTag("drags", (attribute, material) -> {
+        PropertyParser.<MaterialDrags>registerTag("drags", (attribute, material) -> {
             return new ElementTag(material.isDrag());
         });
     }
@@ -76,7 +76,7 @@ public class MaterialBubbleColumn implements Property {
         // @name drags
         // @input ElementTag(Boolean)
         // @description
-        // Sets wether this material will apply force on entities moving through this block.
+        // Sets whether this material will apply force on entities moving through this BubbleColumn block.
         // @tags
         // <MaterialTag.drags>
         // -->
