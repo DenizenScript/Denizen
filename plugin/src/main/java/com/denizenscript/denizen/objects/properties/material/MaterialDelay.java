@@ -53,6 +53,7 @@ public class MaterialDelay implements Property {
         // <--[tag]
         // @attribute <MaterialTag.max_delay>
         // @returns ElementTag(Number)
+        // @mechanism MaterialTag.delay
         // @group properties
         // @description
         // Returns the maximum delay allowed for the redstone repeater material.
@@ -64,6 +65,7 @@ public class MaterialDelay implements Property {
         // <--[tag]
         // @attribute <MaterialTag.min_delay>
         // @returns ElementTag(Number)
+        // @mechanism MaterialTag.delay
         // @group properties
         // @description
         // Returns the minimum delay allowed for the redstone repeater material.
@@ -111,14 +113,16 @@ public class MaterialDelay implements Property {
         // Sets the delay of a redstone repeater material.
         // @tags
         // <MaterialTag.delay>
+        // <MaterialTag.max_delay>
+        // <MaterialTag.min_delay>
         // -->
         if (mechanism.matches("delay") && mechanism.requireInteger()) {
-            int count = mechanism.getValue().asInt();
-            if (count < getMin() || count > getMax()) {
-                Debug.echoError("Delay value '" + count + "' is not valid. Must be between " + getMin() + " and " + getMax() + ".");
+            int delay = mechanism.getValue().asInt();
+            if (delay < getMin() || delay > getMax()) {
+                Debug.echoError("Delay value '" + delay + "' is not valid. Must be between " + getMin() + " and " + getMax() + ".");
                 return;
             }
-            getRepeater().setDelay(count);
+            getRepeater().setDelay(delay);
         }
     }
 }
