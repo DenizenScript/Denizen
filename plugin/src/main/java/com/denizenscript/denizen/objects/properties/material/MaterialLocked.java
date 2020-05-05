@@ -8,7 +8,7 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.type.Repeater;
 
-public class MaterialRepeaterLock implements Property {
+public class MaterialLocked implements Property {
 
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
@@ -16,12 +16,12 @@ public class MaterialRepeaterLock implements Property {
                 && ((MaterialTag) material).getModernData().data instanceof Repeater;
     }
 
-    public static MaterialRepeaterLock getFrom(ObjectTag _material) {
+    public static MaterialLocked getFrom(ObjectTag _material) {
         if (!describes(_material)) {
             return null;
         }
         else {
-            return new MaterialRepeaterLock((MaterialTag) _material);
+            return new MaterialLocked((MaterialTag) _material);
         }
     }
 
@@ -29,7 +29,7 @@ public class MaterialRepeaterLock implements Property {
             "is_locked"
     };
 
-    private MaterialRepeaterLock(MaterialTag _material) {
+    private MaterialLocked(MaterialTag _material) {
         material = _material;
     }
 
@@ -45,17 +45,17 @@ public class MaterialRepeaterLock implements Property {
         // @description
         // Returns whether this redstone repeater material is locked.
         // -->
-        PropertyParser.<MaterialRepeaterLock>registerTag("is_locked", (attribute, material) -> {
+        PropertyParser.<MaterialLocked>registerTag("is_locked", (attribute, material) -> {
             return new ElementTag(material.isLocked());
         });
     }
 
-    public Repeater getLockable() {
+    public Repeater getRepeater() {
         return (Repeater) material.getModernData().data;
     }
 
     public boolean isLocked() {
-        return getLockable().isLocked();
+        return getRepeater().isLocked();
     }
 
     @Override
@@ -81,7 +81,7 @@ public class MaterialRepeaterLock implements Property {
         // <MaterialTag.is_locked>
         // -->
         if (mechanism.matches("is_locked") && mechanism.requireBoolean()) {
-            getLockable().setLocked(mechanism.getValue().asBoolean());
+            getRepeater().setLocked(mechanism.getValue().asBoolean());
         }
     }
 }
