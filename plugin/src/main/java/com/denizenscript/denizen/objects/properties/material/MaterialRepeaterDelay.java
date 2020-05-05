@@ -55,7 +55,7 @@ public class MaterialRepeaterDelay implements Property {
         // @returns ElementTag(Number)
         // @group properties
         // @description
-        // Returns the maximum delay allowed for the repeater material.
+        // Returns the maximum delay allowed for the redstone repeater material.
         // -->
         PropertyParser.<MaterialRepeaterDelay>registerTag("max_delay", (attribute, material) -> {
             return new ElementTag(material.getMax());
@@ -66,7 +66,7 @@ public class MaterialRepeaterDelay implements Property {
         // @returns ElementTag(Number)
         // @group properties
         // @description
-        // Returns the minimum delay allowed for the repeater material.
+        // Returns the minimum delay allowed for the redstone repeater material.
         // -->
         PropertyParser.<MaterialRepeaterDelay>registerTag("min_delay", (attribute, material) -> {
             return new ElementTag(material.getMin());
@@ -108,7 +108,7 @@ public class MaterialRepeaterDelay implements Property {
         // @name delay
         // @input ElementTag(Number)
         // @description
-        // Sets the delay of a repeater material.
+        // Sets the delay of a redstone repeater material.
         // @tags
         // <MaterialTag.delay>
         // -->
