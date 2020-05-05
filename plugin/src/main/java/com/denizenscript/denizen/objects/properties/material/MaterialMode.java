@@ -44,7 +44,7 @@ public class MaterialMode implements Property {
         // @group properties
         // @description
         // Returns a comparator's mode.
-        // Output is COMPARISON or SUBTRACT.
+        // Output is COMPARE or SUBTRACT.
         // -->
         PropertyParser.<MaterialMode>registerTag("mode", (attribute, material) -> {
             return new ElementTag(material.getComparator().getMode().name());
@@ -65,7 +65,9 @@ public class MaterialMode implements Property {
     }
 
     @Override
-    public String getPropertyId() { return "mode"; }
+    public String getPropertyId() {
+        return "mode";
+    }
 
     @Override
     public void adjust(Mechanism mechanism) {
@@ -75,7 +77,7 @@ public class MaterialMode implements Property {
         // @name mode
         // @input ElementTag
         // @description
-        // Sets comparator's mode between comparison and subtract.
+        // Sets comparator's mode between compare and subtract.
         // @tags
         // <MaterialTag.mode>
         // -->
