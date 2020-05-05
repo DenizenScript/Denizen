@@ -18,12 +18,14 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
+import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_14_R1.block.CraftBlockEntityState;
 import org.bukkit.craftbukkit.v1_14_R1.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_14_R1.block.CraftSkull;
 import org.bukkit.craftbukkit.v1_14_R1.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_14_R1.util.CraftLegacy;
+import org.bukkit.craftbukkit.v1_14_R1.util.CraftMagicNumbers;
 import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.material.MaterialData;
 
@@ -36,6 +38,12 @@ import java.util.UUID;
 public class BlockHelperImpl implements BlockHelper {
 
     public static final Field craftBlockEntityState_tileEntity;
+
+    @Override
+    public void applyPhysics(Location location) {
+        BlockPosition pos = new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        ((CraftWorld) location.getWorld()).getHandle().applyPhysics(pos, CraftMagicNumbers.getBlock(location.getBlock().getType()));
+    }
 
     static {
         Field f = null;
