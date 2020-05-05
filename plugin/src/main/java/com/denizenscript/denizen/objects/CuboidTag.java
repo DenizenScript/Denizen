@@ -52,6 +52,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
     // Cloning
     @Override
     public CuboidTag clone() {
+        if (noteName != null) {
+            return this;
+        }
         CuboidTag cuboid;
         try {
             cuboid = (CuboidTag) super.clone();
