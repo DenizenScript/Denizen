@@ -206,6 +206,12 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         if (cuboid2.pairs.size() != pairs.size()) {
             return false;
         }
+        if ((noteName == null) != (cuboid2.noteName == null)) {
+            return false;
+        }
+        if (noteName != null && !noteName.equals(cuboid2.noteName)) {
+            return false;
+        }
         for (int i = 0; i < pairs.size(); i++) {
             LocationPair pair1 = pairs.get(i);
             LocationPair pair2 = cuboid2.pairs.get(i);
@@ -278,6 +284,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
 
     // Location Pairs (low, high) that make up the CuboidTag
     public List<LocationPair> pairs = new ArrayList<>();
+
+    public String noteName = null;
 
     /**
      * Construct the cuboid without adding pairs
@@ -669,7 +677,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
 
     @Override
     public void makeUnique(String id) {
-        NotableManager.saveAs(this, id);
+        CuboidTag toNote = clone();
+        toNote.noteName = id;
+        NotableManager.saveAs(toNote, id);
     }
 
     @Override
