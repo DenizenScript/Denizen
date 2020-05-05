@@ -134,6 +134,7 @@ public class ItemLore implements Property {
         if (mechanism.matches("lore")) {
             ItemMeta meta = item.getItemStack().getItemMeta();
             ListTag lore = mechanism.valueAsType(ListTag.class);
+            CoreUtilities.fixNewLinesToListSeparation(lore);
             if (item.isItemscript()) {
                 if (!Settings.packetInterception()) {
                     lore.add(0, ItemScriptHelper.createItemScriptID(item.getScriptName()));
