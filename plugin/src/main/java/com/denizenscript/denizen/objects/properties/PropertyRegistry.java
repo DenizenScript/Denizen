@@ -149,6 +149,7 @@ public class PropertyRegistry {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
                 PropertyParser.registerProperty(MaterialCampfire.class, MaterialTag.class);
             }
+            PropertyParser.registerProperty(MaterialCount.class, MaterialTag.class);
             PropertyParser.registerProperty(MaterialDelay.class, MaterialTag.class);
             PropertyParser.registerProperty(MaterialDirectional.class, MaterialTag.class);
             PropertyParser.registerProperty(MaterialDrags.class, MaterialTag.class);
