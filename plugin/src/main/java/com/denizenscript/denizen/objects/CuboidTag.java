@@ -197,6 +197,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
 
     @Override
     public int hashCode() {
+        if (noteName != null) {
+            return noteName.hashCode();
+        }
         return pairs.size() + pairs.get(0).low.hashCode();
     }
 
@@ -687,6 +690,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
 
     @Override
     public void forget() {
+        noteName = null;
         NotableManager.remove(this);
     }
 
