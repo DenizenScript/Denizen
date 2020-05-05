@@ -144,7 +144,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(ItemUnbreakable.class, ItemTag.class);
 
         // register core MaterialTag properties
-        PropertyParser.registerProperty(MaterialComparator.class, MaterialTag.class);
+        PropertyParser.registerProperty(MaterialMode.class, MaterialTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
             PropertyParser.registerProperty(MaterialAge.class, MaterialTag.class);
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
