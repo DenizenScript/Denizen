@@ -9,7 +9,7 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.type.Repeater;
 
-public class MaterialRepeaterDelay implements Property {
+public class MaterialDelay implements Property {
 
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
@@ -17,12 +17,12 @@ public class MaterialRepeaterDelay implements Property {
                 && ((MaterialTag) material).getModernData().data instanceof Repeater;
     }
 
-    public static MaterialRepeaterDelay getFrom(ObjectTag _material) {
+    public static MaterialDelay getFrom(ObjectTag _material) {
         if (!describes(_material)) {
             return null;
         }
         else {
-            return new MaterialRepeaterDelay((MaterialTag) _material);
+            return new MaterialDelay((MaterialTag) _material);
         }
     }
 
@@ -30,7 +30,7 @@ public class MaterialRepeaterDelay implements Property {
             "delay"
     };
 
-    private MaterialRepeaterDelay(MaterialTag _material) {
+    private MaterialDelay(MaterialTag _material) {
         material = _material;
     }
 
@@ -46,7 +46,7 @@ public class MaterialRepeaterDelay implements Property {
         // @description
         // Returns the current delay of a redstone repeater material.
         // -->
-        PropertyParser.<MaterialRepeaterDelay>registerTag("delay", (attribute, material) -> {
+        PropertyParser.<MaterialDelay>registerTag("delay", (attribute, material) -> {
             return new ElementTag(material.getCurrent());
         });
 
@@ -57,7 +57,7 @@ public class MaterialRepeaterDelay implements Property {
         // @description
         // Returns the maximum delay allowed for the redstone repeater material.
         // -->
-        PropertyParser.<MaterialRepeaterDelay>registerTag("max_delay", (attribute, material) -> {
+        PropertyParser.<MaterialDelay>registerTag("max_delay", (attribute, material) -> {
             return new ElementTag(material.getMax());
         });
 
@@ -68,7 +68,7 @@ public class MaterialRepeaterDelay implements Property {
         // @description
         // Returns the minimum delay allowed for the redstone repeater material.
         // -->
-        PropertyParser.<MaterialRepeaterDelay>registerTag("min_delay", (attribute, material) -> {
+        PropertyParser.<MaterialDelay>registerTag("min_delay", (attribute, material) -> {
             return new ElementTag(material.getMin());
         });
 
