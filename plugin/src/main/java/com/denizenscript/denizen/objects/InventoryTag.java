@@ -1889,20 +1889,20 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 return new ElementTag(found_items >= qty);
             }
             // <--[tag]
-            // @attribute <InventoryTag.contains.material[<material>]>
+            // @attribute <InventoryTag.contains.material[<material>|...]>
             // @returns ElementTag(Boolean)
             // @description
             // Returns whether the inventory contains an item with the specified material (except item script items).
             // -->
             if (attribute.startsWith("material", 2)) {
-                if (!attribute.hasContext(2) || !MaterialTag.matches(attribute.getContext(2))) {
+                if (!attribute.hasContext(2)) {
                     return null;
                 }
-                MaterialTag material = MaterialTag.valueOf(attribute.getContext(2));
+                List<MaterialTag> materials = ListTag.valueOf(attribute.getContext(2), attribute.context).filter(MaterialTag.class, attribute.context);
                 int qty = 1;
 
                 // <--[tag]
-                // @attribute <InventoryTag.contains.material[<material>].quantity[<#>]>
+                // @attribute <InventoryTag.contains.material[<material>|...].quantity[<#>]>
                 // @returns ElementTag(Boolean)
                 // @description
                 // Returns whether the inventory contains a certain quantity of an item with the specified material (except item script items).
@@ -1917,11 +1917,17 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
 
                 int found_items = 0;
 
+                mainLoop:
                 for (ItemStack item : object.getContents()) {
-                    if (item != null && item.getType() == material.getMaterial() && !(new ItemTag(item).isItemscript())) {
-                        found_items += item.getAmount();
-                        if (found_items >= qty) {
-                            break;
+                    if (item == null) {
+                        continue;
+                    }
+                    for (MaterialTag material : materials) {
+                        if (item.getType() == material.getMaterial() && !(new ItemTag(item).isItemscript())) {
+                            found_items += item.getAmount();
+                            if (found_items >= qty) {
+                                break mainLoop;
+                            }
                         }
                     }
                 }
