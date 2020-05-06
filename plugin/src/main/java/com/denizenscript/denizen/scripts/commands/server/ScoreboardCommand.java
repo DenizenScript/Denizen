@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.server;
 
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.entity.FakeOfflinePlayer;
 import com.denizenscript.denizen.utilities.ScoreboardHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -23,13 +24,13 @@ public class ScoreboardCommand extends AbstractCommand {
 
     public ScoreboardCommand() {
         setName("scoreboard");
-        setSyntax("scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar}/none) (displayname:<name>)");
+        setSyntax("scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/player/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar}/none) (displayname:<name>)");
         setRequiredArguments(1, 9);
     }
 
     // <--[command]
     // @Name Scoreboard
-    // @Syntax scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar}/none) (displayname:<name>)
+    // @Syntax scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/player/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar}/none) (displayname:<name>)
     // @Required 1
     // @Maximum 9
     // @Short Add or removes viewers, objectives and scores from scoreboards.
@@ -39,6 +40,8 @@ public class ScoreboardCommand extends AbstractCommand {
     // Lets you make players see a certain scoreboard and then a certain objective in that scoreboard.
     // Please note that a 'scoreboard' is NOT a 'sidebar' - if you want that thing where text is on the right side of the screen, use <@link command sidebar>.
     // 'Scoreboard' is the underlying internal system that powers sidebars, below_name plates, team prefixing, and a lot of other systems. Generally, you should avoid using this command directly.
+    //
+    // The ID can be 'main' for the global default scoreboard, 'player' for the attached player's current scoreboard, or any other value for a custom named scoreboard.
     //
     // There are currently three slots where objectives can be displayed:
     // in the sidebar on the right of the screen, below player names and in the player list that shows up when you press Tab.
@@ -212,6 +215,9 @@ public class ScoreboardCommand extends AbstractCommand {
         // Get the main scoreboard by default
         if (id.asString().equalsIgnoreCase("main")) {
             board = ScoreboardHelper.getMain();
+        }
+        else if (id.asString().equalsIgnoreCase("player")) {
+            board = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().getScoreboard();
         }
         else {
             // If this scoreboard already exists, get it
