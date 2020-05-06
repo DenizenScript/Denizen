@@ -32,6 +32,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new FurnaceSmeltsItemScriptEvent());
         ScriptEvent.registerScriptEvent(new LeafDecaysScriptEvent());
         ScriptEvent.registerScriptEvent(new LiquidSpreadScriptEvent());
+        ScriptEvent.registerScriptEvent(new NoteBlockPlaysNoteScriptEvent());
         ScriptEvent.registerScriptEvent(new PistonExtendsScriptEvent());
         ScriptEvent.registerScriptEvent(new PistonRetractsScriptEvent());
         ScriptEvent.registerScriptEvent(new RedstoneScriptEvent());
