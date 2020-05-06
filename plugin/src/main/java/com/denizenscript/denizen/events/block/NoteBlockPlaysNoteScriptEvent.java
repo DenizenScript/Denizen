@@ -29,6 +29,7 @@ public class NoteBlockPlaysNoteScriptEvent extends BukkitScriptEvent implements 
     // <context.tone> returns the the note tone played (A to G).
     // <context.octave> returns the octave the note is played at (as a number).
     // <context.sharp> returns a boolean indicating whether the note is sharp.
+    // <context.pitch> returns the computed pitch value (that fits into <@link command playsound>). Note that volume is always 3.
     //
     // -->
 
@@ -77,6 +78,10 @@ public class NoteBlockPlaysNoteScriptEvent extends BukkitScriptEvent implements 
         }
         else if (name.equals("sharp")) {
             return new ElementTag(event.getNote().isSharped());
+        }
+        else if (name.equals("pitch")) {
+            double pitch = Math.pow(2.0, (double)(event.getNote().getId() - 12) / 12.0); // based on minecraft source
+            return new ElementTag(pitch);
         }
         return super.getContext(name);
     }
