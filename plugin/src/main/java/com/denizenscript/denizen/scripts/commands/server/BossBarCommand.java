@@ -16,10 +16,7 @@ import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BossBarCommand extends AbstractCommand {
 
@@ -167,7 +164,7 @@ public class BossBarCommand extends AbstractCommand {
         String idString = CoreUtilities.toLowerCase(id.asString());
 
         switch (Action.valueOf(action.asString().toUpperCase())) {
-            case CREATE:
+            case CREATE: {
                 if (bossBarMap.containsKey(idString)) {
                     Debug.echoError("BossBar '" + idString + "' already exists!");
                     return;
@@ -195,8 +192,9 @@ public class BossBarCommand extends AbstractCommand {
                 bossBar.setVisible(true);
                 bossBarMap.put(idString, bossBar);
                 break;
+            }
 
-            case UPDATE:
+            case UPDATE: {
                 if (!bossBarMap.containsKey(idString)) {
                     Debug.echoError("BossBar '" + idString + "' does not exist!");
                     return;
@@ -214,14 +212,30 @@ public class BossBarCommand extends AbstractCommand {
                 if (style != null) {
                     bossBar1.setStyle(BarStyle.valueOf(style.asString().toUpperCase()));
                 }
+                if (flags != null) {
+                    HashSet<BarFlag> oldFlags = new HashSet<>(Arrays.asList(BarFlag.values()));
+                    HashSet<BarFlag> newFlags = new HashSet<>(flags.size());
+                    for (String flagName : flags) {
+                        BarFlag flag = BarFlag.valueOf(flagName.toUpperCase());
+                        newFlags.add(flag);
+                        oldFlags.remove(flag);
+                    }
+                    for (BarFlag flag : oldFlags) {
+                        bossBar1.removeFlag(flag);
+                    }
+                    for (BarFlag flag : newFlags) {
+                        bossBar1.addFlag(flag);
+                    }
+                }
                 if (players != null) {
                     for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
                         bossBar1.addPlayer(player.getPlayerEntity());
                     }
                 }
                 break;
+            }
 
-            case REMOVE:
+            case REMOVE: {
                 if (!bossBarMap.containsKey(idString)) {
                     Debug.echoError("BossBar '" + idString + "' does not exist!");
                     return;
@@ -236,6 +250,7 @@ public class BossBarCommand extends AbstractCommand {
                 bossBarMap.get(idString).setVisible(false);
                 bossBarMap.remove(idString);
                 break;
+            }
         }
     }
 }
