@@ -279,7 +279,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     }
 
     public boolean isHidden(Entity entity) {
-        return entity != null && NMSHandler.getEntityHelper().isHidden(player.getBukkitEntity(), entity.getBukkitEntity());
+        return entity != null && NMSHandler.getEntityHelper().isHidden(player.getBukkitEntity(), entity.getBukkitEntity().getUniqueId());
     }
 
     public boolean processHiddenEntitiesForPacket(Packet<?> packet) {

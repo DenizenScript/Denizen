@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
+import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.objects.properties.entity.EntityHealth;
 import com.denizenscript.denizen.scripts.commands.player.SidebarCommand;
 import com.denizenscript.denizen.utilities.DenizenAPI;
@@ -3729,6 +3730,14 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         if (!mechanism.fulfilled()) {
             if (isOnline()) {
                 new EntityTag(getPlayerEntity()).adjust(mechanism);
+            }
+            else {
+                if (mechanism.matches("show_to_players")) {
+                    EntityHelper.removeHide(null, getOfflinePlayer().getUniqueId());
+                }
+                if (mechanism.matches("hide_from_players")) {
+                    NMSHandler.getEntityHelper().addHide(null, getOfflinePlayer().getUniqueId());
+                }
             }
         }
 

@@ -3108,6 +3108,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @input None
         // @description
         // Marks the entity as visible to players by default (if it was hidden).
+        // Works with offline players.
         // -->
         if (mechanism.matches("show_to_players")) {
             NMSHandler.getEntityHelper().unhideEntity(null, getBukkitEntity());
@@ -3119,6 +3120,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @input None
         // @description
         // Hides the entity from players by default.
+        // Works with offline players.
         // -->
         if (mechanism.matches("hide_from_players")) {
             NMSHandler.getEntityHelper().hideEntity(null, getBukkitEntity(), false);

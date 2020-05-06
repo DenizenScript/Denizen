@@ -176,7 +176,7 @@ public abstract class EntityHelper {
             }
             return;
         }
-        if (isHiddenByDefault(entity)) {
+        if (isHiddenByDefault(entity.getUniqueId())) {
             removeHide(player.getUniqueId(), entity.getUniqueId());
         }
         else {
@@ -220,7 +220,7 @@ public abstract class EntityHelper {
             }
             return;
         }
-        if (isHiddenByDefault(entity)) {
+        if (isHiddenByDefault(entity.getUniqueId())) {
             addHide(player.getUniqueId(), entity.getUniqueId());
         }
         else {
@@ -231,17 +231,17 @@ public abstract class EntityHelper {
 
     public static UUID DEFAULT_HIDE = new UUID(0, 0);
 
-    public boolean isHiddenByDefault(Entity ent) {
-        Set<UUID> hiding = hiddenEntitiesEntPl.get(ent.getUniqueId());
+    public boolean isHiddenByDefault(UUID id) {
+        Set<UUID> hiding = hiddenEntitiesEntPl.get(id);
         return hiding != null && hiding.contains(DEFAULT_HIDE);
     }
 
-    public boolean isHidden(Player player, Entity entity) {
-        if (isHiddenByDefault(entity)) {
-            Set<UUID> hiding = hiddenEntitiesEntPl.get(entity.getUniqueId());
+    public boolean isHidden(Player player, UUID id) {
+        if (isHiddenByDefault(id)) {
+            Set<UUID> hiding = hiddenEntitiesEntPl.get(id);
             return hiding == null || !hiding.contains(player.getUniqueId());
         }
-        Set<UUID> hiding = hiddenEntitiesEntPl.get(entity.getUniqueId());
+        Set<UUID> hiding = hiddenEntitiesEntPl.get(id);
         return hiding != null && hiding.contains(player.getUniqueId());
     }
 

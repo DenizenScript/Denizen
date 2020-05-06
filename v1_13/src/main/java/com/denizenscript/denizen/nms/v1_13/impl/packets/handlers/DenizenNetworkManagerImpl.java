@@ -284,7 +284,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
             if (entity == null) {
                 oldManager.sendPacket(packet, genericfuturelistener);
             }
-            else if (!NMSHandler.getEntityHelper().isHidden(player.getBukkitEntity(), entity.getBukkitEntity())) {
+            else if (!NMSHandler.getEntityHelper().isHidden(player.getBukkitEntity(), entity.getBukkitEntity().getUniqueId())) {
                 if (entity instanceof EntityFakePlayerImpl) {
                     final EntityFakePlayerImpl fakePlayer = (EntityFakePlayerImpl) entity;
                     sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, fakePlayer));
