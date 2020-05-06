@@ -80,6 +80,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new EntityTamesScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityTargetsScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityTeleportScriptEvent());
+        ScriptEvent.registerScriptEvent(new EntityTransformScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityUnleashedScriptEvent());
         ScriptEvent.registerScriptEvent(new FireworkBurstsScriptEvent());
         ScriptEvent.registerScriptEvent(new HangingBreaksScriptEvent());
