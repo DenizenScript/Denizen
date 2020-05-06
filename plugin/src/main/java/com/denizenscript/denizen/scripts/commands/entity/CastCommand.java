@@ -33,10 +33,15 @@ public class CastCommand extends AbstractCommand {
     // @Group entity
     //
     // @Description
-    // Casts or removes a potion effect to or from a list of entities. If you don't specify a duration,
-    // it defaults to 60 seconds. If you don't specify a power level, it defaults to 1.
-    // To cast an effect with a duration which displays as '**:**' or 'infinite' use a duration
-    // of '1639s' (1639 seconds) or greater. While it may display as infinite, it will still wear off.
+    // Casts or removes a potion effect to or from a list of entities.
+    //
+    // The effect type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
+    //
+    // If you don't specify a duration, it defaults to 60 seconds.
+    // To cast an effect with a duration which displays as '**:**' or 'infinite' use a duration of '1639s' (1639 seconds) or greater.
+    // While it may display as infinite, it will still wear off.
+    //
+    // If you don't specify a power level, it defaults to 1.
     //
     // If no player is specified, the command will target the player. If no player is present, the
     // command will target the NPC. If an NPC is not present, there will be an error!

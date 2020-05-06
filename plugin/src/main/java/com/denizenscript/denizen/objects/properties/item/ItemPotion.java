@@ -142,6 +142,7 @@ public class ItemPotion implements Property {
         // @description
         // Returns the potion type details for this potion item.
         // In the format Type,Level,Extended,Splash,Color
+        // The type will be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html>.
         // -->
         if (attribute.startsWith("potion_base") && item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof PotionMeta) {
             PotionMeta meta = ((PotionMeta) item.getItemStack().getItemMeta());
@@ -302,6 +303,7 @@ public class ItemPotion implements Property {
                 // @group properties
                 // @description
                 // Returns the type of the potion effect.
+                // The effect type will be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
                 // -->
                 if (attribute.startsWith("type")) {
                     return new ElementTag(meta.getCustomEffects().get(potN).getType().getName())
@@ -346,6 +348,8 @@ public class ItemPotion implements Property {
         // Second example: REGEN,false,true,RED|REGENERATION,1,500,true,false,false
         // Color can also be used like "255&comma128&comma0" (r,g,b but replace ',' with '&comma').
         // NOTE: In pre-1.13 Minecraft versions, you could set a color in the custom effects list instead of "icon".
+        // The primary type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html>.
+        // The effect type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
         // @tags
         // <ItemTag.potion_effect[<#>]>
         // <ItemTag.potion_effect[<#>].type>

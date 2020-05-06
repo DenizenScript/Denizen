@@ -29,10 +29,10 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
     // @Triggers when a splash potion breaks open
     //
     // @Context
-    // <context.potion> returns a ItemTag of the potion that broke open.
+    // <context.potion> returns an ItemTag of the potion that broke open.
     // <context.entities> returns a ListTag of affected entities.
     // <context.location> returns the LocationTag the splash potion broke open at.
-    // <context.entity> returns a EntityTag of the splash potion.
+    // <context.entity> returns an EntityTag of the splash potion.
     //
     // -->
 

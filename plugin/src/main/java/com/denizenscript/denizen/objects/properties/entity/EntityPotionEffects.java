@@ -92,6 +92,7 @@ public class EntityPotionEffects implements Property {
         // Returns the list of active potion effects on the entity, in the format: TYPE,AMPLIFIER,DURATION,IS_AMBIENT,HAS_PARTICLES,HAS_ICON|...
         // Note that AMPLIFIER is a number representing the level, and DURATION is a number representing the time, in ticks, it will last for.
         // IS_AMBIENT, HAS_PARTICLES, and HAS_ICON are booleans.
+        // The effect type will be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
         // -->
         if (attribute.startsWith("list_effects")) {
             ListTag effects = new ListTag();
@@ -105,9 +106,11 @@ public class EntityPotionEffects implements Property {
         // @attribute <EntityTag.has_effect[<effect>]>
         // @returns ElementTag(Boolean)
         // @group attributes
+        // @mechanism EntityTag.potion_effects
         // @description
         // Returns whether the entity has a specified effect.
         // If no effect is specified, returns whether the entity has any effect.
+        // The effect type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
         // -->
         if (attribute.startsWith("has_effect")) {
             boolean returnElement = false;
@@ -140,8 +143,10 @@ public class EntityPotionEffects implements Property {
         // Note that AMPLIFIER is a number representing the level, and DURATION is a number representing the time, in ticks, it will last for.
         // IS_AMBIENT, HAS_PARTICLES, and HAS_ICON are booleans.
         // For example: SPEED,0,120,false,true,true would give the entity a swiftness potion for 120 ticks.
+        // The effect type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
         // @tags
         // <EntityTag.list_effects>
+        // <EntityTag.has_effect[<effect>]>
         // -->
         if (mechanism.matches("potion_effects")) {
             ListTag effects = ListTag.valueOf(mechanism.getValue().asString(), mechanism.context);
