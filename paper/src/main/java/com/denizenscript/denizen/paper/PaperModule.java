@@ -1,8 +1,10 @@
 package com.denizenscript.denizen.paper;
 
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.paper.events.*;
 import com.denizenscript.denizen.paper.properties.EntityCanTick;
+import com.denizenscript.denizen.paper.properties.WorldViewDistance;
 import com.denizenscript.denizen.paper.tags.PaperTagBase;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.events.ScriptEvent;
@@ -25,6 +27,7 @@ public class PaperModule {
 
         // Properties
         PropertyParser.registerProperty(EntityCanTick.class, EntityTag.class);
+        PropertyParser.registerProperty(WorldViewDistance.class, WorldTag.class);
 
         // Paper Tags
         new PaperTagBase();
