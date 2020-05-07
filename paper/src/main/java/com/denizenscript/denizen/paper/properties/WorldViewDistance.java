@@ -81,7 +81,7 @@ public class WorldViewDistance implements Property {
         // @Plugin Paper
         // @description
         // Sets this world's view distance. All chunks within this radius will be tracked by the server.
-        // Input should be a number from 2 to 32. To allow for a larger untracked radius, use <@link mechanism WorldTag.no_tick_view_distance>
+        // Input should be a number from 2 to 32. To allow for a larger untracked radius, use <@link mechanism WorldTag.no_tick_view_distance>.
         // @tags
         // <WorldTag.view_distance>
         // <server.view_distance>
