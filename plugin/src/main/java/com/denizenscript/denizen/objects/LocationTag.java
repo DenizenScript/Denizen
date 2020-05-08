@@ -3069,7 +3069,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @returns LocationTag
         // @description
         // Returns the block this block is attached to.
-        // (Only if it is a lever or button!)
+        // (For buttons, levers, signs, etc).
         // -->
         registerTag("attached_to", (attribute, object) -> {
             BlockFace face = BlockFace.SELF;
