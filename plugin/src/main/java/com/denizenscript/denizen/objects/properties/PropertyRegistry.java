@@ -128,6 +128,7 @@ public class PropertyRegistry {
         }
         PropertyParser.registerProperty(ItemPotion.class, ItemTag.class);
         PropertyParser.registerProperty(ItemQuantity.class, ItemTag.class);
+        PropertyParser.registerProperty(ItemRawNBT.class, ItemTag.class);
         PropertyParser.registerProperty(ItemRepairCost.class, ItemTag.class);
         PropertyParser.registerProperty(ItemScript.class, ItemTag.class);
         PropertyParser.registerProperty(ItemSignContents.class, ItemTag.class);
