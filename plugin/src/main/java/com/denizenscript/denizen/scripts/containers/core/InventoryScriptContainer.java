@@ -110,27 +110,25 @@ public class InventoryScriptContainer extends ScriptContainer {
 
     public InventoryTag getInventoryFrom(PlayerTag player, NPCTag npc) {
 
-        // TODO: Clean all this code!
-
-        InventoryTag inventory = null;
+        InventoryTag inventory;
         BukkitTagContext context = new BukkitTagContext(player, npc, new ScriptTag(this));
 
         try {
+            InventoryType type = InventoryType.CHEST;
             if (contains("inventory")) {
                 try {
-                    inventory = new InventoryTag(InventoryType.valueOf(getString("inventory").toUpperCase()));
-                    if (contains("title")) {
-                        inventory.setTitle(TagManager.tag(getString("title"), context));
-                    }
-                    inventory.setIdentifiers("script", getName());
+                    type = InventoryType.valueOf(getString("inventory").toUpperCase());
                 }
                 catch (IllegalArgumentException ex) {
                     Debug.echoError("Invalid inventory type specified. Assuming \"CHEST\" (" + ex.getMessage() + ")");
                 }
             }
+            else {
+                Debug.echoError("Inventory script '" + getName() + "' does not specify an inventory type. Assuming \"CHEST\".");
+            }
             int size = 0;
             if (contains("size")) {
-                if (inventory != null && !getInventoryType().name().equalsIgnoreCase("chest")) {
+                if (type != InventoryType.CHEST) {
                     Debug.echoError("You can only set the size of chest inventories!");
                 }
                 else {
@@ -141,7 +139,6 @@ public class InventoryScriptContainer extends ScriptContainer {
                     else {
                         size = Integer.parseInt(sizeText);
                     }
-
                     if (size == 0) {
                         Debug.echoError("Inventory size can't be 0. Assuming default of inventory type...");
                     }
@@ -153,9 +150,6 @@ public class InventoryScriptContainer extends ScriptContainer {
                         size = size * -1;
                         Debug.echoError("Inventory size must be a positive number! Inverting to " + size + "...");
                     }
-
-                    inventory = new InventoryTag(size, contains("title") ? TagManager.tag(getString("title"), context) : "Chest");
-                    inventory.setIdentifiers("script", getName());
                 }
             }
             if (size == 0) {
@@ -166,6 +160,11 @@ public class InventoryScriptContainer extends ScriptContainer {
                     size = getInventoryType().getDefaultSize();
                 }
             }
+            inventory = new InventoryTag(type);
+            if (contains("title")) {
+                inventory.setTitle(TagManager.tag(getString("title"), context));
+            }
+            inventory.setIdentifiers("script", getName());
             boolean[] filledSlots = new boolean[size];
             if (contains("slots")) {
                 ItemStack[] finalItems = new ItemStack[size];
@@ -213,18 +212,9 @@ public class InventoryScriptContainer extends ScriptContainer {
                         itemsAdded++;
                     }
                 }
-                if (inventory == null) {
-                    size = finalItems.length % 9 == 0 ? finalItems.length : (int) (Math.ceil(finalItems.length / 9.0) * 9);
-                    inventory = new InventoryTag(size == 0 ? 9 : size,
-                            contains("title") ? TagManager.tag(getString("title"), context) : "Chest");
-                }
                 inventory.setContents(finalItems);
             }
             if (contains("procedural items")) {
-                if (inventory == null) {
-                    size = InventoryType.CHEST.getDefaultSize();
-                    inventory = new InventoryTag(size, contains("title") ? TagManager.tag(getString("title"), context) : "Chest");
-                }
                 List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(player, npc), "procedural items");
                 if (!entries.isEmpty()) {
                     InstantQueue queue = new InstantQueue("INV_SCRIPT_ITEM_PROC");
