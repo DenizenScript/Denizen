@@ -1,7 +1,9 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -20,7 +22,12 @@ public class ItemBaseColor implements Property {
     public static boolean describes(ObjectTag item) {
         if (item instanceof ItemTag) {
             Material material = ((ItemTag) item).getItemStack().getType();
-            return MaterialCompat.isBannerOrShield(material);
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+                return material == Material.SHIELD;
+            }
+            else {
+                return MaterialCompat.isBannerOrShield(material);
+            }
         }
         return false;
     }
@@ -86,9 +93,8 @@ public class ItemBaseColor implements Property {
         // @group properties
         // @mechanism ItemTag.base_color
         // @description
-        // Gets the base color of a banner.
+        // Gets the base color of a shield.
         // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
-        // As of 1.13+, this tag is no longer relevant.
         // -->
         if (attribute.startsWith("base_color")) {
             DyeColor baseColor = getBaseColor();
@@ -123,9 +129,8 @@ public class ItemBaseColor implements Property {
         // @name base_color
         // @input Element
         // @description
-        // Changes the base color of a banner.
+        // Changes the base color of a shield.
         // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
-        // As of 1.13+, this mechanism is no longer relevant.
         // @tags
         // <ItemTag.base_color>
         // -->
