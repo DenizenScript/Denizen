@@ -44,7 +44,14 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player right clicks");
+        if (!path.eventLower.startsWith("player right clicks")) {
+            return false;
+        }
+        String clickedEntity = path.eventArgLowerAt(3);
+        if (clickedEntity.equals("block") || (MaterialTag.matches(clickedEntity) && !EntityTag.matches(clickedEntity))) {
+            return false;
+        }
+        return true;
     }
 
     @Override
