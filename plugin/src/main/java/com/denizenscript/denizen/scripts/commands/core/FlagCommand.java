@@ -23,22 +23,21 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
     public FlagCommand() {
         setName("flag");
-        setSyntax("flag ({player}/npc/server/<entity>) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)");
+        setSyntax("flag [player/npc/server/<entity>] [<name>([<#>])](:<action>)[:<value>] (duration:<value>)");
         setRequiredArguments(1, 3);
     }
 
     // <--[command]
     // @Name Flag
-    // @Syntax flag ({player}/npc/server/<entity>) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)
-    // @Required 1
+    // @Syntax flag [player/npc/server/<entity>] [<name>([<#>])](:<action>)[:<value>] (duration:<value>)
+    // @Required 2
     // @Maximum 3
     // @Short Sets or modifies a flag on the player, NPC, entity, or server.
     // @Group core
     // @Guide https://guide.denizenscript.com/guides/basics/flags.html
     //
     // @Description
-    // The flag command sets or modifies custom value storage database entries connected to
-    // each player, each NPC, each entity, and the server.
+    // The flag command sets or modifies custom value storage database entries connected to each player, each NPC, each entity, and the server.
     // Flags can have operations performed upon them, such as:
     // Increment a flag:
     // - flag player counter:++
