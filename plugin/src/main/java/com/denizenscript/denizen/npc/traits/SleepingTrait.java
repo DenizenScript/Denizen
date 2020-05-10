@@ -7,7 +7,6 @@ import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.util.PlayerAnimation;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;

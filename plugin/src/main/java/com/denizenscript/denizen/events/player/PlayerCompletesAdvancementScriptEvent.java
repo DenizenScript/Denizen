@@ -3,6 +3,7 @@ package com.denizenscript.denizen.events.player;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
@@ -18,10 +19,13 @@ public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent imp
     //
     // @Regex ^on player completes advancement$
     //
+    // @Switch name:<name> to only fire if the advancement has the specified name.
+    //
     // @Triggers when a player has completed all criteria in an advancement.
     //
     // @Context
     // <context.criteria> returns all the criteria present in this advancement.
+    // <context.advancement> returns the name of advancement completed.
     //
     // @Player Always.
     //
@@ -40,6 +44,14 @@ public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent imp
     }
 
     @Override
+    public boolean matches(ScriptPath path) {
+        if (!runGenericSwitchCheck(path, "name", event.getAdvancement().getKey().getKey())) {
+            return false;
+        }
+        return super.matches(path);
+    }
+
+    @Override
     public String getName() {
         return "PlayerCompletesAdvancement";
     }
@@ -55,6 +67,9 @@ public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent imp
             ListTag criteria = new ListTag();
             criteria.addAll(event.getAdvancement().getCriteria());
             return criteria;
+        }
+        else if (name.equals("advancement")) {
+            return new ElementTag(event.getAdvancement().getKey().getKey());
         }
         return super.getContext(name);
     }
