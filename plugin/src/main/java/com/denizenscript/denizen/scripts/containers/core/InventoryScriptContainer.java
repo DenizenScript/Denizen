@@ -153,16 +153,22 @@ public class InventoryScriptContainer extends ScriptContainer {
                 }
             }
             if (size == 0) {
-                if (contains("slots") && getInventoryType().name().equalsIgnoreCase("chest")) {
+                if (contains("slots") && type == InventoryType.CHEST) {
                     size = getStringList("slots").size() * 9;
                 }
                 else {
-                    size = getInventoryType().getDefaultSize();
+                    size = type.getDefaultSize();
                 }
             }
-            inventory = new InventoryTag(type);
-            if (contains("title")) {
-                inventory.setTitle(TagManager.tag(getString("title"), context));
+            String title = contains("title") ? TagManager.tag(getString("title"), context) : null;
+            if (type == InventoryType.CHEST) {
+                inventory = new InventoryTag(size, title != null ? title : "Chest");
+            }
+            else {
+                inventory = new InventoryTag(type);
+            }
+            if (title != null) {
+                inventory.setTitle(title);
             }
             inventory.setIdentifiers("script", getName());
             boolean[] filledSlots = new boolean[size];
