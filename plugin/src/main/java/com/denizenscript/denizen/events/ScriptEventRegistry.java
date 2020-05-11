@@ -145,6 +145,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new PlayerLeashesEntityScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerLeavesBedScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerLevelsUpScriptEvent());
+        ScriptEvent.registerScriptEvent(new PlayerLocaleChangeScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerLoginScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerMendsItemScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerOpensInvScriptEvent());

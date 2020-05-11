@@ -1581,6 +1581,16 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             return new ElementTag(NMSHandler.getPlayerHelper().getPlayerBrand(object.getPlayerEntity()));
         });
 
+        // <--[tag]
+        // @attribute <PlayerTag.locale>
+        // @returns ElementTag
+        // @description
+        // Returns the current locale of the player.
+        // -->
+        registerOnlineOnlyTag("locale", (attribute, object) -> {
+            return new ElementTag(object.getPlayerEntity().getLocale());
+        });
+
         /////////////////////
         //   INVENTORY ATTRIBUTES
         /////////////////
