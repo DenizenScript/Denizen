@@ -109,7 +109,12 @@ public class EntityColor implements Property {
             return PandaHelper.getColor(colored);
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.ARROW) {
-            return new ColorTag(((Arrow) colored).getColor()).identify();
+            try {
+                return new ColorTag(((Arrow) colored.getBukkitEntity()).getColor()).identify();
+            }
+            catch (Exception e) {
+                return null;
+            }
         }
         else { // Should never happen
             return null;
@@ -247,7 +252,7 @@ public class EntityColor implements Property {
                 PandaHelper.setColor(colored, mechanism.getValue().asString());
             }
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.ARROW) {
-                ((Arrow) colored).setColor(mechanism.valueAsType(ColorTag.class).getColor());
+                ((Arrow) colored.getBukkitEntity()).setColor(mechanism.valueAsType(ColorTag.class).getColor());
             }
             else { // Should never happen
                 Debug.echoError("Could not apply color '" + mechanism.getValue().toString() + "' to entity of type " + type.name() + ".");

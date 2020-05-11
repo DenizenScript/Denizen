@@ -48,7 +48,7 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
             return false;
         }
         String clickedEntity = path.eventArgLowerAt(3);
-        if (clickedEntity.equals("block") || (MaterialTag.matches(clickedEntity) && !EntityTag.matches(clickedEntity))) {
+        if (clickedEntity.equals("fake") || clickedEntity.equals("block") || (MaterialTag.matches(clickedEntity) && !EntityTag.matches(clickedEntity))) {
             return false;
         }
         return true;

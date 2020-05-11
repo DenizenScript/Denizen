@@ -1,14 +1,26 @@
 package com.denizenscript.denizen.nms.interfaces;
 
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
+import com.denizenscript.denizencore.objects.Mechanism;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.util.*;
 
 public abstract class PlayerHelper {
+
+    public Entity sendEntitySpawn(Player player, EntityType entityType, Location location, ArrayList<Mechanism> mechanisms) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void sendEntityDestroy(Player player, Entity entity) {
+        throw new UnsupportedOperationException();
+    }
 
     public abstract int getFlyKickCooldown(Player player);
 
