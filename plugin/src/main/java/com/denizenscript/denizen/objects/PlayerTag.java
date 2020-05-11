@@ -11,6 +11,7 @@ import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.BossBarHelper;
+import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizen.utilities.packets.ItemChangeMessage;
 import com.denizenscript.denizencore.objects.*;
@@ -2398,6 +2399,24 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 }
             }
             return null;
+        });
+
+        // <--[tag]
+        // @attribute <PlayerTag.fake_entities>
+        // @returns ListTag(EntityTag)
+        // @description
+        // Returns a list of fake entities the player can see, as set by <@link command fakespawn>.
+        // Note that these entities are not being tracked by the server, so many operations may not be possible on them.
+        // -->
+        registerTag("fake_entities", (attribute, object) -> {
+            ListTag list = new ListTag();
+            FakeEntity.FakeEntityMap map = FakeEntity.entityMap.get(object.getOfflinePlayer().getUniqueId());
+            if (map != null) {
+                for (Map.Entry<Integer, FakeEntity> entry : map.byId.entrySet()) {
+                    list.addObject(entry.getValue().entity);
+                }
+            }
+            return list;
         });
     }
 

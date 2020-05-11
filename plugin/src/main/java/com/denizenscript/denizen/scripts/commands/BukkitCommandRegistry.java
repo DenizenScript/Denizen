@@ -123,6 +123,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         }
         registerCommand(CompassCommand.class);
         registerCommand(ExperienceCommand.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)) {
+            registerCommand(FakeSpawnCommand.class);
+        }
         registerCommand(GlowCommand.class);
         registerCommand(GroupCommand.class);
         registerCommand(ItemCooldownCommand.class);
