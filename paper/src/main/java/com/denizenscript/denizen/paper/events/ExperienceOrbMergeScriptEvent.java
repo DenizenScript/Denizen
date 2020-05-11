@@ -75,13 +75,10 @@ public class ExperienceOrbMergeScriptEvent extends BukkitScriptEvent implements 
 
     @EventHandler
     public void experienceOrbsMerge(ExperienceOrbMergeEvent event) {
-        Entity target = event.getMergeTarget();
-        Entity source = event.getMergeSource();
-        EntityTag.rememberEntity(target);
-        EntityTag.rememberEntity(source);
         this.event = event;
+        Entity target = event.getMergeTarget();
+        EntityTag.rememberEntity(target);
         fire(event);
         EntityTag.forgetEntity(target);
-        EntityTag.forgetEntity(source);
     }
 }

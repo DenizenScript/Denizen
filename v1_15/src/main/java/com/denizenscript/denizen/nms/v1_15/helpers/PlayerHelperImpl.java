@@ -57,8 +57,6 @@ public class PlayerHelperImpl extends PlayerHelper {
             entity.safeAdjust(mechanism);
         }
 
-        EntityTag.rememberEntity(entity.getBukkitEntity());
-
         if (nmsEntity instanceof EntityLiving) {
             EntityLiving nmsLivingEntity = (EntityLiving) nmsEntity;
             conn.sendPacket(new PacketPlayOutSpawnEntityLiving(nmsLivingEntity));

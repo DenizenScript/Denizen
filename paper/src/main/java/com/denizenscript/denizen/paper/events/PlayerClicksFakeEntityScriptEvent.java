@@ -29,6 +29,7 @@ public class PlayerClicksFakeEntityScriptEvent extends BukkitScriptEvent impleme
     //
     // @Context
     // <context.entity> returns the EntityTag of the entity that was clicked. Note that this entity is not being tracked by the server, so many operations may not be possible on it.
+    // This will return null if the player clicks a fake entity that was not spawned via <@link command fakespawn>.
     // <context.hand> returns an ElementTag of the hand used to click.
     // <context.click_type> returns an ElementTag of the click type (left/right).
     //

@@ -13,7 +13,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FakeSpawnCommand extends AbstractCommand {
@@ -45,6 +45,9 @@ public class FakeSpawnCommand extends AbstractCommand {
     // Optionally, specify how long the fake entity should remain for.
     // If unspecified, will default to 10 seconds.
     // After the duration is up, the entity will be removed from the player(s).
+    //
+    // @Tags
+    // <PlayerTag.fake_entities>
     //
     // @Usage
     // Use to show a fake creeper in front of the attached player.
@@ -79,9 +82,7 @@ public class FakeSpawnCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("players") && Utilities.entryHasPlayer(scriptEntry)) {
-            List<PlayerTag> players = new ArrayList<>();
-            players.add(Utilities.getEntryPlayer(scriptEntry));
-            scriptEntry.defaultObject("players", players);
+            scriptEntry.defaultObject("players", Arrays.asList(Utilities.getEntryPlayer(scriptEntry)));
         }
 
         if (!scriptEntry.hasObject("location")) {
@@ -102,8 +103,8 @@ public class FakeSpawnCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        EntityTag entity = (EntityTag) scriptEntry.getObject("entity");
-        LocationTag location = (LocationTag) scriptEntry.getObject("location");
+        EntityTag entity = scriptEntry.getObjectTag("entity");
+        LocationTag location = scriptEntry.getObjectTag("location");
         List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
         DurationTag duration = scriptEntry.getObjectTag("duration");
 

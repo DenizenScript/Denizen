@@ -18,6 +18,15 @@ public class EntityShootsBowPaperScriptEventImpl extends EntityShootsBowEvent {
             String lower = CoreUtilities.toLowerCase(determination);
             if (lower.equals("keep_item")) {
                 event.setConsumeArrow(false);
+                if (entity.isPlayer()) {
+                    final Player p = entity.getPlayer();
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+                        @Override
+                        public void run() {
+                            p.updateInventory();
+                        }
+                    }, 1);
+                }
                 return true;
             }
         }
@@ -30,19 +39,5 @@ public class EntityShootsBowPaperScriptEventImpl extends EntityShootsBowEvent {
             return new ItemTag(event.getArrowItem());
         }
         return super.getContext(name);
-    }
-
-    @Override
-    public void fire() {
-        super.fire();
-        if (!event.getConsumeArrow() && entity.isPlayer()) {
-            final Player p = entity.getPlayer();
-            Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    p.updateInventory();
-                }
-            }, 1);
-        }
     }
 }

@@ -8,7 +8,6 @@ import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent;
-import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -76,9 +75,6 @@ public class PlayerAbsorbsExperienceScriptEvent extends BukkitScriptEvent implem
     @EventHandler
     public void absorbsExperience(PlayerPickupExperienceEvent event) {
         this.event = event;
-        Entity entity = event.getExperienceOrb();
-        EntityTag.rememberEntity(entity);
         fire(event);
-        EntityTag.forgetEntity(entity);
     }
 }

@@ -103,14 +103,9 @@ public class EntityPathfindScriptEvent extends BukkitScriptEvent implements List
     @EventHandler
     public void onEntityPathfind(EntityPathfindEvent event) {
         this.event = event;
-        Entity entity = event.getEntity();
+        this.entity = new EntityTag(event.getEntity());
         Entity target = event.getTargetEntity();
-        this.entity = new EntityTag(entity);
         this.target = target != null ? new EntityTag(target) : null;
-        EntityTag.rememberEntity(entity);
-        EntityTag.rememberEntity(target);
         fire(event);
-        EntityTag.forgetEntity(entity);
-        EntityTag.forgetEntity(target);
     }
 }
