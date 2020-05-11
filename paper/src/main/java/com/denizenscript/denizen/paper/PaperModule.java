@@ -33,6 +33,7 @@ public class PaperModule {
         }
         ScriptEvent.registerScriptEvent(new ProjectileCollideScriptEvent());
         ScriptEvent.registerScriptEvent(new TNTPrimesScriptEvent());
+        ScriptEvent.registerScriptEvent(new UnknownCommandScriptEvent());
 
         // Properties
         PropertyParser.registerProperty(EntityCanTick.class, EntityTag.class);
