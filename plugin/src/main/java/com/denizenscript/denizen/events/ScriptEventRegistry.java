@@ -71,7 +71,9 @@ public class ScriptEventRegistry {
             ScriptEvent.registerScriptEvent(new EntityPotionEffectScriptEvent());
         }
         ScriptEvent.registerScriptEvent(new EntityResurrectScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityShootsBowEvent());
+        if (!Denizen.supportsPaper) {
+            ScriptEvent.registerScriptEvent(new EntityShootsBowEvent());
+        }
         ScriptEvent.registerScriptEvent(new EntitySpawnerSpawnScriptEvent());
         ScriptEvent.registerScriptEvent(new EntitySpawnScriptEvent());
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
