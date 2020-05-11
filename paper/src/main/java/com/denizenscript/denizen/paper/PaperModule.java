@@ -24,6 +24,7 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(new ExperienceOrbMergeScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerAbsorbsExperienceScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerBeaconEffectScriptEvent());
+        ScriptEvent.registerScriptEvent(new PlayerClicksFakeEntityScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerEquipsArmorScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerJumpsPaperScriptEventImpl());
         ScriptEvent.registerScriptEvent(new PlayerSpectatesEntityScriptEvent());

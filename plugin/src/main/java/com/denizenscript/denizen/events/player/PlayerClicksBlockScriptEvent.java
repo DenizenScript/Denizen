@@ -119,13 +119,14 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         return true;
     }
 
-    private static final HashSet<String> matchHelpList = new HashSet<>(Arrays.asList("at", "entity", "npc", "player", "vehicle", "projectile", "hanging"));
+    private static final HashSet<String> matchHelpList = new HashSet<>(Arrays.asList("at", "entity", "npc", "player", "vehicle", "projectile", "hanging", "fake"));
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return (path.eventLower.startsWith("player clicks")
-                || path.eventLower.startsWith("player left clicks")
-                || (path.eventLower.startsWith("player right clicks")
+        return ((path.eventLower.startsWith("player clicks")
+                && !path.eventArgLowerAt(2).equals("fake"))
+                || (path.eventLower.startsWith("player left clicks")
+                || path.eventLower.startsWith("player right clicks")
                 && !matchHelpList.contains(path.eventArgLowerAt(3))
                 && !EntityTag.matches(path.eventArgLowerAt(3))))
                 && couldMatchIn(path.eventLower);  // Avoid matching "clicks in inventory"
