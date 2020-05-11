@@ -68,7 +68,7 @@ public class CommandScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(1).equals("command") || path.eventArgLowerAt(0).equals("command");
+        return path.eventArgLowerAt(1).equals("command") || (path.eventArgLowerAt(0).equals("command") && !path.eventArgLowerAt(1).equals("unknown"));
     }
 
     @Override

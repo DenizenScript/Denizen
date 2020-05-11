@@ -71,7 +71,9 @@ public class ScriptEventRegistry {
             ScriptEvent.registerScriptEvent(new EntityPotionEffectScriptEvent());
         }
         ScriptEvent.registerScriptEvent(new EntityResurrectScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityShootsBowEvent());
+        if (!Denizen.supportsPaper) {
+            ScriptEvent.registerScriptEvent(new EntityShootsBowEvent());
+        }
         ScriptEvent.registerScriptEvent(new EntitySpawnerSpawnScriptEvent());
         ScriptEvent.registerScriptEvent(new EntitySpawnScriptEvent());
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
@@ -143,6 +145,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new PlayerLeashesEntityScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerLeavesBedScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerLevelsUpScriptEvent());
+        ScriptEvent.registerScriptEvent(new PlayerLocaleChangeScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerLoginScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerMendsItemScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerOpensInvScriptEvent());

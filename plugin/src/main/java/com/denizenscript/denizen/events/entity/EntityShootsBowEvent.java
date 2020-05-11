@@ -3,6 +3,7 @@ package com.denizenscript.denizen.events.entity;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.Conversion;
+import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.entity.Position;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -10,7 +11,9 @@ import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityShootBowEvent;
@@ -38,10 +41,11 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
     // <context.entity> returns the EntityTag that shot the bow.
     // <context.projectile> returns a EntityTag of the projectile.
     // <context.bow> returns the ItemTag of the bow used to shoot.
-    // <context.force> returns the force of the shot.
+    // <context.item> returns an ItemTag of the shot projectile, if any (on Paper servers only).
     //
     // @Determine
     // ListTag(EntityTag) to change the projectile(s) being shot. (Note that in certain cases, determining an arrow may not be valid).
+    // "KEEP_ITEM" to keep the projectile item on shooting it (on Paper servers only).
     //
     // @Player when the entity that shot the bow is a player.
     //
@@ -143,6 +147,19 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
             return projectile;
         }
         return super.getContext(name);
+    }
+
+    @Override
+    public void cancellationChanged() {
+        if (cancelled && entity.isPlayer()) {
+            final Player p = entity.getPlayer();
+            Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+                @Override
+                public void run() {
+                    p.updateInventory();
+                }
+            }, 1);
+        }
     }
 
     @EventHandler
