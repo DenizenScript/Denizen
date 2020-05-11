@@ -110,7 +110,7 @@ public class PoseCommand extends AbstractCommand {
         NPCTag npc = Utilities.getEntryNPC(scriptEntry);
         Action action = (Action) scriptEntry.getObject("action");
         String id = (String) scriptEntry.getObject("pose_id");
-        LocationTag pose_loc = (LocationTag) scriptEntry.getObject("pose_loc");
+        LocationTag pose_loc = scriptEntry.getObjectTag("pose_loc");
 
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),

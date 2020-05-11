@@ -90,10 +90,10 @@ public class CreateCommand extends AbstractCommand {
     @Override
     public void execute(final ScriptEntry scriptEntry) {
 
-        ElementTag name = (ElementTag) scriptEntry.getObject("name");
-        EntityTag type = (EntityTag) scriptEntry.getObject("entity_type");
-        LocationTag loc = (LocationTag) scriptEntry.getObject("spawn_location");
-        ListTag traits = (ListTag) scriptEntry.getObject("traits");
+        ElementTag name = scriptEntry.getElement("name");
+        EntityTag type = scriptEntry.getObjectTag("entity_type");
+        LocationTag loc = scriptEntry.getObjectTag("spawn_location");
+        ListTag traits = scriptEntry.getObjectTag("traits");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

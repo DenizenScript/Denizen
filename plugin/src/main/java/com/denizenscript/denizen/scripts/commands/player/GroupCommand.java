@@ -99,7 +99,7 @@ public class GroupCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         ElementTag action = scriptEntry.getElement("action");
-        WorldTag world = (WorldTag) scriptEntry.getObject("world");
+        WorldTag world = scriptEntry.getObjectTag("world");
         ElementTag group = scriptEntry.getElement("group");
 
         if (scriptEntry.dbCallShouldDebug()) {

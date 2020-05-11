@@ -105,8 +105,8 @@ public class CooldownCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-        ScriptTag script = (ScriptTag) scriptEntry.getObject("script");
-        DurationTag duration = (DurationTag) scriptEntry.getObject("duration");
+        ScriptTag script = scriptEntry.getObjectTag("script");
+        DurationTag duration = scriptEntry.getObjectTag("duration");
         Type type = (scriptEntry.hasObject("type") ?
                 (Type) scriptEntry.getObject("type") : Type.PLAYER);
 

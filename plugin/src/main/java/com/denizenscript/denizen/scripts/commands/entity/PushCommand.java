@@ -183,7 +183,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
     @Override
     public void execute(final ScriptEntry scriptEntry) {
 
-        EntityTag originEntity = (EntityTag) scriptEntry.getObject("origin_entity");
+        EntityTag originEntity = scriptEntry.getObjectTag("origin_entity");
         LocationTag originLocation = scriptEntry.hasObject("origin_location") ?
                 (LocationTag) scriptEntry.getObject("origin_location") :
                 new LocationTag(originEntity.getEyeLocation()
@@ -211,8 +211,8 @@ public class PushCommand extends AbstractCommand implements Holdable {
         }
 
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
-        final ScriptTag script = (ScriptTag) scriptEntry.getObject("script");
-        final ListTag definitions = (ListTag) scriptEntry.getObject("definitions");
+        final ScriptTag script = scriptEntry.getObjectTag("script");
+        final ListTag definitions = scriptEntry.getObjectTag("definitions");
 
         final double speed = scriptEntry.getElement("speed").asDouble();
         final int maxTicks = ((DurationTag) scriptEntry.getObject("duration")).getTicksAsInt();

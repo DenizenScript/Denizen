@@ -116,8 +116,8 @@ public class BreakCommand extends AbstractCommand implements Holdable {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        final LocationTag location = (LocationTag) scriptEntry.getObject("location");
-        final NPCTag npc = (NPCTag) scriptEntry.getObject("npc");
+        final LocationTag location = scriptEntry.getObjectTag("location");
+        final NPCTag npc = scriptEntry.getObjectTag("npc");
         ElementTag radius = scriptEntry.getElement("radius");
 
         final HashMap<String, ObjectTag> context = new HashMap<>();

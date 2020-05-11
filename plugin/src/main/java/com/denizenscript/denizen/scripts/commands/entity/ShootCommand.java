@@ -199,7 +199,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
     @Override
     public void execute(final ScriptEntry scriptEntry) {
 
-        EntityTag originEntity = (EntityTag) scriptEntry.getObject("origin_entity");
+        EntityTag originEntity = scriptEntry.getObjectTag("origin_entity");
         LocationTag originLocation = scriptEntry.hasObject("origin_location") ?
                 (LocationTag) scriptEntry.getObject("origin_location") :
                 new LocationTag(originEntity.getEyeLocation()
@@ -224,16 +224,16 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         }
 
         final List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
-        final ScriptTag script = (ScriptTag) scriptEntry.getObject("script");
-        final ListTag definitions = (ListTag) scriptEntry.getObject("definitions");
-        EntityTag shooter = (EntityTag) scriptEntry.getObject("shooter");
+        final ScriptTag script = scriptEntry.getObjectTag("script");
+        final ListTag definitions = scriptEntry.getObjectTag("definitions");
+        EntityTag shooter = scriptEntry.getObjectTag("shooter");
 
         ElementTag height = scriptEntry.getElement("height");
         ElementTag gravity = scriptEntry.getElement("gravity");
         ElementTag speed = scriptEntry.getElement("speed");
         ElementTag spread = scriptEntry.getElement("spread");
 
-        LocationTag lead = (LocationTag) scriptEntry.getObject("lead");
+        LocationTag lead = scriptEntry.getObjectTag("lead");
 
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("origin", originEntity != null ? originEntity : originLocation) +

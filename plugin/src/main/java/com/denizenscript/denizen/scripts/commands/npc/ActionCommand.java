@@ -95,8 +95,8 @@ public class ActionCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        ListTag actions = (ListTag) scriptEntry.getObject("actions");
-        ListTag context = (ListTag) scriptEntry.getObject("context");
+        ListTag actions = scriptEntry.getObjectTag("actions");
+        ListTag context = scriptEntry.getObjectTag("context");
         List<NPCTag> npcs = (List<NPCTag>) scriptEntry.getObject("npcs");
 
         if (scriptEntry.dbCallShouldDebug()) {

@@ -91,9 +91,9 @@ public class AnchorCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
         Action action = (Action) scriptEntry.getObject("action");
-        LocationTag location = (LocationTag) scriptEntry.getObject("location");
-        ElementTag range = (ElementTag) scriptEntry.getObject("range");
-        ElementTag id = (ElementTag) scriptEntry.getObject("id");
+        LocationTag location = scriptEntry.getObjectTag("location");
+        ElementTag range = scriptEntry.getElement("range");
+        ElementTag id = scriptEntry.getElement("id");
         NPCTag npc = Utilities.getEntryNPC(scriptEntry);
 
         if (scriptEntry.dbCallShouldDebug()) {

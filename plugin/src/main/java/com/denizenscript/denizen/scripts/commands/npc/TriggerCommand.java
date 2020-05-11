@@ -120,7 +120,7 @@ public class TriggerCommand extends AbstractCommand {
         ElementTag toggle = scriptEntry.getElement("toggle");
         ElementTag trigger = scriptEntry.getElement("trigger");
         ElementTag radius = scriptEntry.getElement("radius");
-        DurationTag cooldown = (DurationTag) scriptEntry.getObject("cooldown");
+        DurationTag cooldown = scriptEntry.getObjectTag("cooldown");
         NPCTag npc = scriptEntry.hasObject("npc") ? (NPCTag) scriptEntry.getObject("npc") : Utilities.getEntryNPC(scriptEntry);
 
         if (scriptEntry.dbCallShouldDebug()) {

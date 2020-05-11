@@ -126,8 +126,8 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
     @Override
     public void execute(ScriptEntry scriptEntry) {
         ElementTag action = scriptEntry.getElement("action");
-        ListTag chunklocs = (ListTag) scriptEntry.getObject("location");
-        DurationTag length = (DurationTag) scriptEntry.getObject("duration");
+        ListTag chunklocs = scriptEntry.getObjectTag("location");
+        DurationTag length = scriptEntry.getObjectTag("duration");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

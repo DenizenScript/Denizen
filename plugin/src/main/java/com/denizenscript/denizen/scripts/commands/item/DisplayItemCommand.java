@@ -126,9 +126,9 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        ItemTag item = (ItemTag) scriptEntry.getObject("item");
-        DurationTag duration = (DurationTag) scriptEntry.getObject("duration");
-        LocationTag location = (LocationTag) scriptEntry.getObject("location");
+        ItemTag item = scriptEntry.getObjectTag("item");
+        DurationTag duration = scriptEntry.getObjectTag("duration");
+        LocationTag location = scriptEntry.getObjectTag("location");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

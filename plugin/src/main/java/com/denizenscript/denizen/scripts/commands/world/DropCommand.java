@@ -145,13 +145,13 @@ public class DropCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-        LocationTag location = (LocationTag) scriptEntry.getObject("location");
+        LocationTag location = scriptEntry.getObjectTag("location");
         ElementTag qty = scriptEntry.getElement("qty");
         ElementTag action = scriptEntry.getElement("action");
         ElementTag speed = scriptEntry.getElement("speed");
         List<ItemTag> items = (List<ItemTag>) scriptEntry.getObject("item");
-        EntityTag entity = (EntityTag) scriptEntry.getObject("entity");
-        DurationTag delay = (DurationTag) scriptEntry.getObject("delay");
+        EntityTag entity = scriptEntry.getObjectTag("entity");
+        DurationTag delay = scriptEntry.getObjectTag("delay");
 
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),

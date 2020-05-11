@@ -135,7 +135,7 @@ public class FlyCommand extends AbstractCommand {
     @Override
     public void execute(final ScriptEntry scriptEntry) {
 
-        LocationTag origin = (LocationTag) scriptEntry.getObject("origin");
+        LocationTag origin = scriptEntry.getObjectTag("origin");
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         final List<LocationTag> destinations = scriptEntry.hasObject("destinations") ?
                 (List<LocationTag>) scriptEntry.getObject("destinations") :
@@ -144,7 +144,7 @@ public class FlyCommand extends AbstractCommand {
         // Set freeflight to true only if there are no destinations
         final boolean freeflight = destinations.size() < 1;
 
-        EntityTag controller = (EntityTag) scriptEntry.getObject("controller");
+        EntityTag controller = scriptEntry.getObjectTag("controller");
 
         // If freeflight is on, we need to do some checks
         if (freeflight) {

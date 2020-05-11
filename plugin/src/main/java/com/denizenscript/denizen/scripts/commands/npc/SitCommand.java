@@ -62,7 +62,7 @@ public class SitCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-        LocationTag location = (LocationTag) scriptEntry.getObject("location");
+        LocationTag location = scriptEntry.getObjectTag("location");
         NPCTag npc = Utilities.getEntryNPC(scriptEntry);
         if (!(npc.getEntity() instanceof Player || npc.getEntity() instanceof Sittable)) {
             Debug.echoError("Entities of type " + npc.getEntityType().getName() + " cannot sit.");

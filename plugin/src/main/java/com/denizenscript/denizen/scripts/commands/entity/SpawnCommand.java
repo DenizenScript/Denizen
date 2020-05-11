@@ -112,8 +112,8 @@ public class SpawnCommand extends AbstractCommand {
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
-        LocationTag location = (LocationTag) scriptEntry.getObject("location");
-        EntityTag target = (EntityTag) scriptEntry.getObject("target");
+        LocationTag location = scriptEntry.getObjectTag("location");
+        EntityTag target = scriptEntry.getObjectTag("target");
         ElementTag spread = scriptEntry.getElement("spread");
         boolean persistent = scriptEntry.hasObject("persistent");
 

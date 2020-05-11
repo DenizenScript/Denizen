@@ -125,7 +125,7 @@ public class HurtCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
-        EntityTag source = (EntityTag) scriptEntry.getObject("source");
+        EntityTag source = scriptEntry.getObjectTag("source");
         ElementTag amountElement = scriptEntry.getElement("amount");
         ElementTag cause = scriptEntry.getElement("cause");
         ElementTag source_once = scriptEntry.getElement("source_once");

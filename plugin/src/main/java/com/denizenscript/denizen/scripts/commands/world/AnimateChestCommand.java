@@ -124,7 +124,7 @@ public class AnimateChestCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        LocationTag location = (LocationTag) scriptEntry.getObject("location");
+        LocationTag location = scriptEntry.getObjectTag("location");
         ElementTag action = scriptEntry.getElement("action");
         ElementTag sound = scriptEntry.getElement("sound");
         List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");

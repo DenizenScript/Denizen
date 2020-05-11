@@ -72,7 +72,7 @@ public class StrikeCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         // Extract objects from ScriptEntry
-        LocationTag location = (LocationTag) scriptEntry.getObject("location");
+        LocationTag location = scriptEntry.getObjectTag("location");
         Boolean damage = scriptEntry.getElement("damage").asBoolean();
 
         // Debugger

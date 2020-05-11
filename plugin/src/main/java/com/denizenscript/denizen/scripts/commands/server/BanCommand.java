@@ -140,7 +140,7 @@ public class BanCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
         ElementTag action = scriptEntry.getElement("action");
         List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
-        ListTag addresses = (ListTag) scriptEntry.getObject("addresses");
+        ListTag addresses = scriptEntry.getObjectTag("addresses");
         ElementTag reason = scriptEntry.getElement("reason");
         DurationTag duration = scriptEntry.getObjectTag("duration");
         ElementTag source = scriptEntry.getElement("source");

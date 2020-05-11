@@ -74,9 +74,9 @@ public class ScribeCommand extends AbstractCommand {
 
         // Retrieve objects from ScriptEntry
         BookAction action = (BookAction) scriptEntry.getObject("action");
-        ItemTag book = (ItemTag) scriptEntry.getObject("item");
-        ScriptTag script = (ScriptTag) scriptEntry.getObject("script");
-        LocationTag location = (LocationTag) scriptEntry.getObject("location");
+        ItemTag book = scriptEntry.getObjectTag("item");
+        ScriptTag script = scriptEntry.getObjectTag("script");
+        LocationTag location = scriptEntry.getObjectTag("location");
 
         BookScriptContainer bookScript = (BookScriptContainer) script.getContainer();
 

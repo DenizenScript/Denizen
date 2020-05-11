@@ -157,7 +157,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        LocationTag loc = (LocationTag) scriptEntry.getObject("location");
+        LocationTag loc = scriptEntry.getObjectTag("location");
         ElementTag speed = scriptEntry.getElement("speed");
         ElementTag auto_range = scriptEntry.getElement("auto_range");
         ElementTag radius = scriptEntry.getElement("radius");

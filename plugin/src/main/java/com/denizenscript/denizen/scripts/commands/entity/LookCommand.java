@@ -94,9 +94,9 @@ public class LookCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        final LocationTag loc = (LocationTag) scriptEntry.getObject("location");
+        final LocationTag loc = scriptEntry.getObjectTag("location");
         final List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
-        final DurationTag duration = (DurationTag) scriptEntry.getObject("duration");
+        final DurationTag duration = scriptEntry.getObjectTag("duration");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

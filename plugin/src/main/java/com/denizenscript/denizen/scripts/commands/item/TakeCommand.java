@@ -192,7 +192,7 @@ public class TakeCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        InventoryTag inventory = (InventoryTag) scriptEntry.getObject("inventory");
+        InventoryTag inventory = scriptEntry.getObjectTag("inventory");
         ElementTag qty = scriptEntry.getElement("qty");
         ElementTag displayname = scriptEntry.getElement("displayname");
         ItemTag scriptitem = scriptEntry.getObjectTag("scriptitem");

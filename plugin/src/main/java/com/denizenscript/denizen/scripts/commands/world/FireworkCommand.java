@@ -133,8 +133,8 @@ public class FireworkCommand extends AbstractCommand {
                 (LocationTag) scriptEntry.getObject("location") :
                 Utilities.getEntryNPC(scriptEntry).getLocation();
 
-        ElementTag type = (ElementTag) scriptEntry.getObject("type");
-        ElementTag power = (ElementTag) scriptEntry.getObject("power");
+        ElementTag type = scriptEntry.getElement("type");
+        ElementTag power = scriptEntry.getElement("power");
         boolean flicker = scriptEntry.hasObject("flicker");
         boolean trail = scriptEntry.hasObject("trail");
         List<ColorTag> primary = (List<ColorTag>) scriptEntry.getObject("primary");

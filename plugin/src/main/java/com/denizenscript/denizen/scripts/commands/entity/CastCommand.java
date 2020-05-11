@@ -130,7 +130,7 @@ public class CastCommand extends AbstractCommand {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         PotionEffectType effect = (PotionEffectType) scriptEntry.getObject("effect");
         int amplifier = scriptEntry.getElement("amplifier").asInt();
-        DurationTag duration = (DurationTag) scriptEntry.getObject("duration");
+        DurationTag duration = scriptEntry.getObjectTag("duration");
         boolean remove = scriptEntry.getElement("remove").asBoolean();
         ElementTag showParticles = scriptEntry.getElement("show_particles");
         ElementTag ambient = scriptEntry.getElement("ambient");

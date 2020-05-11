@@ -108,11 +108,11 @@ public class LeashCommand extends AbstractCommand {
         Entity Holder = null;
         Object holderObject = scriptEntry.getObject("holder");
         if (holderObject instanceof EntityTag) {
-            holder = (EntityTag) scriptEntry.getObject("holder");
+            holder = scriptEntry.getObjectTag("holder");
             Holder = holder.getBukkitEntity();
         }
         else if (holderObject instanceof LocationTag) {
-            holderLoc = ((LocationTag) scriptEntry.getObject("holder"));
+            holderLoc = scriptEntry.getObjectTag("holder");
             Material material = holderLoc.getBlock().getType();
             if (material == MaterialCompat.OAK_FENCE || material == MaterialCompat.NETHER_FENCE
                     || material == Material.ACACIA_FENCE || material == Material.BIRCH_FENCE

@@ -100,8 +100,8 @@ public class ExplodeCommand extends AbstractCommand {
     @Override
     public void execute(final ScriptEntry scriptEntry) {
 
-        final LocationTag location = (LocationTag) scriptEntry.getObject("location");
-        ElementTag power = (ElementTag) scriptEntry.getObject("power");
+        final LocationTag location = scriptEntry.getObjectTag("location");
+        ElementTag power = scriptEntry.getElement("power");
         boolean breakblocks = scriptEntry.hasObject("breakblocks");
         boolean fire = scriptEntry.hasObject("fire");
 

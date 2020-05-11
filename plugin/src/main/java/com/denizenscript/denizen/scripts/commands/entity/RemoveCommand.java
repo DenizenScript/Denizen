@@ -94,7 +94,7 @@ public class RemoveCommand extends AbstractCommand {
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
-        WorldTag world = (WorldTag) scriptEntry.getObject("world");
+        WorldTag world = scriptEntry.getObjectTag("world");
 
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugList("entities", entities));

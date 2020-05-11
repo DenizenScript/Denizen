@@ -112,8 +112,8 @@ public class ZapCommand extends AbstractCommand implements Listener {
     @Override
     public void execute(final ScriptEntry scriptEntry) {
 
-        final ScriptTag script = (ScriptTag) scriptEntry.getObject("script");
-        DurationTag duration = (DurationTag) scriptEntry.getObject("duration");
+        final ScriptTag script = scriptEntry.getObjectTag("script");
+        DurationTag duration = scriptEntry.getObjectTag("duration");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

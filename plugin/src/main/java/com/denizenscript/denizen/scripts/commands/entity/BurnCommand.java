@@ -82,7 +82,7 @@ public class BurnCommand extends AbstractCommand {
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
-        DurationTag duration = (DurationTag) scriptEntry.getObject("duration");
+        DurationTag duration = scriptEntry.getObjectTag("duration");
 
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), duration.debug() +

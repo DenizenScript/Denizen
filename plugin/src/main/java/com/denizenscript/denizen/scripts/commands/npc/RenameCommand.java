@@ -69,7 +69,7 @@ public class RenameCommand extends AbstractCommand {
     @Override
     public void execute(final ScriptEntry scriptEntry) {
 
-        ElementTag name = (ElementTag) scriptEntry.getObject("name");
+        ElementTag name = scriptEntry.getElement("name");
 
         if (scriptEntry.dbCallShouldDebug()) {
 

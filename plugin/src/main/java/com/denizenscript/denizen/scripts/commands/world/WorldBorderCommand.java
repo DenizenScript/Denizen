@@ -152,9 +152,9 @@ public class WorldBorderCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        WorldTag world = (WorldTag) scriptEntry.getObject("world");
+        WorldTag world = scriptEntry.getObjectTag("world");
         List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
-        LocationTag center = (LocationTag) scriptEntry.getObject("center");
+        LocationTag center = scriptEntry.getObjectTag("center");
         ElementTag size = scriptEntry.getElement("size");
         ElementTag currSize = scriptEntry.getElement("current_size");
         ElementTag damage = scriptEntry.getElement("damage");

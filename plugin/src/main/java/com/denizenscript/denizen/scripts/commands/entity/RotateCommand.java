@@ -135,10 +135,10 @@ public class RotateCommand extends AbstractCommand implements Holdable {
     public void execute(final ScriptEntry scriptEntry) {
 
         final List<EntityTag> entities = new ArrayList<>((List<EntityTag>) scriptEntry.getObject("entities"));
-        final DurationTag duration = (DurationTag) scriptEntry.getObject("duration");
-        final DurationTag frequency = (DurationTag) scriptEntry.getObject("frequency");
-        final ElementTag yaw = (ElementTag) scriptEntry.getObject("yaw");
-        final ElementTag pitch = (ElementTag) scriptEntry.getObject("pitch");
+        final DurationTag duration = scriptEntry.getObjectTag("duration");
+        final DurationTag frequency = scriptEntry.getObjectTag("frequency");
+        final ElementTag yaw = scriptEntry.getElement("yaw");
+        final ElementTag pitch = scriptEntry.getElement("pitch");
         boolean cancel = scriptEntry.hasObject("cancel");
         final boolean infinite = scriptEntry.hasObject("infinite");
 

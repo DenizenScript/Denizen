@@ -141,7 +141,7 @@ public class GiveCommand extends AbstractCommand {
 
         ElementTag engrave = scriptEntry.getElement("engrave");
         ElementTag unlimit_stack_size = scriptEntry.getElement("unlimit_stack_size");
-        InventoryTag inventory = (InventoryTag) scriptEntry.getObject("inventory");
+        InventoryTag inventory = scriptEntry.getObjectTag("inventory");
         ElementTag qty = scriptEntry.getElement("qty");
         Type type = (Type) scriptEntry.getObject("type");
         ElementTag slot = scriptEntry.getElement("slot");

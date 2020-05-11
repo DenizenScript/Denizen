@@ -111,7 +111,7 @@ public class AttackCommand extends AbstractCommand {
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
-        EntityTag target = (EntityTag) scriptEntry.getObject("target");
+        EntityTag target = scriptEntry.getObjectTag("target");
         boolean cancel = scriptEntry.hasObject("cancel");
 
         if (scriptEntry.dbCallShouldDebug()) {

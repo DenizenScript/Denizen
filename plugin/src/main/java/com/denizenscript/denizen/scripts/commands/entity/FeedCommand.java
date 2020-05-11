@@ -120,8 +120,8 @@ public class FeedCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-        PlayerTag player = (PlayerTag) scriptEntry.getObject("targetplayer");
-        NPCTag npc = (NPCTag) scriptEntry.getObject("targetnpc");
+        PlayerTag player = scriptEntry.getObjectTag("targetplayer");
+        NPCTag npc = scriptEntry.getObjectTag("targetnpc");
         ElementTag amount = scriptEntry.getElement("amount");
         ElementTag saturation = scriptEntry.getElement("saturation");
         if (scriptEntry.dbCallShouldDebug()) {

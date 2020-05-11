@@ -63,7 +63,7 @@ public class SleepCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-        LocationTag location = (LocationTag) scriptEntry.getObject("location");
+        LocationTag location = scriptEntry.getObjectTag("location");
         NPCTag npc = Utilities.getEntryNPC(scriptEntry);
         if (npc.getEntityType() != EntityType.PLAYER && !(npc.getEntity() instanceof Villager)) {
             Debug.echoError("Only Player or villager type NPCs can sit!");

@@ -138,7 +138,7 @@ public class MidiCommand extends AbstractCommand implements Holdable {
         }
 
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
-        LocationTag location = (LocationTag) scriptEntry.getObject("location");
+        LocationTag location = scriptEntry.getObjectTag("location");
         float tempo = scriptEntry.getElement("tempo").asFloat();
         float volume = scriptEntry.getElement("volume").asFloat();
 

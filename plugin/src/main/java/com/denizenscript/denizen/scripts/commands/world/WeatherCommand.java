@@ -124,7 +124,7 @@ public class WeatherCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-        Value value = Value.valueOf(((ElementTag) scriptEntry.getObject("value")).asString().toUpperCase());
+        Value value = Value.valueOf((scriptEntry.getElement("value")).asString().toUpperCase());
         WorldTag world = scriptEntry.getObjectTag("world");
         Type type = (Type) scriptEntry.getObject("type");
         DurationTag resetAfter = scriptEntry.getObjectTag("reset_after");

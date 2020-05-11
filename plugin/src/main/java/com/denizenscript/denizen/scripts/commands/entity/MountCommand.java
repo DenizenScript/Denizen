@@ -113,7 +113,7 @@ public class MountCommand extends AbstractCommand {
     @Override
     public void execute(final ScriptEntry scriptEntry) {
 
-        LocationTag location = (LocationTag) scriptEntry.getObject("location");
+        LocationTag location = scriptEntry.getObjectTag("location");
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         boolean cancel = scriptEntry.hasObject("cancel");
 
