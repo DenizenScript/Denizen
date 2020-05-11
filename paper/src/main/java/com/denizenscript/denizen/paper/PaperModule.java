@@ -4,6 +4,7 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.paper.events.*;
 import com.denizenscript.denizen.paper.properties.EntityCanTick;
+import com.denizenscript.denizen.paper.properties.EntityExperienceOrb;
 import com.denizenscript.denizen.paper.properties.WorldViewDistance;
 import com.denizenscript.denizen.paper.tags.PaperTagBase;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -19,6 +20,8 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(new EntityKnocksbackEntityScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityPathfindScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityShootsBowPaperScriptEventImpl());
+        ScriptEvent.registerScriptEvent(new ExperienceOrbMergeScriptEvent());
+        ScriptEvent.registerScriptEvent(new PlayerAbsorbsExperienceScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerBeaconEffectScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerEquipsArmorScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerJumpsPaperScriptEventImpl());
@@ -29,6 +32,7 @@ public class PaperModule {
 
         // Properties
         PropertyParser.registerProperty(EntityCanTick.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityExperienceOrb.class, EntityTag.class);
         PropertyParser.registerProperty(WorldViewDistance.class, WorldTag.class);
 
         // Paper Tags
