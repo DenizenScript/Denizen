@@ -27,13 +27,15 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(new PlayerClicksFakeEntityScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerEquipsArmorScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerJumpsPaperScriptEventImpl());
-        ScriptEvent.registerScriptEvent(new PlayerSpectatesEntityScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerStopsSpectatingScriptEvent());
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+            ScriptEvent.registerScriptEvent(new PlayerSpectatesEntityScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerStopsSpectatingScriptEvent());
             ScriptEvent.registerScriptEvent(new PreEntitySpawnScriptEvent());
         }
         ScriptEvent.registerScriptEvent(new ProjectileCollideScriptEvent());
-        ScriptEvent.registerScriptEvent(new TNTPrimesScriptEvent());
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+            ScriptEvent.registerScriptEvent(new TNTPrimesScriptEvent());
+        }
         ScriptEvent.registerScriptEvent(new UnknownCommandScriptEvent());
 
         // Properties
