@@ -42,6 +42,10 @@ public class PaperModule {
         PropertyParser.registerProperty(EntityCanTick.class, EntityTag.class);
         PropertyParser.registerProperty(EntityExperienceOrb.class, EntityTag.class);
         PropertyParser.registerProperty(EntityFromSpawner.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)) {
+            PropertyParser.registerProperty(EntityBeeGoal.class, EntityTag.class);
+            PropertyParser.registerProperty(EntityMobGoal.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntitySpawnLocation.class, EntityTag.class);
         PropertyParser.registerProperty(WorldViewDistance.class, WorldTag.class);
         PropertyParser.registerProperty(PlayerAffectsMonsterSpawning.class, PlayerTag.class);
