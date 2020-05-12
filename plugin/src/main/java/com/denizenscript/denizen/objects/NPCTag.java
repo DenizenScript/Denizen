@@ -594,19 +594,28 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns the location associated with the specified anchor, or null if it doesn't exist.
         // -->
         registerTag("anchor", (attribute, object) -> {
-            if (attribute.hasContext(1)
-                    && object.getCitizen().getTrait(Anchors.class).getAnchor(attribute.getContext(1)) != null) {
-                return new LocationTag(object.getCitizen().getTrait(Anchors.class)
-                        .getAnchor(attribute.getContext(1)).getLocation());
+            Anchors trait = object.getCitizen().getTrait(Anchors.class);
+            if (attribute.hasContext(1)) {
+                Anchor anchor = trait.getAnchor(attribute.getContext(1));
+                    if (anchor != null) {
+                        return new LocationTag(anchor.getLocation());
+                    }
+                    else {
+                        attribute.echoError("NPC Anchor '" + attribute.getContext(1) + "' is not defined.");
+                        return null;
+                    }
             }
             else if (attribute.startsWith("list", 2)) {
                 attribute.fulfill(1);
                 Deprecations.npcAnchorListTag.warn(attribute.context);
                 ListTag list = new ListTag();
-                for (Anchor anchor : object.getCitizen().getTrait(Anchors.class).getAnchors()) {
+                for (Anchor anchor : trait.getAnchors()) {
                     list.add(anchor.getName());
                 }
                 return list;
+            }
+            else {
+                attribute.echoError("npc.anchor[...] tag must have an input.");
             }
             return null;
         }, "anchors");
