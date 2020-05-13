@@ -1976,6 +1976,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             // @description
             // Returns a list of matching blocks within a radius.
             // Note: current implementation measures the center of nearby block's distance from the exact given location.
+            // Result list is sorted by closeness (1 = closest, 2 = next closest, ... last = farthest).
             // -->
             if (attribute.startsWith("blocks", 2)) {
                 ArrayList<LocationTag> found = new ArrayList<>();
@@ -2044,6 +2045,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             // @returns ListTag
             // @description
             // Returns a list of matching surface blocks within a radius.
+            // Result list is sorted by closeness (1 = closest, 2 = next closest, ... last = farthest).
             // -->
             else if (attribute.startsWith("surface_blocks", 2)) {
                 ArrayList<LocationTag> found = new ArrayList<>();
@@ -2110,6 +2112,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             // @returns ListTag
             // @description
             // Returns a list of players within a radius.
+            // Result list is sorted by closeness (1 = closest, 2 = next closest, ... last = farthest).
             // -->
             else if (attribute.startsWith("players", 2)) {
                 ArrayList<PlayerTag> found = new ArrayList<>();
@@ -2135,6 +2138,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             // @returns ListTag
             // @description
             // Returns a list of NPCs within a radius.
+            // Result list is sorted by closeness (1 = closest, 2 = next closest, ... last = farthest).
             // -->
             else if (attribute.startsWith("npcs", 2)) {
                 ArrayList<NPCTag> found = new ArrayList<>();
@@ -2160,6 +2164,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             // @returns ListTag
             // @description
             // Returns a list of entities within a radius, with an optional search parameter for the entity type.
+            // Result list is sorted by closeness (1 = closest, 2 = next closest, ... last = farthest).
             // -->
             else if (attribute.startsWith("entities", 2)) {
                 ListTag ent_list = attribute.hasContext(2) ? ListTag.valueOf(attribute.getContext(2), attribute.context) : null;
@@ -2198,6 +2203,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             // @description
             // Returns a list of living entities within a radius.
             // This includes Players, mobs, NPCs, etc., but excludes dropped items, experience orbs, etc.
+            // Result list is sorted by closeness (1 = closest, 2 = next closest, ... last = farthest).
             // -->
             else if (attribute.startsWith("living_entities", 2)) {
                 ListTag found = new ListTag();
