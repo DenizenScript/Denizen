@@ -27,7 +27,7 @@ public class TradeTag implements ObjectTag, Adjustable {
     // The properties that can be used to customize a merchant trade are:
     //
     // result=<item>
-    // input=<item>(|<item>)
+    // inputs=<item>(|<item>)
     // uses=<number of uses>
     // max_uses=<maximum number of uses>
     // has_xp=true/false
