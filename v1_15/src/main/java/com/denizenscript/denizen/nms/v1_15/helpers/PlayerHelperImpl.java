@@ -13,6 +13,7 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.*;
 import org.bukkit.Chunk;
+import org.bukkit.SoundCategory;
 import org.bukkit.craftbukkit.v1_15_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
@@ -45,6 +46,12 @@ public class PlayerHelperImpl extends PlayerHelper {
             ex.printStackTrace();
         }
         ENTITY_HUMAN_SKINLAYERS_DATAWATCHER = skinlayers;
+    }
+
+    @Override
+    public void stopSound(Player player, String sound, SoundCategory category) {
+        MinecraftKey soundKey = sound == null ? null : new MinecraftKey(sound);
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutStopSound(soundKey, net.minecraft.server.v1_15_R1.SoundCategory.valueOf(category.name())));
     }
 
     @Override

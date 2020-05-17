@@ -3563,17 +3563,16 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // If no sound type is specified, all types will be stopped.
         // -->
         if (mechanism.matches("stop_sound")) {
-            if (!mechanism.hasValue()) {
-                getPlayerEntity().stopSound("");
-            }
-            else {
+            SoundCategory category = SoundCategory.MASTER;
+            if (mechanism.hasValue()) {
                 try {
-                    getPlayerEntity().stopSound("", SoundCategory.valueOf(mechanism.getValue().asString().toUpperCase()));
+                    category = SoundCategory.valueOf(mechanism.getValue().asString().toUpperCase());
                 }
                 catch (Exception e) {
                     Debug.echoError("Invalid SoundCategory. Must specify a valid name.");
                 }
             }
+            NMSHandler.getPlayerHelper().stopSound(getPlayerEntity(), null, category);
         }
 
         if (mechanism.matches("action_bar")) {

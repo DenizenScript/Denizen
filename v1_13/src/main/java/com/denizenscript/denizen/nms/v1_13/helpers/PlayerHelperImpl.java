@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.SoundCategory;
 import org.bukkit.craftbukkit.v1_13_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_13_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
@@ -42,6 +43,12 @@ public class PlayerHelperImpl extends PlayerHelper {
             ex.printStackTrace();
         }
         ENTITY_HUMAN_SKINLAYERS_DATAWATCHER = skinlayers;
+    }
+
+    @Override
+    public void stopSound(Player player, String sound, SoundCategory category) {
+        MinecraftKey soundKey = sound == null ? null : new MinecraftKey(sound);
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutStopSound(soundKey, net.minecraft.server.v1_13_R2.SoundCategory.valueOf(category.name())));
     }
 
     @Override

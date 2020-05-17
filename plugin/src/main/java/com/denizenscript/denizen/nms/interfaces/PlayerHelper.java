@@ -2,10 +2,7 @@ package com.denizenscript.denizen.nms.interfaces;
 
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import com.denizenscript.denizencore.objects.Mechanism;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -13,6 +10,8 @@ import org.bukkit.entity.Player;
 import java.util.*;
 
 public abstract class PlayerHelper {
+
+    public abstract void stopSound(Player player, String sound, SoundCategory category);
 
     public Entity sendEntitySpawn(Player player, EntityType entityType, Location location, ArrayList<Mechanism> mechanisms) {
         throw new UnsupportedOperationException();
