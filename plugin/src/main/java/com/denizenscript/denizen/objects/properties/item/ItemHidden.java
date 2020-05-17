@@ -6,45 +6,58 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class ItemFlags implements Property {
+public class ItemHidden implements Property {
 
     public static boolean describes(ObjectTag item) {
         // All items can have flags
         return item instanceof ItemTag && ((ItemTag) item).getItemStack().getType() != Material.AIR;
     }
 
-    public static ItemFlags getFrom(ObjectTag _item) {
+    public static ItemHidden getFrom(ObjectTag _item) {
         if (!describes(_item)) {
             return null;
         }
         else {
-            return new ItemFlags((ItemTag) _item);
+            return new ItemHidden((ItemTag) _item);
         }
     }
 
     public static final String[] handledTags = new String[] {
-            "flags"
+            "flags", "hides"
     };
 
     public static final String[] handledMechs = new String[] {
-            "flags"
+            "flags", "hides"
     };
 
-    private ItemFlags(ItemTag _item) {
+    private ItemHidden(ItemTag _item) {
         item = _item;
     }
 
+    @Deprecated
     public ListTag flags() {
         ListTag output = new ListTag();
         ItemStack itemStack = item.getItemStack();
         if (itemStack.hasItemMeta()) {
             for (ItemFlag flag : itemStack.getItemMeta().getItemFlags()) {
                 output.add(flag.name());
+            }
+        }
+        return output;
+    }
+
+    public ListTag hides() {
+        ListTag output = new ListTag();
+        ItemStack itemStack = item.getItemStack();
+        if (itemStack.hasItemMeta()) {
+            for (ItemFlag flag : itemStack.getItemMeta().getItemFlags()) {
+                output.add(flag.name().substring("HIDE_".length()));
             }
         }
         return output;
@@ -60,18 +73,21 @@ public class ItemFlags implements Property {
         }
 
         // <--[tag]
-        // @attribute <ItemTag.flags>
+        // @attribute <ItemTag.hides>
         // @returns ListTag
-        // @mechanism ItemTag.flags
+        // @mechanism ItemTag.hides
         // @group properties
         // @description
-        // Returns a list of flags set on this item.
-        // Valid flags include: HIDE_ATTRIBUTES, HIDE_DESTROYS, HIDE_ENCHANTS, HIDE_PLACED_ON, HIDE_POTION_EFFECTS, and HIDE_UNBREAKABLE
-        // NOTE: 'HIDE_POTION_EFFECTS' also hides banner patterns.
+        // Returns a list of item data types to be hidden from view on this item.
+        // Valid hide types include: ATTRIBUTES, DESTROYS, ENCHANTS, PLACED_ON, POTION_EFFECTS, and UNBREAKABLE
+        // NOTE: 'POTION_EFFECTS' also hides banner patterns.
         // -->
+        if (attribute.startsWith("hides")) {
+            return hides().getObjectAttribute(attribute.fulfill(1));
+        }
         if (attribute.startsWith("flags")) {
-            return flags()
-                    .getObjectAttribute(attribute.fulfill(1));
+            Deprecations.itemFlagsProperty.warn(attribute.context);
+            return flags().getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;
@@ -79,9 +95,9 @@ public class ItemFlags implements Property {
 
     @Override
     public String getPropertyString() {
-        ListTag flags = flags();
-        if (flags.size() > 0) {
-            return flags().identify();
+        ListTag hidden = hides();
+        if (hidden.size() > 0) {
+            return hidden.identify();
         }
         else {
             return null;
@@ -90,7 +106,7 @@ public class ItemFlags implements Property {
 
     @Override
     public String getPropertyId() {
-        return "flags";
+        return "hides";
     }
 
     @Override
@@ -98,19 +114,25 @@ public class ItemFlags implements Property {
 
         // <--[mechanism]
         // @object ItemTag
-        // @name flags
+        // @name hides
         // @input ListTag
         // @description
-        // Sets the item's meta flag set.
-        // Use "HIDE_ALL" to automatically apply all flags.
+        // Sets the item's list of data types to hide.
+        // Use "ALL" to automatically hide all hideable item data.
         // @tags
-        // <ItemTag.flags>
+        // <ItemTag.hides>
         // -->
-        if (mechanism.matches("flags")) {
+        if (mechanism.matches("flags") || mechanism.matches("hides")) {
+            if (mechanism.matches("flags")) {
+                Deprecations.itemFlagsProperty.warn(mechanism.context);
+            }
             ItemMeta meta = item.getItemStack().getItemMeta();
             meta.removeItemFlags(ItemFlag.values());
-            ListTag new_flags = mechanism.valueAsType(ListTag.class);
-            for (String str : new_flags) {
+            ListTag new_hides = mechanism.valueAsType(ListTag.class);
+            for (String str : new_hides) {
+                if (!str.startsWith("HIDE_")) {
+                    str = "HIDE_" + str;
+                }
                 if (str.equalsIgnoreCase("HIDE_ALL")) {
                     meta.addItemFlags(ItemFlag.values());
                 }
