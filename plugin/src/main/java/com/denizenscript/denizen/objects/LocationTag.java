@@ -3087,6 +3087,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                     && MaterialSwitchFace.describes(material)) {
                 face = MaterialSwitchFace.getFrom(material).getAttachedTo();
             }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)
+                    && material.hasModernData() && material.getModernData().data instanceof org.bukkit.block.data.type.WallSign) {
+                face = ((org.bukkit.block.data.type.WallSign) material.getModernData().data).getFacing().getOppositeFace();
+            }
             else {
                 MaterialData data = object.getBlockStateForTag(attribute).getData();
                 if (data instanceof Attachable) {
