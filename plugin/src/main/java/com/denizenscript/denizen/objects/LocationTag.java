@@ -1612,6 +1612,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             ListTag list = new ListTag();
             org.bukkit.util.Vector rel = target.toVector().subtract(object.toVector());
             double len = rel.length();
+            if (len < 0.0001) {
+                return new ListTag();
+            }
             rel = rel.multiply(1d / len);
             for (double i = 0d; i <= len; i += rad) {
                 list.addObject(new LocationTag(object.clone().add(rel.clone().multiply(i))));
