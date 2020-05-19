@@ -20,8 +20,6 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
     //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
-    // @Cancellable true
-    //
     // @Triggers when an entity is unleashed.
     //
     // @Context

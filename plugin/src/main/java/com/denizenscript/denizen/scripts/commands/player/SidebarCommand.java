@@ -317,6 +317,7 @@ public class SidebarCommand extends AbstractCommand {
                             scores = ListTag.getListFor(TagManager.tagObject(perScores, context), context);
                         }
                     }
+                    boolean removedAny = false;
                     if (scores != null) {
                         try {
                             for (String scoreString : scores) {
@@ -334,6 +335,7 @@ public class SidebarCommand extends AbstractCommand {
                         }
                         sidebar.setLines(current);
                         sidebar.sendUpdate();
+                        removedAny = true;
                     }
                     if (value != null) {
                         for (String line : value) {
@@ -345,8 +347,9 @@ public class SidebarCommand extends AbstractCommand {
                         }
                         sidebar.setLines(current);
                         sidebar.sendUpdate();
+                        removedAny = true;
                     }
-                    else {
+                    if (!removedAny) {
                         sidebar.remove();
                         sidebars.remove(player.getPlayerEntity().getUniqueId());
                     }
