@@ -130,14 +130,15 @@ public class ItemHidden implements Property {
             meta.removeItemFlags(ItemFlag.values());
             ListTag new_hides = mechanism.valueAsType(ListTag.class);
             for (String str : new_hides) {
+                str = str.toUpperCase();
                 if (!str.startsWith("HIDE_")) {
                     str = "HIDE_" + str;
                 }
-                if (str.equalsIgnoreCase("HIDE_ALL")) {
+                if (str.equals("HIDE_ALL")) {
                     meta.addItemFlags(ItemFlag.values());
                 }
                 else {
-                    meta.addItemFlags(ItemFlag.valueOf(str.toUpperCase()));
+                    meta.addItemFlags(ItemFlag.valueOf(str));
                 }
             }
             item.getItemStack().setItemMeta(meta);
