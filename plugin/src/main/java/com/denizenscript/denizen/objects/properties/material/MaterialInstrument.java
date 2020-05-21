@@ -78,8 +78,8 @@ public class MaterialInstrument implements Property {
         // @name instrument
         // @input ElementTag
         // @description
-        // Sets the instrument played from this note block, for valid
-        // instruments see list at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Instrument.html>.
+        // Sets the instrument played from this note block,
+        // for valid instruments see list at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Instrument.html>.
         // @tags
         // <MaterialTag.instrument>
         // -->
