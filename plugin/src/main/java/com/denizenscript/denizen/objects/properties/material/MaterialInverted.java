@@ -6,30 +6,30 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
-import org.bukkit.block.data.type.Gate;
+import org.bukkit.block.data.type.DaylightDetector;
 
-public class MaterialGate implements Property {
+public class MaterialInverted implements Property {
 
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData().data instanceof Gate;
+                && ((MaterialTag) material).getModernData().data instanceof DaylightDetector;
     }
 
-    public static MaterialGate getFrom(ObjectTag _material) {
+    public static MaterialInverted getFrom(ObjectTag _material) {
         if (!describes(_material)) {
             return null;
         }
         else {
-            return new MaterialGate((MaterialTag) _material);
+            return new MaterialInverted((MaterialTag) _material);
         }
     }
 
     public static final String[] handledMechs = new String[] {
-            "is_in_wall"
+            "inverted"
     };
 
-    private MaterialGate(MaterialTag _material) {
+    private MaterialInverted(MaterialTag _material) {
         material = _material;
     }
 
@@ -38,30 +38,30 @@ public class MaterialGate implements Property {
     public static void registerTags() {
 
         // <--[tag]
-        // @attribute <MaterialTag.signal_fire>
+        // @attribute <MaterialTag.inverted>
         // @returns ElementTag(Boolean)
-        // @mechanism MaterialTag.signal_fire
+        // @mechanism MaterialTag.inverted
         // @group properties
         // @description
-        // Returns whether this campfire will produce longer smoke trails, or not.
+        // Returns whether a daylight detector block is inverted, or not.
         // -->
-        PropertyParser.<MaterialGate>registerTag("is_in_wall", (attribute, material) -> {
-            return new ElementTag(material.getGate().isInWall());
+        PropertyParser.<MaterialInverted>registerTag("inverted", (attribute, material) -> {
+            return new ElementTag(material.getDaylightDetector().isInverted());
         });
     }
 
-    public Gate getGate() {
-        return (Gate) material.getModernData().data;
+    public DaylightDetector getDaylightDetector() {
+        return (DaylightDetector) material.getModernData().data;
     }
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(getGate().isInWall());
+        return String.valueOf(getDaylightDetector().isInverted());
     }
 
     @Override
     public String getPropertyId() {
-        return "is_in_wall";
+        return "inverted";
     }
 
     @Override
@@ -69,15 +69,15 @@ public class MaterialGate implements Property {
 
         // <--[mechanism]
         // @object MaterialTag
-        // @name signal_fire
+        // @name inverted
         // @input ElementTag(Boolean)
         // @description
-        // Sets a campfire block to have longer smoke trails, or not.
+        // Sets whether a daylight detector block is inverted, or not.
         // @tags
-        // <MaterialTag.signal_fire>
+        // <MaterialTag.inverted>
         // -->
-        if (mechanism.matches("is_in_wall") && mechanism.requireBoolean()) {
-            getGate().setInWall(mechanism.getValue().asBoolean());
+        if (mechanism.matches("inverted") && mechanism.requireBoolean()) {
+            getDaylightDetector().setInverted(mechanism.getValue().asBoolean());
         }
     }
 }

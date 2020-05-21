@@ -6,30 +6,30 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
-import org.bukkit.block.data.type.DaylightDetector;
+import org.bukkit.block.data.type.Gate;
 
-public class MaterialDaylightDetector implements Property {
+public class MaterialIsInWall implements Property {
 
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData().data instanceof DaylightDetector;
+                && ((MaterialTag) material).getModernData().data instanceof Gate;
     }
 
-    public static MaterialDaylightDetector getFrom(ObjectTag _material) {
+    public static MaterialIsInWall getFrom(ObjectTag _material) {
         if (!describes(_material)) {
             return null;
         }
         else {
-            return new MaterialDaylightDetector((MaterialTag) _material);
+            return new MaterialIsInWall((MaterialTag) _material);
         }
     }
 
     public static final String[] handledMechs = new String[] {
-            "inverted"
+            "is_in_wall"
     };
 
-    private MaterialDaylightDetector(MaterialTag _material) {
+    private MaterialIsInWall(MaterialTag _material) {
         material = _material;
     }
 
@@ -38,30 +38,31 @@ public class MaterialDaylightDetector implements Property {
     public static void registerTags() {
 
         // <--[tag]
-        // @attribute <MaterialTag.inverted>
+        // @attribute <MaterialTag.is_in_wall>
         // @returns ElementTag(Boolean)
-        // @mechanism MaterialTag.inverted
+        // @mechanism MaterialTag.is_in_wall
         // @group properties
         // @description
-        // Returns whether a daylight detector block is inverted, or not.
+        // Returns whether this gate is attached to a wall,
+        // and if true the texture is lowered by a small amount to blend in better..
         // -->
-        PropertyParser.<MaterialDaylightDetector>registerTag("inverted", (attribute, material) -> {
-            return new ElementTag(material.getDaylightDetector().isInverted());
+        PropertyParser.<MaterialIsInWall>registerTag("is_in_wall", (attribute, material) -> {
+            return new ElementTag(material.getGate().isInWall());
         });
     }
 
-    public DaylightDetector getDaylightDetector() {
-        return (DaylightDetector) material.getModernData().data;
+    public Gate getGate() {
+        return (Gate) material.getModernData().data;
     }
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(getDaylightDetector().isInverted());
+        return String.valueOf(getGate().isInWall());
     }
 
     @Override
     public String getPropertyId() {
-        return "inverted";
+        return "is_in_wall";
     }
 
     @Override
@@ -69,15 +70,16 @@ public class MaterialDaylightDetector implements Property {
 
         // <--[mechanism]
         // @object MaterialTag
-        // @name inverted
+        // @name is_in_wall
         // @input ElementTag(Boolean)
         // @description
-        // Sets whether a daylight detector block is inverted, or not.
+        // Sets whether this gate is attached to a wall,
+        // and if true the texture is lowered by a small amount to blend in better.
         // @tags
-        // <MaterialTag.inverted>
+        // <MaterialTag.is_in_wall>
         // -->
-        if (mechanism.matches("inverted") && mechanism.requireBoolean()) {
-            getDaylightDetector().setInverted(mechanism.getValue().asBoolean());
+        if (mechanism.matches("is_in_wall") && mechanism.requireBoolean()) {
+            getGate().setInWall(mechanism.getValue().asBoolean());
         }
     }
 }

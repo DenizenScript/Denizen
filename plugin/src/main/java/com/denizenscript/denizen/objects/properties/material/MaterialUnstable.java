@@ -8,7 +8,7 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.type.TNT;
 
-public class MaterialTNT implements Property {
+public class MaterialUnstable implements Property {
 
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
@@ -16,12 +16,12 @@ public class MaterialTNT implements Property {
                 && ((MaterialTag) material).getModernData().data instanceof TNT;
     }
 
-    public static MaterialTNT getFrom(ObjectTag _material) {
+    public static MaterialUnstable getFrom(ObjectTag _material) {
         if (!describes(_material)) {
             return null;
         }
         else {
-            return new MaterialTNT((MaterialTag) _material);
+            return new MaterialUnstable((MaterialTag) _material);
         }
     }
 
@@ -29,7 +29,7 @@ public class MaterialTNT implements Property {
             "is_unstable"
     };
 
-    private MaterialTNT(MaterialTag _material) {
+    private MaterialUnstable(MaterialTag _material) {
         material = _material;
     }
 
@@ -45,7 +45,7 @@ public class MaterialTNT implements Property {
         // @description
         // Returns whether this TNT will explode when punched, or not.
         // -->
-        PropertyParser.<MaterialTNT>registerTag("is_unstable", (attribute, material) -> {
+        PropertyParser.<MaterialUnstable>registerTag("is_unstable", (attribute, material) -> {
             return new ElementTag(material.getTNT().isUnstable());
         });
     }

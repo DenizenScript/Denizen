@@ -148,32 +148,31 @@ public class PropertyRegistry {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
                 PropertyParser.registerProperty(MaterialCampfire.class, MaterialTag.class);
             }
-            PropertyParser.registerProperty(MaterialCommandBlock.class, MaterialTag.class);
             PropertyParser.registerProperty(MaterialCount.class, MaterialTag.class);
-            PropertyParser.registerProperty(MaterialDaylightDetector.class, MaterialTag.class);
             PropertyParser.registerProperty(MaterialDelay.class, MaterialTag.class);
             PropertyParser.registerProperty(MaterialDirectional.class, MaterialTag.class);
+            PropertyParser.registerProperty(MaterialDisarmed.class, MaterialTag.class);
             PropertyParser.registerProperty(MaterialDrags.class, MaterialTag.class);
-            PropertyParser.registerProperty(MaterialEndPortalFrame.class, MaterialTag.class);
+            PropertyParser.registerProperty(MaterialEye.class, MaterialTag.class);
             PropertyParser.registerProperty(MaterialFaces.class, MaterialTag.class);
-            PropertyParser.registerProperty(MaterialGate.class, MaterialTag.class);
             PropertyParser.registerProperty(MaterialHalf.class, MaterialTag.class);
+            PropertyParser.registerProperty(MaterialHanging.class, MaterialTag.class);
             PropertyParser.registerProperty(MaterialInstrument.class, MaterialTag.class);
-            PropertyParser.registerProperty(MaterialLantern.class, MaterialTag.class);
-            PropertyParser.registerProperty(MaterialLocked.class, MaterialTag.class);
+            PropertyParser.registerProperty(MaterialInverted.class, MaterialTag.class);
+            PropertyParser.registerProperty(MaterialIsInWall.class, MaterialTag.class);
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
                 PropertyParser.registerProperty(MaterialLeafSize.class, MaterialTag.class);
             }
             PropertyParser.registerProperty(MaterialLevel.class, MaterialTag.class);
             PropertyParser.registerProperty(MaterialLightable.class, MaterialTag.class);
+            PropertyParser.registerProperty(MaterialLocked.class, MaterialTag.class);
             PropertyParser.registerProperty(MaterialMode.class, MaterialTag.class);
             PropertyParser.registerProperty(MaterialPersistent.class, MaterialTag.class);
             PropertyParser.registerProperty(MaterialSlab.class, MaterialTag.class);
             PropertyParser.registerProperty(MaterialSnowable.class, MaterialTag.class);
             PropertyParser.registerProperty(MaterialSwitchable.class, MaterialTag.class);
             PropertyParser.registerProperty(MaterialSwitchFace.class, MaterialTag.class);
-            PropertyParser.registerProperty(MaterialTNT.class, MaterialTag.class);
-            PropertyParser.registerProperty(MaterialTripwire.class, MaterialTag.class);
+            PropertyParser.registerProperty(MaterialUnstable.class, MaterialTag.class);
             PropertyParser.registerProperty(MaterialWaterlogged.class, MaterialTag.class);
         }
 

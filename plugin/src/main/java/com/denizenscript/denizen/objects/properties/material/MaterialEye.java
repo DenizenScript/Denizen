@@ -6,30 +6,30 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
-import org.bukkit.block.data.type.Tripwire;
+import org.bukkit.block.data.type.EndPortalFrame;
 
-public class MaterialTripwire implements Property {
+public class MaterialEye implements Property {
 
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData().data instanceof Tripwire;
+                && ((MaterialTag) material).getModernData().data instanceof EndPortalFrame;
     }
 
-    public static MaterialTripwire getFrom(ObjectTag _material) {
+    public static MaterialEye getFrom(ObjectTag _material) {
         if (!describes(_material)) {
             return null;
         }
         else {
-            return new MaterialTripwire((MaterialTag) _material);
+            return new MaterialEye((MaterialTag) _material);
         }
     }
 
     public static final String[] handledMechs = new String[] {
-            "disarmed"
+            "has_eye"
     };
 
-    private MaterialTripwire(MaterialTag _material) {
+    private MaterialEye(MaterialTag _material) {
         material = _material;
     }
 
@@ -38,30 +38,30 @@ public class MaterialTripwire implements Property {
     public static void registerTags() {
 
         // <--[tag]
-        // @attribute <MaterialTag.is_disarmed>
+        // @attribute <MaterialTag.has_eye>
         // @returns ElementTag(Boolean)
-        // @mechanism MaterialTag.is_disarmed
+        // @mechanism MaterialTag.has_eye
         // @group properties
         // @description
-        // Returns whether a tripwire block is disarmed, or not.
+        // Returns whether this end portal frame has an eye.
         // -->
-        PropertyParser.<MaterialTripwire>registerTag("disarmed", (attribute, material) -> {
-            return new ElementTag(material.getTripWire().isDisarmed());
+        PropertyParser.<MaterialEye>registerTag("has_eye", (attribute, material) -> {
+            return new ElementTag(material.getEndPortalFrame().hasEye());
         });
     }
 
-    public Tripwire getTripWire() {
-        return (Tripwire) material.getModernData().data;
+    public EndPortalFrame getEndPortalFrame() {
+        return (EndPortalFrame) material.getModernData().data;
     }
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(getTripWire().isDisarmed());
+        return String.valueOf(getEndPortalFrame().hasEye());
     }
 
     @Override
     public String getPropertyId() {
-        return "disarmed";
+        return "has_eye";
     }
 
     @Override
@@ -69,15 +69,15 @@ public class MaterialTripwire implements Property {
 
         // <--[mechanism]
         // @object MaterialTag
-        // @name is_disarmed
+        // @name has_eye
         // @input ElementTag(Boolean)
         // @description
-        // Sets whether a tripwire block is disarmed, or not.
+        // Sets a end portal frame block to have an eye, or not.
         // @tags
-        // <MaterialTag.is_disarmed>
+        // <MaterialTag.has_eye>
         // -->
-        if (mechanism.matches("disarmed") && mechanism.requireBoolean()) {
-            getTripWire().setDisarmed(mechanism.getValue().asBoolean());
+        if (mechanism.matches("has_eye") && mechanism.requireBoolean()) {
+            getEndPortalFrame().setEye(mechanism.getValue().asBoolean());
         }
     }
 }

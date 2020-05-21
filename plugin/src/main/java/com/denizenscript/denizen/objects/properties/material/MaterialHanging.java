@@ -8,7 +8,7 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.type.Lantern;
 
-public class MaterialLantern implements Property {
+public class MaterialHanging implements Property {
 
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
@@ -16,12 +16,12 @@ public class MaterialLantern implements Property {
                 && ((MaterialTag) material).getModernData().data instanceof Lantern;
     }
 
-    public static MaterialLantern getFrom(ObjectTag _material) {
+    public static MaterialHanging getFrom(ObjectTag _material) {
         if (!describes(_material)) {
             return null;
         }
         else {
-            return new MaterialLantern((MaterialTag) _material);
+            return new MaterialHanging((MaterialTag) _material);
         }
     }
 
@@ -29,7 +29,7 @@ public class MaterialLantern implements Property {
             "hanging"
     };
 
-    private MaterialLantern(MaterialTag _material) {
+    private MaterialHanging(MaterialTag _material) {
         material = _material;
     }
 
@@ -45,7 +45,7 @@ public class MaterialLantern implements Property {
         // @description
         // Returns whether this lantern is hanging, or not.
         // -->
-        PropertyParser.<MaterialLantern>registerTag("hanging", (attribute, material) -> {
+        PropertyParser.<MaterialHanging>registerTag("hanging", (attribute, material) -> {
             return new ElementTag(material.getLantern().isHanging());
         });
     }

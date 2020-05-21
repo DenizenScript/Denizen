@@ -6,30 +6,30 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
-import org.bukkit.block.data.type.CommandBlock;
+import org.bukkit.block.data.type.Tripwire;
 
-public class MaterialCommandBlock implements Property {
+public class MaterialDisarmed implements Property {
 
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData().data instanceof CommandBlock;
+                && ((MaterialTag) material).getModernData().data instanceof Tripwire;
     }
 
-    public static MaterialCommandBlock getFrom(ObjectTag _material) {
+    public static MaterialDisarmed getFrom(ObjectTag _material) {
         if (!describes(_material)) {
             return null;
         }
         else {
-            return new MaterialCommandBlock((MaterialTag) _material);
+            return new MaterialDisarmed((MaterialTag) _material);
         }
     }
 
     public static final String[] handledMechs = new String[] {
-            "conditional"
+            "disarmed"
     };
 
-    private MaterialCommandBlock(MaterialTag _material) {
+    private MaterialDisarmed(MaterialTag _material) {
         material = _material;
     }
 
@@ -38,30 +38,30 @@ public class MaterialCommandBlock implements Property {
     public static void registerTags() {
 
         // <--[tag]
-        // @attribute <MaterialTag.conditional>
+        // @attribute <MaterialTag.is_disarmed>
         // @returns ElementTag(Boolean)
-        // @mechanism MaterialTag.conditional
+        // @mechanism MaterialTag.is_disarmed
         // @group properties
         // @description
-        // Returns whether this command block is conditional, or not.
+        // Returns whether a tripwire block is disarmed, or not.
         // -->
-        PropertyParser.<MaterialCommandBlock>registerTag("conditional", (attribute, material) -> {
-            return new ElementTag(material.getCommandBlock().isConditional());
+        PropertyParser.<MaterialDisarmed>registerTag("disarmed", (attribute, material) -> {
+            return new ElementTag(material.getTripWire().isDisarmed());
         });
     }
 
-    public CommandBlock getCommandBlock() {
-        return (CommandBlock) material.getModernData().data;
+    public Tripwire getTripWire() {
+        return (Tripwire) material.getModernData().data;
     }
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(getCommandBlock().isConditional());
+        return String.valueOf(getTripWire().isDisarmed());
     }
 
     @Override
     public String getPropertyId() {
-        return "conditional";
+        return "disarmed";
     }
 
     @Override
@@ -69,15 +69,15 @@ public class MaterialCommandBlock implements Property {
 
         // <--[mechanism]
         // @object MaterialTag
-        // @name conditional
+        // @name is_disarmed
         // @input ElementTag(Boolean)
         // @description
-        // Sets whether this command block is conditional, or not.
+        // Sets whether a tripwire block is disarmed, or not.
         // @tags
-        // <MaterialTag.conditional>
+        // <MaterialTag.is_disarmed>
         // -->
-        if (mechanism.matches("conditional") && mechanism.requireBoolean()) {
-            getCommandBlock().setConditional(mechanism.getValue().asBoolean());
+        if (mechanism.matches("disarmed") && mechanism.requireBoolean()) {
+            getTripWire().setDisarmed(mechanism.getValue().asBoolean());
         }
     }
 }
