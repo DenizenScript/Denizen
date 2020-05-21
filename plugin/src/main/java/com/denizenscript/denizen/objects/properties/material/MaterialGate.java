@@ -38,12 +38,12 @@ public class MaterialGate implements Property {
     public static void registerTags() {
 
         // <--[tag]
-        // @attribute <MaterialTag.signal_fire>
+        // @attribute <MaterialTag.is_in_wall>
         // @returns ElementTag(Boolean)
-        // @mechanism MaterialTag.signal_fire
+        // @mechanism MaterialTag.is_in_wall
         // @group properties
         // @description
-        // Returns whether this campfire will produce longer smoke trails, or not.
+        // Returns whether this gate is in the wall, or not.
         // -->
         PropertyParser.<MaterialGate>registerTag("is_in_wall", (attribute, material) -> {
             return new ElementTag(material.getGate().isInWall());
@@ -69,12 +69,12 @@ public class MaterialGate implements Property {
 
         // <--[mechanism]
         // @object MaterialTag
-        // @name signal_fire
+        // @name is_in_wall
         // @input ElementTag(Boolean)
         // @description
-        // Sets a campfire block to have longer smoke trails, or not.
+        // Sets whether this gate is in the wall, or not.
         // @tags
-        // <MaterialTag.signal_fire>
+        // <MaterialTag.is_in_wall>
         // -->
         if (mechanism.matches("is_in_wall") && mechanism.requireBoolean()) {
             getGate().setInWall(mechanism.getValue().asBoolean());
