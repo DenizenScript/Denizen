@@ -996,6 +996,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @description
         // Returns the location of the block this location is on,
         // i.e. returns a location without decimals or direction.
+        // Note that you almost never actually need this tag. This does not "get the block", this just rounds coordinates down.
+        // If you have this in a script, it is more likely to be a mistake than actually needed.
+        // Consider using <@link tag LocationTag.round_down> instead.
         // -->
         registerTag("block", (attribute, object) -> {
             return new LocationTag(object.getWorld(), object.getBlockX(), object.getBlockY(), object.getBlockZ());
