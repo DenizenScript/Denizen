@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.inventory.meta.SkullMeta;
 
@@ -54,13 +55,31 @@ public class ItemSkullskin implements Property {
         }
 
         // <--[tag]
+        // @attribute <ItemTag.skull_skin>
+        // @returns ElementTag
+        // @mechanism ItemTag.skull_skin
+        // @group properties
+        // @description
+        // Returns the UUID of the player whose skin a skull item uses.
+        // Note: Item must be a 'player_head' with a skin.
+        // In format: UUID|Texture|Name.
+        // -->
+        if (attribute.startsWith("skull_skin")) {
+            String skin = getPropertyString();
+            if (skin == null) {
+                return null;
+            }
+            return new ElementTag(skin).getObjectAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <ItemTag.skin>
         // @returns ElementTag
         // @mechanism ItemTag.skull_skin
         // @group properties
         // @description
         // Returns the UUID of the player whose skin a skull item uses.
-        // Note: Item must be a 'skull_item' with a skin.
+        // Note: Item must be a 'player_head' with a skin.
         // In format: UUID|Texture|Name.
         // -->
         if (attribute.startsWith("skin")) {
@@ -68,17 +87,8 @@ public class ItemSkullskin implements Property {
             if (skin != null) {
                 attribute = attribute.fulfill(1);
 
-                // <--[tag]
-                // @attribute <ItemTag.skin.full>
-                // @returns ElementTag|Element
-                // @mechanism ItemTag.skull_skin
-                // @group properties
-                // @description
-                // Returns the UUID of the player whose skin a skull item uses, along
-                // with the permanently cached texture property.
-                // Note: Item must be a 'skull_item' with a skin.
-                // -->
                 if (attribute.startsWith("full")) {
+                    Deprecations.itemSkinFullTag.warn(attribute.context);
                     return new ElementTag(skin).getObjectAttribute(attribute.fulfill(1));
                 }
                 return new ElementTag(CoreUtilities.split(skin, '|').get(0)).getObjectAttribute(attribute);
@@ -95,7 +105,7 @@ public class ItemSkullskin implements Property {
         // @group properties
         // @description
         // Returns whether the item has a custom skin set.
-        // (Only for human 'skull_item's)
+        // (Only for 'player_head's)
         // -->
         if (attribute.startsWith("has_skin")) {
             return new ElementTag(getPropertyString() != null)
