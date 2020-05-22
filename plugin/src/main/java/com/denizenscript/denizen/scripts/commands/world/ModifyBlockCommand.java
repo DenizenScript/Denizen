@@ -42,7 +42,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         setName("modifyblock");
         setSyntax("modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (no_physics/naturally) (delayed) (<script>) (<percent chance>|...) (source:<player>)");
         setRequiredArguments(2, 7);
-        DenizenAPI.getCurrentInstance().getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+        Bukkit.getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
         // Keep the list empty automatically - we don't want to still block physics so much later that something else edited the block!
         Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
             @Override
@@ -411,7 +411,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         }
     }
 
-    void setBlock(Location location, MaterialTag material, boolean physics, boolean natural) {
+    public static void setBlock(Location location, MaterialTag material, boolean physics, boolean natural) {
         if (physics) {
             for (int i = 0; i < block_physics.size(); i++) {
                 if (compareloc(block_physics.get(i), location)) {
@@ -435,13 +435,13 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         }
     }
 
-    boolean no_physics = false;
+    public static boolean no_physics = false;
 
-    public final List<Location> block_physics = new ArrayList<>();
+    public static final List<Location> block_physics = new ArrayList<>();
 
-    long tick = 0;
+    public static long tick = 0;
 
-    long physitick = 0;
+    public static long physitick = 0;
 
     @EventHandler
     public void blockPhysics(BlockPhysicsEvent event) {
@@ -470,7 +470,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         }
     }
 
-    boolean compareloc(Location lone, Location ltwo) {
+    public static boolean compareloc(Location lone, Location ltwo) {
         return lone.getBlockX() == ltwo.getBlockX() && lone.getBlockY() == ltwo.getBlockY() &&
                 lone.getBlockZ() == ltwo.getBlockZ() && lone.getWorld().getName().equalsIgnoreCase(ltwo.getWorld().getName());
     }

@@ -20,7 +20,7 @@ public class AdjustBlockCommand extends AbstractCommand {
 
     public AdjustBlockCommand() {
         setName("adjustblock");
-        setSyntax("adjustblock [<location>|...] [<mechanism>](:<value>)");
+        setSyntax("adjustblock [<location>|...] [<mechanism>](:<value>) (no_physics)");
         setRequiredArguments(2, 3);
     }
 
@@ -108,8 +108,8 @@ public class AdjustBlockCommand extends AbstractCommand {
             MaterialTag specialMaterial = new MaterialTag(new ModernBlockData(data));
             Mechanism mechanism = new Mechanism(mechanismName, value, scriptEntry.entryData.getTagContext());
             specialMaterial.safeAdjust(mechanism);
-            block.setBlockData(data, false);
             if (doPhysics) {
+                block.setBlockData(data, false);
                 NMSHandler.getBlockHelper().applyPhysics(location);
                 NMSHandler.getBlockHelper().applyPhysics(location.clone().add(1, 0, 0));
                 NMSHandler.getBlockHelper().applyPhysics(location.clone().add(-1, 0, 0));
@@ -118,7 +118,9 @@ public class AdjustBlockCommand extends AbstractCommand {
                 NMSHandler.getBlockHelper().applyPhysics(location.clone().add(0, 1, 0));
                 NMSHandler.getBlockHelper().applyPhysics(location.clone().add(0, -1, 0));
             }
+            else {
+                ModifyBlockCommand.setBlock(block.getLocation(), specialMaterial, false, false);
+            }
         }
-
     }
 }
