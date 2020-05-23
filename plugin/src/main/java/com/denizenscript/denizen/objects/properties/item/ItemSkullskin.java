@@ -152,8 +152,8 @@ public class ItemSkullskin implements Property {
         // Optionally, use the second ElementTag for the skin texture cache.
         // Optionally, use the third ElementTag for a player name.
         // @tags
+        // <ItemTag.skull_skin>
         // <ItemTag.skin>
-        // <ItemTag.skin.full>
         // <ItemTag.has_skin>
         // -->
         if (mechanism.matches("skull_skin")) {

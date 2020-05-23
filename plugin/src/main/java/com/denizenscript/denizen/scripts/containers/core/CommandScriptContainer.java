@@ -91,7 +91,7 @@ public class CommandScriptContainer extends ScriptContainer {
     //   # Available context: <context.server> returns whether the server is viewing the help (a player if false).
     //   # | Most command scripts should NOT have this key, but it's available.
     //   allowed help:
-    //   - determine <player.is_op||<context.server>>
+    //   - determine <player.has_flag[special_allowed_help_flag]||<context.server>>
     //
     //   # The procedure-based script that will run when a player uses tab completion to predict words.
     //   # This should return a ListTag of words that the player can tab through, based on the arguments they have already typed.

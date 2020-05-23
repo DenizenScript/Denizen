@@ -25,7 +25,7 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
     // player drags in inventory
     // player drags (<item>) (in <inventory>)
     //
-    // @Regex ^on player drags( ^[\s]+)?(in [^\s]+)?( in_area ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player drags( ^[\s]+)?(in [^\s]+)?$
     //
     // @Switch in_area:<area> to only process the event if it occurred within a specified area.
     //
