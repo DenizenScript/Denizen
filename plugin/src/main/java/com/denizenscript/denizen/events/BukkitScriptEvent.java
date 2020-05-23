@@ -28,6 +28,50 @@ import java.util.regex.Pattern;
 
 public abstract class BukkitScriptEvent extends ScriptEvent {
 
+    public boolean couldMatchInArea(String lower) {
+        int index = CoreUtilities.split(lower, ' ').indexOf("in");
+        if (index == -1) {
+            return true;
+        }
+
+        String in = CoreUtilities.getXthArg(index + 1, lower);
+        if (InventoryTag.matches(in) || in.equalsIgnoreCase("inventory") || isRegexMatchable(in)) {
+            return false;
+        }
+        if (in.equalsIgnoreCase("notable")) {
+            String next = CoreUtilities.getXthArg(index + 2, lower);
+            if (!next.equalsIgnoreCase("cuboid") && !next.equalsIgnoreCase("ellipsoid")) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean couldMatchInventory(String text) {
+        if (text.equals("inventory")) {
+            return true;
+        }
+        if (InventoryTag.matches(text)) {
+            return true;
+        }
+        if (CoreUtilities.contains(text, '*')) {
+            return true;
+        }
+        if (text.startsWith("regex:")) {
+            return true;
+        }
+        // This one must be last.
+        if (CoreUtilities.contains(text, '|')) {
+            for (String subMatch : text.split("\\|")) {
+                if (!couldMatchInventory(subMatch)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     public boolean couldMatchItem(String text) {
         if (text.equals("item")) {
             return true;
@@ -51,6 +95,25 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return true;
         }
         return false;
+    }
+
+    public boolean nonSwitchWithCheck(ScriptPath path, ItemTag held) {
+        int index;
+        for (index = 0; index < path.eventArgsLower.length; index++) {
+            if (path.eventArgsLower[index].equals("with")) {
+                break;
+            }
+        }
+        if (index >= path.eventArgsLower.length) {
+            // No 'with ...' specified
+            return true;
+        }
+
+        String with = path.eventArgLowerAt(index + 1);
+        if (with != null && (held == null || !tryItem(held, with))) {
+            return false;
+        }
+        return true;
     }
 
     public BukkitTagContext getTagContext(ScriptPath path) {

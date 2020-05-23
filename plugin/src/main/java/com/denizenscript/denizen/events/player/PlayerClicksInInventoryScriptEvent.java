@@ -6,13 +6,15 @@ import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -69,9 +71,11 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
     // <--[event]
     // @Events
     // player clicks in inventory
-    // player (<click type>) clicks (<item>) in <inventory> (with <item>)
+    // player (<click type>) clicks (<item>) in <inventory>
     //
-    // @Regex ^on player( [^\s]+)? clicks [^\s]+( in [^\s]+)?( with [^\s]+)?$
+    // @Regex ^on player( [^\s]+)? clicks [^\s]+( in [^\s]+)?$
+    //
+    // @Switch with:<item> to only process the event if a specified cursor item was used.
     //
     // @Triggers when a player clicks in an inventory. Note that you likely will also want to listen to <@link event player drags in inventory>.
     //
@@ -107,6 +111,8 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
     public ItemTag cursor; // Needed due to internal oddity
     public InventoryClickEvent event;
 
+    private static final HashSet<String> matchHelpList = new HashSet<>(Arrays.asList("at", "entity", "npc", "player", "vehicle", "projectile", "hanging", "fake"));
+
     @Override
     public boolean couldMatch(ScriptPath path) {
         if (!path.eventLower.startsWith("player")) {
@@ -115,18 +121,29 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
         if (!path.eventArgLowerAt(1).equals("clicks") && !path.eventArgLowerAt(2).equals("clicks")) {
             return false;
         }
-        for (String arg : path.eventArgsLower) {
-            if (arg.equals("in")) {
-                return true;
+        String clickedObj = path.eventArgLowerAt(3);
+        if (matchHelpList.contains(clickedObj)) {
+            return false;
+        }
+        int inIndex = -1;
+        for (int i = 0; i < path.eventArgsLower.length; i++) {
+            if (path.eventArgLowerAt(i).equals("in")) {
+                inIndex = i;
             }
         }
-        return false;
+        if (inIndex == -1) {
+            return false;
+        }
+        if (!couldMatchInventory(path.eventArgLowerAt(inIndex + 1))) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public boolean matches(ScriptPath path) {
         boolean hasClickType = path.eventArgLowerAt(2).equals("clicks");
-        if (hasClickType && !path.eventArgLowerAt(1).equals(CoreUtilities.toLowerCase(event.getClick().name()))) {
+        if (hasClickType && !runGenericCheck(path.eventArgLowerAt(1), event.getClick().name())) {
             return false;
         }
         String clickedItemText = path.eventArgLowerAt(hasClickType ? 3 : 2);
@@ -142,13 +159,10 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
         if (!tryInventory(inventory, path.eventArgLowerAt(inIndex + 1))) {
             return false;
         }
-        int withIndex = -1;
-        for (int i = 0; i < path.eventArgsLower.length; i++) {
-            if (path.eventArgLowerAt(i).equals("with")) {
-                withIndex = i;
-            }
+        if (!runWithCheck(path, cursor)) {
+            return false;
         }
-        if (withIndex > 0 && (event.getCursor() == null || !tryItem(new ItemTag(event.getCursor()), path.eventArgLowerAt(withIndex + 1)))) {
+        if (!nonSwitchWithCheck(path, cursor)) {
             return false;
         }
         return super.matches(path);
