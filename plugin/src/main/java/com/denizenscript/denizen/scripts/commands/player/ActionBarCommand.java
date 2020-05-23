@@ -117,7 +117,7 @@ public class ActionBarCommand extends AbstractCommand {
 
         boolean perPlayer = perPlayerObj != null && perPlayerObj.asBoolean();
         BukkitTagContext context = (BukkitTagContext) scriptEntry.getContext();
-        if (!perPlayer || targets == null) {
+        if (!perPlayer) {
             text = TagManager.tag(text, context);
         }
 
