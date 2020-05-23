@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
+import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -10,9 +11,11 @@ import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.tags.TagManager;
 import net.md_5.bungee.api.ChatMessageType;
 
 import java.util.Arrays;
@@ -22,22 +25,28 @@ public class ActionBarCommand extends AbstractCommand {
 
     public ActionBarCommand() {
         setName("actionbar");
-        setSyntax("actionbar [<text>] (targets:<player>|...) (format:<name>)");
-        setRequiredArguments(1, 3);
+        setSyntax("actionbar [<text>] (targets:<player>|...) (format:<name>) (per_player)");
+        setRequiredArguments(1, 4);
+        setParseArgs(false);
     }
 
     // <--[command]
     // @Name ActionBar
-    // @Syntax actionbar [<text>] (targets:<player>|...) (format:<name>)
+    // @Syntax actionbar [<text>] (targets:<player>|...) (format:<name>) (per_player)
     // @Required 1
-    // @Maximum 3
+    // @Maximum 4
     // @Short Sends a message to a player's action bar.
     // @group player
     //
     // @Description
-    // Sends a message to the target's action bar area. If no target is specified it will default to the attached
-    // player. Accepts the 'format:<name>' argument, which will reformat the text according to the specified
-    // format script.
+    // Sends a message to the target's action bar area.
+    // If no target is specified it will default to the attached player.
+    // Accepts the 'format:<name>' argument, which will reformat the text according to the specified format script.
+    //
+    // Optionally use 'per_player' with a list of player targets, to have the tags in the text input be reparsed for each and every player.
+    // So, for example, "- actionbar 'hello <player.name>' targets:<server.list_online_players>"
+    // would normally show "hello bob" to every player (every player sees the exact same name in the text, ie bob sees "hello bob", steve also sees "hello bob", etc)
+    // but if you use "per_player", each player online would see their own name (so bob sees "hello bob", steve sees "hello steve", etc).
     //
     // @Tags
     // None
@@ -58,19 +67,23 @@ public class ActionBarCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : ArgumentHelper.interpret(scriptEntry, scriptEntry.getOriginalArguments())) {
 
             if (arg.matchesPrefix("format", "f")) {
-                String formatStr = arg.getValue();
+                String formatStr = TagManager.tag(arg.getValue(), scriptEntry.getContext());
                 FormatScriptContainer format = ScriptRegistry.getScriptContainer(formatStr);
                 if (format == null) {
-                    Debug.echoError("Could not find format script matching '" + formatStr + '\'');
+                    Debug.echoError("Could not find format script matching '" + formatStr + "'");
                 }
-                scriptEntry.addObject("format", format);
+                scriptEntry.addObject("format", new ScriptTag(format));
             }
             if (arg.matchesPrefix("targets", "target")
                     && arg.matchesArgumentList(PlayerTag.class)) {
-                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
+                scriptEntry.addObject("targets", ListTag.getListFor(TagManager.tagObject(arg.getValue(), scriptEntry.getContext()), scriptEntry.getContext()).filter(PlayerTag.class, scriptEntry));
+            }
+            else if (!scriptEntry.hasObject("per_player")
+                    && arg.matches("per_player")) {
+                scriptEntry.addObject("per_player", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("text")) {
                 scriptEntry.addObject("text", new ElementTag(arg.raw_value));
@@ -97,24 +110,43 @@ public class ActionBarCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-        ElementTag text = scriptEntry.getElement("text");
-        FormatScriptContainer format = (FormatScriptContainer) scriptEntry.getObject("format");
         List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
+        String text = scriptEntry.getElement("text").asString();
+        ScriptTag formatObj = scriptEntry.getObjectTag("format");
+        ElementTag perPlayerObj = scriptEntry.getElement("per_player");
+
+        boolean perPlayer = perPlayerObj != null && perPlayerObj.asBoolean();
+        BukkitTagContext context = (BukkitTagContext) scriptEntry.getContext();
+        if (!perPlayer || targets == null) {
+            text = TagManager.tag(text, context);
+        }
+
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), text.debug() + ArgumentHelper.debugList("Targets", targets));
+            Debug.report(scriptEntry, getName(),
+                    ArgumentHelper.debugObj("Message", text)
+                            + ArgumentHelper.debugList("Targets", targets)
+                            + (formatObj != null ? formatObj.debug() : "")
+                            + (perPlayerObj != null ? perPlayerObj.debug() : ""));
         }
-        if (format != null) {
-            text = new ElementTag(format.getFormattedText(text.asString(), scriptEntry));
-        }
+
+        FormatScriptContainer format = formatObj == null ? null : (FormatScriptContainer) formatObj.getContainer();
+
         for (PlayerTag player : targets) {
-            if (player.isValid() && player.isOnline()) {
-                player.getPlayerEntity().spigot().sendMessage(ChatMessageType.ACTION_BAR, FormattedTextHelper.parse(text.asString()));
+            if (player != null) {
+                if (!player.isOnline()) {
+                    Debug.echoDebug(scriptEntry, "Player is offline, can't send actionbar to them. Skipping.");
+                    continue;
+                }
+                String personalText = text;
+                if (perPlayer) {
+                    context.player = player;
+                    personalText = TagManager.tag(personalText, context);
+                }
+                player.getPlayerEntity().spigot().sendMessage(ChatMessageType.ACTION_BAR, FormattedTextHelper.parse(format != null ? format.getFormattedText(personalText, scriptEntry) : personalText));
             }
             else {
-                Debug.echoError(scriptEntry.getResidingQueue(), "Tried to send action bar message to non-existent or offline player!");
+                Debug.echoError("Sent actionbar to non-existent player!?");
             }
         }
-
     }
-
 }
