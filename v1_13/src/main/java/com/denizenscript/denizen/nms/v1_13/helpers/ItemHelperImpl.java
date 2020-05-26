@@ -17,6 +17,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import org.bukkit.craftbukkit.v1_13_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_13_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_13_R2.util.CraftMagicNumbers;
 import org.bukkit.craftbukkit.v1_13_R2.util.CraftNamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
@@ -36,6 +37,11 @@ public class ItemHelperImpl extends ItemHelper {
         MinecraftKey nmsKey = CraftNamespacedKey.toMinecraft(key);
         Object2ObjectLinkedOpenHashMap<MinecraftKey, IRecipe> recipeMap = ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().recipes;
         return recipeMap.get(nmsKey);
+    }
+
+    @Override
+    public Integer burnTime(Material material) {
+        return TileEntityFurnace.p().get(CraftMagicNumbers.getItem(material));
     }
 
     @Override

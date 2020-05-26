@@ -26,6 +26,11 @@ import java.util.List;
 public class ItemHelperImpl extends ItemHelper {
 
     @Override
+    public Integer burnTime(Material material) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public Recipe getRecipeById(NamespacedKey key) {
         throw new UnsupportedOperationException();
     }

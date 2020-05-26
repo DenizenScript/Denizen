@@ -18,6 +18,7 @@ import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Object2ObjectLi
 import org.bukkit.craftbukkit.v1_15_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftInventoryPlayer;
 import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_15_R1.util.CraftMagicNumbers;
 import org.bukkit.craftbukkit.v1_15_R1.util.CraftNamespacedKey;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
@@ -40,6 +41,11 @@ public class ItemHelperImpl extends ItemHelper {
             }
         }
         return null;
+    }
+
+    @Override
+    public Integer burnTime(Material material) {
+        return TileEntityFurnace.f().get(CraftMagicNumbers.getItem(material));
     }
 
     @Override

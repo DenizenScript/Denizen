@@ -17,6 +17,8 @@ import java.util.List;
 
 public abstract class ItemHelper {
 
+    public abstract Integer burnTime(Material material);
+
     public abstract Recipe getRecipeById(NamespacedKey key);
 
     public abstract void removeRecipe(NamespacedKey key);

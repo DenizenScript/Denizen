@@ -9,6 +9,7 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
 import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.tags.BukkitTagContext;
+import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.Attribute;
@@ -739,6 +740,29 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // -->
         registerTag("is_flammable", (attribute, object) -> {
             return new ElementTag(object.material.isFlammable());
+        });
+
+        // <--[tag]
+        // @attribute <MaterialTag.is_fuel>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns whether the material is a block that can be burned in a furnace as fuel.
+        // -->
+        registerTag("is_fuel", (attribute, object) -> {
+            return new ElementTag(object.material.isFuel());
+        });
+
+        // <--[tag]
+        // @attribute <MaterialTag.fuel_burn_time>
+        // @returns DurationTag
+        // @description
+        // Returns the duration that a burnable fuel block will burn in a furnace for.
+        // -->
+        registerTag("fuel_burn_time", (attribute, object) -> {
+            Integer ticks = NMSHandler.getItemHelper().burnTime(object.getMaterial());
+            if (ticks != null) {
+                return new DurationTag(ticks.longValue());
+            }
         });
 
         // <--[tag]
