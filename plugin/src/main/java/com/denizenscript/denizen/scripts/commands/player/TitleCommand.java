@@ -82,8 +82,7 @@ public class TitleCommand extends AbstractCommand {
                 String argStr = TagManager.tag(arg.getValue(), scriptEntry.getContext());
                 scriptEntry.addObject("fade_out", DurationTag.valueOf(argStr, scriptEntry.context));
             }
-            else if (arg.matchesPrefix("targets", "target")
-                    && arg.matchesArgumentList(PlayerTag.class)) {
+            else if (arg.matchesPrefix("targets", "target")) {
                 scriptEntry.addObject("targets", ListTag.getListFor(TagManager.tagObject(arg.getValue(), scriptEntry.getContext()), scriptEntry.getContext()).filter(PlayerTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("per_player")
@@ -122,6 +121,7 @@ public class TitleCommand extends AbstractCommand {
         BukkitTagContext context = (BukkitTagContext) scriptEntry.getContext();
         if (!perPlayer) {
             title = TagManager.tag(title, context);
+            subtitle = TagManager.tag(subtitle, context);
         }
 
         if (scriptEntry.dbCallShouldDebug()) {

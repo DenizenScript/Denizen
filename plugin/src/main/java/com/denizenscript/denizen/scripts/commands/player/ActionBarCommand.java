@@ -77,8 +77,7 @@ public class ActionBarCommand extends AbstractCommand {
                 }
                 scriptEntry.addObject("format", new ScriptTag(format));
             }
-            if (arg.matchesPrefix("targets", "target")
-                    && arg.matchesArgumentList(PlayerTag.class)) {
+            if (arg.matchesPrefix("targets", "target")) {
                 scriptEntry.addObject("targets", ListTag.getListFor(TagManager.tagObject(arg.getValue(), scriptEntry.getContext()), scriptEntry.getContext()).filter(PlayerTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("per_player")
