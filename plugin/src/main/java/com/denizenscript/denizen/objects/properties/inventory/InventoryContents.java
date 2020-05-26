@@ -5,9 +5,11 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -122,7 +124,28 @@ public class InventoryContents implements Property {
 
     public static void registerTags() {
 
+
+
         // <--[tag]
+        // @attribute <InventoryTag.map_slots>
+        // @returns MapTag
+        // @group properties
+        // @description
+        // Returns a map of inventory slots to the items in those slots (excludes air).
+        // -->
+        PropertyParser.<InventoryContents>registerTag("map_slots", (attribute, contents) -> {
+            MapTag map = new MapTag();
+            ItemStack[] items = contents.inventory.getContents();
+            for (int i = 0; i < items.length; i++) {
+                if (items[i] == null || items[i].getType() == Material.AIR) {
+                    continue;
+                }
+                map.map.put(new StringHolder(String.valueOf(i + 1)), new ItemTag(items[i]));
+            }
+            return map;
+        });
+
+            // <--[tag]
         // @attribute <InventoryTag.list_contents>
         // @returns ListTag(ItemTag)
         // @group properties

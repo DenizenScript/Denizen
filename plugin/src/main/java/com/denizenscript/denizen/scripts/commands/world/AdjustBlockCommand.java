@@ -47,11 +47,11 @@ public class AdjustBlockCommand extends AbstractCommand {
     //
     // @Usage
     // Use to put snow on the block at the player's feet.
-    // - adjust <player.location.below> snowy:true
+    // - adjustblock <player.location.below> snowy:true
     //
     // @Usage
     // Use to switch on the lever that the player is looking at, without actually providing redstone power.
-    // - adjust <player.cursor_on> switched:true no_physics
+    // - adjustblock <player.cursor_on> switched:true no_physics
     //
     // -->
 
