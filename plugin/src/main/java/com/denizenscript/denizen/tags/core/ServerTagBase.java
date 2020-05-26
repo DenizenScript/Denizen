@@ -261,6 +261,22 @@ public class ServerTagBase {
             return;
         }
 
+        // <--[tag]
+        // @attribute <server.recipe_result[<id>]>
+        // @returns ItemTag
+        // @description
+        // Returns the item that a recipe will create when crafted.
+        // -->
+        if (attribute.startsWith("recipe_result") && attribute.hasContext(1)) {
+            NamespacedKey key = Utilities.parseNamespacedKey(attribute.getContext(1));
+            Recipe recipe = NMSHandler.getItemHelper().getRecipeById(key);
+            if (recipe == null) {
+                return;
+            }
+            event.setReplacedObject(new ItemTag(recipe.getResult()));
+            return;
+        }
+
         if (attribute.startsWith("scoreboard")) {
             Scoreboard board;
             String name = "main";
