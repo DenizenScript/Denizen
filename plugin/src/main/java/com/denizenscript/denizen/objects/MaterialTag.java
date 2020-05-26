@@ -763,6 +763,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
             if (ticks != null) {
                 return new DurationTag(ticks.longValue());
             }
+            return null;
         });
 
         // <--[tag]
