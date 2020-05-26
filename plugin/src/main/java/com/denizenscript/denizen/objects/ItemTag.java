@@ -214,6 +214,10 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         return false;
     }
 
+    public static ItemTag getItemFor(ObjectTag object, TagContext context) {
+        return object instanceof ItemTag ? (ItemTag) object : valueOf(object.toString(), context);
+    }
+
     @Override
     public ObjectTag duplicate() {
         return new ItemTag(item.clone());

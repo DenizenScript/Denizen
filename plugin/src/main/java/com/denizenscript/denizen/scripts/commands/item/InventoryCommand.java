@@ -13,6 +13,7 @@ import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.Deprecations;
@@ -142,7 +143,7 @@ public class InventoryCommand extends AbstractCommand {
             // or a ListTag of ItemTags
             else if (!scriptEntry.hasObject("origin")
                     && arg.matchesPrefix("origin", "o", "source", "items", "item", "i", "from", "f")
-                    && (arg.matchesArgumentTypes(InventoryTag.class, EntityTag.class, LocationTag.class)
+                    && (arg.matchesArgumentTypes(InventoryTag.class, EntityTag.class, LocationTag.class, MapTag.class)
                     || arg.matchesArgumentList(ItemTag.class))) {
                 scriptEntry.addObject("origin", Conversion.getInventory(arg, scriptEntry));
             }
