@@ -48,7 +48,7 @@ public class TextWidthHelper {
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
             if (c == '\n') {
-                output.append(str, lineStart, i);
+                output.append(str, lineStart, i + 1);
                 curLineWidth = 0;
                 lineStart = i + 1;
                 continue;
