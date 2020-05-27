@@ -131,21 +131,19 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
         LocationTag location = scriptEntry.getObjectTag("location");
 
         if (scriptEntry.dbCallShouldDebug()) {
-
             Debug.report(scriptEntry, getName(),
                     item.debug()
                             + duration.debug()
                             + location.debug());
-
         }
 
         // Drop the item
-        final Item dropped = location.getWorld()
-                .dropItem(location.getBlockLocation().clone().add(0.5, 1.5, 0.5), item.getItemStack());
+        final Item dropped = location.getWorld().dropItem(location.getBlockLocation().clone().add(0.5, 1.5, 0.5), item.getItemStack());
         dropped.setVelocity(dropped.getVelocity().multiply(0));
         dropped.setPickupDelay(duration.getTicksAsInt() + 1000);
         dropped.setTicksLived(duration.getTicksAsInt() + 1000);
         if (!dropped.isValid()) {
+            Debug.echoDebug(scriptEntry, "Item failed to spawned (likely blocked by some plugin).");
             return;
         }
         final UUID itemUUID = dropped.getUniqueId();
