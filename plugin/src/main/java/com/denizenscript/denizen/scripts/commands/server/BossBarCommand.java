@@ -38,7 +38,9 @@ public class BossBarCommand extends AbstractCommand {
     // Displays a boss bar at the top of the screen of the specified player(s). You can also update the
     // values and remove the bar.
     //
-    // Requires an ID. Progress must be between 0 and 1.
+    // Requires an ID.
+    //
+    // Progress must be between 0 and 1.
     //
     // Valid colors: BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW.
     // Valid styles: SEGMENTED_10, SEGMENTED_12, SEGMENTED_20, SEGMENTED_6, SOLID.

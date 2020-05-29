@@ -23,11 +23,14 @@ import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debuggable;
+import com.denizenscript.denizencore.utilities.debugging.StrongWarning;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.function.Consumer;
 
 public class DenizenCoreImplementation implements DenizenImplementation {
@@ -188,10 +191,17 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     // If you need to use the original player/NPC in a tag on the same line, use the define command to track it.
     // -->
 
+    public static StrongWarning invalidPlayerArg = new StrongWarning("The 'player:' arg should not be used in commands like define/flag/yaml/... just input the player directly instead.");
+    public static StrongWarning invalidNpcArg = new StrongWarning("The 'npc:' arg should not be used in commands like define/flag/yaml/... just input the npc directly instead.");
+    public static HashSet<String> invalidPlayerArgCommands = new HashSet<>(Arrays.asList("DEFINE", "FLAG", "YAML"));
+
     @Override
     public boolean handleCustomArgs(ScriptEntry scriptEntry, Argument arg, boolean if_ignore) {
         // Fill player/off-line player
         if (arg.matchesPrefix("player") && !if_ignore) {
+            if (invalidPlayerArgCommands.contains(scriptEntry.getCommandName())) {
+                invalidPlayerArg.warn(scriptEntry);
+            }
             Debug.echoDebug(scriptEntry, "...replacing the linked player with " + arg.getValue());
             String value = TagManager.tag(arg.getValue(), scriptEntry.getContext());
             PlayerTag player = PlayerTag.valueOf(value);
@@ -204,6 +214,9 @@ public class DenizenCoreImplementation implements DenizenImplementation {
 
         // Fill NPC argument
         else if (arg.matchesPrefix("npc") && !if_ignore) {
+            if (invalidPlayerArgCommands.contains(scriptEntry.getCommandName())) {
+                invalidNpcArg.warn(scriptEntry);
+            }
             Debug.echoDebug(scriptEntry, "...replacing the linked NPC with " + arg.getValue());
             String value = TagManager.tag(arg.getValue(), scriptEntry.getContext());
             NPCTag npc = NPCTag.valueOf(value);
