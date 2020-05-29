@@ -22,7 +22,7 @@ public class AnnounceCommand extends AbstractCommand {
         setName("announce");
         setSyntax("announce [<text>] (to_ops/to_console/to_flagged:<flag_name>) (format:<name>)");
         setRequiredArguments(1, 3);
-        isProcedural = true; // Should be false, but specially allowed due to common lazy debugging techniques
+        isProcedural = true;
     }
 
     // <--[command]
@@ -118,6 +118,9 @@ public class AnnounceCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
+        if (scriptEntry.getResidingQueue().procedural) {
+            Debug.echoError("'Announce' should not be used in a procedure script. Consider the 'debug' command instead.");
+        }
         ElementTag text = scriptEntry.getElement("text");
         AnnounceType type = (AnnounceType) scriptEntry.getObject("type");
         FormatScriptContainer format = (FormatScriptContainer) scriptEntry.getObject("format");
