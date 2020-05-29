@@ -232,6 +232,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                             queue.addDefinition(definition, section.getString(definition));
                         }
                     }
+                    queue.procedural = true;
                     queue.start();
                     if (queue.determinations != null) {
                         ListTag list = ListTag.getListFor(queue.determinations.getObject(0), context);
