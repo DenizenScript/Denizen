@@ -52,7 +52,7 @@ Scripts:
     Use default script folder: true
     Alternative folder path: 'plugins/Denizen'
   # What character encoding to use. 'default' indicates system default, 'utf8' is suggested as a preferred encoding in most cases.
-  Encoding: default
+  Encoding: utf8
 
 # The default options for new Denizen NPCs
 
