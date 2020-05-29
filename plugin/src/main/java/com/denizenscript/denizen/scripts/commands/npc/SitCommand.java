@@ -18,6 +18,7 @@ public class SitCommand extends AbstractCommand {
         setName("sit");
         setSyntax("sit (<location>)");
         setRequiredArguments(0, 1);
+        isProcedural = false;
     }
 
     // <--[command]

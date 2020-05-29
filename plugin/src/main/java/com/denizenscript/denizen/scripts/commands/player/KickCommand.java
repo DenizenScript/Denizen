@@ -18,6 +18,7 @@ public class KickCommand extends AbstractCommand {
         setName("kick");
         setSyntax("kick [<player>|...] (reason:<text>)");
         setRequiredArguments(1, 2);
+        isProcedural = false;
     }
 
     // <--[command]

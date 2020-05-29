@@ -38,6 +38,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
         if (Depends.citizens != null) {
             denizen.getServer().getPluginManager().registerEvents(new ChunkLoadCommandNPCEvents(), denizen);
         }
+        isProcedural = false;
     }
 
     // <--[command]

@@ -21,6 +21,7 @@ public class HealCommand extends AbstractCommand {
         setName("heal");
         setSyntax("heal (<#.#>) ({player}/<entity>|...)");
         setRequiredArguments(0, 2);
+        isProcedural = false;
     }
 
     // <--[command]

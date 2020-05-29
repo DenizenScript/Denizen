@@ -21,6 +21,7 @@ public class BanCommand extends AbstractCommand {
         setName("ban");
         setSyntax("ban ({add}/remove) [<player>|.../addresses:<address>|...] (reason:<text>) (duration:<duration>) (source:<text>)");
         setRequiredArguments(1, 5);
+        isProcedural = false;
     }
 
     // <--[command]

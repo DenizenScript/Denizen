@@ -23,6 +23,7 @@ public class AnimateCommand extends AbstractCommand {
         setName("animate");
         setSyntax("animate [<entity>|...] [animation:<name>]");
         setRequiredArguments(2, 2);
+        isProcedural = false;
     }
 
     // <--[command]

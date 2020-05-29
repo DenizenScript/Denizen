@@ -28,6 +28,7 @@ public class BlockCrackCommand extends AbstractCommand {
         setName("blockcrack");
         setSyntax("blockcrack [<location>] [progress:<#>] (stack) (players:<player>|...)");
         setRequiredArguments(2, 4);
+        isProcedural = false;
     }
 
     // <--[command]

@@ -17,6 +17,7 @@ public class PushableCommand extends AbstractCommand {
         setName("pushable");
         setSyntax("pushable (state:true/false/{toggle}) (delay:<duration>) (returnable:true/false)");
         setRequiredArguments(0, 3);
+        isProcedural = false;
     }
 
     // <--[command]

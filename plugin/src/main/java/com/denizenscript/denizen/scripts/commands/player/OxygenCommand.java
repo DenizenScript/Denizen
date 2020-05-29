@@ -15,6 +15,7 @@ public class OxygenCommand extends AbstractCommand {
         setName("oxygen");
         setSyntax("oxygen [<#>] (type:{remaining}/maximum) (mode:{set}/add/remove)");
         setRequiredArguments(1, 3);
+        isProcedural = false;
     }
 
     // <--[command]

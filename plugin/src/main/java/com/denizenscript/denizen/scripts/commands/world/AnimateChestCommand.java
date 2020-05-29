@@ -25,6 +25,7 @@ public class AnimateChestCommand extends AbstractCommand {
         setName("animatechest");
         setSyntax("animatechest [<location>] ({open}/close) (sound:{true}/false) (<player>|...)");
         setRequiredArguments(1, 4);
+        isProcedural = false;
     }
 
     // <--[command]

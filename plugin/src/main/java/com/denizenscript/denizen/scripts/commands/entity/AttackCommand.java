@@ -21,6 +21,7 @@ public class AttackCommand extends AbstractCommand {
         setName("attack");
         setSyntax("attack (<entity>|...) (target:<entity>/cancel)");
         setRequiredArguments(0, 2);
+        isProcedural = false;
     }
 
     // <--[command]

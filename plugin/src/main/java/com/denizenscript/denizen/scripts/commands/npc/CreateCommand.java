@@ -20,6 +20,7 @@ public class CreateCommand extends AbstractCommand {
         setName("create");
         setSyntax("create [<entity>] [<name>] (<location>) (traits:<trait>|...)");
         setRequiredArguments(1, 4);
+        isProcedural = false;
     }
 
     // <--[command]

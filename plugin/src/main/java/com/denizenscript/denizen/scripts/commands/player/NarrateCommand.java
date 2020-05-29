@@ -28,6 +28,7 @@ public class NarrateCommand extends AbstractCommand {
         setSyntax("narrate [<text>] (targets:<player>|...) (format:<script>) (per_player)");
         setRequiredArguments(1, 4);
         setParseArgs(false);
+        isProcedural = true; // Should be false, but specially allowed due to common lazy debugging techniques
     }
 
     // <--[command]

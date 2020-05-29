@@ -23,6 +23,7 @@ public class RotateCommand extends AbstractCommand implements Holdable {
         setName("rotate");
         setSyntax("rotate (cancel) (<entity>|...) (yaw:<#.#>) (pitch:<#.#>) (infinite/duration:<duration>) (frequency:<duration>)");
         setRequiredArguments(1, 6);
+        isProcedural = false;
     }
 
     // <--[command]

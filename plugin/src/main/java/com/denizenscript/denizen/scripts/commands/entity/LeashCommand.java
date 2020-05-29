@@ -23,6 +23,7 @@ public class LeashCommand extends AbstractCommand {
         setName("leash");
         setSyntax("leash (cancel) [<entity>|...] (holder:<entity>/<location>)");
         setRequiredArguments(1, 3);
+        isProcedural = false;
     }
 
     // <--[command]

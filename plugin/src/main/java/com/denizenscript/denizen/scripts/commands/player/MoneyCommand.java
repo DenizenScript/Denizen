@@ -22,6 +22,7 @@ public class MoneyCommand extends AbstractCommand {
         setName("money");
         setSyntax("money [give/take/set] (quantity:<#.#>) (players:<player>|...)");
         setRequiredArguments(1, 3);
+        isProcedural = false;
     }
 
     // <--[command]

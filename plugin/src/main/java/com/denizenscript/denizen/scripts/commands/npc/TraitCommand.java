@@ -17,6 +17,7 @@ public class TraitCommand extends AbstractCommand {
         setName("trait");
         setSyntax("trait (state:true/false/{toggle}) [<trait>]");
         setRequiredArguments(1, 2);
+        isProcedural = false;
     }
 
     // <--[command]

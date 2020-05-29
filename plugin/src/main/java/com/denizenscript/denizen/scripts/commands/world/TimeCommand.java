@@ -22,6 +22,7 @@ public class TimeCommand extends AbstractCommand {
         setName("time");
         setSyntax("time ({global}/player) [<time-duration>/reset] (<world>) (reset:<duration>) (freeze)");
         setRequiredArguments(1, 5);
+        isProcedural = false;
     }
 
     // <--[command]

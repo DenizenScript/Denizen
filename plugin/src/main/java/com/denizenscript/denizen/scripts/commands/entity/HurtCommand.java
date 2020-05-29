@@ -23,6 +23,7 @@ public class HurtCommand extends AbstractCommand {
         setName("hurt");
         setSyntax("hurt (<#.#>) ({player}/<entity>|...) (cause:<cause>)");
         setRequiredArguments(0, 3);
+        isProcedural = false;
     }
 
     // <--[command]

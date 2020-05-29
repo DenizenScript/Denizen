@@ -20,6 +20,7 @@ public class FishCommand extends AbstractCommand {
         setName("fish");
         setSyntax("fish [<location>] (catch:{none}/default/junk/treasure/fish) (stop) (chance:<#>)");
         setRequiredArguments(1, 4);
+        isProcedural = false;
     }
 
     // <--[command]

@@ -18,6 +18,7 @@ public class StandCommand extends AbstractCommand {
         setName("stand");
         setSyntax("stand");
         setRequiredArguments(0, 0);
+        isProcedural = false;
     }
 
     // <--[command]

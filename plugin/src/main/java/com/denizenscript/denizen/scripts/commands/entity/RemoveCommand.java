@@ -22,6 +22,7 @@ public class RemoveCommand extends AbstractCommand {
         setName("remove");
         setSyntax("remove [<entity>|...] (world:<world>)");
         setRequiredArguments(1, 2);
+        isProcedural = false;
     }
 
     // <--[command]

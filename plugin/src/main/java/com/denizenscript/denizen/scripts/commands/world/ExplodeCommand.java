@@ -16,6 +16,7 @@ public class ExplodeCommand extends AbstractCommand {
         setName("explode");
         setSyntax("explode (power:<#.#>) (<location>) (fire) (breakblocks)");
         setRequiredArguments(0, 4);
+        isProcedural = false;
     }
 
     // <--[command]

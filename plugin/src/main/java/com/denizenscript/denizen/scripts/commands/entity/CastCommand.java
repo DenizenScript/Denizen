@@ -22,6 +22,7 @@ public class CastCommand extends AbstractCommand {
         setName("cast");
         setSyntax("cast [<effect>] (remove) (duration:<value>) (amplifier:<#>) (<entity>|...) (no_ambient) (hide_particles)");
         setRequiredArguments(1, 7);
+        isProcedural = false;
     }
 
     // <--[command]

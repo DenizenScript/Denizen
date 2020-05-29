@@ -42,6 +42,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         setSyntax("shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (speed:<#.#>) (script:<name>) (def:<element>|...) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)");
         setRequiredArguments(1, 11);
         Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+        isProcedural = false;
     }
 
     // <--[command]

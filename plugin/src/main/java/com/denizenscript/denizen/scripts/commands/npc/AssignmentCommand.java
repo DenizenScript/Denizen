@@ -16,6 +16,7 @@ public class AssignmentCommand extends AbstractCommand {
         setName("assignment");
         setSyntax("assignment [set/remove] (script:<name>)");
         setRequiredArguments(1, 2);
+        isProcedural = false;
     }
 
     // <--[command]

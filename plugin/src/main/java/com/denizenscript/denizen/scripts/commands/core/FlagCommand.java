@@ -25,6 +25,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
         setName("flag");
         setSyntax("flag [player/npc/server/<entity>] [<name>([<#>])](:<action>)[:<value>] (duration:<value>)");
         setRequiredArguments(1, 3);
+        isProcedural = false;
     }
 
     // <--[command]

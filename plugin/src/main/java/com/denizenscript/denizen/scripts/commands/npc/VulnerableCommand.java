@@ -15,6 +15,7 @@ public class VulnerableCommand extends AbstractCommand {
         setName("vulnerable");
         setSyntax("vulnerable (state:{true}/false/toggle)");
         setRequiredArguments(0, 1);
+        isProcedural = false;
     }
 
     // <--[command]

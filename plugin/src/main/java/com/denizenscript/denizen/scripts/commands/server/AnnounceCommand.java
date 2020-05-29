@@ -22,6 +22,7 @@ public class AnnounceCommand extends AbstractCommand {
         setName("announce");
         setSyntax("announce [<text>] (to_ops/to_console/to_flagged:<flag_name>) (format:<name>)");
         setRequiredArguments(1, 3);
+        isProcedural = true; // Should be false, but specially allowed due to common lazy debugging techniques
     }
 
     // <--[command]

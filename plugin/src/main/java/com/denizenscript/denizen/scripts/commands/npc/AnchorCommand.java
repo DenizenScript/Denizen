@@ -21,6 +21,7 @@ public class AnchorCommand extends AbstractCommand {
         setName("anchor");
         setSyntax("anchor [id:<name>] [remove/add <location>]");
         setRequiredArguments(2, 3);
+        isProcedural = false;
     }
 
     // <--[command]

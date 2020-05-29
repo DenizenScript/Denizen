@@ -20,6 +20,7 @@ public class CreateWorldCommand extends AbstractCommand {
         setName("createworld");
         setSyntax("createworld [<name>] (generator:<id>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>) (seed:<seed>) (settings:<json>)");
         setRequiredArguments(1, 7);
+        isProcedural = false;
     }
 
     // <--[command]

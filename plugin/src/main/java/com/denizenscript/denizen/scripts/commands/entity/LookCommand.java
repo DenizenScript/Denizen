@@ -24,6 +24,7 @@ public class LookCommand extends AbstractCommand {
         setName("look");
         setSyntax("look (<entity>|...) [<location>] (duration:<duration>)");
         setRequiredArguments(1, 3);
+        isProcedural = false;
     }
 
     // <--[command]

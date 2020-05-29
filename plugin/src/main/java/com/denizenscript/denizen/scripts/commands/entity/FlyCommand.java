@@ -31,6 +31,7 @@ public class FlyCommand extends AbstractCommand {
         setName("fly");
         setSyntax("fly (cancel) [<entity>|...] (controller:<player>) (origin:<location>) (destinations:<location>|...) (speed:<#.#>) (rotationthreshold:<#.#>)");
         setRequiredArguments(1, 7);
+        isProcedural = false;
     }
 
     // <--[command]

@@ -24,6 +24,7 @@ public class BossBarCommand extends AbstractCommand {
         setName("bossbar");
         setSyntax("bossbar ({create}/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (flags:<flag>|...)");
         setRequiredArguments(1, 8);
+        isProcedural = false;
     }
 
     // <--[command]

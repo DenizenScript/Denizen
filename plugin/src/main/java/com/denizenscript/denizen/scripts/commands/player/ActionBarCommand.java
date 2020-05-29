@@ -28,6 +28,7 @@ public class ActionBarCommand extends AbstractCommand {
         setSyntax("actionbar [<text>] (targets:<player>|...) (format:<name>) (per_player)");
         setRequiredArguments(1, 4);
         setParseArgs(false);
+        isProcedural = false;
     }
 
     // <--[command]

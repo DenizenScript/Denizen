@@ -25,6 +25,7 @@ public class GiveCommand extends AbstractCommand {
         setName("give");
         setSyntax("give [money/xp/<item>|...] (quantity:<#>) (unlimit_stack_size) (to:<inventory>) (slot:<slot>)");
         setRequiredArguments(1, 5);
+        isProcedural = false;
     }
 
     // <--[command]

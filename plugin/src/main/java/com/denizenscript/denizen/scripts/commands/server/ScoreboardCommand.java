@@ -26,6 +26,7 @@ public class ScoreboardCommand extends AbstractCommand {
         setName("scoreboard");
         setSyntax("scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/player/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar}/none) (displayname:<name>)");
         setRequiredArguments(1, 9);
+        isProcedural = false;
     }
 
     // <--[command]

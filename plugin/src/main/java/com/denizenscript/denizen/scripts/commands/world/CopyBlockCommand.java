@@ -23,6 +23,7 @@ public class CopyBlockCommand extends AbstractCommand {
         setName("copyblock");
         setSyntax("copyblock [<location>] [to:<location>] (remove_original)");
         setRequiredArguments(2, 3);
+        isProcedural = false;
     }
 
     // <--[command]

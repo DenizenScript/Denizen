@@ -17,6 +17,7 @@ public class TriggerCommand extends AbstractCommand {
         setName("trigger");
         setSyntax("trigger [name:<trigger>] (state:{toggle}/true/false) (cooldown:<duration>) (radius:<#>)");
         setRequiredArguments(1, 4);
+        isProcedural = false;
     }
 
     // <--[command]

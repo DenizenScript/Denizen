@@ -14,6 +14,7 @@ public class GameRuleCommand extends AbstractCommand {
         setName("gamerule");
         setSyntax("gamerule [<world>] [<rule>] [<value>]");
         setRequiredArguments(3, 3);
+        isProcedural = false;
     }
 
     // <--[command]

@@ -29,6 +29,7 @@ public class ExecuteCommand extends AbstractCommand {
         setName("execute");
         setSyntax("execute [as_player/as_op/as_npc/as_server] [<Bukkit-command>] (silent)");
         setRequiredArguments(2, 3);
+        isProcedural = false;
     }
 
     // <--[command]

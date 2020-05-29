@@ -19,6 +19,7 @@ public class SleepCommand extends AbstractCommand {
         setName("sleep");
         setSyntax("sleep (<location>)");
         setRequiredArguments(0, 1);
+        isProcedural = false;
     }
 
     // <--[command]

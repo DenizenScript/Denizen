@@ -22,6 +22,7 @@ public class AdjustBlockCommand extends AbstractCommand {
         setName("adjustblock");
         setSyntax("adjustblock [<location>|...] [<mechanism>](:<value>) (no_physics)");
         setRequiredArguments(2, 3);
+        isProcedural = false;
     }
 
     // <--[command]

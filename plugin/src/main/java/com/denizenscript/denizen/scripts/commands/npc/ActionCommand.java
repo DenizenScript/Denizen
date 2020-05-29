@@ -20,6 +20,7 @@ public class ActionCommand extends AbstractCommand {
         setName("action");
         setSyntax("action [<action name>|...] (<npc>|...) (context:<name>|<object>|...)");
         setRequiredArguments(1, 3);
+        isProcedural = false;
     }
 
     // <--[command]

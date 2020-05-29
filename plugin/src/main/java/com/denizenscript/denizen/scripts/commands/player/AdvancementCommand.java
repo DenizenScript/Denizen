@@ -28,6 +28,7 @@ public class AdvancementCommand extends AbstractCommand {
         setName("advancement");
         setSyntax("advancement [id:<name>] (delete/grant:<players>/revoke:<players>/{create}) (parent:<name>) (icon:<item>) (title:<text>) (description:<text>) (background:<key>) (frame:<type>) (toast:<boolean>) (announce:<boolean>) (hidden:<boolean>) (x:<offset>) (y:<offset>)");
         setRequiredArguments(1, 13);
+        isProcedural = false;
     }
 
     // <--[command]

@@ -22,6 +22,7 @@ public class WorldBorderCommand extends AbstractCommand {
         setName("worldborder");
         setSyntax("worldborder [<world>/<player>|...] (center:<location>) (size:<#.#>) (current_size:<#.#>) (damage:<#.#>) (damagebuffer:<#.#>) (warningdistance:<#>) (warningtime:<duration>) (duration:<duration>) (reset)");
         setRequiredArguments(2, 10);
+        isProcedural = false;
     }
 
     // <--[command]

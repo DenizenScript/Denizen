@@ -17,6 +17,7 @@ public class LightCommand extends AbstractCommand {
         setName("light");
         setSyntax("light [<location>] [<#>/reset] (duration:<duration>)");
         setRequiredArguments(2, 3);
+        isProcedural = false;
     }
 
     // <--[command]

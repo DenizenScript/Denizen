@@ -19,6 +19,7 @@ public class AgeCommand extends AbstractCommand {
         setName("age");
         setSyntax("age [<entity>|...] (adult/baby/<age>) (lock)");
         setRequiredArguments(1, 3);
+        isProcedural = false;
     }
 
     // <--[command]

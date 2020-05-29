@@ -27,6 +27,7 @@ public class MapCommand extends AbstractCommand {
         setName("map");
         setSyntax("map [<#>/new:<world>] [reset:<location>/image:<file> (resize)/script:<script>] (x:<#>) (y:<#>)");
         setRequiredArguments(2, 5);
+        isProcedural = false;
     }
 
     // <--[command]

@@ -18,6 +18,7 @@ public class LookcloseCommand extends AbstractCommand {
         setName("lookclose");
         setSyntax("lookclose (<npc>) (state:<true/false>) (range:<#>) (realistic)");
         setRequiredArguments(0, 4);
+        isProcedural = false;
     }
 
     // <--[command]

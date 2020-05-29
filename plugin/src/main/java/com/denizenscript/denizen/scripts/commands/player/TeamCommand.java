@@ -20,6 +20,7 @@ public class TeamCommand extends AbstractCommand {
         setName("team");
         setSyntax("team (id:<scoreboard>/{main}) [name:<team>] (add:<entry>|...) (remove:<entry>|...) (prefix:<prefix>) (suffix:<suffix>) (option:<type> status:<status>) (color:<color>)");
         setRequiredArguments(2, 9);
+        isProcedural = false;
     }
 
     // <--[command]

@@ -18,6 +18,7 @@ public class GroupCommand extends AbstractCommand {
         setName("group");
         setSyntax("group [add/remove/set] [<group>] (<world>)");
         setRequiredArguments(2, 3);
+        isProcedural = false;
     }
 
     // <--[command]

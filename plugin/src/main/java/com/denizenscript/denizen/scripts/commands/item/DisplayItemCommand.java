@@ -28,6 +28,7 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
         setSyntax("displayitem [<item>] [<location>] (duration:<value>)");
         setRequiredArguments(2, 3);
         Bukkit.getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+        isProcedural = false;
     }
 
     // <--[command]

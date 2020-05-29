@@ -29,6 +29,7 @@ public class PauseCommand extends AbstractCommand {
         setName("pause");
         setSyntax("pause [waypoints/activity] (<duration>)");
         setRequiredArguments(1, 2);
+        isProcedural = false;
     }
 
     // <--[command]

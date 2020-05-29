@@ -15,6 +15,7 @@ public class ExperienceCommand extends AbstractCommand {
         setName("experience");
         setSyntax("experience [{set}/give/take] (level) [<#>]");
         setRequiredArguments(2, 3);
+        isProcedural = false;
     }
 
     // <--[command]

@@ -25,6 +25,7 @@ public class TeleportCommand extends AbstractCommand {
         setName("teleport");
         setSyntax("teleport (<entity>|...) [<location>]");
         setRequiredArguments(1, 2);
+        isProcedural = false;
     }
 
     // <--[command]

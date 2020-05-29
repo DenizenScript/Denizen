@@ -21,6 +21,7 @@ public class DespawnCommand extends AbstractCommand {
         setName("despawn");
         setSyntax("despawn (<npc>|...)");
         setRequiredArguments(0, 1);
+        isProcedural = false;
     }
 
     // <--[command]

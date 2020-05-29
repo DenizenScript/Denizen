@@ -20,6 +20,7 @@ public class EngageCommand extends AbstractCommand {
         setName("engage");
         setSyntax("engage (<duration>)");
         setRequiredArguments(0, 1);
+        isProcedural = false;
     }
 
     // <--[command]

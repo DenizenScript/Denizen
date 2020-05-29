@@ -18,6 +18,7 @@ public class ResetCommand extends AbstractCommand {
         setName("reset");
         setSyntax("reset (<player>|...) [cooldown/saves/global_cooldown] (<script>)");
         setRequiredArguments(1, 3);
+        isProcedural = false;
     }
 
     // <--[command]

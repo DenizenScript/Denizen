@@ -25,6 +25,7 @@ public class BreakCommand extends AbstractCommand implements Holdable {
         setName("break");
         setSyntax("break [<location>] (<npc>) (radius:<#.#>)");
         setRequiredArguments(1, 3);
+        isProcedural = false;
     }
 
     // <--[command]

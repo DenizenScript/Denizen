@@ -26,6 +26,7 @@ public class GlowCommand extends AbstractCommand {
         setName("glow");
         setSyntax("glow [<entity>|...] (<should glow>)");
         setRequiredArguments(1, 2);
+        isProcedural = false;
     }
 
     // <--[command]

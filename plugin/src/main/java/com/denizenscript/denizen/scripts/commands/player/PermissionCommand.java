@@ -18,6 +18,7 @@ public class PermissionCommand extends AbstractCommand {
         setName("permission");
         setSyntax("permission [add/remove] [permission] (group:<name>) (<world>)");
         setRequiredArguments(2, 4);
+        isProcedural = false;
     }
 
     // <--[command]

@@ -28,6 +28,7 @@ public class FireworkCommand extends AbstractCommand {
         setName("firework");
         setSyntax("firework (<location>) (power:<#>) (<type>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)");
         setRequiredArguments(0, 7);
+        isProcedural = false;
     }
 
     // <--[command]

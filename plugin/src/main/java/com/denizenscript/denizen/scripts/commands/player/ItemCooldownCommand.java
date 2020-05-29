@@ -20,6 +20,7 @@ public class ItemCooldownCommand extends AbstractCommand {
         setName("itemcooldown");
         setSyntax("itemcooldown [<material>|...] (duration:<duration>)");
         setRequiredArguments(1, 2);
+        isProcedural = false;
     }
 
     // <--[command]

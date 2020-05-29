@@ -26,6 +26,7 @@ public class MidiCommand extends AbstractCommand implements Holdable {
         setName("midi");
         setSyntax("midi [cancel/<file> (tempo:<#.#>) (volume:<#.#>)] (<location>/<entity>|...)");
         setRequiredArguments(1, 4);
+        isProcedural = false;
     }
 
     // <--[command]

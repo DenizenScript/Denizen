@@ -21,6 +21,7 @@ public class StatisticCommand extends AbstractCommand {
         setName("statistic");
         setSyntax("statistic [<statistic>] [add/take/set] (<#>) (qualifier:<material>/<entity>)");
         setRequiredArguments(2, 4);
+        isProcedural = false;
     }
 
     // <--[command]

@@ -26,6 +26,7 @@ public class OpenTradesCommand extends AbstractCommand {
         setName("opentrades");
         setSyntax("opentrades [<entity>/<trade>|...] (title:<title>) (players:<player>|...)");
         setRequiredArguments(1, 3);
+        isProcedural = false;
     }
 
     // <--[command]

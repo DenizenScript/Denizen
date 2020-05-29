@@ -28,6 +28,7 @@ public class FakeItemCommand extends AbstractCommand {
         setName("fakeitem");
         setSyntax("fakeitem [<item>|...] [slot:<slot>] (duration:<duration>) (players:<player>|...) (player_only)");
         setRequiredArguments(2, 5);
+        isProcedural = false;
     }
 
     // <--[command]

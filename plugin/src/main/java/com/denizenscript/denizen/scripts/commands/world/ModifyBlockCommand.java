@@ -53,6 +53,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                 }
             }
         }, 2, 2);
+        isProcedural = false;
     }
 
     // <--[command]

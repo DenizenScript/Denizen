@@ -17,6 +17,7 @@ public class RenameCommand extends AbstractCommand {
         setName("rename");
         setSyntax("rename [<name>]");
         setRequiredArguments(1, 1);
+        isProcedural = false;
     }
 
     // <--[command]

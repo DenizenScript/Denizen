@@ -29,6 +29,7 @@ public class ToastCommand extends AbstractCommand {
         setName("toast");
         setSyntax("toast [<text>] (targets:<player>|...) (icon:<item>) (frame:{task}/challenge/goal) (background:<texture>)");
         setRequiredArguments(1, 5);
+        isProcedural = false;
     }
 
     // <--[command]

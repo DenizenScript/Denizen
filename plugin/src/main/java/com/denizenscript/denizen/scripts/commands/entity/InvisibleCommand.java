@@ -20,6 +20,7 @@ public class InvisibleCommand extends AbstractCommand {
         setName("invisible");
         setSyntax("invisible [<entity>] (state:true/false/toggle)");
         setRequiredArguments(1, 2);
+        isProcedural = false;
     }
 
     // <--[command]

@@ -21,6 +21,7 @@ public class MountCommand extends AbstractCommand {
         setName("mount");
         setSyntax("mount (cancel) [<entity>|...] (<location>)");
         setRequiredArguments(0, 3);
+        isProcedural = false;
     }
 
     // <--[command]

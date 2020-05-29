@@ -12,6 +12,7 @@ public class DisengageCommand extends AbstractCommand {
         setName("disengage");
         setSyntax("disengage");
         setRequiredArguments(0, 0);
+        isProcedural = false;
     }
 
     // <--[command]

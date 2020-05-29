@@ -23,6 +23,7 @@ public class ShowFakeCommand extends AbstractCommand {
         setName("showfake");
         setSyntax("showfake [<material>|.../cancel] [<location>|...] (players:<player>|...) (d:<duration>{10s})");
         setRequiredArguments(2, 4);
+        isProcedural = false;
     }
 
     // <--[command]

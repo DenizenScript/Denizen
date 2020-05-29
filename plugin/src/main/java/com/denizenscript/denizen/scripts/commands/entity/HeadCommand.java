@@ -26,6 +26,7 @@ public class HeadCommand extends AbstractCommand {
         setName("head");
         setSyntax("head (<entity>|...) [skin:<player_name>]");
         setRequiredArguments(1, 2);
+        isProcedural = false;
     }
 
     // <--[command]

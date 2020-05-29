@@ -18,6 +18,7 @@ public class FeedCommand extends AbstractCommand {
         setName("feed");
         setSyntax("feed (<entity>) (amount:<#>) (saturation:<#.#>)");
         setRequiredArguments(0, 3);
+        isProcedural = false;
     }
 
     // <--[command]

@@ -7,7 +7,6 @@ import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.DurationTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -24,6 +23,7 @@ public class WeatherCommand extends AbstractCommand {
         setName("weather");
         setSyntax("weather ({global}/player) [sunny/storm/thunder/reset] (<world>) (reset:<duration>)");
         setRequiredArguments(1, 4);
+        isProcedural = false;
     }
 
     // <--[command]

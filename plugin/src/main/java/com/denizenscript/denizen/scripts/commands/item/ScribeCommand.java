@@ -25,6 +25,7 @@ public class ScribeCommand extends AbstractCommand {
         setName("scribe");
         setSyntax("(Deprecated)");
         setRequiredArguments(0, -1);
+        isProcedural = false;
     }
 
     private enum BookAction {GIVE, DROP, EQUIP, NONE}

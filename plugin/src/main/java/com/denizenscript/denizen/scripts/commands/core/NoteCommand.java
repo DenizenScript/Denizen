@@ -16,6 +16,7 @@ public class NoteCommand extends AbstractCommand {
         setName("note");
         setSyntax("note [<Notable ObjectTag>/remove] [as:<name>]");
         setRequiredArguments(2, 2);
+        isProcedural = false;
     }
 
     // <--[command]

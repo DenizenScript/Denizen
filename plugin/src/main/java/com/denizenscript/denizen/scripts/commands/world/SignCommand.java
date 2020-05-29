@@ -27,6 +27,7 @@ public class SignCommand extends AbstractCommand {
         setName("sign");
         setSyntax("sign (type:{automatic}/sign_post/wall_sign) (material:<material>) [<line>|...] [<location>] (direction:north/east/south/west)");
         setRequiredArguments(1, 5);
+        isProcedural = false;
     }
 
     // <--[command]

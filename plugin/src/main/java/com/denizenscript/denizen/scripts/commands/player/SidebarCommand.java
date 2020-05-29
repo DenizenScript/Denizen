@@ -31,6 +31,7 @@ public class SidebarCommand extends AbstractCommand {
         setRequiredArguments(1, 8);
         setParseArgs(false);
         DenizenAPI.getCurrentInstance().getServer().getPluginManager().registerEvents(new SidebarEvents(), DenizenAPI.getCurrentInstance());
+        isProcedural = false;
     }
 
     // <--[command]

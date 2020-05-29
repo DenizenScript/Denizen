@@ -34,6 +34,7 @@ public class SwitchCommand extends AbstractCommand {
         setName("switch");
         setSyntax("switch [<location>|...] (state:[{toggle}/on/off]) (duration:<value>)");
         setRequiredArguments(1, 3);
+        isProcedural = false;
     }
 
     // <--[command]

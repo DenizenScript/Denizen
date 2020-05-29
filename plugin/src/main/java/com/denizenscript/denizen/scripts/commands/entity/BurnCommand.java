@@ -20,6 +20,7 @@ public class BurnCommand extends AbstractCommand {
         setName("burn");
         setSyntax("burn [<entity>|...] (duration:<value>)");
         setRequiredArguments(1, 2);
+        isProcedural = false;
     }
 
     // <--[command]

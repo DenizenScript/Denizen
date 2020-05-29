@@ -22,6 +22,7 @@ public class SpawnCommand extends AbstractCommand {
         setName("spawn");
         setSyntax("spawn [<entity>|...] (<location>) (target:<entity>) (persistent)");
         setRequiredArguments(1, 4);
+        isProcedural = false;
     }
 
     // <--[command]

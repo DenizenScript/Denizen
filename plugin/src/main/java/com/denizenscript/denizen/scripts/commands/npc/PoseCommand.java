@@ -19,6 +19,7 @@ public class PoseCommand extends AbstractCommand {
         setName("pose");
         setSyntax("pose (add/remove/{assume}) [id:<name>] (player/{npc}) (<location>)");
         setRequiredArguments(1, 4);
+        isProcedural = false;
     }
 
     // <--[command]

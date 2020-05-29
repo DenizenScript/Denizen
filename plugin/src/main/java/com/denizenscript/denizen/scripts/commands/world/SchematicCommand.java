@@ -57,6 +57,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         schematics = new HashMap<>();
         noPhys = false;
         Bukkit.getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+        isProcedural = false;
     }
 
     // <--[command]

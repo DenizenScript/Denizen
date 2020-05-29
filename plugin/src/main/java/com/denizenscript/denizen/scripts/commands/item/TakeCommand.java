@@ -28,6 +28,7 @@ public class TakeCommand extends AbstractCommand {
         setName("take");
         setSyntax("take [money/xp/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/nbt:<key>/material:<material>/<item>|...] (quantity:<#>) (from:<inventory>)");
         setRequiredArguments(1, 3);
+        isProcedural = false;
     }
 
     // <--[command]

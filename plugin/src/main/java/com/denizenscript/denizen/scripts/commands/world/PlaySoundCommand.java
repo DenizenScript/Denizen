@@ -21,6 +21,7 @@ public class PlaySoundCommand extends AbstractCommand {
         setName("playsound");
         setSyntax("playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>) (custom) (sound_category:<category name>)");
         setRequiredArguments(2, 6);
+        isProcedural = false;
     }
 
     // <--[command]

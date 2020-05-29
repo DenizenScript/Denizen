@@ -18,6 +18,7 @@ public class CooldownCommand extends AbstractCommand {
         setName("cooldown");
         setSyntax("cooldown [<duration>] (global) (script:<script>)");
         setRequiredArguments(1, 3);
+        isProcedural = false;
     }
 
     // <--[command]

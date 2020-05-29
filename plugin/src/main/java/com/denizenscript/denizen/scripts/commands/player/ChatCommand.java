@@ -20,6 +20,7 @@ public class ChatCommand extends AbstractCommand {
         setName("chat");
         setSyntax("chat [<text>] (no_target/targets:<entity>|...) (talkers:<entity>|...) (range:<#.#>)");
         setRequiredArguments(1, 4);
+        isProcedural = false;
     }
 
     // TODO: Should the chat command be in the NPC group instead?

@@ -22,6 +22,7 @@ public class ZapCommand extends AbstractCommand implements Listener {
         setName("zap");
         setSyntax("zap (<script>) [<step>] (<duration>)");
         setRequiredArguments(0, 3);
+        isProcedural = false;
     }
 
     // <--[command]

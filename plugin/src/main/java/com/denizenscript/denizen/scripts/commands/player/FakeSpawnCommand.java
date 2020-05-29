@@ -22,6 +22,7 @@ public class FakeSpawnCommand extends AbstractCommand {
         setName("fakespawn");
         setSyntax("fakespawn [<entity>] [<location>] (players:<player>|...) (d:<duration>{10s})");
         setRequiredArguments(2, 4);
+        isProcedural = false;
     }
 
     // <--[command]

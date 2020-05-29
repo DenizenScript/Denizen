@@ -33,6 +33,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
         if (Depends.citizens != null) {
             DenizenAPI.getCurrentInstance().getServer().getPluginManager().registerEvents(new WalkCommandCitizensEvents(), DenizenAPI.getCurrentInstance());
         }
+        isProcedural = false;
     }
 
     // <--[command]

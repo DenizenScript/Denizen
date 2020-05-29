@@ -26,6 +26,7 @@ public class DropCommand extends AbstractCommand {
         setName("drop");
         setSyntax("drop [<entity_type>/xp/<item>|...] (<location>) (quantity:<#>) (speed:<#.#>) (delay:<duration>)");
         setRequiredArguments(1, 5);
+        isProcedural = false;
     }
 
     // <--[command]

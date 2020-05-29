@@ -19,6 +19,7 @@ public class FollowCommand extends AbstractCommand {
         setName("follow");
         setSyntax("follow (followers:<entity>|...) (stop/target:<entity>) (lead:<#.#>) (max:<#.#>) (speed:<#.#>) (allow_wander)");
         setRequiredArguments(0, 6);
+        isProcedural = false;
     }
 
     // <--[command]

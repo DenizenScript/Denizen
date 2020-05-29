@@ -17,6 +17,7 @@ public class NBTCommand extends AbstractCommand {
         setName("nbt");
         setSyntax("(Deprecated)");
         setRequiredArguments(0, -1);
+        isProcedural = false;
     }
 
     @Override

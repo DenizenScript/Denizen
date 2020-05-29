@@ -27,6 +27,7 @@ public class InventoryCommand extends AbstractCommand {
         setName("inventory");
         setSyntax("inventory [open/close/copy/move/swap/set/keep/exclude/fill/clear/update/adjust <mechanism>:<value>] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)");
         setRequiredArguments(1, 6);
+        isProcedural = false;
     }
 
     // <--[language]

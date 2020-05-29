@@ -15,6 +15,7 @@ public class StrikeCommand extends AbstractCommand {
         setName("strike");
         setSyntax("strike (no_damage) [<location>]");
         setRequiredArguments(1, 2);
+        isProcedural = false;
     }
 
     // <--[command]

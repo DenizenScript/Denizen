@@ -33,6 +33,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
         setName("push");
         setSyntax("push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (duration:<duration>) (script:<name>) (def:<element>|...) (force_along) (precision:<#>) (no_rotate) (no_damage) (ignore_collision)");
         setRequiredArguments(1, 12);
+        isProcedural = false;
     }
 
     // <--[command]

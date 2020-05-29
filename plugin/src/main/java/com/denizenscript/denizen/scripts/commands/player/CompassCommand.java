@@ -17,6 +17,7 @@ public class CompassCommand extends AbstractCommand {
         setName("compass");
         setSyntax("compass [<location>/reset]");
         setRequiredArguments(1, 1);
+        isProcedural = false;
     }
 
     // <--[command]

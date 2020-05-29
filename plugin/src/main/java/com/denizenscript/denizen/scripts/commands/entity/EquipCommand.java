@@ -29,6 +29,7 @@ public class EquipCommand extends AbstractCommand {
         setName("equip");
         setSyntax("equip (<entity>|...) (hand:<item>) (offhand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>) (saddle:<item>) (horse_armor:<item>)");
         setRequiredArguments(1, 9);
+        isProcedural = false;
     }
 
     // <--[command]

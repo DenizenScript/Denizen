@@ -30,6 +30,7 @@ public class PlayEffectCommand extends AbstractCommand {
         setName("playeffect");
         setSyntax("playeffect [effect:<name>] [at:<location>|...] (data:<#.#>) (special_data:<data>) (visibility:<#.#>) (quantity:<#>) (offset:<#.#>,<#.#>,<#.#>) (targets:<player>|...)");
         setRequiredArguments(2, 8);
+        isProcedural = false;
     }
 
     // <--[language]

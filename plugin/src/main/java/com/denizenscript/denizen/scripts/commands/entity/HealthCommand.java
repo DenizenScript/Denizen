@@ -21,6 +21,7 @@ public class HealthCommand extends AbstractCommand {
         setName("health");
         setSyntax("health ({npc}/<entity>|...) [<#>] (state:{true}/false/toggle) (heal)");
         setRequiredArguments(1, 4);
+        isProcedural = false;
     }
 
     // <--[command]
