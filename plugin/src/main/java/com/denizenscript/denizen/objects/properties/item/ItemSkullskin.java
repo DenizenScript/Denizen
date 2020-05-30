@@ -34,7 +34,7 @@ public class ItemSkullskin implements Property {
     }
 
     public static final String[] handledTags = new String[] {
-            "skin", "has_skin"
+            "skin", "has_skin", "skull_skin"
     };
 
     public static final String[] handledMechs = new String[] {
