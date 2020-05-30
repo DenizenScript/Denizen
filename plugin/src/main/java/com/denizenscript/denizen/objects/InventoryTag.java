@@ -6,6 +6,7 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
+import com.denizenscript.denizen.utilities.inventory.RecipeHelper;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizencore.objects.*;
@@ -28,6 +29,7 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.DoubleChest;
@@ -2307,6 +2309,27 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 }
             }
             return recipeList;
+        });
+
+        // <--[tag]
+        // @attribute <InventoryTag.recipe>
+        // @returns ElementTag
+        // @description
+        // Returns the recipe ID for the recipe currently formed in a crafting inventory.
+        // Returns a list in the Namespace:Key format, for example "minecraft:stick".
+        // -->
+        registerTag("recipe", (attribute, object) -> {
+            Recipe recipe;
+            if ((object.inventory instanceof CraftingInventory)) {
+                recipe = ((CraftingInventory) object.inventory).getRecipe();
+            }
+            else {
+                return null;
+            }
+            if (recipe == null) {
+                return null;
+            }
+            return new ElementTag(((Keyed) recipe).getKey().toString());
         });
 
         // <--[tag]
