@@ -41,7 +41,7 @@ public class ItemPotion implements Property {
     }
 
     public static final String[] handledTags = new String[] {
-            "potion_base", "has_potion_effect", "potion_effect"
+            "potion_base_type", "potion_base", "has_potion_effect", "potion_effect"
     };
 
     public static final String[] handledMechs = new String[] {
@@ -135,6 +135,20 @@ public class ItemPotion implements Property {
                 && ((PotionMeta) item.getItemStack().getItemMeta()).hasCustomEffects();
 
         // <--[tag]
+        // @attribute <ItemTag.potion_base_type>
+        // @returns ElementTag
+        // @mechanism ItemTag.potion_effects
+        // @group properties
+        // @description
+        // Returns the base potion type name for this potion item.
+        // The type will be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html>.
+        // -->
+        if (attribute.startsWith("potion_base_type") && item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof PotionMeta) {
+            PotionMeta meta = ((PotionMeta) item.getItemStack().getItemMeta());
+            return new ElementTag(meta.getBasePotionData().getType().name()).getObjectAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <ItemTag.potion_base>
         // @returns ElementTag
         // @mechanism ItemTag.potion_effects
@@ -149,7 +163,7 @@ public class ItemPotion implements Property {
             return new ElementTag(meta.getBasePotionData().getType().name() + "," + (meta.getBasePotionData().isUpgraded() ? 2 : 1)
                     + "," + meta.getBasePotionData().isExtended() + "," + (item.getItemStack().getType() == Material.SPLASH_POTION)
                     + (meta.hasColor() ? "," + new ColorTag(meta.getColor()).identify() : "")
-            ).getObjectAttribute(attribute.fulfill(1));
+                ).getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
