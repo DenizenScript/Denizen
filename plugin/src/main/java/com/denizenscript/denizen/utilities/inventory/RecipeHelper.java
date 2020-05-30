@@ -1,8 +1,11 @@
 package com.denizenscript.denizen.utilities.inventory;
 
+import org.bukkit.Material;
 import org.bukkit.inventory.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class RecipeHelper {
@@ -63,7 +66,7 @@ public class RecipeHelper {
         int matrixWidth = matrix.length == 9 ? 3 : 2;
         int canMoveX = matrixWidth - shape.width;
         int canMoveY = matrixWidth - shape.height;
-        for (int offsetX = 0; offsetX < canMoveX; offsetX++) {
+        for (int offsetX = 0; offsetX <= canMoveX; offsetX++) {
             for (int offsetY = 0; offsetY <= canMoveY; offsetY++) {
                 int result = tryRecipeMatch(matrix, matrixWidth, shape, offsetX, offsetY);
                 if (result > 0) {
@@ -74,13 +77,46 @@ public class RecipeHelper {
         return 0;
     }
 
+    public static boolean tryRemoveSingle(List<ItemStack> items, List<RecipeChoice> choices) {
+        mainLoop:
+        for (RecipeChoice choice : choices) {
+            for (int i = 0; i < items.size(); i++) {
+                ItemStack item = items.get(i);
+                if (choice.test(item)) {
+                    if (item.getAmount() == 1) {
+                        items.remove(i);
+                    }
+                    else {
+                        item.setAmount(item.getAmount() - 1);
+                    }
+                    continue mainLoop;
+                }
+            }
+            return false;
+        }
+        return true;
+    }
+
+    public static int getShapelessQuantity(CraftingInventory inventory, ShapelessRecipe recipe) {
+        List<ItemStack> items = new ArrayList<>();
+        for (ItemStack item : inventory.getMatrix()) {
+            if (item != null && item.getType() != Material.AIR) {
+                items.add(item.clone());
+            }
+        }
+        int amount = 0;
+        while (tryRemoveSingle(items, recipe.getChoiceList())) {
+            amount++;
+        }
+        return amount;
+    }
+
     public static int getMaximumOutputQuantity(Recipe recipe, CraftingInventory inventory) {
         if (recipe instanceof ShapedRecipe) {
             return getShapedQuantity(inventory, new ShapeHelper((ShapedRecipe) recipe));
         }
         else if (recipe instanceof ShapelessRecipe) {
-            // TODO
-            return 1;
+            return getShapelessQuantity(inventory, (ShapelessRecipe) recipe);
         }
         else {
             return 1;
