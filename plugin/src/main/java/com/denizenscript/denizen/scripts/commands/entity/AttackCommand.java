@@ -19,25 +19,24 @@ public class AttackCommand extends AbstractCommand {
 
     public AttackCommand() {
         setName("attack");
-        setSyntax("attack (<entity>|...) (target:<entity>/cancel)");
+        setSyntax("attack [<entity>|...] (target:<entity>/cancel)");
         setRequiredArguments(0, 2);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Attack
-    // @Syntax attack (<entity>|...) (target:<entity>/cancel)
+    // @Syntax attack [<entity>|...] (target:<entity>/cancel)
     // @Required 0
     // @Maximum 2
     // @Short Makes an entity, or list of entities, attack a target.
     // @Group entity
     //
     // @Description
-    // By itself, the 'attack' command will act as an NPC command in the sense that an attached
-    // NPC will attack the attached player, or specified target. It can also accept a specified entity,
-    // or list of entities, to fulfill the command, just specify a 'fetchable' entity object. This includes
-    // player objects (dPlayers) and NPC objects (dNPCs). To specify the target, prefix the entity
-    // object with 'target:' or 't:'.
+    // The attack command causes a mob entity to attack a target mob entity or player.
+    //
+    // This technically can be used on an NPC, but it will trigger the Citizens internal punching-pathfinder.
+    // This attack mode doesn't work well. If you want NPC combat, consider using Sentinel instead.
     //
     // To cancel an attack, use the 'cancel' argument instead of specifying a target.
     //
@@ -47,20 +46,16 @@ public class AttackCommand extends AbstractCommand {
     // <NPCTag.target_entity>
     //
     // @Usage
-    // Use to make an NPC attack a player in an interact script.
-    // - attack
+    // Use to make the player's target entity attack a nearby entity.
+    // - attack <player.target> target:<npc.location.find.living_entities.within[10].random>
     //
     // @Usage
-    // Use to make an NPC attack a nearby entity.
-    // - attack target:<npc.location.find.living_entities.within[10].random>
-    //
-    // @Usage
-    // Use to make a specific entity attack an entity, including players or npcs.
+    // Use to make a random nearby entity attack a player.
     // - attack <player.location.find.living_entities.within[10].random> target:<player>
     //
     // @Usage
-    // Use to stop an attack
-    // - attack <npc> stop
+    // Use to stop an entity from attacking.
+    // - attack <[entity]> stop
     // -->
 
     @Override

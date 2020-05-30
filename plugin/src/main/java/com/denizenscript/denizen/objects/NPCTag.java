@@ -1060,6 +1060,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @returns ElementTag
         // @description
         // Returns the NPC's current navigator attack strategy.
+        // Not related to Sentinel combat.
         // -->
         registerTag("attack_strategy", (attribute, object) -> {
             return new ElementTag(object.getNavigator().getLocalParameters().attackStrategy().toString());
@@ -1112,7 +1113,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @attribute <NPCTag.is_fighting>
         // @returns ElementTag(Boolean)
         // @description
-        // Returns whether the NPC is in combat.
+        // Returns whether the NPC is currently targeting an entity for the Citizens internal punching pathfinder.
+        // Not compatible with Sentinel.
         // -->
         registerTag("is_fighting", (attribute, object) -> {
             return new ElementTag(object.getNavigator().getEntityTarget() != null && object.getNavigator().getEntityTarget().isAggressive());
