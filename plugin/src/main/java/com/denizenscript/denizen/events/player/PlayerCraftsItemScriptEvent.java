@@ -4,7 +4,6 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.utilities.inventory.RecipeHelper;
@@ -132,6 +131,10 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
 
     @EventHandler
     public void onCraftItem(CraftItemEvent event) {
+        if (event.getCursor() != null && event.getCursor().getType() != Material.AIR && event.getCursor().isSimilar(event.getCurrentItem())) {
+            // This event fires even when nothing crafts due to a cursor item, so disregard those cases.
+            return;
+        }
         HumanEntity humanEntity = event.getWhoClicked();
         if (EntityTag.isNPC(humanEntity)) {
             return;
