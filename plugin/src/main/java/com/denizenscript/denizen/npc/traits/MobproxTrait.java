@@ -108,7 +108,7 @@ public class MobproxTrait extends Trait {
     // -->
     private void callAction(String act, Entity ent) {
         Map<String, ObjectTag> context = new HashMap<>();
-        context.put("entity", new EntityTag(ent));
+        context.put("entity", new EntityTag(ent).getDenizenObject());
         dnpc.action("mob " + act + " proximity", null, context);
         dnpc.action(ent.getType().name() + " " + act + " proximity", null, context);
     }

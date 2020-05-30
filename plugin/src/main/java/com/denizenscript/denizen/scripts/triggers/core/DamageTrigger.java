@@ -97,7 +97,7 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
             if (damager.isProjectile() && damager.hasShooter()) {
                 damager = damager.getShooter();
             }
-            context.put("damager", damager);
+            context.put("damager", damager.getDenizenObject());
 
             String determ = npc.action("damaged", null, context);
             if (determ != null && determ.equalsIgnoreCase("CANCELLED")) {
