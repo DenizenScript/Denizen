@@ -2333,6 +2333,26 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <InventoryTag.craftable_quantity>
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the quantity of items that would be received if this crafting inventory were fully crafted (eg via a shift click).
+        // -->
+        registerTag("craftable_quantity", (attribute, object) -> {
+            Recipe recipe;
+            if ((object.inventory instanceof CraftingInventory)) {
+                recipe = ((CraftingInventory) object.inventory).getRecipe();
+            }
+            else {
+                return null;
+            }
+            if (recipe == null) {
+                return null;
+            }
+            return new ElementTag(RecipeHelper.getMaximumOutputQuantity(recipe, (CraftingInventory) object.inventory) * recipe.getResult().getAmount());
+        });
+
+        // <--[tag]
         // @attribute <InventoryTag.result>
         // @returns ItemTag
         // @mechanism InventoryTag.result
