@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.nms.v1_15.helpers;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
 import com.denizenscript.denizen.nms.v1_15.impl.blocks.BlockDataImpl;
@@ -445,12 +446,14 @@ public class EntityHelperImpl extends EntityHelper {
         CraftPlayer craftPlayer = (CraftPlayer) pl;
         EntityPlayer entityPlayer = craftPlayer.getHandle();
         if (entityPlayer.playerConnection != null && !craftPlayer.equals(entity)) {
-            // TODO: 1.14 - make sure this works
             PlayerChunkMap tracker = ((WorldServer) craftPlayer.getHandle().world).getChunkProvider().playerChunkMap;
             net.minecraft.server.v1_15_R1.Entity other = ((CraftEntity) entity).getHandle();
             PlayerChunkMap.EntityTracker entry = tracker.trackedEntities.get(other.getId());
             if (entry != null) {
                 entry.clear(entityPlayer);
+            }
+            if (Denizen.supportsPaper) { // Workaround for Paper issue
+                entityPlayer.playerConnection.sendPacket(new PacketPlayOutEntityDestroy(other.getId()));
             }
         }
     }
@@ -464,7 +467,6 @@ public class EntityHelperImpl extends EntityHelper {
         CraftPlayer craftPlayer = (CraftPlayer) pl;
         EntityPlayer entityPlayer = craftPlayer.getHandle();
         if (entityPlayer.playerConnection != null && !craftPlayer.equals(entity)) {
-            // TODO: 1.14 - same as hide packet above
             PlayerChunkMap tracker = ((WorldServer) craftPlayer.getHandle().world).getChunkProvider().playerChunkMap;
             net.minecraft.server.v1_15_R1.Entity other = ((CraftEntity) entity).getHandle();
             PlayerChunkMap.EntityTracker entry = tracker.trackedEntities.get(other.getId());
