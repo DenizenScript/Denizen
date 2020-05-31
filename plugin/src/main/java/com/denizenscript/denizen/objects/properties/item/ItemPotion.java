@@ -74,8 +74,12 @@ public class ItemPotion implements Property {
         // as compared to the PotionEffect constructor!
         int duration = new ElementTag(d2[2]).asInt();
         int amplifier = new ElementTag(d2[1]).asInt();
-        boolean ambient = new ElementTag(d2[3]).asBoolean();
-        boolean particles = new ElementTag(d2[4]).asBoolean();
+        boolean ambient = true;
+        boolean particles = true;
+        if (d2.length > 3) {
+            ambient = new ElementTag(d2[3]).asBoolean();
+            particles = new ElementTag(d2[4]).asBoolean();
+        }
         Color color = null;
         boolean icon = false;
         if (d2.length > 5) {

@@ -68,9 +68,9 @@ public class EntityPotionEffects implements Property {
         }
         ListTag returnable = new ListTag();
         for (PotionEffect effect : effects) {
-            returnable.add(effect.getType().getName() + "," + effect.getAmplifier() + "," + effect.getDuration());
+            returnable.add(ItemPotion.stringifyEffect(effect));
         }
-        return returnable.identify().substring(3);
+        return returnable.identify();
     }
 
     public String getPropertyId() {
