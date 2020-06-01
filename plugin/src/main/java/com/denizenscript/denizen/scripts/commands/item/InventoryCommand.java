@@ -34,25 +34,23 @@ public class InventoryCommand extends AbstractCommand {
     // @name Virtual Inventories
     // @group Inventory System
     // @description
-    // Virtual inventories are inventories that have no attachment to anything within the world of Minecraft. They can
-    // be used for a wide range of purposes - from looting fallen enemies to serving as interactive menus with item
-    // 'buttons'.
+    // Virtual inventories are inventories that have no attachment to anything within the world of Minecraft.
+    // They can be used for a wide range of purposes - from looting fallen enemies to serving as interactive menus with item 'buttons'.
     //
-    // In Denizen, all noted inventories (saved by the Note command) are automatically converted into a
-    // virtual copy of the saved inventory. This enables you to open and edit the items inside freely, with automatic
-    // saving, as if it were a normal inventory.
+    // In Denizen, all noted inventories (saved by the Note command) are automatically converted into a virtual copy of the saved inventory.
+    // This enables you to open and edit the items inside freely, with automatic saving, as if it were a normal inventory.
     //
-    // Noting is not the only way to create virtual inventories, however. Using 'generic' along with inventory
-    // properties will allow you to create temporary custom inventories to do with as you please. The properties that
-    // can be used like this are:
+    // Noting is not the only way to create virtual inventories, however.
+    // Using 'generic' along with inventory properties will allow you to create temporary custom inventories to do with as you please.
+    // The properties that can be used like this are:
     //
     // size=<size>
     // contents=<item>|...
     // title=<title>
     // holder=<inventory type>
     //
-    // For example, the following task script opens a virtual inventory with 18 slots, of which the second slot is a
-    // snowball, all the rest are empty, and the title is "My Awesome Inventory" with some colors in it.
+    // For example, the following task script opens a virtual inventory with 18 slots,
+    // where the second slot is a snowball, all the rest are empty, and the title is "My Awesome Inventory" with some colors in it.
     // <code>
     // open random inventory:
     //   type: task
@@ -71,13 +69,17 @@ public class InventoryCommand extends AbstractCommand {
     // @Group item
     //
     // @Description
-    // Use this command to edit the state of inventories. By default, the destination inventory
-    // is the current attached player's inventory. If you are copying, swapping, removing from
-    // (including via "keep" and "exclude"), adding to, moving, or filling inventories, you'll need
-    // both destination and origin inventories. Origin inventories may be specified as a list of
-    // ItemTags, but destinations must be actual dInventories.
-    // Using "open", "clear", or "update" only require a destination. "Update" also requires the
-    // destination to be a valid player inventory.
+    // Use this command to edit the state of inventories.
+    // By default, the destination inventory is the current attached player's inventory.
+    //
+    // If you are copying, swapping, removing from (including via "keep" and "exclude"), adding to, moving, or filling inventories,
+    // you'll need both destination and origin inventories.
+    //
+    // Origin inventories may be specified as a list of ItemTags, but destinations must be actual InventoryTags.
+    //
+    // Using "open", "clear", or "update" only require a destination.
+    // "Update" also requires the destination to be a valid player inventory.
+    //
     // Using "close" closes any inventory that the currently attached player has opened.
     //
     // Note that to add items to an inventory, you should usually use <@link command give>,

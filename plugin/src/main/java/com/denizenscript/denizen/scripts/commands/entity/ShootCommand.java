@@ -59,7 +59,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
     // Generally, use the "speed" argument to send an entity exactly the direction you input,
     // and don't include it to have the entity automatically attempt to land exactly on the destination by calculating an arc.
     //
-    // If the origin is not an entity, specify a shooter so the damage handling code knows how to assume shot the projectile.
+    // If the origin is not an entity, specify a shooter so the damage handling code knows who to assume shot the projectile.
     //
     // Normally, a list of entities will spawn mounted on top of each other. To have them instead fire separately and spread out,
     // specify the 'spread' argument with a decimal number indicating how wide to spread the entities.
@@ -255,6 +255,10 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         // later in the script queue
 
         final ListTag entityList = new ListTag();
+
+        if (!no_rotate) {
+            originLocation = new LocationTag(NMSHandler.getEntityHelper().faceLocation(originLocation, destination));
+        }
 
         // Go through all the entities, spawning/teleporting and rotating them
         for (EntityTag entity : entities) {
