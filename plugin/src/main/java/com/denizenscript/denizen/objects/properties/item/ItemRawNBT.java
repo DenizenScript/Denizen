@@ -123,12 +123,19 @@ public class ItemRawNBT implements Property {
     //
     // -->
 
-    public static Tag convertObjectToNbt(String object, TagContext context) {
+    public static Tag convertObjectToNbt(String object, TagContext context, String path) {
         if (object.startsWith("map@")) {
             MapTag map = MapTag.valueOf(object, context);
             Map<String, Tag> result = new LinkedHashMap<>();
             for (Map.Entry<StringHolder, ObjectTag> entry : map.map.entrySet()) {
-                result.put(entry.getKey().str, convertObjectToNbt(entry.getValue().toString(), context));
+                try {
+                    result.put(entry.getKey().str, convertObjectToNbt(entry.getValue().toString(), context, path + "." + entry.getKey().str));
+                }
+                catch (Exception ex) {
+                    Debug.echoError("Object NBT interpretation failed for key '" + path + "." + entry.getKey().str + "'.");
+                    Debug.echoError(ex);
+                    return null;
+                }
             }
             return NMSHandler.getInstance().createCompoundTag(result);
         }
@@ -137,13 +144,21 @@ public class ItemRawNBT implements Property {
             int typeCode = Integer.parseInt(object.substring("list:".length(), nextColonIndex));
             String listValue = object.substring(nextColonIndex + 1);
             List<Tag> result = new ArrayList<>();
-            for (String value : ListTag.valueOf(listValue, context)) {
-                result.add(convertObjectToNbt(value, context));
+            ListTag listTag = ListTag.valueOf(listValue, context);
+            for (int i = 0; i < listTag.size(); i++) {
+                try {
+                    result.add(convertObjectToNbt(listTag.get(i), context, path + "[" + i + "]"));
+                }
+                catch (Exception ex) {
+                    Debug.echoError("Object NBT interpretation failed for list key '" + path + "' at index " + i + ".");
+                    Debug.echoError(ex);
+                    return null;
+                }
             }
             return new JNBTListTag(NBTUtils.getTypeClass(typeCode), result);
         }
         else if (object.startsWith("byte_array:")) {
-            List<String> numberStrings = CoreUtilities.split(object.substring("byte_array:".length()), '|');
+            ListTag numberStrings = ListTag.valueOf(object.substring("byte_array:".length()), context);
             byte[] result = new byte[numberStrings.size()];
             for (int i = 0; i < result.length; i++) {
                 result[i] = Byte.parseByte(numberStrings.get(i));
@@ -151,7 +166,7 @@ public class ItemRawNBT implements Property {
             return new ByteArrayTag(result);
         }
         else if (object.startsWith("int_array:")) {
-            List<String> numberStrings = CoreUtilities.split(object.substring("int_array:".length()), '|');
+            ListTag numberStrings = ListTag.valueOf(object.substring("int_array:".length()), context);
             int[] result = new int[numberStrings.size()];
             for (int i = 0; i < result.length; i++) {
                 result[i] = Integer.parseInt(numberStrings.get(i));
@@ -324,7 +339,17 @@ public class ItemRawNBT implements Property {
             MapTag input = mechanism.valueAsType(MapTag.class);
             Map<String, Tag> result = new LinkedHashMap<>(compoundTag.getValue());
             for (Map.Entry<StringHolder, ObjectTag> entry : input.map.entrySet()) {
-                result.put(entry.getKey().str, convertObjectToNbt(entry.getValue().toString(), mechanism.context));
+                try {
+                    Tag tag = convertObjectToNbt(entry.getValue().toString(), mechanism.context, "(item).");
+                    if (tag != null) {
+                        result.put(entry.getKey().str, tag);
+                    }
+                }
+                catch (Exception ex) {
+                    Debug.echoError("Raw_Nbt input failed for root key '" + entry.getKey().str + "'.");
+                    Debug.echoError(ex);
+                    return;
+                }
             }
             compoundTag = NMSHandler.getInstance().createCompoundTag(result);
             item.setItemStack(NMSHandler.getItemHelper().setNbtData(item.getItemStack(), compoundTag));
