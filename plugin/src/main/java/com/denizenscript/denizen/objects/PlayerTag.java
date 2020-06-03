@@ -2513,8 +2513,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @name level
         // @input ElementTag(Number)
         // @description
-        // Sets the level on the player. Does not affect the current progression
-        // of experience towards next level.
+        // Sets the level on the player. Does not affect the current progression of experience towards next level.
         // @tags
         // <PlayerTag.xp_level>
         // -->
@@ -2886,43 +2885,18 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             setGameMode(GameMode.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
 
-        // <--[mechanism]
-        // @object PlayerTag
-        // @name kick
-        // @input ElementTag
-        // @description
-        // Kicks the player, with the specified message.
-        // -->
         if (mechanism.matches("kick")) {
+            Deprecations.oldKickMech.warn(mechanism.context);
             getPlayerEntity().kickPlayer(mechanism.getValue().asString());
         }
 
-        // <--[mechanism]
-        // @object PlayerTag
-        // @name weather
-        // @input ElementTag
-        // @description
-        // Sets the weather condition for the player. This does NOT affect the weather
-        // in the world, and will block any world weather changes until the 'reset_weather'
-        // mechanism is used. Valid weather: CLEAR, DOWNFALL
-        // @tags
-        // <PlayerTag.weather>
-        // -->
         if (mechanism.matches("weather") && mechanism.requireEnum(false, WeatherType.values())) {
+            Deprecations.oldWeatherMech.warn(mechanism.context);
             getPlayerEntity().setPlayerWeather(WeatherType.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
 
-        // <--[mechanism]
-        // @object PlayerTag
-        // @name reset_weather
-        // @input None
-        // @description
-        // Resets the weather on the Player to the conditions currently taking place in the Player's
-        // current world.
-        // @tags
-        // <PlayerTag.weather>
-        // -->
         if (mechanism.matches("reset_weather")) {
+            Deprecations.oldWeatherMech.warn(mechanism.context);
             getPlayerEntity().resetPlayerWeather();
         }
 
@@ -2979,37 +2953,13 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             setLocation(mechanism.valueAsType(LocationTag.class));
         }
 
-        // <--[mechanism]
-        // @object PlayerTag
-        // @name time
-        // @input ElementTag(Number)
-        // @description
-        // Sets the time of day the Player is currently experiencing. Setting this will cause the
-        // player to have a different time than other Players in the world are experiencing though
-        // time will continue to progress. Using the 'reset_time' mechanism, or relogging your player
-        // will reset this mechanism to match the world's current time. Valid range is 0-24000.
-        // The value is relative to the current world time, and will continue moving at the same rate as current world time moves.
-        // @tags
-        // <PlayerTag.time>
-        // -->
         if (mechanism.matches("time") && mechanism.requireInteger()) {
+            Deprecations.oldTimeMech.warn(mechanism.context);
             getPlayerEntity().setPlayerTime(mechanism.getValue().asInt(), true);
         }
 
-        // <--[mechanism]
-        // @object PlayerTag
-        // @name freeze_time
-        // @input ElementTag(Number)
-        // @description
-        // Sets the time of day the Player is currently experiencing and freezes it there. Note:
-        // there is a small 'twitch effect' when looking at the sky when time is frozen.
-        // Setting this will cause the player to have a different time than other Players in
-        // the world are experiencing. Using the 'reset_time' mechanism, or relogging your player
-        // will reset this mechanism to match the world's current time. Valid range is 0-24000.
-        // @tags
-        // <PlayerTag.time>
-        // -->
         if (mechanism.matches("freeze_time")) {
+            Deprecations.oldTimeMech.warn(mechanism.context);
             if (mechanism.requireInteger("Invalid integer specified. Assuming current world time.")) {
                 getPlayerEntity().setPlayerTime(mechanism.getValue().asInt(), false);
             }
@@ -3018,17 +2968,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             }
         }
 
-        // <--[mechanism]
-        // @object PlayerTag
-        // @name reset_time
-        // @input None
-        // @description
-        // Resets any altered time that has been applied to this player. Using this will make
-        // the Player's time match the world's current time.
-        // @tags
-        // <PlayerTag.time>
-        // -->
         if (mechanism.matches("reset_time")) {
+            Deprecations.oldTimeMech.warn(mechanism.context);
             getPlayerEntity().resetPlayerTime();
         }
 
@@ -3074,8 +3015,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @name hide_entity
         // @input EntityTag(|ElementTag(Boolean))
         // @description
-        // Hides an entity from the player. You can optionally also specify a boolean to determine
-        // whether the entity should be kept in the tab list (players only).
+        // Hides an entity from the player.
+        // You can optionally also specify a boolean to determine whether the entity should be kept in the tab list (players only).
         // -->
         if (mechanism.matches("hide_entity")) {
             if (!mechanism.getValue().asString().isEmpty()) {
@@ -3102,20 +3043,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             }
         }
 
-        // <--[mechanism]
-        // @object PlayerTag
-        // @name show_boss_bar
-        // @input (ElementTag(Number)|)Element
-        // @description
-        // Shows the player a boss health bar with the specified text as a name.
-        // Use with no input value to remove the bar.
-        // Optionally, precede the text with a number indicating the health value
-        // based on an arbitrary scale of 0 to 200. For example:
-        // - adjust <player> show_boss_bar:Hello
-        // - adjust <player> show_boss_bar:100|Hello
-        // NOTE: This has been replaced by <@link command bossbar>!
-        // -->
         if (mechanism.matches("show_boss_bar")) {
+            Deprecations.oldBossBarMech.warn(mechanism.context);
             if (!mechanism.getValue().asString().isEmpty()) {
                 String[] split = mechanism.getValue().asString().split("\\|", 2);
                 if (split.length == 2 && new ElementTag(split[0]).isDouble()) {
@@ -3135,11 +3064,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @name fake_experience
         // @input ElementTag(Decimal)(|ElementTag(Number))
         // @description
-        // Shows the player a fake experience bar, with a number between 0.0 and 1.0
-        // to specify how far along the bar is.
+        // Shows the player a fake experience bar, with a number between 0.0 and 1.0 to specify how far along the bar is.
         // Use with no input value to reset to the player's normal experience.
         // Optionally, you can specify a fake experience level.
-        // - adjust <player> fake_experience:0.5|5
+        // For example: - adjust <player> fake_experience:0.5|5
         // -->
         if (mechanism.matches("fake_experience")) {
             if (!mechanism.getValue().asString().isEmpty()) {
@@ -3168,8 +3096,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @name fake_health
         // @input ElementTag(Decimal)(|ElementTag(Number)(|ElementTag(Decimal)))
         // @description
-        // Shows the player a fake health bar, with a number between 0 and 20,
-        // where 1 is half of a heart.
+        // Shows the player a fake health bar, with a number between 0 and 20, where 1 is half of a heart.
         // Use with no input value to reset to the player's normal health.
         // Optionally, you can specify a fake food level, between 0 and 20.
         // You can also optionally specify a food saturation level between 0 and 10.
@@ -3210,11 +3137,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @name fake_equipment
         // @input EntityTag(|Element|ItemTag)
         // @description
-        // Shows the player fake equipment on the specified living entity, which has
-        // no real non-visual effects, in the form Entity|Slot|Item, where the slot
-        // can be one of the following: HAND, OFF_HAND, BOOTS, LEGS, CHEST, HEAD
-        // Optionally, exclude the slot and item to stop showing the fake equipment,
-        // if any, on the specified entity.
+        // Shows the player fake equipment on the specified living entity, which has no real non-visual effects.
+        // Input is in the form Entity|Slot|Item, where the slot can be one of the following: HAND, OFF_HAND, BOOTS, LEGS, CHEST, HEAD
+        // Optionally, exclude the slot and item to stop showing the fake equipment, if any, on the specified entity.
         // - adjust <player> fake_equipment:<[some_entity]>|chest|diamond_chestplate
         // - adjust <player> fake_equipment:<player>|head|jack_o_lantern
         // -->
@@ -3278,8 +3203,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @name item_message
         // @input ElementTag
         // @description
-        // Shows the player an item message as if the item they are carrying had
-        // changed names to the specified Element.
+        // Shows the player an item message as if the item they are carrying had changed names to the specified Element.
         // -->
         if (mechanism.matches("item_message")) {
             ItemChangeMessage.sendMessage(getPlayerEntity(), mechanism.getValue().asString());
@@ -3313,8 +3237,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @input EntityTag
         // @description
         // Forces the player to spectate from the entity's point of view.
-        // Note: They cannot cancel the spectating without a re-log -- you
-        // must make them spectate themselves to cancel the effect.
+        // Note: They cannot cancel the spectating without a re-log -- you must make them spectate themselves to cancel the effect.
         // (i.e. - adjust <player> "spectate:<player>")
         // -->
         if (mechanism.matches("spectate") && mechanism.requireObject(EntityTag.class)) {
@@ -3327,8 +3250,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @input None
         // @description
         // Forces the player to open the written book in their hand.
-        // The book can safely be removed from the player's hand
-        // without the player closing the book.
+        // The book can safely be removed from the player's hand without the player closing the book.
         // -->
         if (mechanism.matches("open_book")) {
             NMSHandler.getPacketHelper().openBook(getPlayerEntity(), EquipmentSlot.HAND);
@@ -3340,8 +3262,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @input None
         // @description
         // Forces the player to open the written book in their offhand.
-        // The book can safely be removed from the player's offhand
-        // without the player closing the book.
+        // The book can safely be removed from the player's offhand without the player closing the book.
         // -->
         if (mechanism.matches("open_offhand_book")) {
             NMSHandler.getPacketHelper().openBook(getPlayerEntity(), EquipmentSlot.OFF_HAND);
@@ -3445,8 +3366,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @name edit_sign
         // @input LocationTag
         // @description
-        // Allows the player to edit an existing sign. To create a
-        // sign, see <@link command Sign>.
+        // Allows the player to edit an existing sign. To create a sign, see <@link command Sign>.
         // -->
         if (mechanism.matches("edit_sign") && mechanism.requireObject(LocationTag.class)) {
             if (!NMSHandler.getPacketHelper().showSignEditor(getPlayerEntity(), mechanism.valueAsType(LocationTag.class))) {
@@ -3459,8 +3379,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @name tab_list_info
         // @input ElementTag(|ElementTag)
         // @description
-        // Show the player some text in the header and footer area
-        // in their tab list.
+        // Show the player some text in the header and footer area in their tab list.
         // - adjust <player> tab_list_info:<header>|<footer>
         // -->
         if (mechanism.matches("tab_list_info")) {
@@ -3511,8 +3430,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @name banner_update
         // @input LocationTag|ElementTag(|ListTag)
         // @description
-        // Shows the player a fake base color and, optionally, patterns on a banner. Input must be
-        // in the form: "LOCATION|BASE_COLOR(|COLOR/PATTERN|...)"
+        // Shows the player a fake base color and, optionally, patterns on a banner. Input must be in the form: "LOCATION|BASE_COLOR(|COLOR/PATTERN|...)"
         // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
         // For the list of possible patterns, see <@link url http://bit.ly/1MqRn7T>.
         // -->
@@ -3558,8 +3476,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @input ElementTag
         // @description
         // Stops all sounds of the specified type for the player.
-        // Valid types are AMBIENT, BLOCKS, HOSTILE, MASTER, MUSIC,
-        // NEUTRAL, PLAYERS, RECORDS, VOICE, and WEATHER
+        // Valid types are AMBIENT, BLOCKS, HOSTILE, MASTER, MUSIC, NEUTRAL, PLAYERS, RECORDS, VOICE, and WEATHER
         // If no sound type is specified, all types will be stopped.
         // -->
         if (mechanism.matches("stop_sound")) {
@@ -3667,18 +3584,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             getOfflinePlayer().setOp(mechanism.getValue().asBoolean());
         }
 
-        // <--[mechanism]
-        // @object PlayerTag
-        // @name money
-        // @input ElementTag(Number)
-        // @plugin Vault
-        // @description
-        // Set the amount of money a player has with the linked economy system (through Vault).
-        // (Only if supported by the registered Economy system.)
-        // @tags
-        // <PlayerTag.money>
-        // -->
         if (mechanism.matches("money") && mechanism.requireDouble() && Depends.economy != null) {
+            Deprecations.oldMoneyMech.warn(mechanism.context);
             double bal = Depends.economy.getBalance(getOfflinePlayer());
             double goal = mechanism.getValue().asDouble();
             if (goal > bal) {
