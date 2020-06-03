@@ -619,7 +619,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // <ChunkTag.is_loaded>
         // -->
         if (mechanism.matches("unload")) {
-            getChunk().unload(true);
+            getWorld().unloadChunk(getX(), getZ(), true);
         }
 
         // <--[mechanism]
@@ -632,7 +632,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // <chunk.is_loaded>
         // -->
         if (mechanism.matches("unload_without_saving")) {
-            getChunk().unload(false);
+            getWorld().unloadChunk(getX(), getZ(), false);
         }
 
         // <--[mechanism]
