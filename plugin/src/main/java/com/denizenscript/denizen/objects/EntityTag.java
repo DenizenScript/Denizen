@@ -725,8 +725,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                 }
                 else {
 
-                    org.bukkit.entity.Entity ent;
-
                     if (entity_type.getName().equals("PLAYER")) {
                         if (Depends.citizens == null) {
                             Debug.echoError("Cannot spawn entity of type PLAYER!");
@@ -791,14 +789,12 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                         }
 
                         // This is currently the only way to spawn a falling block
-                        ent = location.getWorld().spawnFallingBlock(location, material, materialData);
-                        entity = ent;
+                        entity = location.getWorld().spawnFallingBlock(location, material, materialData);
                         uuid = entity.getUniqueId();
                     }
                     else {
 
-                        ent = entity_type.spawnNewEntity(location, mechanisms, entityScript);
-                        entity = ent;
+                        entity = entity_type.spawnNewEntity(location, mechanisms, entityScript);
                         if (entity == null) {
                             if (Debug.verbose) {
                                 Debug.echoError("Failed to spawn entity of type " + entity_type.getName());

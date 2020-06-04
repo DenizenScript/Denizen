@@ -34,10 +34,11 @@ public class SpawnCommand extends AbstractCommand {
     // @Group entity
     //
     // @Description
-    // Spawn an entity or list of entities at the specified location. Accepts the 'target:<entity>' argument which
-    // will cause all spawned entities to follow and attack the targeted entity.
-    // If the persistent argument is present, the entity will not despawn when no players are within range, causing
-    // the entity to remain until killed.
+    // Spawn an entity or list of entities at the specified location.
+    //
+    // Accepts the 'target:<entity>' argument which will cause all spawned entities to follow and attack the targeted entity.
+    //
+    // If the persistent argument is present, the entity will not despawn when no players are within range, causing the entity to remain until killed.
     //
     // @Tags
     // <EntityTag.is_spawned>
@@ -146,12 +147,16 @@ public class SpawnCommand extends AbstractCommand {
 
             entityList.addObject(entity);
 
-            if (persistent && entity.isLivingEntity()) {
-                entity.getLivingEntity().setRemoveWhenFarAway(false);
+            if (!entity.isSpawned()) {
+                Debug.echoDebug(scriptEntry, "Failed to spawn " + entity + " (blocked by other plugin, script, or gamerule?).");
             }
-
-            if (target != null && target.isLivingEntity()) {
-                entity.target(target.getLivingEntity());
+            else {
+                if (persistent && entity.isLivingEntity()) {
+                    entity.getLivingEntity().setRemoveWhenFarAway(false);
+                }
+                if (target != null && target.isLivingEntity()) {
+                    entity.target(target.getLivingEntity());
+                }
             }
         }
 
