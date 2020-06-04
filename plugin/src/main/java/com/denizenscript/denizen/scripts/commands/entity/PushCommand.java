@@ -18,6 +18,7 @@ import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.Holdable;
+import com.denizenscript.denizencore.scripts.containers.core.TaskScriptContainer;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 import com.denizenscript.denizencore.utilities.ScriptUtilities;
 import org.bukkit.Location;
@@ -118,7 +119,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("speed", arg.asElement());
             }
             else if (!scriptEntry.hasObject("script")
-                    && (arg.matchesArgumentType(ScriptTag.class)
+                    && ((arg.matchesArgumentType(ScriptTag.class) && arg.asType(ScriptTag.class).getContainer() instanceof TaskScriptContainer)
                     || arg.matchesPrefix("script"))) {
                 scriptEntry.addObject("script", arg.asType(ScriptTag.class));
             }
