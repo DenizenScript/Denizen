@@ -178,11 +178,13 @@ public class FishingTrait extends Trait {
         v = v + (CoreUtilities.getRandom().nextDouble() - .8) / 2;
         victor = victor.multiply(v / 20.0);
 
-        fishHook = NMSHandler.getFishingHelper().spawnHook(from, (Player) npc.getEntity());
-        fishHook.setShooter((ProjectileSource) npc.getEntity());
-        fishHook.setVelocity(victor);
+        if (npc.getEntity() instanceof Player) {
+            fishHook = NMSHandler.getFishingHelper().spawnHook(from, (Player) npc.getEntity());
+            fishHook.setShooter((ProjectileSource) npc.getEntity());
+            fishHook.setVelocity(victor);
 
-        PlayerAnimation.ARM_SWING.play((Player) npc.getEntity());
+            PlayerAnimation.ARM_SWING.play((Player) npc.getEntity());
+        }
     }
 
     // <--[action]
@@ -200,10 +202,9 @@ public class FishingTrait extends Trait {
 
         int chance = (int) (Math.random() * 100);
 
-        try {
+        if (fishHook != null && fishHook.isValid()) {
             fishHook.remove();
-        }
-        catch (Exception e) {
+            fishHook = null;
         }
 
         if (catchPercent > chance && fishHook != null && catchType != FishingHelper.CatchType.NONE) {
@@ -227,7 +228,9 @@ public class FishingTrait extends Trait {
             DenizenAPI.getDenizenNPC(npc).action("catch fish", null);
         }
 
-        PlayerAnimation.ARM_SWING.play((Player) npc.getEntity());
+        if (npc.getEntity() instanceof Player) {
+            PlayerAnimation.ARM_SWING.play((Player) npc.getEntity());
+        }
     }
 
     /**
