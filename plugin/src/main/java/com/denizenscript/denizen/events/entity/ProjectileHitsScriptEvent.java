@@ -30,7 +30,8 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     // @Context
     // <context.projectile> returns the EntityTag of the projectile.
     // <context.shooter> returns the EntityTag of the shooter, if there is one.
-    // <context.location> returns the LocationTag of the block that was hit.
+    // <context.location> returns a LocationTag of the block that was hit.
+    // <context.hit_face> returns a LocationTag vector of the hit normal (like '0,1,0' if the projectile hit the top of the block).
     //
     // -->
 
@@ -118,6 +119,9 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
         }
         else if (name.equals("location")) {
             return location;
+        }
+        else if (name.equals("hit_face") && event.getHitBlockFace() != null) {
+            return new LocationTag(event.getHitBlockFace().getDirection());
         }
         else if (name.equals("shooter") && shooter != null) {
             return shooter.getDenizenObject();
