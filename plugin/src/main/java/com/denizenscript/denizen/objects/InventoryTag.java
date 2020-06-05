@@ -2406,7 +2406,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <InventoryTag.anvil_rename_text>
-        // @returns Element
+        // @returns ElementTag
         // @description
         // Returns the current entered renaming text on an anvil.
         // -->

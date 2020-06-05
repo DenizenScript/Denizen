@@ -35,7 +35,10 @@ public class WorldSavesScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(1).equals("saves");
+        if (!path.eventArgLowerAt(1).equals("saves")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

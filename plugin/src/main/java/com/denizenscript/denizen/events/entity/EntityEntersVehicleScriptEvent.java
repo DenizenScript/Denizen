@@ -9,6 +9,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -45,25 +48,34 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
     public EntityTag entity;
     public VehicleEnterEvent event;
 
+    public static HashSet<String> notRelevantEnterables = new HashSet<>(Arrays.asList("notable", "cuboid", "biome", "bed", "portal"));
+
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(1).equals("enters")
-                // TODO: Ideally, match valid entity types
-                && !path.eventArgLowerAt(2).equals("biome");
+        if (!path.eventArgLowerAt(1).equals("enters")) {
+            return false;
+        }
+        if (notRelevantEnterables.contains(path.eventArgLowerAt(2))) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        if (!couldMatchVehicle(path.eventArgLowerAt(2))) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public boolean matches(ScriptPath path) {
-
         if (!tryEntity(entity, path.eventArgLowerAt(0))
                 || !tryEntity(vehicle, path.eventArgLowerAt(2))) {
             return false;
         }
-
         if (!runInCheck(path, vehicle.getLocation())) {
             return false;
         }
-
         return super.matches(path);
     }
 

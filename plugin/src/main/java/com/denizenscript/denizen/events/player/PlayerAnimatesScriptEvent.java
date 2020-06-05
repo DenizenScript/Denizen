@@ -10,6 +10,7 @@ import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerAnimationEvent;
+import org.bukkit.event.player.PlayerAnimationType;
 
 public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -42,7 +43,13 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player animates");
+        if (!path.eventLower.startsWith("player animates")) {
+            return false;
+        }
+        if (!couldMatchEnum(path.eventArgLowerAt(2), PlayerAnimationType.values())) {
+            return false;
+        }
+        return true;
     }
 
     @Override

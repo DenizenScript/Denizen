@@ -39,7 +39,10 @@ public class WeatherChangesScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(0).equals("weather");
+        if (!path.eventArgLowerAt(0).equals("weather")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

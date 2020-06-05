@@ -60,10 +60,17 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean couldMatch(ScriptPath path) {
+        boolean isUp = path.eventLower.startsWith("player picks up");
+        if (!isUp && !path.eventLower.startsWith("player takes")) {
+            return false;
+        }
         if (path.eventArgLowerAt(3).equals("from")) {
             return false;
         }
-        return path.eventLower.startsWith("player picks up") || path.eventLower.startsWith("player takes");
+        if (!couldMatchItem(path.eventArgLowerAt(isUp ? 3 : 2))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

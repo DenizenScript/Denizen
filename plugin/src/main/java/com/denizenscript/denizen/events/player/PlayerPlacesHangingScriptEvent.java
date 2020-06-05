@@ -14,7 +14,6 @@ import org.bukkit.event.hanging.HangingPlaceEvent;
 
 public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements Listener {
 
-    // TODO: de-collide with places block
     // <--[event]
     // @Events
     // player places hanging
@@ -47,7 +46,13 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player places");
+        if (!path.eventLower.startsWith("player places")) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(2))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

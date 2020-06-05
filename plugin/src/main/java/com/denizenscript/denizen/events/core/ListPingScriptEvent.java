@@ -46,7 +46,10 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("server list ping");
+        if (!path.eventLower.startsWith("server list ping")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

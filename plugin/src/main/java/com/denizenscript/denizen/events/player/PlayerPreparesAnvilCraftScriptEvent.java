@@ -52,7 +52,13 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player prepares anvil craft");
+        if (!path.eventLower.startsWith("player prepares anvil craft")) {
+            return false;
+        }
+        if (!couldMatchItem(path.eventArgLowerAt(4))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.events.world;
+package com.denizenscript.denizen.events.item;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.InventoryTag;
@@ -46,10 +46,19 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
 
     @Override
     public boolean couldMatch(ScriptPath path) {
+        if (!path.eventArgLowerAt(1).equals("picks") || !path.eventArgLowerAt(2).equals("up")) {
+            return false;
+        }
         if (path.eventArgLowerAt(0).equals("player")) {
             return false;
         }
-        return path.eventArgLowerAt(1).equals("picks") && path.eventArgLowerAt(2).equals("up");
+        if (!couldMatchInventory(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        if (!couldMatchItem(path.eventArgLowerAt(3))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.events.entity;
+package com.denizenscript.denizen.events.item;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.InventoryTag;
@@ -15,8 +15,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 
 public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Listener {
-
-    // TODO: Find more appropriate package than 'entity' for this. Probably 'player'.
 
     // <--[event]
     // @Events
@@ -60,7 +58,13 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(1).equals("enchanted");
+        if (!path.eventArgLowerAt(1).equals("enchanted")) {
+            return false;
+        }
+        if (!couldMatchItem(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

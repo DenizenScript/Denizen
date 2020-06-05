@@ -44,8 +44,16 @@ public class PlayerFlyingScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(2).equals("flying")
-                || path.eventArgLowerAt(2).equals("flight");
+        if (!path.eventArgLowerAt(0).equals("player")) {
+            return false;
+        }
+        if (!path.eventArgLowerAt(2).equals("starts") && !path.eventArgLowerAt(2).equals("stops") && !path.eventArgLowerAt(2).equals("toggles")) {
+            return false;
+        }
+        if (!path.eventArgLowerAt(2).equals("flying") && !path.eventArgLowerAt(2).equals("flight")) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -57,7 +65,6 @@ public class PlayerFlyingScriptEvent extends BukkitScriptEvent implements Listen
         if (cmd.equals("stops") && state) {
             return false;
         }
-
         if (!runInCheck(path, event.getPlayer().getLocation())) {
             return false;
         }

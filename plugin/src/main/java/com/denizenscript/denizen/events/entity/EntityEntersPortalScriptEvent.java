@@ -44,7 +44,13 @@ public class EntityEntersPortalScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.contains("enters portal");
+        if (!path.eventLower.contains("enters portal")) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

@@ -40,7 +40,13 @@ public class LeafDecaysScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(1).equals("decay");
+        if (!path.eventArgLowerAt(1).equals("decay")) {
+            return false;
+        }
+        if (!path.eventArgLowerAt(2).equals("leaves") && !couldMatchBlock(path.eventArgLowerAt(2))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

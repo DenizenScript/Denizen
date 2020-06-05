@@ -48,7 +48,13 @@ public class DragonPhaseChangeScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.contains("changes phase");
+        if (!path.eventLower.contains("changes phase")) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

@@ -11,7 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 
-public class ItemScrollScriptEvent extends BukkitScriptEvent implements Listener {
+public class HotbarScrollScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -35,18 +35,21 @@ public class ItemScrollScriptEvent extends BukkitScriptEvent implements Listener
     //
     // -->
 
-    public ItemScrollScriptEvent() {
+    public HotbarScrollScriptEvent() {
         instance = this;
     }
 
-    public static ItemScrollScriptEvent instance;
+    public static HotbarScrollScriptEvent instance;
 
     public PlayerItemHeldEvent event;
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player holds item")
-                || path.eventLower.startsWith("player scrolls their hotbar");
+        if (!path.eventLower.startsWith("player holds item")
+                && !path.eventLower.startsWith("player scrolls their hotbar")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

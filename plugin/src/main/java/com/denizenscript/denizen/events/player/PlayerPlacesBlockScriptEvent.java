@@ -50,23 +50,24 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        String mat = path.eventArgLowerAt(2);
-        return path.eventLower.startsWith("player places")
-                && (!mat.equals("hanging") && !mat.equals("painting") && !mat.equals("item_frame") && !mat.equals("leash_hitch"));
+        if (!path.eventLower.startsWith("player places")) {
+            return false;
+        }
+        if (!couldMatchBlock(path.eventArgLowerAt(2))) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public boolean matches(ScriptPath path) {
-
         String mat = path.eventArgLowerAt(2);
         if (!tryItem(item_in_hand, mat) && !tryMaterial(material, mat)) {
             return false;
         }
-
         if (!runGenericSwitchCheck(path, "using", hand.asString())) {
             return false;
         }
-
         if (!runInCheck(path, location)) {
             return false;
         }

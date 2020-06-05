@@ -24,6 +24,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 public abstract class BukkitScriptEvent extends ScriptEvent {
@@ -47,6 +48,15 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return true;
     }
 
+    public boolean couldMatchEnum(String text, final Enum<?>[] enumVals) {
+        for (Enum<?> val : enumVals) {
+            if (val.name().equalsIgnoreCase(text)) {
+                return true;
+            }
+        }
+        return genericCouldMatchChecks(text, (t) -> couldMatchEnum(t, enumVals));
+    }
+
     public boolean couldMatchInventory(String text) {
         if (text.equals("inventory")) {
             return true;
@@ -54,31 +64,76 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (InventoryTag.matches(text)) {
             return true;
         }
-        if (CoreUtilities.contains(text, '*')) {
+        return genericCouldMatchChecks(text, this::couldMatchInventory);
+    }
+
+    public static HashSet<String> specialEntityMatchables = new HashSet<>(Arrays.asList("player", "entity", "npc", "vehicle", "fish", "projectile", "hanging"));
+
+    public boolean couldMatchEntity(String text) {
+        if (specialEntityMatchables.contains(text)) {
             return true;
         }
-        if (text.startsWith("regex:")) {
+        if (EntityTag.matches(text)) {
             return true;
         }
-        // This one must be last.
-        if (CoreUtilities.contains(text, '|')) {
-            for (String subMatch : text.split("\\|")) {
-                if (!couldMatchInventory(subMatch)) {
-                    return false;
-                }
+        return genericCouldMatchChecks(text, this::couldMatchEntity);
+    }
+
+    public boolean couldMatchVehicle(String text) {
+        if (text.equals("vehicle")) {
+            return true;
+        }
+        if (specialEntityMatchables.contains(text)) {
+            return false;
+        }
+        if (EntityTag.matches(text)) {
+            EntityTag entity = EntityTag.valueOf(text, CoreUtilities.noDebugContext);
+            if (entity == null) {
+                return false;
+            }
+            if (!Vehicle.class.isAssignableFrom(entity.getEntityType().getBukkitEntityType().getEntityClass())) {
+                return false;
             }
             return true;
         }
-        return false;
+        return genericCouldMatchChecks(text, this::couldMatchVehicle);
+    }
+
+    public boolean couldMatchBlock(String text) {
+        if (text.equals("block") || text.equals("material")) {
+            return true;
+        }
+        if (text.equals("item")) {
+            return false;
+        }
+        if (MaterialTag.matches(text)) {
+            MaterialTag mat = MaterialTag.valueOf(text, CoreUtilities.noDebugContext);
+            if (mat == null || !mat.getMaterial().isBlock()) {
+                return false;
+            }
+            return true;
+        }
+        return genericCouldMatchChecks(text, this::couldMatchBlock);
     }
 
     public boolean couldMatchItem(String text) {
         if (text.equals("item")) {
             return true;
         }
-        if (MaterialTag.matches(text) || ItemTag.matches(text)) {
+        if (MaterialTag.matches(text)) {
+            MaterialTag mat = MaterialTag.valueOf(text, CoreUtilities.noDebugContext);
+            if (mat == null || !mat.getMaterial().isItem()) {
+                return false;
+            }
             return true;
         }
+        if (ItemTag.matches(text)) {
+            return true;
+        }
+        return genericCouldMatchChecks(text, this::couldMatchItem);
+    }
+
+    public boolean genericCouldMatchChecks(String text, Function<String, Boolean> checkType) {
         if (CoreUtilities.contains(text, '*')) {
             return true;
         }
@@ -88,7 +143,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         // This one must be last.
         if (CoreUtilities.contains(text, '|')) {
             for (String subMatch : text.split("\\|")) {
-                if (!couldMatchItem(subMatch)) {
+                if (!checkType.apply(subMatch)) {
                     return false;
                 }
             }

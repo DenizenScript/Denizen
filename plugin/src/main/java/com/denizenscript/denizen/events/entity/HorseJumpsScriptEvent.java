@@ -46,7 +46,10 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.equals("horse jumps") || path.eventLower.endsWith("jumps");
+        if (!path.eventLower.equals("horse jumps") && !path.eventLower.endsWith("jumps")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

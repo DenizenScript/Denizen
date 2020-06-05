@@ -42,7 +42,13 @@ public class BlockFadesScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(1).equals("fades");
+        if (!path.eventArgLowerAt(1).equals("fades")) {
+            return false;
+        }
+        if (!couldMatchBlock(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

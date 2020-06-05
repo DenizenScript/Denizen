@@ -44,11 +44,14 @@ public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean couldMatch(ScriptPath path) {
+        if (!path.eventArgLowerAt(0).equals("player") || !path.eventArgLowerAt(2).equals("sprinting")) {
+            return false;
+        }
         String middleWord = path.eventArgAt(1);
         if (!(middleWord.equals("starts") || middleWord.equals("stops") || middleWord.equals("toggles"))) {
             return false;
         }
-        return path.eventArgLowerAt(0).equals("player") && path.eventArgLowerAt(2).equals("sprinting");
+        return true;
     }
 
     @Override

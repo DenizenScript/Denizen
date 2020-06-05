@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.events.entity;
+package com.denizenscript.denizen.events.vehicle;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
@@ -55,7 +55,16 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.contains("collides with");
+        if (!path.eventLower.contains("collides with")) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(3))) {
+            return false;
+        }
+        if (!couldMatchVehicle(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -63,15 +72,12 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
         if (!tryEntity(vehicle, path.eventArgLowerAt(0))) {
             return false;
         }
-
         if (!tryEntity(entity, path.eventArgLowerAt(3))) {
             return false;
         }
-
         if (!runInCheck(path, vehicle.getLocation())) {
             return false;
         }
-
         return super.matches(path);
     }
 

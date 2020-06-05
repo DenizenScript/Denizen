@@ -41,7 +41,10 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.equals("pig zapped");
+        if (!path.eventLower.equals("pig zapped")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

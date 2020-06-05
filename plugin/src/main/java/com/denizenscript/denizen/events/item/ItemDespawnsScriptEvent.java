@@ -1,62 +1,61 @@
-package com.denizenscript.denizen.events.entity;
+package com.denizenscript.denizen.events.item;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import org.bukkit.entity.Item;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.entity.ItemDespawnEvent;
 
-public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener {
+public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // item spawns
-    // <item> spawns
-    // <material> spawns
+    // item despawns
+    // <item> despawns
     //
-    // @Regex ^on [^\s]+ spawns$
+    // @Regex ^on [^\s]+ despawns$
     //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true
     //
-    // @Triggers when an item entity spawns.
+    // @Triggers when an item entity despawns.
     //
     // @Context
     // <context.item> returns the ItemTag of the entity.
     // <context.entity> returns the EntityTag.
-    // <context.location> returns the location of the entity to be spawned.
+    // <context.location> returns the location of the entity to be despawned.
     //
     // -->
 
-    public ItemSpawnsScriptEvent() {
+    public ItemDespawnsScriptEvent() {
         instance = this;
     }
 
-    public static ItemSpawnsScriptEvent instance;
+    public static ItemDespawnsScriptEvent instance;
     public ItemTag item;
     public LocationTag location;
     public EntityTag entity;
-    public ItemSpawnEvent event;
-
-    // TODO: De-collide with 'entity spawns'
+    public ItemDespawnEvent event;
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        String arg = path.eventArgLowerAt(2);
-        if (arg.length() > 0 && !arg.equals("in")) {
+        if (!path.eventArgLowerAt(1).equals("despawns")) {
             return false;
         }
-        return path.eventArgLowerAt(1).equals("spawns");
+        if (!couldMatchItem(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public boolean matches(ScriptPath path) {
-        String item_test = path.eventArgLowerAt(0);
+        String item_test = CoreUtilities.getXthArg(0, path.eventLower);
 
         if (!tryItem(item, item_test)) {
             return false;
@@ -71,7 +70,7 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public String getName() {
-        return "ItemSpawns";
+        return "ItemDespawns";
     }
 
     @Override
@@ -89,14 +88,11 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @EventHandler
-    public void onItemSpawns(ItemSpawnEvent event) {
-        Item entity = event.getEntity();
+    public void onItemDespawns(ItemDespawnEvent event) {
         location = new LocationTag(event.getLocation());
-        item = new ItemTag(entity.getItemStack());
-        this.entity = new EntityTag(entity);
+        item = new ItemTag(event.getEntity().getItemStack());
+        entity = new EntityTag(event.getEntity());
         this.event = event;
-        EntityTag.rememberEntity(entity);
         fire(event);
-        EntityTag.forgetEntity(entity);
     }
 }

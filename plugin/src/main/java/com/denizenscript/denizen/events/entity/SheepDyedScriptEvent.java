@@ -51,7 +51,10 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("sheep dyed") || path.eventLower.startsWith("player dyes sheep");
+        if (!path.eventLower.startsWith("sheep dyed") && !path.eventLower.startsWith("player dyes sheep")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

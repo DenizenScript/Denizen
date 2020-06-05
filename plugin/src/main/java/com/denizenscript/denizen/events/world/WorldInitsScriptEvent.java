@@ -35,7 +35,10 @@ public class WorldInitsScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(1).equals("initializes");
+        if (!path.eventArgLowerAt(1).equals("initializes")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

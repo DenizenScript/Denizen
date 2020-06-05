@@ -42,7 +42,10 @@ public class ChunkLoadScriptEvent extends BukkitScriptEvent implements Listener 
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("chunk loads");
+        if (!path.eventLower.startsWith("chunk loads")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

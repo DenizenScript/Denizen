@@ -40,7 +40,10 @@ public class WorldUnloadsScriptEvent extends BukkitScriptEvent implements Listen
         if (path.eventArgLowerAt(0).equals("chunk")) {
             return false;
         }
-        return path.eventArgLowerAt(1).equals("unloads");
+        if (!path.eventArgLowerAt(1).equals("unloads")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

@@ -56,6 +56,9 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
         if (!cmd.equals("splash") && !cmd.equals("splashes")) {
             return false;
         }
+        if (!couldMatchItem(path.eventArgLowerAt(1))) {
+            return false;
+        }
         return true;
     }
 

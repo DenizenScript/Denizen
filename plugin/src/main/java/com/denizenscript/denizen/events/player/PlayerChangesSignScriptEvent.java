@@ -58,7 +58,10 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
         String sign = path.eventArgAt(2);
-        return (sign.equals("sign") || MaterialTag.matches(sign));
+        if  (!sign.equals("sign") && !couldMatchBlock(sign)) {
+            return false;
+        }
+        return true;
     }
 
     @Override

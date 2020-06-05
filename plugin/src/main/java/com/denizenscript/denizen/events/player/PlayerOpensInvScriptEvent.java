@@ -12,13 +12,14 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 
 public class PlayerOpensInvScriptEvent extends BukkitScriptEvent implements Listener {
 
-    // TODO: in area
     // <--[event]
     // @Events
     // player opens inventory
     // player opens <inventory>
     //
     // @Regex ^on player opens [^\s]+$
+    //
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Triggers when a player opens an inventory. (EG, chests, not the player's main inventory.)
     //
@@ -40,12 +41,21 @@ public class PlayerOpensInvScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player opens");
+        if (!path.eventLower.startsWith("player opens")) {
+            return false;
+        }
+        if (!couldMatchInventory(path.eventArgLowerAt(2))) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public boolean matches(ScriptPath path) {
         if (!tryInventory(inventory, path.eventArgLowerAt(2))) {
+            return false;
+        }
+        if (!runInCheck(path, inventory.getLocation())) {
             return false;
         }
         return super.matches(path);

@@ -42,7 +42,13 @@ public class EntityDespawnScriptEvent extends BukkitScriptEvent {
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(1).equals("despawns");
+        if (!path.eventArgLowerAt(1).equals("despawns")) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

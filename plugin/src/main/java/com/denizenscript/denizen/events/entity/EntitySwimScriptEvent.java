@@ -45,7 +45,17 @@ public class EntitySwimScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(2).equals("swimming");
+        if (!path.eventArgLowerAt(2).equals("swimming")) {
+            return false;
+        }
+        String cmd = path.eventArgLowerAt(1);
+        if (!cmd.equals("starts") && !cmd.equals("stops") && !cmd.equals("toggles")) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

@@ -4,7 +4,9 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.block.*;
 import com.denizenscript.denizen.events.core.*;
 import com.denizenscript.denizen.events.entity.*;
+import com.denizenscript.denizen.events.item.*;
 import com.denizenscript.denizen.events.player.*;
+import com.denizenscript.denizen.events.vehicle.*;
 import com.denizenscript.denizen.events.world.*;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -14,6 +16,7 @@ import com.denizenscript.denizencore.events.ScriptEvent;
 public class ScriptEventRegistry {
 
     public static void registerMainEvents() {
+
         // Block events
         ScriptEvent.registerScriptEvent(new BlockBuiltScriptEvent());
         ScriptEvent.registerScriptEvent(new BlockBurnsScriptEvent());
@@ -89,10 +92,6 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new FireworkBurstsScriptEvent());
         ScriptEvent.registerScriptEvent(new HangingBreaksScriptEvent());
         ScriptEvent.registerScriptEvent(new HorseJumpsScriptEvent());
-        ScriptEvent.registerScriptEvent(new ItemDespawnsScriptEvent());
-        ScriptEvent.registerScriptEvent(new ItemEnchantedScriptEvent());
-        ScriptEvent.registerScriptEvent(new ItemMergesScriptEvent());
-        ScriptEvent.registerScriptEvent(new ItemSpawnsScriptEvent());
         if (Depends.citizens != null) {
             ScriptEvent.registerScriptEvent(new NPCSpawnScriptEvent());
         }
@@ -102,19 +101,21 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new SheepDyedScriptEvent());
         ScriptEvent.registerScriptEvent(new SheepRegrowsScriptEvent());
         ScriptEvent.registerScriptEvent(new SlimeSplitsScriptEvent());
-        ScriptEvent.registerScriptEvent(new VehicleCollidesBlockScriptEvent());
-        ScriptEvent.registerScriptEvent(new VehicleCollidesEntityScriptEvent());
-        ScriptEvent.registerScriptEvent(new VehicleCreatedScriptEvent());
-        ScriptEvent.registerScriptEvent(new VehicleDamagedScriptEvent());
-        ScriptEvent.registerScriptEvent(new VehicleDestroyedScriptEvent());
-        ScriptEvent.registerScriptEvent(new VehicleMoveScriptEvent());
+
+        // Item events
+        ScriptEvent.registerScriptEvent(new InventoryPicksUpItemScriptEvent());
+        ScriptEvent.registerScriptEvent(new ItemDespawnsScriptEvent());
+        ScriptEvent.registerScriptEvent(new ItemEnchantedScriptEvent());
+        ScriptEvent.registerScriptEvent(new ItemMergesScriptEvent());
+        ScriptEvent.registerScriptEvent(new ItemMoveScriptEvent());
+        ScriptEvent.registerScriptEvent(new ItemRecipeFormedScriptEvent());
+        ScriptEvent.registerScriptEvent(new ItemSpawnsScriptEvent());
 
         // Player events
         ScriptEvent.registerScriptEvent(new BiomeEnterExitScriptEvent());
         ScriptEvent.registerScriptEvent(new ChatScriptEvent());
+        ScriptEvent.registerScriptEvent(new HotbarScrollScriptEvent());
         ScriptEvent.registerScriptEvent(new ExperienceBottleBreaksScriptEvent());
-        ScriptEvent.registerScriptEvent(new ItemRecipeFormedScriptEvent());
-        ScriptEvent.registerScriptEvent(new ItemScrollScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerAnimatesScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerBreaksBlockScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerBreaksItemScriptEvent());
@@ -184,12 +185,18 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new PlayerWalksOverScriptEvent());
         ScriptEvent.registerScriptEvent(new ResourcePackStatusScriptEvent());
 
+        // Vehicle
+        ScriptEvent.registerScriptEvent(new VehicleCollidesBlockScriptEvent());
+        ScriptEvent.registerScriptEvent(new VehicleCollidesEntityScriptEvent());
+        ScriptEvent.registerScriptEvent(new VehicleCreatedScriptEvent());
+        ScriptEvent.registerScriptEvent(new VehicleDamagedScriptEvent());
+        ScriptEvent.registerScriptEvent(new VehicleDestroyedScriptEvent());
+        ScriptEvent.registerScriptEvent(new VehicleMoveScriptEvent());
+
         // World events
         ScriptEvent.registerScriptEvent(new ChunkLoadScriptEvent());
         ScriptEvent.registerScriptEvent(new ChunkUnloadScriptEvent());
         ScriptEvent.registerScriptEvent(new CommandScriptEvent());
-        ScriptEvent.registerScriptEvent(new InventoryPicksUpItemScriptEvent());
-        ScriptEvent.registerScriptEvent(new ItemMoveScriptEvent());
         ScriptEvent.registerScriptEvent(new LightningStrikesScriptEvent());
         ScriptEvent.registerScriptEvent(new LingeringPotionSplashScriptEvent());
         ScriptEvent.registerScriptEvent(new PortalCreateScriptEvent());

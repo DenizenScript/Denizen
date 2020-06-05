@@ -48,7 +48,14 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player throws") && path.eventLower.contains("egg");
+        if (!path.eventLower.startsWith("player throws") || !path.eventLower.contains("egg")) {
+            return false;
+        }
+        String type = path.eventArgLowerAt(2);
+        if (!type.equals("hatching") && !type.equals("non-hatching") && !type.equals("egg")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

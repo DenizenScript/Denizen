@@ -38,7 +38,10 @@ public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("spawn changes");
+        if (!path.eventLower.startsWith("spawn changes")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

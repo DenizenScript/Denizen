@@ -47,7 +47,13 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("furnace smelts");
+        if (!path.eventLower.startsWith("furnace smelts")) {
+            return false;
+        }
+        if (!couldMatchItem(path.eventArgLowerAt(2))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

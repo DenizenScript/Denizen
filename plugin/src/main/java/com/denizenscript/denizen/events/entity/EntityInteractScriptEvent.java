@@ -46,7 +46,16 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.contains("interacts with");
+        if (!path.eventLower.contains("interacts with")) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        if (!couldMatchBlock(path.eventArgLowerAt(3))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

@@ -62,7 +62,10 @@ public class TabCompleteScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("tab complete");
+        if (!path.eventLower.startsWith("tab complete")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

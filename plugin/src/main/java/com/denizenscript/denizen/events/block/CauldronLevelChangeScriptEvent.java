@@ -50,7 +50,14 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("cauldron level ");
+        if (!path.eventLower.startsWith("cauldron level ")) {
+            return false;
+        }
+        String type = path.eventArgLowerAt(2);
+        if (!type.equals("changes") && !type.equals("raises") && !type.equals("lowers")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

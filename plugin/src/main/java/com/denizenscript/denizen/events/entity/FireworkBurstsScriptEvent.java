@@ -43,7 +43,10 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("firework bursts");
+        if (!path.eventLower.startsWith("firework bursts")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

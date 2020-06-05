@@ -23,7 +23,10 @@ public class ServerStartScriptEvent extends BukkitScriptEvent {
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("server start");
+        if (!path.eventLower.startsWith("server start")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

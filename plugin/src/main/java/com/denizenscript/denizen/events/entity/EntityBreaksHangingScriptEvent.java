@@ -13,6 +13,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -52,9 +55,23 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
     public LocationTag location;
     public HangingBreakByEntityEvent event;
 
+    public static HashSet<String> notRelevantBreakables = new HashSet<>(Arrays.asList("item", "held", "block"));
+
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(1).equals("breaks");
+        if (!path.eventArgLowerAt(1).equals("breaks")) {
+            return false;
+        }
+        if (notRelevantBreakables.contains(path.eventArgLowerAt(2))) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(2))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

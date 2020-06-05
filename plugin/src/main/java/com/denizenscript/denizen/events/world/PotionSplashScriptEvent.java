@@ -47,8 +47,14 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        String cmd = path.eventArgAt(1);
-        return cmd.equals("splash") || cmd.equals("splashes");
+        String cmd = path.eventArgLowerAt(1);
+        if (!cmd.equals("splash") && !cmd.equals("splashes")) {
+            return false;
+        }
+        if (!couldMatchItem(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

@@ -46,13 +46,19 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean couldMatch(ScriptPath path) {
+        if (!path.eventArgLowerAt(1).equals("spreads")) {
+            return false;
+        }
         if (path.eventLower.startsWith("block")) {
             return false;
         }
         if (path.eventLower.startsWith("dragon egg moves")) {
             return true;
         }
-        return path.eventArgLowerAt(1).equals("spreads");
+        if (!path.eventLower.startsWith("liquid") && !couldMatchBlock(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

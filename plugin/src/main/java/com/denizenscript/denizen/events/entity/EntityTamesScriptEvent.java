@@ -46,7 +46,13 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(1).equals("tames");
+        if (!path.eventArgLowerAt(1).equals("tames") && !path.eventArgLowerAt(1).equals("tamed")) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

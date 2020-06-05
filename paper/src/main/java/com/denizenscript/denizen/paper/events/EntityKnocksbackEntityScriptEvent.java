@@ -58,8 +58,13 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(1).equals("knocks") &&
-                path.eventArgLowerAt(2).equals("back");
+        if (!path.eventArgLowerAt(1).equals("knocks") || !path.eventArgLowerAt(2).equals("back")) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(0)) || !couldMatchEntity(path.eventArgLowerAt(3))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

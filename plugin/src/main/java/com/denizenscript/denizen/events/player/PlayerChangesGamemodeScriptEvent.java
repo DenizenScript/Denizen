@@ -41,7 +41,10 @@ public class PlayerChangesGamemodeScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player changes gamemode");
+        if (!path.eventLower.startsWith("player changes gamemode")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

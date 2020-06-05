@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.events.entity;
+package com.denizenscript.denizen.events.vehicle;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
@@ -54,13 +54,20 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean couldMatch(ScriptPath path) {
+        String cmd = path.eventArgAt(1);
+        if (!cmd.equals("damaged") && !cmd.equals("damages")) {
+            return false;
+        }
         if (path.eventArgLowerAt(3).equals("by")) {
             return false;
         }
-        String tid = path.eventArgLowerAt(0);
-        String cmd = path.eventArgAt(1);
-        return !tid.equals("entity") && (cmd.equals("damaged")
-                || (cmd.equals("damages") && !path.eventArgLowerAt(2).equals("entity")));
+        if (!couldMatchVehicle(path.eventArgLowerAt(0)) && !couldMatchVehicle(path.eventArgLowerAt(2))) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -68,18 +75,15 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
         String cmd = path.eventArgLowerAt(1);
         String veh = cmd.equals("damaged") ? path.eventArgLowerAt(0) : path.eventArgLowerAt(2);
         String ent = cmd.equals("damages") ? path.eventArgLowerAt(0) : "";
-
         if (!tryEntity(vehicle, veh)) {
             return false;
         }
         if (!ent.isEmpty() && entity != null && !tryEntity(entity, ent)) {
             return false;
         }
-
         if (!runInCheck(path, vehicle.getLocation())) {
             return false;
         }
-
         return super.matches(path);
     }
 

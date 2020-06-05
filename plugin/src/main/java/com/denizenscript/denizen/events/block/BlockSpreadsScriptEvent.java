@@ -43,7 +43,16 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(1).equals("spreads") && !path.eventArgLowerAt(0).equals("liquid");
+        if (!path.eventArgLowerAt(1).equals("spreads")) {
+            return false;
+        }
+        if (path.eventArgLowerAt(0).equals("liquid")) {
+            return false;
+        }
+        if (!couldMatchBlock(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.block.Biome;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -55,8 +56,13 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player enters")
-                || path.eventLower.startsWith("player exits");
+        if (!path.eventLower.startsWith("player enters") && !path.eventLower.startsWith("player exits")) {
+            return false;
+        }
+        if (!path.eventArgLowerAt(2).equals("biome") && !couldMatchEnum(path.eventArgLowerAt(2), Biome.values())) {
+            return false;
+        }
+        return true;
     }
 
     @Override

@@ -49,7 +49,10 @@ public class BrewingStandFueledScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("brewing stand fueled");
+        if (!path.eventLower.startsWith("brewing stand fueled")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

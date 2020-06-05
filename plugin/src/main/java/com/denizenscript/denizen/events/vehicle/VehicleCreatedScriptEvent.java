@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.events.entity;
+package com.denizenscript.denizen.events.vehicle;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -38,20 +38,23 @@ public class VehicleCreatedScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(1).equals("created");
+        if (!path.eventArgLowerAt(1).equals("created")) {
+            return false;
+        }
+        if (!couldMatchVehicle(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public boolean matches(ScriptPath path) {
-
         if (!tryEntity(vehicle, path.eventArgLowerAt(0))) {
             return false;
         }
-
         if (!runInCheck(path, vehicle.getLocation())) {
             return false;
         }
-
         return super.matches(path);
     }
 

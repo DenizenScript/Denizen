@@ -49,7 +49,13 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(1).equals("extends");
+        if (!path.eventArgLowerAt(1).equals("extends")) {
+            return false;
+        }
+        if (!path.eventArgLowerAt(0).equals("piston") && !couldMatchBlock(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

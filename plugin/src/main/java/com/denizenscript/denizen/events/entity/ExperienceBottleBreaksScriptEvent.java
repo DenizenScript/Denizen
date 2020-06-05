@@ -43,7 +43,13 @@ public class ExperienceBottleBreaksScriptEvent extends BukkitScriptEvent impleme
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("experience bottle breaks");
+        if (!path.eventLower.startsWith("experience bottle breaks")) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

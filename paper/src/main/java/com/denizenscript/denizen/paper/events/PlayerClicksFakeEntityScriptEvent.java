@@ -46,9 +46,9 @@ public class PlayerClicksFakeEntityScriptEvent extends BukkitScriptEvent impleme
 
     @Override
     public boolean couldMatch(ScriptEvent.ScriptPath path) {
-        return path.eventLower.startsWith("player clicks fake")
-                || path.eventLower.startsWith("player right clicks fake")
-                || path.eventLower.startsWith("player left clicks fake");
+        return path.eventLower.startsWith("player clicks fake entity")
+                || path.eventLower.startsWith("player right clicks fake entity")
+                || path.eventLower.startsWith("player left clicks fake entity");
     }
 
     @Override

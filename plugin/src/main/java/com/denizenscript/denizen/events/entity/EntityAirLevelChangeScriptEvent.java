@@ -48,7 +48,13 @@ public class EntityAirLevelChangeScriptEvent extends BukkitScriptEvent implement
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.contains("changes air level");
+        if (!path.eventLower.contains("changes air level")) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

@@ -40,7 +40,10 @@ public class BrewsScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("brewing stand brews");
+        if (!path.eventLower.startsWith("brewing stand brews")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

@@ -45,7 +45,13 @@ public class EntitySpawnerSpawnScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("spawner spawns");
+        if (!path.eventLower.startsWith("spawner spawns")) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(2))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

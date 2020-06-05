@@ -45,7 +45,10 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("redstone recalculated");
+        if (!path.eventLower.startsWith("redstone recalculated")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

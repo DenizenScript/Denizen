@@ -88,13 +88,27 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return ((path.eventLower.startsWith("player clicks")
-                && !path.eventArgLowerAt(2).equals("fake"))
-                || (path.eventLower.startsWith("player left clicks")
-                || path.eventLower.startsWith("player right clicks")
-                && !matchHelpList.contains(path.eventArgLowerAt(3))
-                && !EntityTag.matches(path.eventArgLowerAt(3))))
-                && couldMatchInArea(path.eventLower);  // Avoid matching "clicks in inventory"
+        if (!path.eventArgLowerAt(0).equals("player")) {
+            return false;
+        }
+        boolean clickFirst = path.eventArgLowerAt(1).equals("clicks");
+        if (!clickFirst && !path.eventArgLowerAt(2).equals("clicks")) {
+            return false;
+        }
+        if (!clickFirst && !path.eventArgLowerAt(1).equals("right") && !path.eventArgLowerAt(1).equals("left")) {
+            return false;
+        }
+        String clickedOn = path.eventArgLowerAt(clickFirst ? 2 : 3);
+        if (matchHelpList.contains(clickedOn)) {
+            return false;
+        }
+        if (!couldMatchBlock(clickedOn)) {
+            return false;
+        }
+        if (!couldMatchInArea(path.eventLower)) {
+            return false;
+        }
+        return true;
     }
 
     private static final HashSet<String> withHelpList = new HashSet<>(Arrays.asList("with", "using", "in"));

@@ -38,7 +38,10 @@ public class SheepRegrowsScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("sheep regrows wool");
+        if (!path.eventLower.startsWith("sheep regrows wool")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

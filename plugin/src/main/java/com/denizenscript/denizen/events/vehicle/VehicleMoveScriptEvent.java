@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.events.entity;
+package com.denizenscript.denizen.events.vehicle;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
@@ -42,20 +42,23 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(1).equals("moves");
+        if (!path.eventArgLowerAt(1).equals("moves")) {
+            return false;
+        }
+        if (!couldMatchVehicle(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public boolean matches(ScriptPath path) {
-
         if (!tryEntity(vehicle, path.eventArgLowerAt(0))) {
             return false;
         }
-
         if (!runInCheck(path, vehicle.getLocation())) {
             return false;
         }
-
         return super.matches(path);
     }
 

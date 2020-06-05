@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.events.entity;
+package com.denizenscript.denizen.events.item;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
@@ -8,45 +8,53 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.ItemMergeEvent;
+import org.bukkit.event.entity.ItemSpawnEvent;
 
-public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener {
+public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // item merges
-    // <item> merges
-    // <material> merges
+    // item spawns
+    // <item> spawns
     //
-    // @Regex ^on [^\s]+ merges$
+    // @Regex ^on [^\s]+ spawns$
     //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true
     //
-    // @Triggers when an item entity merges into another item entity.
+    // @Triggers when an item entity spawns.
     //
     // @Context
     // <context.item> returns the ItemTag of the entity.
     // <context.entity> returns the EntityTag.
-    // <context.target> returns the EntityTag being merged into.
     // <context.location> returns the location of the entity to be spawned.
     //
     // -->
 
-    public ItemMergesScriptEvent() {
+    public ItemSpawnsScriptEvent() {
         instance = this;
     }
 
-    public static ItemMergesScriptEvent instance;
+    public static ItemSpawnsScriptEvent instance;
     public ItemTag item;
     public LocationTag location;
     public EntityTag entity;
-    public ItemMergeEvent event;
+    public ItemSpawnEvent event;
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(1).equals("merges") && couldMatchItem(path.eventArgLowerAt(0));
+        if (!path.eventArgLowerAt(1).equals("spawns")) {
+            return false;
+        }
+        String arg = path.eventArgLowerAt(2);
+        if (arg.length() > 0 && !arg.equals("in")) {
+            return false;
+        }
+        if (!couldMatchItem(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -66,7 +74,7 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public String getName() {
-        return "ItemMerges";
+        return "ItemSpawns";
     }
 
     @Override
@@ -80,20 +88,18 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
         else if (name.equals("entity")) {
             return entity;
         }
-        else if (name.equals("target")) {
-            return new EntityTag(event.getTarget());
-        }
         return super.getContext(name);
     }
 
     @EventHandler
-    public void onItemMerges(ItemMergeEvent event) {
+    public void onItemSpawns(ItemSpawnEvent event) {
         Item entity = event.getEntity();
-        Item target = event.getTarget();
-        location = new LocationTag(target.getLocation());
+        location = new LocationTag(event.getLocation());
         item = new ItemTag(entity.getItemStack());
         this.entity = new EntityTag(entity);
         this.event = event;
+        EntityTag.rememberEntity(entity);
         fire(event);
+        EntityTag.forgetEntity(entity);
     }
 }

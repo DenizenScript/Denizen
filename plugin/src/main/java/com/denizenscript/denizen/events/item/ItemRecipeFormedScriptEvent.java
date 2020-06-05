@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.events.player;
+package com.denizenscript.denizen.events.item;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.InventoryTag;
@@ -21,7 +21,6 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
     // @Events
     // item recipe formed
     // <item> recipe formed
-    // <material> recipe formed
     //
     // @Regex ^on [^\s]+ recipe formed$
     //
@@ -55,6 +54,9 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
             return true;
         }
         if (!path.eventArgLowerAt(1).equals("recipe") || !path.eventArgLowerAt(2).equals("formed")) {
+            return false;
+        }
+        if (!couldMatchItem(path.eventArgLowerAt(0))) {
             return false;
         }
         return true;

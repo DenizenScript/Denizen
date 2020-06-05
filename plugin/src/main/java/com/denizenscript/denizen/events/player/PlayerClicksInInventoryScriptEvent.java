@@ -118,11 +118,12 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
         if (!path.eventLower.startsWith("player")) {
             return false;
         }
-        if (!path.eventArgLowerAt(1).equals("clicks") && !path.eventArgLowerAt(2).equals("clicks")) {
+        boolean clickFirst = path.eventArgLowerAt(1).equals("clicks");
+        if (!clickFirst && !path.eventArgLowerAt(2).equals("clicks")) {
             return false;
         }
-        String clickedObj = path.eventArgLowerAt(3);
-        if (matchHelpList.contains(clickedObj)) {
+        String clickedOn = path.eventArgLowerAt(clickFirst ? 2 : 3);
+        if (matchHelpList.contains(clickedOn)) {
             return false;
         }
         int inIndex = -1;

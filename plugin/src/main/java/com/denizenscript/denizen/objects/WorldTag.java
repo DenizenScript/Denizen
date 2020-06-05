@@ -570,7 +570,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         registerTag("time", (attribute, object) -> {
             // <--[tag]
             // @attribute <WorldTag.time.duration>
-            // @returns DurationTags
+            // @returns DurationTag
             // @description
             // Returns the relative in-game time of this world as a duration.
             // -->

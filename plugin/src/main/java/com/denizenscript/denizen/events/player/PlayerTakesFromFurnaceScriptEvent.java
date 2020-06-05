@@ -19,7 +19,6 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
     // @Events
     // player takes item from furnace
     // player takes <item> from furnace
-    // player takes <material> from furnace
     //
     // @Regex ^on player takes [^\s]+ from furnace$
     //
@@ -48,8 +47,13 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player takes")
-                && (path.eventArgLowerAt(4).equals("furnace"));
+        if (!path.eventLower.startsWith("player takes") || !path.eventArgLowerAt(3).equals("from") || !path.eventArgLowerAt(4).equals("furnace")) {
+            return false;
+        }
+        if (!couldMatchItem(path.eventArgLowerAt(2))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

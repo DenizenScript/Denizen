@@ -49,7 +49,13 @@ public class PistonRetractsScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(1).equals("retracts");
+        if (!path.eventArgLowerAt(1).equals("retracts")) {
+            return false;
+        }
+        if (!path.eventArgLowerAt(0).equals("piston") && !couldMatchBlock(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
 
     }
 

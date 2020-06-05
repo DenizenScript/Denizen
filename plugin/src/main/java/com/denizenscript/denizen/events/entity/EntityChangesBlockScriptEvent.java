@@ -53,21 +53,27 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(1).equals("changes");
+        if (!path.eventArgLowerAt(1).equals("changes")) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        if (!couldMatchBlock(path.eventArgLowerAt(2))) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public boolean matches(ScriptPath path) {
         String entName = path.eventArgLowerAt(0);
-
         if (!tryEntity(entity, entName)) {
             return false;
         }
-
         if (!tryMaterial(old_material, path.eventArgLowerAt(2))) {
             return false;
         }
-
         if (path.eventArgLowerAt(3).equals("into")) {
             String mat2 = path.eventArgLowerAt(4);
             if (mat2.isEmpty()) {
@@ -78,11 +84,9 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
                 return false;
             }
         }
-
         if (!runInCheck(path, location)) {
             return false;
         }
-
         return super.matches(path);
     }
 

@@ -68,7 +68,10 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player chats");
+        if (!path.eventLower.startsWith("player chats")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

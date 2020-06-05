@@ -35,7 +35,13 @@ public class WorldLoadsScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(1).equals("loads");
+        if (path.eventArgLowerAt(0).equals("chunk")) {
+            return false;
+        }
+        if (!path.eventArgLowerAt(1).equals("loads")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

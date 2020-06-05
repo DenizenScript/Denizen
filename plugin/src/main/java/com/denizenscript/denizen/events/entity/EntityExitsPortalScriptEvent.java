@@ -44,7 +44,13 @@ public class EntityExitsPortalScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.contains("exits portal");
+        if (!path.eventLower.contains("exits portal")) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

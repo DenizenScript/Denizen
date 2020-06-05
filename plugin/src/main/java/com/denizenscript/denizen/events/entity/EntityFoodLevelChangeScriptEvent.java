@@ -48,7 +48,13 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.contains("changes food level");
+        if (!path.eventLower.contains("changes food level")) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

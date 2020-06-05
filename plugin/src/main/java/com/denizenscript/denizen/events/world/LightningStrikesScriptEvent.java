@@ -42,7 +42,10 @@ public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("lightning strikes");
+        if (!path.eventLower.startsWith("lightning strikes")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

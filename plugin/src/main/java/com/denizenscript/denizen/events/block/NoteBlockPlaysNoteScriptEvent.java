@@ -45,7 +45,10 @@ public class NoteBlockPlaysNoteScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("noteblock plays note");
+        if (!path.eventLower.startsWith("noteblock plays note")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

@@ -40,7 +40,10 @@ public class NPCSpawnScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("npc spawns");
+        if (!path.eventLower.startsWith("npc spawns")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

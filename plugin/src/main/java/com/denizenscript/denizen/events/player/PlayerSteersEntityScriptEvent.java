@@ -58,7 +58,13 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(1).startsWith("steers");
+        if (!path.eventLower.startsWith("player steers")) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(2))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

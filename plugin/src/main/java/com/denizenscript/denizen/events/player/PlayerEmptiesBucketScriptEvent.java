@@ -49,7 +49,14 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player empties");
+        if (!path.eventLower.startsWith("player empties")) {
+            return false;
+        }
+        String bucket = path.eventArgLowerAt(2);
+        if (!bucket.equals("bucket") && !couldMatchItem(bucket)) {
+            return false;
+        }
+        return true;
     }
 
     @Override

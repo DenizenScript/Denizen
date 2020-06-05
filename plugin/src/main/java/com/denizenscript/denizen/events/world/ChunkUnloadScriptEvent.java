@@ -43,7 +43,10 @@ public class ChunkUnloadScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("chunk unloads");
+        if (!path.eventLower.startsWith("chunk unloads")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

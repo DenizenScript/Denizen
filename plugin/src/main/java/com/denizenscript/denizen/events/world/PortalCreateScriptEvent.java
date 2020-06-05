@@ -48,7 +48,10 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("portal created");
+        if (!path.eventLower.startsWith("portal created")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

@@ -79,7 +79,13 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     @Override
     public boolean couldMatch(ScriptPath path) {
         String cmd = path.eventArgLowerAt(1);
-        return cmd.equals("dies") || cmd.equals("death");
+        if (!cmd.equals("dies") && !cmd.equals("death")) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

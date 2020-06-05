@@ -68,7 +68,16 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     @Override
     public boolean couldMatch(ScriptPath path) {
         String cmd = path.eventArgLowerAt(1);
-        return cmd.equals("hits") || cmd.equals("shoots");
+        if (!cmd.equals("hits") && !cmd.equals("shoots")) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        if (!couldMatchBlock(path.eventArgLowerAt(2))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

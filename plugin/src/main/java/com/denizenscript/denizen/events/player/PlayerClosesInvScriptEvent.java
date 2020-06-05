@@ -14,13 +14,14 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 
 public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Listener {
 
-    // TODO: in area
     // <--[event]
     // @Events
     // player closes inventory
     // player closes <inventory>
     //
     // @Regex ^on player closes [^\s]+$
+    //
+    // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Triggers when a player closes an inventory. (EG, chests, not the player's main inventory.)
     //
@@ -43,12 +44,21 @@ public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player closes ");
+        if (!path.eventLower.startsWith("player closes ")) {
+            return false;
+        }
+        if (!couldMatchInventory(path.eventArgLowerAt(2))) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public boolean matches(ScriptPath path) {
         if (!tryInventory(inventory, path.eventArgLowerAt(2))) {
+            return false;
+        }
+        if (!runInCheck(path, inventory.getLocation())) {
             return false;
         }
         return super.matches(path);

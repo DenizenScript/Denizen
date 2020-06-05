@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.events.world;
+package com.denizenscript.denizen.events.item;
 
 import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.ItemTag;
@@ -52,7 +52,16 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(1).equals("moves") && path.eventArgLowerAt(2).equals("from");
+        if (!path.eventArgLowerAt(1).equals("moves") || !path.eventArgLowerAt(2).equals("from")) {
+            return false;
+        }
+        if (!couldMatchItem(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        if (!couldMatchInventory(path.eventArgLowerAt(3))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

@@ -49,14 +49,17 @@ public class PlayerHoldsShieldEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean couldMatch(ScriptPath path) {
+        if (!path.eventArgLowerAt(0).equals("player")) {
+            return false;
+        }
         String middleWord = path.eventArgAt(1);
         if (!(middleWord.equals("raises") || middleWord.equals("lowers") || middleWord.equals("toggles"))) {
             return false;
         }
-        if (!path.eventArgLowerAt(0).equals("player")) {
+        if (!path.eventArgLowerAt(2).equals("shield") && !couldMatchItem(path.eventArgLowerAt(2))) {
             return false;
         }
-        return (path.eventArgLowerAt(2).equals("shield") || couldMatchItem(path.eventArgLowerAt(2)));
+        return true;
     }
 
     @Override

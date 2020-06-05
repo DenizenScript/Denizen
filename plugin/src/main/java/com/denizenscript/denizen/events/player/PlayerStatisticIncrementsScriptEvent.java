@@ -47,7 +47,15 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player statistic");
+        if (!path.eventLower.startsWith("player statistic")) {
+            return false;
+        }
+        if (!path.eventArgLowerAt(2).equals("increments")) {
+            if (!path.eventArgLowerAt(3).equals("increments") || !couldMatchEnum(path.eventArgLowerAt(2), Statistic.values())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

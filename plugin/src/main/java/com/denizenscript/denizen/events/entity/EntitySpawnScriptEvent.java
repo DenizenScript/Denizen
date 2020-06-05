@@ -51,7 +51,16 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(1).equals("spawns") && !path.eventLower.startsWith("item") && !path.eventLower.startsWith("spawner");
+        if (!path.eventArgLowerAt(1).equals("spawns")) {
+            return false;
+        }
+        if (path.eventLower.startsWith("item") || path.eventLower.startsWith("spawner") || path.eventLower.startsWith("npc")) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

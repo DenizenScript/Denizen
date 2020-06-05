@@ -46,7 +46,17 @@ public class EntityGlideScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventArgLowerAt(2).equals("gliding");
+        if (!path.eventArgLowerAt(2).equals("gliding")) {
+            return false;
+        }
+        String cmd = path.eventArgLowerAt(1);
+        if (!cmd.equals("starts") && !cmd.equals("stops") && !cmd.equals("toggles")) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

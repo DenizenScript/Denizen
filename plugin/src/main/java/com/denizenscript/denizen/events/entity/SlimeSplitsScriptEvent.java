@@ -41,7 +41,10 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("slime splits");
+        if (!path.eventLower.startsWith("slime splits")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

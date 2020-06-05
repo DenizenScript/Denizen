@@ -59,7 +59,17 @@ public class EntityPotionEffectScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.contains(" potion effects ");
+        if (!path.eventLower.contains(" potion effects ")) {
+            return false;
+        }
+        String change = path.eventArgAt(3);
+        if (!change.equals("modified") && !couldMatchEnum(change, EntityPotionEffectEvent.Action.values())) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

@@ -43,7 +43,13 @@ public class PlayerSpectatesEntityScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player spectates ");
+        if (!path.eventLower.startsWith("player spectates ")) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(2))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

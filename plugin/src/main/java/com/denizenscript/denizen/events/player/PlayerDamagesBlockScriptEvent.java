@@ -52,8 +52,7 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
         if (!path.eventLower.startsWith("player damages")) {
             return false;
         }
-        String mat = path.eventArgLowerAt(2);
-        if (!mat.equals("block") && !MaterialTag.matches(mat)) {
+        if (!couldMatchBlock(path.eventArgLowerAt(2))) {
             return false;
         }
         return true;
