@@ -15,7 +15,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     // <--[event]
     // @Events
     // player places block
-    // player places <material>
+    // player places <item>
     //
     // @Regex ^on player places [^\s]+$
     //
@@ -53,7 +53,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
         if (!path.eventLower.startsWith("player places")) {
             return false;
         }
-        if (!couldMatchBlock(path.eventArgLowerAt(2))) {
+        if (!couldMatchItem(path.eventArgLowerAt(2))) {
             return false;
         }
         return true;

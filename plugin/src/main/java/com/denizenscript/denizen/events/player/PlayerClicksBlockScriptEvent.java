@@ -22,7 +22,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     // <--[event]
     // @Events
     // player clicks block
-    // player (right/left) clicks (<material>)
+    // player (right/left) clicks <material>
     // player (right/left) clicks block
     //
     // @Cancellable true
@@ -102,7 +102,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         if (matchHelpList.contains(clickedOn)) {
             return false;
         }
-        if (!couldMatchBlock(clickedOn)) {
+        if (!clickedOn.isEmpty() && !couldMatchBlock(clickedOn)) {
             return false;
         }
         if (!couldMatchInArea(path.eventLower)) {

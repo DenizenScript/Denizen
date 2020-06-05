@@ -10,7 +10,6 @@ import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -51,17 +50,7 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("player breaks")) {
-            return false;
-        }
-        if (path.eventArgLowerAt(2).equals("block")) {
-            return false;
-        }
-        else if (!path.eventArgLowerAt(2).equals("held")) {
-            if (couldMatchItem(path.eventArgLowerAt(2))) {
-                Deprecations.oldStylePlayerBreaksItemEvent.message = oldWarningMessage + " (for event: " + path.toString() + ").";
-                Deprecations.oldStylePlayerBreaksItemEvent.warn();
-            }
+        if (!path.eventLower.startsWith("player breaks held")) {
             return false;
         }
         if (!couldMatchItem(path.eventArgLowerAt(3))) {
@@ -81,8 +70,6 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
         }
         return super.matches(path);
     }
-
-    public static String oldWarningMessage = Deprecations.oldStylePlayerBreaksItemEvent.message;
 
     @Override
     public String getName() {
