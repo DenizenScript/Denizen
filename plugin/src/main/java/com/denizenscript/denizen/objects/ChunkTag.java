@@ -300,6 +300,18 @@ public class ChunkTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <ChunkTag.force_loaded>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns whether the chunk is forced to stay loaded at all times.
+        // This is related to the <@link command chunkload> command.
+        // -->
+        registerTag("force_loaded", (attribute, object) -> {
+            Chunk chunk = object.getChunkForTag(attribute);
+            return new ElementTag(chunk != null && chunk.isForceLoaded());
+        });
+
+        // <--[tag]
         // @attribute <ChunkTag.x>
         // @returns ElementTag(Number)
         // @description
@@ -551,7 +563,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
 
         // <--[tag]
         // @attribute <ChunkTag.inhabited_time>
-        // @returns Duration
+        // @returns DurationTag
         // @Mechanism ChunkTag.inhabited_time
         // @description
         // Returns the total time the chunk has been inhabited for.
