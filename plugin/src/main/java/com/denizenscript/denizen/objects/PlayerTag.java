@@ -799,7 +799,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <PlayerTag.money>
         // @returns ElementTag(Decimal)
-        // @mechanism PlayerTag.money
         // @plugin Vault
         // @description
         // Returns the amount of money the player has with the registered Economy system.
@@ -2230,7 +2229,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <PlayerTag.time>
         // @returns ElementTag(Number)
-        // @mechanism PlayerTag.time
         // @description
         // Returns the time the player is currently experiencing. This time could differ from
         // the time that the rest of the world is currently experiencing if a 'time' or 'freeze_time'
@@ -2243,7 +2241,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <PlayerTag.weather>
         // @returns ElementTag
-        // @mechanism PlayerTag.weather
         // @description
         // Returns the type of weather the player is experiencing. This will be different
         // from the weather currently in the world that the player is residing in if

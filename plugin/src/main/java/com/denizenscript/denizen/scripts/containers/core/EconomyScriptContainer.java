@@ -35,7 +35,7 @@ public class EconomyScriptContainer extends ScriptContainer {
     // Economy script containers
     //
     // Economy script containers provide a Vault economy, which can be used in scripts by
-    // <@link tag PlayerTag.money> and <@link mechanism PlayerTag.money>
+    // <@link tag PlayerTag.money> and <@link command money>
     // and as well by any other plugin that relies on economy functionality (such as shop plugins).
     //
     // Note that vault economy bank systems are not currently supported.
