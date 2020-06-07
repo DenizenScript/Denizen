@@ -27,7 +27,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
     // Proximity triggers must have a sub-key identifying what type of proximity trigger to use.
     // The three types are "entry", "exit", and "move".
     //
-    // Entry and exit do exactly as the names imply: Entry fires when the NPC walks into range of the NPC, and exit fires when the NPC walks out of range.
+    // Entry and exit do exactly as the names imply: Entry fires when the player walks into range of the NPC, and exit fires when the player walks out of range.
     //
     // Move is a bit more subtle: it fires very rapidly so long as a player remains within range of the NPC.
     // This is useful for eg script logic that needs to be constantly updating whenever a player is nearby (eg a combat NPC script needs to constantly update its aim).

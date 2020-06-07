@@ -137,9 +137,14 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
 
     @EventHandler
     public void onCraftItem(CraftItemEvent event) {
-        if (event.getCursor() != null && event.getCursor().getType() != Material.AIR && !event.getCursor().isSimilar(event.getCurrentItem())) {
-            // This event fires even when nothing crafts due to a cursor item, so disregard those cases.
-            return;
+        // This event fires even when nothing crafts due to a cursor item, so disregard those cases.
+        if (event.getClick() != ClickType.SHIFT_LEFT && event.getCursor() != null && event.getCursor().getType() != Material.AIR) {
+            if (!event.getCursor().isSimilar(event.getCurrentItem())) {
+                return;
+            }
+            if (event.getCursor().getAmount() + event.getRecipe().getResult().getAmount() > event.getCursor().getType().getMaxStackSize()) {
+                return;
+            }
         }
         HumanEntity humanEntity = event.getWhoClicked();
         if (EntityTag.isNPC(humanEntity)) {
