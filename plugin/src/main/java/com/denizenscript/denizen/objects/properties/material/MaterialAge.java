@@ -8,6 +8,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.Ageable;
+import org.bukkit.block.data.type.Sapling;
 import org.bukkit.block.data.type.TurtleEgg;
 
 public class MaterialAge implements Property {
@@ -16,7 +17,8 @@ public class MaterialAge implements Property {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
                 && (((MaterialTag) material).getModernData().data instanceof Ageable
-                || ((MaterialTag) material).getModernData().data instanceof TurtleEgg);
+                || ((MaterialTag) material).getModernData().data instanceof TurtleEgg
+                || ((MaterialTag) material).getModernData().data instanceof Sapling);
     }
 
     public static MaterialAge getFrom(ObjectTag _material) {
@@ -76,6 +78,14 @@ public class MaterialAge implements Property {
         return material.getModernData().data instanceof TurtleEgg;
     }
 
+    public Sapling getSapling() {
+        return (Sapling) material.getModernData().data;
+    }
+
+    public boolean isSapling() {
+        return material.getModernData().data instanceof Sapling;
+    }
+
     public Ageable getAgeable() {
         return (Ageable) material.getModernData().data;
     }
@@ -83,6 +93,9 @@ public class MaterialAge implements Property {
     public int getCurrent() {
         if (isTurtleEgg()) {
             return getTurtleEgg().getHatch();
+        }
+        else if (isSapling()) {
+            return getSapling().getStage();
         }
         else {
             return getAgeable().getAge();
@@ -92,6 +105,9 @@ public class MaterialAge implements Property {
     public int getMax() {
         if (isTurtleEgg()) {
             return getTurtleEgg().getMaximumHatch();
+        }
+        else if (isSapling()) {
+            return getSapling().getMaximumStage();
         }
         else {
             return getAgeable().getMaximumAge();
@@ -129,6 +145,9 @@ public class MaterialAge implements Property {
             }
             if (isTurtleEgg()) {
                 getTurtleEgg().setHatch(age);
+            }
+            else if (isSapling()) {
+                getSapling().setStage(age);
             }
             else {
                 getAgeable().setAge(age);
