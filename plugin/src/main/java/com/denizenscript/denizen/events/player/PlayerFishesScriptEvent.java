@@ -24,6 +24,8 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Regex ^on player fishes( [^\s]+)?( while [^\s]+)?$
     //
+    // @Group Player
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true

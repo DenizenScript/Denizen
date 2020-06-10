@@ -19,6 +19,8 @@ public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent imp
     //
     // @Regex ^on player completes advancement$
     //
+    // @Group Player
+    //
     // @Switch name:<name> to only fire if the advancement has the specified name.
     //
     // @Triggers when a player has completed all criteria in an advancement.

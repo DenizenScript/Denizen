@@ -19,6 +19,10 @@ public class PlayerRiptideScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Regex ^on player activates riptide$
     //
+    // @Group Player
+    //
+    // @Group Player
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Triggers when a player activates the riptide effect.

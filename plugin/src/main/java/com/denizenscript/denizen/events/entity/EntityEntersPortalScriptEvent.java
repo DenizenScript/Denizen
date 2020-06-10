@@ -19,6 +19,8 @@ public class EntityEntersPortalScriptEvent extends BukkitScriptEvent implements 
     //
     // @Regex ^on [^\s]+ enters portal$
     //
+    // @Group Entity
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Triggers when an entity enters a portal.

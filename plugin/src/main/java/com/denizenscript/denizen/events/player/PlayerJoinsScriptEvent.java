@@ -21,6 +21,8 @@ public class PlayerJoinsScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Regex ^on player (joins|join)$
     //
+    // @Group Player
+    //
     // @Triggers when a player joins the server.
     //
     // @Context

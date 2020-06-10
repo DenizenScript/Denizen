@@ -26,6 +26,8 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Regex ^on player breaks held [^\s]+$
     //
+    // @Group Player
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true

@@ -21,6 +21,8 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
     //
     // @Regex ^on (sheep dyed|player dyes sheep) [^\s]+$
     //
+    // @Group Entity
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true

@@ -24,6 +24,8 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Regex ^on [^\s]+ recipe formed$
     //
+    // @Group Item
+    //
     // @Cancellable true
     //
     // @Triggers when an item's recipe is correctly formed.

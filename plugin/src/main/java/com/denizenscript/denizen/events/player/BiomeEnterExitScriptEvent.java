@@ -22,6 +22,8 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
     // player enters biome
     // player exits biome
     //
+    // @Group Player
+    //
     // @Regex ^on player (enters|exits) [^\s]+$
     //
     // @Switch in:<area> to only process the event if it occurred within a specified area.

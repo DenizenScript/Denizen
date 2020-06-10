@@ -34,6 +34,8 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Regex ^on [^\s]+ ((kills [^\s]+)|killed( by [^\s]+)?)$
     //
+    // @Group Entity
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true

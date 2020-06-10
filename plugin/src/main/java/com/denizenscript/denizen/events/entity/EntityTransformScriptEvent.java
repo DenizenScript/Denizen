@@ -19,6 +19,8 @@ public class EntityTransformScriptEvent extends BukkitScriptEvent implements Lis
     //
     // @Regex ^on [^\s]+ transforms( into [^\s]+)?$
     //
+    // @Group Entity
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     // @Switch because:<reason> to only process the event if a specific reason caused the transformation.
     //

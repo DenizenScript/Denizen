@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.events.core;
+package com.denizenscript.denizen.events.server;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -10,6 +10,8 @@ public class ServerStartScriptEvent extends BukkitScriptEvent {
     // server start
     //
     // @Regex ^on server start$
+    //
+    // @Group Server
     //
     // @Triggers when the server starts.
     //

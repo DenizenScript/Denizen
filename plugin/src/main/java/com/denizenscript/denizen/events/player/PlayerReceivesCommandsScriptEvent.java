@@ -19,6 +19,8 @@ public class PlayerReceivesCommandsScriptEvent extends BukkitScriptEvent impleme
     //
     // @Regex ^on player receives commands$
     //
+    // @Group Player
+    //
     // @Triggers when the list of available server commands is sent to the player for tab completion.
     //
     // @Context

@@ -18,6 +18,8 @@ public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implement
     // <vehicle> collides with block
     // <vehicle> collides with <material>
     //
+    // @Group Vehicle
+    //
     // @Regex ^on [^\s]+ collides with [^\s]+$
     //
     // @Switch in:<area> to only process the event if it occurred within a specified area.

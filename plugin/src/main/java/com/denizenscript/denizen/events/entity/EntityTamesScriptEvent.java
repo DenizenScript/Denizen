@@ -21,6 +21,8 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Regex ^on [^\s]+ (tames [^\s]+|tamed)$
     //
+    // @Group Entity
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true

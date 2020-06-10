@@ -19,6 +19,8 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
     //
     // @Regex ^on firework bursts$
     //
+    // @Group Entity
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true

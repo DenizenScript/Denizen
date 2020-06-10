@@ -27,6 +27,8 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
     //
     // @Regex ^on [^\s]+ breaks [^\s]+( because [^\s]+)?$
     //
+    // @Group Entity
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true

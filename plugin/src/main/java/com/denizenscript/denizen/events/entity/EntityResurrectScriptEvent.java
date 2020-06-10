@@ -18,6 +18,8 @@ public class EntityResurrectScriptEvent extends BukkitScriptEvent implements Lis
     //
     // @Regex ^on [^\s]+ resurrected$
     //
+    // @Group Entity
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true

@@ -33,6 +33,8 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Regex ^on [^\s]+ (death|dies)$
     //
+    // @Group Entity
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     // @Switch by:<entity type> to only process the event if the killer is of a specified entity type.
     // @Switch cause:<cause> to only process the event if it was caused by a specific damage cause.

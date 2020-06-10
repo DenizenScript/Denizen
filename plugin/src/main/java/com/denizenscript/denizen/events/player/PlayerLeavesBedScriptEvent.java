@@ -19,6 +19,8 @@ public class PlayerLeavesBedScriptEvent extends BukkitScriptEvent implements Lis
     //
     // @Regex ^on player leaves bed$
     //
+    // @Group Player
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true

@@ -18,6 +18,8 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
     //
     // @Regex ^on player receives message$
     //
+    // @Group Player
+    //
     // @Cancellable true
     //
     // @Warning Using this will forcibly sync the chat thread.

@@ -3,6 +3,8 @@ package com.denizenscript.denizen;
 import com.denizenscript.denizen.events.ScriptEventRegistry;
 import com.denizenscript.denizen.events.bukkit.SavesReloadEvent;
 import com.denizenscript.denizen.events.core.*;
+import com.denizenscript.denizen.events.server.ServerPrestartScriptEvent;
+import com.denizenscript.denizen.events.server.ServerStartScriptEvent;
 import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.InventoryTag;

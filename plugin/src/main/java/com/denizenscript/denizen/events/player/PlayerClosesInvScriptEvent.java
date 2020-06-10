@@ -21,6 +21,8 @@ public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Lis
     //
     // @Regex ^on player closes [^\s]+$
     //
+    // @Group Player
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Triggers when a player closes an inventory. (EG, chests, not the player's main inventory.)

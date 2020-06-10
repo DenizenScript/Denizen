@@ -17,6 +17,8 @@ public class EntityDespawnScriptEvent extends BukkitScriptEvent {
     //
     // @Regex ^on [^\s]+ despawns$
     //
+    // @Group Entity
+    //
     // @Warning this event fires very rapidly.
     //
     // @Switch in:<area> to only process the event if it occurred within a specified area.

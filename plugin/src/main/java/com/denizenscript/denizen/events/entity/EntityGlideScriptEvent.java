@@ -20,6 +20,8 @@ public class EntityGlideScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Regex ^on player (toggles|starts|stops) gliding$
     //
+    // @Group Entity
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true

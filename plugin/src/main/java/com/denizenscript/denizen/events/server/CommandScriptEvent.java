@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.events.core;
+package com.denizenscript.denizen.events.server;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
@@ -30,6 +30,8 @@ public class CommandScriptEvent extends BukkitScriptEvent implements Listener {
     // <command_name> command
     //
     // @Regex ^on( [^\s]+)? command$
+    //
+    // @Group Server
     //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //

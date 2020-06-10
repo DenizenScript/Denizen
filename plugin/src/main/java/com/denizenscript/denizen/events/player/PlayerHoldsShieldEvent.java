@@ -28,6 +28,8 @@ public class PlayerHoldsShieldEvent extends BukkitScriptEvent implements Listene
     //
     // @Regex ^on player (toggles|raises|lowers) shield$
     //
+    // @Group Player
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Triggers when a player starts or stops holding up a shield.

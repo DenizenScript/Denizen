@@ -17,6 +17,8 @@ public class NoteBlockPlaysNoteScriptEvent extends BukkitScriptEvent implements 
     //
     // @Regex ^on noteblock plays note$
     //
+    // @Group Block
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     // @Switch instrument:<instrument> to only process the event if a specific instrument was played.
     //

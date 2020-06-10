@@ -23,6 +23,8 @@ public class EntityPotionEffectScriptEvent extends BukkitScriptEvent implements 
     //
     // @Regex ^on [^\s]+ potion effects [^\s]+$
     //
+    // @Group Entity
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     // @Switch cause:<cause> to only process the event when it came from a specified cause.
     // @Switch effect:<effect type> to only process the event when a specified potion effect is applied.

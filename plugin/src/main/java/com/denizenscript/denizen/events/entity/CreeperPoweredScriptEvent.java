@@ -17,6 +17,8 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
     //
     // @Regex ^on creeper powered( because [^\s]+)?$
     //
+    // @Group Entity
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true

@@ -20,6 +20,8 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
     //
     // @Regex ^on player damages [^\s]+$
     //
+    // @Group Player
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     // @Switch with:<item> to only process the event when the player is hitting the block with a specified item.
     //

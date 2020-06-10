@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.events.core;
+package com.denizenscript.denizen.events.server;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.utilities.DenizenAPI;
@@ -22,6 +22,8 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
     // server list ping
     //
     // @Regex ^on server list ping$
+    //
+    // @Group Server
     //
     // @Triggers when the server is pinged for a client's server list.
     // @Context

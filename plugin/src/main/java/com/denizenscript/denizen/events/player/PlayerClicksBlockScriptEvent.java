@@ -29,6 +29,8 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     //
     // @Regex ^on player ([^\s]+ )?clicks [^\s]+$
     //
+    // @Group Player
+    //
     // @Switch with:<item> to only process the event if a specified item was held.
     // @Switch using:hand/off_hand/either_hand to only process the event if the specified hand was used to click.
     // @Switch in:<area> to only process the event if it occurred within a specified area.

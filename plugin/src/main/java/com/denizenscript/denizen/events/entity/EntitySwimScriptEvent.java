@@ -18,7 +18,10 @@ public class EntitySwimScriptEvent extends BukkitScriptEvent implements Listener
     // entity starts swimming
     // entity stops swimming
     //
-    // @Regex ^on player (toggles|starts|stops) swimming
+    // @Regex ^on player (toggles|starts|stops) swimming$
+    //
+    // @Group Entity
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true

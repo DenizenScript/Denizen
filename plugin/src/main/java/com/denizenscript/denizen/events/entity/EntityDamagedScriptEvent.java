@@ -38,6 +38,8 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Regex ^on [^\s]+ ((damages [^\s]+)|damaged( by [^\s]+)?)$
     //
+    // @Group Entity
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Switch with:<item> to only process the event when the item used to cause damage (in the damager's hand) is a specified item.

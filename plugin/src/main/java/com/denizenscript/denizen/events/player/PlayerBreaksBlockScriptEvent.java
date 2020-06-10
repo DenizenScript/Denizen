@@ -26,6 +26,8 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     //
     // @Regex ^on player breaks [^\s]+$
     //
+    // @Group Player
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     // @Switch with:<item> to only process the event when the player is breaking the block with a specified item.
     //

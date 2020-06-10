@@ -23,6 +23,8 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
     //
     // @Regex ^on player prepares anvil craft [^\s]+$
     //
+    // @Group Player
+    //
     // @Triggers when a player prepares an anvil to craft an item.
     //
     // @Warning The player doing the crafting is estimated and may be inaccurate.

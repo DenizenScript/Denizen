@@ -24,6 +24,8 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     //
     // @Regex ^on player changes [^\s]+$
     //
+    // @Group Player
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true

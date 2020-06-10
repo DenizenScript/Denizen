@@ -18,7 +18,7 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
     // <item> moves from inventory (to <inventory type>)
     // <item> moves from <inventory type> (to <inventory type>)
     //
-    // @Group World
+    // @Group Item
     //
     // @Regex ^on [^\s]+ moves from [^\s]+( to [^\s]+)?$
     //

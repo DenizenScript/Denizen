@@ -19,6 +19,8 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Regex ^on player steps on [^\s]+$
     //
+    // @Group Player
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Warning This event may fire very rapidly.

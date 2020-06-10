@@ -15,6 +15,8 @@ public class ResourcePackStatusScriptEvent extends BukkitScriptEvent {
     //
     // @Regex ^on resource pack status$
     //
+    // @Group Player
+    //
     // @Triggers when a player accepts, denies, successfully loads, or fails to download a resource pack.
     //
     // @Context

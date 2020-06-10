@@ -28,6 +28,8 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
     //
     // @Regex ^on player (edits|signs) book$
     //
+    // @Group Player
+    //
     // @Triggers when a player edits or signs a book.
     // @Context
     // <context.title> returns the name of the book, if any.

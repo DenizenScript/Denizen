@@ -20,7 +20,7 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
     //
     // @Regex ^on [^\s]+ picks up [^\s]+$
     //
-    // @Group World
+    // @Group Item
     //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //

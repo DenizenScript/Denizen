@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.events.core;
+package com.denizenscript.denizen.events.server;
 
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
@@ -20,6 +20,8 @@ public class TabCompleteScriptEvent extends BukkitScriptEvent implements Listene
     // tab complete
     //
     // @Regex ^on tab complete$
+    //
+    // @Group Server
     //
     // @Cancellable true
     //

@@ -23,6 +23,8 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
     //
     // @Regex ^on player ( [^\s]+ )increments$
     //
+    // @Group Player
+    //
     // @Cancellable true
     //
     // @Triggers when a player's statistics increment.

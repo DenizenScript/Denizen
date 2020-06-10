@@ -20,6 +20,8 @@ public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements 
     //
     // @Regex ^on [^\s]+ exits [^\s]+$
     //
+    // @Group Entity
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true

@@ -18,6 +18,8 @@ public class NPCSpawnScriptEvent extends BukkitScriptEvent implements Listener {
     //
     // @Regex ^on npc spawns$
     //
+    // @Group Entity
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true

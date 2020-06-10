@@ -29,6 +29,8 @@ public class PlayerPreLoginScriptEvent extends BukkitScriptEvent implements List
     //
     // @Regex ^on player prelogin$
     //
+    // @Group Player
+    //
     // @Triggers when a player starts to logs in to the server.
     // This is during the EARLY authentication process, and should NOT be confused with <@link event player joins>.
     //

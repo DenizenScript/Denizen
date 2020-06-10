@@ -15,6 +15,8 @@ public class VehicleCreatedScriptEvent extends BukkitScriptEvent implements List
     // vehicle created
     // <vehicle> created
     //
+    // @Group Vehicle
+    //
     // @Regex ^on [^\s]+ created$
     //
     // @Switch in:<area> to only process the event if it occurred within a specified area.

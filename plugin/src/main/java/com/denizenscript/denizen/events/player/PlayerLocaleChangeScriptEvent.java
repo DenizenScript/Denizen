@@ -18,6 +18,8 @@ public class PlayerLocaleChangeScriptEvent extends BukkitScriptEvent implements 
     //
     // @Regex ^on player locale change$
     //
+    // @Group Player
+    //
     // @Triggers when a player changes their locale in their client settings.
     //
     // @Context

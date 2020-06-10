@@ -2,10 +2,10 @@ package com.denizenscript.denizen.events;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.block.*;
-import com.denizenscript.denizen.events.core.*;
 import com.denizenscript.denizen.events.entity.*;
 import com.denizenscript.denizen.events.item.*;
 import com.denizenscript.denizen.events.player.*;
+import com.denizenscript.denizen.events.server.*;
 import com.denizenscript.denizen.events.vehicle.*;
 import com.denizenscript.denizen.events.world.*;
 import com.denizenscript.denizen.utilities.depends.Depends;
@@ -39,12 +39,6 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new PistonExtendsScriptEvent());
         ScriptEvent.registerScriptEvent(new PistonRetractsScriptEvent());
         ScriptEvent.registerScriptEvent(new RedstoneScriptEvent());
-
-        // Core events
-        ScriptEvent.registerScriptEvent(new ListPingScriptEvent());
-        ScriptEvent.registerScriptEvent(new ServerPrestartScriptEvent());
-        ScriptEvent.registerScriptEvent(new ServerStartScriptEvent());
-        ScriptEvent.registerScriptEvent(new TabCompleteScriptEvent());
 
         // Entity events
         ScriptEvent.registerScriptEvent(new CreeperPoweredScriptEvent());
@@ -185,6 +179,13 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new PlayerWalksOverScriptEvent());
         ScriptEvent.registerScriptEvent(new ResourcePackStatusScriptEvent());
 
+        // Server events
+        ScriptEvent.registerScriptEvent(new CommandScriptEvent());
+        ScriptEvent.registerScriptEvent(new ListPingScriptEvent());
+        ScriptEvent.registerScriptEvent(new ServerPrestartScriptEvent());
+        ScriptEvent.registerScriptEvent(new ServerStartScriptEvent());
+        ScriptEvent.registerScriptEvent(new TabCompleteScriptEvent());
+
         // Vehicle
         ScriptEvent.registerScriptEvent(new VehicleCollidesBlockScriptEvent());
         ScriptEvent.registerScriptEvent(new VehicleCollidesEntityScriptEvent());
@@ -196,7 +197,6 @@ public class ScriptEventRegistry {
         // World events
         ScriptEvent.registerScriptEvent(new ChunkLoadScriptEvent());
         ScriptEvent.registerScriptEvent(new ChunkUnloadScriptEvent());
-        ScriptEvent.registerScriptEvent(new CommandScriptEvent());
         ScriptEvent.registerScriptEvent(new LightningStrikesScriptEvent());
         ScriptEvent.registerScriptEvent(new LingeringPotionSplashScriptEvent());
         ScriptEvent.registerScriptEvent(new LootGenerateScriptEvent());

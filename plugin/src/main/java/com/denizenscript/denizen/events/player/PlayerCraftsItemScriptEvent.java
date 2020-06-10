@@ -29,6 +29,8 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Regex ^on player crafts [^\s]+$
     //
+    // @Group Player
+    //
     // @Cancellable true
     //
     // @Triggers when a player fully crafts an item.

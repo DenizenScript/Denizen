@@ -21,6 +21,8 @@ public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Regex ^on player (toggles|starts|stops) sprinting$
     //
+    // @Group Player
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true

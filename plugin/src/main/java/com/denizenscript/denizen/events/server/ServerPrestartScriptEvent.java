@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.events.core;
+package com.denizenscript.denizen.events.server;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.events.ScriptEvent;
@@ -12,6 +12,8 @@ public class ServerPrestartScriptEvent extends BukkitScriptEvent {
     // server prestart
     //
     // @Regex ^on server prestart$
+    //
+    // @Group Server
     //
     // @Triggers before the server finishes starting... fired after some saves are loaded, but before other data is loaded. Use with extreme caution.
     //

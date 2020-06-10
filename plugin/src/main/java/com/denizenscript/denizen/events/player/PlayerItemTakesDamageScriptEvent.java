@@ -25,6 +25,8 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     //
     // @Regex ^on player [^\s]+ takes damage$
     //
+    // @Group Player
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true

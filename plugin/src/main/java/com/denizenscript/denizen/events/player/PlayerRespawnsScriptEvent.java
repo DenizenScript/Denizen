@@ -21,6 +21,8 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
     //
     // @Regex ^on player respawns( at (bed|elsewhere))?$
     //
+    // @Group Player
+    //
     // @Triggers when a player respawns.
     //
     // @Context

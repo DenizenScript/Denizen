@@ -16,6 +16,8 @@ public class SheepRegrowsScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Regex ^on sheep regrows wool$
     //
+    // @Group Entity
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true

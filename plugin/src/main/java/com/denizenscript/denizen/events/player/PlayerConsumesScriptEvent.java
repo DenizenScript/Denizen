@@ -22,6 +22,8 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
     //
     // @Regex ^on player consumes [^\s]+$
     //
+    // @Group Player
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true

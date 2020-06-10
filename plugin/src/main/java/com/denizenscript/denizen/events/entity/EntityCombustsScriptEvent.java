@@ -24,6 +24,8 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
     //
     // @Regex ^on [^\s]+ combusts$
     //
+    // @Group Entity
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true

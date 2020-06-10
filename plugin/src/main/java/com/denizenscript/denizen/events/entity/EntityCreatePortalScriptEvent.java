@@ -22,6 +22,8 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
     //
     // @Regex ^on [^\s]+ creates portal$
     //
+    // @Group Entity
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true

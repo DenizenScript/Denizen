@@ -19,6 +19,8 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Regex ^on player jumps$
     //
+    // @Group Player
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Triggers when a player jumps.

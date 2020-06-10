@@ -29,6 +29,8 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Regex ^on player (picks up|takes) [^\s]+$
     //
+    // @Group Player
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true

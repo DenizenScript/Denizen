@@ -20,6 +20,8 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
     // <vehicle> collides with entity
     // <vehicle> collides with <entity>
     //
+    // @Group Vehicle
+    //
     // @Regex ^on [^\s]+ collides with [^\s]+$
     //
     // @Switch in:<area> to only process the event if it occurred within a specified area.

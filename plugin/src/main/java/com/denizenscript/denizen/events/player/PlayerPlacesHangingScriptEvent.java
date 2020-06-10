@@ -21,6 +21,8 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
     //
     // @Regex ^on player places [^\s]+$
     //
+    // @Group Player
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true

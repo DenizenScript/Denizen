@@ -22,6 +22,8 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
     //
     // @Regex ^on [^\s]+ interacts with [^\s]+$
     //
+    // @Group Entity
+    //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
     // @Cancellable true

@@ -20,6 +20,8 @@ public class PlayerSwapsItemsScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Regex ^on player swaps items$
     //
+    // @Group Player
+    //
     // @Switch main:<item> to only process the event if the item being put into the main hand matches the input item.
     // @Switch offhand:<item> to only process the event if the item being put into the off-hand matches the input item.
     //

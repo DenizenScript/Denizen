@@ -15,6 +15,8 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
     // vehicle moves
     // <vehicle> moves
     //
+    // @Group Vehicle
+    //
     // @Regex ^on [^\s]+ moves$
     //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
