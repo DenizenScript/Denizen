@@ -16,6 +16,7 @@ public class EntityTagBase {
         // @returns EntityTag
         // @description
         // Returns an entity object constructed from the input value.
+        // Refer to <@link language EntityTag objects>.
         // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override

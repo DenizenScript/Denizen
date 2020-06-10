@@ -28,6 +28,7 @@ public class PlayerTagBase implements Listener {
         // @returns PlayerTag
         // @description
         // Returns a player object constructed from the input value.
+        // Refer to <@link language PlayerTag objects>.
         // If no input value is specified, returns the linked player.
         // -->
         Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());

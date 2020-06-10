@@ -16,6 +16,7 @@ public class LocationTagBase {
         // @returns LocationTag
         // @description
         // Returns a location object constructed from the input value.
+        // Refer to <@link language LocationTag objects>.
         // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override

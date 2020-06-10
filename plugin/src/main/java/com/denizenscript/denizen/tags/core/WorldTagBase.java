@@ -16,6 +16,7 @@ public class WorldTagBase {
         // @returns WorldTag
         // @description
         // Returns a world object constructed from the input value.
+        // Refer to <@link language WorldTag objects>.
         // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override

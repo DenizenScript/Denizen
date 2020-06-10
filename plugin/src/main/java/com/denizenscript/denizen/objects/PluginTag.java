@@ -20,7 +20,7 @@ public class PluginTag implements ObjectTag {
     // @description
     // A PluginTag represents a Bukkit plugin on the server.
     //
-    // These use the object notation "in@".
+    // These use the object notation "pl@".
     // The identity format for plugins is the plugin's registered name.
     // For example, 'pl@Denizen'.
     //

@@ -281,7 +281,8 @@ public class InteractScriptContainer extends ScriptContainer {
                 }
             }
             catch (Exception ex) {
-                Debug.echoError("Warning: improperly defined " + trigger.getName() + " trigger for script '" + getName() + "'!");
+                Debug.echoError("Warning: improperly defined " + trigger.getSimpleName() + " trigger for script '" + getName() + "' (basic formatting error?)!");
+                Debug.echoError(ex);
             }
             return idMap;
         }

@@ -16,6 +16,7 @@ public class TradeTagBase {
         // @returns TradeTag
         // @description
         // Returns a trade object constructed from the input value.
+        // Refer to <@link language TradeTag objects>.
         // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override

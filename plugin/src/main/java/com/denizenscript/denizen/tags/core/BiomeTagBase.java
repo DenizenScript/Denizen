@@ -16,6 +16,7 @@ public class BiomeTagBase {
         // @returns BiomeTag
         // @description
         // Returns a biome object constructed from the input value.
+        // Refer to <@link language BiomeTag objects>.
         // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override

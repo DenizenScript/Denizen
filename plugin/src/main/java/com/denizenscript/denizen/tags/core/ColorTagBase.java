@@ -16,6 +16,7 @@ public class ColorTagBase {
         // @returns ColorTag
         // @description
         // Returns a color object constructed from the input value.
+        // Refer to <@link language ColorTag objects>.
         // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override

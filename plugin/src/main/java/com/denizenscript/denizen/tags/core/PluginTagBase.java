@@ -16,6 +16,7 @@ public class PluginTagBase {
         // @returns PluginTag
         // @description
         // Returns a plugin object constructed from the input value.
+        // Refer to <@link language PluginTag objects>.
         // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override

@@ -16,6 +16,7 @@ public class MaterialTagBase {
         // @returns MaterialTag
         // @description
         // Returns a material object constructed from the input value.
+        // Refer to <@link language MaterialTag objects>.
         // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override

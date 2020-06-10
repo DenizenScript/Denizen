@@ -10,7 +10,7 @@ Debug:
   # Whether the '/ex' command should show debug by default. (if set to false, this inverts the '-q' option)
   Ex command debug: true
   # The max length of a line of debug output. Shorten this if your console is hard to read.
-  Line length: 128
+  Line length: 150
   # The max length of debug output. After this length, all further output will be cut off.
   Trim length limit: 1024
   # Whether to permit the "server.redirect_logging" mechanism

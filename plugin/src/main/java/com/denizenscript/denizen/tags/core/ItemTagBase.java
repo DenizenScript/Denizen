@@ -16,6 +16,7 @@ public class ItemTagBase {
         // @returns ItemTag
         // @description
         // Returns an item object constructed from the input value.
+        // Refer to <@link language ItemTag objects>.
         // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override

@@ -16,6 +16,7 @@ public class ChunkTagBase {
         // @returns ChunkTag
         // @description
         // Returns a chunk object constructed from the input value.
+        // Refer to <@link language ChunkTag objects>.
         // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override

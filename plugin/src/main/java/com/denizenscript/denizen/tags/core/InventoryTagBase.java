@@ -16,6 +16,7 @@ public class InventoryTagBase {
         // @returns InventoryTag
         // @description
         // Returns an inventory object constructed from the input value.
+        // Refer to <@link language InventoryTag objects>.
         // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
