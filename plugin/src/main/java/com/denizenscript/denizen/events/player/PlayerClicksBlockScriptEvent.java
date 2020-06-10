@@ -102,7 +102,8 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         if (matchHelpList.contains(clickedOn)) {
             return false;
         }
-        if (!clickedOn.isEmpty() && !couldMatchBlock(clickedOn)) {
+        if (!clickedOn.isEmpty() && !couldMatchBlock(clickedOn)
+                && !clickedOn.equals("with") && !clickedOn.equals("in") && !clickedOn.equals("using")) { // Legacy format support
             return false;
         }
         if (!couldMatchInArea(path.eventLower)) {
