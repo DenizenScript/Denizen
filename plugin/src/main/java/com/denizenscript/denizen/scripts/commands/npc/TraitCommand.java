@@ -1,30 +1,36 @@
 package com.denizenscript.denizen.scripts.commands.npc;
 
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
 
+import java.util.Collections;
+import java.util.List;
+
 public class TraitCommand extends AbstractCommand {
 
     public TraitCommand() {
         setName("trait");
-        setSyntax("trait (state:true/false/{toggle}) [<trait>]");
-        setRequiredArguments(1, 2);
+        setSyntax("trait (state:true/false/{toggle}) [<trait>] (to:<npc>|...)");
+        setRequiredArguments(1, 3);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Trait
-    // @Syntax trait (state:true/false/{toggle}) [<trait>]
+    // @Syntax trait (state:true/false/{toggle}) [<trait>] (to:<npc>|...)
     // @Required 1
-    // @Maximum 2
+    // @Maximum 3
     // @Plugin Citizens
     // @Short Adds or removes a trait from an NPC.
     // @Group npc
@@ -38,6 +44,8 @@ public class TraitCommand extends AbstractCommand {
     // Note that a redundant instruction, like adding a trait that the NPC already has, will give an error message.
     //
     // The trait input is simply the name of the trait, like "sentinel".
+    //
+    // Optionally, specify a list of NPCs to apply the trait to. If unspecified, the linked NPC will be used.
     //
     // @Tags
     // <NPCTag.has_trait[<trait>]>
@@ -58,7 +66,6 @@ public class TraitCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("state")
                     && arg.matchesPrefix("state", "s")
                     && arg.matchesEnum(Toggle.values())) {
@@ -67,19 +74,25 @@ public class TraitCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("trait")) {
                 scriptEntry.addObject("trait", new ElementTag(arg.getValue()));
             }
-
+            else if (!scriptEntry.hasObject("npcs")
+                    && arg.matchesArgumentList(NPCTag.class)) {
+                scriptEntry.addObject("npcs", arg.asType(ListTag.class).filter(NPCTag.class, scriptEntry));
+            }
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         if (!scriptEntry.hasObject("trait")) {
             throw new InvalidArgumentsException("Missing trait argument!");
         }
-
-        if (!Utilities.entryHasNPC(scriptEntry)) {
-            throw new InvalidArgumentsException("This command requires a linked NPC!");
+        if (!scriptEntry.hasObject("npcs")) {
+            if (!Utilities.entryHasNPC(scriptEntry)) {
+                throw new InvalidArgumentsException("This command requires a linked NPC!");
+            }
+            scriptEntry.addObject("npcs", Collections.singletonList(Utilities.getEntryNPC(scriptEntry)));
         }
-
         scriptEntry.defaultObject("state", new ElementTag("TOGGLE"));
-
     }
 
     @Override
@@ -87,15 +100,13 @@ public class TraitCommand extends AbstractCommand {
 
         ElementTag toggle = scriptEntry.getElement("state");
         ElementTag traitName = scriptEntry.getElement("trait");
-        NPC npc = Utilities.getEntryNPC(scriptEntry).getCitizen();
+        List<NPCTag> npcs = (List<NPCTag>) scriptEntry.getObject("npcs");
 
         if (scriptEntry.dbCallShouldDebug()) {
-
             Debug.report(scriptEntry, getName(),
                     traitName.debug() +
-                            toggle.debug() +
-                            Utilities.getEntryNPC(scriptEntry).debug());
-
+                    toggle.debug() +
+                    ArgumentHelper.debugList("npc", npcs));
         }
 
         Class<? extends Trait> trait = CitizensAPI.getTraitFactory().getTraitClass(traitName.asString());
@@ -105,38 +116,36 @@ public class TraitCommand extends AbstractCommand {
             return;
         }
 
-        switch (Toggle.valueOf(toggle.asString())) {
-
-            case TRUE:
-            case ON:
-                if (npc.hasTrait(trait)) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "NPC already has trait '" + traitName.asString() + "'");
-                }
-                else {
-                    npc.addTrait(trait);
-                }
-                break;
-
-            case FALSE:
-            case OFF:
-                if (!npc.hasTrait(trait)) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "NPC does not have trait '" + traitName.asString() + "'");
-                }
-                else {
-                    npc.removeTrait(trait);
-                }
-                break;
-
-            case TOGGLE:
-                if (npc.hasTrait(trait)) {
-                    npc.removeTrait(trait);
-                }
-                else {
-                    npc.addTrait(trait);
-                }
-                break;
-
+        for (NPCTag npcTag : npcs) {
+            NPC npc = npcTag.getCitizen();
+            switch (Toggle.valueOf(toggle.asString())) {
+                case TRUE:
+                case ON:
+                    if (npc.hasTrait(trait)) {
+                        Debug.echoError(scriptEntry.getResidingQueue(), "NPC already has trait '" + traitName.asString() + "'");
+                    }
+                    else {
+                        npc.addTrait(trait);
+                    }
+                    break;
+                case FALSE:
+                case OFF:
+                    if (!npc.hasTrait(trait)) {
+                        Debug.echoError(scriptEntry.getResidingQueue(), "NPC does not have trait '" + traitName.asString() + "'");
+                    }
+                    else {
+                        npc.removeTrait(trait);
+                    }
+                    break;
+                case TOGGLE:
+                    if (npc.hasTrait(trait)) {
+                        npc.removeTrait(trait);
+                    }
+                    else {
+                        npc.addTrait(trait);
+                    }
+                    break;
+            }
         }
-
     }
 }
