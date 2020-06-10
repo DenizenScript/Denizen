@@ -174,6 +174,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     public BukkitTagContext getTagContext(ScriptPath path) {
         BukkitTagContext context = (BukkitTagContext) getScriptEntryData().getTagContext();
         context.script = new ScriptTag(path.container);
+        context.debug = path.container.shouldDebug();
         return context;
     }
 
