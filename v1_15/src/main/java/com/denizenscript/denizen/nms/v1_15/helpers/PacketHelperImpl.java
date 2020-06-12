@@ -150,7 +150,6 @@ public class PacketHelperImpl implements PacketHelper {
         }
         CompoundTag compoundTag = NMSHandler.getBlockHelper().getNbtData(location.getBlock())
                 .createBuilder()
-                .putInt("Base", base.getDyeData())
                 .put("Patterns", new JNBTListTag(CompoundTag.class, nbtPatterns))
                 .build();
         showTileEntityData(player, location, 3, compoundTag);

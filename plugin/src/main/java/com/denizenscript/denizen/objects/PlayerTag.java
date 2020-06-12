@@ -3426,20 +3426,23 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name banner_update
-        // @input LocationTag|ElementTag(|ListTag)
+        // @input LocationTag|ListTag
         // @description
-        // Shows the player a fake base color and, optionally, patterns on a banner. Input must be in the form: "LOCATION|BASE_COLOR(|COLOR/PATTERN|...)"
-        // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
+        // Shows the player fake patterns on a banner. Input must be in the form: "LOCATION|COLOR/PATTERN|..."
+        // As of Minecraft 1.13, the base color is unique material types, and so <@link command showfake> must be used for base color changes.
         // For the list of possible patterns, see <@link url http://bit.ly/1MqRn7T>.
         // -->
         if (mechanism.matches("banner_update")) {
             if (mechanism.getValue().asString().length() > 0) {
                 String[] split = mechanism.getValue().asString().split("\\|");
                 List<org.bukkit.block.banner.Pattern> patterns = new ArrayList<>();
-                if (split.length > 2) {
+                if (LocationTag.matches(split[0]) && split.length > 1) {
                     List<String> splitList;
-                    for (int i = 2; i < split.length; i++) {
+                    for (int i = 1; i < split.length; i++) {
                         String string = split[i];
+                        if (i == 1 && !string.contains("/")) {
+                            continue; // Comapt with old input format that had base_color
+                        }
                         try {
                             splitList = CoreUtilities.split(string, '/', 2);
                             patterns.add(new org.bukkit.block.banner.Pattern(DyeColor.valueOf(splitList.get(0).toUpperCase()),
@@ -3449,21 +3452,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                             Debug.echoError("Could not apply pattern to banner: " + string);
                         }
                     }
-                }
-                if (LocationTag.matches(split[0]) && split.length > 1) {
                     LocationTag location = LocationTag.valueOf(split[0], mechanism.context);
-                    DyeColor base;
-                    try {
-                        base = DyeColor.valueOf(split[1].toUpperCase());
-                    }
-                    catch (Exception e) {
-                        Debug.echoError("Could not apply base color to banner: " + split[1]);
-                        return;
-                    }
-                    NMSHandler.getPacketHelper().showBannerUpdate(getPlayerEntity(), location, base, patterns);
+                    NMSHandler.getPacketHelper().showBannerUpdate(getPlayerEntity(), location, DyeColor.WHITE, patterns);
                 }
                 else {
-                    Debug.echoError("Must specify a valid location and a base color!");
+                    Debug.echoError("Must specify a valid location and pattern list!");
                 }
             }
         }
