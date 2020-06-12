@@ -706,7 +706,7 @@ public class Denizen extends JavaPlugin {
                     String owner = string.substring(3, cb);
                     String flag = string.substring(cb + 2);
                     if (PlayerTag.matches(owner)) {
-                        PlayerTag player = PlayerTag.valueOf(owner);
+                        PlayerTag player = PlayerTag.valueOf(owner, CoreUtilities.basicContext);
                         if (FlagManager.playerHasFlag(player, flag)) {
                             return flag_manager.getPlayerFlag(player, flag);
                         }
@@ -715,7 +715,7 @@ public class Denizen extends JavaPlugin {
                         }
                     }
                     else if (Depends.citizens != null && NPCTag.matches(owner)) {
-                        NPCTag npc = NPCTag.valueOf(owner);
+                        NPCTag npc = NPCTag.valueOf(owner, CoreUtilities.basicContext);
                         if (FlagManager.npcHasFlag(npc, flag)) {
                             return flag_manager.getNPCFlag(npc.getId(), flag);
                         }
@@ -724,7 +724,7 @@ public class Denizen extends JavaPlugin {
                         }
                     }
                     else if (EntityTag.matches(owner)) {
-                        EntityTag entity = EntityTag.valueOf(owner);
+                        EntityTag entity = EntityTag.valueOf(owner, CoreUtilities.basicContext);
                         if (FlagManager.entityHasFlag(entity, flag)) {
                             return flag_manager.getEntityFlag(entity, flag);
                         }

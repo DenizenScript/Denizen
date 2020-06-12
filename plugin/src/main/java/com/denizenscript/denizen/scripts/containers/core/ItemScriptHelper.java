@@ -244,7 +244,7 @@ public class ItemScriptHelper implements Listener {
                                 exp = Float.parseFloat(subSection.getString("experience"));
                             }
                             if (subSection.contains("cook_time")) {
-                                cookTime = DurationTag.valueOf(subSection.getString("cook_time")).getTicksAsInt();
+                                cookTime = DurationTag.valueOf(subSection.getString("cook_time"), new BukkitTagContext(container)).getTicksAsInt();
                             }
                             registerFurnaceRecipe(container, item, subSection.getString("input"), exp, cookTime, type, internalId, group);
                         }

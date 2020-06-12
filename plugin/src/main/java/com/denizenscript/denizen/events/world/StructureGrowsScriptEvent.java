@@ -57,7 +57,7 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
         String block = path.eventArgLowerAt(0);
-        MaterialTag mat = MaterialTag.valueOf(block);
+        MaterialTag mat = MaterialTag.valueOf(block, CoreUtilities.basicContext);
         return block.equals("structure") || (mat != null && mat.isStructure());
     }
 

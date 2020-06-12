@@ -64,6 +64,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
+    @Deprecated
     public static MaterialTag valueOf(String string) {
         return valueOf(string, null);
     }
@@ -218,7 +219,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
                     && getData((byte) 0) == ((MaterialTag) object).getData((byte) 0);
         }
         else {
-            MaterialTag parsed = valueOf(object.toString());
+            MaterialTag parsed = valueOf(object.toString(), CoreUtilities.noDebugContext);
             return equals(parsed);
         }
     }
@@ -874,7 +875,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // Invalid for 1.13+ servers.
         // -->
         registerTag("is_made_of", (attribute, object) -> {
-            MaterialTag compared = MaterialTag.valueOf(attribute.getContext(1));
+            MaterialTag compared = attribute.contextAsType(1, MaterialTag.class);
             return new ElementTag(compared != null && object.material == compared.getMaterial());
         });
 

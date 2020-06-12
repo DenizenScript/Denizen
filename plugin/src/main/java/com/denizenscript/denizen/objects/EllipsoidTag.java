@@ -49,6 +49,7 @@ public class EllipsoidTag implements ObjectTag, Notable {
     //    OBJECT FETCHER
     ////////////////
 
+    @Deprecated
     public static EllipsoidTag valueOf(String string) {
         return valueOf(string, null);
     }

@@ -70,15 +70,15 @@ public class EntityScriptContainer extends ScriptContainer {
     public EntityTag getEntityFrom(PlayerTag player, NPCTag npc) {
         EntityTag entity;
         try {
+            TagContext context = new BukkitTagContext(player, npc, new ScriptTag(this));
             if (contains("entity_type")) {
-                String entityType = TagManager.tag((getString("entity_type", "")), new BukkitTagContext(player, npc, new ScriptTag(this)));
-                entity = EntityTag.valueOf(entityType);
+                String entityType = TagManager.tag((getString("entity_type", "")), context);
+                entity = EntityTag.valueOf(entityType, context);
             }
             else {
                 throw new Exception("Missing entity_type argument!");
             }
 
-            TagContext context = new BukkitTagContext(player, npc, new ScriptTag(this));
             Set<StringHolder> strings = getConfigurationSection("").getKeys(false);
             for (StringHolder string : strings) {
                 if (!string.low.equals("entity_type") && !string.low.equals("type") && !string.low.equals("debug") && !string.low.equals("custom")) {

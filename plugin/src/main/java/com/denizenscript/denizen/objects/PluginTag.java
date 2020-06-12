@@ -30,6 +30,7 @@ public class PluginTag implements ObjectTag {
     //    Object Fetcher
     ////////////////
 
+    @Deprecated
     public static PluginTag valueOf(String string) {
         return valueOf(string, null);
     }

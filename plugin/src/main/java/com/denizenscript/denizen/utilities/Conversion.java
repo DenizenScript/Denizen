@@ -86,17 +86,9 @@ public class Conversion {
 
     public static AbstractMap.SimpleEntry<Integer, InventoryTag> getInventory(String string, TagContext context) {
         if (InventoryTag.matches(string)) {
-            if (context != null) {
-                InventoryTag inv = InventoryTag.valueOf(string, context);
-                if (inv != null) {
-                    return new AbstractMap.SimpleEntry<>(inv.getContents().length, inv);
-                }
-            }
-            else {
-                InventoryTag inv = InventoryTag.valueOf(string, null);
-                if (inv != null) {
-                    return new AbstractMap.SimpleEntry<>(inv.getContents().length, inv);
-                }
+            InventoryTag inv = InventoryTag.valueOf(string, context);
+            if (inv != null) {
+                return new AbstractMap.SimpleEntry<>(inv.getContents().length, inv);
             }
         }
         else if (string.startsWith("map@")) {
@@ -133,13 +125,13 @@ public class Conversion {
             return new AbstractMap.SimpleEntry<>(items.length, inventory);
         }
         else if (LocationTag.matches(string)) {
-            InventoryTag inv = LocationTag.valueOf(string).getInventory();
+            InventoryTag inv = LocationTag.valueOf(string, context).getInventory();
             if (inv != null) {
                 return new AbstractMap.SimpleEntry<>(inv.getContents().length, inv);
             }
         }
         else if (EntityTag.matches(string)) {
-            InventoryTag inv = EntityTag.valueOf(string).getInventory();
+            InventoryTag inv = EntityTag.valueOf(string, context).getInventory();
             if (inv != null) {
                 return new AbstractMap.SimpleEntry<>(inv.getContents().length, inv);
             }

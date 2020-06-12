@@ -6,7 +6,9 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.DurationTag;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.persistence.Persist;
@@ -88,7 +90,7 @@ public class HealthTrait extends Trait implements Listener {
     private UUID entityId = null;
 
     public DurationTag getRespawnDelay() {
-        return DurationTag.valueOf(respawnDelay);
+        return DurationTag.valueOf(respawnDelay, CoreUtilities.basicContext);
     }
 
     public void setRespawnLocation(String string) {
@@ -108,7 +110,8 @@ public class HealthTrait extends Trait implements Listener {
     }
 
     public Location getRespawnLocation() {
-        return LocationTag.valueOf(TagManager.tag(respawnLocation, new BukkitTagContext(null, NPCTag.mirrorCitizensNPC(npc), null, false, null)));
+        TagContext context = new BukkitTagContext(null, NPCTag.mirrorCitizensNPC(npc), null, false, null);
+        return LocationTag.valueOf(TagManager.tag(respawnLocation, context), context);
     }
 
     public void setRespawnable(boolean respawnable) {
@@ -266,8 +269,8 @@ public class HealthTrait extends Trait implements Listener {
             return;
         }
 
-        loc = LocationTag.valueOf(TagManager.tag(respawnLocation, // TODO: debug option?
-                new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), null, true, null)));
+        TagContext context = new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), null, true, null);
+        loc = getRespawnLocation();// TODO: debug option?
 
         if (loc == null) {
             loc = npc.getEntity().getLocation();
@@ -286,7 +289,7 @@ public class HealthTrait extends Trait implements Listener {
 
         //die();
 
-        if (respawn && (DurationTag.valueOf(respawnDelay).getTicks() > 0)) {
+        if (respawn && (getRespawnDelay().getTicks() > 0)) {
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
                     new Runnable() {
                         public void run() {
@@ -297,7 +300,7 @@ public class HealthTrait extends Trait implements Listener {
                                 npc.spawn(loc);
                             }
                         }
-                    }, (DurationTag.valueOf(respawnDelay).getTicks()));
+                    }, (getRespawnDelay().getTicks()));
         }
 
     }

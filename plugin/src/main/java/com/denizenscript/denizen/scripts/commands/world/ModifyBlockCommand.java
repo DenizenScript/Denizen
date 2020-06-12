@@ -185,6 +185,14 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
     }
 
+    public static LocationTag getLocAt(ListTag list, int index, ScriptEntry entry) {
+        ObjectTag obj = list.getObject(index);
+        if (obj instanceof LocationTag) {
+            return (LocationTag) obj;
+        }
+        return LocationTag.valueOf(obj.toString(), entry.context);
+    }
+
     @Override
     public void execute(final ScriptEntry scriptEntry) {
 
@@ -262,7 +270,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                         loc = locations.get(0);
                     }
                     else {
-                        loc = LocationTag.valueOf(location_list.get(0));
+                        loc = getLocAt(location_list, 0, scriptEntry);
                     }
                     boolean was_static = preSetup(loc);
                     while ((locations != null && locations.size() > index) || (location_list != null && location_list.size() > index)) {
@@ -271,7 +279,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                             nLoc = locations.get(index);
                         }
                         else {
-                            nLoc = LocationTag.valueOf(location_list.get(index));
+                            nLoc = getLocAt(location_list, index, scriptEntry);
                         }
                         handleLocation(nLoc, index, materialList, doPhysics, isNatural, radius, height, depth, percs, sourcePlayer, scriptEntry);
                         index++;
@@ -299,7 +307,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                 loc = locations.get(0);
             }
             else {
-                loc = LocationTag.valueOf(location_list.get(0));
+                loc = getLocAt(location_list, 0, scriptEntry);
             }
             boolean was_static = preSetup(loc);
             int index = 0;
@@ -310,8 +318,8 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                 }
             }
             else {
-                for (String str : location_list) {
-                    handleLocation(LocationTag.valueOf(str), index, materialList, doPhysics, isNatural, radius, height, depth, percentages, sourcePlayer, scriptEntry);
+                for (int i = 0; i < location_list.size(); i++) {
+                    handleLocation(getLocAt(location_list, i, scriptEntry), index, materialList, doPhysics, isNatural, radius, height, depth, percentages, sourcePlayer, scriptEntry);
                     index++;
                 }
             }

@@ -2,6 +2,7 @@ package com.denizenscript.denizen.utilities.maps;
 
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapView;
@@ -70,9 +71,13 @@ public abstract class MapObject {
         return currentVisibility.get(uuid);
     }
 
+    public TagContext getTagContext(PlayerTag player) {
+        return new BukkitTagContext(player, player.getSelectedNPC(), null, debug, null);
+    }
+
     protected String tag(String arg, PlayerTag player) {
         // Short, reusable TagManager call
-        return TagManager.tag(arg, new BukkitTagContext(player, player.getSelectedNPC(), null, debug, null));
+        return TagManager.tag(arg, getTagContext(player));
     }
 
     public Map<String, Object> getSaveData() {

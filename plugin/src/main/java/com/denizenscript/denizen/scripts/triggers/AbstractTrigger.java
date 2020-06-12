@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.triggers;
 
+import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer;
 import com.denizenscript.denizen.utilities.DenizenAPI;
@@ -83,10 +84,10 @@ public abstract class AbstractTrigger {
         // Create Queue
         long speedTicks;
         if (script.contains("SPEED")) {
-            speedTicks = DurationTag.valueOf(script.getString("SPEED", "0")).getTicks();
+            speedTicks = DurationTag.valueOf(script.getString("SPEED", "0"), new BukkitTagContext(script)).getTicks();
         }
         else {
-            speedTicks = DurationTag.valueOf(Settings.interactQueueSpeed()).getTicks();
+            speedTicks = DurationTag.valueOf(Settings.interactQueueSpeed(), new BukkitTagContext(script)).getTicks();
         }
         ScriptQueue queue;
         if (speedTicks > 0) {

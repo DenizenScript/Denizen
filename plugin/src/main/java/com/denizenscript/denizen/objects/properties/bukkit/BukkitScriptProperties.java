@@ -46,7 +46,7 @@ public class BukkitScriptProperties implements Property {
         // using the attached player available in the script entry. Not having a valid player will result in 'null'.
         // -->
         PropertyParser.<BukkitScriptProperties>registerTag("cooled_down", (attribute, script) -> {
-            PlayerTag player = (attribute.hasContext(1) ? PlayerTag.valueOf(attribute.getContext(1))
+            PlayerTag player = (attribute.hasContext(1) ? attribute.contextAsType(1, PlayerTag.class)
                     : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
             if (player != null && player.isValid()) {
                 return new ElementTag(CooldownCommand.checkCooldown(player, script.script.getContainer().getName()));
@@ -63,7 +63,7 @@ public class BukkitScriptProperties implements Property {
         // Returns the time left for the player to cooldown for the script.
         // -->
         PropertyParser.<BukkitScriptProperties>registerTag("cooldown", (attribute, script) -> {
-            PlayerTag player = (attribute.hasContext(1) ? PlayerTag.valueOf(attribute.getContext(1))
+            PlayerTag player = (attribute.hasContext(1) ? attribute.contextAsType(1, PlayerTag.class)
                     : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
             return CooldownCommand.getCooldownDuration(player, script.script.getName());
         });
@@ -76,7 +76,7 @@ public class BukkitScriptProperties implements Property {
         // Must be an INTERACT script.
         // -->
         PropertyParser.<BukkitScriptProperties>registerTag("step", (attribute, script) -> {
-            PlayerTag player = (attribute.hasContext(1) ? PlayerTag.valueOf(attribute.getContext(1))
+            PlayerTag player = (attribute.hasContext(1) ? attribute.contextAsType(1, PlayerTag.class)
                     : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
             if (player != null && player.isValid()) {
                 return new ElementTag(InteractScriptHelper.getCurrentStep(player, script.script.getContainer().getName()));

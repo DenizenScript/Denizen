@@ -52,6 +52,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
+    @Deprecated
     public static ChunkTag valueOf(String string) {
         return valueOf(string, null);
     }

@@ -96,7 +96,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         if (EntityTag.matches(determination)) {
-            target = EntityTag.valueOf(determination);
+            target = EntityTag.valueOf(determination, getTagContext(path));
         }
         return super.applyDetermination(path, determinationObj);
     }

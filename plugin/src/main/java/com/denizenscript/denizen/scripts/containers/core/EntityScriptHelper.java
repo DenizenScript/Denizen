@@ -13,6 +13,7 @@ import com.denizenscript.denizen.objects.properties.entity.EntityBoundingBox;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -177,7 +178,7 @@ public class EntityScriptHelper implements Listener {
             return;
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
-            ScriptTag scriptObj = ScriptTag.valueOf(script);
+            ScriptTag scriptObj = ScriptTag.valueOf(script, CoreUtilities.basicContext);
             if (scriptObj == null) {
                 Debug.echoError("Can't set entity script to '" + script + "': not a valid script!");
             }

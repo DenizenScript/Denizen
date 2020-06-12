@@ -67,7 +67,7 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         if (LocationTag.matches(determination)) {
-            to = LocationTag.valueOf(determination);
+            to = LocationTag.valueOf(determination, getTagContext(path));
             event.setTo(to);
             return true;
         }

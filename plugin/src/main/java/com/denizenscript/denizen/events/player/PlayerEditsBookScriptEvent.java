@@ -3,7 +3,6 @@ package com.denizenscript.denizen.events.player;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.BookScriptContainer;
-import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
@@ -76,9 +75,9 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
             return true;
         }
         else if (ScriptTag.matches(determination)) {
-            ScriptTag script = ScriptTag.valueOf(determination);
+            ScriptTag script = ScriptTag.valueOf(determination, getTagContext(path));
             if (script.getContainer() instanceof BookScriptContainer) {
-                ItemTag dBook = ((BookScriptContainer) script.getContainer()).getBookFrom((BukkitTagContext) getScriptEntryData().getTagContext());
+                ItemTag dBook = ((BookScriptContainer) script.getContainer()).getBookFrom(getScriptEntryData().getTagContext());
                 BookMeta bookMeta = (BookMeta) dBook.getItemStack().getItemMeta();
                 if (dBook.getMaterial().getMaterial() == MaterialCompat.WRITABLE_BOOK) {
                     event.setSigning(false);

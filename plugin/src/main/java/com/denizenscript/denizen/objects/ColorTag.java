@@ -12,8 +12,8 @@ import org.bukkit.Color;
 import org.bukkit.DyeColor;
 
 import java.lang.reflect.Field;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.HashMap;
+import java.util.List;
 
 public class ColorTag implements ObjectTag {
 
@@ -32,18 +32,32 @@ public class ColorTag implements ObjectTag {
     // A list of accepted color names can be found at
     // <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Color.html>
     //
-    // Red/green/blue values are each from 0 to 256.
+    // Red/green/blue values are each from 0 to 255.
     //
     // -->
-
-    final static Pattern rgbPattern = Pattern.compile("(\\d+)[,:](\\d+)[,:](\\d+)");
 
     //////////////////
     //    OBJECT FETCHER
     ////////////////
 
+    @Deprecated
     public static ColorTag valueOf(String string) {
         return valueOf(string, null);
+    }
+
+    public static HashMap<String, Color> colorsByName = new HashMap<>();
+
+    static {
+        for (Field field : Color.class.getDeclaredFields()) {
+            if (field.getType() == Color.class) {
+                try {
+                    colorsByName.put(CoreUtilities.toLowerCase(field.getName()), (Color) field.get(null));
+                }
+                catch (Exception ex) {
+                    Debug.echoError(ex);
+                }
+            }
+        }
     }
 
     /**
@@ -54,40 +68,29 @@ public class ColorTag implements ObjectTag {
      */
     @Fetchable("co")
     public static ColorTag valueOf(String string, TagContext context) {
+        if (string.startsWith("co@")) {
+            string = string.substring("co@".length());
+        }
 
-        string = string.toUpperCase().replace("CO@", "");
-
-        if (string.equals("RANDOM")) {
-
+        if (string.equals("random")) {
             // Get a color using random RGB values
             return new ColorTag(CoreUtilities.getRandom().nextInt(256),
                     CoreUtilities.getRandom().nextInt(256),
                     CoreUtilities.getRandom().nextInt(256));
         }
 
-        Matcher m = rgbPattern.matcher(string);
+        List<String> split = CoreUtilities.split(string, ',');
+        if (split.size() == 3) {
 
-        if (m.matches()) {
-            if (!ArgumentHelper.matchesInteger(m.group(1)) || !ArgumentHelper.matchesInteger(m.group(2)) || !ArgumentHelper.matchesInteger(m.group(3))) {
+            if (!ArgumentHelper.matchesInteger(split.get(0)) || !ArgumentHelper.matchesInteger(split.get(1)) || !ArgumentHelper.matchesInteger(split.get(2))) {
                 return null;
             }
-            return new ColorTag(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)));
+            return new ColorTag(Integer.parseInt(split.get(0)), Integer.parseInt(split.get(1)), Integer.parseInt(split.get(2)));
         }
 
-        Field colorField = null;
-
-        try {
-            colorField = Color.class.getField(string.toUpperCase());
-        }
-        catch (SecurityException e1) {
-            Debug.echoError("Security exception getting color field!");
-        }
-        catch (NoSuchFieldException e1) {
-            Debug.echoError("No such color field '" + string + "'!");
-        }
-
-        if (colorField != null) {
-            return new ColorTag(colorField);
+        Color col = colorsByName.get(CoreUtilities.toLowerCase(string));
+        if (col != null) {
+            return new ColorTag(col);
         }
 
         // No match
@@ -101,25 +104,12 @@ public class ColorTag implements ObjectTag {
      * @return true if matched, otherwise false
      */
     public static boolean matches(String arg) {
-
-        arg = arg.toUpperCase().replace("CO@", "");
-
-        if (arg.toUpperCase().equals("RANDOM")) {
+        if (arg.startsWith("co@")) {
             return true;
         }
-
-        Matcher m = rgbPattern.matcher(arg);
-
-        if (m.matches()) {
+        if (valueOf(arg, CoreUtilities.noDebugContext) != null) {
             return true;
         }
-
-        for (Field field : Color.class.getFields()) {
-            if (arg.toUpperCase().matches(field.getName())) {
-                return true;
-            }
-        }
-
         return false;
     }
 
@@ -129,15 +119,6 @@ public class ColorTag implements ObjectTag {
 
     public ColorTag(int red, int green, int blue) {
         color = Color.fromRGB(red, green, blue);
-    }
-
-    public ColorTag(Field field) {
-        try {
-            color = (Color) field.get(null);
-        }
-        catch (Exception e) {
-            Debug.echoError("Exception trying to fetch color!");
-        }
     }
 
     public ColorTag(Color color) {
@@ -317,7 +298,7 @@ public class ColorTag implements ObjectTag {
                 Debug.echoError("The tag ListTag.insert[...] must have a value.");
                 return null;
             }
-            ColorTag mixed_with = ColorTag.valueOf(attribute.getContext(1));
+            ColorTag mixed_with = ColorTag.valueOf(attribute.getContext(1), attribute.context);
             if (mixed_with != null) {
                 return new ColorTag(object.color.mixColors(mixed_with.getColor()));
             }

@@ -14,6 +14,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Builder;
 import org.bukkit.entity.Firework;
@@ -123,7 +124,7 @@ public class FireworkCommand extends AbstractCommand {
 
         scriptEntry.defaultObject("type", new ElementTag("ball"));
         scriptEntry.defaultObject("power", new ElementTag(1));
-        scriptEntry.defaultObject("primary", Arrays.asList(ColorTag.valueOf("yellow")));
+        scriptEntry.defaultObject("primary", Arrays.asList(new ColorTag(Color.YELLOW)));
     }
 
     @SuppressWarnings("unchecked")

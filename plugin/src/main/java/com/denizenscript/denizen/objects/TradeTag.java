@@ -49,10 +49,6 @@ public class TradeTag implements ObjectTag, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
-    public static TradeTag valueOf(String string) {
-        return valueOf(string, null);
-    }
-
     @Fetchable("trade")
     public static TradeTag valueOf(String string, TagContext context) {
         if (string == null) {

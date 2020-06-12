@@ -128,7 +128,7 @@ public class ResetCommand extends AbstractCommand {
         // Now deal with the rest
         for (String object : players) {
 
-            PlayerTag resettable = PlayerTag.valueOf(object);
+            PlayerTag resettable = PlayerTag.valueOf(object, scriptEntry.context);
             if (resettable.isValid()) {
 
                 switch (type) {

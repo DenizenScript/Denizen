@@ -111,6 +111,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
     //   OBJECT FETCHER
     /////////////////
 
+    @Deprecated
     public static PlayerTag valueOf(String string) {
         return valueOf(string, null);
     }
@@ -766,7 +767,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             if (attribute.hasContext(1)) {
                 try {
                     outcome = DenizenAPI.getCurrentInstance().getSaves().getString("Players." + object.getName() + ".Scripts."
-                            + ScriptTag.valueOf(attribute.getContext(1)).getName() + ".Current Step");
+                            + ScriptTag.valueOf(attribute.getContext(1), attribute.context).getName() + ".Current Step");
                 }
                 catch (Exception e) {
                     outcome = "null";
@@ -1981,7 +1982,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             if (!attribute.hasContext(1)) {
                 return null;
             }
-            ChunkTag chunk = ChunkTag.valueOf(attribute.getContext(1));
+            ChunkTag chunk = ChunkTag.valueOf(attribute.getContext(1), attribute.context);
             if (chunk == null) {
                 return null;
             }
@@ -2387,7 +2388,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             if (!attribute.hasContext(1)) {
                 return null;
             }
-            LocationTag input = LocationTag.valueOf(attribute.getContext(1));
+            LocationTag input = attribute.contextAsType(1, LocationTag.class);
             FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(object.getOfflinePlayer().getUniqueId());
             if (map != null) {
                 FakeBlock block = map.byLocation.get(input);
@@ -3019,7 +3020,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             if (!mechanism.getValue().asString().isEmpty()) {
                 ListTag split = mechanism.valueAsType(ListTag.class);
                 if (split.size() > 0 && new ElementTag(split.get(0)).matchesType(EntityTag.class)) {
-                    EntityTag entity = EntityTag.valueOf(split.get(0));
+                    EntityTag entity = EntityTag.valueOf(split.get(0), mechanism.context);
                     if (!entity.isSpawnedOrValidForTag()) {
                         Debug.echoError("Can't hide the unspawned entity '" + split.get(0) + "'!");
                     }
@@ -3411,7 +3412,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 String[] split = mechanism.getValue().asString().split("\\|", 2);
                 if (LocationTag.matches(split[0]) && split.length > 1) {
                     ListTag lines = ListTag.valueOf(split[1], mechanism.context);
-                    getPlayerEntity().sendSignChange(LocationTag.valueOf(split[0]), lines.toArray(new String[4]));
+                    getPlayerEntity().sendSignChange(LocationTag.valueOf(split[0], mechanism.context), lines.toArray(new String[4]));
                 }
                 else {
                     Debug.echoError("Must specify a valid location and at least one sign line!");
@@ -3450,7 +3451,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                     }
                 }
                 if (LocationTag.matches(split[0]) && split.length > 1) {
-                    LocationTag location = LocationTag.valueOf(split[0]);
+                    LocationTag location = LocationTag.valueOf(split[0], mechanism.context);
                     DyeColor base;
                     try {
                         base = DyeColor.valueOf(split[1].toUpperCase());

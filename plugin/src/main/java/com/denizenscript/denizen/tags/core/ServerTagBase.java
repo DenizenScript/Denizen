@@ -1407,7 +1407,7 @@ public class ServerTagBase {
             // Returns an ElementTag of a group's chat prefix for the specified WorldTag.
             // -->
             if (attribute.startsWith("world", 2)) {
-                WorldTag world = WorldTag.valueOf(attribute.getContext(2));
+                WorldTag world = attribute.contextAsType(2, WorldTag.class);
                 if (world != null) {
                     event.setReplacedObject(new ElementTag(Depends.chat.getGroupPrefix(world.getWorld(), group))
                             .getObjectAttribute(attribute.fulfill(2)));
@@ -1448,7 +1448,7 @@ public class ServerTagBase {
             // Returns an ElementTag of a group's chat suffix for the specified WorldTag.
             // -->
             if (attribute.startsWith("world", 2)) {
-                WorldTag world = WorldTag.valueOf(attribute.getContext(2));
+                WorldTag world = attribute.contextAsType(2, WorldTag.class);
                 if (world != null) {
                     event.setReplacedObject(new ElementTag(Depends.chat.getGroupSuffix(world.getWorld(), group))
                             .getObjectAttribute(attribute.fulfill(2)));
@@ -1566,7 +1566,7 @@ public class ServerTagBase {
         // -->
         if ((attribute.startsWith("list_npcs_assigned") || attribute.startsWith("get_npcs_assigned")) && Depends.citizens != null
                 && attribute.hasContext(1)) {
-            ScriptTag script = ScriptTag.valueOf(attribute.getContext(1));
+            ScriptTag script = ScriptTag.valueOf(attribute.getContext(1), attribute.context);
             if (script == null || !(script.getContainer() instanceof AssignmentScriptContainer)) {
                 attribute.echoError("Invalid script specified.");
             }

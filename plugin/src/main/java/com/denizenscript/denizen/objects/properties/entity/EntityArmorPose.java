@@ -142,7 +142,7 @@ public class EntityArmorPose implements Property {
                     Debug.echoError("Invalid pose part specified: " + name + "; ignoring next: " + angle);
                 }
                 else {
-                    posePart.setAngle(armorStand, toEulerAngle(LocationTag.valueOf(angle)));
+                    posePart.setAngle(armorStand, toEulerAngle(LocationTag.valueOf(angle, mechanism.context)));
                 }
             }
         }

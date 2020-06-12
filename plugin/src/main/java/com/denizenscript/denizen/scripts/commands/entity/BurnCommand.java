@@ -76,7 +76,7 @@ public class BurnCommand extends AbstractCommand {
                 (Utilities.entryHasNPC(scriptEntry) ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null));
 
         // Use default duration if one is not specified
-        scriptEntry.defaultObject("duration", DurationTag.valueOf("5s"));
+        scriptEntry.defaultObject("duration", new DurationTag(5));
     }
 
     @SuppressWarnings("unchecked")

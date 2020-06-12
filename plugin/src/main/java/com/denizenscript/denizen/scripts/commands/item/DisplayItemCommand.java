@@ -96,7 +96,7 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
         }
 
         if (!scriptEntry.hasObject("duration")) {
-            scriptEntry.addObject("duration", DurationTag.valueOf("1m"));
+            scriptEntry.addObject("duration", new DurationTag(60));
         }
     }
 

@@ -8,6 +8,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.block.BlockState;
@@ -50,11 +51,11 @@ public class InventoryHolder implements Property {
         }
         if (inventory.getIdType() != null
                 && (inventory.getIdType().equals("player") || inventory.getIdType().equals("enderchest"))) {
-            return PlayerTag.valueOf(inventory.getIdHolder());
+            return PlayerTag.valueOf(inventory.getIdHolder(), CoreUtilities.basicContext);
         }
         else if (inventory.getIdType() != null && inventory.getIdType().equalsIgnoreCase("script")
                 && ScriptTag.matches(inventory.getIdHolder())) {
-            return ScriptTag.valueOf(inventory.getIdHolder());
+            return ScriptTag.valueOf(inventory.getIdHolder(), CoreUtilities.basicContext);
         }
         org.bukkit.inventory.InventoryHolder holder = inventory.getInventory().getHolder();
 

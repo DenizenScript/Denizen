@@ -188,7 +188,7 @@ public class TeamCommand extends AbstractCommand {
         if (add != null) {
             for (String string : add) {
                 if (string.startsWith("p@")) {
-                    string = PlayerTag.valueOf(string).getName();
+                    string = PlayerTag.valueOf(string, scriptEntry.context).getName();
                 }
                 if (!team.hasEntry(string)) {
                     team.addEntry(string);
@@ -198,7 +198,7 @@ public class TeamCommand extends AbstractCommand {
         if (remove != null) {
             for (String string : remove) {
                 if (string.startsWith("p@")) {
-                    string = PlayerTag.valueOf(string).getName();
+                    string = PlayerTag.valueOf(string, scriptEntry.context).getName();
                 }
                 if (team.hasEntry(string)) {
                     team.removeEntry(string);

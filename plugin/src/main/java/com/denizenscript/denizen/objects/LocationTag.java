@@ -153,6 +153,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     //    OBJECT FETCHER
     ////////////////
 
+    @Deprecated
     public static LocationTag valueOf(String string) {
         return valueOf(string, null);
     }
@@ -975,7 +976,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (!attribute.hasContext(1)) {
                 return null;
             }
-            LocationTag offsetLoc = LocationTag.valueOf(attribute.getContext(1));
+            LocationTag offsetLoc = attribute.contextAsType(1, LocationTag.class);
             if (offsetLoc == null) {
                 return null;
             }
@@ -1557,7 +1558,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 attribute.fulfill(1);
                 Set<EntityType> types = new HashSet<>();
                 for (String str : ListTag.valueOf(attribute.getContext(1), attribute.context)) {
-                    types.add(EntityTag.valueOf(str).getBukkitEntityType());
+                    types.add(EntityTag.valueOf(str, attribute.context).getBukkitEntityType());
                 }
                 result = object.getWorld().rayTraceEntities(object, object.getDirection(), range, (e) -> types.contains(e.getType()));
             }
@@ -1596,7 +1597,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Finds all locations between this location and another, separated by 1 block-width each.
         // -->
         registerTag("points_between", (attribute, object) -> {
-            LocationTag target = LocationTag.valueOf(attribute.getContext(1));
+            LocationTag target = attribute.contextAsType(1, LocationTag.class);
             if (target == null) {
                 return null;
             }
@@ -1664,7 +1665,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (!attribute.hasContext(1)) {
                 return null;
             }
-            LocationTag location = LocationTag.valueOf(attribute.getContext(1));
+            LocationTag location = attribute.contextAsType(1, LocationTag.class);
             if (location != null) {
                 try {
                     NMSHandler.getChunkHelper().changeChunkServerThread(object.getWorld());
@@ -1700,7 +1701,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (attribute.hasContext(1) && LocationTag.matches(attribute.getContext(1))) {
                 // Subtract this location's vector from the other location's vector,
                 // not the other way around
-                LocationTag target = LocationTag.valueOf(attribute.getContext(1));
+                LocationTag target = attribute.contextAsType(1, LocationTag.class);
                 EntityHelper entityHelper = NMSHandler.getEntityHelper();
 
                 // <--[tag]
@@ -1734,7 +1735,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the location with the yaw rotated the specified amount (eg 180 to face the location backwards).
         // -->
         registerTag("rotate_yaw", (attribute, object) -> {
-            LocationTag loc = LocationTag.valueOf(object.identify());
+            LocationTag loc = LocationTag.valueOf(object.identify(), attribute.context).clone();
             loc.setYaw(loc.getYaw() + (float) attribute.getDoubleContext(1));
             return loc;
         });
@@ -1746,7 +1747,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the location with the pitch rotated the specified amount. Note that this is capped to +/- 90.
         // -->
         registerTag("rotate_pitch", (attribute, object) -> {
-            LocationTag loc = LocationTag.valueOf(object.identify());
+            LocationTag loc = LocationTag.valueOf(object.identify(), attribute.context).clone();
             loc.setPitch(Math.max(-90, Math.min(90, loc.getPitch() + (float) attribute.getDoubleContext(1))));
             return loc;
         });
@@ -1762,7 +1763,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (!attribute.hasContext(1)) {
                 return null;
             }
-            Location two = LocationTag.valueOf(attribute.getContext(1));
+            Location two = attribute.contextAsType(1, LocationTag.class);
             return new LocationTag(NMSHandler.getEntityHelper().faceLocation(object, two));
         });
 
@@ -1782,7 +1783,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                     facingLoc = object.clone();
                 }
                 else if (EntityTag.matches(attribute.getContext(1))) {
-                    facingLoc = EntityTag.valueOf(attribute.getContext(1)).getLocation();
+                    facingLoc = EntityTag.valueOf(attribute.getContext(1), attribute.context).getLocation();
                 }
                 else {
                     if (!attribute.hasAlternative()) {
@@ -1840,7 +1841,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             float pitch = 0f;
             float yaw = 0f;
             if (EntityTag.matches(context)) {
-                EntityTag ent = EntityTag.valueOf(context);
+                EntityTag ent = EntityTag.valueOf(context, attribute.context);
                 if (ent.isSpawnedOrValidForTag()) {
                     pitch = ent.getBukkitEntity().getLocation().getPitch();
                     yaw = ent.getBukkitEntity().getLocation().getYaw();
@@ -2290,7 +2291,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (!attribute.hasContext(1)) {
                 return null;
             }
-            LocationTag two = LocationTag.valueOf(attribute.getContext(1));
+            LocationTag two = attribute.contextAsType(1, LocationTag.class);
             if (two == null) {
                 return null;
             }
@@ -2494,7 +2495,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 return null;
             }
             LocationTag output = object.clone();
-            WorldTag world = WorldTag.valueOf(attribute.getContext(1));
+            WorldTag world = attribute.contextAsType(1, WorldTag.class);
             output.setWorld(world.getWorld());
             return output;
         });
@@ -2539,7 +2540,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 }
             }
             if (LocationTag.matches(attribute.getContext(1))) {
-                return new LocationTag(object.clone().add(LocationTag.valueOf(attribute.getContext(1))));
+                return new LocationTag(object.clone().add(attribute.contextAsType(1, LocationTag.class)));
             }
             return null;
         });
@@ -2565,7 +2566,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 }
             }
             if (LocationTag.matches(attribute.getContext(1))) {
-                return new LocationTag(object.clone().subtract(LocationTag.valueOf(attribute.getContext(1))));
+                return new LocationTag(object.clone().subtract(attribute.contextAsType(1, LocationTag.class)));
             }
             return null;
         });
@@ -2649,7 +2650,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 return null;
             }
             if (LocationTag.matches(attribute.getContext(1))) {
-                LocationTag toLocation = LocationTag.valueOf(attribute.getContext(1));
+                LocationTag toLocation = attribute.contextAsType(1, LocationTag.class);
                 if (!object.getWorldName().equalsIgnoreCase(toLocation.getWorldName())) {
                     if (!attribute.hasAlternative()) {
                         Debug.echoError("Can't measure distance between two different worlds!");
@@ -2672,7 +2673,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 return null;
             }
             if (LocationTag.matches(attribute.getContext(1))) {
-                LocationTag toLocation = LocationTag.valueOf(attribute.getContext(1));
+                LocationTag toLocation = attribute.contextAsType(1, LocationTag.class);
 
                 // <--[tag]
                 // @attribute <LocationTag.distance[<location>].horizontal>
@@ -2758,13 +2759,13 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 return null;
             }
             if (EllipsoidTag.matches(attribute.getContext(1))) {
-                EllipsoidTag ellipsoid = EllipsoidTag.valueOf(attribute.getContext(1));
+                EllipsoidTag ellipsoid = attribute.contextAsType(1, EllipsoidTag.class);
                 if (ellipsoid != null) {
                     return new ElementTag(ellipsoid.contains(object));
                 }
             }
             else {
-                CuboidTag cuboid = CuboidTag.valueOf(attribute.getContext(1));
+                CuboidTag cuboid = attribute.contextAsType(1, CuboidTag.class);
                 if (cuboid != null) {
                     return new ElementTag(cuboid.isInsideCuboid(object));
                 }

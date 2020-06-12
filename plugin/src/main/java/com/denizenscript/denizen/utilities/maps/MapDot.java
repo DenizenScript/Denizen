@@ -35,7 +35,7 @@ public class MapDot extends MapObject {
         int baseX = getX(player, uuid);
         int baseY = getY(player, uuid);
         int radius = (int) Double.parseDouble(tag(radiusTag, player));
-        Color color = ColorTag.valueOf(tag(colorTag, player)).getColor();
+        Color color = ColorTag.valueOf(tag(colorTag, player), getTagContext(player)).getColor();
         for (int x = -radius; x < radius; x++) {
             int finalX = baseX + x;
             if (finalX >= 128) {

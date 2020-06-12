@@ -36,6 +36,7 @@ public class BiomeTag implements ObjectTag, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
+    @Deprecated
     public static BiomeTag valueOf(String string) {
         return valueOf(string, null);
     }

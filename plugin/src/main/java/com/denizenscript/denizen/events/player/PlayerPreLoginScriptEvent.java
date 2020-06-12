@@ -86,7 +86,7 @@ public class PlayerPreLoginScriptEvent extends BukkitScriptEvent implements List
             }
         }
         if (QueueTag.matches(determination)) {
-            QueueTag newQueue = QueueTag.valueOf(determination);
+            QueueTag newQueue = QueueTag.valueOf(determination, getTagContext(path));
             if (newQueue != null && newQueue.getQueue() != null) {
                 waitForQueues.add(newQueue);
             }

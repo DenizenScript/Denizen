@@ -2,6 +2,7 @@ package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.google.common.base.Splitter;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.server.ScoreboardCommand;
@@ -71,7 +72,7 @@ public class ScoreboardHelper {
             // and make them see this scoreboard if they are online
             for (String viewer : viewerList) {
                 if (PlayerTag.matches(viewer)) {
-                    PlayerTag player = PlayerTag.valueOf(viewer);
+                    PlayerTag player = PlayerTag.valueOf(viewer, CoreUtilities.basicContext);
                     viewerMap.put(player.getName(), id);
 
                     if (player.isOnline()) {

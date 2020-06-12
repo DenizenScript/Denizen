@@ -93,7 +93,7 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
         if (!isDefaultDetermination(determinationObj)) {
             String determination = determinationObj.toString();
             if (LocationTag.matches(determination)) {
-                event.getAcceleration().copy((LocationTag.valueOf(determination)).toVector());
+                event.getAcceleration().copy((LocationTag.valueOf(determination, getTagContext(path))).toVector());
                 return true;
             }
         }

@@ -95,7 +95,7 @@ public class ItemPotion implements Property {
             else {
                 String check = d2[5].replace("&comma", ",");
                 if (ColorTag.matches(check)) {
-                    color = ColorTag.valueOf(check).getColor();
+                    color = ColorTag.valueOf(check, CoreUtilities.basicContext).getColor();
                 }
             }
         }
@@ -388,7 +388,7 @@ public class ItemPotion implements Property {
                     CoreUtilities.toLowerCase(d1[2]).equals("true"),
                     CoreUtilities.toLowerCase(d1[1]).equals("true")));
             if (d1.length > 3) {
-                meta.setColor(ColorTag.valueOf(d1[3].replace("&comma", ",")).getColor());
+                meta.setColor(ColorTag.valueOf(d1[3].replace("&comma", ","), mechanism.context).getColor());
             }
             meta.clearCustomEffects();
             for (int i = 1; i < data.size(); i++) {

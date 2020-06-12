@@ -50,7 +50,7 @@ public class BukkitListProperties implements Property {
 
             for (int n = 0; n < list.size(); n++) {
                 if (list.get(n).startsWith("p@")) {
-                    PlayerTag gotten = PlayerTag.valueOf(list.get(n));
+                    PlayerTag gotten = PlayerTag.valueOf(list.get(n), attribute.context);
                     if (gotten != null) {
                         dScriptArg.append(gotten.getName());
                     }
@@ -59,7 +59,7 @@ public class BukkitListProperties implements Property {
                     }
                 }
                 else if (list.get(n).startsWith("e@") || list.get(n).startsWith("n@")) {
-                    EntityTag gotten = EntityTag.valueOf(list.get(n));
+                    EntityTag gotten = EntityTag.valueOf(list.get(n), attribute.context);
                     if (gotten != null) {
                         dScriptArg.append(gotten.getName());
                     }

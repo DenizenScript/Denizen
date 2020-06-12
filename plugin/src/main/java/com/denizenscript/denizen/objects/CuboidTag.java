@@ -89,6 +89,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
+    @Deprecated
     public static CuboidTag valueOf(String string) {
         return valueOf(string, null);
     }
@@ -114,8 +115,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 }
                 CuboidTag toReturn = new CuboidTag();
                 for (int i = 0; i < positions.size(); i += 2) {
-                    LocationTag pos_1 = LocationTag.valueOf(positions.get(i));
-                    LocationTag pos_2 = LocationTag.valueOf(positions.get(i + 1));
+                    LocationTag pos_1 = LocationTag.valueOf(positions.get(i), context);
+                    LocationTag pos_2 = LocationTag.valueOf(positions.get(i + 1), context);
                     if (pos_1 == null || pos_2 == null) {
                         if (context == null || context.debug) {
                             Debug.echoError("valueOf in CuboidTag returning null (null locations): '" + string + "'.");
@@ -838,7 +839,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 attribute.echoError("The tag CuboidTag.intersects[...] must have a value.");
                 return null;
             }
-            CuboidTag cub2 = CuboidTag.valueOf(attribute.getContext(1));
+            CuboidTag cub2 = attribute.contextAsType(1, CuboidTag.class);
             if (cub2 != null) {
                 boolean intersects = false;
                 whole_loop:
@@ -874,7 +875,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 attribute.echoError("The tag CuboidTag.contains_location[...] must have a value.");
                 return null;
             }
-            LocationTag loc = LocationTag.valueOf(attribute.getContext(1));
+            LocationTag loc = attribute.contextAsType(1, LocationTag.class);
             return new ElementTag(cuboid.isInsideCuboid(loc));
         });
 
@@ -889,7 +890,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 attribute.echoError("The tag CuboidTag.is_within[...] must have a value.");
                 return null;
             }
-            CuboidTag cub2 = CuboidTag.valueOf(attribute.getContext(1));
+            CuboidTag cub2 = attribute.contextAsType(1, CuboidTag.class);
             if (cub2 != null) {
                 boolean contains = true;
                 for (LocationPair pair2 : cuboid.pairs) {
@@ -972,7 +973,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 return null;
             }
             else {
-                CuboidTag subCuboid = CuboidTag.valueOf(attribute.getContext(1));
+                CuboidTag subCuboid = attribute.contextAsType(1, CuboidTag.class);
                 if (!attribute.startsWith("at", 2)) {
                     attribute.echoError("The tag CuboidTag.set[...] must be followed by an 'at'.");
                     return null;
@@ -1009,7 +1010,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 return null;
             }
             cuboid = cuboid.clone();
-            CuboidTag subCuboid = CuboidTag.valueOf(attribute.getContext(1));
+            CuboidTag subCuboid = attribute.contextAsType(1, CuboidTag.class);
             int member = cuboid.pairs.size() + 1;
 
             // <--[tag]
@@ -1188,7 +1189,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
             if (newCuboid != null) {
                 return cuboid.including(newCuboid.getLow(0)).including(newCuboid.getHigh(0));
             }
-            LocationTag loc = LocationTag.valueOf(attribute.getContext(1));
+            LocationTag loc = attribute.contextAsType(1, LocationTag.class);
             if (loc != null) {
                 return cuboid.including(loc);
             }
@@ -1299,7 +1300,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 attribute.echoError("The tag CuboidTag.with_min[...] must have a value.");
                 return null;
             }
-            LocationTag location = LocationTag.valueOf(attribute.getContext(1));
+            LocationTag location = attribute.contextAsType(1, LocationTag.class);
             return new CuboidTag(location, cuboid.pairs.get(0).high);
         });
 
@@ -1317,7 +1318,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 attribute.echoError("The tag CuboidTag.with_max[...] must have a value.");
                 return null;
             }
-            LocationTag location = LocationTag.valueOf(attribute.getContext(1));
+            LocationTag location = attribute.contextAsType(1, LocationTag.class);
             return new CuboidTag(location, cuboid.pairs.get(0).low);
         });
 
@@ -1341,7 +1342,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 expandBy = new Vector(val, val, val);
             }
             else {
-                expandBy = LocationTag.valueOf(attribute.getContext(1)).toVector();
+                expandBy = attribute.contextAsType(1, LocationTag.class).toVector();
             }
             LocationPair pair = cuboid.pairs.get(0);
             return new CuboidTag(pair.low.clone().subtract(expandBy), pair.high.clone().add(expandBy));
@@ -1591,7 +1592,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 member = new ElementTag(value.substring(0, comma)).asInt();
                 value = value.substring(comma + 1);
             }
-            CuboidTag subCuboid = CuboidTag.valueOf(value);
+            CuboidTag subCuboid = CuboidTag.valueOf(value, mechanism.context);
             if (member < 1) {
                 member = 1;
             }
@@ -1623,7 +1624,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 member = new ElementTag(value.substring(0, comma)).asInt();
                 value = value.substring(comma + 1);
             }
-            CuboidTag subCuboid = CuboidTag.valueOf(value);
+            CuboidTag subCuboid = CuboidTag.valueOf(value, mechanism.context);
             if (member < 1) {
                 member = 1;
             }

@@ -444,7 +444,7 @@ public class EntityAreaEffectCloud implements Property {
                 if (potionData.size() >= 3) {
                     PotionEffectType type = PotionEffectType.getByName(potionData.get(0));
                     ElementTag amplifier = new ElementTag(potionData.get(1));
-                    DurationTag duration = DurationTag.valueOf(potionData.get(2));
+                    DurationTag duration = DurationTag.valueOf(potionData.get(2), mechanism.context);
                     ElementTag ambient = new ElementTag((potionData.size() > 3) ? potionData.get(3) : "false");
                     ElementTag particles = new ElementTag((potionData.size() > 4) ? potionData.get(4) : "true");
 
@@ -473,7 +473,7 @@ public class EntityAreaEffectCloud implements Property {
         // <EntityTag.particle.color>
         // -->
         if (mechanism.matches("particle_color") && mechanism.requireObject(ColorTag.class)) {
-            getHelper().setColor(ColorTag.valueOf(mechanism.getValue().asString()).getColor());
+            getHelper().setColor(mechanism.valueAsType(ColorTag.class).getColor());
         }
 
         // <--[mechanism]
@@ -524,7 +524,7 @@ public class EntityAreaEffectCloud implements Property {
         // <EntityTag.duration>
         // -->
         if (mechanism.matches("duration") && mechanism.requireObject(DurationTag.class)) {
-            getHelper().setDuration(DurationTag.valueOf(mechanism.getValue().asString()).getTicksAsInt());
+            getHelper().setDuration(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -538,7 +538,7 @@ public class EntityAreaEffectCloud implements Property {
         // <EntityTag.duration.on_use>
         // -->
         if (mechanism.matches("duration_on_use") && mechanism.requireObject(DurationTag.class)) {
-            getHelper().setDurationOnUse(DurationTag.valueOf(mechanism.getValue().asString()).getTicksAsInt());
+            getHelper().setDurationOnUse(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -606,7 +606,7 @@ public class EntityAreaEffectCloud implements Property {
         // <EntityTag.reapplication_delay>
         // -->
         if (mechanism.matches("reapplication_delay") && mechanism.requireObject(DurationTag.class)) {
-            getHelper().setReappDelay(DurationTag.valueOf(mechanism.getValue().asString()).getTicksAsInt());
+            getHelper().setReappDelay(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -619,7 +619,7 @@ public class EntityAreaEffectCloud implements Property {
         // <EntityTag.source>
         // -->
         if (mechanism.matches("source") && mechanism.requireObject(EntityTag.class)) {
-            getHelper().setSource((ProjectileSource) EntityTag.valueOf(mechanism.getValue().asString()).getBukkitEntity());
+            getHelper().setSource((ProjectileSource) mechanism.valueAsType(EntityTag.class).getBukkitEntity());
         }
 
         // <--[mechanism]
@@ -633,7 +633,7 @@ public class EntityAreaEffectCloud implements Property {
         // <EntityTag.wait_time>
         // -->
         if (mechanism.matches("wait_time") && mechanism.requireObject(DurationTag.class)) {
-            getHelper().setWaitTime(DurationTag.valueOf(mechanism.getValue().asString()).getTicksAsInt());
+            getHelper().setWaitTime(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
     }
 }

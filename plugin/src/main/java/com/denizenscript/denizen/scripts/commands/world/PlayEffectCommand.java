@@ -120,7 +120,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     Deprecations.oldPlayEffectSpecials.warn(scriptEntry);
                     // Allow iconcrack_[item] for item break effects (ex: iconcrack_stone)
                     String shrunk = arg.getValue().substring("iconcrack_".length());
-                    ItemTag item = ItemTag.valueOf(shrunk, scriptEntry.entryData.getTagContext());
+                    ItemTag item = ItemTag.valueOf(shrunk, scriptEntry.context);
                     if (item != null) {
                         scriptEntry.addObject("iconcrack", item);
                     }
@@ -132,7 +132,7 @@ public class PlayEffectCommand extends AbstractCommand {
                 else if (arg.startsWith("blockcrack_")) {
                     Deprecations.oldPlayEffectSpecials.warn(scriptEntry);
                     String shrunk = arg.getValue().substring("blockcrack_".length());
-                    MaterialTag material = MaterialTag.valueOf(shrunk);
+                    MaterialTag material = MaterialTag.valueOf(shrunk, scriptEntry.context);
                     if (material != null) {
                         scriptEntry.addObject("blockcrack", material);
                     }
@@ -144,7 +144,7 @@ public class PlayEffectCommand extends AbstractCommand {
                 else if (arg.startsWith("blockdust_")) {
                     Deprecations.oldPlayEffectSpecials.warn(scriptEntry);
                     String shrunk = arg.getValue().substring("blockdust_".length());
-                    MaterialTag material = MaterialTag.valueOf(shrunk);
+                    MaterialTag material = MaterialTag.valueOf(shrunk, scriptEntry.context);
                     if (material != null) {
                         scriptEntry.addObject("blockdust", material);
                     }
@@ -314,7 +314,7 @@ public class PlayEffectCommand extends AbstractCommand {
                             }
                             else {
                                 float size = Float.parseFloat(dataList.get(0));
-                                ColorTag color = ColorTag.valueOf(dataList.get(1));
+                                ColorTag color = ColorTag.valueOf(dataList.get(1), scriptEntry.context);
                                 dataObject = new org.bukkit.Particle.DustOptions(color.getColor(), size);
                             }
                         }

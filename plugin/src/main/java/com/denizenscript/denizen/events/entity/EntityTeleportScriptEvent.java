@@ -100,7 +100,7 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
         String determination = determinationObj.toString();
         String dlow = CoreUtilities.toLowerCase(determination);
         if (dlow.startsWith("origin:")) {
-            LocationTag new_from = LocationTag.valueOf(determination.substring("origin:".length()));
+            LocationTag new_from = LocationTag.valueOf(determination.substring("origin:".length()), getTagContext(path));
             if (new_from != null) {
                 from = new_from;
                 if (event != null) {
@@ -113,7 +113,7 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
             }
         }
         else if (dlow.startsWith("destination:")) {
-            LocationTag new_to = LocationTag.valueOf(determination.substring("destination:".length()));
+            LocationTag new_to = LocationTag.valueOf(determination.substring("destination:".length()), getTagContext(path));
             if (new_to != null) {
                 to = new_to;
                 if (event != null) {
@@ -126,7 +126,7 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
             }
         }
         else if (LocationTag.matches(determination)) {
-            LocationTag new_to = LocationTag.valueOf(determination);
+            LocationTag new_to = LocationTag.valueOf(determination, getTagContext(path));
             if (new_to != null) {
                 to = new_to;
                 if (event != null) {

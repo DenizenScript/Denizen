@@ -204,7 +204,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
             }
             Debug.echoDebug(scriptEntry, "...replacing the linked player with " + arg.getValue());
             String value = TagManager.tag(arg.getValue(), scriptEntry.getContext());
-            PlayerTag player = PlayerTag.valueOf(value);
+            PlayerTag player = PlayerTag.valueOf(value, scriptEntry.context);
             if (player == null || !player.isValid()) {
                 Debug.echoError(scriptEntry.getResidingQueue(), value + " is an invalid player!");
             }
@@ -219,7 +219,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
             }
             Debug.echoDebug(scriptEntry, "...replacing the linked NPC with " + arg.getValue());
             String value = TagManager.tag(arg.getValue(), scriptEntry.getContext());
-            NPCTag npc = NPCTag.valueOf(value);
+            NPCTag npc = NPCTag.valueOf(value, scriptEntry.context);
             if (npc == null || !npc.isValid()) {
                 Debug.echoError(scriptEntry.getResidingQueue(), value + " is an invalid NPC!");
                 return false;
@@ -353,7 +353,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
             outcome = EntityTag.matches(comparable);
         }
         else if (comparedto.equalsIgnoreCase("spawnedentity")) {
-            outcome = (EntityTag.matches(comparable) && EntityTag.valueOf(comparable).isSpawned());
+            outcome = (EntityTag.matches(comparable) && EntityTag.valueOf(comparable, CoreUtilities.basicContext).isSpawned());
         }
         else if (comparedto.equalsIgnoreCase("npc")) {
             outcome = NPCTag.matches(comparable);
@@ -362,10 +362,10 @@ public class DenizenCoreImplementation implements DenizenImplementation {
             outcome = PlayerTag.matches(comparable);
         }
         else if (comparedto.equalsIgnoreCase("offlineplayer")) {
-            outcome = (PlayerTag.valueOf(comparable) != null && !PlayerTag.valueOf(comparable).isOnline());
+            outcome = (PlayerTag.valueOf(comparable, CoreUtilities.basicContext) != null && !PlayerTag.valueOf(comparable, CoreUtilities.basicContext).isOnline());
         }
         else if (comparedto.equalsIgnoreCase("onlineplayer")) {
-            outcome = (PlayerTag.valueOf(comparable) != null && PlayerTag.valueOf(comparable).isOnline());
+            outcome = (PlayerTag.valueOf(comparable, CoreUtilities.basicContext) != null && PlayerTag.valueOf(comparable, CoreUtilities.basicContext).isOnline());
         }
         else if (comparedto.equalsIgnoreCase("item")) {
             outcome = ItemTag.matches(comparable);

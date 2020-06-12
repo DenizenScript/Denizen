@@ -844,13 +844,13 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         }
         inventory.setContents(contents);
         if (Depends.citizens != null && NPCTag.matches(idHolder)) { // TODO: Directly store holder
-            NPCTag.valueOf(idHolder).getInventoryTrait().setContents(contents);
+            NPCTag.valueOf(idHolder, context).getInventoryTrait().setContents(contents);
         }
     }
 
     public boolean update() {
         if (getIdType().equals("player")) {
-            PlayerTag.valueOf(idHolder).getPlayerEntity().updateInventory();
+            PlayerTag.valueOf(idHolder, CoreUtilities.basicContext).getPlayerEntity().updateInventory();
             return true;
         }
         return false;
@@ -1339,7 +1339,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             NMSHandler.getItemHelper().setInventoryItem(inventory, item, slot + i);
         }
         if (Depends.citizens != null && NPCTag.matches(idHolder)) { // TODO: Directly store holder
-            NPCTag.valueOf(idHolder).getInventoryTrait().setContents(inventory.getContents());
+            NPCTag.valueOf(idHolder, CoreUtilities.basicContext).getInventoryTrait().setContents(inventory.getContents());
         }
         return this;
 
@@ -2039,7 +2039,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             // Returns -1 if there's no match.
             // -->
             if (attribute.startsWith("material", 2)) {
-                MaterialTag material = MaterialTag.valueOf(attribute.getContext(2));
+                MaterialTag material = attribute.contextAsType(2, MaterialTag.class);
                 if (material == null) {
                     return null;
                 }
@@ -2193,7 +2193,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 if (!attribute.hasContext(2) || !MaterialTag.matches(attribute.getContext(2))) {
                     return null;
                 }
-                MaterialTag material = MaterialTag.valueOf(attribute.getContext(2));
+                MaterialTag material = attribute.contextAsType(2, MaterialTag.class);
                 attribute.fulfill(1);
                 return new ElementTag(object.countByMaterial(material.getMaterial()));
             }

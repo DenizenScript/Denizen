@@ -85,7 +85,7 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
         String determination = determinationObj.toString();
         if (EntityTag.matches(determination)) {
             event.setHatching(true);
-            EntityType type = EntityTag.valueOf(determination).getBukkitEntityType();
+            EntityType type = EntityTag.valueOf(determination, getTagContext(path)).getBukkitEntityType();
             event.setHatchingType(type);
             return true;
         }

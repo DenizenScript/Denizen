@@ -9,6 +9,7 @@ import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.npc.NPC;
 
 import java.util.HashMap;
@@ -144,7 +145,7 @@ public class EngageCommand extends AbstractCommand {
     public static void setEngaged(NPC npc, boolean engaged) {
         if (engaged) {
             currentlyEngaged.put(npc, System.currentTimeMillis()
-                    + (long) (DurationTag.valueOf(Settings.engageTimeoutInSeconds()).getSeconds()) * 1000);
+                    + (long) (DurationTag.valueOf(Settings.engageTimeoutInSeconds(), CoreUtilities.basicContext).getSeconds()) * 1000);
         }
         if (!engaged) {
             currentlyEngaged.remove(npc);

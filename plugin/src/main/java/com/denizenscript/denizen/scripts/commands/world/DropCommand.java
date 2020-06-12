@@ -138,7 +138,7 @@ public class DropCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("qty")) {
-            scriptEntry.addObject("qty", ElementTag.valueOf("1").setPrefix("qty"));
+            scriptEntry.addObject("qty", new ElementTag("1").setPrefix("qty"));
         }
 
         // Okay!

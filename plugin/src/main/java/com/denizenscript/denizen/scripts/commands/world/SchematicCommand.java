@@ -596,7 +596,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         // -->
         if (attribute.startsWith("block")) {
             if (attribute.hasContext(1) && LocationTag.matches(attribute.getContext(1))) {
-                LocationTag location = LocationTag.valueOf(attribute.getContext(1));
+                LocationTag location = attribute.contextAsType(1, LocationTag.class);
                 BlockData block = set.blockAt(location.getX(), location.getY(), location.getZ());
                 event.setReplaced(new MaterialTag(block)
                         .getAttribute(attribute.fulfill(1)));
@@ -635,7 +635,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         // Returns a cuboid of where the schematic would be if it was pasted at an origin.
         // -->
         if (attribute.startsWith("cuboid") && attribute.hasContext(1)) {
-            LocationTag origin = LocationTag.valueOf(attribute.getContext(1));
+            LocationTag origin = attribute.contextAsType(1, LocationTag.class);
             event.setReplaced(set.getCuboid(origin)
                     .getAttribute(attribute.fulfill(1)));
             return;

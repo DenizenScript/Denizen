@@ -63,6 +63,7 @@ public class WorldTag implements ObjectTag, Adjustable {
     //
     // -->
 
+    @Deprecated
     public static WorldTag valueOf(String string) {
         return valueOf(string, null);
     }

@@ -96,7 +96,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
             return true;
         }
         else if (LocationTag.matches(determination)) {
-            LocationTag vel = LocationTag.valueOf(determination);
+            LocationTag vel = LocationTag.valueOf(determination, getTagContext(path));
             if (vel == null) {
                 Debug.echoError("[" + getName() + "] Invalid velocity '" + determination + "'!");
             }

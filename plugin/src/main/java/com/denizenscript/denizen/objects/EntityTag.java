@@ -170,6 +170,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         }
     }
 
+    @Deprecated
     public static EntityTag valueOf(String string) {
         return valueOf(string, null);
     }
@@ -201,7 +202,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         if (string.startsWith("n@") || string.startsWith("e@") || string.startsWith("p@")) {
             // NPC entity
             if (string.startsWith("n@")) {
-                NPCTag npc = NPCTag.valueOf(string);
+                NPCTag npc = NPCTag.valueOf(string, context);
                 if (npc != null) {
                     if (npc.isSpawned()) {
                         return new EntityTag(npc);
@@ -220,7 +221,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             }
             // Player entity
             else if (string.startsWith("p@")) {
-                LivingEntity returnable = PlayerTag.valueOf(string).getPlayerEntity();
+                LivingEntity returnable = PlayerTag.valueOf(string, context).getPlayerEntity();
                 if (returnable != null) {
                     return new EntityTag(returnable);
                 }
@@ -743,7 +744,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
 
                         if (data1 != null && MaterialTag.matches(data1)) {
 
-                            material = MaterialTag.valueOf(data1).getMaterial();
+                            material = MaterialTag.valueOf(data1, CoreUtilities.basicContext).getMaterial();
 
                             // If we did not get a block with "RANDOM", or we got
                             // air or portals, keep trying
@@ -753,7 +754,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                                             material == MaterialCompat.NETHER_PORTAL ||
                                             material == MaterialCompat.END_PORTAL)) {
 
-                                material = MaterialTag.valueOf(data1).getMaterial();
+                                material = MaterialTag.valueOf(data1, CoreUtilities.basicContext).getMaterial();
                             }
                         }
                         else {
@@ -1536,7 +1537,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // -->
         registerSpawnedOnlyTag("can_see", (attribute, object) -> {
             if (object.isLivingEntity() && attribute.hasContext(1) && EntityTag.matches(attribute.getContext(1))) {
-                EntityTag toEntity = EntityTag.valueOf(attribute.getContext(1));
+                EntityTag toEntity = attribute.contextAsType(1, EntityTag.class);
                 if (toEntity != null && toEntity.isSpawnedOrValidForTag()) {
                     return new ElementTag(object.getLivingEntity().hasLineOfSight(toEntity.getBukkitEntity()));
                 }
@@ -2419,7 +2420,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         registerSpawnedOnlyTag("weapon_damage", (attribute, object) -> {
             Entity target = null;
             if (attribute.hasContext(1)) {
-                target = valueOf(attribute.getContext(1)).getBukkitEntity();
+                target = attribute.contextAsType(1, EntityTag.class).getBukkitEntity();
             }
             return new ElementTag(NMSHandler.getEntityHelper().getDamageTo(object.getLivingEntity(), target));
         });
@@ -2564,12 +2565,12 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                 Vector offset = null;
                 boolean rotateWith = true;
                 if (list.size() > 1) {
-                    offset = LocationTag.valueOf(list.get(1)).toVector();
+                    offset = LocationTag.valueOf(list.get(1), mechanism.context).toVector();
                     if (list.size() > 2) {
                         rotateWith = new ElementTag(list.get(2)).asBoolean();
                     }
                 }
-                NMSHandler.getInstance().forceAttachMove(entity, EntityTag.valueOf(list.get(0)).getBukkitEntity(), offset, rotateWith);
+                NMSHandler.getInstance().forceAttachMove(entity, EntityTag.valueOf(list.get(0), mechanism.context).getBukkitEntity(), offset, rotateWith);
             }
             else {
                 NMSHandler.getInstance().forceAttachMove(entity, null, null, false);
@@ -2820,7 +2821,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                 EntityTag ent = new EntityTag(bukkitEnt);
                 String escript = ent.getEntityScript();
                 ent = EntityTag.valueOf("e@" + (escript != null && escript.length() > 0 ? escript : ent.getEntityType().getLowercaseName())
-                        + PropertyParser.getPropertiesString(ent));
+                        + PropertyParser.getPropertiesString(ent), mechanism.context);
                 ent.spawnAt(getEyeLocation());
                 ((HumanEntity) getLivingEntity()).setShoulderEntityLeft(null);
             }
@@ -2841,7 +2842,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                 EntityTag ent = new EntityTag(bukkitEnt);
                 String escript = ent.getEntityScript();
                 ent = EntityTag.valueOf("e@" + (escript != null && escript.length() > 0 ? escript : ent.getEntityType().getLowercaseName())
-                        + PropertyParser.getPropertiesString(ent));
+                        + PropertyParser.getPropertiesString(ent), mechanism.context);
                 ent.spawnAt(getEyeLocation());
                 ((HumanEntity) getLivingEntity()).setShoulderEntityRight(null);
             }

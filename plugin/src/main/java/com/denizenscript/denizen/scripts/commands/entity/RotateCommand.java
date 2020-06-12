@@ -123,7 +123,7 @@ public class RotateCommand extends AbstractCommand implements Holdable {
         scriptEntry.defaultObject("yaw", new ElementTag(10));
         scriptEntry.defaultObject("pitch", new ElementTag(0));
         scriptEntry.defaultObject("duration", new DurationTag(20));
-        scriptEntry.defaultObject("frequency", DurationTag.valueOf("1t"));
+        scriptEntry.defaultObject("frequency", new DurationTag(1L));
 
         // Check to make sure required arguments have been filled
         if (!scriptEntry.hasObject("entities")) {

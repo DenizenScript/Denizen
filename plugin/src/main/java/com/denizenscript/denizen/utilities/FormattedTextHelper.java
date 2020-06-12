@@ -213,7 +213,7 @@ public class FormattedTextHelper {
                                 hoverValue = new BaseComponent[] { new TextComponent(NMSHandler.getItemHelper().getRawHoverText(item.getItemStack())) };
                             }
                             else if (action == HoverEvent.Action.SHOW_ENTITY) {
-                                EntityTag entity = EntityTag.valueOf(unescape(innardParts.get(0)));
+                                EntityTag entity = EntityTag.valueOf(unescape(innardParts.get(0)), CoreUtilities.basicContext);
                                 if (entity == null) {
                                     continue;
                                 }

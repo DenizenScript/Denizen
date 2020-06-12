@@ -196,7 +196,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                     Debug.echoDebug(scriptEntry, "...allowing unloading of all stored chunks");
                     if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
                         for (String chunkStr : chunkDelays.keySet()) {
-                            ChunkTag loopChunk = ChunkTag.valueOf(chunkStr);
+                            ChunkTag loopChunk = ChunkTag.valueOf(chunkStr, scriptEntry.context);
                             loopChunk.getChunk().setForceLoaded(false);
                         }
                     }

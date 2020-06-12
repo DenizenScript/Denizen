@@ -85,7 +85,7 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
                 return true;
             }
             else if (lower.startsWith("fly_cooldown:")) {
-                DurationTag duration = DurationTag.valueOf(lower.substring("fly_cooldown:".length()));
+                DurationTag duration = DurationTag.valueOf(lower.substring("fly_cooldown:".length()), getTagContext(path));
                 if (duration != null) {
                     NMSHandler.getPlayerHelper().setFlyKickCooldown(player.getPlayerEntity(), (int) duration.getTicks());
                     cancelled = true;

@@ -71,6 +71,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         return mirrorCitizensNPC(CitizensAPI.getNPCRegistry().getNPC(entity));
     }
 
+    @Deprecated
     public static NPCTag valueOf(String string) {
         return valueOf(string, null);
     }
