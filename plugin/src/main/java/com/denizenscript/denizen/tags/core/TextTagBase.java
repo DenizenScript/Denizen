@@ -559,7 +559,7 @@ public class TextTagBase {
                 // -->
                 StringBuilder with = new StringBuilder();
                 if (attribute.startsWith("with", 2)) {
-                    ListTag withList = ListTag.valueOf(attribute.getContext(2), attribute.context);
+                    ListTag withList = attribute.contextAsType(2, ListTag.class);
                     attribute.fulfill(1);
                     for (String str : withList) {
                         with.append(";").append(FormattedTextHelper.escape(EscapeTagBase.unEscape(str)));
@@ -585,7 +585,7 @@ public class TextTagBase {
             @Override
             public void run(ReplaceableTagEvent event) {
                 Attribute attribute = event.getAttributes();
-                ListTag scoreList = ListTag.valueOf(attribute.getContext(1), attribute.context);
+                ListTag scoreList = attribute.contextAsType(1, ListTag.class);
                 if (scoreList.size() < 2) {
                     return;
                 }

@@ -1614,7 +1614,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                 set.add(Material.AIR);
 
                 if (attribute.startsWith("ignore", 3) && attribute.hasContext(3)) {
-                    List<MaterialTag> ignoreList = ListTag.valueOf(attribute.getContext(3), attribute.context).filter(MaterialTag.class, attribute.context);
+                    List<MaterialTag> ignoreList = attribute.contextAsType(3, ListTag.class).filter(MaterialTag.class, attribute.context);
                     for (MaterialTag material : ignoreList) {
                         set.add(material.getMaterial());
                     }

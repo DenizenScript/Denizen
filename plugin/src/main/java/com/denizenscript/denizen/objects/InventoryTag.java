@@ -1457,7 +1457,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             if (!attribute.hasContext(1)) {
                 return null;
             }
-            List<ItemTag> items = ListTag.valueOf(attribute.getContext(1), attribute.context).filter(ItemTag.class, attribute.context, !attribute.hasAlternative());
+            List<ItemTag> items = attribute.contextAsType(1, ListTag.class).filter(ItemTag.class, attribute.context, !attribute.hasAlternative());
             if (items == null || items.isEmpty()) {
                 return null;
             }
@@ -1900,7 +1900,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 if (!attribute.hasContext(2)) {
                     return null;
                 }
-                List<MaterialTag> materials = ListTag.valueOf(attribute.getContext(2), attribute.context).filter(MaterialTag.class, attribute.context);
+                List<MaterialTag> materials = attribute.contextAsType(2, ListTag.class).filter(MaterialTag.class, attribute.context);
                 int qty = 1;
 
                 // <--[tag]
@@ -1940,7 +1940,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             if (!attribute.hasContext(1)) {
                 return null;
             }
-            ListTag list = ListTag.valueOf(attribute.getContext(1), attribute.context);
+            ListTag list = attribute.contextAsType(1, ListTag.class);
             if (list.isEmpty()) {
                 return null;
             }
@@ -1981,7 +1981,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             if (!attribute.hasContext(1)) {
                 return null;
             }
-            ListTag list = ListTag.valueOf(attribute.getContext(1), attribute.context);
+            ListTag list = attribute.contextAsType(1, ListTag.class);
             if (list.isEmpty()) {
                 return null;
             }
@@ -2062,7 +2062,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             // Returns -1 if there's no match.
             // -->
             if (attribute.startsWith("scriptname", 2)) {
-                String scrname = ItemTag.valueOf(attribute.getContext(2), attribute.context).getScriptName();
+                String scrname = attribute.contextAsType(2, ItemTag.class).getScriptName();
                 if (scrname == null) {
                     return null;
                 }
@@ -2080,7 +2080,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             if (!attribute.hasContext(1) || !ItemTag.matches(attribute.getContext(1))) {
                 return null;
             }
-            ItemTag item = ItemTag.valueOf(attribute.getContext(1), attribute.context);
+            ItemTag item = attribute.contextAsType(1, ItemTag.class);
             item.setAmount(1);
             int slot = -1;
             for (int i = 0; i < object.inventory.getSize(); i++) {
@@ -2108,7 +2108,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             if (!attribute.hasContext(1) || !ItemTag.matches(attribute.getContext(1))) {
                 return null;
             }
-            ItemTag item = ItemTag.valueOf(attribute.getContext(1), attribute.context);
+            ItemTag item = attribute.contextAsType(1, ItemTag.class);
             item.setAmount(1);
             int slot = -1;
             for (int i = 0; i < object.inventory.getSize(); i++) {
@@ -2199,7 +2199,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             }
             if (attribute.hasContext(1) && ItemTag.matches(attribute.getContext(1))) {
                 return new ElementTag(object.count
-                        (ItemTag.valueOf(attribute.getContext(1), attribute.context).getItemStack(), false));
+                        (attribute.contextAsType(1, ItemTag.class).getItemStack(), false));
             }
             else {
                 return new ElementTag(object.count(null, false));
@@ -2214,8 +2214,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // -->
         registerTag("stacks", (attribute, object) -> {
             if (attribute.hasContext(1) && ItemTag.matches(attribute.getContext(1))) {
-                return new ElementTag(object.count
-                        (ItemTag.valueOf(attribute.getContext(1), attribute.context).getItemStack(), true));
+                return new ElementTag(object.count(attribute.contextAsType(1, ItemTag.class).getItemStack(), true));
             }
             else {
                 return new ElementTag(object.count(null, true));

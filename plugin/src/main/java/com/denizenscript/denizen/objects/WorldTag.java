@@ -226,7 +226,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // -->
         registerTag("entities", (attribute, object) -> {
             ListTag entities = new ListTag();
-            ListTag typeFilter = attribute.hasContext(1) ? ListTag.valueOf(attribute.getContext(1), attribute.context) : null;
+            ListTag typeFilter = attribute.hasContext(1) ? attribute.contextAsType(1, ListTag.class) : null;
             for (Entity entity : object.getEntitiesForTag()) {
                 EntityTag current = new EntityTag(entity);
                 if (typeFilter != null) {

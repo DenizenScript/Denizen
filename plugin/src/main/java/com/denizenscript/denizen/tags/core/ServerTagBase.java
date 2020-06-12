@@ -1566,7 +1566,7 @@ public class ServerTagBase {
         // -->
         if ((attribute.startsWith("list_npcs_assigned") || attribute.startsWith("get_npcs_assigned")) && Depends.citizens != null
                 && attribute.hasContext(1)) {
-            ScriptTag script = ScriptTag.valueOf(attribute.getContext(1), attribute.context);
+            ScriptTag script = attribute.contextAsType(1, ScriptTag.class);
             if (script == null || !(script.getContainer() instanceof AssignmentScriptContainer)) {
                 attribute.echoError("Invalid script specified.");
             }

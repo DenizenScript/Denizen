@@ -93,7 +93,7 @@ public class PlayerTagBase implements Listener {
 
         // Player tag may specify a new player in the <player[context]...> portion of the tag.
         if (attribute.hasContext(1)) {
-            p = PlayerTag.valueOf(attribute.getContext(1), attribute.context);
+            p = attribute.contextAsType(1, PlayerTag.class);
         }
         if (p == null || !p.isValid()) {
             if (!event.hasAlternative()) {

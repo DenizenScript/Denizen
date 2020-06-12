@@ -390,7 +390,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
             if (chunk == null) {
                 return null;
             }
-            ListTag typeFilter = attribute.hasContext(1) ? ListTag.valueOf(attribute.getContext(1), attribute.context) : null;
+            ListTag typeFilter = attribute.hasContext(1) ? attribute.contextAsType(1, ListTag.class) : null;
             try {
                 NMSHandler.getChunkHelper().changeChunkServerThread(object.getWorld());
                 for (Entity entity : chunk.getEntities()) {

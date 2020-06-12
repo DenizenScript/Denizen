@@ -298,7 +298,7 @@ public class ColorTag implements ObjectTag {
                 Debug.echoError("The tag ListTag.insert[...] must have a value.");
                 return null;
             }
-            ColorTag mixed_with = ColorTag.valueOf(attribute.getContext(1), attribute.context);
+            ColorTag mixed_with = attribute.contextAsType(1, ColorTag.class);
             if (mixed_with != null) {
                 return new ColorTag(object.color.mixColors(mixed_with.getColor()));
             }

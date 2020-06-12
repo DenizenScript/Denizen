@@ -767,7 +767,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             if (attribute.hasContext(1)) {
                 try {
                     outcome = DenizenAPI.getCurrentInstance().getSaves().getString("Players." + object.getName() + ".Scripts."
-                            + ScriptTag.valueOf(attribute.getContext(1), attribute.context).getName() + ".Current Step");
+                            + attribute.contextAsType(1, ScriptTag.class).getName() + ".Current Step");
                 }
                 catch (Exception e) {
                     outcome = "null";
@@ -1982,7 +1982,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             if (!attribute.hasContext(1)) {
                 return null;
             }
-            ChunkTag chunk = ChunkTag.valueOf(attribute.getContext(1), attribute.context);
+            ChunkTag chunk = attribute.contextAsType(1, ChunkTag.class);
             if (chunk == null) {
                 return null;
             }

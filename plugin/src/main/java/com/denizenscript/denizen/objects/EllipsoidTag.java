@@ -286,7 +286,7 @@ public class EllipsoidTag implements ObjectTag, Notable {
         // -->
         registerTag("blocks", (attribute, object) -> {
             if (attribute.hasContext(1)) {
-                return new ListTag(object.getBlocks(ListTag.valueOf(attribute.getContext(1), attribute.context).filter(MaterialTag.class, attribute.context), attribute));
+                return new ListTag(object.getBlocks(attribute.contextAsType(1, ListTag.class).filter(MaterialTag.class, attribute.context), attribute));
             }
             else {
                 return new ListTag(object.getBlocks(attribute));

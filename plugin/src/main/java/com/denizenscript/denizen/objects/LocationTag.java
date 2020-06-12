@@ -1209,7 +1209,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         registerTag("drops", (attribute, object) -> {
             ItemStack inputItem = null;
             if (attribute.hasContext(1)) {
-                inputItem = ItemTag.valueOf(attribute.getContext(1), attribute.context).getItemStack();
+                inputItem = attribute.contextAsType(1, ItemTag.class).getItemStack();
             }
             ListTag list = new ListTag();
             for (ItemStack it : object.getDropsForTag(attribute, inputItem)) {
@@ -1557,7 +1557,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (attribute.startsWith("type", 2) && attribute.hasContext(2)) {
                 attribute.fulfill(1);
                 Set<EntityType> types = new HashSet<>();
-                for (String str : ListTag.valueOf(attribute.getContext(1), attribute.context)) {
+                for (String str : attribute.contextAsType(1, ListTag.class)) {
                     types.add(EntityTag.valueOf(str, attribute.context).getBukkitEntityType());
                 }
                 result = object.getWorld().rayTraceEntities(object, object.getDirection(), range, (e) -> types.contains(e.getType()));
@@ -1783,7 +1783,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                     facingLoc = object.clone();
                 }
                 else if (EntityTag.matches(attribute.getContext(1))) {
-                    facingLoc = EntityTag.valueOf(attribute.getContext(1), attribute.context).getLocation();
+                    facingLoc = attribute.contextAsType(1, EntityTag.class).getLocation();
                 }
                 else {
                     if (!attribute.hasAlternative()) {
@@ -1989,7 +1989,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 ArrayList<LocationTag> found = new ArrayList<>();
                 List<MaterialTag> materials = new ArrayList<>();
                 if (attribute.hasContext(2)) {
-                    materials = ListTag.valueOf(attribute.getContext(2), attribute.context).filter(MaterialTag.class, attribute.context);
+                    materials = attribute.contextAsType(2, ListTag.class).filter(MaterialTag.class, attribute.context);
                 }
                 // Avoid NPE from invalid materials
                 if (materials == null) {
@@ -2058,7 +2058,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 ArrayList<LocationTag> found = new ArrayList<>();
                 List<MaterialTag> materials = new ArrayList<>();
                 if (attribute.hasContext(2)) {
-                    materials = ListTag.valueOf(attribute.getContext(2), attribute.context).filter(MaterialTag.class, attribute.context);
+                    materials = attribute.contextAsType(2, ListTag.class).filter(MaterialTag.class, attribute.context);
                 }
                 // Avoid NPE from invalid materials
                 if (materials == null) {
@@ -2174,7 +2174,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             // Result list is sorted by closeness (1 = closest, 2 = next closest, ... last = farthest).
             // -->
             else if (attribute.startsWith("entities", 2)) {
-                ListTag ent_list = attribute.hasContext(2) ? ListTag.valueOf(attribute.getContext(2), attribute.context) : null;
+                ListTag ent_list = attribute.hasContext(2) ? attribute.contextAsType(2, ListTag.class) : null;
                 ListTag found = new ListTag();
                 attribute.fulfill(2);
                 for (Entity entity : new WorldTag(object.getWorld()).getEntitiesForTag()) {

@@ -773,7 +773,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // -->
         registerTag("blocks", (attribute, cuboid) -> {
             if (attribute.hasContext(1)) {
-                return new ListTag(cuboid.getBlocks(ListTag.valueOf(attribute.getContext(1), attribute.context).filter(MaterialTag.class, attribute.context), attribute));
+                return new ListTag(cuboid.getBlocks(attribute.contextAsType(1, ListTag.class).filter(MaterialTag.class, attribute.context), attribute));
             }
             else {
                 return new ListTag(cuboid.getBlocks(attribute));
@@ -801,7 +801,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         // -->
         registerTag("spawnable_blocks", (attribute, cuboid) -> {
             if (attribute.hasContext(1)) {
-                return new ListTag(cuboid.getSpawnableBlocks(ListTag.valueOf(attribute.getContext(1), attribute.context).filter(MaterialTag.class, attribute.context), attribute));
+                return new ListTag(cuboid.getSpawnableBlocks(attribute.contextAsType(1, ListTag.class).filter(MaterialTag.class, attribute.context), attribute));
             }
             else {
                 return new ListTag(cuboid.getSpawnableBlocks(attribute));
@@ -1273,7 +1273,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 attribute.echoError("The tag CuboidTag.with_world[...] must have a value.");
                 return null;
             }
-            WorldTag world = WorldTag.valueOf(attribute.getContext(1), attribute.context);
+            WorldTag world = attribute.contextAsType(1, WorldTag.class);
             if (world == null) {
                 attribute.echoError("World '" + attribute.getContext(1) + "' does not exist.");
                 return null;
@@ -1394,7 +1394,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
             ArrayList<EntityTag> entities = new ArrayList<>();
             ListTag types = new ListTag();
             if (attribute.hasContext(1)) {
-                types = ListTag.valueOf(attribute.getContext(1), attribute.context);
+                types = attribute.contextAsType(1, ListTag.class);
             }
             for (Entity ent : new WorldTag(cuboid.getWorld()).getEntitiesForTag()) {
                 EntityTag current = new EntityTag(ent);

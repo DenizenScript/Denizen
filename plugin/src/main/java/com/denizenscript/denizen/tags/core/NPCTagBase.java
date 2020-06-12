@@ -66,7 +66,7 @@ public class NPCTagBase implements Listener {
         NPCTag npc = ((BukkitTagContext) event.getContext()).npc;
         if (attribute.hasContext(1)) {
             if (NPCTag.matches(attribute.getContext(1))) {
-                npc = NPCTag.valueOf(attribute.getContext(1), attribute.context);
+                npc = attribute.contextAsType(1, NPCTag.class);
             }
             else {
                 if (!event.hasAlternative()) {
