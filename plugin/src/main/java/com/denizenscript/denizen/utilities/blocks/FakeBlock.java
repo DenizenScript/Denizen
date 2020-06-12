@@ -136,6 +136,9 @@ public class FakeBlock {
         }
         if (material.hasModernData()) {
             material.getModernData().sendFakeChangeTo(player.getPlayerEntity(), location);
+            if (material.getMaterial().name().endsWith("_BANNER")) { // Banners are weird
+                location.getWorld().refreshChunk(chunkCoord.x, chunkCoord.z);
+            }
         }
         else {
             player.getPlayerEntity().sendBlockChange(location, material.getMaterial(), material.getMaterialData().getData());

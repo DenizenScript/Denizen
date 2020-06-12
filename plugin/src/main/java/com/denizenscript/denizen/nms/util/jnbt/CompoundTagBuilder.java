@@ -34,7 +34,7 @@ public class CompoundTagBuilder {
     /**
      * Create a new instance.
      */
-    CompoundTagBuilder() {
+    public CompoundTagBuilder() {
         this.entries = new HashMap<>();
     }
 

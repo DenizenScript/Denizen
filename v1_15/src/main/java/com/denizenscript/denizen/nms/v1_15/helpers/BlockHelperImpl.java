@@ -122,6 +122,9 @@ public class BlockHelperImpl implements BlockHelper {
         NMSHandler.getChunkHelper().changeChunkServerThread(block.getWorld());
         org.bukkit.block.BlockState state = block.getState();
         NMSHandler.getChunkHelper().restoreServerThread(block.getWorld());
+        if (!(state instanceof CraftBlockEntityState)) {
+            return null;
+        }
         TileEntity tileEntity = getTE((CraftBlockEntityState) state);
         if (tileEntity == null) {
             return null;
