@@ -2408,7 +2408,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // -->
         registerTag("fake_entities", (attribute, object) -> {
             ListTag list = new ListTag();
-            FakeEntity.FakeEntityMap map = FakeEntity.entityMap.get(object.getOfflinePlayer().getUniqueId());
+            FakeEntity.FakeEntityMap map = FakeEntity.playersToEntities.get(object.getOfflinePlayer().getUniqueId());
             if (map != null) {
                 for (Map.Entry<Integer, FakeEntity> entry : map.byId.entrySet()) {
                     list.addObject(entry.getValue().entity);

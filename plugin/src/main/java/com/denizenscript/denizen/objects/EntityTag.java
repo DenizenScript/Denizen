@@ -10,6 +10,7 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
+import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.flags.FlagManager;
@@ -198,6 +199,19 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             }
 
             return new EntityTag(randomType, "RANDOM");
+        }
+        if (string.startsWith("e@fake:")) {
+            try {
+                UUID entityID = UUID.fromString(string);
+                FakeEntity entity = FakeEntity.idsToEntities.get(entityID);
+                if (entity != null) {
+                    return entity.entity;
+                }
+                return null;
+            }
+            catch (Exception ex) {
+                // DO NOTHING
+            }
         }
         if (string.startsWith("n@") || string.startsWith("e@") || string.startsWith("p@")) {
             // NPC entity
@@ -444,6 +458,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
     private NPCTag npc = null;
     private UUID uuid = null;
     private String entityScript = null;
+    public boolean isFake = false;
 
     public DenizenEntityType getEntityType() {
         return entity_type;
@@ -1031,6 +1046,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
 
             else if (isSpawnedOrValidForTag()) {
                 return "e@" + entity.getUniqueId().toString();
+            }
+
+            else if (isFake) {
+                return "e@fake:" + entity.getUniqueId().toString();
             }
         }
 

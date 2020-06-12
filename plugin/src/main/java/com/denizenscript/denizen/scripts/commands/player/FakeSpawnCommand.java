@@ -9,6 +9,7 @@ import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.DurationTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -20,7 +21,7 @@ public class FakeSpawnCommand extends AbstractCommand {
 
     public FakeSpawnCommand() {
         setName("fakespawn");
-        setSyntax("fakespawn [<entity>] [<location>] (players:<player>|...) (d:<duration>{10s})");
+        setSyntax("fakespawn [<entity>] [cancel/<location>] (players:<player>|...) (d:<duration>{10s})");
         setRequiredArguments(2, 4);
         isProcedural = false;
     }
@@ -47,8 +48,11 @@ public class FakeSpawnCommand extends AbstractCommand {
     // If unspecified, will default to 10 seconds.
     // After the duration is up, the entity will be removed from the player(s).
     //
+    // To remove a fake entity, specify the fake entity object and 'cancel' instead of a location.
+    //
     // @Tags
     // <PlayerTag.fake_entities>
+    // <entry[saveName].faked_entities> returns the list of spawned faked entities (one per player).
     //
     // @Usage
     // Use to show a fake creeper in front of the attached player.
@@ -77,6 +81,10 @@ public class FakeSpawnCommand extends AbstractCommand {
                     && arg.matchesArgumentType(LocationTag.class)) {
                 scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
+            else if (!scriptEntry.hasObject("cancel")
+                    && arg.matches("cancel")) {
+                scriptEntry.addObject("cancel", new ElementTag(true));
+            }
             else {
                 arg.reportUnhandled();
             }
@@ -86,7 +94,7 @@ public class FakeSpawnCommand extends AbstractCommand {
             scriptEntry.defaultObject("players", Arrays.asList(Utilities.getEntryPlayer(scriptEntry)));
         }
 
-        if (!scriptEntry.hasObject("location")) {
+        if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("cancel")) {
             throw new InvalidArgumentsException("Must specify a valid location!");
         }
 
@@ -108,12 +116,29 @@ public class FakeSpawnCommand extends AbstractCommand {
         LocationTag location = scriptEntry.getObjectTag("location");
         List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
         DurationTag duration = scriptEntry.getObjectTag("duration");
+        ElementTag cancel = scriptEntry.getElement("cancel");
 
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), entity.debug() + location.debug() + duration.debug()
+            Debug.report(scriptEntry, getName(), entity.debug()
+                    + (cancel != null ? cancel.debug() :
+                    location.debug() + duration.debug())
                     + ArgumentHelper.debugList("players", players));
         }
 
-        FakeEntity.showFakeEntityTo(players, entity, location, duration);
+        if (cancel != null && cancel.asBoolean()) {
+            if (entity.isFake) {
+                FakeEntity fakeEnt = FakeEntity.idsToEntities.get(entity.getUUID());
+                if (fakeEnt != null) {
+                    fakeEnt.cancelEntity();
+                }
+                else {
+                    Debug.echoDebug(scriptEntry, "Entity '" + entity + "' cannot be cancelled: not listed in fake-entity map.");
+                }
+            }
+        }
+        else {
+            ListTag created = FakeEntity.showFakeEntityTo(players, entity, location, duration);
+            scriptEntry.addObject("faked_entities", created);
+        }
     }
 }
