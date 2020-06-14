@@ -70,7 +70,7 @@ public class ShowFakeCommand extends AbstractCommand {
     //
     // @Usage
     // Use to place fake lava that the player is standing in, for all the server to see
-    // - showfake lava <player.location> players:<server.list_online_players>
+    // - showfake lava <player.location> players:<server.online_players>
     // -->
 
     @Override

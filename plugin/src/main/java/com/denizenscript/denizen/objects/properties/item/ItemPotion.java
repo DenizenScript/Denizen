@@ -377,8 +377,8 @@ public class ItemPotion implements Property {
         // <ItemTag.potion_effect[<#>].has_particles>
         // <ItemTag.potion_effect[<#>].color>
         // <ItemTag.potion_effect[<#>].icon>
-        // <server.list_potion_types>
-        // <server.list_potion_effects>
+        // <server.potion_types>
+        // <server.potion_effect_types>
         // -->
         if (mechanism.matches("potion_effects")) {
             ListTag data = mechanism.valueAsType(ListTag.class);

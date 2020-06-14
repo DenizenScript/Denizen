@@ -53,11 +53,11 @@ public class MoneyCommand extends AbstractCommand {
     //
     // @Usage
     // Use to give all players on the server 100 money.
-    // - money give quantity:100 to:<server.list_players>
+    // - money give quantity:100 to:<server.players>
     //
     // @Usage
     // Use to set the money of all online players to 250.
-    // - money set quantity:250 players:<server.list_online_players>
+    // - money set quantity:250 players:<server.online_players>
     // -->
 
     enum Action {

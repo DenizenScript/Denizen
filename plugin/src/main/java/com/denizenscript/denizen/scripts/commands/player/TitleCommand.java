@@ -42,7 +42,7 @@ public class TitleCommand extends AbstractCommand {
     // The defaults for these are: 1 second, 3 seconds, and 1 second, respectively.
     //
     // Optionally use 'per_player' with a list of player targets, to have the tags in the text input be reparsed for each and every player.
-    // So, for example, "- title 'title:hello <player.name>' targets:<server.list_online_players>"
+    // So, for example, "- title 'title:hello <player.name>' targets:<server.online_players>"
     // would normally say "hello bob" to every player (every player sees the exact same name in the text, ie bob sees "hello bob", steve also sees "hello bob", etc)
     // but if you use "per_player", each player online would see their own name (so bob sees "hello bob", steve sees "hello steve", etc).
     //
@@ -51,7 +51,7 @@ public class TitleCommand extends AbstractCommand {
     //
     // @Usage
     // Use to alert players of impending server restart.
-    // - title "title:<red>Server Restarting" "subtitle:<red>In 1 minute!" stay:1m targets:<server.list_online_players>
+    // - title "title:<red>Server Restarting" "subtitle:<red>In 1 minute!" stay:1m targets:<server.online_players>
     //
     // @Usage
     // Use to inform the player about the area they have just entered.

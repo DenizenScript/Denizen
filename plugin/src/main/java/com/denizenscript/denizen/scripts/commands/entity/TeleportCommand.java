@@ -53,11 +53,11 @@ public class TeleportCommand extends AbstractCommand {
     //
     // @Usage
     // Use to teleport to a random online player
-    // - teleport <player> <server.list_online_players.random.location>
+    // - teleport <player> <server.online_players.random.location>
     //
     // @Usage
     // Use to teleport all players to your location
-    // - teleport <server.list_online_players> <player.location>
+    // - teleport <server.online_players> <player.location>
     // -->
 
     @Override

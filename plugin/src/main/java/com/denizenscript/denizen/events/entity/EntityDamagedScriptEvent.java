@@ -20,7 +20,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     // @group Useful Lists
     // @description
     // Possible damage causes: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EntityDamageEvent.DamageCause.html>
-    // These are used in <@link event entity damage>, <@link tag server.list_damage_causes>, <@link tag EntityTag.last_damage.cause>, ...
+    // These are used in <@link event entity damage>, <@link tag server.damage_causes>, <@link tag EntityTag.last_damage.cause>, ...
     // -->
 
     // <--[event]

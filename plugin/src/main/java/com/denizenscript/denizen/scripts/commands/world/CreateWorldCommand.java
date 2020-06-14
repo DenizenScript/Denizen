@@ -41,8 +41,8 @@ public class CreateWorldCommand extends AbstractCommand {
     // Optionally specify additional generator settings as JSON input.
     //
     // @Tags
-    // <server.list_world_types>
-    // <server.list_worlds>
+    // <server.world_types>
+    // <server.worlds>
     //
     // @Usage
     // Use to create a normal world with name 'survival'

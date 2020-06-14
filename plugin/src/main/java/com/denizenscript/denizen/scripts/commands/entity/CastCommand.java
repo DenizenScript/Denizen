@@ -55,7 +55,7 @@ public class CastCommand extends AbstractCommand {
     //
     // @Tags
     // <EntityTag.has_effect[<effect>]>
-    // <server.list_potion_effects>
+    // <server.potion_effect_types>
     //
     // @Usage
     // Use to cast a level 1 effect onto the player.

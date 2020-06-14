@@ -153,7 +153,7 @@ public class ItemPatterns implements Property {
         // For the list of possible patterns, see <@link url http://bit.ly/1MqRn7T>.
         // @tags
         // <ItemTag.patterns>
-        // <server.list_patterns>
+        // <server.pattern_types>
         // -->
         if (mechanism.matches("patterns")) {
             List<Pattern> patterns = new ArrayList<>();

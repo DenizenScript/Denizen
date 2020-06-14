@@ -105,7 +105,7 @@ public class CommandScriptContainer extends ScriptContainer {
     //   tab complete:
     //   - if !<player.is_op||<context.server>>:
     //     - stop
-    //   - determine <server.list_online_players.parse[name].include[pizza|potato|anchovy].filter[starts_with[<context.args.last>]]>
+    //   - determine <server.online_players.parse[name].include[pizza|potato|anchovy].filter[starts_with[<context.args.last>]]>
     //
     //   # The script that will run when the command is executed.
     //   # No, you do not need '- determine fulfilled' or anything of the sort, since the command is fully registered.

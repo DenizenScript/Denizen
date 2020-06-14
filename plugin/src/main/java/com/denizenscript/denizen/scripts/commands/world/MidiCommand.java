@@ -61,7 +61,7 @@ public class MidiCommand extends AbstractCommand implements Holdable {
     //
     // @Usage
     // Use to play a midi song file at a given location to the specified player(s), and wait for it to finish.
-    // - ~midi file:Denizen <server.list_online_players>
+    // - ~midi file:Denizen <server.online_players>
     // -->
 
     @Override

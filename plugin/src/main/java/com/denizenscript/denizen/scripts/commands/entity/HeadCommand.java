@@ -55,7 +55,7 @@ public class HeadCommand extends AbstractCommand {
     //
     // @Usage
     // Use to equip all online players with Notch's head.
-    // - head <server.list_online_players> skin:Notch
+    // - head <server.online_players> skin:Notch
     // -->
 
     @Override

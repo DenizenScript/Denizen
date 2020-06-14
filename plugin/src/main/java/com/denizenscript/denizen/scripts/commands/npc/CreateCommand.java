@@ -38,7 +38,7 @@ public class CreateCommand extends AbstractCommand {
     // use in a script.
     //
     // @Tags
-    // <server.list_npcs>
+    // <server.npcs>
     // <entry[saveName].created_npc> returns the NPC that was created.
     //
     // @Usage

@@ -75,7 +75,7 @@ public class MapScriptContainer extends ScriptContainer {
     //       world_coordinates: false
     // </code>
     //
-    // A list of cursor types is available through <@link tag server.list_map_cursor_types>.
+    // A list of cursor types is available through <@link tag server.map_cursor_types>.
     //
     // -->
 

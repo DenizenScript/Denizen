@@ -42,7 +42,7 @@ public class GroupCommand extends AbstractCommand {
     // <PlayerTag.in_group[<group>].global>
     // <PlayerTag.in_group[<group>].world>
     // <PlayerTag.groups>
-    // <server.list_permission_groups>
+    // <server.permission_groups>
     //
     // @Usage
     // Use to add a player to the Admin group.

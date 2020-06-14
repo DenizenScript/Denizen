@@ -43,7 +43,7 @@ public class SpawnCommand extends AbstractCommand {
     // @Tags
     // <EntityTag.is_spawned>
     // <server.entity_is_spawned[<entity>]>
-    // <server.list_entity_types>
+    // <server.entity_types>
     // <entry[saveName].spawned_entities> returns a list of entities that were spawned.
     // <entry[saveName].spawned_entity> returns the entity that was spawned (if you only spawned one).
     //

@@ -489,7 +489,7 @@ public class EntityAreaEffectCloud implements Property {
         // <EntityTag.base_potion.type>
         // <EntityTag.base_potion.is_upgraded>
         // <EntityTag.base_potion.is_extended>
-        // <server.list_potion_types>
+        // <server.potion_types>
         // -->
         if (mechanism.matches("base_potion")) {
             List<String> data = CoreUtilities.split(mechanism.getValue().asString().toUpperCase(), ',');

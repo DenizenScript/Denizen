@@ -76,7 +76,7 @@ public class InventoryScriptContainer extends ScriptContainer {
     //   # | Most inventory scripts should exclude this key, but it may be useful in some cases.
     //   procedural items:
     //     - define list <list[]>
-    //     - foreach <server.list_online_players>:
+    //     - foreach <server.online_players>:
     //       - define item player_head[skull_skin=<[value].name>]
     //       - define list <[list].include[<[item]>]>
     //     - determine <[list]>

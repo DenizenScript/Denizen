@@ -60,7 +60,7 @@ public class SignCommand extends AbstractCommand {
     //
     // @Usage
     // Use to force a sign to be a wall_sign if no sign is found.
-    // - sign type:wall_sign "Player<&co>|<player.name>|Online Players<&co>|<server.list_online_players.size>" <context.location>
+    // - sign type:wall_sign "Player<&co>|<player.name>|Online Players<&co>|<server.online_players.size>" <context.location>
     //
     // -->
 

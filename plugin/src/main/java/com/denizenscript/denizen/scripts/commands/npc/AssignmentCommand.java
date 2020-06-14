@@ -44,7 +44,7 @@ public class AssignmentCommand extends AbstractCommand {
     // @Tags
     // <NPCTag.script>
     // <NPCTag.has_script>
-    // <server.list_npcs_assigned[<assignment_script>]>
+    // <server.npcs_assigned[<assignment_script>]>
     //
     // @Usage
     // Use to assign an npc with an assignment script named 'Bob_the_Builder'.

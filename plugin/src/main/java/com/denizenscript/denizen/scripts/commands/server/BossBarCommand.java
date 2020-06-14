@@ -52,7 +52,7 @@ public class BossBarCommand extends AbstractCommand {
     //
     // @Usage
     // Shows a message to all online players.
-    // - bossbar MyMessageID players:<server.list_online_players> "title:HI GUYS" color:red
+    // - bossbar MyMessageID players:<server.online_players> "title:HI GUYS" color:red
     //
     // @Usage
     // Update the boss bar's color and progress.

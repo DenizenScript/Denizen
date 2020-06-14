@@ -53,7 +53,7 @@ public class BlockCrackCommand extends AbstractCommand {
     //
     // @Usage
     // Use to stop showing a crack in a block to all online players.
-    // - blockcrack <context.location> progress:0 players:<server.list_online_players>
+    // - blockcrack <context.location> progress:0 players:<server.online_players>
     //
     // @Usage
     // Use to show all 10 layers of block cracking at the same time.

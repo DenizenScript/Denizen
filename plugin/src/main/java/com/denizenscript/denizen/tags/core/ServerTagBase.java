@@ -596,7 +596,7 @@ public class ServerTagBase {
         // @description
         // Returns a list of all enchantments known to the server.
         // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html>.
-        // Generally, prefer <@link tag server.list_enchantment_keys>.
+        // Generally, prefer <@link tag server.enchantment_keys>.
         // -->
         if (attribute.startsWith("enchantment_types") || attribute.startsWith("list_enchantments")) {
             if (attribute.matches("list_enchantments")) {
@@ -697,7 +697,7 @@ public class ServerTagBase {
         // Returns a list of all particle effect types known to the server.
         // Generally used with <@link command playeffect>.
         // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html>.
-        // Refer also to <@link tag server.list_effects>.
+        // Refer also to <@link tag server.effect_types>.
         // -->
         if (attribute.startsWith("particle_types") || attribute.startsWith("list_particles")) {
             if (attribute.matches("list_particles")) {
@@ -718,7 +718,7 @@ public class ServerTagBase {
         // Returns a list of all 'effect' types known to the server.
         // Generally used with <@link command playeffect>.
         // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Effect.html>.
-        // Refer also to <@link tag server.list_particles>.
+        // Refer also to <@link tag server.particle_types>.
         // -->
         if (attribute.startsWith("effect_types") || attribute.startsWith("list_effects")) {
             if (attribute.matches("list_effects")) {
@@ -737,7 +737,7 @@ public class ServerTagBase {
         // @returns ListTag
         // @description
         // Returns a list of all banner patterns known to the server.
-        // Generally used with <@link tag ItemTag.patterns>.
+        // Generally used with <@link tag ItemTag.pattern_types>.
         // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/banner/PatternType.html>.
         // -->
         if (attribute.startsWith("pattern_types") || attribute.startsWith("list_patterns")) {
@@ -753,13 +753,13 @@ public class ServerTagBase {
         }
 
         // <--[tag]
-        // @attribute <server.list_potion_effect_types>
+        // @attribute <server.otion_effect_types>
         // @returns ListTag
         // @description
         // Returns a list of all potion effects known to the server.
         // Can be used with <@link command cast>.
         // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
-        // Refer also to <@link tag server.list_potion_types>.
+        // Refer also to <@link tag server.potion_types>.
         // -->
         if (attribute.startsWith("potion_effect_types") || attribute.startsWith("list_potion_effects")) {
             if (attribute.matches("list_potion_effects")) {
@@ -781,7 +781,7 @@ public class ServerTagBase {
         // @description
         // Returns a list of all potion types known to the server.
         // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html>.
-        // Refer also to <@link tag server.list_potion_effects>.
+        // Refer also to <@link tag server.potion_effects>.
         // -->
         if (attribute.startsWith("potion_types") || attribute.startsWith("list_potion_types")) {
             listDeprecateWarn(attribute);
@@ -968,7 +968,7 @@ public class ServerTagBase {
         // Returns the qualifier type of the given statistic.
         // Generally relevant to usage with <@link tag PlayerTag.statistic.qualifier>.
         // Returns UNTYPED, ITEM, ENTITY, or BLOCK.
-        // Refer also to <@link tag server.list_statistics>.
+        // Refer also to <@link tag server.statistic_types>.
         // -->
         if (attribute.startsWith("statistic_type") && attribute.hasContext(1)) {
             Statistic statistic;
@@ -987,7 +987,7 @@ public class ServerTagBase {
         // @returns ElementTag(Integer)
         // @description
         // Returns the max level (at an enchantment table) for the given enchantment.
-        // Refer also to <@link tag server.list_enchantments>.
+        // Refer also to <@link tag server.enchantment_types>.
         // -->
         if (attribute.startsWith("enchantment_max_level") && attribute.hasContext(1)) {
             Enchantment ench = Utilities.getEnchantmentByName(attribute.getContext(1));
@@ -1003,7 +1003,7 @@ public class ServerTagBase {
         // @returns ElementTag(Integer)
         // @description
         // Returns the starting level (at an enchantment table) for the given enchantment.
-        // Refer also to <@link tag server.list_enchantments>.
+        // Refer also to <@link tag server.enchantment_types>.
         // -->
         if (attribute.startsWith("enchantment_start_level") && attribute.hasContext(1)) {
             Enchantment ench = Utilities.getEnchantmentByName(attribute.getContext(1));
@@ -2220,7 +2220,7 @@ public class ServerTagBase {
         // @description
         // Resets the server's recipe list to the default vanilla recipe list + item script recipes.
         // @tags
-        // <server.list_recipe_ids[(<type>)]>
+        // <server.recipe_ids[(<type>)]>
         // -->
         if (mechanism.matches("reset_recipes")) {
             Bukkit.resetRecipes();
@@ -2234,7 +2234,7 @@ public class ServerTagBase {
         // @description
         // Removes a recipe or list of recipes from the server, in Namespace:Key format.
         // @tags
-        // <server.list_recipe_ids[(<type>)]>
+        // <server.recipe_ids[(<type>)]>
         // -->
         if (mechanism.matches("remove_recipes")) {
             ListTag list = mechanism.valueAsType(ListTag.class);

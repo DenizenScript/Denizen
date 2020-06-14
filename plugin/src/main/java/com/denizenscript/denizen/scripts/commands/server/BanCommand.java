@@ -51,8 +51,8 @@ public class BanCommand extends AbstractCommand {
     // <server.ban_info[<address>].reason>
     // <server.ban_info[<address>].created>
     // <server.ban_info[<address>].source>
-    // <server.list_banned_addresses>
-    // <server.list_banned_players>
+    // <server.banned_addresses>
+    // <server.banned_players>
     //
     // @Usage
     // Use to ban a player.
@@ -76,7 +76,7 @@ public class BanCommand extends AbstractCommand {
     //
     // @Usage
     // Use to temporarily ip ban all online players.
-    // - ban addresses:<server.list_online_players.parse[ip]> duration:5m
+    // - ban addresses:<server.online_players.parse[ip]> duration:5m
     //
     // @Usage
     // Use to unban a list of players.

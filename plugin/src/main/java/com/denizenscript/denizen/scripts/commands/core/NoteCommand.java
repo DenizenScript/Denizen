@@ -34,7 +34,7 @@ public class NoteCommand extends AbstractCommand {
     // Notable objects keep their properties when added.
     //
     // @Tags
-    // <server.list_notables[<type>]>
+    // <server.notables[<type>]>
     // <CuboidTag.notable_name>
     // <InventoryTag.notable_name>
     // <LocationTag.notable_name>

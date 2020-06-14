@@ -2237,7 +2237,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             // @returns LocationTag
             // @description
             // Returns the location of the nearest structure of the given type, within a maximum radius.
-            // To get a list of valid structure types, use <@link tag server.list_structure_types>.
+            // To get a list of valid structure types, use <@link tag server.structure_types>.
             // Note that structure type names are case sensitive, and likely to be all-lowercase in most cases.
             // -->
             else if (attribute.startsWith("structure", 2) && attribute.hasContext(2)) {
@@ -2260,7 +2260,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             // @returns LocationTag
             // @description
             // Returns the location of the nearest unexplored structure of the given type, within a maximum radius.
-            // To get a list of valid structure types, use <@link tag server.list_structure_types>.
+            // To get a list of valid structure types, use <@link tag server.structure_types>.
             // Note that structure type names are case sensitive, and likely to be all-lowercase in most cases.
             // -->
             else if (attribute.startsWith("unexplored_structure", 2) && attribute.hasContext(2)) {
@@ -3614,7 +3614,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // For the list of possible patterns, see <@link url http://bit.ly/1MqRn7T>.
         // @tags
         // <LocationTag.patterns>
-        // <server.list_patterns>
+        // <server.pattern_types>
         // -->
         if (mechanism.matches("patterns")) {
             List<org.bukkit.block.banner.Pattern> patterns = new ArrayList<>();
@@ -3658,7 +3658,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Generates a tree at this location if possible.
         // For a list of valid tree types, see <@link url http://bit.ly/2o7m1je>
         // @tags
-        // <server.list_tree_types>
+        // <server.tree_types>
         // -->
         if (mechanism.matches("generate_tree") && mechanism.requireEnum(false, TreeType.values())) {
             boolean generated = getWorld().generateTree(this, TreeType.valueOf(mechanism.getValue().asString().toUpperCase()));

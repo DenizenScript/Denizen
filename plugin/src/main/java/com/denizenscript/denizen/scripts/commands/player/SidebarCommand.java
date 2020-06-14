@@ -74,7 +74,7 @@ public class SidebarCommand extends AbstractCommand {
     //
     // @Usage
     // Use to show all online players a sidebar.
-    // - sidebar set "title:Hello World!" "values:This is|My Message!|Wee!" players:<server.list_online_players>
+    // - sidebar set "title:Hello World!" "values:This is|My Message!|Wee!" players:<server.online_players>
     //
     // @Usage
     // Use to show a few players their ping.
@@ -82,7 +82,7 @@ public class SidebarCommand extends AbstractCommand {
     //
     // @Usage
     // Use to set a sidebar with the score values indicating information to the user.
-    // - sidebar set scores:<server.list_online_players.size>|<server.max_players> "values:Players online|Players allowed"
+    // - sidebar set scores:<server.online_players.size>|<server.max_players> "values:Players online|Players allowed"
     //
     // @Usage
     // Use to change a specific line of a sidebar.
