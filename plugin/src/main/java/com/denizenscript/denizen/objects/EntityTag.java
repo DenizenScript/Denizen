@@ -1423,7 +1423,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // If the entity is a horse, returns the item equipped as the horses armor, or air if none.
         // -->
-        registerTag("horse_armor", (attribute, object) -> {
+        registerSpawnedOnlyTag("horse_armor", (attribute, object) -> {
             if (object.getBukkitEntityType() == EntityType.HORSE) {
                 return new ItemTag(((Horse) object.getLivingEntity()).getInventory().getArmor());
             }
@@ -2044,7 +2044,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the living entity's absorption health.
         // -->
-        registerTag("absorption_health", (attribute, object) -> {
+        registerSpawnedOnlyTag("absorption_health", (attribute, object) -> {
             return new ElementTag(NMSHandler.getEntityHelper().getAbsorption(object.getLivingEntity()));
         });
 
@@ -2114,7 +2114,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns the entity this entity is looking at, using precise ray trace logic.
         // Optionally, specify a maximum range to find the entity from (defaults to 200).
         // -->
-        registerTag("precise_target", (attribute, object) -> {
+        registerSpawnedOnlyTag("precise_target", (attribute, object) -> {
             int range = attribute.getIntContext(1);
             if (range < 1) {
                 range = 200;
@@ -2133,7 +2133,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns the location this entity is looking at, using precise ray trace (against entities) logic.
         // Optionally, specify a maximum range to find the target from (defaults to 200).
         // -->
-        registerTag("precise_target_position", (attribute, object) -> {
+        registerSpawnedOnlyTag("precise_target_position", (attribute, object) -> {
             int range = attribute.getIntContext(1);
             if (range < 1) {
                 range = 200;
@@ -2255,9 +2255,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @returns ElementTag(Boolean)
         // @group data
         // @description
-        // Returns whether the entity is a living-type entity (eg a cow or a player or anything else that lives, as specifically opposed to non-living entities like paintings, etc).
+        // Returns whether the entity type is a living-type entity (eg a cow or a player or anything else that lives, as specifically opposed to non-living entities like paintings, etc).
         // Not to be confused with the idea of being alive - see <@link tag EntityTag.is_spawned>.
-        // This tag is valid for entity type objects.
         // -->
         registerTag("is_living", (attribute, object) -> {
             if (object.entity == null && object.entity_type != null) {
@@ -2271,9 +2270,12 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @returns ElementTag(Boolean)
         // @group data
         // @description
-        // Returns whether the entity is a hostile monster.
+        // Returns whether the entity type is a hostile monster.
         // -->
-        registerSpawnedOnlyTag("is_monster", (attribute, object) -> {
+        registerTag("is_monster", (attribute, object) -> {
+            if (object.entity == null && object.entity_type != null) {
+                return new ElementTag(Monster.class.isAssignableFrom(object.entity_type.getBukkitEntityType().getEntityClass()));
+            }
             return new ElementTag(object.getBukkitEntity() instanceof Monster);
         });
 
@@ -2282,9 +2284,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @returns ElementTag(Boolean)
         // @group data
         // @description
-        // Returns whether the entity is a mob (Not a player or NPC).
+        // Returns whether the entity type is a mob (Not a player or NPC).
         // -->
-        registerSpawnedOnlyTag("is_mob", (attribute, object) -> {
+        registerTag("is_mob", (attribute, object) -> {
+            if (object.entity == null && object.entity_type != null) {
+                EntityType type = object.entity_type.getBukkitEntityType();
+                return new ElementTag(type != EntityType.PLAYER && LivingEntity.class.isAssignableFrom(type.getEntityClass()));
+            }
             return new ElementTag(!object.isPlayer() && !object.isNPC() && object.isLivingEntity());
         });
 
@@ -2316,9 +2322,12 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @returns ElementTag(Boolean)
         // @group data
         // @description
-        // Returns whether the entity is a projectile.
+        // Returns whether the entity type is a projectile.
         // -->
-        registerSpawnedOnlyTag("is_projectile", (attribute, object) -> {
+        registerTag("is_projectile", (attribute, object) -> {
+            if (object.entity == null && object.entity_type != null) {
+                return new ElementTag(Projectile.class.isAssignableFrom(object.entity_type.getBukkitEntityType().getEntityClass()));
+            }
             return new ElementTag(object.isProjectile());
         });
 
