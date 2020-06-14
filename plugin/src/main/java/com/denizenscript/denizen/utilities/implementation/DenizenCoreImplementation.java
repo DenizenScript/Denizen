@@ -10,6 +10,7 @@ import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizen.utilities.debugging.DebugSubmit;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizencore.DenizenImplementation;
@@ -27,6 +28,7 @@ import com.denizenscript.denizencore.utilities.debugging.StrongWarning;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.util.Arrays;
@@ -475,5 +477,44 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     @Override
     public boolean allowStrangeYAMLSaves() {
         return Settings.allowStrangeYAMLSaves();
+    }
+
+    @Override
+    public void startRecording() {
+        Debug.record = true;
+        Debug.Recording = new StringBuilder();
+    }
+
+    @Override
+    public void stopRecording() {
+        Debug.record = false;
+        Debug.Recording = new StringBuilder();
+    }
+
+    @Override
+    public void submitRecording(Consumer<String> processResult) {
+        if (!Debug.record) {
+            processResult.accept("disabled");
+            return;
+        }
+        Debug.record = false;
+        final DebugSubmit submit = new DebugSubmit();
+        submit.recording = Debug.Recording.toString();
+        Debug.Recording = new StringBuilder();
+        submit.start();
+        BukkitRunnable task = new BukkitRunnable() {
+            public void run() {
+                if (!submit.isAlive()) {
+                    this.cancel();
+                    if (submit.Result == null) {
+                        processResult.accept(null);
+                    }
+                    else {
+                        processResult.accept("https://one.denizenscript.com" + submit.Result);
+                    }
+                }
+            }
+        };
+        task.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, 5);
     }
 }

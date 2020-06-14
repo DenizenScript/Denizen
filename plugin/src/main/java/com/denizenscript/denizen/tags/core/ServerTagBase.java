@@ -888,8 +888,7 @@ public class ServerTagBase {
         // @attribute <server.list_notables[<type>]>
         // @returns ListTag
         // @description
-        // Lists all saved Notables currently on the server.
-        // Optionally, specify a type to search for.
+        // Lists all saved notable objects of a specific type currently on the server.
         // Valid types: locations, cuboids, ellipsoids, inventories
         // -->
         if (attribute.startsWith("list_notables")) {

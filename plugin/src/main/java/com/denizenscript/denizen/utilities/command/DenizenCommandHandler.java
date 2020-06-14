@@ -10,7 +10,6 @@ import com.denizenscript.denizen.utilities.command.manager.CommandContext;
 import com.denizenscript.denizen.utilities.command.manager.Paginator;
 import com.denizenscript.denizen.utilities.command.manager.exceptions.CommandException;
 import com.denizenscript.denizen.utilities.command.manager.messaging.Messaging;
-import com.denizenscript.denizen.utilities.debugging.DebugSubmit;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
@@ -19,7 +18,6 @@ import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.debugging.FutureWarning;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Set;
 
@@ -85,26 +83,15 @@ public class DenizenCommandHandler {
             Messaging.sendError(sender, "Use /denizen debug -r  to record debug information to be submitted");
             return;
         }
-        Debug.record = false;
         Messaging.send(sender, "Submitting...");
-        final DebugSubmit submit = new DebugSubmit();
-        submit.recording = Debug.Recording.toString();
-        Debug.Recording = new StringBuilder();
-        submit.start();
-        BukkitRunnable task = new BukkitRunnable() {
-            public void run() {
-                if (!submit.isAlive()) {
-                    if (submit.Result == null) {
-                        Messaging.sendError(sender, "Error while submitting.");
-                    }
-                    else {
-                        Messaging.send(sender, "Successfully submitted to https://one.denizenscript.com" + submit.Result);
-                    }
-                    this.cancel();
-                }
+        DenizenCore.getImplementation().submitRecording((s) -> {
+            if (s == null) {
+                Messaging.sendError(sender, "Error while submitting.");
             }
-        };
-        task.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, 10);
+            else {
+                Messaging.send(sender, "Successfully submitted to " + s);
+            }
+        });
     }
 
     // <--[language]
