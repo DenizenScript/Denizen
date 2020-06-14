@@ -218,7 +218,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         /////////////////
 
         // <--[tag]
-        // @attribute <WorldTag.entities[<entity>|...]>
+        // @attribute <WorldTag.entities[(<entity>|...)]>
         // @returns ListTag(EntityTag)
         // @description
         // Returns a list of entities in this world.

@@ -378,7 +378,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <ChunkTag.entities[<entity>|...]>
+        // @attribute <ChunkTag.entities[(<entity>|...)]>
         // @returns ListTag(EntityTag)
         // @description
         // Returns a list of entities in the chunk.

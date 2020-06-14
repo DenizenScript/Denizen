@@ -469,6 +469,7 @@ public class Denizen extends JavaPlugin {
                         @Override
                         public void run() {
                             Debug.outputThisTick = 0;
+                            Debug.errorDuplicatePrevention = false;
                             DenizenCore.tick(50); // Sadly, minecraft has no delta timing, so a tick is always 50ms.
                         }
                     }, 1, 1);

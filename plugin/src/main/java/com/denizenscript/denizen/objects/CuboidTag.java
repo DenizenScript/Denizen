@@ -1349,12 +1349,12 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <CuboidTag.list_players>
+        // @attribute <CuboidTag.players>
         // @returns ListTag(PlayerTag)
         // @description
         // Gets a list of all players currently within the CuboidTag.
         // -->
-        registerTag("list_players", (attribute, cuboid) -> {
+        registerTag("players", (attribute, cuboid) -> {
             ArrayList<PlayerTag> players = new ArrayList<>();
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (cuboid.isInsideCuboid(player.getLocation())) {
@@ -1362,16 +1362,16 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 }
             }
             return new ListTag(players);
-        });
+        }, "list_players");
 
         // <--[tag]
-        // @attribute <CuboidTag.list_npcs>
+        // @attribute <CuboidTag.npcs>
         // @returns ListTag(NPCTag)
         // @description
         // Gets a list of all NPCs currently within the CuboidTag.
         // -->
         if (Depends.citizens != null) {
-            registerTag("list_npcs", (attribute, cuboid) -> {
+            registerTag("_npcs", (attribute, cuboid) -> {
                 ArrayList<NPCTag> npcs = new ArrayList<>();
                 for (NPC npc : CitizensAPI.getNPCRegistry()) {
                     NPCTag dnpc = NPCTag.mirrorCitizensNPC(npc);
@@ -1380,17 +1380,17 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                     }
                 }
                 return new ListTag(npcs);
-            });
+            }, "list_npcs");
         }
 
         // <--[tag]
-        // @attribute <CuboidTag.list_entities[<entity>|...]>
+        // @attribute <CuboidTag.entities[(<entity>|...)]>
         // @returns ListTag(EntityTag)
         // @description
         // Gets a list of all entities currently within the CuboidTag, with
         // an optional search parameter for the entity type.
         // -->
-        registerTag("list_entities", (attribute, cuboid) -> {
+        registerTag("entities", (attribute, cuboid) -> {
             ArrayList<EntityTag> entities = new ArrayList<>();
             ListTag types = new ListTag();
             if (attribute.hasContext(1)) {
@@ -1413,16 +1413,16 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 }
             }
             return new ListTag(entities);
-        });
+        }, "list_entities");
 
         // <--[tag]
-        // @attribute <CuboidTag.list_living_entities>
+        // @attribute <CuboidTag.living_entities>
         // @returns ListTag(EntityTag)
         // @description
         // Gets a list of all living entities currently within the CuboidTag.
         // This includes Players, mobs, NPCs, etc., but excludes dropped items, experience orbs, etc.
         // -->
-        registerTag("list_living_entities", (attribute, cuboid) -> {
+        registerTag("living_entities", (attribute, cuboid) -> {
             ArrayList<EntityTag> entities = new ArrayList<>();
             for (Entity ent : cuboid.getWorld().getLivingEntities()) {
                 if (cuboid.isInsideCuboid(ent.getLocation()) && !EntityTag.isCitizensNPC(ent)) {
@@ -1430,15 +1430,15 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 }
             }
             return new ListTag(entities);
-        });
+        }, "list_living_entities");
 
         // <--[tag]
-        // @attribute <CuboidTag.list_chunks>
+        // @attribute <CuboidTag.chunks>
         // @returns ListTag(ChunkTag)
         // @description
         // Gets a list of all chunks entirely within the CuboidTag (ignoring the Y axis).
         // -->
-        registerTag("list_chunks", (attribute, cuboid) -> {
+        registerTag("chunks", (attribute, cuboid) -> {
             ListTag chunks = new ListTag();
             for (LocationPair pair : cuboid.pairs) {
                 int minY = pair.low.getBlockY();
@@ -1463,15 +1463,15 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 }
             }
             return chunks.deduplicate();
-        });
+        }, "list_chunks");
 
         // <--[tag]
-        // @attribute <CuboidTag.list_partial_chunks>
+        // @attribute <CuboidTag.partial_chunks>
         // @returns ListTag(ChunkTag)
         // @description
         // Gets a list of all chunks partially or entirely within the CuboidTag.
         // -->
-        registerTag("list_partial_chunks", (attribute, cuboid) -> {
+        registerTag("partial_chunks", (attribute, cuboid) -> {
             ListTag chunks = new ListTag();
             for (LocationPair pair : cuboid.pairs) {
                 ChunkTag minChunk = new ChunkTag(pair.low);
@@ -1483,7 +1483,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 }
             }
             return chunks;
-        });
+        }, "list_partial_chunks");
 
         // <--[tag]
         // @attribute <CuboidTag.notable_name>

@@ -1978,7 +1978,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             double radius = attribute.getDoubleContext(3);
 
             // <--[tag]
-            // @attribute <LocationTag.find.blocks[<block>|...].within[<#>]>
+            // @attribute <LocationTag.find.blocks[(<material>|...)].within[<#>]>
             // @returns ListTag
             // @description
             // Returns a list of matching blocks within a radius.
@@ -2048,7 +2048,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
 
             // <--[tag]
-            // @attribute <LocationTag.find.surface_blocks[<block>|...].within[<#.#>]>
+            // @attribute <LocationTag.find.surface_blocks[(<material>|...)].within[<#.#>]>
             // @returns ListTag
             // @description
             // Returns a list of matching surface blocks within a radius.
@@ -2167,7 +2167,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
 
             // <--[tag]
-            // @attribute <LocationTag.find.entities[<entity>|...].within[<#.#>]>
+            // @attribute <LocationTag.find.entities[(<entity>|...)].within[<#.#>]>
             // @returns ListTag
             // @description
             // Returns a list of entities within a radius, with an optional search parameter for the entity type.
