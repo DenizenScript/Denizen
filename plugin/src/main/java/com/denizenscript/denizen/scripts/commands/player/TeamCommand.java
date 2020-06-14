@@ -130,6 +130,7 @@ public class TeamCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("add") && !scriptEntry.hasObject("remove")
+                && !scriptEntry.hasObject("option") && !scriptEntry.hasObject("color")
                 && !scriptEntry.hasObject("prefix") && !scriptEntry.hasObject("suffix")) {
             throw new InvalidArgumentsException("Must specify something to do with the team!");
         }
