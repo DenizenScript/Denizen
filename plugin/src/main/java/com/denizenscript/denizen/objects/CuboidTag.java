@@ -1510,17 +1510,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         registerTag("full", (attribute, cuboid) -> {
             return new ElementTag(cuboid.identifyFull());
         });
-
-        // <--[tag]
-        // @attribute <CuboidTag.type>
-        // @returns ElementTag
-        // @description
-        // Always returns 'Cuboid' for CuboidTag objects. All objects fetchable by the Object Fetcher will return the
-        // type of object that is fulfilling this attribute.
-        // -->
-        registerTag("type", (attribute, cuboid) -> {
-            return new ElementTag("Cuboid");
-        });
     }
 
     public CuboidTag including(Location loc) {

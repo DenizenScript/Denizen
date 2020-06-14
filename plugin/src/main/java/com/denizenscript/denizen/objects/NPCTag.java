@@ -1151,17 +1151,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             Deprecations.oldNPCNavigator.warn(attribute.context);
             return object;
         });
-
-        // <--[tag]
-        // @attribute <NPCTag.type>
-        // @returns ElementTag
-        // @description
-        // Always returns 'NPC' for NPCTag objects. All objects fetchable by the Object Fetcher will return the
-        // type of object that is fulfilling this attribute.
-        // -->
-        registerTag("type", (attribute, object) -> {
-            return new ElementTag("NPC");
-        });
     }
 
     public static ObjectTagProcessor<NPCTag> tagProcessor = new ObjectTagProcessor<>();

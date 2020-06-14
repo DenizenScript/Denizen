@@ -180,17 +180,6 @@ public class PluginTag implements ObjectTag {
         registerTag("authors", (attribute, object) -> {
             return new ListTag(object.plugin.getDescription().getAuthors());
         });
-
-        // <--[tag]
-        // @attribute <PluginTag.type>
-        // @returns ElementTag
-        // @description
-        // Always returns 'Plugin' for PluginTag objects. All objects fetchable by the Object Fetcher will return the
-        // type of object that is fulfilling this attribute.
-        // -->
-        registerTag("type", (attribute, object) -> {
-            return new ElementTag("Plugin");
-        });
     }
 
     public static ObjectTagProcessor<PluginTag> tagProcessor = new ObjectTagProcessor<>();

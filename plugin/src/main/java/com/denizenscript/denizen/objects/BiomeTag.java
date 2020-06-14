@@ -252,17 +252,6 @@ public class BiomeTag implements ObjectTag, Adjustable {
             }
             return list;
         });
-
-        // <--[tag]
-        // @attribute <BiomeTag.type>
-        // @returns ElementTag
-        // @description
-        // Always returns 'Biome' for BiomeTag objects. All objects fetchable by the Object Fetcher will return the
-        // type of object that is fulfilling this attribute.
-        // -->
-        registerTag("type", (attribute, object) -> {
-            return new ElementTag("Biome");
-        });
     }
 
     public static ObjectTagProcessor<BiomeTag> tagProcessor = new ObjectTagProcessor<>();

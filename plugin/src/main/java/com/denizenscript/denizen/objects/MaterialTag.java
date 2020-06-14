@@ -980,17 +980,6 @@ public class MaterialTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <MaterialTag.type>
-        // @returns ElementTag
-        // @description
-        // Always returns 'Material' for MaterialTag objects. All objects fetchable by the Object Fetcher will return the
-        // type of object that is fulfilling this attribute.
-        // -->
-        registerTag("type", (attribute, object) -> {
-            return new ElementTag("Material");
-        });
-
-        // <--[tag]
         // @attribute <MaterialTag.with[<mechanism>=<value>;...]>
         // @returns MaterialTag
         // @group properties

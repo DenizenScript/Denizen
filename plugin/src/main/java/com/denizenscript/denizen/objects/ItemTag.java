@@ -962,17 +962,6 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
                         ;// ex: diamond -> a diamond
             }
         });
-
-        // <--[tag]
-        // @attribute <ItemTag.type>
-        // @returns ElementTag
-        // @description
-        // Always returns 'Item' for ItemTag objects. All objects fetchable by the Object Fetcher will return the
-        // type of object that is fulfilling this attribute.
-        // -->
-        registerTag("type", (attribute, object) -> {
-            return new ElementTag("Item");
-        });
     }
 
     public static ObjectTagProcessor<ItemTag> tagProcessor = new ObjectTagProcessor<>();

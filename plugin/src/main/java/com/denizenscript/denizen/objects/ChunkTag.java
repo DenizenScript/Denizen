@@ -577,17 +577,6 @@ public class ChunkTag implements ObjectTag, Adjustable {
             }
             return new DurationTag(chunk.getInhabitedTime());
         });
-
-        // <--[tag]
-        // @attribute <ChunkTag.type>
-        // @returns ElementTag
-        // @description
-        // Always returns 'Chunk' for ChunkTag objects. All objects fetchable by the Object Fetcher will return the
-        // type of object that is fulfilling this attribute.
-        // -->
-        registerTag("type", (attribute, object) -> {
-            return new ElementTag("Chunk");
-        });
     }
 
     public static ObjectTagProcessor<ChunkTag> tagProcessor = new ObjectTagProcessor<>();

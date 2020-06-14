@@ -691,17 +691,6 @@ public class WorldTag implements ObjectTag, Adjustable {
             return new ElementTag(object.getWorld().getEnvironment().name());
         });
 
-        // <--[tag]
-        // @attribute <WorldTag.type>
-        // @returns ElementTag
-        // @description
-        // Always returns 'World' for WorldTag objects. All objects fetchable by the Object Fetcher will return the
-        // type of object that is fulfilling this attribute.
-        // -->
-        registerTag("type", (attribute, object) -> {
-            return new ElementTag("World");
-        });
-
         /////////////////////
         //   WORLD BORDER ATTRIBUTES
         /////////////////

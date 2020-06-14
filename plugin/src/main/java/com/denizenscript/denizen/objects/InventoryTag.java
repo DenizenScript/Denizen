@@ -2437,18 +2437,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         registerTag("input", (attribute, object) -> {
             return object.getInput();
         });
-        registerTag("smelting", tagProcessor.registeredObjectTags.get("input"));
-
-        // <--[tag]
-        // @attribute <InventoryTag.type>
-        // @returns ElementTag
-        // @description
-        // Always returns 'Inventory' for InventoryTag objects. All objects fetchable by the Object Fetcher will return the
-        // type of object that is fulfilling this attribute.
-        // -->
-        registerTag("type", (attribute, object) -> {
-            return new ElementTag("Inventory");
-        });
+        tagProcessor.registerFutureTagDeprecation("smelting", "input");
     }
 
     public static ObjectTagProcessor<InventoryTag> tagProcessor = new ObjectTagProcessor<>();

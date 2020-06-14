@@ -965,17 +965,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <PlayerTag.type>
-        // @returns ElementTag
-        // @description
-        // Always returns 'Player' for PlayerTag objects. All objects fetchable by the Object Fetcher will return the
-        // type of object that is fulfilling this attribute.
-        // -->
-        registerTag("type", (attribute, object) -> {
-            return new ElementTag("Player");
-        });
-
-        // <--[tag]
         // @attribute <PlayerTag.save_name>
         // @returns ElementTag
         // @description

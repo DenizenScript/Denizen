@@ -1171,17 +1171,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
 
     public static void registerTags() {
 
-        // <--[tag]
-        // @attribute <EntityTag.type>
-        // @returns ElementTag
-        // @description
-        // Always returns 'Entity' for EntityTag objects. All objects fetchable by the Object Fetcher will return the
-        // type of object that is fulfilling this attribute.
-        // -->
-        registerTag("type", (attribute, object) -> {
-            return new ElementTag("Entity");
-        });
-
         /////////////////////
         //   UNSPAWNED ATTRIBUTES
         /////////////////

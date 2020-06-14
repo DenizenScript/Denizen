@@ -312,17 +312,6 @@ public class EllipsoidTag implements ObjectTag, Notable {
         registerTag("size", (attribute, object) -> {
             return object.size;
         });
-
-        // <--[tag]
-        // @attribute <EllipsoidTag.type>
-        // @returns ElementTag
-        // @description
-        // Always returns 'Ellipsoid' for EllipsoidTag objects. All objects fetchable by the Object Fetcher will return the
-        // type of object that is fulfilling this attribute.
-        // -->
-        registerTag("type", (attribute, object) -> {
-            return new ElementTag("Ellipsoid");
-        });
     }
 
     public static ObjectTagProcessor<EllipsoidTag> tagProcessor = new ObjectTagProcessor<>();

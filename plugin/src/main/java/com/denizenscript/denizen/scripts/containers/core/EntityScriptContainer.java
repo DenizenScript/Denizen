@@ -29,7 +29,7 @@ public class EntityScriptContainer extends ScriptContainer {
     // The following is the format for the container.
     // Except for the 'entity_type' key (and the required 'type' key), all other keys are optional.
     //
-    // You can also include a 'custom' key to hold any custom yaml data attached to the script.
+    // You can also include a 'custom' key to hold any custom data attached to the script.
     //
     // <code>
     // # The name of the entity script is the same name that you can use to construct a new

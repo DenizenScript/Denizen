@@ -321,17 +321,6 @@ public class ColorTag implements ObjectTag {
             }
             return new LocationTag(null, valid.getRed() / 255F, valid.getGreen() / 255F, valid.getBlue() / 255F);
         });
-
-        // <--[tag]
-        // @attribute <ColorTag.type>
-        // @returns ElementTag
-        // @description
-        // Always returns 'Color' for ColorTag objects. All objects fetchable by the Object Fetcher will return the
-        // type of object that is fulfilling this attribute.
-        // -->
-        registerTag("type", (attribute, object) -> {
-            return new ElementTag("Color");
-        });
     }
 
     public static ObjectTagProcessor<ColorTag> tagProcessor = new ObjectTagProcessor<>();

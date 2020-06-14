@@ -3187,17 +3187,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         registerTag("local_difficulty", (attribute, object) -> {
             return new ElementTag(NMSHandler.getWorldHelper().getLocalDifficulty(object));
         });
-
-        // <--[tag]
-        // @attribute <LocationTag.type>
-        // @returns ElementTag
-        // @description
-        // Always returns 'Location' for LocationTag objects. All objects fetchable by the Object Fetcher will return the
-        // type of object that is fulfilling this attribute.
-        // -->
-        registerTag("type", (attribute, object) -> {
-            return new ElementTag("Location");
-        });
     }
 
     public static ObjectTagProcessor<LocationTag> tagProcessor = new ObjectTagProcessor<>();
