@@ -385,8 +385,8 @@ public class ItemPotion implements Property {
             String[] d1 = data.get(0).split(",");
             PotionMeta meta = (PotionMeta) item.getItemStack().getItemMeta();
             meta.setBasePotionData(new PotionData(PotionType.valueOf(d1[0].toUpperCase()),
-                    CoreUtilities.toLowerCase(d1[2]).equals("true"),
-                    CoreUtilities.toLowerCase(d1[1]).equals("true")));
+                    CoreUtilities.equalsIgnoreCase(d1[2], "true"),
+                    CoreUtilities.equalsIgnoreCase(d1[1], "true")));
             if (d1.length > 3) {
                 meta.setColor(ColorTag.valueOf(d1[3].replace("&comma", ","), mechanism.context).getColor());
             }

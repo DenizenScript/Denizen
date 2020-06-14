@@ -238,7 +238,7 @@ public class CommandContext {
     }
 
     public boolean matches(String command) {
-        return args[0].equalsIgnoreCase(command);
+        return CoreUtilities.equalsIgnoreCase(args[0], command);
     }
 
     public static Location parseLocation(Location currentLocation, String flag) throws CommandException {

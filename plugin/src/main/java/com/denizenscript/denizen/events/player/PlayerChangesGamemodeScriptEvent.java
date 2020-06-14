@@ -53,7 +53,7 @@ public class PlayerChangesGamemodeScriptEvent extends BukkitScriptEvent implemen
     public boolean matches(ScriptPath path) {
         String mode = path.eventArgLowerAt(4);
         if (mode.length() > 0) {
-            if (!CoreUtilities.toLowerCase(gamemode.asString()).equals(mode)) {
+            if (!CoreUtilities.equalsIgnoreCase(gamemode.asString(), mode)) {
                 return false;
             }
         }

@@ -36,12 +36,12 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
 
         String in = CoreUtilities.getXthArg(index + 1, lower);
-        if (InventoryTag.matches(in) || in.equalsIgnoreCase("inventory") || isRegexMatchable(in)) {
+        if (InventoryTag.matches(in) || CoreUtilities.equalsIgnoreCase(in, "inventory") || isRegexMatchable(in)) {
             return false;
         }
-        if (in.equalsIgnoreCase("notable")) {
+        if (CoreUtilities.equalsIgnoreCase(in, "notable")) {
             String next = CoreUtilities.getXthArg(index + 2, lower);
-            if (!next.equalsIgnoreCase("cuboid") && !next.equalsIgnoreCase("ellipsoid")) {
+            if (!CoreUtilities.equalsIgnoreCase(next, "cuboid") && !CoreUtilities.equalsIgnoreCase(next, "ellipsoid")) {
                 return false;
             }
         }
@@ -50,7 +50,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
 
     public boolean couldMatchEnum(String text, final Enum<?>[] enumVals) {
         for (Enum<?> val : enumVals) {
-            if (val.name().equalsIgnoreCase(text)) {
+            if (CoreUtilities.equalsIgnoreCase(val.name(), text)) {
                 return true;
             }
         }
@@ -401,7 +401,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return EllipsoidTag.getNotableEllipsoidsContaining(location).size() > 0;
         }
         else if (WorldTag.matches(it)) {
-            return CoreUtilities.toLowerCase(location.getWorld().getName()).equals(lower);
+            return CoreUtilities.equalsIgnoreCase(location.getWorld().getName(), lower);
         }
         else if (CuboidTag.matches(it)) {
             CuboidTag cuboid = CuboidTag.valueOf(it, getTagContext(path));
@@ -428,7 +428,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     public boolean runWithCheck(ScriptPath path, ItemTag held) {
         String with = path.switches.get("with");
         if (with != null) {
-            if (with.equalsIgnoreCase("item")) {
+            if (CoreUtilities.equalsIgnoreCase(with, "item")) {
                 return true;
             }
             if (held == null || !tryItem(held, with)) {

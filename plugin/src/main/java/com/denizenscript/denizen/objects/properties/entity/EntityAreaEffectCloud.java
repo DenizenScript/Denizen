@@ -499,8 +499,8 @@ public class EntityAreaEffectCloud implements Property {
             else {
                 try {
                     PotionType type = PotionType.valueOf(data.get(0));
-                    boolean extended = type.isExtendable() && CoreUtilities.toLowerCase(data.get(1)).equals("true");
-                    boolean upgraded = type.isUpgradeable() && CoreUtilities.toLowerCase(data.get(2)).equals("true");
+                    boolean extended = type.isExtendable() && CoreUtilities.equalsIgnoreCase(data.get(1), "true");
+                    boolean upgraded = type.isUpgradeable() && CoreUtilities.equalsIgnoreCase(data.get(2), "true");
                     if (extended && upgraded) {
                         Debug.echoError("Potion cannot be both upgraded and extended");
                     }

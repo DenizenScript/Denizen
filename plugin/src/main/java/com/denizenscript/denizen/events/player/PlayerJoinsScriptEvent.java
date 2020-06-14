@@ -57,7 +57,7 @@ public class PlayerJoinsScriptEvent extends BukkitScriptEvent implements Listene
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag) {
             String determination = determinationObj.toString();
-            if (CoreUtilities.toLowerCase(determination).equals("none")) {
+            if (CoreUtilities.equalsIgnoreCase(determination, "none")) {
                 event.setJoinMessage(null);
                 return true;
             }

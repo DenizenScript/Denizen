@@ -96,7 +96,7 @@ public class Utilities {
                     !f.getCanonicalPath().startsWith(new File(".").getCanonicalPath())) {
                 return false;
             }
-            if (!CoreUtilities.toLowerCase(Settings.fileLimitPath()).equals("none")
+            if (!CoreUtilities.equalsIgnoreCase(Settings.fileLimitPath(), "none")
                     && !f.getCanonicalPath().startsWith(new File("./" + Settings.fileLimitPath()).getCanonicalPath())) {
                 return false;
             }
@@ -357,7 +357,7 @@ public class Utilities {
             java.util.Enumeration myEnum = jar.entries();
             while (myEnum.hasMoreElements()) {
                 java.util.jar.JarEntry file = (java.util.jar.JarEntry) myEnum.nextElement();
-                if (file.getName().equalsIgnoreCase(fileName)) {
+                if (CoreUtilities.equalsIgnoreCase(file.getName(), fileName)) {
                     java.io.File f = new java.io.File(destDir + "/" + file.getName());
                     if (file.isDirectory()) {
                         continue;

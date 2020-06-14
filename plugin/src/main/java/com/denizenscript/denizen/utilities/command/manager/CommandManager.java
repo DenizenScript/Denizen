@@ -85,7 +85,7 @@ public class CommandManager {
     private void executeMethod(String[] args, CommandSender sender, Object[] methodArgs) throws CommandException {
         String cmdName = CoreUtilities.toLowerCase(args[0]);
         String modifier = args.length > 1 ? args[1] : "";
-        boolean help = CoreUtilities.toLowerCase(modifier).equals("help");
+        boolean help = CoreUtilities.equalsIgnoreCase(modifier, "help");
 
         Method method = commands.get(cmdName + " " + CoreUtilities.toLowerCase(modifier));
         if (method == null && !help) {

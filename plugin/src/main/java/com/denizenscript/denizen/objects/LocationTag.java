@@ -701,7 +701,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if ((other.getWorldName() == null && getWorldName() != null)
                 || (getWorldName() == null && other.getWorldName() != null)
                 || (getWorldName() != null && other.getWorldName() != null
-                && !getWorldName().equalsIgnoreCase(other.getWorldName()))) {
+                && !CoreUtilities.equalsIgnoreCase(getWorldName(), other.getWorldName()))) {
             return false;
         }
         return Math.floor(getX()) == Math.floor(other.getX())

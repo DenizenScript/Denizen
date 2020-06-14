@@ -165,7 +165,7 @@ public class ExecuteCommand extends AbstractCommand {
                 break;
 
             case AS_OP:
-                if (CoreUtilities.toLowerCase(command).equals("stop")) {
+                if (CoreUtilities.equalsIgnoreCase(command, "stop")) {
                     Debug.echoError("Please use as_server to execute 'stop'.");
                     return;
                 }

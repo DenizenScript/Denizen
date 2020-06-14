@@ -68,7 +68,7 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
-        if (!CoreUtilities.toLowerCase(determination).equals("none")) {
+        if (!CoreUtilities.equalsIgnoreCase(determination, "none")) {
             LocationTag loc = LocationTag.valueOf(determination, getTagContext(path));
             if (loc != null) {
                 event.setRespawnLocation(loc);

@@ -1253,8 +1253,9 @@ public class ServerTagBase {
         if ((attribute.startsWith("npcs_named") || attribute.startsWith("list_npcs_named")) && Depends.citizens != null && attribute.hasContext(1)) {
             listDeprecateWarn(attribute);
             ListTag npcs = new ListTag();
+            String name = attribute.getContext(1);
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                if (npc.getName().equalsIgnoreCase(attribute.getContext(1))) {
+                if (CoreUtilities.equalsIgnoreCase(npc.getName(), name)) {
                     npcs.addObject(NPCTag.mirrorCitizensNPC(npc));
                 }
             }
@@ -1566,7 +1567,7 @@ public class ServerTagBase {
             Player matchPlayer = null;
             String matchInput = CoreUtilities.toLowerCase(attribute.getContext(1));
             for (Player player : Bukkit.getOnlinePlayers()) {
-                if (CoreUtilities.toLowerCase(player.getName()).equals(matchInput)) {
+                if (CoreUtilities.equalsIgnoreCase(player.getName(), matchInput)) {
                     matchPlayer = player;
                     break;
                 }
@@ -1594,7 +1595,7 @@ public class ServerTagBase {
             UUID matchPlayer = null;
             String matchInput = CoreUtilities.toLowerCase(attribute.getContext(1));
             for (Map.Entry<String, UUID> entry : PlayerTag.getAllPlayers().entrySet()) {
-                if (CoreUtilities.toLowerCase(entry.getKey()).equals(matchInput)) {
+                if (CoreUtilities.equalsIgnoreCase(entry.getKey(), matchInput)) {
                     matchPlayer = entry.getValue();
                     break;
                 }
@@ -1627,7 +1628,7 @@ public class ServerTagBase {
                 ListTag npcs = new ListTag();
                 for (NPC npc : CitizensAPI.getNPCRegistry()) {
                     if (npc.hasTrait(AssignmentTrait.class) && npc.getTrait(AssignmentTrait.class).hasAssignment()
-                            && npc.getTrait(AssignmentTrait.class).getAssignment().getName().equalsIgnoreCase(script.getName())) {
+                            && CoreUtilities.equalsIgnoreCase(npc.getTrait(AssignmentTrait.class).getAssignment().getName(), script.getName())) {
                         npcs.addObject(NPCTag.mirrorCitizensNPC(npc));
                     }
                 }

@@ -883,7 +883,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                             if (obj instanceof EntityTag) {
                                 filterEntity = (EntityTag) obj;
                             }
-                            else if (CoreUtilities.toLowerCase(obj.toString()).equals("npc")) {
+                            else if (CoreUtilities.equalsIgnoreCase(obj.toString(), "npc")) {
                                 valid = EntityTag.isCitizensNPC(entity);
                             }
                             else {
