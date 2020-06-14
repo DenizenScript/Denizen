@@ -53,7 +53,7 @@ public class PlaySoundCommand extends AbstractCommand {
     // A volume above 1.0 however will not be louder - instead it will be audible from farther (approximately 1 extra chunk of distance per value, eg 2.0 is 2 more chunks, 5.0 is 5 more chunks, etc.).
     //
     // @Tags
-    // <server.sounds>
+    // <server.sound_types>
     //
     // @Usage
     // Use to play a sound for a player

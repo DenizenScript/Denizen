@@ -63,7 +63,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
     // <EntityTag.list_flags[(regex:)<search>]>
     // <server.flag[<flag>]>
     // <server.has_flag[<flag_name>]>
-    // <server.flags[(regex:)<search>]>
+    // <server.list_flags[(regex:)<search>]>
     // <server.online_players_flagged[<flag_name>]>
     // <server.players_flagged[<flag_name>]>
     // <server.spawned_npcs_flagged[<flag_name>]>

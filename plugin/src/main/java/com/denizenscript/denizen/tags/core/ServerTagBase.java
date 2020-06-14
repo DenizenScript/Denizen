@@ -737,7 +737,7 @@ public class ServerTagBase {
         // @returns ListTag
         // @description
         // Returns a list of all banner patterns known to the server.
-        // Generally used with <@link tag ItemTag.pattern_types>.
+        // Generally used with <@link tag ItemTag.patterns>.
         // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/banner/PatternType.html>.
         // -->
         if (attribute.startsWith("pattern_types") || attribute.startsWith("list_patterns")) {
@@ -753,7 +753,7 @@ public class ServerTagBase {
         }
 
         // <--[tag]
-        // @attribute <server.otion_effect_types>
+        // @attribute <server.potion_effect_types>
         // @returns ListTag
         // @description
         // Returns a list of all potion effects known to the server.
@@ -781,7 +781,7 @@ public class ServerTagBase {
         // @description
         // Returns a list of all potion types known to the server.
         // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html>.
-        // Refer also to <@link tag server.potion_effects>.
+        // Refer also to <@link tag server.potion_effect_types>.
         // -->
         if (attribute.startsWith("potion_types") || attribute.startsWith("list_potion_types")) {
             listDeprecateWarn(attribute);
