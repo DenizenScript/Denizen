@@ -42,6 +42,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityBoatType.class, EntityTag.class);
         PropertyParser.registerProperty(EntityArmorPose.class, EntityTag.class);
         PropertyParser.registerProperty(EntityArms.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)) {
+            PropertyParser.registerProperty(EntityAware.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityBasePlate.class, EntityTag.class);
         PropertyParser.registerProperty(EntityBeamTarget.class, EntityTag.class);
         PropertyParser.registerProperty(EntityBodyArrows.class, EntityTag.class);
