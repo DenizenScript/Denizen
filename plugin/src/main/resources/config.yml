@@ -34,6 +34,8 @@ Debug:
   Prefix: ""
   # Whether to show full information about scripts being loaded (at startup and "/ex reload" usage).
   Show loading info: false
+  # Whether to show deprecation warnings that are scheduled as future warnings.
+  Show future warnings: false
 
 Scripts:
   World:

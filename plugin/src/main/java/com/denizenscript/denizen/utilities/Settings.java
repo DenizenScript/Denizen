@@ -4,6 +4,7 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.FutureWarning;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.nio.charset.Charset;
@@ -40,6 +41,7 @@ public class Settings {
         cache_defaultDebugMode = config.getBoolean("Debug.Container default", true);
         cache_debugLimitPerTick = config.getInt("Debug.Limit per tick", 5000);
         cache_debugPrefix = config.getString("Debug.Prefix", "");
+        FutureWarning.futureWarningsEnabled = config.getBoolean("Debug.Show future warnings", false);
         cache_scriptQueueSpeed = config.getString("Scripts.Queue speed", "instant");
         cache_interactQueueSpeed = config.getString("Scripts.Interact.Queue speed", "0.5s");
         cache_healthTraitEnabledByDefault = config.getBoolean("Traits.Health.Enabled", false);
