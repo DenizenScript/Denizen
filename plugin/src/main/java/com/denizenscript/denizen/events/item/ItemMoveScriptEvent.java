@@ -118,6 +118,7 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
 
     @EventHandler
     public void onInventoryMoveItemEvent(InventoryMoveItemEvent event) {
+        this.event = event;
         origin = InventoryTag.mirrorBukkitInventory(event.getSource());
         destination = InventoryTag.mirrorBukkitInventory(event.getDestination());
         item = new ItemTag(event.getItem());
