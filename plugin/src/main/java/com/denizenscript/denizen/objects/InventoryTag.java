@@ -138,8 +138,8 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             }
             if (!idTrackedInventories.containsKey(tagForm.uniquifier)) {
                 idTrackedInventories.put(tagForm.uniquifier, tagForm);
+                temporaryInventoryLinks.put(inventory, tagForm);
             }
-            temporaryInventoryLinks.put(inventory, tagForm);
         }
 
         public static void setup() {
@@ -148,11 +148,12 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 public void run() {
                     if (idTrackedInventories.size() > 300) {
                         idTrackedInventories.clear();
-                        for (InventoryTag retained : retainedInventoryLinks.values()) {
-                            idTrackedInventories.put(retained.uniquifier, retained);
-                        }
                         for (InventoryTag temp : temporaryInventoryLinks.values()) {
                             idTrackedInventories.put(temp.uniquifier, temp);
+                        }
+                        for (InventoryTag retained : retainedInventoryLinks.values()) {
+                            idTrackedInventories.put(retained.uniquifier, retained);
+                            temporaryInventoryLinks.put(retained.inventory, retained);
                         }
                     }
                     InventoryTrackerSystem.temporaryInventoryLinks.clear();
