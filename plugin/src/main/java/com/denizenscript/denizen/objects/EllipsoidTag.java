@@ -170,8 +170,6 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable {
     public ListTag getShell() {
         ListTag output = new ListTag();
         double yScale = size.getY();
-        double diameterX = size.getX() * 2;
-        double diameterZ = size.getZ() * 2;
         int maxY = (int) Math.floor(yScale);
         output.addObject(new LocationTag(loc.getBlockX(), loc.getBlockY() - maxY, loc.getBlockZ(), loc.getWorldName()));
         if (maxY != 0) {
@@ -182,10 +180,10 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable {
             double yProgMax = Math.abs(y) / yScale;
             double minSubWidth = Math.sqrt(1.0 - yProgMin * yProgMin);
             double maxSubWidth = Math.sqrt(1.0 - yProgMax * yProgMax);
-            double minX = diameterX * minSubWidth - 1;
-            double minZ = diameterZ * minSubWidth - 1;
-            double maxX = diameterX * maxSubWidth;
-            double maxZ = diameterZ * maxSubWidth;
+            double minX = size.getX() * minSubWidth - 1;
+            double minZ = size.getZ() * minSubWidth - 1;
+            double maxX = size.getX() * maxSubWidth;
+            double maxZ = size.getZ() * maxSubWidth;
             for (int x = 0; x < maxX; x++) {
                 for (int z = 0; z < maxZ; z++) {
                     double scaleTestMin = (x * x) / (minX * minX) + (z * z) / (minZ * minZ);
