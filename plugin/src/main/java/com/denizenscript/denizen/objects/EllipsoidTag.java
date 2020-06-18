@@ -3,6 +3,7 @@ package com.denizenscript.denizen.objects;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.objects.notable.Notable;
@@ -12,6 +13,7 @@ import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -324,6 +326,20 @@ public class EllipsoidTag implements ObjectTag, Notable {
                 return null;
             }
             return new EllipsoidTag(object.loc.clone().add(attribute.contextAsType(1, LocationTag.class)), object.size.clone());
+        });
+
+        // <--[tag]
+        // @attribute <EllipsoidTag.contains[<location>]>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns a boolean indicating whether the specified location is inside this ellipsoid.
+        // -->
+        registerTag("contains", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("ellipsoid.contains[...] tag must have an input.");
+                return null;
+            }
+            return new ElementTag(object.contains(attribute.contextAsType(1, LocationTag.class)));
         });
 
         // <--[tag]
