@@ -3,7 +3,6 @@ package com.denizenscript.denizen.objects;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.objects.notable.Notable;
@@ -311,6 +310,20 @@ public class EllipsoidTag implements ObjectTag, Notable {
         // -->
         registerTag("size", (attribute, object) -> {
             return object.size;
+        });
+
+        // <--[tag]
+        // @attribute <EllipsoidTag.add[<location>]>
+        // @returns EllipsoidTag
+        // @description
+        // Returns a copy of this ellipsoid, shifted by the input location.
+        // -->
+        registerTag("add", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("ellipsoid.add[...] tag must have an input.");
+                return null;
+            }
+            return new EllipsoidTag(object.loc.clone().add(attribute.contextAsType(1, LocationTag.class)), object.size.clone());
         });
     }
 

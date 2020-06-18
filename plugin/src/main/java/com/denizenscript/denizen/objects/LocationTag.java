@@ -273,7 +273,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // x,y,z,pitch,yaw
         {
             try {
-                return new LocationTag(null,
+                return new LocationTag((World) null,
                         Double.valueOf(split.get(0)),
                         Double.valueOf(split.get(1)),
                         Double.valueOf(split.get(2)),
@@ -306,7 +306,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                             Float.valueOf(split.get(3)),
                             Float.valueOf(split.get(4)));
                 }
-                LocationTag output = new LocationTag(null,
+                LocationTag output = new LocationTag((World) null,
                         Double.valueOf(split.get(0)),
                         Double.valueOf(split.get(1)),
                         Double.valueOf(split.get(2)),
@@ -400,6 +400,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
     public LocationTag(World world, double x, double y, double z, float pitch, float yaw) {
         super(world, x, y, z, yaw, pitch);
+    }
+
+    public LocationTag(String worldName, double x, double y, double z, float pitch, float yaw) {
+        super(worldName == null ? null : Bukkit.getWorld(worldName), x, y, z, yaw, pitch);
+        backupWorld = worldName;
     }
 
     public boolean isChunkLoaded() {
@@ -584,6 +589,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     @Override
     public void setYaw(float yaw) {
         super.setYaw(yaw);
+    }
+
+    @Override
+    public LocationTag add(Location input) {
+        return new LocationTag(getWorldName(), getX() + input.getX(), getY() + input.getY(), getZ() + input.getZ(), input.getPitch(), input.getYaw());
     }
 
     public boolean hasInventory() {
