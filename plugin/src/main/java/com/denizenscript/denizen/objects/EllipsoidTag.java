@@ -325,6 +325,50 @@ public class EllipsoidTag implements ObjectTag, Notable {
             }
             return new EllipsoidTag(object.loc.clone().add(attribute.contextAsType(1, LocationTag.class)), object.size.clone());
         });
+
+        // <--[tag]
+        // @attribute <EllipsoidTag.with_location[<location>]>
+        // @returns EllipsoidTag
+        // @description
+        // Returns a copy of this ellipsoid, set to the specified location.
+        // -->
+        registerTag("with_location", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("ellipsoid.with_location[...] tag must have an input.");
+                return null;
+            }
+            return new EllipsoidTag(attribute.contextAsType(1, LocationTag.class), object.size.clone());
+        });
+
+        // <--[tag]
+        // @attribute <EllipsoidTag.with_size[<location>]>
+        // @returns EllipsoidTag
+        // @description
+        // Returns a copy of this ellipsoid, set to the specified size.
+        // -->
+        registerTag("with_size", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("ellipsoid.with_size[...] tag must have an input.");
+                return null;
+            }
+            return new EllipsoidTag(object.loc.clone(), attribute.contextAsType(1, LocationTag.class));
+        });
+
+        // <--[tag]
+        // @attribute <EllipsoidTag.with_world[<world>]>
+        // @returns EllipsoidTag
+        // @description
+        // Returns a copy of this ellipsoid, set to the specified world.
+        // -->
+        registerTag("with_world", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("ellipsoid.with_world[...] tag must have an input.");
+                return null;
+            }
+            LocationTag loc = object.loc.clone();
+            loc.setWorld(attribute.contextAsType(1, WorldTag.class).getWorld());
+            return new EllipsoidTag(loc, object.size.clone());
+        });
     }
 
     public static ObjectTagProcessor<EllipsoidTag> tagProcessor = new ObjectTagProcessor<>();
