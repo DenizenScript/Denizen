@@ -210,21 +210,6 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public boolean isBreeding(Animals entity) {
-        return ((CraftAnimals) entity).getHandle().isInLove();
-    }
-
-    @Override
-    public void setBreeding(Animals entity, boolean breeding) {
-        if (breeding) {
-            ((CraftAnimals) entity).getHandle().a((EntityHuman) null);
-        }
-        else {
-            ((CraftAnimals) entity).getHandle().resetLove();
-        }
-    }
-
-    @Override
     public void setTarget(Creature entity, LivingEntity target) {
         EntityLiving nmsTarget = target != null ? ((CraftLivingEntity) target).getHandle() : null;
         ((CraftCreature) entity).getHandle().setGoalTarget(nmsTarget, EntityTargetEvent.TargetReason.CUSTOM, true);

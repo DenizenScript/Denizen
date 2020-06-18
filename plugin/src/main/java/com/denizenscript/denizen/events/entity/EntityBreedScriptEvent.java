@@ -4,7 +4,6 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
@@ -128,8 +127,8 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
     public void cancellationChanged() {
         // Prevent entities from continuing to breed with each other
         if (cancelled) {
-            NMSHandler.getEntityHelper().setBreeding((Animals) father.getLivingEntity(), false);
-            NMSHandler.getEntityHelper().setBreeding((Animals) mother.getLivingEntity(), false);
+            ((Animals) father.getLivingEntity()).setLoveModeTicks(0);
+            ((Animals) mother.getLivingEntity()).setLoveModeTicks(0);
         }
         super.cancellationChanged();
     }

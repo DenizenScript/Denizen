@@ -70,10 +70,6 @@ public abstract class EntityHelper {
 
     public abstract Entity getEntity(World world, UUID uuid);
 
-    public abstract boolean isBreeding(Animals entity);
-
-    public abstract void setBreeding(Animals entity, boolean breeding);
-
     public abstract void setTarget(Creature entity, LivingEntity target);
 
     public abstract CompoundTag getNbtData(Entity entity);

@@ -1877,7 +1877,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns whether the animal entity is trying to with another of its kind.
         // -->
         registerSpawnedOnlyTag("breeding", (attribute, object) -> {
-            return new ElementTag(NMSHandler.getEntityHelper().isBreeding((Animals) object.getLivingEntity()));
+            return new ElementTag(((Animals) object.getLivingEntity()).getLoveModeTicks() > 0);
         }, "is_breeding");
 
         // <--[tag]
@@ -2712,7 +2712,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <EntityTag.can_breed>
         // -->
         if (mechanism.matches("breed") && mechanism.requireBoolean()) {
-            NMSHandler.getEntityHelper().setBreeding((Animals) getLivingEntity(), mechanism.getValue().asBoolean());
+            ((Animals) getLivingEntity()).setLoveModeTicks(mechanism.getValue().asBoolean() ? 600 : 0);
         }
 
         // <--[mechanism]
