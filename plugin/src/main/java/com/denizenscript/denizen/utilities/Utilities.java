@@ -74,6 +74,37 @@ public class Utilities {
         return ench;
     }
 
+    public static String getRecipeType(Recipe recipe) {
+        if (recipe == null) {
+            return null;
+        }
+        if (recipe instanceof ShapedRecipe) {
+            return "shaped";
+        }
+        else if (recipe instanceof ShapelessRecipe) {
+            return "shapeless";
+        }
+        else if (recipe instanceof CookingRecipe) {
+            if (recipe instanceof FurnaceRecipe) {
+                return "furnace";
+            }
+            else if (recipe instanceof BlastingRecipe) {
+                return "blasting";
+            }
+            else if (recipe instanceof CampfireRecipe) {
+                return "campfire";
+            }
+            else if (recipe instanceof SmokingRecipe) {
+                return "smoking";
+            }
+        }
+        else if (recipe instanceof StonecuttingRecipe) {
+            return "stonecutting";
+        }
+        Debug.echoError("Failed to determine recipe type for " + recipe.getClass().getName() + ": " + recipe);
+        return null;
+    }
+
     public static boolean isRecipeOfType(Recipe recipe, String type) {
         return type == null || (
                 (type.equals("crafting") && (recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe)) ||

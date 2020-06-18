@@ -228,6 +228,7 @@ public class ServerTagBase {
         // This is formatted equivalently to the item script recipe input, with "material:" for non-exact matches, and a full ItemTag for exact matches.
         // Note that this won't represent all recipes perfectly (primarily those with multiple input choices per slot).
         // For furnace-style recipes, this will return a list with only 1 item.
+        // For shaped recipes, this will include 'air' for slots that are part of the shape but don't require an item.
         // -->
         if (attribute.startsWith("recipe_items") && attribute.hasContext(1)) {
             NamespacedKey key = Utilities.parseNamespacedKey(attribute.getContext(1));
@@ -237,7 +238,10 @@ public class ServerTagBase {
             }
             ListTag result = new ListTag();
             Consumer<RecipeChoice> addChoice = (choice) -> {
-                if (choice != null) {
+                if (choice == null) {
+                    result.addObject(new ItemTag(Material.AIR));
+                }
+                else {
                     if (choice instanceof RecipeChoice.ExactChoice) {
                         result.addObject(new ItemTag(choice.getItemStack()));
                     }
@@ -262,6 +266,40 @@ public class ServerTagBase {
                 addChoice.accept(((CookingRecipe) recipe).getInputChoice());
             }
             event.setReplacedObject(result.getObjectAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.recipe_shape[<id>]>
+        // @returns ElementTag
+        // @description
+        // Returns the shape of a shaped recipe, like '2x2' or '3x3'.
+        // -->
+        if (attribute.startsWith("recipe_shape") && attribute.hasContext(1)) {
+            NamespacedKey key = Utilities.parseNamespacedKey(attribute.getContext(1));
+            Recipe recipe = NMSHandler.getItemHelper().getRecipeById(key);
+            if (!(recipe instanceof ShapedRecipe)) {
+                return;
+            }
+            String[] shape = ((ShapedRecipe) recipe).getShape();
+            event.setReplacedObject(new ElementTag(shape[0].length() + "x" + shape.length));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.recipe_type[<id>]>
+        // @returns ElementTag
+        // @description
+        // Returns the type of recipe that the given recipe ID is.
+        // Will be one of FURNACE, BLASTING, SHAPED, SHAPELESS, SMOKING, CAMPFIRE, STONECUTTING.
+        // -->
+        if (attribute.startsWith("recipe_type") && attribute.hasContext(1)) {
+            NamespacedKey key = Utilities.parseNamespacedKey(attribute.getContext(1));
+            Recipe recipe = NMSHandler.getItemHelper().getRecipeById(key);
+            if (recipe == null) {
+                return;
+            }
+            event.setReplacedObject(new ElementTag(Utilities.getRecipeType(recipe)));
             return;
         }
 

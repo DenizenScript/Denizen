@@ -118,6 +118,7 @@ public class ItemHidden implements Property {
         // @input ListTag
         // @description
         // Sets the item's list of data types to hide.
+        // Valid hide types include: ATTRIBUTES, DESTROYS, ENCHANTS, PLACED_ON, POTION_EFFECTS, UNBREAKABLE, or ALL.
         // Use "ALL" to automatically hide all hideable item data.
         // @tags
         // <ItemTag.hides>
