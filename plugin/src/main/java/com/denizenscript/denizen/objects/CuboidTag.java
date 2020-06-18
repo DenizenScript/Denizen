@@ -1084,11 +1084,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
                 }
                 pair = cuboid.pairs.get(member - 1);
             }
-            Location base = pair.high.clone().add(pair.low.clone()).add(1.0, 1.0, 1.0);
+            LocationTag base = pair.high.clone().add(pair.low).add(1.0, 1.0, 1.0);
             base.setX(base.getX() / 2.0);
             base.setY(base.getY() / 2.0);
             base.setZ(base.getZ() / 2.0);
-            return new LocationTag(base);
+            return base;
         });
 
         // <--[tag]

@@ -592,8 +592,21 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     }
 
     @Override
+    public LocationTag add(double x, double y, double z) {
+        super.add(x, y, z);
+        return this;
+    }
+
+    @Override
     public LocationTag add(Location input) {
-        return new LocationTag(getWorldName(), getX() + input.getX(), getY() + input.getY(), getZ() + input.getZ(), input.getPitch(), input.getYaw());
+        super.add(input);
+        return this;
+    }
+
+    @Override
+    public LocationTag multiply(double input) {
+        super.multiply(input);
+        return this;
     }
 
     public boolean hasInventory() {
@@ -2550,7 +2563,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 }
             }
             if (LocationTag.matches(attribute.getContext(1))) {
-                return new LocationTag(object.clone().add(attribute.contextAsType(1, LocationTag.class)));
+                return object.clone().add(attribute.contextAsType(1, LocationTag.class));
             }
             return null;
         });

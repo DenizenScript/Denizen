@@ -62,27 +62,21 @@ public class EllipsoidTag implements ObjectTag, Notable {
      */
     @Fetchable("ellipsoid")
     public static EllipsoidTag valueOf(String string, TagContext context) {
-
         if (string.startsWith("ellipsoid@")) {
             string = string.substring(10);
         }
-
         Notable noted = NotableManager.getSavedObject(string);
         if (noted instanceof EllipsoidTag) {
             return (EllipsoidTag) noted;
         }
-
         List<String> split = CoreUtilities.split(string, ',');
-
         if (split.size() != 7) {
             return null;
         }
-
         WorldTag world = WorldTag.valueOf(split.get(3), false);
         if (world == null) {
             return null;
         }
-
         for (int i = 0; i < 7; i++) {
             if (i != 3 && !ArgumentHelper.matchesDouble(split.get(i))) {
                 if (context == null || context.debug) {
@@ -91,7 +85,6 @@ public class EllipsoidTag implements ObjectTag, Notable {
                 }
             }
         }
-
         LocationTag location = new LocationTag(world.getWorld(), Double.parseDouble(split.get(0)), Double.parseDouble(split.get(1)), Double.parseDouble(split.get(2)));
         LocationTag size = new LocationTag(null, Double.parseDouble(split.get(4)), Double.parseDouble(split.get(5)), Double.parseDouble(split.get(6)));
         return new EllipsoidTag(location, size);
@@ -104,7 +97,6 @@ public class EllipsoidTag implements ObjectTag, Notable {
      * @return true if matched, otherwise false
      */
     public static boolean matches(String arg) {
-
         try {
             return EllipsoidTag.valueOf(arg, CoreUtilities.noDebugContext) != null;
         }
@@ -175,28 +167,13 @@ public class EllipsoidTag implements ObjectTag, Notable {
         return locations;
     }
 
-    public List<LocationTag> getBlockLocations(Attribute attribute) {
-        List<LocationTag> initial = new CuboidTag(new Location(loc.getWorld(),
-                loc.getX() - size.getX(), loc.getY() - size.getY(), loc.getZ() - size.getZ()),
-                new Location(loc.getWorld(),
-                        loc.getX() + size.getX(), loc.getY() + size.getY(), loc.getZ() + size.getZ()))
-                .getBlocks_internal(null, attribute);
-        List<LocationTag> locations = new ArrayList<>();
-        for (LocationTag loc : initial) {
-            if (contains(loc)) {
-                locations.add(loc);
-            }
-        }
-        return locations;
-    }
-
     public boolean contains(Location test) {
         double xbase = test.getX() - loc.getX();
         double ybase = test.getY() - loc.getY();
         double zbase = test.getZ() - loc.getZ();
         return ((xbase * xbase) / (size.getX() * size.getX())
                 + (ybase * ybase) / (size.getY() * size.getY())
-                + (zbase * zbase) / (size.getZ() * size.getZ()) < 1);
+                + (zbase * zbase) / (size.getZ() * size.getZ()) <= 1);
     }
 
     String prefix = "ellipsoid";
@@ -258,7 +235,7 @@ public class EllipsoidTag implements ObjectTag, Notable {
     }
 
     public String identifyFull() {
-        return "ellipsoid@" + loc.getX() + "," + loc.getY() + "," + loc.getZ() + "," + loc.getWorld().getName()
+        return "ellipsoid@" + loc.getX() + "," + loc.getY() + "," + loc.getZ() + "," + loc.getWorldName()
                 + "," + size.getX() + "," + size.getY() + "," + size.getZ();
     }
 
@@ -340,6 +317,56 @@ public class EllipsoidTag implements ObjectTag, Notable {
                 return null;
             }
             return new ElementTag(object.contains(attribute.contextAsType(1, LocationTag.class)));
+        });
+
+        // <--[tag]
+        // @attribute <EllipsoidTag.include[<location>]>
+        // @returns EllipsoidTag
+        // @description
+        // Returns a copy of this ellipsoid, with the size value adapted to include the specified world location.
+        // -->
+        registerTag("include", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("ellipsoid.include[...] tag must have an input.");
+                return null;
+            }
+            LocationTag target = attribute.contextAsType(1, LocationTag.class);
+            if (object.contains(target)) {
+                return object;
+            }
+            LocationTag size = object.size.clone();
+            Vector relative = target.toVector().subtract(object.loc.toVector());
+            // Cuboid minimum expansion
+            size.setX(Math.max(size.getX(), Math.abs(relative.getX())));
+            size.setY(Math.max(size.getY(), Math.abs(relative.getY())));
+            size.setZ(Math.max(size.getZ(), Math.abs(relative.getZ())));
+            EllipsoidTag result = new EllipsoidTag(object.loc.clone(), new LocationTag(size));
+            if (result.contains(target)) {
+                return result;
+            }
+            double sizeLen = size.length();
+            // Ellipsoid additional expand
+            while (!result.contains(target)) {
+                // I gave up on figuring out the math for this, so here's an awful loop-hack
+                double projX = (relative.getX() * relative.getX()) / (size.getX() * size.getX());
+                double projY = (relative.getY() * relative.getY()) / (size.getY() * size.getY());
+                double projZ = (relative.getZ() * relative.getZ()) / (size.getZ() * size.getZ());
+                double scale = Math.max(projX + projY + projZ, sizeLen * 0.01);
+                if (projX >= projY && projX >= projZ) {
+                    size.setX(size.getX() + scale);
+                }
+                else if (projY >= projX && projY >= projZ) {
+                    size.setY(size.getY() + scale);
+                }
+                else if (projZ >= projX && projZ >= projY) {
+                    size.setZ(size.getZ() + scale);
+                }
+                else {
+                    size = size.add(scale, scale, scale);
+                }
+                result.size = size;
+            }
+            return result;
         });
 
         // <--[tag]
