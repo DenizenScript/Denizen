@@ -192,9 +192,15 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable {
                     double scaleTestMax = (x * x) / (maxX * maxX) + (z * z) / (maxZ * maxZ);
                     if (scaleTestMin >= 1.0 && scaleTestMax <= 1.0) {
                         output.addObject(new LocationTag(loc.getBlockX() + x, loc.getBlockY() + y, loc.getBlockZ() + z, loc.getWorldName()));
-                        output.addObject(new LocationTag(loc.getBlockX() - x, loc.getBlockY() + y, loc.getBlockZ() + z, loc.getWorldName()));
-                        output.addObject(new LocationTag(loc.getBlockX() + x, loc.getBlockY() + y, loc.getBlockZ() - z, loc.getWorldName()));
-                        output.addObject(new LocationTag(loc.getBlockX() - x, loc.getBlockY() + y, loc.getBlockZ() - z, loc.getWorldName()));
+                        if (x != 0) {
+                            output.addObject(new LocationTag(loc.getBlockX() - x, loc.getBlockY() + y, loc.getBlockZ() + z, loc.getWorldName()));
+                        }
+                        if (z != 0) {
+                            output.addObject(new LocationTag(loc.getBlockX() + x, loc.getBlockY() + y, loc.getBlockZ() - z, loc.getWorldName()));
+                        }
+                        if (x != 0 && z != 0) {
+                            output.addObject(new LocationTag(loc.getBlockX() - x, loc.getBlockY() + y, loc.getBlockZ() - z, loc.getWorldName()));
+                        }
                     }
                 }
             }
