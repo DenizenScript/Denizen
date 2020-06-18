@@ -1534,6 +1534,8 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 dummyInv.setSize(object.inventory.getSize());
             }
             dummyInv.setContents(object.getContents());
+            dummyInv.scriptName = object.scriptName;
+            trackTemporaryInventory(dummyInv);
 
             // <--[tag]
             // @attribute <InventoryTag.include[<item>].quantity[<#>]>
@@ -1571,6 +1573,8 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 dummyInv.setSize(object.inventory.getSize());
             }
             dummyInv.setContents(object.getContents());
+            dummyInv.scriptName = object.scriptName;
+            trackTemporaryInventory(dummyInv);
 
             // <--[tag]
             // @attribute <InventoryTag.exclude[<item>].quantity[<#>]>
