@@ -35,7 +35,7 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
     // <context.item> returns the ItemTag that was moved.
     //
     // @Determine
-    // ItemTag to set a different item to be moved. NOTE: The original item will not be moved!
+    // ItemTag to set a different item to be moved.
     //
     // -->
 

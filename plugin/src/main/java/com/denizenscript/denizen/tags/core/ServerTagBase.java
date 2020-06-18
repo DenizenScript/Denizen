@@ -237,11 +237,13 @@ public class ServerTagBase {
             }
             ListTag result = new ListTag();
             Consumer<RecipeChoice> addChoice = (choice) -> {
-                if (choice instanceof RecipeChoice.ExactChoice) {
-                    result.addObject(new ItemTag(choice.getItemStack()));
-                }
-                else {
-                    result.add("material:" + choice.getItemStack().getType().name());
+                if (choice != null) {
+                    if (choice instanceof RecipeChoice.ExactChoice) {
+                        result.addObject(new ItemTag(choice.getItemStack()));
+                    }
+                    else {
+                        result.add("material:" + choice.getItemStack().getType().name());
+                    }
                 }
             };
             if (recipe instanceof ShapedRecipe) {
