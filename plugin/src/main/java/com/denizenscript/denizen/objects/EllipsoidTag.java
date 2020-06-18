@@ -18,7 +18,7 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EllipsoidTag implements ObjectTag, Notable {
+public class EllipsoidTag implements ObjectTag, Notable, Cloneable {
 
     // <--[language]
     // @name EllipsoidTag Objects
@@ -167,6 +167,41 @@ public class EllipsoidTag implements ObjectTag, Notable {
         return locations;
     }
 
+    public ListTag getShell() {
+        ListTag output = new ListTag();
+        double yScale = size.getY();
+        double diameterX = size.getX() * 2;
+        double diameterZ = size.getZ() * 2;
+        int maxY = (int) Math.floor(yScale);
+        output.addObject(new LocationTag(loc.getBlockX(), loc.getBlockY() - maxY, loc.getBlockZ(), loc.getWorldName()));
+        if (maxY != 0) {
+            output.addObject(new LocationTag(loc.getBlockX(), loc.getBlockY() + maxY, loc.getBlockZ(), loc.getWorldName()));
+        }
+        for (int y = -maxY; y <= maxY; y++) {
+            double yProgMin = Math.min(1.0, (Math.abs(y) + 1) / yScale);
+            double yProgMax = Math.abs(y) / yScale;
+            double minSubWidth = Math.sqrt(1.0 - yProgMin * yProgMin);
+            double maxSubWidth = Math.sqrt(1.0 - yProgMax * yProgMax);
+            double minX = diameterX * minSubWidth - 1;
+            double minZ = diameterZ * minSubWidth - 1;
+            double maxX = diameterX * maxSubWidth;
+            double maxZ = diameterZ * maxSubWidth;
+            for (int x = 0; x < maxX; x++) {
+                for (int z = 0; z < maxZ; z++) {
+                    double scaleTestMin = (x * x) / (minX * minX) + (z * z) / (minZ * minZ);
+                    double scaleTestMax = (x * x) / (maxX * maxX) + (z * z) / (maxZ * maxZ);
+                    if (scaleTestMin >= 1.0 && scaleTestMax <= 1.0) {
+                        output.addObject(new LocationTag(loc.getBlockX() + x, loc.getBlockY() + y, loc.getBlockZ() + z, loc.getWorldName()));
+                        output.addObject(new LocationTag(loc.getBlockX() - x, loc.getBlockY() + y, loc.getBlockZ() + z, loc.getWorldName()));
+                        output.addObject(new LocationTag(loc.getBlockX() + x, loc.getBlockY() + y, loc.getBlockZ() - z, loc.getWorldName()));
+                        output.addObject(new LocationTag(loc.getBlockX() - x, loc.getBlockY() + y, loc.getBlockZ() - z, loc.getWorldName()));
+                    }
+                }
+            }
+        }
+        return output;
+    }
+
     public boolean contains(Location test) {
         double xbase = test.getX() - loc.getX();
         double ybase = test.getY() - loc.getY();
@@ -259,8 +294,7 @@ public class EllipsoidTag implements ObjectTag, Notable {
         // @returns ListTag(LocationTag)
         // @description
         // Returns each block location within the EllipsoidTag.
-        // Optionally, specify a list of materials to only return locations
-        // with that block type.
+        // Optionally, specify a list of materials to only return locations with that block type.
         // -->
         registerTag("blocks", (attribute, object) -> {
             if (attribute.hasContext(1)) {
@@ -270,6 +304,16 @@ public class EllipsoidTag implements ObjectTag, Notable {
                 return new ListTag(object.getBlocks(attribute));
             }
         }, "get_blocks");
+
+        // <--[tag]
+        // @attribute <EllipsoidTag.shell>
+        // @returns ListTag(LocationTag)
+        // @description
+        // Returns a 3D outline (shell) of this ellipsoid, as a list of block locations.
+        // -->
+        registerTag("shell", (attribute, object) -> {
+            return object.getShell();
+        });
 
         // <--[tag]
         // @attribute <EllipsoidTag.location>
