@@ -27,7 +27,7 @@ public class PlayerChangesGamemodeScriptEvent extends BukkitScriptEvent implemen
     // @Triggers when a player's gamemode is changed.
     //
     // @Context
-    // <context.gamemode> returns an ElementTag of the gamemode. Game Modes: <@link url http://bit.ly/1KHab43>
+    // <context.gamemode> returns an ElementTag of the gamemode. Game Modes: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/GameMode.html>
     //
     // @Player Always.
     //

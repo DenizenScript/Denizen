@@ -1035,7 +1035,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @returns ElementTag
         // @description
         // Returns the base color of the banner at this location.
-        // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
+        // For the list of possible colors, see <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/DyeColor.html>.
         // As of 1.13+, this tag is no longer relevant.
         // -->
         registerTag("base_color", (attribute, object) -> {
@@ -1091,8 +1091,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @mechanism LocationTag.patterns
         // @description
         // Lists the patterns of the banner at this location in the form "COLOR/PATTERN|COLOR/PATTERN" etc.
-        // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
-        // For the list of possible patterns, see <@link url http://bit.ly/1MqRn7T>.
+        // For the list of possible colors, see <@link url hhttps://hub.spigotmc.org/javadocs/bukkit/org/bukkit/DyeColor.html>.
+        // For the list of possible patterns, see <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/block/banner/PatternType.html>.
         // -->
         registerTag("patterns", (attribute, object) -> {
             ListTag list = new ListTag();
@@ -3590,7 +3590,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @input Element
         // @description
         // Changes the base color of the banner at this location.
-        // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
+        // For the list of possible colors, see <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/DyeColor.html>.
         // As of 1.13+, this mechanism is no longer relevant.
         // @tags
         // <LocationTag.base_color>
@@ -3610,8 +3610,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @input ListTag
         // @description
         // Changes the patterns of the banner at this location. Input must be in the form "COLOR/PATTERN|COLOR/PATTERN" etc.
-        // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
-        // For the list of possible patterns, see <@link url http://bit.ly/1MqRn7T>.
+        // For the list of possible colors, see <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/DyeColor.html>.
+        // For the list of possible patterns, see <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/block/banner/PatternType.html>.
         // @tags
         // <LocationTag.patterns>
         // <server.pattern_types>
@@ -3656,7 +3656,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @input Element
         // @description
         // Generates a tree at this location if possible.
-        // For a list of valid tree types, see <@link url http://bit.ly/2o7m1je>
+        // For a list of valid tree types, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/TreeType.html>
         // @tags
         // <server.tree_types>
         // -->

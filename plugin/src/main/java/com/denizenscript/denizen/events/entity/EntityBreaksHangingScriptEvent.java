@@ -36,7 +36,7 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
     // @Triggers when a hanging entity (painting, item_frame, or leash_hitch) is broken.
     //
     // @Context
-    // <context.cause> returns the cause of the entity breaking. Causes list: <@link url http://bit.ly/1BeqxPX>
+    // <context.cause> returns the cause of the entity breaking. Causes list: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/hanging/HangingBreakEvent.RemoveCause.html>
     // <context.breaker> returns the EntityTag that broke the hanging entity, if any.
     // <context.hanging> returns the EntityTag of the hanging.
     //

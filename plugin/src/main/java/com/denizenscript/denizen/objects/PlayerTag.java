@@ -3419,7 +3419,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Shows the player fake patterns on a banner. Input must be in the form: "LOCATION|COLOR/PATTERN|..."
         // As of Minecraft 1.13, the base color is unique material types, and so <@link command showfake> must be used for base color changes.
-        // For the list of possible patterns, see <@link url http://bit.ly/1MqRn7T>.
+        // For the list of possible patterns, see <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/block/banner/PatternType.html>.
         // -->
         if (mechanism.matches("banner_update")) {
             if (mechanism.getValue().asString().length() > 0) {

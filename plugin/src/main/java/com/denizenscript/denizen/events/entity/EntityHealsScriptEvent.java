@@ -31,7 +31,7 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
     // @Context
     // <context.amount> returns the amount the entity healed.
     // <context.entity> returns the EntityTag that healed.
-    // <context.reason> returns the cause of the entity healing. Can be: <@link url http://bit.ly/2GTtxsf>
+    // <context.reason> returns the cause of the entity healing. Can be: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EntityRegainHealthEvent.RegainReason.html>
     //
     // @Determine
     // ElementTag(Decimal) to set the amount of health the entity receives.
