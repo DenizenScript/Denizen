@@ -1,12 +1,14 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
 import net.citizensnpcs.api.ai.event.NavigationEvent;
 import net.citizensnpcs.api.ai.flocking.*;
 import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -49,33 +51,22 @@ public class WalkCommandCitizensEvents implements Listener {
         if (e.getNPC() == null) {
             return;
         }
-
-        // Check each held entry -- the scriptExecutor is waiting on
-        // the entry to be marked 'waited for'.
         for (int i = 0; i < WalkCommand.held.size(); i++) {
             ScriptEntry entry = WalkCommand.held.get(i);
-
-            // Get all NPCs associated with the entry. They must all
-            // finish navigation before the entry can be let go
             List<NPCTag> tally = (List<NPCTag>) entry.getObject("tally");
-
             if (tally == null) {
+                WalkCommand.held.remove(i--);
                 continue;
             }
-
             for (int x = 0; x < tally.size(); x++) {
                 if (!tally.get(x).isSpawned()) {
                     tally.remove(x--);
                 }
             }
-            // If the NPC is the NPC from the event, take it from the list.
             tally.remove(NPCTag.mirrorCitizensNPC(e.getNPC()));
-
-            // Check if tally is empty.
             if (tally.isEmpty()) {
-                entry.setFinished(true);
-                WalkCommand.held.remove(i);
-                i--;
+                Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), () -> entry.setFinished(true), 1);
+                WalkCommand.held.remove(i--);
             }
         }
     }
