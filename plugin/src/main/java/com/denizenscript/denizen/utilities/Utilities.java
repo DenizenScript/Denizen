@@ -23,6 +23,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.*;
@@ -296,6 +297,14 @@ public class Utilities {
             return null;
         }
         return new NPCTag(closestNPC);
+    }
+
+    public static boolean checkLocationWithBoundingBox(Location baseLocation, Entity entity, double theLeeway) {
+        if (!checkLocation(baseLocation, entity.getLocation(), theLeeway + 16)) {
+            return false;
+        }
+        double distanceSq = NMSHandler.getEntityHelper().getBoundingBox(entity).distanceSquared(baseLocation.toVector());
+        return distanceSq < theLeeway * theLeeway;
     }
 
     public static boolean checkLocation(LivingEntity entity, Location theLocation, double theLeeway) {
