@@ -22,7 +22,7 @@ public class HurtCommand extends AbstractCommand {
     public HurtCommand() {
         setName("hurt");
         setSyntax("hurt (<#.#>) ({player}/<entity>|...) (cause:<cause>)");
-        setRequiredArguments(0, 3);
+        setRequiredArguments(0, 5);
         isProcedural = false;
     }
 
@@ -30,7 +30,7 @@ public class HurtCommand extends AbstractCommand {
     // @Name Hurt
     // @Syntax hurt (<#.#>) ({player}/<entity>|...) (cause:<cause>)
     // @Required 0
-    // @Maximum 3
+    // @Maximum 5
     // @Short Hurts the player or a list of entities.
     // @Group entity
     //
