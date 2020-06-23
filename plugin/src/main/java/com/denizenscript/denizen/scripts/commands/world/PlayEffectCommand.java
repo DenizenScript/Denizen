@@ -42,7 +42,7 @@ public class PlayEffectCommand extends AbstractCommand {
     // Effects:
     // - Everything on <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html>
     // - Everything on <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Effect.html>
-    // - RANDOM (chooses a random visual effect from the list starting with 'huge_explosion')
+    // - RANDOM (chooses a random visual effect from the Particle list)
     // -->
 
     // <--[command]
