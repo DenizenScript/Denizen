@@ -215,24 +215,6 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public void toggleAI(Entity entity, boolean hasAI) {
-        net.minecraft.server.v1_12_R1.Entity nmsEntity = ((CraftEntity) entity).getHandle();
-        if (!(nmsEntity instanceof EntityInsentient)) {
-            return;
-        }
-        ((EntityInsentient) nmsEntity).setNoAI(!hasAI);
-    }
-
-    @Override
-    public boolean isAIDisabled(Entity entity) {
-        net.minecraft.server.v1_12_R1.Entity nmsEntity = ((CraftEntity) entity).getHandle();
-        if (!(nmsEntity instanceof EntityInsentient)) {
-            return true;
-        }
-        return ((EntityInsentient) nmsEntity).isNoAI();
-    }
-
-    @Override
     public double getSpeed(Entity entity) {
         net.minecraft.server.v1_12_R1.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
         if (!(nmsEntityEntity instanceof EntityInsentient)) {
@@ -320,7 +302,7 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public void walkTo(final Entity entity, Location location, double speed, final Runnable callback) {
+    public void walkTo(final LivingEntity entity, Location location, double speed, final Runnable callback) {
         if (entity == null || location == null) {
             return;
         }
@@ -333,9 +315,9 @@ public class EntityHelperImpl extends EntityHelper {
         final NavigationAbstract entityNavigation = nmsEntity.getNavigation();
 
         final PathEntity path;
-        final boolean aiDisabled = isAIDisabled(entity);
+        final boolean aiDisabled = !entity.hasAI();
         if (aiDisabled) {
-            toggleAI(entity, true);
+            entity.setAI(true);
             nmsEntity.onGround = true;
         }
         path = entityNavigation.a(location.getX(), location.getY(), location.getZ());
@@ -353,7 +335,7 @@ public class EntityHelperImpl extends EntityHelper {
                         }
                         nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(oldSpeed);
                         if (aiDisabled) {
-                            toggleAI(entity, false);
+                            entity.setAI(false);
                         }
                         cancel();
                     }

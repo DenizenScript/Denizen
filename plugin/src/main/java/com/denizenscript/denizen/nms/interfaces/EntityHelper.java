@@ -80,10 +80,6 @@ public abstract class EntityHelper {
 
     public abstract void stopWalking(Entity entity);
 
-    public abstract void toggleAI(Entity entity, boolean hasAI);
-
-    public abstract boolean isAIDisabled(Entity entity);
-
     public abstract double getSpeed(Entity entity);
 
     public abstract void setSpeed(Entity entity, double speed);
@@ -91,7 +87,7 @@ public abstract class EntityHelper {
     public abstract void follow(final Entity target, final Entity follower, final double speed, final double lead,
                                 final double maxRange, final boolean allowWander);
 
-    public abstract void walkTo(final Entity entity, Location location, double speed, final Runnable callback);
+    public abstract void walkTo(final LivingEntity entity, Location location, double speed, final Runnable callback);
 
     public class EnforcePlayerHides implements Listener {
 

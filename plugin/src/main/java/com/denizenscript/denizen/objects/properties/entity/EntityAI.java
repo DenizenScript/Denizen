@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -40,7 +39,7 @@ public class EntityAI implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(!NMSHandler.getEntityHelper().isAIDisabled(entity.getBukkitEntity()));
+        return String.valueOf(entity.getLivingEntity().hasAI());
     }
 
     @Override
@@ -67,7 +66,7 @@ public class EntityAI implements Property {
         // Other programmatic methods of blocking AI might also not be accounted for by this tag.
         // -->
         if (attribute.startsWith("has_ai")) {
-            return new ElementTag(!NMSHandler.getEntityHelper().isAIDisabled(entity.getBukkitEntity()))
+            return new ElementTag(entity.getLivingEntity().hasAI())
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
@@ -88,7 +87,7 @@ public class EntityAI implements Property {
         // <EntityTag.has_ai>
         // -->
         if ((mechanism.matches("has_ai") || mechanism.matches("toggle_ai")) && mechanism.requireBoolean()) {
-            NMSHandler.getEntityHelper().toggleAI(entity.getBukkitEntity(), mechanism.getValue().asBoolean());
+            entity.getLivingEntity().setAI(mechanism.getValue().asBoolean());
         }
     }
 }
