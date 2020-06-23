@@ -34,7 +34,7 @@ public class MapCommand extends AbstractCommand {
     // @Name Map
     // @Syntax map [<#>/new:<world>] [reset:<location> (scale:<value>) (tracking)/image:<file> (resize)/script:<script>] (x:<#>) (y:<#>)
     // @Required 2
-    // @Maximum 5
+    // @Maximum 7
     // @Short Modifies a new or existing map by adding images or text.
     // @Group item
     //
@@ -80,9 +80,7 @@ public class MapCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("new")
                     && arg.matchesPrefix("new")
                     && arg.matchesArgumentType(WorldTag.class)) {
@@ -149,26 +147,21 @@ public class MapCommand extends AbstractCommand {
             }
 
         }
-
         if (!scriptEntry.hasObject("map-id") && !scriptEntry.hasObject("new")) {
             throw new InvalidArgumentsException("Must specify a map ID or create a new map!");
         }
-
         if (!scriptEntry.hasObject("reset")
                 && !scriptEntry.hasObject("reset-loc")
                 && !scriptEntry.hasObject("image")
                 && !scriptEntry.hasObject("script")) {
             throw new InvalidArgumentsException("Must specify a valid action to perform!");
         }
-
         scriptEntry.defaultObject("reset", new ElementTag(false)).defaultObject("resize", new ElementTag(false))
                 .defaultObject("x-value", new ElementTag(0)).defaultObject("y-value", new ElementTag(0));
-
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         ElementTag id = scriptEntry.getElement("map-id");
         WorldTag create = scriptEntry.getObjectTag("new");
         ElementTag reset = scriptEntry.getElement("reset");
@@ -182,16 +175,12 @@ public class MapCommand extends AbstractCommand {
         ElementTag tracking = scriptEntry.getElement("tracking");
         ElementTag x = scriptEntry.getElement("x-value");
         ElementTag y = scriptEntry.getElement("y-value");
-
         if (scriptEntry.dbCallShouldDebug()) {
-
             Debug.report(scriptEntry, getName(), (id != null ? id.debug() : "") + (create != null ? create.debug() : "")
                     + reset.debug() + (resetLoc != null ? resetLoc.debug() : "") + (image != null ? image.debug() : "")
                     + (script != null ? script.debug() : "") + resize.debug() + (width != null ? width.debug() : "")
                     + (height != null ? height.debug() : "") + x.debug() + y.debug());
-
         }
-
         MapView map;
         if (create != null) {
             map = Bukkit.getServer().createMap(create.getWorld());
@@ -208,7 +197,6 @@ public class MapCommand extends AbstractCommand {
             Debug.echoError("The map command failed somehow! Report this to a developer!");
             return;
         }
-
         if (reset.asBoolean()) {
             if (tracking != null) {
                 map.setTrackingPosition(true);
@@ -246,6 +234,5 @@ public class MapCommand extends AbstractCommand {
                 }
             }
         }
-
     }
 }
