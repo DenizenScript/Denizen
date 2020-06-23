@@ -25,14 +25,14 @@ public class MapCommand extends AbstractCommand {
 
     public MapCommand() {
         setName("map");
-        setSyntax("map [<#>/new:<world>] [reset:<location>/image:<file> (resize)/script:<script>] (x:<#>) (y:<#>)");
-        setRequiredArguments(2, 5);
+        setSyntax("map [<#>/new:<world>] [reset:<location> (scale:<value>) (tracking)/image:<file> (resize)/script:<script>] (x:<#>) (y:<#>)");
+        setRequiredArguments(2, 7);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Map
-    // @Syntax map [<#>/new:<world>] [reset:<location>/image:<file> (resize)/script:<script>] (x:<#>) (y:<#>)
+    // @Syntax map [<#>/new:<world>] [reset:<location> (scale:<value>) (tracking)/image:<file> (resize)/script:<script>] (x:<#>) (y:<#>)
     // @Required 2
     // @Maximum 5
     // @Short Modifies a new or existing map by adding images or text.
@@ -44,6 +44,12 @@ public class MapCommand extends AbstractCommand {
     //
     // You can reset this at any time by using the 'reset:<location>' argument, which will remove all
     // images and texts on the map and show the default world map at the specified location.
+    //
+    // The 'scale' argument takes input of one of the values listed here:
+    // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/map/MapView.Scale.html>
+    //
+    // The 'tracking' argument determines if the map will track it's location on the map it displays.
+    // This is often the player holding the map's location.
     //
     // Note that all maps have a size of 128x128.
     //
@@ -110,6 +116,15 @@ public class MapCommand extends AbstractCommand {
                     && arg.matchesInteger()) {
                 scriptEntry.addObject("height", arg.asElement());
             }
+            else if (!scriptEntry.hasObject("scale")
+                    && arg.matchesPrefix("scale")
+                    && arg.matchesEnum(MapView.Scale.values())) {
+                scriptEntry.addObject("scale", arg.asElement());
+            }
+            else if (!scriptEntry.hasObject("tracking")
+                    && arg.matches("tracking")) {
+                scriptEntry.addObject("tracking", new ElementTag("true"));
+            }
             else if (!scriptEntry.hasObject("script")
                     && arg.matchesPrefix("s", "script")
                     && arg.matchesArgumentType(ScriptTag.class)) {
@@ -128,6 +143,9 @@ public class MapCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("map-id")
                     && arg.matchesInteger()) {
                 scriptEntry.addObject("map-id", arg.asElement());
+            }
+            else {
+                arg.reportUnhandled();
             }
 
         }
@@ -160,6 +178,8 @@ public class MapCommand extends AbstractCommand {
         ElementTag resize = scriptEntry.getElement("resize");
         ElementTag width = scriptEntry.getElement("width");
         ElementTag height = scriptEntry.getElement("height");
+        ElementTag scale = scriptEntry.getElement("scale");
+        ElementTag tracking = scriptEntry.getElement("tracking");
         ElementTag x = scriptEntry.getElement("x-value");
         ElementTag y = scriptEntry.getElement("y-value");
 
@@ -190,6 +210,12 @@ public class MapCommand extends AbstractCommand {
         }
 
         if (reset.asBoolean()) {
+            if (tracking != null) {
+                map.setTrackingPosition(true);
+            }
+            if (scale != null) {
+                map.setScale(MapView.Scale.valueOf(scale.asString().toUpperCase()));
+            }
             List<MapRenderer> oldRenderers = DenizenMapManager.removeDenizenRenderers(map);
             for (MapRenderer renderer : oldRenderers) {
                 map.addRenderer(renderer);
