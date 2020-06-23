@@ -17,8 +17,9 @@ public class EntityGlideScriptEvent extends BukkitScriptEvent implements Listene
     // entity toggles gliding
     // entity starts gliding
     // entity stops gliding
+    // <entity> (starts/stops/toggles) gliding
     //
-    // @Regex ^on player (toggles|starts|stops) gliding$
+    // @Regex ^on [^\s]+ (toggles|starts|stops) gliding$
     //
     // @Group Entity
     //
