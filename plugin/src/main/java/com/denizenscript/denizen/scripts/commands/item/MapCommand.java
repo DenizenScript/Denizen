@@ -25,7 +25,7 @@ public class MapCommand extends AbstractCommand {
 
     public MapCommand() {
         setName("map");
-        setSyntax("map [<#>/new:<world>] [reset:<location> (scale:<value>) (tracking)/image:<file> (resize)/script:<script> (x:<#>) (y:<#>)");
+        setSyntax("map [<#>/new:<world>] [reset:<location> (scale:<value>) (tracking)/image:<file> (resize)/script:<script>] (x:<#>) (y:<#>)");
         setRequiredArguments(2, 7);
         isProcedural = false;
     }
