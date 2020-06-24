@@ -46,7 +46,7 @@ public class ScoreboardCommand extends AbstractCommand {
     //
     // There are currently three slots where objectives can be displayed:
     // in the sidebar on the right of the screen, below player names and in the player list that shows up when you press Tab.
-    // The names of these slots can be found here: <@link url http://jd.bukkit.org/rb/apidocs/org/bukkit/scoreboard/DisplaySlot.html>
+    // The names of these slots can be found here: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/scoreboard/DisplaySlot.html>
     //
     // Every objective has several lines of scores.
     // Technically, the lines track players, but fake player names can be used by Denizen to let you call the lines anything you want.

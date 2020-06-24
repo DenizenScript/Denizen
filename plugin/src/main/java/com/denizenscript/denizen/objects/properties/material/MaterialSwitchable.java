@@ -8,6 +8,7 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.Powerable;
 import org.bukkit.block.data.Openable;
+import org.bukkit.block.data.type.DaylightDetector;
 import org.bukkit.block.data.type.Dispenser;
 
 public class MaterialSwitchable  implements Property {
@@ -17,7 +18,8 @@ public class MaterialSwitchable  implements Property {
                 && ((MaterialTag) material).hasModernData()
                 && (((MaterialTag) material).getModernData().data instanceof Powerable
                 || ((MaterialTag) material).getModernData().data instanceof Openable
-                || ((MaterialTag) material).getModernData().data instanceof Dispenser);
+                || ((MaterialTag) material).getModernData().data instanceof Dispenser
+                || ((MaterialTag) material).getModernData().data instanceof DaylightDetector);
     }
 
     public static MaterialSwitchable getFrom(ObjectTag _material) {
@@ -47,7 +49,7 @@ public class MaterialSwitchable  implements Property {
         // @mechanism MaterialTag.switched
         // @group properties
         // @description
-        // Returns whether a Powerable material (like pressure plates) or an Openable material (like doors), or a dispenser is switched.
+        // Returns whether a Powerable material (like pressure plates) or an Openable material (like doors), or a dispenser, or a daylight sensor is switched.
         // -->
         PropertyParser.<MaterialSwitchable>registerTag("switched", (attribute, material) -> {
             return new ElementTag(material.getState());
@@ -66,12 +68,20 @@ public class MaterialSwitchable  implements Property {
         return material.getModernData().data instanceof Openable;
     }
 
+    public boolean isDisepnser() {
+        return material.getModernData().data instanceof Dispenser;
+    }
+
     public Openable getOpenable() {
         return (Openable) material.getModernData().data;
     }
 
     public Dispenser getDispenser() {
         return (Dispenser) material.getModernData().data;
+    }
+
+    public DaylightDetector getDaylightDetector() {
+        return (DaylightDetector) material.getModernData().data;
     }
 
     public boolean getState() {
@@ -81,23 +91,26 @@ public class MaterialSwitchable  implements Property {
         else if (isPowerable()) {
             return getPowerable().isPowered();
         }
-        else {
+        else if (isDisepnser()) {
             return getDispenser().isTriggered();
+        }
+        else {
+            return getDaylightDetector().isInverted();
         }
     }
 
     public void setState(boolean state) {
         if (isOpenable()) {
             getOpenable().setOpen(state);
-            return;
         }
         else if (isPowerable()) {
             getPowerable().setPowered(state);
-            return;
+        }
+        else if (isDisepnser()) {
+            getDispenser().setTriggered(state);
         }
         else {
-            getDispenser().setTriggered(state);
-            return;
+            getDaylightDetector().setInverted(state);
         }
     }
 
@@ -119,7 +132,7 @@ public class MaterialSwitchable  implements Property {
         // @name switched
         // @input ElementTag(Boolean)
         // @description
-        // Sets whether a Powerable material (like pressure plates) or an Openable material (like doors), or a dispenser is switched.
+        // Sets whether a Powerable material (like pressure plates) or an Openable material (like doors), or a dispenser, or a daylight sensor is switched.
         // @tags
         // <MaterialTag.switched>
         // -->
