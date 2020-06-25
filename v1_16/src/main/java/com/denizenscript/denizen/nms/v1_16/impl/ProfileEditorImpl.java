@@ -10,10 +10,7 @@ import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.server.v1_16_R1.EntityPlayer;
-import net.minecraft.server.v1_16_R1.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_16_R1.PacketPlayOutNamedEntitySpawn;
-import net.minecraft.server.v1_16_R1.PacketPlayOutPlayerInfo;
+import net.minecraft.server.v1_16_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_16_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
@@ -50,7 +47,7 @@ public class ProfileEditorImpl extends ProfileEditor {
                     else {
                         if (isSkinChanging) {
                             ((CraftServer) Bukkit.getServer()).getHandle().moveToWorld(
-                                    entityPlayer, entityPlayer.dimension, true, player.getLocation(), false);
+                                    entityPlayer, (WorldServer) entityPlayer.world, true, player.getLocation(), false);
                         }
                         player.updateInventory();
                     }

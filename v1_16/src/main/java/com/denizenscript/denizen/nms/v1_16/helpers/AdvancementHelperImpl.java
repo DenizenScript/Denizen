@@ -116,8 +116,8 @@ public class AdvancementHelperImpl extends AdvancementHelper {
                 Collections.emptySet(),
                 Collections.emptyMap()));
         AdvancementDataPlayer data = nmsPlayer.getAdvancementData();
-        data.c(); // save progress
-        data.b(); // clear progress
+        data.b(); // save progress
+        data.a(DedicatedServer.getServer().getAdvancementData()); // clear progress
         data.b(nmsPlayer); // load progress and update client
     }
 

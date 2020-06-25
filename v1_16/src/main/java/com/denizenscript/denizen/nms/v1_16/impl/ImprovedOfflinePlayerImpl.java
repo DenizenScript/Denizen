@@ -84,7 +84,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
     @Override
     public void setEnderChest(Inventory inventory) {
         NBTTagCompound nbtTagCompound = ((CompoundTagImpl) compound).toNMSTag();
-        nbtTagCompound.set("EnderItems", ((InventoryEnderChest) ((CraftInventory) inventory).getInventory()).f());
+        nbtTagCompound.set("EnderItems", ((InventoryEnderChest) ((CraftInventory) inventory).getInventory()).g());
         this.compound = CompoundTagImpl.fromNMSTag(nbtTagCompound);
         if (this.autosave) {
             savePlayerData();
@@ -93,29 +93,37 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
 
     @Override
     public double getMaxHealth() {
-        AttributeInstance maxHealth = getAttributes().a(GenericAttributes.MAX_HEALTH);
+        AttributeModifiable maxHealth = getAttributes().a(GenericAttributes.MAX_HEALTH);
         return maxHealth == null ? GenericAttributes.MAX_HEALTH.getDefault() : maxHealth.getValue();
     }
 
     @Override
     public void setMaxHealth(double input) {
+        throw new UnsupportedOperationException(); // TODO: 1.16: Attribute logic changed!
+        /*
         AttributeMapBase attributes = getAttributes();
-        AttributeInstance maxHealth = attributes.a(GenericAttributes.MAX_HEALTH);
+        AttributeModifiable maxHealth = attributes.a(GenericAttributes.MAX_HEALTH);
         if (maxHealth == null) {
             maxHealth = attributes.b(GenericAttributes.MAX_HEALTH);
         }
         maxHealth.setValue(input);
         setAttributes(attributes);
+        */
     }
 
     private AttributeMapBase getAttributes() {
+        throw new UnsupportedOperationException(); // TODO: 1.16: Attribute logic changed!
+        /*
         AttributeMapBase amb = new AttributeMapServer();
         initAttributes(amb);
         GenericAttributes.a(amb, ((CompoundTagImpl) this.compound).toNMSTag().getList("Attributes", 10));
         return amb;
+        */
     }
 
     private void initAttributes(AttributeMapBase amb) {
+        throw new UnsupportedOperationException(); // TODO: 1.16: Attribute logic changed!
+        /*
         // --v from EntityHuman superclass (EntityLiving) v--
         amb.b(GenericAttributes.MAX_HEALTH);
         amb.b(GenericAttributes.KNOCKBACK_RESISTANCE);
@@ -128,15 +136,19 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
         amb.b(GenericAttributes.MOVEMENT_SPEED).setValue(0.10000000149011612D);
         amb.b(GenericAttributes.ATTACK_SPEED);
         amb.b(GenericAttributes.LUCK);
+        */
     }
 
     public void setAttributes(AttributeMapBase attributes) {
+        throw new UnsupportedOperationException(); // TODO: 1.16: Attribute logic changed!
+        /*
         NBTTagCompound nbtTagCompound = ((CompoundTagImpl) compound).toNMSTag();
         nbtTagCompound.set("Attributes", GenericAttributes.a(attributes));
         this.compound = CompoundTagImpl.fromNMSTag(nbtTagCompound);
         if (this.autosave) {
             savePlayerData();
         }
+        */
     }
 
     @Override

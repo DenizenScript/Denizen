@@ -6,6 +6,8 @@ import com.denizenscript.denizen.nms.v1_16.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.nms.interfaces.PacketHelper;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.JNBTListTag;
+import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.server.v1_16_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
@@ -25,6 +27,7 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
+import java.lang.invoke.MethodHandle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +35,8 @@ import java.util.List;
 public class PacketHelperImpl implements PacketHelper {
 
     public static final DataWatcherObject<Float> ENTITY_HUMAN_DATA_WATCHER_ABSORPTION = ReflectionHelper.getFieldValue(EntityHuman.class, "c", null);
+
+    public static final MethodHandle ABILITIES_PACKET_FOV_SETTER = ReflectionHelper.getFinalSetter(PacketPlayOutAbilities.class, "f");
 
     @Override
     public void setFakeAbsorption(Player player, float value) {
@@ -75,7 +80,12 @@ public class PacketHelperImpl implements PacketHelper {
     public void setFieldOfView(Player player, float fov) {
         PacketPlayOutAbilities packet = new PacketPlayOutAbilities(((CraftPlayer) player).getHandle().abilities);
         if (!Float.isNaN(fov)) {
-            packet.b(fov);
+            try {
+                ABILITIES_PACKET_FOV_SETTER.invoke(packet, fov);
+            }
+            catch (Throwable ex) {
+                Debug.echoError(ex);
+            }
         }
         sendPacket(player, packet);
     }
@@ -110,12 +120,12 @@ public class PacketHelperImpl implements PacketHelper {
         sendPacket(player, new PacketPlayOutSpawnEntityLiving(entity));
         sendPacket(player, new PacketPlayOutCamera(entity));
         ((CraftServer) Bukkit.getServer()).getHandle().moveToWorld(((CraftPlayer) player).getHandle(),
-                ((CraftWorld) player.getWorld()).getHandle().worldProvider.getDimensionManager(), true, player.getLocation(), false);
+                ((CraftWorld) player.getWorld()).getHandle(), true, player.getLocation(), false);
     }
 
     @Override
     public void showDemoScreen(Player player) {
-        sendPacket(player, new PacketPlayOutGameStateChange(5, 0.0F));
+        sendPacket(player, new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.f, 0.0F));
     }
 
     @Override
@@ -181,7 +191,10 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void showEquipment(Player player, LivingEntity entity, EquipmentSlot equipmentSlot, ItemStack itemStack) {
-        sendPacket(player, new PacketPlayOutEntityEquipment(entity.getEntityId(), CraftEquipmentSlot.getNMS(equipmentSlot), CraftItemStack.asNMSCopy(itemStack)));
+        Pair<EnumItemSlot, net.minecraft.server.v1_16_R1.ItemStack> pair = new Pair<>(CraftEquipmentSlot.getNMS(equipmentSlot), CraftItemStack.asNMSCopy(itemStack));
+        ArrayList<Pair<EnumItemSlot, net.minecraft.server.v1_16_R1.ItemStack>> pairList = new ArrayList<>();
+        pairList.add(pair);
+        sendPacket(player, new PacketPlayOutEntityEquipment(entity.getEntityId(), pairList));
     }
 
     @Override

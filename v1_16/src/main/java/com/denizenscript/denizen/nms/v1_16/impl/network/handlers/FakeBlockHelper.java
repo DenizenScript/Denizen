@@ -132,14 +132,14 @@ public class FakeBlockHelper {
                                 subPaletteId = paletteLen;
                                 paletteLen++;
                                 palette = newPalette;
-                                int newWdith = MathHelper.d(paletteLen);
-                                if (newWdith > width) {
-                                    DataBits newBits = new DataBits(newWdith, 4096);
+                                int newWidth = MathHelper.e(paletteLen);
+                                if (newWidth > width) {
+                                    DataBits newBits = new DataBits(newWidth, 4096);
                                     for (int i = 0; i < bits.b(); i++) {
                                         newBits.a(i, bits.a(i));
                                     }
                                     bits = newBits;
-                                    width = newWdith;
+                                    width = newWidth;
                                 }
                             }
                             bits.a(blockIndex, subPaletteId);

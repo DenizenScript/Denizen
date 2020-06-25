@@ -39,9 +39,13 @@ public class CustomEntityHelperImpl implements CustomEntityHelper {
 
     @Override
     public ItemProjectile spawnItemProjectile(Location location, ItemStack itemStack) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException();
+        /*
         CraftWorld world = (CraftWorld) location.getWorld();
         EntityItemProjectileImpl entity = new EntityItemProjectileImpl(world, location, itemStack);
         return entity.getBukkitEntity();
+        */
     }
 
     @Override

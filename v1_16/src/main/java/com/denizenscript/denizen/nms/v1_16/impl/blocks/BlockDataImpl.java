@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_16_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R1.block.data.CraftBlockData;
 
 public class BlockDataImpl implements BlockData {
 
@@ -58,7 +59,7 @@ public class BlockDataImpl implements BlockData {
             ctag = (CompoundTagImpl) builder.build();
             BlockPosition blockPos = new BlockPosition(block.getX(), block.getY(), block.getZ());
             TileEntity te = ((CraftWorld) block.getWorld()).getHandle().getTileEntity(blockPos);
-            te.load(ctag.toNMSTag());
+            te.load(((CraftBlockData) block.getBlockData()).getState(), ctag.toNMSTag());
         }
     }
 

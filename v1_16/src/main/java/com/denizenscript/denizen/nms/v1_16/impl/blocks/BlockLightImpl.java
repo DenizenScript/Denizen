@@ -98,9 +98,9 @@ public class BlockLightImpl extends BlockLight {
                 Chunk chunk = world.getChunkAt(chunkX, chunkZ);
                 boolean any = false;
                 for (Vector vec : RELATIVE_CHUNKS) {
-                    Chunk other = world.getChunkIfLoaded(chunkX + vec.getBlockX(), chunkZ + vec.getBlockZ());
-                    if (other != null) {
-                        List<BlockLight> lights = lightsByChunk.get(other.bukkitChunk);
+                    IChunkAccess other = world.getChunkAt(chunkX + vec.getBlockX(), chunkZ + vec.getBlockZ(), ChunkStatus.FULL, false);
+                    if (other instanceof Chunk) {
+                        List<BlockLight> lights = lightsByChunk.get(((Chunk) other).bukkitChunk);
                         if (lights != null) {
                             any = true;
                             for (BlockLight light : lights) {
@@ -129,11 +129,11 @@ public class BlockLightImpl extends BlockLight {
             int bitMask = PACKETPLAYOUTLIGHTUPDATE_BLOCKLIGHT_BITMASK.getInt(packet);
             List<byte[]> blockData = (List<byte[]>) PACKETPLAYOUTLIGHTUPDATE_BLOCKLIGHT_DATA.get(packet);
             Bukkit.getScheduler().scheduleSyncDelayedTask(NMSHandler.getJavaPlugin(), () -> {
-                Chunk chk = world.getChunkIfLoaded(cX, cZ);
-                if (chk == null) {
+                IChunkAccess chk = world.getChunkAt(cX, cZ, ChunkStatus.FULL, false);
+                if (!(chk instanceof Chunk)) {
                     return;
                 }
-                List<BlockLight> lights = lightsByChunk.get(chk.bukkitChunk);
+                List<BlockLight> lights = lightsByChunk.get(((Chunk) chk).bukkitChunk);
                 if (lights == null) {
                     return;
                 }
@@ -145,7 +145,7 @@ public class BlockLightImpl extends BlockLight {
                     }
                 }
                 if (any) {
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(NMSHandler.getJavaPlugin(), () -> sendNearbyChunkUpdates(chk), 3);
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(NMSHandler.getJavaPlugin(), () -> sendNearbyChunkUpdates((Chunk) chk), 3);
                 }
             }, 1);
         }
@@ -237,9 +237,9 @@ public class BlockLightImpl extends BlockLight {
     public static void sendNearbyChunkUpdates(Chunk chunk) {
         ChunkCoordIntPair pos = chunk.getPos();
         for (Vector vec : RELATIVE_CHUNKS) {
-            Chunk other = chunk.getWorld().getChunkIfLoaded(pos.x + vec.getBlockX(), pos.z + vec.getBlockZ());
-            if (other != null) {
-                sendSingleChunkUpdate(other);
+            IChunkAccess other = chunk.getWorld().getChunkAt(pos.x + vec.getBlockX(), pos.z + vec.getBlockZ(), ChunkStatus.FULL, false);
+            if (other instanceof Chunk) {
+                sendSingleChunkUpdate((Chunk) other);
             }
         }
     }
@@ -248,7 +248,7 @@ public class BlockLightImpl extends BlockLight {
         doNotCheck = true;
         LightEngine lightEngine = chunk.e();
         ChunkCoordIntPair pos = chunk.getPos();
-        PacketPlayOutLightUpdate packet = new PacketPlayOutLightUpdate(pos, lightEngine);
+        PacketPlayOutLightUpdate packet = new PacketPlayOutLightUpdate(pos, lightEngine, true); // TODO: 1.16: should 'trust edges' be true here?
         ((WorldServer) chunk.world).getChunkProvider().playerChunkMap.a(pos, false).forEach((player) -> {
             player.playerConnection.sendPacket(packet);
         });

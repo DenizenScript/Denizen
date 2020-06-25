@@ -152,16 +152,20 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public String getJsonString(ItemStack itemStack) {
-        String json = CraftItemStack.asNMSCopy(itemStack).B().getChatModifier().toString().replace("\\", "\\\\").replace("\"", "\\\"");
+        String json = CraftItemStack.asNMSCopy(itemStack).C().getChatModifier().toString().replace("\\", "\\\\").replace("\"", "\\\"");
         return json.substring(176, json.length() - 185);
     }
 
     @Override
     public String getRawHoverText(ItemStack itemStack) {
+        throw new UnsupportedOperationException();
+        // TODO: 1.16
+        /*
         if (itemStack == null || itemStack.getType() == Material.AIR) {
             return "";
         }
-        return CraftItemStack.asNMSCopy(itemStack).B().getChatModifier().getHoverEvent().b().getText();
+        return CraftItemStack.asNMSCopy(itemStack).C().getChatModifier().getHoverEvent().b().getText();
+        */
     }
 
     @Override

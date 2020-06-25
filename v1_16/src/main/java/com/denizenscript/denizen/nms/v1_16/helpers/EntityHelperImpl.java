@@ -44,6 +44,8 @@ public class EntityHelperImpl extends EntityHelper {
 
     public static final MethodHandle ENTITY_SETPOSE = ReflectionHelper.getMethodHandle(net.minecraft.server.v1_16_R1.Entity.class, "setPose", EntityPose.class);
 
+    public static final MethodHandle ENTITY_ONGROUND_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.server.v1_16_R1.Entity.class, "onGround");
+
     @Override
     public double getAbsorption(LivingEntity entity) {
         return entity.getAbsorptionAmount();
@@ -113,6 +115,8 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public String getRawHoverText(Entity entity) {
+        throw new UnsupportedOperationException();
+        /*
         try {
             ChatHoverable hoverable = (ChatHoverable) ENTITY_HOVER_TEXT_GETTER.invoke(((CraftEntity) entity).getHandle());
             return hoverable.b().getText();
@@ -120,7 +124,7 @@ public class EntityHelperImpl extends EntityHelper {
         catch (Throwable ex) {
             ex.printStackTrace();
             return null;
-        }
+        }*/
     }
 
     public List<String> getDiscoveredRecipes(Player player) {
@@ -219,13 +223,13 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public CompoundTag getNbtData(Entity entity) {
         NBTTagCompound compound = new NBTTagCompound();
-        ((CraftEntity) entity).getHandle().c(compound);
+        ((CraftEntity) entity).getHandle().a_(compound);
         return CompoundTagImpl.fromNMSTag(compound);
     }
 
     @Override
     public void setNbtData(Entity entity, CompoundTag compoundTag) {
-        ((CraftEntity) entity).getHandle().f(((CompoundTagImpl) compoundTag).toNMSTag());
+        ((CraftEntity) entity).getHandle().load(((CompoundTagImpl) compoundTag).toNMSTag());
     }
 
     /*
@@ -358,7 +362,12 @@ public class EntityHelperImpl extends EntityHelper {
         final boolean aiDisabled = !entity.hasAI();
         if (aiDisabled) {
             entity.setAI(true);
-            nmsEntity.onGround = true;
+            try {
+                ENTITY_ONGROUND_SETTER.invoke(nmsEntity, true);
+            }
+            catch (Throwable ex) {
+                Debug.echoError(ex);
+            }
         }
         path = entityNavigation.a(location.getX(), location.getY(), location.getZ(), 0);
         if (path != null) {
@@ -470,7 +479,7 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public float getBaseYaw(Entity entity) {
         net.minecraft.server.v1_16_R1.Entity handle = ((CraftEntity) entity).getHandle();
-        return ((EntityLiving) handle).aL;
+        return ((EntityLiving) handle).aK;
     }
 
     @Override
@@ -486,11 +495,11 @@ public class EntityHelperImpl extends EntityHelper {
                 while (yaw >= 180.0F) {
                     yaw -= 360.0F;
                 }
-                livingHandle.aL = yaw;
+                livingHandle.aK = yaw;
                 if (!(handle instanceof EntityHuman)) {
-                    livingHandle.aK = yaw;
+                    livingHandle.aJ = yaw;
                 }
-                livingHandle.aM = yaw;
+                livingHandle.aL = yaw;
             }
             handle.pitch = pitch;
         }

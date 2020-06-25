@@ -1,23 +1,21 @@
 package com.denizenscript.denizen.nms.v1_16.impl.entities;
-
+/*
 import com.denizenscript.denizen.nms.interfaces.ItemProjectile;
 import org.bukkit.craftbukkit.v1_16_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftItem;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftLivingEntity;
-import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.projectiles.ProjectileSource;*/
 
-public class CraftItemProjectileImpl extends CraftItem implements ItemProjectile {
+// TODO: 1.16
+
+public class CraftItemProjectileImpl {} /* extends CraftItem implements ItemProjectile {
 
     private boolean doesBounce;
 
     public CraftItemProjectileImpl(CraftServer server, EntityItemProjectileImpl entity) {
         super(server, entity);
     }
-
-    /*
-    public static ItemProjectile createItemProjectile(Location location, ArrayList<Mechanism> mechanisms) {
-    }*/
 
     @Override
     public EntityItemProjectileImpl getHandle() {
@@ -59,3 +57,4 @@ public class CraftItemProjectileImpl extends CraftItem implements ItemProjectile
         this.doesBounce = doesBounce;
     }
 }
+*/

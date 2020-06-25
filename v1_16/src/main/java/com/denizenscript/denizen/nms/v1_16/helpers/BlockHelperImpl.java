@@ -141,7 +141,7 @@ public class BlockHelperImpl implements BlockHelper {
         if (tileEntity == null) {
             return;
         }
-        tileEntity.load(((CompoundTagImpl) compoundTag).toNMSTag());
+        tileEntity.load(((CraftBlockData) block.getBlockData()).getState(), ((CompoundTagImpl) compoundTag).toNMSTag());
         tileEntity.update();
     }
 
@@ -192,7 +192,7 @@ public class BlockHelperImpl implements BlockHelper {
             return false;
         }
         // protected final float durability;
-        ReflectionHelper.setFieldValue(net.minecraft.server.v1_16_R1.Block.class, "durability", block, resistance);
+        ReflectionHelper.setFieldValue(net.minecraft.server.v1_16_R1.BlockBase.class, "durability", block, resistance);
         return true;
     }
 
@@ -202,7 +202,7 @@ public class BlockHelperImpl implements BlockHelper {
         if (block == null) {
             return 0;
         }
-        return ReflectionHelper.getFieldValue(net.minecraft.server.v1_16_R1.Block.class, "durability", block);
+        return ReflectionHelper.getFieldValue(net.minecraft.server.v1_16_R1.BlockBase.class, "durability", block);
     }
 
     @Override
@@ -216,14 +216,11 @@ public class BlockHelperImpl implements BlockHelper {
         return new CraftBlockState(mat);
     }
 
-    // protected final Material material;
-    public static final Field BLOCK_MATERIAL = ReflectionHelper.getFields(net.minecraft.server.v1_16_R1.Block.class).get("material");
+    public static final Field BLOCK_MATERIAL = ReflectionHelper.getFields(net.minecraft.server.v1_16_R1.BlockBase.class).get("material");
 
-    // private final EnumPistonReaction R;
-    public static final MethodHandle MATERIAL_PUSH_REACTION_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.server.v1_16_R1.Material.class, "R");
+    public static final MethodHandle MATERIAL_PUSH_REACTION_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.server.v1_16_R1.Material.class, "S");
 
-    // public final float strength;
-    public static final MethodHandle BLOCK_STRENGTH_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.server.v1_16_R1.Block.class, "strength");
+    public static final MethodHandle BLOCK_STRENGTH_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.server.v1_16_R1.BlockBase.BlockData.class, "strength");
 
     public net.minecraft.server.v1_16_R1.Block getMaterialBlock(Material bukkitMaterial) {
         return ((CraftBlockData) bukkitMaterial.createBlockData()).getState().getBlock();
@@ -256,13 +253,13 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public float getBlockStength(Material mat) {
-        return getMaterialBlock(mat).strength;
+        return getMaterialBlock(mat).getBlockData().strength;
     }
 
     @Override
     public void setBlockStrength(Material mat, float strength) {
         try {
-            BLOCK_STRENGTH_SETTER.invoke(getMaterialBlock(mat), strength);
+            BLOCK_STRENGTH_SETTER.invoke(getMaterialBlock(mat).getBlockData(), strength);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);

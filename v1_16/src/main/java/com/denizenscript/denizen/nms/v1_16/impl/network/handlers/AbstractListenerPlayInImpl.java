@@ -2,10 +2,14 @@ package com.denizenscript.denizen.nms.v1_16.impl.network.handlers;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import net.minecraft.server.v1_16_R1.*;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
+import javax.annotation.Nullable;
 import java.util.Set;
 
 public class AbstractListenerPlayInImpl extends PlayerConnection {
@@ -28,6 +32,11 @@ public class AbstractListenerPlayInImpl extends PlayerConnection {
     }
 
     @Override
+    public void disconnect(IChatBaseComponent ichatbasecomponent) {
+        oldListener.disconnect(ichatbasecomponent);
+    }
+
+    @Override
     public void disconnect(String s) {
         oldListener.disconnect(s);
     }
@@ -38,8 +47,18 @@ public class AbstractListenerPlayInImpl extends PlayerConnection {
     }
 
     @Override
+    public void a(double d0, double d1, double d2, float f, float f1, PlayerTeleportEvent.TeleportCause cause) {
+        oldListener.a(d0, d1, d2, f, f1, cause);
+    }
+
+    @Override
     public void a(double d0, double d1, double d2, float f, float f1, Set<PacketPlayOutPosition.EnumPlayerTeleportFlags> set) {
         oldListener.a(d0, d1, d2, f, f1, set);
+    }
+
+    @Override
+    public void a(double d0, double d1, double d2, float f, float f1, Set<PacketPlayOutPosition.EnumPlayerTeleportFlags> set, PlayerTeleportEvent.TeleportCause cause) {
+        oldListener.a(d0, d1, d2, f, f1, set, cause);
     }
 
     @Override
@@ -60,6 +79,11 @@ public class AbstractListenerPlayInImpl extends PlayerConnection {
     @Override
     public void tick() {
         oldListener.tick();
+    }
+
+    @Override
+    public void syncPosition() {
+        oldListener.syncPosition();
     }
 
     public void handlePacketIn(Packet<PacketListenerPlayIn> packet) {
@@ -315,6 +339,12 @@ public class AbstractListenerPlayInImpl extends PlayerConnection {
     }
 
     @Override
+    public void a(PacketPlayInJigsawGenerate packet) {
+        handlePacketIn(packet);
+        oldListener.a(packet);
+    }
+
+    @Override
     public void a(PacketPlayInDifficultyLock packet) {
         handlePacketIn(packet);
         oldListener.a(packet);
@@ -329,5 +359,10 @@ public class AbstractListenerPlayInImpl extends PlayerConnection {
     @Override
     public void a(IChatBaseComponent iChatBaseComponent) {
         oldListener.a(iChatBaseComponent);
+    }
+
+    @Override
+    public void a(Packet<?> packet, @Nullable GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
+        oldListener.a(packet, genericfuturelistener);
     }
 }

@@ -20,8 +20,8 @@ public class FishingHelperImpl implements FishingHelper {
         EntityFishingHook nmsHook = ((CraftFishHook) fishHook).getHandle();
         if (catchType == CatchType.DEFAULT) {
             float f = ((CraftWorld) fishHook.getWorld()).getHandle().random.nextFloat();
-            int i = EnchantmentManager.g(nmsHook.owner);
-            int j = EnchantmentManager.a(Enchantments.LURE, nmsHook.owner);
+            int i = EnchantmentManager.g((EntityHuman) nmsHook.getShooter());
+            int j = EnchantmentManager.a(Enchantments.LURE, (EntityHuman) nmsHook.getShooter());
             float f1 = 0.1F - (float) i * 0.025F - (float) j * 0.01F;
             float f2 = 0.05F + (float) i * 0.01F - (float) j * 0.01F;
 

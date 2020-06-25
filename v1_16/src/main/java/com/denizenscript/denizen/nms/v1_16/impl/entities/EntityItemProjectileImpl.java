@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.nms.v1_16.impl.entities;
 
+/*
 import com.denizenscript.denizen.nms.v1_16.Handler;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_16_R1.*;
@@ -12,9 +13,12 @@ import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
 
 import java.util.Iterator;
 import java.util.UUID;
+*/
 
-public class EntityItemProjectileImpl extends EntityItem implements IProjectile {
+// TODO: 1.16: IProjectile isn't an interface anymore.
 
+public class EntityItemProjectileImpl { // extends EntityItem implements IProjectile
+/*
     public Entity shooter;
     public UUID shooterId;
     public Entity c;
@@ -179,5 +183,5 @@ public class EntityItemProjectileImpl extends EntityItem implements IProjectile 
     @Override
     public CraftItemProjectileImpl getBukkitEntity() {
         return (CraftItemProjectileImpl) super.getBukkitEntity();
-    }
+    }*/
 }

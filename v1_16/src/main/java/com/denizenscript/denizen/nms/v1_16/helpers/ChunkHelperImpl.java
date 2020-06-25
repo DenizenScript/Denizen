@@ -71,8 +71,9 @@ public class ChunkHelperImpl implements ChunkHelper {
 
     @Override
     public void refreshChunkSections(Chunk chunk) {
-        PacketPlayOutMapChunk lowPacket = new PacketPlayOutMapChunk(((CraftChunk) chunk).getHandle(), 255); // 00000000 11111111
-        PacketPlayOutMapChunk highPacket = new PacketPlayOutMapChunk(((CraftChunk) chunk).getHandle(), 65280); // 11111111 00000000
+        // TODO: 1.16: is false for 'Ignore old data' in the packets below good?
+        PacketPlayOutMapChunk lowPacket = new PacketPlayOutMapChunk(((CraftChunk) chunk).getHandle(), 255, false); // 00000000 11111111
+        PacketPlayOutMapChunk highPacket = new PacketPlayOutMapChunk(((CraftChunk) chunk).getHandle(), 65280, false); // 11111111 00000000
         ChunkCoordIntPair pos = new ChunkCoordIntPair(chunk.getX(), chunk.getZ());
         PlayerChunk playerChunk = ((CraftWorld) chunk.getWorld()).getHandle().getChunkProvider()
                 .playerChunkMap.visibleChunks.get(pos.pair());

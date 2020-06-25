@@ -10,6 +10,7 @@ import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.server.v1_16_R1.*;
 import org.bukkit.*;
 import org.bukkit.Chunk;
@@ -70,7 +71,10 @@ public class PlayerHelperImpl extends PlayerHelper {
             for (EnumItemSlot itemSlot : EnumItemSlot.values()) {
                 ItemStack nmsItemStack = nmsLivingEntity.getEquipment(itemSlot);
                 if (nmsItemStack != null && nmsItemStack.getItem() != Items.AIR) {
-                    conn.sendPacket(new PacketPlayOutEntityEquipment(nmsLivingEntity.getId(), itemSlot, nmsItemStack));
+                    Pair<EnumItemSlot, ItemStack> pair = new Pair<>(itemSlot, nmsItemStack);
+                    ArrayList<Pair<EnumItemSlot, net.minecraft.server.v1_16_R1.ItemStack>> pairList = new ArrayList<>();
+                    pairList.add(pair);
+                    conn.sendPacket(new PacketPlayOutEntityEquipment(nmsLivingEntity.getId(), pairList));
                 }
             }
         }
@@ -79,9 +83,6 @@ public class PlayerHelperImpl extends PlayerHelper {
         }
         else if (nmsEntity instanceof EntityPainting) {
             conn.sendPacket(new PacketPlayOutSpawnEntityPainting((EntityPainting) nmsEntity));
-        }
-        else if (nmsEntity instanceof EntityLightning) {
-            conn.sendPacket(new PacketPlayOutSpawnEntityWeather(nmsEntity));
         }
         else {
             conn.sendPacket(new PacketPlayOutSpawnEntity(nmsEntity));
@@ -141,12 +142,12 @@ public class PlayerHelperImpl extends PlayerHelper {
 
     @Override
     public float getMaxAttackCooldownTicks(Player player) {
-        return ((CraftPlayer) player).getHandle().ex() + 3;
+        return ((CraftPlayer) player).getHandle().eR() + 3;
     }
 
     @Override
     public float getAttackCooldownPercent(Player player) {
-        return ((CraftPlayer) player).getHandle().s(0.5f);
+        return ((CraftPlayer) player).getHandle().getAttackCooldown(0.5f);
     }
 
     @Override
@@ -181,7 +182,7 @@ public class PlayerHelperImpl extends PlayerHelper {
         GameProfile profile = ((CraftPlayer) player).getProfile();
         OpList opList = server.getPlayerList().getOPs();
         if (op) {
-            int permLevel = server.j();
+            int permLevel = server.g();
             opList.add(new OpListEntry(profile, permLevel, opList.b(profile)));
         }
         else {
@@ -193,7 +194,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public void showEndCredits(Player player) {
         ((CraftPlayer) player).getHandle().viewingCredits = true;
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutGameStateChange(4, 0.0F));
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.e, 0.0F));
     }
 
     @Override
