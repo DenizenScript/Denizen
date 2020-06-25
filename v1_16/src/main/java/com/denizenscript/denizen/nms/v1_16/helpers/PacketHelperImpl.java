@@ -125,7 +125,7 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void showDemoScreen(Player player) {
-        sendPacket(player, new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.f, 0.0F));
+        sendPacket(player, new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.f, 0f));
     }
 
     @Override

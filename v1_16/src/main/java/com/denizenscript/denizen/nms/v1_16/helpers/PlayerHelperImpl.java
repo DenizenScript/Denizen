@@ -194,7 +194,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public void showEndCredits(Player player) {
         ((CraftPlayer) player).getHandle().viewingCredits = true;
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.e, 0.0F));
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.e, 1f));
     }
 
     @Override
