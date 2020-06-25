@@ -13,8 +13,8 @@ import org.bukkit.entity.Wolf;
 public class EntityAngry implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag && (((EntityTag) entity).getBukkitEntityType() == EntityType.WOLF
-                || ((EntityTag) entity).getBukkitEntityType() == EntityType.PIG_ZOMBIE);
+        return entity instanceof EntityTag && (((EntityTag) entity).getBukkitEntity() instanceof Wolf
+                || ((EntityTag) entity).getBukkitEntity() instanceof PigZombie);
     }
 
     public static EntityAngry getFrom(ObjectTag entity) {
@@ -42,7 +42,7 @@ public class EntityAngry implements Property {
 
     @Override
     public String getPropertyString() {
-        if (entity.getBukkitEntityType() == EntityType.WOLF) {
+        if (entity.getBukkitEntity() instanceof Wolf) {
             if (!((Wolf) entity.getLivingEntity()).isAngry()) {
                 return null;
             }
@@ -50,7 +50,7 @@ public class EntityAngry implements Property {
                 return "true";
             }
         }
-        else if (entity.getBukkitEntityType() == EntityType.PIG_ZOMBIE) {
+        else if (entity.getBukkitEntity() instanceof PigZombie) {
             if (!((PigZombie) entity.getLivingEntity()).isAngry()) {
                 return null;
             }
@@ -82,11 +82,11 @@ public class EntityAngry implements Property {
         // If the entity is a wolf or PigZombie, returns whether the entity is angry.
         // -->
         if (attribute.startsWith("angry")) {
-            if (entity.getBukkitEntityType() == EntityType.WOLF) {
+            if (entity.getBukkitEntity() instanceof Wolf) {
                 return new ElementTag(((Wolf) entity.getBukkitEntity()).isAngry())
                         .getObjectAttribute(attribute.fulfill(1));
             }
-            else if (entity.getBukkitEntityType() == EntityType.PIG_ZOMBIE) {
+            else if (entity.getBukkitEntity() instanceof PigZombie) {
                 return new ElementTag(((PigZombie) entity.getBukkitEntity()).isAngry())
                         .getObjectAttribute(attribute.fulfill(1));
             }
@@ -108,10 +108,10 @@ public class EntityAngry implements Property {
         // <EntityTag.angry>
         // -->
         if (mechanism.matches("angry") && mechanism.requireBoolean()) {
-            if (entity.getBukkitEntityType() == EntityType.WOLF) {
+            if (entity.getBukkitEntity() instanceof Wolf) {
                 ((Wolf) entity.getBukkitEntity()).setAngry(mechanism.getValue().asBoolean());
             }
-            else if (entity.getBukkitEntityType() == EntityType.PIG_ZOMBIE) {
+            else if (entity.getBukkitEntity() instanceof PigZombie) {
                 ((PigZombie) entity.getBukkitEntity()).setAngry(mechanism.getValue().asBoolean());
             }
         }
