@@ -35,7 +35,7 @@ public class MaterialCount implements Property {
     }
 
     public static final String[] handledMechs = new String[] {
-            "count", "pickle_count"
+            "count", "pickle_count", "hatch_count"
     };
 
     private MaterialCount(MaterialTag _material) {
@@ -81,6 +81,36 @@ public class MaterialCount implements Property {
         PropertyParser.<MaterialCount>registerTag("count_min", (attribute, material) -> {
             return new ElementTag(material.getMin());
         }, "pickle_min");
+
+        // <--[tag]
+        // @attribute <MaterialTag.hatch_count>
+        // @returns ElementTag(Number)
+        // @mechanism MaterialTag.count
+        // @group properties
+        // @description
+        // Returns the amount of eggs that will hatch from a Turtle Egg material.
+        // -->
+        PropertyParser.<MaterialCount>registerTag("hatch_count", (attribute, material) -> {
+            if (material.isTurtleEgg()) {
+                return new ElementTag(material.getTurtleEgg().getHatch());
+            }
+            return null;
+        });
+
+        // <--[tag]
+        // @attribute <MaterialTag.hatch_max>
+        // @returns ElementTag(Number)
+        // @mechanism MaterialTag.hatch_count_max
+        // @group properties
+        // @description
+        // Returns the maximum amount of eggs that will hatch from a Turtle Egg material.
+        // -->
+        PropertyParser.<MaterialCount>registerTag("hatch_count_max", (attribute, material) -> {
+            if (material.isTurtleEgg()) {
+                return new ElementTag(material.getTurtleEgg().getMaximumHatch());
+            }
+            return null;
+        });
 
     }
 
@@ -182,6 +212,25 @@ public class MaterialCount implements Property {
             else if (isRespawnAnchor()) {
                 ((RespawnAnchor) material.getModernData().data).setCharges(count);
             }
+        }
+
+        // <--[mechanism]
+        // @object MaterialTag
+        // @name count
+        // @input ElementTag(Number)
+        // @description
+        // Sets the amount of eggs that will hatch from a Turtle Egg material.
+        // @tags
+        // <MaterialTag.hatch_count>
+        // <MaterialTag.hatch_count_max>
+        // -->
+        if (mechanism.matches("hatch_count") && mechanism.requireInteger() && isTurtleEgg()) {
+            int count = mechanism.getValue().asInt();
+            if (count < getMin() || count > getMax()) {
+                Debug.echoError("Material hatch_count mechanism value '" + count + "' is not valid. Must be between " + getMin() + " and " + getMax() + ".");
+                return;
+            }
+            getTurtleEgg().setHatch(count);
         }
     }
 }
