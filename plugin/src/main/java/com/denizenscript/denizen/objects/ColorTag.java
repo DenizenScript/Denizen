@@ -30,7 +30,7 @@ public class ColorTag implements ObjectTag {
     // For example, 'co@50,64,128' or 'co@red'.
     //
     // A list of accepted color names can be found at
-    // <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Color.html>
+    // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Color.html>
     //
     // Red/green/blue values are each from 0 to 255.
     //

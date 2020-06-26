@@ -40,7 +40,7 @@ public class PlaySoundCommand extends AbstractCommand {
     //
     // Sounds are by default played under their normal sound type (eg zombie sounds are under the type Mobs/Animals).
     // You can optionally instead specify an alternate sound category to use.
-    // For a list of all valid sound categories, check <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/SoundCategory.html>
+    // For a list of all valid sound categories, check <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/SoundCategory.html>
     //
     // Specifying a player or list of players will only play the sound for each player, from their own location (but will not follow them if they move).
     // If a location is specified, it will play the sound for any players that are near the location specified.

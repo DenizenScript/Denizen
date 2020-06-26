@@ -1460,7 +1460,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @returns ElementTag(Number)
         // @description
         // Returns the player's current value for the specified statistic.
-        // Valid statistics: <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Statistic.html>
+        // Valid statistics: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Statistic.html>
         // Works with offline players.
         // -->
         registerTag("statistic", (attribute, object) -> {
@@ -1482,7 +1482,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             // @description
             // Returns the player's current value for the specified statistic, with the
             // specified qualifier, which can be either an entity or material.
-            // Valid statistics: <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Statistic.html>
+            // Valid statistics: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Statistic.html>
             // To check a statistic type dynamically, refer to <@link tag server.statistic_type>.
             // -->
             if (attribute.startsWith("qualifier", 2)) {
@@ -3419,7 +3419,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Shows the player fake patterns on a banner. Input must be in the form: "LOCATION|COLOR/PATTERN|..."
         // As of Minecraft 1.13, the base color is unique material types, and so <@link command showfake> must be used for base color changes.
-        // For the list of possible patterns, see <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/block/banner/PatternType.html>.
+        // For the list of possible patterns, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/banner/PatternType.html>.
         // -->
         if (mechanism.matches("banner_update")) {
             if (mechanism.getValue().asString().length() > 0) {

@@ -38,7 +38,7 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     // <context.entity> returns the EntityTag that spawned.
     // <context.location> returns the location the entity will spawn at.
     // <context.reason> returns the reason the entity spawned.
-    // Reasons: <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html>
+    // Reasons: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html>
     //
     // -->
 

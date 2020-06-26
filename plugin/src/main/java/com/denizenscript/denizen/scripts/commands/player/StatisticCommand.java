@@ -35,7 +35,7 @@ public class StatisticCommand extends AbstractCommand {
     // @Description
     // Changes the specified statistic for the player.
     // For more info on statistics, see <@link url https://minecraft.gamepedia.com/Statistics>
-    // For statistic names, see <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Statistic.html>
+    // For statistic names, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Statistic.html>
     //
     // You can add, take, or set a numeric value to the statistic for the linked player.
     // Works with offline players.

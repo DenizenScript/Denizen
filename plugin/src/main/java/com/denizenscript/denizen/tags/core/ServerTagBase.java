@@ -889,7 +889,7 @@ public class ServerTagBase {
         // @description
         // Returns a list of all statistic types known to the server.
         // Generally used with <@link tag PlayerTag.statistic>.
-        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Statistic.html>.
+        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Statistic.html>.
         // Optionally, specify a type to limit to statistics of a given type. Valid types: UNTYPED, ITEM, ENTITY, or BLOCK.
         // Refer also to <@link tag server.statistic_type>.
         // -->
