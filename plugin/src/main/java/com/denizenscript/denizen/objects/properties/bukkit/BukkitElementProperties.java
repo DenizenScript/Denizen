@@ -17,7 +17,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import net.md_5.bungee.chat.ComponentSerializer;
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.ChatColor;
 
 import javax.xml.bind.DatatypeConverter;
 import java.nio.charset.StandardCharsets;
@@ -259,7 +259,7 @@ public class BukkitElementProperties implements Property {
             String colors = "";
             for (String line : CoreUtilities.split(object.asString(), '\n')) {
                 output.add(colors + line);
-                colors = ChatColor.getLastColors(colors + line);
+                colors = org.bukkit.ChatColor.getLastColors(colors + line);
             }
             return output;
         });
@@ -272,7 +272,7 @@ public class BukkitElementProperties implements Property {
         // Returns the ChatColors used last in an element.
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("last_color", (attribute, object) -> {
-            return new ElementTag(ChatColor.getLastColors(object.asString()));
+            return new ElementTag(org.bukkit.ChatColor.getLastColors(object.asString()));
         });
 
         // <--[tag]
@@ -595,7 +595,7 @@ public class BukkitElementProperties implements Property {
         // @group text manipulation
         // @description
         // Makes the input text colored by the input color. Equivalent to "<COLOR><ELEMENT_HERE><COLOR.end_format>"
-        // Color can be either a color name, or code... that is: ".color[gold]" and ".color[6]" are both valid.
+        // Color can be a color name, color code, hex, or ColorTag... that is: ".color[gold]", ".color[6]", ".color[#AABB00]", and ".color[co@128,64,0]" are all valid.
         //
         // Note that end_format is a magic Denizen tool, and unlike other format codes (like 'bold') does not appear in Spigot's API or the old Minecraft chat system.
         // As such, it only works when sent through certain Denizen commands (narrate, announce, etc) or mechanisms (like ItemTag.book).
@@ -606,22 +606,35 @@ public class BukkitElementProperties implements Property {
                 return null;
             }
             String colorName = attribute.getContext(1);
-            ChatColor color = null;
+            String colorOut = null;
             if (colorName.length() == 1) {
-                color = ChatColor.getByChar(colorName.charAt(0));
+                ChatColor color = ChatColor.getByChar(colorName.charAt(0));
+                if (color != null) {
+                    colorOut = color.toString();
+                }
             }
-            if (color == null) {
+            else if (colorName.length() == 7 && colorName.startsWith("#")) {
+                return new ElementTag(ChatColor.COLOR_CHAR + "[color=" + colorName + "]" + object.asString() + ChatColor.COLOR_CHAR + "[reset=f]");
+            }
+            else if (colorName.startsWith("co@")) {
+                ColorTag color = ColorTag.valueOf(colorName, attribute.context);
+                String hex = Integer.toHexString(color.getColor().asRGB());
+                while (hex.length() < 6) {
+                    hex = "0" + hex;
+                }
+                return new ElementTag(ChatColor.COLOR_CHAR + "[color=#" + hex + "]" + object.asString() + ChatColor.COLOR_CHAR + "[reset=f]");
+            }
+            if (colorOut == null) {
                 try {
-                    color = ChatColor.valueOf(colorName.toUpperCase());
+                    ChatColor color = ChatColor.of(colorName.toUpperCase());
+                    colorOut = color.toString();
                 }
                 catch (IllegalArgumentException ex) {
-                    if (!attribute.hasAlternative()) {
-                        Debug.echoError("Color '" + colorName + "' doesn't exist (for ElementTag.color[...]).");
-                    }
+                    attribute.echoError("Color '" + colorName + "' doesn't exist (for ElementTag.color[...]).");
                     return null;
                 }
             }
-            return new ElementTag(color + object.asString() + ChatColor.COLOR_CHAR + "[reset=" + color.getChar() + "]");
+            return new ElementTag(colorOut + object.asString() + ChatColor.COLOR_CHAR + "[reset=" + colorOut.substring(1) + "]");
         });
 
         // <--[tag]

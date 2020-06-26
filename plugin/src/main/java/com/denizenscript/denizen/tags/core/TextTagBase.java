@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.tags.core;
 
+import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -595,6 +596,54 @@ public class TextTagBase {
                 event.setReplacedObject(new ElementTag(ChatColor.COLOR_CHAR + "[score=" + name + ";" + objective + ";" + value + "]").getObjectAttribute(attribute.fulfill(1)));
             }
         }, "&score");
+
+        // <--[tag]
+        // @attribute <&color[<color>]>
+        // @returns ElementTag
+        // @description
+        // Returns a chat code that makes the following text be the specified color.
+        // Color can be a color name, color code, hex, or ColorTag... that is: "&color[gold]", "&color[6]", "&color[#AABB00]", and "&color[co@128,64,0]" are all valid.
+        // -->
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                Attribute attribute = event.getAttributes();
+                if (!attribute.hasContext(1)) {
+                    return;
+                }
+                String colorName = attribute.getContext(1);
+                String colorOut = null;
+                if (colorName.length() == 1) {
+                    ChatColor color = ChatColor.getByChar(colorName.charAt(0));
+                    if (color != null) {
+                        colorOut = color.toString();
+                    }
+                }
+                else if (colorName.length() == 7 && colorName.startsWith("#")) {
+                    event.setReplacedObject(new ElementTag(net.md_5.bungee.api.ChatColor.COLOR_CHAR + "[color=" + colorName + "]").getObjectAttribute(attribute.fulfill(1)));
+                    return;
+                }
+                else if (colorName.startsWith("co@")) {
+                    ColorTag color = ColorTag.valueOf(colorName, attribute.context);
+                    String hex = Integer.toHexString(color.getColor().asRGB());
+                    while (hex.length() < 6) {
+                        hex = "0" + hex;
+                    }
+                    event.setReplacedObject(new ElementTag(net.md_5.bungee.api.ChatColor.COLOR_CHAR + "[color=#" + hex + "]").getObjectAttribute(attribute.fulfill(1)));
+                }
+                if (colorOut == null) {
+                    try {
+                        ChatColor color = ChatColor.valueOf(colorName.toUpperCase());
+                        colorOut = color.toString();
+                    }
+                    catch (IllegalArgumentException ex) {
+                        attribute.echoError("Color '" + colorName + "' doesn't exist (for tag &color[...]).");
+                        return;
+                    }
+                }
+                event.setReplacedObject(new ElementTag(colorOut).getObjectAttribute(attribute.fulfill(1)));
+            }
+        }, "&color");
 
         // <--[tag]
         // @attribute <&0>

@@ -133,6 +133,7 @@ public class FormattedTextHelper {
         List<BaseComponent> outputList = new ArrayList<>();
         int started = 0;
         TextComponent nextText = new TextComponent();
+        TextComponent lastText = new TextComponent();
         for (int i = 0; i < chars.length; i++) {
             if (chars[i] == ChatColor.COLOR_CHAR && i + 1 < chars.length) {
                 char code = chars[i + 1];
@@ -149,7 +150,8 @@ public class FormattedTextHelper {
                     if (innardBase.size() == 2) {
                         nextText.setText(nextText.getText() + str.substring(started, i));
                         outputList.add(nextText);
-                        TextComponent lastText = nextText;
+                        TextComponent doublelasttext = lastText;
+                        lastText = nextText;
                         nextText = copyFormatToNewText(lastText);
                         nextText.setText("");
                         if (innardType.equals("score") && innardParts.size() == 2) {
@@ -264,10 +266,18 @@ public class FormattedTextHelper {
                             else if (subCode == 'o' || subCode == 'O') {
                                 nextText.setItalic(false);
                             }
+                            else {
+                                nextText.setColor(doublelasttext.getColor());
+                            }
                         }
                         else if (innardType.equals("color")) {
                             String colorChar = innardBase.get(1);
-                            nextText.setColor(ChatColor.getByChar(colorChar.charAt(0)));
+                            if (colorChar.length() == 1) {
+                                nextText.setColor(ChatColor.getByChar(colorChar.charAt(0)));
+                            }
+                            else if (colorChar.length() == 7) {
+                                nextText.setColor(ChatColor.of(colorChar));
+                            }
                         }
                     }
                     i = endBracket;
@@ -321,7 +331,7 @@ public class FormattedTextHelper {
                     String url = str.substring(i, nextSpace);
                     nextText.setText(nextText.getText() + str.substring(started, i));
                     outputList.add(nextText);
-                    TextComponent lastText = nextText;
+                    lastText = nextText;
                     nextText = new TextComponent(lastText);
                     nextText.setText("");
                     TextComponent clickableText = new TextComponent(url);
