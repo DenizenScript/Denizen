@@ -49,11 +49,8 @@ public class SleepingTrait extends Trait {
             }
         }
         else { // Player
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && bedLocation.getBlock().getBlockData() instanceof Bed) {
+            if (bedLocation.getBlock().getBlockData() instanceof Bed) {
                 ((Player) npc.getEntity()).sleep(bedLocation.clone(), true);
-            }
-            else {
-                PlayerAnimation.SLEEP.play((Player) npc.getEntity());
             }
         }
         sleeping = true;

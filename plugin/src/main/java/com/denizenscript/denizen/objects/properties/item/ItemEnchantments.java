@@ -47,10 +47,7 @@ public class ItemEnchantments implements Property {
     }
 
     public static String getName(Enchantment enchantment) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            return enchantment.getKey().getKey();
-        }
-        return enchantment.getName();
+        return enchantment.getKey().getKey();
     }
 
     ItemTag item;

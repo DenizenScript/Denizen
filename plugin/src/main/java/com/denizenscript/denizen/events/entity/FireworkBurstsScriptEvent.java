@@ -6,6 +6,7 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.FireworkExplodeEvent;
@@ -73,7 +74,7 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
             return location;
         }
         else if (name.equals("item")) {
-            ItemStack itemStack = new ItemStack(MaterialCompat.FIREWORK_ROCKET);
+            ItemStack itemStack = new ItemStack(Material.FIREWORK_ROCKET);
             itemStack.setItemMeta(event.getEntity().getFireworkMeta());
             return new ItemTag(itemStack);
         }

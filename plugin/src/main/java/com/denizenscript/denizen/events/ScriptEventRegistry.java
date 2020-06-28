@@ -64,24 +64,18 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new EntityHealsScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityInteractScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityKilledScriptEvent());
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            ScriptEvent.registerScriptEvent(new EntityPotionEffectScriptEvent());
-        }
+        ScriptEvent.registerScriptEvent(new EntityPotionEffectScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityResurrectScriptEvent());
         if (!Denizen.supportsPaper) {
             ScriptEvent.registerScriptEvent(new EntityShootsBowEvent());
         }
         ScriptEvent.registerScriptEvent(new EntitySpawnerSpawnScriptEvent());
         ScriptEvent.registerScriptEvent(new EntitySpawnScriptEvent());
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            ScriptEvent.registerScriptEvent(new EntitySwimScriptEvent());
-        }
+        ScriptEvent.registerScriptEvent(new EntitySwimScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityTamesScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityTargetsScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityTeleportScriptEvent());
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            ScriptEvent.registerScriptEvent(new EntityTransformScriptEvent());
-        }
+        ScriptEvent.registerScriptEvent(new EntityTransformScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityUnleashedScriptEvent());
         ScriptEvent.registerScriptEvent(new FireworkBurstsScriptEvent());
         ScriptEvent.registerScriptEvent(new HangingBreaksScriptEvent());
@@ -152,15 +146,11 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new PlayerPreLoginScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerPreparesAnvilCraftScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerQuitsScriptEvent());
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            ScriptEvent.registerScriptEvent(new PlayerReceivesCommandsScriptEvent());
-        }
+        ScriptEvent.registerScriptEvent(new PlayerReceivesCommandsScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerReceivesMessageScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerRespawnsScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerRightClicksEntityScriptEvent());
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            ScriptEvent.registerScriptEvent(new PlayerRiptideScriptEvent());
-        }
+        ScriptEvent.registerScriptEvent(new PlayerRiptideScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerShearsScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerSneakScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerSprintScriptEvent());

@@ -13,6 +13,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.trait.trait.Equipment;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -114,7 +115,7 @@ public class HeadCommand extends AbstractCommand {
 
         // Create head item with chosen skin, or item/skin
         if (skin != null) {
-            item = MaterialCompat.createPlayerHead();
+            item = new ItemStack(Material.PLAYER_HEAD);
             ItemMeta itemMeta = item.getItemMeta();
             ((SkullMeta) itemMeta).setOwner(skin.asString());
             item.setItemMeta(itemMeta);

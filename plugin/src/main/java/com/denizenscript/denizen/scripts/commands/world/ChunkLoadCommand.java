@@ -165,27 +165,23 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                     if (!chunk.isLoaded()) {
                         chunk.load();
                     }
-                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                        chunk.setForceLoaded(true);
-                        if (length.getSeconds() > 0) {
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (chunkDelays.containsKey(chunkString) && chunkDelays.get(chunkString) <= System.currentTimeMillis()) {
-                                        chunk.setForceLoaded(false);
-                                        chunkDelays.remove(chunkString);
-                                    }
+                    chunk.setForceLoaded(true);
+                    if (length.getSeconds() > 0) {
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+                            @Override
+                            public void run() {
+                                if (chunkDelays.containsKey(chunkString) && chunkDelays.get(chunkString) <= System.currentTimeMillis()) {
+                                    chunk.setForceLoaded(false);
+                                    chunkDelays.remove(chunkString);
                                 }
-                            }, length.getTicks() + 20);
-                        }
+                            }
+                        }, length.getTicks() + 20);
                     }
                     break;
                 case REMOVE:
                     if (chunkDelays.containsKey(chunkString)) {
                         chunkDelays.remove(chunkString);
-                        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                            chunk.setForceLoaded(false);
-                        }
+                        chunk.setForceLoaded(false);
                         Debug.echoDebug(scriptEntry, "...allowing unloading of chunk " + chunk.getX() + ", " + chunk.getZ());
                     }
                     else {
@@ -194,11 +190,9 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                     break;
                 case REMOVEALL:
                     Debug.echoDebug(scriptEntry, "...allowing unloading of all stored chunks");
-                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                        for (String chunkStr : chunkDelays.keySet()) {
-                            ChunkTag loopChunk = ChunkTag.valueOf(chunkStr, scriptEntry.context);
-                            loopChunk.getChunk().setForceLoaded(false);
-                        }
+                    for (String chunkStr : chunkDelays.keySet()) {
+                        ChunkTag loopChunk = ChunkTag.valueOf(chunkStr, scriptEntry.context);
+                        loopChunk.getChunk().setForceLoaded(false);
                     }
                     chunkDelays.clear();
                     break;

@@ -19,7 +19,6 @@ import com.denizenscript.denizen.scripts.triggers.TriggerRegistry;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.tags.core.ServerTagBase;
 import com.denizenscript.denizen.utilities.*;
-import com.denizenscript.denizen.utilities.blocks.OldMaterialsHelper;
 import com.denizenscript.denizen.utilities.command.DenizenCommandHandler;
 import com.denizenscript.denizen.utilities.command.ExCommandHandler;
 import com.denizenscript.denizen.utilities.command.NPCCommandHandler;
@@ -387,8 +386,6 @@ public class Denizen extends JavaPlugin {
         }
 
         try {
-            // Initialize old Materials helper
-            OldMaterialsHelper._initialize();
             // Initialize all properties
             PropertyRegistry.registermainProperties();
         }

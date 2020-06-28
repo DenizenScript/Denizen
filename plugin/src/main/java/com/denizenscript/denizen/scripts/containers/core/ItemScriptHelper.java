@@ -41,9 +41,7 @@ public class ItemScriptHelper implements Listener {
 
     public static void removeDenizenRecipes() {
         recipeIdToItemScript.clear();
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            NMSHandler.getItemHelper().clearDenizenRecipes();
-        }
+        NMSHandler.getItemHelper().clearDenizenRecipes();
     }
 
     public String getIdFor(ItemScriptContainer container, String type, int id) {
@@ -128,28 +126,26 @@ public class ItemScriptHelper implements Listener {
                 ingredients.add(items);
             }
         }
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            NamespacedKey key = new NamespacedKey("denizen", internalId);
-            ShapedRecipe recipe = new ShapedRecipe(key, item);
-            recipe.setGroup(group);
-            String shape1 = "ABC".substring(0, width);
-            String shape2 = "DEF".substring(0, width);
-            String shape3 = "GHI".substring(0, width);
-            String itemChars = shape1 + shape2 + shape3;
-            if (recipeList.size() == 3) {
-                recipe = recipe.shape(shape1, shape2, shape3);
-            }
-            else if (recipeList.size() == 2) {
-                recipe = recipe.shape(shape1, shape2);
-            }
-            else {
-                recipe = recipe.shape(shape1);
-            }
-            for (int i = 0; i < ingredients.size(); i++) {
-                NMSHandler.getItemHelper().setShapedRecipeIngredient(recipe, itemChars.charAt(i), ingredients.get(i), exacts.get(i));
-            }
-            Bukkit.addRecipe(recipe);
+        NamespacedKey key = new NamespacedKey("denizen", internalId);
+        ShapedRecipe recipe = new ShapedRecipe(key, item);
+        recipe.setGroup(group);
+        String shape1 = "ABC".substring(0, width);
+        String shape2 = "DEF".substring(0, width);
+        String shape3 = "GHI".substring(0, width);
+        String itemChars = shape1 + shape2 + shape3;
+        if (recipeList.size() == 3) {
+            recipe = recipe.shape(shape1, shape2, shape3);
         }
+        else if (recipeList.size() == 2) {
+            recipe = recipe.shape(shape1, shape2);
+        }
+        else {
+            recipe = recipe.shape(shape1);
+        }
+        for (int i = 0; i < ingredients.size(); i++) {
+            NMSHandler.getItemHelper().setShapedRecipeIngredient(recipe, itemChars.charAt(i), ingredients.get(i), exacts.get(i));
+        }
+        Bukkit.addRecipe(recipe);
     }
 
     public void registerShapelessRecipe(ItemScriptContainer container, ItemStack item, String shapelessString, String internalId, String group) {
@@ -172,13 +168,11 @@ public class ItemScriptHelper implements Listener {
             }
             ingredients.add(items);
         }
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            boolean[] bools = new boolean[exacts.size()];
-            for (int i = 0; i < exacts.size(); i++) {
-                bools[i] = exacts.get(i);
-            }
-            NMSHandler.getItemHelper().registerShapelessRecipe(internalId, group, item, ingredients, bools);
+        boolean[] bools = new boolean[exacts.size()];
+        for (int i = 0; i < exacts.size(); i++) {
+            bools[i] = exacts.get(i);
         }
+        NMSHandler.getItemHelper().registerShapelessRecipe(internalId, group, item, ingredients, bools);
     }
 
     public void registerFurnaceRecipe(ItemScriptContainer container, ItemStack item, String furnaceItemString, float exp, int time, String type, String internalId, String group) {
@@ -191,9 +185,7 @@ public class ItemScriptHelper implements Listener {
         if (items == null) {
             return;
         }
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            NMSHandler.getItemHelper().registerFurnaceRecipe(internalId, group, item, items, exp, time, type, exact);
-        }
+        NMSHandler.getItemHelper().registerFurnaceRecipe(internalId, group, item, items, exp, time, type, exact);
     }
 
     public void registerStonecuttingRecipe(ItemScriptContainer container, ItemStack item, String inputItemString, String internalId, String group) {

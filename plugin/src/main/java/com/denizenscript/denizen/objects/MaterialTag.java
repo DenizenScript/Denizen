@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.objects.properties.material.*;
-import com.denizenscript.denizen.utilities.blocks.OldMaterialsHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -18,7 +17,6 @@ import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -77,108 +75,27 @@ public class MaterialTag implements ObjectTag, Adjustable {
      */
     @Fetchable("m")
     public static MaterialTag valueOf(String string, TagContext context) {
-
-        ///////
-        // Handle objects with properties through the object fetcher
         if (ObjectFetcher.isObjectWithProperties(string)) {
             return ObjectFetcher.getObjectFrom(MaterialTag.class, string, context);
         }
-
         string = string.toUpperCase();
         if (string.startsWith("M@")) {
             string = string.substring("M@".length());
         }
         if (string.equals("RANDOM")) {
-            return OldMaterialsHelper.getMaterialFrom(Material.values()[CoreUtilities.getRandom().nextInt(Material.values().length)]);
-        }
-        int index = string.indexOf(',');
-        if (index < 0) {
-            index = string.indexOf(':');
-        }
-        int data = 0;
-        if (index >= 0) {
-            String dataStr = string.substring(index + 1);
-            if (ArgumentHelper.matchesInteger(dataStr)) {
-                data = Integer.parseInt(dataStr);
-                string = string.substring(0, index);
-            }
+            return new MaterialTag(Material.values()[CoreUtilities.getRandom().nextInt(Material.values().length)]);
         }
         Material m = Material.getMaterial(string);
-        if (m == null && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            m = Material.getMaterial(string, true);
-            if (m != null) {
-                m = Bukkit.getUnsafe().fromLegacy(m);
-                if (context == null || context.debug) {
-                    Debug.log("'" + string + "' is a legacy (pre-1.13) material name. It is now '" + m.name() + "'.");
-                }
-            }
-        }
         if (m != null) {
-            if (index >= 0) {
-                if (context != noDebugContext && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                    Deprecations.materialIdsSuggestProperties.warn(context);
-                }
-            }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                return new MaterialTag(m);
-            }
-            return OldMaterialsHelper.getMaterialFrom(m, data);
-        }
-        if (OldMaterialsHelper.all_dMaterials != null) {
-            MaterialTag mat = OldMaterialsHelper.all_dMaterials.get(string);
-            if (mat != null) {
-                if (index >= 0 && context != noDebugContext && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                    Deprecations.materialIdsSuggestProperties.warn(context);
-                }
-                if (data == 0) {
-                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                        return new MaterialTag(mat.material);
-                    }
-                    return mat;
-                }
-                return OldMaterialsHelper.getMaterialFrom(mat.material, data);
-            }
-        }
-        if (ArgumentHelper.matchesInteger(string)) {
-            int matid = Integer.parseInt(string);
-            if (matid != 0) {
-                // It's always an error (except in the 'matches' call) to use a material ID number instead of a name.
-                if (context != noDebugContext) {
-                    Deprecations.materialIdsSuggestNames.warn(context);
-                }
-                m = OldMaterialsHelper.getLegacyMaterial(matid);
-                if (m != null) {
-                    return OldMaterialsHelper.getMaterialFrom(m, data);
-                }
-            }
+            return new MaterialTag(m);
         }
         return null;
     }
 
     public static MaterialTag quickOfNamed(String string) {
-        string = string.toUpperCase();
-        int index = string.indexOf(',');
-        if (index < 0) {
-            index = string.indexOf(':');
-        }
-        int data = 0;
-        if (index >= 0) {
-            String dataStr = string.substring(index + 1);
-            if (ArgumentHelper.matchesInteger(dataStr)) {
-                data = Integer.parseInt(dataStr);
-                string = string.substring(0, index);
-            }
-        }
-        Material m = Material.getMaterial(string);
+        Material m = Material.getMaterial(string.toUpperCase());
         if (m != null) {
-            return OldMaterialsHelper.getMaterialFrom(m, data);
-        }
-        MaterialTag mat = OldMaterialsHelper.all_dMaterials.get(string);
-        if (mat != null) {
-            if (data == 0) {
-                return mat;
-            }
-            return OldMaterialsHelper.getMaterialFrom(mat.material, data);
+            return new MaterialTag(m);
         }
         return null;
     }
@@ -225,10 +142,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
     }
 
     public boolean matchesBlock(Block b) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            return getMaterial() == b.getType();
-        }
-        return matchesMaterialData(b.getType().getNewData(b.getData()));
+        return getMaterial() == b.getType();
     }
 
     ///////////////
@@ -246,8 +160,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         else {
             this.data = (byte) data;
         }
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)
-                && material.isBlock()) {
+        if (material.isBlock()) {
             modernData = new ModernBlockData(material);
         }
     }
@@ -258,34 +171,17 @@ public class MaterialTag implements ObjectTag, Adjustable {
 
     public MaterialTag(BlockState state) {
         this.material = state.getType();
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            this.modernData = new ModernBlockData(state);
-        }
-        else {
-            this.data = state.getRawData();
-        }
+        this.modernData = new ModernBlockData(state);
     }
 
     public MaterialTag(BlockData block) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            this.modernData = block.modern();
-            this.material = modernData.getMaterial();
-        }
-        else {
-            this.material = block.getMaterial();
-            this.data = block.getData();
-        }
+        this.modernData = block.modern();
+        this.material = modernData.getMaterial();
     }
 
     public MaterialTag(Block block) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            this.modernData = new ModernBlockData(block);
-            this.material = modernData.getMaterial();
-        }
-        else {
-            this.material = block.getType();
-            this.data = block.getData();
-        }
+        this.modernData = new ModernBlockData(block);
+        this.material = modernData.getMaterial();
     }
 
     public MaterialTag(ModernBlockData data) {
@@ -306,10 +202,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
     }
 
     public ModernBlockData getModernData() {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            return modernData;
-        }
-        throw new IllegalStateException("Modern block data handler is not available prior to MC 1.13.");
+        return modernData;
     }
 
     public void setModernData(ModernBlockData data) {
@@ -365,19 +258,8 @@ public class MaterialTag implements ObjectTag, Adjustable {
     }
 
     public boolean isStructure() {
-        if (material == Material.CHORUS_PLANT) {
+        if (material == Material.CHORUS_PLANT || material == Material.RED_MUSHROOM_BLOCK || material == Material.BROWN_MUSHROOM_BLOCK) {
             return true;
-        }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)
-                && (material == Material.RED_MUSHROOM_BLOCK || material == Material.BROWN_MUSHROOM_BLOCK)) {
-            return true;
-        }
-        else if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12)) {
-            if (material == Material.RED_MUSHROOM || material == Material.BROWN_MUSHROOM) {
-                return true;
-            }
-            String name = material.name();
-            return name.equals("SAPLING") || name.equals("HUGE_MUSHROOM_1") || name.equals("HUGE_MUSHROOM_2");
         }
         return false;
     }
@@ -417,18 +299,12 @@ public class MaterialTag implements ObjectTag, Adjustable {
         if (forcedIdentity != null) {
             return forcedIdentityLow;
         }
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12) && getData() != null && getData() > 0) {
-            return CoreUtilities.toLowerCase(material.name()) + "," + getData();
-        }
         return CoreUtilities.toLowerCase(material.name());
     }
 
     public String identifyNoIdentifier() {
         if (forcedIdentity != null) {
             return forcedIdentityLow;
-        }
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12) && getData() != null && getData() > 0) {
-            return CoreUtilities.toLowerCase(material.name()) + "," + getData();
         }
         return CoreUtilities.toLowerCase(material.name()) + PropertyParser.getPropertiesString(this);
     }
@@ -443,9 +319,6 @@ public class MaterialTag implements ObjectTag, Adjustable {
     public String identifyFullNoIdentifier() {
         if (forcedIdentity != null) {
             return forcedIdentityLow + (getData() != null ? "," + getData() : "");
-        }
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12) && getData() != null && getData() > 0) {
-            return CoreUtilities.toLowerCase(material.name()) + "," + getData();
         }
         return CoreUtilities.toLowerCase(material.name()) + PropertyParser.getPropertiesString(this);
     }
@@ -471,18 +344,6 @@ public class MaterialTag implements ObjectTag, Adjustable {
     }
 
     public static void registerTags() {
-
-        registerTag("id", (attribute, object) -> {
-            Deprecations.materialIdsSuggestNames.warn(attribute.getScriptEntry());
-            return new ElementTag(object.material.getId());
-        });
-
-        registerTag("data", (attribute, object) -> {
-            if (attribute.context == null || attribute.context.debug) {
-                Deprecations.materialIdsSuggestProperties.warn(attribute.getScriptEntry());
-            }
-            return new ElementTag(object.getData());
-        });
 
         // <--[tag]
         // @attribute <MaterialTag.is_ageable>
@@ -943,10 +804,8 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // -->
         registerTag("item", (attribute, object) -> {
             ItemTag item = new ItemTag(object, 1);
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                if (item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof BlockStateMeta) {
-                    ((BlockStateMeta) item.getItemStack().getItemMeta()).setBlockState(object.modernData.getBlockState());
-                }
+            if (item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof BlockStateMeta) {
+                ((BlockStateMeta) item.getItemStack().getItemMeta()).setBlockState(object.modernData.getBlockState());
             }
             return item;
         });

@@ -1,8 +1,6 @@
 package com.denizenscript.denizen.utilities.inventory;
 
-import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import org.bukkit.Material;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -38,18 +36,17 @@ public class SlotHelper {
      * Returns -1 if unknown.
      */
     public static int slotForItem(PlayerInventory inventory, ItemStack item) {
-        Material type = item.getType();
-        if (MaterialCompat.HELMET_MATERIALS.contains(type) && item.equals(inventory.getHelmet())) {
-            return HELMET;
-        }
-        if (MaterialCompat.CHESTPLATE_MATERIALS.contains(type) && item.equals(inventory.getChestplate())) {
+        if (item.equals(inventory.getChestplate())) {
             return CHESTPLATE;
         }
-        if (MaterialCompat.LEGGINGS_MATERIALS.contains(type) && item.equals(inventory.getLeggings())) {
+        if (item.equals(inventory.getLeggings())) {
             return LEGGINGS;
         }
-        if (MaterialCompat.BOOTS_MATERIALS.contains(type) && item.equals(inventory.getBoots())) {
+        if (item.equals(inventory.getBoots())) {
             return BOOTS;
+        }
+        if (item.equals(inventory.getHelmet())) {
+            return HELMET;
         }
         if (item.equals(inventory.getItemInMainHand())) {
             return inventory.getHeldItemSlot();

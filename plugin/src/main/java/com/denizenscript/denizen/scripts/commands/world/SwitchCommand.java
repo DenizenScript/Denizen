@@ -1,14 +1,9 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.utilities.depends.Depends;
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
-import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
@@ -17,11 +12,8 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -154,99 +146,21 @@ public class SwitchCommand extends AbstractCommand {
     }
 
     public static boolean switchState(Block b) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            ModernBlockData mbd = new ModernBlockData(b);
-            Boolean switchState = mbd.getSwitchState();
-            if (switchState != null) {
-                return switchState;
-            }
+        ModernBlockData mbd = new ModernBlockData(b);
+        Boolean switchState = mbd.getSwitchState();
+        if (switchState != null) {
+            return switchState;
         }
-        //return (b.getData() & 0x8) > 0;
-        Material type = b.getType();
-        if (type == MaterialCompat.IRON_DOOR
-                || type == MaterialCompat.OAK_DOOR
-                || type == Material.DARK_OAK_DOOR
-                || type == Material.BIRCH_DOOR
-                || type == Material.ACACIA_DOOR
-                || type == Material.JUNGLE_DOOR
-                || type == Material.SPRUCE_DOOR) {
-            Location location = b.getLocation();
-            int data = b.getData();
-            if (data >= 8) {
-                location = b.getLocation().clone().add(0, -1, 0);
-            }
-            return (location.getBlock().getData() & 0x4) > 0;
-        }
-        else if ((type == MaterialCompat.OAK_TRAPDOOR
-                || type == Material.IRON_TRAPDOOR)
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)
-                && (type == Material.DARK_OAK_TRAPDOOR
-                || type == Material.BIRCH_TRAPDOOR
-                || type == Material.ACACIA_TRAPDOOR
-                || type == Material.JUNGLE_TRAPDOOR
-                || type == Material.SPRUCE_TRAPDOOR))) {
-            return (b.getData() & 0x4) > 0;
-        }
-        else {
-            return (b.getData() & 0x8) > 0;
-        }
+        return false;
     }
 
     // Break off this portion of the code from execute() so it can be used in both execute and the delayed runnable
     public void switchBlock(ScriptEntry scriptEntry, Location interactLocation, SwitchState switchState, Player player) {
         boolean currentState = switchState(interactLocation.getBlock());
-
-        if ((switchState.equals(SwitchState.ON) && !currentState) ||
-                (switchState.equals(SwitchState.OFF) && currentState) ||
-                switchState.equals(SwitchState.TOGGLE)) {
-
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                ModernBlockData mbd = new ModernBlockData(interactLocation.getBlock());
-                mbd.setSwitchState(interactLocation.getBlock(), !currentState);
-            }
-            else {
-                try {
-                    if (interactLocation.getBlock().getType() == MaterialCompat.IRON_DOOR) {
-                        Location block;
-                        if (interactLocation.clone().add(0, -1, 0).getBlock().getType() == MaterialCompat.IRON_DOOR) {
-                            block = interactLocation.clone().add(0, -1, 0);
-                        }
-                        else {
-                            block = interactLocation;
-                        }
-                        BlockData blockData = NMSHandler.getBlockHelper().getBlockData(MaterialCompat.IRON_DOOR, (byte) (block.getBlock().getData() ^ 4));
-                        blockData.setBlock(block.getBlock(), false);
-                    }
-                    else {
-                        // Try for a linked player
-                        if (player == null && Bukkit.getOnlinePlayers().size() > 0) {
-                            // If there's none, link any player
-                            if (Bukkit.getOnlinePlayers().size() > 0) {
-                                player = (Player) Bukkit.getOnlinePlayers().toArray()[0];
-                            }
-                            else if (Depends.citizens != null) {
-                                // If there are no players, link any Human NPC
-                                for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                                    if (npc.isSpawned() && npc.getEntity() instanceof Player) {
-                                        player = (Player) npc.getEntity();
-                                        break;
-                                    }
-                                }
-                                // TODO: backup if no human NPC available? (Fake EntityPlayer instance?)
-                            }
-                        }
-                        NMSHandler.getEntityHelper().forceInteraction(player, interactLocation);
-                    }
-
-                }
-                catch (NullPointerException e) {
-                    Debug.echoError("Cannot switch " + interactLocation.getBlock().getType().toString() + "!");
-                    return;
-                }
-            }
-
-            Debug.echoDebug(scriptEntry, "Switched " + interactLocation.getBlock().getType().toString() + "! Current state now: " +
-                    (switchState(interactLocation.getBlock()) ? "ON" : "OFF"));
+        if ((switchState.equals(SwitchState.ON) && !currentState) || (switchState.equals(SwitchState.OFF) && currentState) || switchState.equals(SwitchState.TOGGLE)) {
+            ModernBlockData mbd = new ModernBlockData(interactLocation.getBlock());
+            mbd.setSwitchState(interactLocation.getBlock(), !currentState);
+            Debug.echoDebug(scriptEntry, "Switched " + interactLocation.getBlock().getType().toString() + "! Current state now: " + (switchState(interactLocation.getBlock()) ? "ON" : "OFF"));
         }
     }
 }

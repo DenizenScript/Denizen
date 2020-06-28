@@ -2,9 +2,11 @@ package com.denizenscript.denizen.utilities.blocks;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.BlockData;
+import com.denizenscript.denizen.nms.util.ReflectionHelper;
 import com.denizenscript.denizen.nms.util.jnbt.*;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import org.bukkit.Material;
 import org.bukkit.util.BlockVector;
 
 import java.io.InputStream;
@@ -113,7 +115,7 @@ public class MCEditSchematicHelper {
                     for (int z = 0; z < length; z++) {
                         int index = y * width * length + z * width + x;
                         BlockVector pt = new BlockVector(x, y, z);
-                        MaterialTag dMat = OldMaterialsHelper.getMaterialFrom(OldMaterialsHelper.getLegacyMaterial(blocks[index]), blockData[index]);
+                        MaterialTag dMat = new MaterialTag(getLegacyMaterial(blocks[index]), blockData[index]);
                         BlockData block = dMat.getNmsBlockData();
                         if (tileEntitiesMap.containsKey(pt)) {
                             CompoundTag otag = NMSHandler.getInstance().createCompoundTag(tileEntitiesMap.get(pt));
@@ -128,6 +130,20 @@ public class MCEditSchematicHelper {
             Debug.echoError(e);
         }
         return cbs;
+    }
+
+    private static final Map<Integer, Material> MATERIAL_BY_LEGACY_ID = new HashMap<>();
+
+    public static Material getLegacyMaterial(int id) {
+        if (MATERIAL_BY_LEGACY_ID.isEmpty()) {
+            Map<String, Material> map = ReflectionHelper.getFieldValue(Material.class, "BY_NAME", null);
+            for (Material material : map.values()) {
+                if (material.isLegacy()) {
+                    MATERIAL_BY_LEGACY_ID.put(material.getId(), material);
+                }
+            }
+        }
+        return MATERIAL_BY_LEGACY_ID.get(id);
     }
 
     private static <T extends Tag> T getChildTag(Map<String, Tag> items, String key, Class<T> expected) throws Exception {

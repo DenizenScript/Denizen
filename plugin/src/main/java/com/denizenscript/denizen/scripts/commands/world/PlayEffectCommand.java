@@ -318,7 +318,7 @@ public class PlayEffectCommand extends AbstractCommand {
                                 dataObject = new org.bukkit.Particle.DustOptions(color.getColor(), size);
                             }
                         }
-                        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && clazz == BlockData.class) {
+                        else if (clazz == BlockData.class) {
                             MaterialTag blockMaterial = MaterialTag.valueOf(special_data.asString(), scriptEntry.getContext());
                             dataObject = blockMaterial.getModernData().data;
                         }

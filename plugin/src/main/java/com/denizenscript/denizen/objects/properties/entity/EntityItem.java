@@ -19,7 +19,7 @@ public class EntityItem implements Property {
         return entity instanceof EntityTag &&
                 (((EntityTag) entity).getBukkitEntityType() == EntityType.DROPPED_ITEM
                         || ((EntityTag) entity).getBukkitEntityType() == EntityType.ENDERMAN
-                        || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && ((EntityTag) entity).getBukkitEntityType() == EntityType.TRIDENT));
+                        || ((EntityTag) entity).getBukkitEntityType() == EntityType.TRIDENT);
     }
 
     public static EntityItem getFrom(ObjectTag entity) {
@@ -49,12 +49,11 @@ public class EntityItem implements Property {
         if (item.getBukkitEntity() instanceof Item) {
             return new ItemTag(((Item) item.getBukkitEntity()).getItemStack());
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && item.getBukkitEntityType() == EntityType.TRIDENT) {
+        else if (item.getBukkitEntityType() == EntityType.TRIDENT) {
             return new ItemTag(NMSHandler.getEntityHelper().getItemFromTrident(item.getBukkitEntity()));
         }
         else {
-            return new ItemTag(((Enderman) item.getBukkitEntity())
-                    .getCarriedMaterial());
+            return new ItemTag(((Enderman) item.getBukkitEntity()).getCarriedBlock().getMaterial());
         }
     }
 
@@ -114,7 +113,7 @@ public class EntityItem implements Property {
             if (item.getBukkitEntity() instanceof Item) {
                 ((Item) item.getBukkitEntity()).setItemStack(mechanism.valueAsType(ItemTag.class).getItemStack());
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && item.getBukkitEntityType() == EntityType.TRIDENT) {
+            else if (item.getBukkitEntityType() == EntityType.TRIDENT) {
                 NMSHandler.getEntityHelper().setItemForTrident(item.getBukkitEntity(), mechanism.valueAsType(ItemTag.class).getItemStack());
             }
             else {

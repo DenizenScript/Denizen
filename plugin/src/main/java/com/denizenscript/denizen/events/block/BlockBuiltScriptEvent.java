@@ -120,12 +120,7 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
     public void onBlockBuilt(BlockCanBuildEvent event) {
         location = new LocationTag(event.getBlock().getLocation());
         old_material = new MaterialTag(event.getBlock());
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            new_material = new MaterialTag(new ModernBlockData(event.getBlockData()));
-        }
-        else {
-            new_material = new MaterialTag(event.getMaterial());
-        }
+        new_material = new MaterialTag(new ModernBlockData(event.getBlockData()));
         cancelled = !event.isBuildable();
         this.event = event;
         fire(event);

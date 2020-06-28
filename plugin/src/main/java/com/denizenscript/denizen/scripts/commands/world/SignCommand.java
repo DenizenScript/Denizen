@@ -106,18 +106,10 @@ public class SignCommand extends AbstractCommand {
     }
 
     public void setWallSign(Block sign, BlockFace bf, MaterialTag material) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            sign.setType(material == null ? MaterialCompat.WALL_SIGN : material.getMaterial(), false);
-            MaterialTag signMaterial = new MaterialTag(sign);
-            MaterialDirectional.getFrom(signMaterial).setFacing(bf);
-            signMaterial.getModernData().setToBlock(sign);
-        }
-        else {
-            org.bukkit.material.Sign sgntmp = new org.bukkit.material.Sign(MaterialCompat.WALL_SIGN);
-            sgntmp.setFacingDirection(bf);
-            BlockData blockData = NMSHandler.getBlockHelper().getBlockData(MaterialCompat.WALL_SIGN, sgntmp.getData());
-            blockData.setBlock(sign, false);
-        }
+        sign.setType(material == null ? MaterialCompat.WALL_SIGN : material.getMaterial(), false);
+        MaterialTag signMaterial = new MaterialTag(sign);
+        MaterialDirectional.getFrom(signMaterial).setFacing(bf);
+        signMaterial.getModernData().setToBlock(sign);
     }
 
     @Override

@@ -79,7 +79,7 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
             if (script.getContainer() instanceof BookScriptContainer) {
                 ItemTag dBook = ((BookScriptContainer) script.getContainer()).getBookFrom(getScriptEntryData().getTagContext());
                 BookMeta bookMeta = (BookMeta) dBook.getItemStack().getItemMeta();
-                if (dBook.getMaterial().getMaterial() == MaterialCompat.WRITABLE_BOOK) {
+                if (dBook.getMaterial().getMaterial() == Material.WRITABLE_BOOK) {
                     event.setSigning(false);
                 }
                 event.setNewBookMeta(bookMeta);

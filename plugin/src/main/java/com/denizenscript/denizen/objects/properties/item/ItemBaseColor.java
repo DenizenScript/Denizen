@@ -1,9 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -21,13 +18,7 @@ public class ItemBaseColor implements Property {
 
     public static boolean describes(ObjectTag item) {
         if (item instanceof ItemTag) {
-            Material material = ((ItemTag) item).getItemStack().getType();
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                return material == Material.SHIELD;
-            }
-            else {
-                return MaterialCompat.isBannerOrShield(material);
-            }
+            return ((ItemTag) item).getItemStack().getType() == Material.SHIELD;
         }
         return false;
     }

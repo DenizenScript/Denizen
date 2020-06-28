@@ -9,7 +9,6 @@ import com.denizenscript.denizen.scripts.commands.world.SwitchCommand;
 import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizen.utilities.world.PathFinder;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.blocks.OldMaterialsHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizencore.objects.*;
@@ -1053,23 +1052,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
-        // @attribute <LocationTag.base_color>
-        // @mechanism LocationTag.base_color
-        // @returns ElementTag
-        // @description
-        // Returns the base color of the banner at this location.
-        // For the list of possible colors, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/DyeColor.html>.
-        // As of 1.13+, this tag is no longer relevant.
-        // -->
-        registerTag("base_color", (attribute, object) -> {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                Debug.echoError("Base_Color tag no longer relevant: banner types are now distinct materials.");
-            }
-            DyeColor color = ((Banner) object.getBlockStateForTag(attribute)).getBaseColor();
-            return new ElementTag(color != null ? color.name() : "BLACK");
-        });
-
-        // <--[tag]
         // @attribute <LocationTag.has_inventory>
         // @returns ElementTag(Boolean)
         // @description
@@ -1239,25 +1221,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 list.addObject(new ItemTag(it));
             }
             return list;
-        });
-
-        // <--[tag]
-        // @attribute <LocationTag.flowerpot_contents>
-        // @returns ElementTag
-        // @mechanism LocationTag.flowerpot_contents
-        // @description
-        // Returns the flower pot contents at the location.
-        // NOTE: Replaced by materials (such as POTTED_CACTUS) in 1.13 and above.
-        // -->
-        registerTag("flowerpot_contents", (attribute, object) -> {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                Debug.echoError("As of Minecraft version 1.13 potted flowers each have their own material, such as POTTED_CACTUS.");
-            }
-            else if (object.getBlockTypeForTag(attribute) == Material.FLOWER_POT) {
-                MaterialData contents = NMSHandler.getBlockHelper().getFlowerpotContents(object.getBlockForTag(attribute));
-                return OldMaterialsHelper.getMaterialFrom(contents.getItemType(), contents.getData());
-            }
-            return null;
         });
 
         // <--[tag]
@@ -2041,13 +2004,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                             if (Utilities.checkLocation(object, tstart.clone().add(x + 0.5, y + 0.5, z + 0.5), radius)) {
                                 if (!materials.isEmpty()) {
                                     for (MaterialTag material : materials) {
-                                        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12) && material.hasData() && material.getData() != 0) {
-                                            BlockState bs = new LocationTag(tstart.clone().add(x, y, z)).getBlockStateForTag(attribute);
-                                            if (bs != null && material.matchesMaterialData(bs.getData())) {
-                                                found.add(new LocationTag(tstart.clone().add(x, y, z)));
-                                            }
-                                        }
-                                        else if (material.getMaterial() == new LocationTag(tstart.clone().add(x, y, z)).getBlockTypeForTag(attribute)) {
+                                        if (material.getMaterial() == new LocationTag(tstart.clone().add(x, y, z)).getBlockTypeForTag(attribute)) {
                                             found.add(new LocationTag(tstart.clone().add(x, y, z)));
                                         }
                                     }
@@ -2970,8 +2927,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         registerTag("tree_distance", (attribute, object) -> {
             MaterialTag material = new MaterialTag(object.getBlockForTag(attribute));
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)
-                    && MaterialPersistent.describes(material)) {
+            if (MaterialPersistent.describes(material)) {
                 return new ElementTag(MaterialPersistent.getFrom(material).getDistance());
             }
             return null;
@@ -3110,12 +3066,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         registerTag("attached_to", (attribute, object) -> {
             BlockFace face = BlockFace.SELF;
             MaterialTag material = new MaterialTag(object.getBlockForTag(attribute));
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)
-                    && MaterialSwitchFace.describes(material)) {
+            if (MaterialSwitchFace.describes(material)) {
                 face = MaterialSwitchFace.getFrom(material).getAttachedTo();
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)
-                    && material.hasModernData() && material.getModernData().data instanceof org.bukkit.block.data.type.WallSign) {
+            else if (material.hasModernData() && material.getModernData().data instanceof org.bukkit.block.data.type.WallSign) {
                 face = ((org.bukkit.block.data.type.WallSign) material.getModernData().data).getFacing().getOppositeFace();
             }
             else {
@@ -3139,48 +3093,13 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // You can test if this will be valid with <@link tag MaterialTag.is_bisected>.
         // -->
         registerTag("other_block", (attribute, object) -> {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                Block b = object.getBlockForTag(attribute);
-                MaterialTag material = new MaterialTag(b);
-                if (MaterialHalf.describes(material)) {
-                    return new LocationTag(object.clone().add(MaterialHalf.getFrom(material).getRelativeBlockVector()));
-                }
-                if (!attribute.hasAlternative()) {
-                    Debug.echoError("Block of type " + object.getBlockTypeForTag(attribute).name() + " isn't supported by other_block.");
-                }
-                return null;
-            }
-            BlockState state = object.getBlockStateForTag(attribute);
-            if (state instanceof Chest) {
-                // There is no remotely sane API for this.
-                InventoryHolder holder = ((Chest) state).getBlockInventory().getHolder();
-                if (holder instanceof DoubleChest) {
-                    Location left = ((DoubleChest) holder).getLeftSide().getInventory().getLocation();
-                    Location right = ((DoubleChest) holder).getRightSide().getInventory().getLocation();
-                    if (left.getBlockX() == object.getBlockX() && left.getBlockY() == object.getBlockY() && left.getBlockZ() == object.getBlockZ()) {
-                        return new LocationTag(right);
-                    }
-                    else {
-                        return new LocationTag(left);
-                    }
-                }
-            }
-            else if (state.getData() instanceof Door) {
-                if (((Door) state.getData()).isTopHalf()) {
-                    return new LocationTag(object.clone().subtract(0, 1, 0));
-                }
-                else {
-                    return new LocationTag(object.clone().add(0, 1, 0));
-                }
-            }
-            else {
-                if (!attribute.hasAlternative()) {
-                    Debug.echoError("Block of type " + object.getBlockTypeForTag(attribute).name() + " isn't supported by other_block.");
-                }
-                return null;
+            Block b = object.getBlockForTag(attribute);
+            MaterialTag material = new MaterialTag(b);
+            if (MaterialHalf.describes(material)) {
+                return new LocationTag(object.clone().add(MaterialHalf.getFrom(material).getRelativeBlockVector()));
             }
             if (!attribute.hasAlternative()) {
-                Debug.echoError("Block of type " + object.getBlockTypeForTag(attribute).name() + " doesn't have an other block.");
+                Debug.echoError("Block of type " + object.getBlockTypeForTag(attribute).name() + " isn't supported by other_block.");
             }
             return null;
         });
@@ -3363,8 +3282,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if (mechanism.matches("skull_skin")) {
             final BlockState blockState = getBlockState();
             Material material = getBlock().getType();
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)
-                    && material != Material.PLAYER_HEAD && material != Material.PLAYER_WALL_HEAD) {
+            if (material != Material.PLAYER_HEAD && material != Material.PLAYER_WALL_HEAD) {
                 Deprecations.skullSkinMaterials.warn(mechanism.context);
             }
             else if (blockState instanceof Skull) {
@@ -3394,28 +3312,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             else {
                 Debug.echoError("Unable to set skull_skin on block of type " + material.name() + " with state " + blockState.getClass().getCanonicalName());
-            }
-        }
-
-        // <--[mechanism]
-        // @object LocationTag
-        // @name flowerpot_contents
-        // @input MaterialTag
-        // @description
-        // Sets the contents of a flower pot.
-        // NOTE: Replaced by materials (such as POTTED_CACTUS) in 1.13 and above.
-        // NOTE: Flowerpot contents will not update client-side until players refresh the chunk.
-        // Refresh a chunk manually with mechanism: refresh_chunk_sections for ChunkTag objects
-        // @tags
-        // <LocationTag.flowerpot_contents>
-        // -->
-        if (mechanism.matches("flowerpot_contents") && mechanism.requireObject(MaterialTag.class)) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                Deprecations.flowerpotMechanism.warn(mechanism.context);
-            }
-            else if (getBlock().getType() == Material.FLOWER_POT) {
-                MaterialData data = mechanism.valueAsType(MaterialTag.class).getMaterialData();
-                NMSHandler.getBlockHelper().setFlowerpotContents(getBlock(), data);
             }
         }
 
@@ -3476,7 +3372,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <LocationTag.command_block_name>
         // -->
         if (mechanism.matches("command_block_name")) {
-            if (getBlock().getType() == MaterialCompat.COMMAND_BLOCK) {
+            if (getBlock().getState() instanceof CommandBlock) {
                 CommandBlock block = ((CommandBlock) getBlockState());
                 block.setName(mechanism.getValue().asString());
                 block.update();
@@ -3493,7 +3389,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <LocationTag.command_block>
         // -->
         if (mechanism.matches("command_block")) {
-            if (getBlock().getType() == MaterialCompat.COMMAND_BLOCK) {
+            if (getBlock().getState() instanceof CommandBlock) {
                 CommandBlock block = ((CommandBlock) getBlockState());
                 block.setCommand(mechanism.getValue().asString());
                 block.update();
@@ -3566,7 +3462,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <LocationTag.furnace_burn_time>
         // -->
         if (mechanism.matches("furnace_burn_time")) {
-            if (MaterialCompat.isFurnace(getBlock().getType())) {
+            if (getBlockState() instanceof Furnace) {
                 Furnace furnace = (Furnace) getBlockState();
                 furnace.setBurnTime((short) mechanism.getValue().asInt());
                 furnace.update();
@@ -3583,7 +3479,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <LocationTag.furnace_cook_time>
         // -->
         if (mechanism.matches("furnace_cook_time")) {
-            if (MaterialCompat.isFurnace(getBlock().getType())) {
+            if (getBlockState() instanceof Furnace) {
                 Furnace furnace = (Furnace) getBlockState();
                 furnace.setCookTime((short) mechanism.getValue().asInt());
                 furnace.update();
@@ -3600,31 +3496,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <LocationTag.furnace_cook_time_total>
         // -->
         if (mechanism.matches("furnace_cook_time_total")) {
-            if (MaterialCompat.isFurnace(getBlock().getType())) {
+            if (getBlockState() instanceof Furnace) {
                 Furnace furnace = (Furnace) getBlockState();
                 furnace.setCookTimeTotal((short) mechanism.getValue().asInt());
                 furnace.update();
             }
-        }
-
-        // <--[mechanism]
-        // @object LocationTag
-        // @name base_color
-        // @input Element
-        // @description
-        // Changes the base color of the banner at this location.
-        // For the list of possible colors, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/DyeColor.html>.
-        // As of 1.13+, this mechanism is no longer relevant.
-        // @tags
-        // <LocationTag.base_color>
-        // -->
-        if (mechanism.matches("base_color")) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                Debug.echoError("Base_Color mechanism no longer relevant: banner types are now distinct materials.");
-            }
-            Banner banner = (Banner) getBlockState();
-            banner.setBaseColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
-            banner.update();
         }
 
         // <--[mechanism]

@@ -38,7 +38,7 @@ public class EntityColor implements Property {
                 (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.CAT) ||
                 (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.PANDA) ||
                 (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.ARROW) ||
-                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && type == EntityType.TROPICAL_FISH);
+                type == EntityType.TROPICAL_FISH;
     }
 
     public static EntityColor getFrom(ObjectTag entity) {
@@ -96,7 +96,7 @@ public class EntityColor implements Property {
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.MUSHROOM_COW) {
             return ((MushroomCow) colored.getBukkitEntity()).getVariant().name();
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && type == EntityType.TROPICAL_FISH) {
+        else if (type == EntityType.TROPICAL_FISH) {
             return TropicalFishHelper.getColor(colored);
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.FOX) {
@@ -239,7 +239,7 @@ public class EntityColor implements Property {
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.MUSHROOM_COW) {
                 ((MushroomCow) colored.getBukkitEntity()).setVariant(MushroomCow.Variant.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && type == EntityType.TROPICAL_FISH) {
+            else if (type == EntityType.TROPICAL_FISH) {
                 TropicalFishHelper.setColor(colored, mechanism.getValue().asString());
             }
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.FOX) {

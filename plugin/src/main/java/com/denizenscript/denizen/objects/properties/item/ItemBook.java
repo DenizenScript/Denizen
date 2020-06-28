@@ -23,7 +23,7 @@ public class ItemBook implements Property {
 
     public static boolean describes(ObjectTag item) {
         Material material = ((ItemTag) item).getItemStack().getType();
-        return (material == Material.WRITTEN_BOOK || material == MaterialCompat.WRITABLE_BOOK);
+        return (material == Material.WRITTEN_BOOK || material == Material.WRITABLE_BOOK);
     }
 
     public static ItemBook getFrom(ObjectTag _item) {

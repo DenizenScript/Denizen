@@ -148,9 +148,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCommand(ExecuteCommand.class);
         registerCommand(ScoreboardCommand.class);
         // world
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            registerCommand(AdjustBlockCommand.class);
-        }
+        registerCommand(AdjustBlockCommand.class);
         registerCommand(AnimateChestCommand.class);
         registerCommand(ChunkLoadCommand.class);
         registerCommand(CopyBlockCommand.class);

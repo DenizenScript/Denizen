@@ -61,9 +61,6 @@ public class ItemPotion implements Property {
                 .append(effect.getDuration()).append(",")
                 .append(effect.isAmbient()).append(",")
                 .append(effect.hasParticles());
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12) && effect.getColor() != null) {
-            sb.append(",").append(new ColorTag(effect.getColor()).identify().replace(",", "&comma"));
-        }
         return sb.toString();
     }
 
@@ -83,20 +80,9 @@ public class ItemPotion implements Property {
         Color color = null;
         boolean icon = false;
         if (d2.length > 5) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                ElementTag check = new ElementTag(d2[5]);
-                if (check.isBoolean()) {
-                    icon = check.asBoolean();
-                }
-                else {
-                    Debug.echoError("Custom effects with the color option are not supported as of Minecraft version 1.13.");
-                }
-            }
-            else {
-                String check = d2[5].replace("&comma", ",");
-                if (ColorTag.matches(check)) {
-                    color = ColorTag.valueOf(check, CoreUtilities.basicContext).getColor();
-                }
+            ElementTag check = new ElementTag(d2[5]);
+            if (check.isBoolean()) {
+                icon = check.asBoolean();
             }
         }
         return NMSHandler.getItemHelper().getPotionEffect(type, duration, amplifier, ambient, particles, color, icon);
@@ -246,24 +232,6 @@ public class ItemPotion implements Property {
                 }
 
                 // <--[tag]
-                // @attribute <ItemTag.potion_effect[<#>].color>
-                // @returns ColorTag
-                // @mechanism ItemTag.potion_effects
-                // @group properties
-                // @description
-                // Returns the potion effect's color.
-                // NOTE: Not supported as of Minecraft version 1.13.
-                // -->
-                if (attribute.startsWith("color")) {
-                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                        Debug.echoError("Custom effects with the color option are not supported as of Minecraft version 1.13.");
-                        return null;
-                    }
-                    return new ColorTag(meta.getCustomEffects().get(potN).getColor())
-                            .getObjectAttribute(attribute.fulfill(1));
-                }
-
-                // <--[tag]
                 // @attribute <ItemTag.potion_effect[<#>].icon>
                 // @returns ElementTag(Boolean)
                 // @mechanism ItemTag.potion_effects
@@ -271,7 +239,7 @@ public class ItemPotion implements Property {
                 // @description
                 // Returns whether the potion effect shows an icon.
                 // -->
-                if (attribute.startsWith("icon") && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
+                if (attribute.startsWith("icon")) {
                     return new ElementTag(meta.getCustomEffects().get(potN).hasIcon()).getObjectAttribute(attribute.fulfill(1));
                 }
 

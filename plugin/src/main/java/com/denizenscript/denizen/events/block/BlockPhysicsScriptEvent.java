@@ -89,8 +89,7 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
     @EventHandler
     public void onBlockPhysics(BlockPhysicsEvent event) {
         Material changedType = event.getChangedType();
-        if (changedType == Material.REDSTONE_WIRE || MaterialCompat.isComparator(changedType)
-                || MaterialCompat.isRepeater(changedType)) {
+        if (changedType == Material.REDSTONE_WIRE || changedType == Material.COMPARATOR || changedType == Material.REPEATER) {
             return;
         }
         location = new LocationTag(event.getBlock().getLocation());

@@ -115,10 +115,7 @@ public class LeashCommand extends AbstractCommand {
         else if (holderObject instanceof LocationTag) {
             holderLoc = scriptEntry.getObjectTag("holder");
             Material material = holderLoc.getBlock().getType();
-            if (material == MaterialCompat.OAK_FENCE || material == MaterialCompat.NETHER_FENCE
-                    || material == Material.ACACIA_FENCE || material == Material.BIRCH_FENCE
-                    || material == Material.JUNGLE_FENCE || material == Material.DARK_OAK_FENCE
-                    || material == Material.SPRUCE_FENCE) {
+            if (material.name().endsWith("_FENCE")) {
                 Holder = holderLoc.getWorld().spawn(holderLoc, LeashHitch.class);
             }
             else {

@@ -74,7 +74,7 @@ public class BookScriptContainer extends ScriptContainer {
         }
         if (contains("signed")) {
             if (getString("signed").equalsIgnoreCase("false")) {
-                book.getItemStack().setType(MaterialCompat.WRITABLE_BOOK);
+                book.getItemStack().setType(Material.WRITABLE_BOOK);
             }
         }
         if (contains("author")) {

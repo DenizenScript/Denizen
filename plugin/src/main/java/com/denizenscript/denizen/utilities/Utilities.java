@@ -65,10 +65,8 @@ public class Utilities {
 
     public static Enchantment getEnchantmentByName(String name) {
         Enchantment ench = null;
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            NamespacedKey key = Utilities.parseNamespacedKey(name);
-            ench = Enchantment.getByKey(key);
-        }
+        NamespacedKey key = Utilities.parseNamespacedKey(name);
+        ench = Enchantment.getByKey(key);
         if (ench == null) {
             ench = Enchantment.getByName(name.toUpperCase());
         }
@@ -372,15 +370,9 @@ public class Utilities {
         else {
             return;
         }
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            MaterialTag signMaterial = new MaterialTag(signState.getBlock());
-            MaterialDirectional.getFrom(signMaterial).setFacing(bf);
-            signMaterial.getModernData().setToBlock(signState.getBlock());
-        }
-        else {
-            ((org.bukkit.material.Sign) signState.getData()).setFacingDirection(bf);
-            signState.update();
-        }
+        MaterialTag signMaterial = new MaterialTag(signState.getBlock());
+        MaterialDirectional.getFrom(signMaterial).setFacing(bf);
+        signMaterial.getModernData().setToBlock(signState.getBlock());
     }
 
     /**

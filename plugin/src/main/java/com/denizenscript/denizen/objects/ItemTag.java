@@ -4,9 +4,7 @@ import com.denizenscript.denizen.objects.properties.item.*;
 import com.denizenscript.denizen.scripts.containers.core.BookScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
-import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.blocks.OldMaterialsHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.utilities.Settings;
@@ -96,13 +94,10 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         if (string == null || string.equals("")) {
             return null;
         }
-
         ItemTag stack = null;
-
         if (ObjectFetcher.isObjectWithProperties(string)) {
             return ObjectFetcher.getObjectFrom(ItemTag.class, string, context);
         }
-
         Notable noted = NotableManager.getSavedObject(string);
         if (noted instanceof ItemTag) {
             Deprecations.notableItems.warn();
@@ -121,9 +116,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
             dataValue = string.substring(commaIndex + 1);
             string = string.substring(0, commaIndex);
         }
-
         try {
-
             if (ScriptRegistry.containsScript(string, ItemScriptContainer.class)) {
                 ItemScriptContainer isc = ScriptRegistry.getScriptContainerAs(string, ItemScriptContainer.class);
                 // TODO: If a script does not contain tags, get the clean reference here.
@@ -139,7 +132,6 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
                     Debug.echoError("Book script '" + book.getName() + "' returned a null item.");
                 }
             }
-
             if (stack != null) {
                 return stack;
             }
@@ -149,29 +141,15 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
                 Debug.echoError(ex);
             }
         }
-
         try {
-            if (ArgumentHelper.matchesInteger(string)) {
-                if (context == null || context.debug) {
-                    Deprecations.materialIds.warn();
-                }
-                stack = new ItemTag(Integer.valueOf(string));
+            MaterialTag mat = MaterialTag.valueOf(string.toUpperCase(), context);
+            if (mat != null) {
+                stack = new ItemTag(mat.getMaterial());
             }
-            else {
-                MaterialTag mat = MaterialTag.valueOf(string.toUpperCase(), context);
-                if (mat != null) {
-                    stack = new ItemTag(mat.getMaterial());
-                    if (mat.hasData() && NMSHandler.getVersion().isAtMost(NMSVersion.v1_12)) {
-                        stack.setDurability(mat.getData());
-                    }
-                }
-            }
-
             if (stack != null) {
                 if (dataValue != null) {
                     stack.setDurability(Short.valueOf(dataValue));
                 }
-
                 return stack;
             }
         }
@@ -183,12 +161,9 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
                 Debug.echoError(ex);
             }
         }
-
         if (context == null || context.debug) {
             Debug.log("valueOf ItemTag returning null: " + string);
         }
-
-        // No match! Return null.
         return null;
     }
 
@@ -235,19 +210,9 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         this(new ItemStack(material));
     }
 
-    @Deprecated
-    public ItemTag(int itemId) {
-        this(MaterialCompat.updateItem(itemId));
-    }
-
     private static ItemStack fixQty(ItemStack item, int qty) {
         item.setAmount(qty);
         return item;
-    }
-
-    @Deprecated
-    public ItemTag(int itemId, int qty) {
-        this(fixQty(MaterialCompat.updateItem(itemId), qty));
     }
 
     public ItemTag(Material material, int qty) {
@@ -255,21 +220,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
     }
 
     public ItemTag(MaterialTag material, int qty) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            this.item = new ItemStack(material.getMaterial(), qty);
-        }
-        else {
-            this.item = new ItemStack(material.getMaterial(), qty, (short) 0, material.getData());
-        }
-    }
-
-    public ItemTag(MaterialData data) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && item.getType().isLegacy()) {
-            this.item = new ItemStack(Bukkit.getUnsafe().fromLegacy(data));
-        }
-        else {
-            this.item = data.toItemStack();
-        }
+        this.item = new ItemStack(material.getMaterial(), qty);
     }
 
     public ItemTag(ItemStack item) {
@@ -488,10 +439,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
     }
 
     public MaterialTag getMaterial() {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            return new MaterialTag(getItemStack().getType());
-        }
-        return OldMaterialsHelper.getMaterialFrom(getItemStack().getType(), getItemStack().getData().getData());
+        return new MaterialTag(getItemStack().getType());
     }
 
     public String getMaterialName() {
@@ -502,10 +450,6 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         if (item != null) {
             item.setAmount(value);
         }
-    }
-
-    public int getMaxStackSize() {
-        return item.getMaxStackSize();
     }
 
     public int getAmount() {
@@ -557,20 +501,13 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
 
     @Override
     public String identify() {
-
         if (item == null || item.getType() == Material.AIR) {
             return "i@air";
         }
-
         // If saved item, return that
         if (isUnique()) {
             Deprecations.notableItems.warn();
             return "i@" + NotableManager.getSavedId(this) + PropertyParser.getPropertiesString(this);
-        }
-
-        // Else, return the material name
-        else if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12) && (item.getDurability() >= 16 || item.getDurability() < 0) && item.getType() != Material.AIR) {
-            return "i@" + getMaterial().realName() + "," + item.getDurability() + PropertyParser.getPropertiesString(this);
         }
         return "i@" + getMaterial().identifyNoPropertiesNoIdentifier().replace("m@", "") + PropertyParser.getPropertiesString(this);
     }
@@ -603,15 +540,8 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         return getMaterial().identifySimple();
     }
 
-    public String identifyMaterialNoIdentifier() {
-        return getMaterial().identifySimpleNoIdentifier();
-    }
-
     public String getFullString() {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            return identify();
-        }
-        return "i@" + getMaterial().realName() + "," + item.getDurability() + PropertyParser.getPropertiesString(this);
+        return identify();
     }
 
     @Override
@@ -647,16 +577,6 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
     }
 
     public static void registerTags() {
-
-        registerTag("id", (attribute, object) -> {
-            Deprecations.materialIds.warn(attribute.getScriptEntry());
-            return new ElementTag(object.getItemStack().getType().getId());
-        });
-
-        registerTag("data", (attribute, object) -> {
-            Deprecations.materialIds.warn(attribute.getScriptEntry());
-            return new ElementTag(object.getItemStack().getData().getData());
-        });
 
         // <--[tag]
         // @attribute <ItemTag.with[<mechanism>=<value>;...]>
@@ -695,19 +615,6 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         // -->
         registerTag("repairable", (attribute, object) -> {
             return new ElementTag(ItemDurability.describes(object));
-        });
-
-        // <--[tag]
-        // @attribute <ItemTag.is_crop>
-        // @returns ElementTag(Boolean)
-        // @group properties
-        // @description
-        // Returns whether the item is a growable crop.
-        // If this returns true, it will enable access to:
-        // <@link mechanism ItemTag.plant_growth> and <@link tag ItemTag.plant_growth>.
-        // -->
-        registerTag("is_crop", (attribute, object) -> {
-            return new ElementTag(ItemPlantgrowth.describes(object));
         });
 
         // <--[tag]
@@ -793,8 +700,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
             if (attribute.getAttribute(2).equals("formatted")) {
                 return object;
             }
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) &&
-                    object.getItemStack().hasItemMeta() && object.getItemStack().getItemMeta() instanceof BlockStateMeta) {
+            if (object.getItemStack().hasItemMeta() && object.getItemStack().getItemMeta() instanceof BlockStateMeta) {
                 if (object.getItemStack().getType() == Material.SHIELD) {
                     MaterialTag material = new MaterialTag(Material.SHIELD);
                     material.setModernData(new ModernBlockData(((BlockStateMeta) object.getItemStack().getItemMeta()).getBlockState()));

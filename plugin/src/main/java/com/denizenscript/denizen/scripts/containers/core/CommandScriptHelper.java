@@ -103,14 +103,12 @@ public class CommandScriptHelper implements Listener {
 
     static {
         Method syncMethod = null;
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            try {
-                syncMethod = Bukkit.getServer().getClass().getDeclaredMethod("syncCommands");
-                syncMethod.setAccessible(true);
-            }
-            catch (Exception e) {
-                Debug.echoError("Failed to load helper to synchronize server commands.");
-            }
+        try {
+            syncMethod = Bukkit.getServer().getClass().getDeclaredMethod("syncCommands");
+            syncMethod.setAccessible(true);
+        }
+        catch (Exception e) {
+            Debug.echoError("Failed to load helper to synchronize server commands.");
         }
         syncCommandsMethod = syncMethod;
     }

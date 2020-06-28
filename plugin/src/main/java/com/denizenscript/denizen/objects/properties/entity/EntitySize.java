@@ -1,7 +1,5 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -16,8 +14,7 @@ public class EntitySize implements Property {
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag &&
                 (((EntityTag) entity).getBukkitEntity() instanceof Slime
-                        || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)
-                        && ((EntityTag) entity).getBukkitEntity() instanceof Phantom));
+                        || ((EntityTag) entity).getBukkitEntity() instanceof Phantom);
     }
 
     public static EntitySize getFrom(ObjectTag entity) {
@@ -45,7 +42,7 @@ public class EntitySize implements Property {
 
     @Override
     public String getPropertyString() {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && entity.getBukkitEntity() instanceof Phantom) {
+        if (entity.getBukkitEntity() instanceof Phantom) {
             return String.valueOf(((Phantom) entity.getBukkitEntity()).getSize());
         }
         return String.valueOf(((Slime) entity.getBukkitEntity()).getSize());
@@ -72,7 +69,7 @@ public class EntitySize implements Property {
         // Returns the size of a slime-type entity or a Phantom (1-120).
         // -->
         if (attribute.startsWith("size")) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && entity.getBukkitEntity() instanceof Phantom) {
+            if (entity.getBukkitEntity() instanceof Phantom) {
                 return new ElementTag(((Phantom) entity.getBukkitEntity()).getSize())
                         .getObjectAttribute(attribute.fulfill(1));
             }
@@ -96,7 +93,7 @@ public class EntitySize implements Property {
         // <EntityTag.size>
         // -->
         if (mechanism.matches("size") && mechanism.requireInteger()) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && entity.getBukkitEntity() instanceof Phantom) {
+            if (entity.getBukkitEntity() instanceof Phantom) {
                 ((Phantom) entity.getBukkitEntity()).setSize(mechanism.getValue().asInt());
                 return;
             }

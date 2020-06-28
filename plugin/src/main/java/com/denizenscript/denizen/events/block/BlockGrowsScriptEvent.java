@@ -70,7 +70,7 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
             return false;
         }
         if (path.switches.containsKey("from")) {
-            if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) || !MaterialAge.describes(new MaterialTag(location.getBlockState()))) {
+            if (!MaterialAge.describes(new MaterialTag(location.getBlockState()))) {
                 return false;
             }
             int oldState = MaterialAge.getFrom(new MaterialTag(location.getBlockState())).getCurrent();
@@ -79,7 +79,7 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
             }
         }
         if (path.switches.containsKey("to")) {
-            if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) || !MaterialAge.describes(material)) {
+            if (!MaterialAge.describes(material)) {
                 return false;
             }
             int newState = MaterialAge.getFrom(material).getCurrent();

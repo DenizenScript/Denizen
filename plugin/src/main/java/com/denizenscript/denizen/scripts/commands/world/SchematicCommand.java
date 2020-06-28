@@ -455,7 +455,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                 }
                 set = schematics.get(name.asString().toUpperCase());
                 String directory = URLDecoder.decode(System.getProperty("user.dir"));
-                String extension = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) ? ".schem" : ".schematic";
+                String extension = ".schem";
                 File f = new File(directory + "/plugins/Denizen/schematics/" + fname + extension);
                 if (!Utilities.canWriteToFile(f)) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Cannot edit that file!");
@@ -465,12 +465,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     try {
                         f.getParentFile().mkdirs();
                         FileOutputStream fs = new FileOutputStream(f);
-                        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-                            SpongeSchematicHelper.saveToSpongeStream(set, fs);
-                        }
-                        else {
-                            MCEditSchematicHelper.saveMCEditFormatToStream(set, fs);
-                        }
+                        SpongeSchematicHelper.saveToSpongeStream(set, fs);
                         fs.flush();
                         fs.close();
                         Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), () -> scriptEntry.setFinished(true));

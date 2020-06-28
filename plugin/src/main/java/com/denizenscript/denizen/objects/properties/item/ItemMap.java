@@ -1,7 +1,5 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -13,7 +11,7 @@ import org.bukkit.inventory.meta.MapMeta;
 
 public class ItemMap implements Property {
 
-    public static Material MAP_MATERIAL = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) ? Material.FILLED_MAP : Material.MAP;
+    public static Material MAP_MATERIAL = Material.FILLED_MAP;
 
     public static boolean describes(ObjectTag item) {
         return item instanceof ItemTag
@@ -70,31 +68,22 @@ public class ItemMap implements Property {
     }
 
     public boolean hasMapId() {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            MapMeta map = (MapMeta) item.getItemStack().getItemMeta();
-            return map.hasMapId();
-        }
-        return true;
+        MapMeta map = (MapMeta) item.getItemStack().getItemMeta();
+        return map.hasMapId();
     }
 
     public int getMapId() {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            MapMeta map = (MapMeta) item.getItemStack().getItemMeta();
-            if (!map.hasMapId()) {
-                return 0;
-            }
-            return map.getMapId();
+        MapMeta map = (MapMeta) item.getItemStack().getItemMeta();
+        if (!map.hasMapId()) {
+            return 0;
         }
-        return item.getItemStack().getDurability();
+        return map.getMapId();
     }
 
     public void setMapId(int id) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            MapMeta map = (MapMeta) item.getItemStack().getItemMeta();
-            map.setMapId(id);
-            item.getItemStack().setItemMeta(map);
-        }
-        item.getItemStack().setDurability((short) (id));
+        MapMeta map = (MapMeta) item.getItemStack().getItemMeta();
+        map.setMapId(id);
+        item.getItemStack().setItemMeta(map);
     }
 
     @Override

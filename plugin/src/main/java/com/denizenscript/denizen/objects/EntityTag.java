@@ -752,8 +752,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                             while (data1.equalsIgnoreCase("RANDOM") &&
                                     ((!material.getMaterial().isBlock()) ||
                                             material.getMaterial() == Material.AIR ||
-                                            material.getMaterial() == MaterialCompat.NETHER_PORTAL ||
-                                            material.getMaterial() == MaterialCompat.END_PORTAL)) {
+                                            material.getMaterial() == Material.NETHER_PORTAL ||
+                                            material.getMaterial() == Material.END_PORTAL)) {
                                 material = MaterialTag.valueOf(data1, CoreUtilities.basicContext);
                             }
                         }
@@ -2199,12 +2199,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns whether this entity is swimming.
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13)) {
-            registerSpawnedOnlyTag("swimming", (attribute, object) -> {
-                return new ElementTag(object.getLivingEntity().isSwimming());
+        registerSpawnedOnlyTag("swimming", (attribute, object) -> {
+            return new ElementTag(object.getLivingEntity().isSwimming());
 
-            });
-        }
+        });
 
         // <--[tag]
         // @attribute <EntityTag.glowing>
@@ -3179,8 +3177,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @tags
         // <EntityTag.swimming>
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13) && mechanism.matches("swimming")
-                && mechanism.requireBoolean()) {
+        if (mechanism.matches("swimming") && mechanism.requireBoolean()) {
             getLivingEntity().setSwimming(mechanism.getValue().asBoolean());
         }
 
