@@ -88,7 +88,7 @@ public class CastCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("show_icon")
                     && arg.matches("no_icon")) {
-                scriptEntry.addObject("no_icon", new ElementTag(false));
+                scriptEntry.addObject("show_icon", new ElementTag(false));
             }
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesPrefix("duration", "d")

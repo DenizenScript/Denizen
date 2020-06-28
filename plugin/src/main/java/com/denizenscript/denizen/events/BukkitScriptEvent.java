@@ -25,7 +25,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 
 public abstract class BukkitScriptEvent extends ScriptEvent {
 
@@ -36,7 +35,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
 
         String in = CoreUtilities.getXthArg(index + 1, lower);
-        if (InventoryTag.matches(in) || CoreUtilities.equalsIgnoreCase(in, "inventory") || isRegexMatchable(in)) {
+        if (InventoryTag.matches(in) || CoreUtilities.equalsIgnoreCase(in, "inventory") || isAdvancedMatchable(in)) {
             return false;
         }
         if (CoreUtilities.equalsIgnoreCase(in, "notable")) {
@@ -585,21 +584,21 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (comparedto.equals("notable")) {
             return NotableManager.isSaved(inv);
         }
-        Pattern regexd = regexHandle(comparedto);
-        if (equalityCheck(inv.getInventoryType().name(), comparedto, regexd)) {
+        MatchHelper matcher = createMatcher(comparedto);
+        if (matcher.doesMatch(inv.getInventoryType().name())) {
             return true;
         }
-        if (equalityCheck(inv.getIdType(), comparedto, regexd)) {
+        if (matcher.doesMatch(inv.getIdType())) {
             return true;
         }
-        if (equalityCheck(inv.getIdHolder(), comparedto, regexd)) {
+        if (matcher.doesMatch(inv.getIdHolder())) {
             return true;
         }
-        if (inv.scriptName != null && equalityCheck(inv.scriptName, comparedto, regexd)) {
+        if (inv.scriptName != null && matcher.doesMatch(inv.scriptName)) {
             return true;
         }
         String notedId = NotableManager.getSavedId(inv);
-        if (notedId != null && equalityCheck(notedId, comparedto, regexd)) {
+        if (notedId != null && matcher.doesMatch(notedId)) {
             return true;
         }
         return false;
@@ -616,14 +615,14 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (comparedto.equals("potion") && CoreUtilities.toLowerCase(item.getItemStack().getType().name()).contains("potion")) {
             return true;
         }
-        Pattern regexd = regexHandle(comparedto);
+        MatchHelper matcher = createMatcher(comparedto);
         if (item.isItemscript()) {
-            if (equalityCheck(item.getScriptName(), comparedto, regexd)) {
+            if (matcher.doesMatch(item.getScriptName())) {
                 return true;
             }
         }
         else {
-            if (equalityCheck(item.getMaterialName(), comparedto, regexd)) {
+            if (matcher.doesMatch(item.getMaterialName())) {
                 return true;
             }
         }
@@ -647,17 +646,17 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 return true;
             }
         }
-        Pattern regexd = regexHandle(comparedto);
-        if (equalityCheck(mat.realName(), comparedto, regexd)) {
+        MatchHelper matcher = createMatcher(comparedto);
+        if (matcher.doesMatch(mat.realName())) {
             return true;
         }
-        else if (equalityCheck(mat.identifyNoIdentifier(), comparedto, regexd)) {
+        else if (matcher.doesMatch(mat.identifyNoIdentifier())) {
             return true;
         }
-        else if (equalityCheck(mat.identifySimpleNoIdentifier(), comparedto, regexd)) {
+        else if (matcher.doesMatch(mat.identifySimpleNoIdentifier())) {
             return true;
         }
-        else if (equalityCheck(mat.identifyFullNoIdentifier(), comparedto, regexd)) {
+        else if (matcher.doesMatch(mat.identifyFullNoIdentifier())) {
             return true;
         }
         return false;
@@ -690,11 +689,11 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         else if (comparedto.equals("hanging")) {
             return bEntity instanceof Hanging;
         }
-        Pattern regexd = regexHandle(comparedto);
-        if (entity.getEntityScript() != null && equalityCheck(entity.getEntityScript(), comparedto, regexd)) {
+        MatchHelper matcher = createMatcher(comparedto);
+        if (entity.getEntityScript() != null && matcher.doesMatch(entity.getEntityScript())) {
             return true;
         }
-        else if (equalityCheck(entity.getEntityType().getLowercaseName(), comparedto, regexd)) {
+        else if (matcher.doesMatch(entity.getEntityType().getLowercaseName())) {
             return true;
         }
         return false;

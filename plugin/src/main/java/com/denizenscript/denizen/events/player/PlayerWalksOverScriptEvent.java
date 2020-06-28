@@ -54,7 +54,8 @@ public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Lis
     @Override
     public boolean matches(ScriptPath path) {
         String loc = path.eventArgLowerAt(3);
-        if (!loc.equals("notable") && !equalityCheck(notable, loc, regexHandle(loc))) {
+        MatchHelper matcher = createMatcher(loc);
+        if (!loc.equals("notable") && !matcher.doesMatch(notable)) {
             return false;
         }
         return super.matches(path);

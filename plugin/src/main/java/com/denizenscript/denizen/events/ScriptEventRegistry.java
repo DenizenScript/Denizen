@@ -199,7 +199,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new ChunkUnloadScriptEvent());
         ScriptEvent.registerScriptEvent(new LightningStrikesScriptEvent());
         ScriptEvent.registerScriptEvent(new LingeringPotionSplashScriptEvent());
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)) {
             ScriptEvent.registerScriptEvent(new LootGenerateScriptEvent());
         }
         ScriptEvent.registerScriptEvent(new PortalCreateScriptEvent());
