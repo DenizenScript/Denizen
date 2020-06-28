@@ -104,16 +104,17 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable {
             return false;
         }
     }
+    @Override
+    public EllipsoidTag clone() {
+        if (noteName != null) {
+            return this;
+        }
+        return new EllipsoidTag(loc.clone(), size.clone());
+    }
 
     @Override
     public ObjectTag duplicate() {
-        try {
-            return (ObjectTag) clone();
-        }
-        catch (CloneNotSupportedException ex) {
-            Debug.echoError(ex);
-            return null;
-        }
+        return clone();
     }
 
     ///////////////
@@ -132,6 +133,8 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable {
     private LocationTag loc;
 
     private LocationTag size;
+
+    public String noteName = null;
 
     public ListTag getBlocks(Attribute attribute) {
         return getBlocks(null, attribute);
@@ -245,12 +248,46 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable {
 
     @Override
     public void makeUnique(String id) {
+        EllipsoidTag toNote = clone();
+        toNote.noteName = id;
         NotableManager.saveAs(this, id);
     }
 
     @Override
     public void forget() {
         NotableManager.remove(this);
+        noteName = null;
+    }
+    @Override
+    public int hashCode() {
+        if (noteName != null) {
+            return noteName.hashCode();
+        }
+        return loc.hashCode() + size.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof EllipsoidTag)) {
+            return false;
+        }
+        EllipsoidTag ellipsoid2 = (EllipsoidTag) other;
+        if ((noteName == null) != (ellipsoid2.noteName == null)) {
+            return false;
+        }
+        if (noteName != null && !noteName.equals(ellipsoid2.noteName)) {
+            return false;
+        }
+        if (!loc.getWorldName().equals(ellipsoid2.loc.getWorldName())) {
+            return false;
+        }
+        if (loc.distanceSquared(ellipsoid2.loc) >= 0.25) {
+            return false;
+        }
+        if (size.distanceSquared(ellipsoid2.size) >= 0.25) {
+            return false;
+        }
+        return true;
     }
 
     @Override

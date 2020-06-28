@@ -49,7 +49,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
     //
     // -->
 
-    // Cloning
     @Override
     public CuboidTag clone() {
         if (noteName != null) {
