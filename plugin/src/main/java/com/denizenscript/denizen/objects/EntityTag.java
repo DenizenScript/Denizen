@@ -491,7 +491,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     public EntityFormObject getDenizenObject() {
-
         if (entity == null && npc == null) {
             return null;
         }
@@ -568,7 +567,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     public Projectile getProjectile() {
-
         return (Projectile) entity;
     }
 
@@ -606,8 +604,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     public InventoryTag getInventory() {
-        return hasInventory() ? isCitizensNPC() ? getDenizenNPC().getDenizenInventory()
-                : InventoryTag.mirrorBukkitInventory(getBukkitInventory()) : null;
+        return hasInventory() ? isCitizensNPC() ? getDenizenNPC().getDenizenInventory() : InventoryTag.mirrorBukkitInventory(getBukkitInventory()) : null;
     }
 
     public String getName() {
@@ -642,7 +639,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
 
     @Override
     public LocationTag getLocation() {
-
         if (entity != null) {
             return new LocationTag(entity.getLocation());
         }
@@ -651,7 +647,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     public LocationTag getEyeLocation() {
-
         if (isPlayer()) {
             return new LocationTag(getPlayer().getEyeLocation());
         }
@@ -676,7 +671,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     public Vector getVelocity() {
-
         if (!isGeneric()) {
             return entity.getVelocity();
         }
@@ -684,7 +678,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     public void setVelocity(Vector vector) {
-
         if (!isGeneric()) {
             if (entity instanceof WitherSkull) {
                 ((WitherSkull) entity).setDirection(vector);
@@ -696,7 +689,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     public World getWorld() {
-
         if (!isGeneric()) {
             return entity.getWorld();
         }
@@ -732,7 +724,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                     else {
                         entity = entity_type.spawnNewEntity(location, mechanisms, entityScript);
                     }
-
                     getLivingEntity().teleport(location);
                     getLivingEntity().getEquipment().setArmorContents(despawned_entity.equipment);
                     getLivingEntity().setHealth(despawned_entity.health);
@@ -740,7 +731,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                     despawned_entity = null;
                 }
                 else {
-
                     if (entity_type.getName().equals("PLAYER")) {
                         if (Depends.citizens == null) {
                             Debug.echoError("Cannot spawn entity of type PLAYER!");
@@ -754,22 +744,17 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                         }
                     }
                     else if (entity_type.getName().equals("FALLING_BLOCK")) {
-
-                        Material material = null;
-
+                        MaterialTag material = null;
                         if (data1 != null && MaterialTag.matches(data1)) {
-
-                            material = MaterialTag.valueOf(data1, CoreUtilities.basicContext).getMaterial();
-
+                            material = MaterialTag.valueOf(data1, CoreUtilities.basicContext);
                             // If we did not get a block with "RANDOM", or we got
                             // air or portals, keep trying
                             while (data1.equalsIgnoreCase("RANDOM") &&
-                                    ((!material.isBlock()) ||
-                                            material == Material.AIR ||
-                                            material == MaterialCompat.NETHER_PORTAL ||
-                                            material == MaterialCompat.END_PORTAL)) {
-
-                                material = MaterialTag.valueOf(data1, CoreUtilities.basicContext).getMaterial();
+                                    ((!material.getMaterial().isBlock()) ||
+                                            material.getMaterial() == Material.AIR ||
+                                            material.getMaterial() == MaterialCompat.NETHER_PORTAL ||
+                                            material.getMaterial() == MaterialCompat.END_PORTAL)) {
+                                material = MaterialTag.valueOf(data1, CoreUtilities.basicContext);
                             }
                         }
                         else {
@@ -784,32 +769,21 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                             // -->
                             for (Mechanism mech : mechanisms) {
                                 if (mech.getName().equalsIgnoreCase("fallingblock_type")) {
-                                    material = mech.valueAsType(MaterialTag.class).getMaterial();
+                                    material = mech.valueAsType(MaterialTag.class);
                                     mechanisms.remove(mech);
                                     break;
                                 }
                             }
                         }
-
                         // If material is null or not a block, default to SAND
-                        if (material == null || (!material.isBlock())) {
-                            material = Material.SAND;
+                        if (material == null || !material.getMaterial().isBlock() || !material.hasModernData()) {
+                            material = new MaterialTag(Material.SAND);
                         }
-
-                        byte materialData = 0;
-
-                        // Get special data value from data2 if it is a valid integer
-                        if (data2 != null && ArgumentHelper.matchesInteger(data2)) {
-
-                            materialData = (byte) Integer.parseInt(data2);
-                        }
-
                         // This is currently the only way to spawn a falling block
-                        entity = location.getWorld().spawnFallingBlock(location, material, materialData);
+                        entity = location.getWorld().spawnFallingBlock(location, material.getModernData().data);
                         uuid = entity.getUniqueId();
                     }
                     else {
-
                         entity = entity_type.spawnNewEntity(location, mechanisms, entityScript);
                         if (entity == null) {
                             if (Debug.verbose) {
@@ -827,12 +801,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             else {
                 Debug.echoError("Cannot spawn a null EntityTag!");
             }
-
             if (!isUnique()) {
                 Debug.echoError("Error spawning entity - bad entity type, blocked by another plugin, or tried to spawn in an unloaded chunk?");
                 return;
             }
-
             for (Mechanism mechanism : mechanisms) {
                 safeAdjust(new Mechanism(new ElementTag(mechanism.getName()), mechanism.getValue(), mechanism.context));
             }

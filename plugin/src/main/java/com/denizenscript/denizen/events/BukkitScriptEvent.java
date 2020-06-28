@@ -515,6 +515,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // -->
 
     public boolean runAutomaticPlayerSwitches(ScriptPath path) {
+        if (!path.switches.containsKey("flagged") && !path.switches.containsKey("permission")) {
+            return true;
+        }
         BukkitScriptEntryData data = (BukkitScriptEntryData) getScriptEntryData();
         if (!data.hasPlayer()) {
             return true;

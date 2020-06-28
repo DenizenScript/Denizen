@@ -603,6 +603,11 @@ public class TextTagBase {
         // @description
         // Returns a chat code that makes the following text be the specified color.
         // Color can be a color name, color code, hex, or ColorTag... that is: "&color[gold]", "&color[6]", "&color[#AABB00]", and "&color[co@128,64,0]" are all valid.
+        //
+        // Note that Full RGB Color is a magic Denizen tool, and unlike other format codes (like 'bold') or the default 16 colors (like 'gold') does not appear in Spigot's API or the old Minecraft chat system.
+        // This instead generates the special modern Minecraft JSON codes for scoreboard scores through the Denizen message processor.
+        // As such, it only works when sent through certain Denizen commands (narrate, announce, etc) or mechanisms (like ItemTag.book).
+        // This will not be valid anywhere that isn't in the chat bar or a book (titles, items, etc. will not work).
         // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
