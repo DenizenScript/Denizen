@@ -1,7 +1,5 @@
 package com.denizenscript.denizen.npc.traits;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.Utilities;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;

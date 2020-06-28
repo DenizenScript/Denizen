@@ -440,7 +440,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             location.getBlock().breakNaturally();
         }
         else {
-            material.getNmsBlockData().setBlock(location.getBlock(), physics);
+            location.getBlock().setBlockData(material.getModernData().data, physics);
         }
     }
 

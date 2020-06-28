@@ -3,7 +3,6 @@ package com.denizenscript.denizen.nms.v1_16.helpers;
 import com.denizenscript.denizen.nms.v1_16.impl.entities.CraftFakePlayerImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.entities.EntityFakeArrowImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.entities.EntityFakePlayerImpl;
-import com.denizenscript.denizen.nms.v1_16.impl.entities.EntityItemProjectileImpl;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.denizenscript.denizen.nms.NMSHandler;

@@ -2,7 +2,6 @@ package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;

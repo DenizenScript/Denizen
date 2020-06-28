@@ -4,8 +4,6 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ChunkTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;

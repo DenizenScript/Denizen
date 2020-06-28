@@ -5,8 +5,6 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.utilities.Settings;
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
@@ -603,23 +601,17 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
         LocationTag loc;
         ListTag list = new ListTag();
         int index = 0;
-
-        BlockHelper blockHelper = NMSHandler.getBlockHelper();
         for (LocationPair pair : pairs) {
-
             LocationTag loc_1 = pair.low;
             int y_distance = pair.yDistance();
             int z_distance = pair.zDistance();
             int x_distance = pair.xDistance();
-
             for (int x = 0; x != x_distance + 1; x++) {
                 for (int y = 0; y != y_distance + 1; y++) {
                     for (int z = 0; z != z_distance + 1; z++) {
-                        loc = new LocationTag(loc_1.clone()
-                                .add(x, y, z));
-
-                        if (blockHelper.isSafeBlock(loc.getBlockTypeForTag(attribute))
-                                && blockHelper.isSafeBlock(new LocationTag(loc.clone().add(0, 1, 0)).getBlockTypeForTag(attribute))
+                        loc = new LocationTag(loc_1.clone().add(x, y, z));
+                        if (!loc.getBlockTypeForTag(attribute).isSolid()
+                                && !(new LocationTag(loc.clone().add(0, 1, 0)).getBlockTypeForTag(attribute)).isSolid()
                                 && new LocationTag(loc.clone().add(0, -1, 0)).getBlockTypeForTag(attribute).isSolid()
                                 && matchesMaterialList(loc.clone().add(0, -1, 0), mats, attribute)) {
                             // Get the center of the block, so the entity won't suffocate

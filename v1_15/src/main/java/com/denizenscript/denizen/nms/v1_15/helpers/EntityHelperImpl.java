@@ -3,9 +3,7 @@ package com.denizenscript.denizen.nms.v1_15.helpers;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
-import com.denizenscript.denizen.nms.v1_15.impl.blocks.BlockDataImpl;
 import com.denizenscript.denizen.nms.v1_15.impl.jnbt.CompoundTagImpl;
-import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.nms.util.BoundingBox;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
@@ -628,10 +626,5 @@ public class EntityHelperImpl extends EntityHelper {
         if (horse instanceof ChestedHorse) {
             ((ChestedHorse) horse).setCarryingChest(carrying);
         }
-    }
-
-    @Override
-    public BlockData getBlockDataFor(FallingBlock entity) {
-        return new BlockDataImpl(entity.getBlockData());
     }
 }

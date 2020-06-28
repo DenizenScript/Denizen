@@ -6,7 +6,6 @@ import com.denizenscript.denizen.objects.properties.material.MaterialHalf;
 import com.denizenscript.denizen.objects.properties.material.MaterialSwitchFace;
 import com.denizenscript.denizen.objects.properties.material.MaterialPersistent;
 import com.denizenscript.denizen.scripts.commands.world.SwitchCommand;
-import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizen.utilities.world.PathFinder;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -15,7 +14,6 @@ import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
-import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.tags.BukkitTagContext;
@@ -42,7 +40,6 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.loot.Lootable;
 import org.bukkit.material.Attachable;
-import org.bukkit.material.Door;
 import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -3149,12 +3146,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     @Override
     public void adjust(Mechanism mechanism) {
 
-        if (mechanism.matches("data") && mechanism.hasValue()) {
-            Deprecations.materialIds.warn(mechanism.context);
-            BlockData blockData = NMSHandler.getBlockHelper().getBlockData(getBlock().getType(), (byte) mechanism.getValue().asInt());
-            blockData.setBlock(getBlock(), false);
-        }
-
         // <--[mechanism]
         // @object LocationTag
         // @name block_facing
@@ -3187,7 +3178,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         if (mechanism.matches("block_type") && mechanism.requireObject(MaterialTag.class)) {
             MaterialTag mat = mechanism.valueAsType(MaterialTag.class);
-            mat.getNmsBlockData().setBlock(getBlock(), false);
+            getBlock().setBlockData(mat.getModernData().data, false);
         }
 
         // <--[mechanism]
@@ -3282,10 +3273,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if (mechanism.matches("skull_skin")) {
             final BlockState blockState = getBlockState();
             Material material = getBlock().getType();
-            if (material != Material.PLAYER_HEAD && material != Material.PLAYER_WALL_HEAD) {
-                Deprecations.skullSkinMaterials.warn(mechanism.context);
-            }
-            else if (blockState instanceof Skull) {
+            if (blockState instanceof Skull) {
                 ListTag list = mechanism.valueAsType(ListTag.class);
                 String idString = list.get(0);
                 String texture = null;

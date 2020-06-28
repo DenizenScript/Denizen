@@ -8,7 +8,6 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
-import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -49,9 +48,6 @@ public class InventoryContents implements Property {
                 containsNonAir = true;
                 if (simpleOrFull == 1) {
                     contents.add(new ItemTag(item).identifySimple());
-                }
-                else if (simpleOrFull == 2) {
-                    contents.add(new ItemTag(item).getFullString());
                 }
                 else {
                     contents.addObject(new ItemTag(item));
@@ -166,12 +162,6 @@ public class InventoryContents implements Property {
             if (attribute.startsWith("simple", 2)) {
                 attribute.fulfill(1);
                 return contents.getContents(1);
-            }
-
-            if (attribute.startsWith("full", 2)) {
-                attribute.fulfill(1);
-                Deprecations.fullTags.warn(attribute.context);
-                return contents.getContents(2);
             }
 
             // <--[tag]

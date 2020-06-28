@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.utilities.blocks;
 
-import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import org.bukkit.Location;
@@ -24,7 +23,7 @@ public interface BlockSet {
         public DurationTag fakeDuration;
     }
 
-    BlockData[] getBlocks();
+    FullBlockData[] getBlocks();
 
     void setBlocksDelayed(final Runnable runme, final InputParams input);
 

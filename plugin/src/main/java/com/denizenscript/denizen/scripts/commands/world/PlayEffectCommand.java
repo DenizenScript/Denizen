@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;

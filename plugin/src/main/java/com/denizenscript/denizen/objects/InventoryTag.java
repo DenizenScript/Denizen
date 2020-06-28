@@ -11,7 +11,6 @@ import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.tags.BukkitTagContext;
@@ -515,7 +514,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         }
         item = new ItemTag(item.getItemStack().clone());
         item.setAmount(1);
-        String myItem = CoreUtilities.toLowerCase(item.getFullString());
+        String myItem = CoreUtilities.toLowerCase(item.identify());
         for (int i = 0; i < inventory.getSize(); i++) {
             ItemStack is = inventory.getItem(i);
             if (is == null || item.getMaterial().getMaterial() != is.getType()) {
@@ -524,7 +523,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             is = is.clone();
             int count = is.getAmount();
             is.setAmount(1);
-            String newItem = CoreUtilities.toLowerCase(new ItemTag(is).getFullString());
+            String newItem = CoreUtilities.toLowerCase(new ItemTag(is).identify());
             if (myItem.equals(newItem)) {
                 if (count <= amount) {
                     amount -= count;
@@ -546,7 +545,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         }
         item = new ItemTag(item.getItemStack().clone());
         item.setAmount(1);
-        String myItem = CoreUtilities.toLowerCase(item.getFullString());
+        String myItem = CoreUtilities.toLowerCase(item.identify());
         for (int i = 0; i < inventory.getSize(); i++) {
             ItemStack is = inventory.getItem(i);
             if (is == null) {
@@ -556,7 +555,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             int count = is.getAmount();
             is.setAmount(1);
             // Note: this double-parsing is intentional, as part of a hotfix for a larger issue
-            String newItem = CoreUtilities.toLowerCase(ItemTag.valueOf(new ItemTag(is).getFullString(), false).getFullString());
+            String newItem = CoreUtilities.toLowerCase(ItemTag.valueOf(new ItemTag(is).identify(), false).identify());
             if (myItem.equals(newItem)) {
                 if (count <= amount) {
                     NMSHandler.getItemHelper().setInventoryItem(inventory, null, i);
@@ -2087,7 +2086,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 if (object.inventory.getItem(i) != null) {
                     ItemTag compare_to = new ItemTag(object.inventory.getItem(i).clone());
                     compare_to.setAmount(1);
-                    if (item.getFullString().equalsIgnoreCase(compare_to.getFullString())) {
+                    if (item.identify().equalsIgnoreCase(compare_to.identify())) {
                         slot = i + 1;
                         break;
                     }

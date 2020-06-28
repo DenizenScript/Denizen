@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.utilities.blocks;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.nms.util.jnbt.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import org.bukkit.util.BlockVector;
@@ -52,7 +51,7 @@ public class SpongeSchematicHelper {
             cbs.center_x = originX;
             cbs.center_y = originY;
             cbs.center_z = originZ;
-            cbs.blocks = new BlockData[width * length * height];
+            cbs.blocks = new FullBlockData[width * length * height];
             Map<String, Tag> paletteMap = getChildTag(schematic, "Palette", CompoundTag.class).getValue();
             HashMap<Integer, ModernBlockData> palette = new HashMap<>(256);
             for (String key : paletteMap.keySet()) {
@@ -93,7 +92,7 @@ public class SpongeSchematicHelper {
                     }
                     i++;
                 }
-                BlockData block = NMSHandler.getBlockHelper().getBlockData(palette.get(value));
+                FullBlockData block = new FullBlockData(palette.get(value).data);
                 int y = index / (width * length);
                 int z = (index % (width * length)) / width;
                 int x = (index % (width * length)) % width;
@@ -101,7 +100,7 @@ public class SpongeSchematicHelper {
                 BlockVector pt = new BlockVector(x, y, z);
                 if (tileEntitiesMap.containsKey(pt)) {
                     CompoundTag otag = NMSHandler.getInstance().createCompoundTag(tileEntitiesMap.get(pt));
-                    block.setCompoundTag(otag);
+                    block.tileEntityData = otag;
                 }
                 cbs.blocks[cbsIndex] = block;
                 index++;
@@ -139,8 +138,8 @@ public class SpongeSchematicHelper {
                 for (int z = 0; z < blockSet.z_height; z++) {
                     for (int x = 0; x < blockSet.x_width; x++) {
                         int cbsIndex = z + y * blockSet.z_height + x * blockSet.z_height * blockSet.y_length;
-                        BlockData bd = blockSet.blocks[cbsIndex];
-                        String dataStr = bd.modern().data.getAsString();
+                        FullBlockData bd = blockSet.blocks[cbsIndex];
+                        String dataStr = bd.data.getAsString();
                         Tag blockIdTag = palette.get(dataStr);
                         if (blockIdTag == null) {
                             blockIdTag = new IntTag(paletteMax++);
@@ -152,7 +151,7 @@ public class SpongeSchematicHelper {
                             blockId >>>= 7;
                         }
                         blocksBuffer.write(blockId);
-                        CompoundTag rawTag = bd.getCompoundTag();
+                        CompoundTag rawTag = bd.tileEntityData;
                         if (rawTag != null) {
                             HashMap<String, Tag> values = new HashMap<>();
                             for (Map.Entry<String, Tag> entry : rawTag.getValue().entrySet()) {

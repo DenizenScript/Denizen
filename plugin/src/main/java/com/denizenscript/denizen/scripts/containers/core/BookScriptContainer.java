@@ -3,7 +3,6 @@ package com.denizenscript.denizen.scripts.containers.core;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
-import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.tags.TagContext;

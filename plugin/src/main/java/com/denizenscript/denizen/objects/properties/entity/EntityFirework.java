@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;

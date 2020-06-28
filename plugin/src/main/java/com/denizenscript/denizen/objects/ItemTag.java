@@ -9,7 +9,6 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
 import com.denizenscript.denizen.nms.util.jnbt.StringTag;
 import com.denizenscript.denizen.objects.notable.NotableManager;
@@ -37,7 +36,6 @@ import org.bukkit.entity.Item;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -242,7 +240,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
 
     // Bukkit itemstack associated
 
-    private ItemStack item = null;
+    private ItemStack item;
 
     public ItemStack getItemStack() {
         return item;
@@ -540,10 +538,6 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         return getMaterial().identifySimple();
     }
 
-    public String getFullString() {
-        return identify();
-    }
-
     @Override
     public String toString() {
         return identify();
@@ -561,7 +555,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
     @Override
     @Note("Items")
     public String getSaveObject() {
-        return getFullString();
+        return identify();
     }
 
     @Override
@@ -735,11 +729,6 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
             YamlConfiguration config = new YamlConfiguration();
             config.set("item", object.getItemStack());
             return new ElementTag(config.saveToString());
-        });
-
-        registerTag("full", (attribute, object) -> {
-            Deprecations.fullTags.warn(attribute.context);
-            return new ElementTag(object.getFullString());
         });
 
         // <--[tag]

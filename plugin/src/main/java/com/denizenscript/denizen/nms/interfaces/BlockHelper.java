@@ -9,7 +9,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Skull;
 import org.bukkit.event.world.PortalCreateEvent;
-import org.bukkit.material.MaterialData;
 
 import java.util.List;
 
@@ -17,12 +16,6 @@ public interface BlockHelper {
 
 
     void applyPhysics(Location location);
-
-    int idFor(Material mat);
-
-    MaterialData getFlowerpotContents(Block block);
-
-    void setFlowerpotContents(Block block, MaterialData data);
 
     PlayerProfile getPlayerProfile(Skull skull);
 
@@ -32,27 +25,11 @@ public interface BlockHelper {
 
     void setNbtData(Block block, CompoundTag compoundTag);
 
-    BlockData getBlockData(Material material, byte data);
-
-    BlockData getBlockData(Block block);
-
-    default BlockData getBlockData(ModernBlockData data) {
-        return null;
-    }
-
-    BlockData getBlockData(String compressedString);
-
     boolean hasBlock(Material material);
 
     boolean setBlockResistance(Material material, float resistance);
 
     float getBlockResistance(Material material);
-
-    default boolean isSafeBlock(Location loc) {
-        return loc.getBlockY() < 0 || loc.getBlockY() > 255 || isSafeBlock(loc.getBlock().getType());
-    }
-
-    boolean isSafeBlock(Material material);
 
     default BlockState generateBlockState(Material mat) {
         return null;

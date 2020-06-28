@@ -4,7 +4,6 @@ import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.npc.traits.TriggerTrait;
 import com.denizenscript.denizen.objects.NPCTag;
@@ -64,7 +63,7 @@ public class Utilities {
     }
 
     public static Enchantment getEnchantmentByName(String name) {
-        Enchantment ench = null;
+        Enchantment ench;
         NamespacedKey key = Utilities.parseNamespacedKey(name);
         ench = Enchantment.getByKey(key);
         if (ench == null) {
@@ -232,9 +231,9 @@ public class Utilities {
             return false;
         }
         BlockHelper blockHelper = NMSHandler.getBlockHelper();
-        return !blockHelper.isSafeBlock(location.clone().subtract(0, 1, 0).getBlock().getType())
-                && blockHelper.isSafeBlock(location.getBlock().getType())
-                && blockHelper.isSafeBlock(location.clone().add(0, 1, 0).getBlock().getType());
+        return location.clone().subtract(0, 1, 0).getBlock().getType().isSolid()
+                && !location.getBlock().getType().isSolid()
+                && !location.clone().add(0, 1, 0).getBlock().getType().isSolid();
     }
 
     /**

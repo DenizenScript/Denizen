@@ -3,7 +3,6 @@ package com.denizenscript.denizen.events.player;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.BookScriptContainer;
-import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;

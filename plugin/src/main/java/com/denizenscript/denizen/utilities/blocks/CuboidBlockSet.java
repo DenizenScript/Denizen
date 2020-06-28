@@ -1,7 +1,5 @@
 package com.denizenscript.denizen.utilities.blocks;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.objects.CuboidTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
@@ -26,12 +24,12 @@ public class CuboidBlockSet implements BlockSet {
         center_x = (int) (center.getX() - low.getX());
         center_y = (int) (center.getY() - low.getY());
         center_z = (int) (center.getZ() - low.getZ());
-        blocks = new BlockData[(x_width * y_length * z_height)];
+        blocks = new FullBlockData[(x_width * y_length * z_height)];
         int index = 0;
         for (int x = 0; x < x_width; x++) {
             for (int y = 0; y < y_length; y++) {
                 for (int z = 0; z < z_height; z++) {
-                    blocks[index++] = NMSHandler.getBlockHelper().getBlockData(low.clone().add(x, y, z).getBlock());
+                    blocks[index++] = new FullBlockData(low.clone().add(x, y, z).getBlock());
                 }
             }
         }
@@ -56,7 +54,7 @@ public class CuboidBlockSet implements BlockSet {
                     long z = index % ((long) (z_height));
                     long y = ((index - z) % ((long) (y_length * z_height))) / ((long) z_height);
                     long x = (index - y - z) / ((long) (y_length * z_height));
-                    blocks[index] = NMSHandler.getBlockHelper().getBlockData(low.clone().add(x, y, z).getBlock());
+                    blocks[index] = new FullBlockData(low.clone().add(x, y, z).getBlock());
                     index++;
                     if (System.currentTimeMillis() - start > 50) {
                         SchematicCommand.noPhys = false;
@@ -72,7 +70,7 @@ public class CuboidBlockSet implements BlockSet {
         }.runTaskTimer(DenizenAPI.getCurrentInstance(), 1, 1);
     }
 
-    public BlockData[] blocks = null;
+    public FullBlockData[] blocks = null;
 
     public int x_width;
 
@@ -87,7 +85,7 @@ public class CuboidBlockSet implements BlockSet {
     public int center_z;
 
     @Override
-    public BlockData[] getBlocks() {
+    public FullBlockData[] getBlocks() {
         return blocks;
     }
 
@@ -97,8 +95,8 @@ public class CuboidBlockSet implements BlockSet {
         return new CuboidTag(low, high);
     }
 
-    public void setBlockSingle(BlockData block, int x, int y, int z, InputParams input) {
-        if (input.noAir && block.getMaterial() == Material.AIR) {
+    public void setBlockSingle(FullBlockData block, int x, int y, int z, InputParams input) {
+        if (input.noAir && block.data.getMaterial() == Material.AIR) {
             return;
         }
         int finalY = input.centerLocation.getBlockY() + y - center_y;
@@ -110,10 +108,10 @@ public class CuboidBlockSet implements BlockSet {
             return;
         }
         if (input.fakeTo == null) {
-            block.setBlock(destBlock, false);
+            block.set(destBlock, false);
         }
         else {
-            FakeBlock.showFakeBlockTo(input.fakeTo, new LocationTag(destBlock.getLocation()), new MaterialTag(block.modern()), input.fakeDuration);
+            FakeBlock.showFakeBlockTo(input.fakeTo, new LocationTag(destBlock.getLocation()), new MaterialTag(new ModernBlockData(block.data)), input.fakeDuration);
         }
     }
 
@@ -163,7 +161,7 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     public void rotateOne() {
-        BlockData[] bd = new BlockData[blocks.length];
+        FullBlockData[] bd = new FullBlockData[blocks.length];
         int index = 0;
         int cx = center_x;
         center_x = center_z;
@@ -182,7 +180,7 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     public void flipX() {
-        BlockData[] bd = new BlockData[blocks.length];
+        FullBlockData[] bd = new FullBlockData[blocks.length];
         int index = 0;
         center_x = x_width - center_x;
         for (int x = x_width - 1; x >= 0; x--) {
@@ -196,7 +194,7 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     public void flipY() {
-        BlockData[] bd = new BlockData[blocks.length];
+        FullBlockData[] bd = new FullBlockData[blocks.length];
         int index = 0;
         center_x = x_width - center_x;
         for (int x = 0; x < x_width; x++) {
@@ -210,7 +208,7 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     public void flipZ() {
-        BlockData[] bd = new BlockData[blocks.length];
+        FullBlockData[] bd = new FullBlockData[blocks.length];
         int index = 0;
         center_x = x_width - center_x;
         for (int x = 0; x < x_width; x++) {
@@ -223,7 +221,7 @@ public class CuboidBlockSet implements BlockSet {
         blocks = bd;
     }
 
-    public BlockData blockAt(double X, double Y, double Z) {
+    public FullBlockData blockAt(double X, double Y, double Z) {
         return blocks[(int) (Z + Y * z_height + X * z_height * y_length)];
         // This calculation should produce the same result as the below nonsense:
         /*

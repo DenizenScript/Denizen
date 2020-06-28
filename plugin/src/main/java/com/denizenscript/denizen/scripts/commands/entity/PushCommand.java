@@ -6,7 +6,6 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.Position;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -307,9 +306,8 @@ public class PushCommand extends AbstractCommand implements Holdable {
                     lastEntity.setVelocity(newVel);
                     // Check if the entity has collided with something
                     // using the most basic possible calculation
-                    BlockHelper blockHelper = NMSHandler.getBlockHelper();
-                    if (!ignoreCollision && (!blockHelper.isSafeBlock(lastEntity.getLocation().add(v3))
-                            || !blockHelper.isSafeBlock(lastEntity.getLocation().add(newVel)))) {
+                    if (!ignoreCollision && (!isSafeBlock(lastEntity.getLocation().add(v3))
+                            || !isSafeBlock(lastEntity.getLocation().add(newVel)))) {
                         runs = maxTicks;
                     }
                     if (no_damage && lastEntity.isLivingEntity()) {
@@ -338,5 +336,9 @@ public class PushCommand extends AbstractCommand implements Holdable {
             }
         };
         task.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, prec);
+    }
+
+    public static boolean isSafeBlock(Location loc) {
+        return loc.getBlockY() < 0 || loc.getBlockY() > 255 || !loc.getBlock().getType().isSolid();
     }
 }

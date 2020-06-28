@@ -4,9 +4,7 @@ import com.denizenscript.denizen.objects.properties.material.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
-import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -16,7 +14,6 @@ import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -174,11 +171,6 @@ public class MaterialTag implements ObjectTag, Adjustable {
         this.modernData = new ModernBlockData(state);
     }
 
-    public MaterialTag(BlockData block) {
-        this.modernData = block.modern();
-        this.material = modernData.getMaterial();
-    }
-
     public MaterialTag(Block block) {
         this.modernData = new ModernBlockData(block);
         this.material = modernData.getMaterial();
@@ -213,13 +205,6 @@ public class MaterialTag implements ObjectTag, Adjustable {
         return material;
     }
 
-    public BlockData getNmsBlockData() {
-        if (modernData != null) {
-            return NMSHandler.getBlockHelper().getBlockData(modernData);
-        }
-        return NMSHandler.getBlockHelper().getBlockData(getMaterial(), getData((byte) 0));
-    }
-
     public String name() {
         return material.name();
     }
@@ -239,18 +224,6 @@ public class MaterialTag implements ObjectTag, Adjustable {
 
     public boolean hasData() {
         return data != null;
-    }
-
-    public boolean matchesMaterialData(MaterialData data) {
-        // If this material has data, check datas
-        if (hasData()) {
-            return (material == data.getItemType() && this.data == data.getData());
-        }
-
-        // Else, return matched itemType/materialType
-        else {
-            return material == data.getItemType();
-        }
     }
 
     public MaterialData getMaterialData() {

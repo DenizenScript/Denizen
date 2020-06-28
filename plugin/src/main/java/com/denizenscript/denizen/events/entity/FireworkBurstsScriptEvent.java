@@ -3,7 +3,6 @@ package com.denizenscript.denizen.events.entity;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import org.bukkit.Material;

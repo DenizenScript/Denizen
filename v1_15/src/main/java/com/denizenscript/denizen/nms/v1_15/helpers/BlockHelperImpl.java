@@ -1,13 +1,11 @@
 package com.denizenscript.denizen.nms.v1_15.helpers;
 
-import com.denizenscript.denizen.nms.v1_15.impl.blocks.BlockDataImpl;
 import com.denizenscript.denizen.nms.v1_15.impl.jnbt.CompoundTagImpl;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
-import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
@@ -24,10 +22,8 @@ import org.bukkit.craftbukkit.v1_15_R1.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_15_R1.block.CraftSkull;
 import org.bukkit.craftbukkit.v1_15_R1.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_15_R1.legacy.CraftLegacy;
 import org.bukkit.craftbukkit.v1_15_R1.util.CraftMagicNumbers;
 import org.bukkit.event.world.PortalCreateEvent;
-import org.bukkit.material.MaterialData;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
@@ -69,24 +65,6 @@ public class BlockHelperImpl implements BlockHelper {
             Debug.echoError(e);
         }
         return null;
-    }
-
-    @Override
-    public int idFor(Material mat) {
-        if (mat.isLegacy()) {
-            return mat.getId();
-        }
-        return CraftLegacy.toLegacy(mat).getId();
-    }
-
-    @Override
-    public MaterialData getFlowerpotContents(Block block) {
-        throw new UnsupportedOperationException("As of Minecraft version 1.13 potted flowers each have their own material, such as POTTED_CACTUS.");
-    }
-
-    @Override
-    public void setFlowerpotContents(Block block, MaterialData data) {
-        throw new UnsupportedOperationException("As of Minecraft version 1.13 potted flowers each have their own material, such as POTTED_CACTUS.");
     }
 
     @Override
@@ -145,26 +123,6 @@ public class BlockHelperImpl implements BlockHelper {
         tileEntity.update();
     }
 
-    @Override
-    public BlockData getBlockData(Material material, byte data) {
-        return new BlockDataImpl(material, data);
-    }
-
-    @Override
-    public BlockData getBlockData(ModernBlockData data) {
-        return new BlockDataImpl(data.data);
-    }
-
-    @Override
-    public BlockData getBlockData(Block block) {
-        return new BlockDataImpl(block);
-    }
-
-    @Override
-    public BlockData getBlockData(String compressedString) {
-        return BlockDataImpl.fromCompressedString(compressedString);
-    }
-
     private static net.minecraft.server.v1_15_R1.Block getBlockFrom(Material material) {
         if (material == Material.FLOWER_POT) {
             return Blocks.FLOWER_POT;
@@ -203,12 +161,6 @@ public class BlockHelperImpl implements BlockHelper {
             return 0;
         }
         return ReflectionHelper.getFieldValue(net.minecraft.server.v1_15_R1.Block.class, "durability", block);
-    }
-
-    @Override
-    public boolean isSafeBlock(Material material) {
-        // this is presumably more accurate these days
-        return !material.isSolid();
     }
 
     @Override

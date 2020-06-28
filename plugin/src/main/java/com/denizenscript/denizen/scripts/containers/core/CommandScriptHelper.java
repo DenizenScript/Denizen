@@ -8,8 +8,6 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.google.common.base.Predicate;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.Command;

@@ -7,7 +7,7 @@ import com.denizenscript.denizen.objects.properties.entity.EntityTame;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
+import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
@@ -15,7 +15,6 @@ import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.nms.interfaces.FakePlayer;
@@ -1685,7 +1684,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             if (!(object.entity instanceof FallingBlock)) {
                 return null;
             }
-            return new MaterialTag(NMSHandler.getEntityHelper().getBlockDataFor((FallingBlock) object.entity));
+            return new MaterialTag(new ModernBlockData(((FallingBlock) object.entity).getBlockData()));
         });
 
         // <--[tag]

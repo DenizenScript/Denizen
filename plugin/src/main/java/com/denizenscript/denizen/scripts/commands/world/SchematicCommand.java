@@ -1,16 +1,10 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.blocks.BlockSet;
-import com.denizenscript.denizen.utilities.blocks.CuboidBlockSet;
-import com.denizenscript.denizen.utilities.blocks.MCEditSchematicHelper;
-import com.denizenscript.denizen.utilities.blocks.SpongeSchematicHelper;
+import com.denizenscript.denizen.utilities.blocks.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.objects.CuboidTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
@@ -307,12 +301,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     try {
                         InputStream fs = new FileInputStream(schemFile);
                         CuboidBlockSet newSet;
-                        if (schemFile.getName().endsWith(".schem")) {
-                            newSet = SpongeSchematicHelper.fromSpongeStream(fs);
-                        }
-                        else {
-                            newSet = MCEditSchematicHelper.fromMCEditStream(fs);
-                        }
+                        newSet = SpongeSchematicHelper.fromSpongeStream(fs);
                         fs.close();
                         Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), () -> {
                             schematics.put(name.asString().toUpperCase(), newSet);
@@ -592,8 +581,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         if (attribute.startsWith("block")) {
             if (attribute.hasContext(1) && LocationTag.matches(attribute.getContext(1))) {
                 LocationTag location = attribute.contextAsType(1, LocationTag.class);
-                BlockData block = set.blockAt(location.getX(), location.getY(), location.getZ());
-                event.setReplaced(new MaterialTag(block)
+                FullBlockData block = set.blockAt(location.getX(), location.getY(), location.getZ());
+                event.setReplaced(new MaterialTag(new ModernBlockData(block.data))
                         .getAttribute(attribute.fulfill(1)));
                 return;
             }

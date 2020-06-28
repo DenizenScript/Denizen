@@ -268,7 +268,7 @@ public class TakeCommand extends AbstractCommand {
                     ItemStack is = item.getItemStack();
                     is.setAmount(qty.asInt());
                     if (!inventory.removeItem(item, item.getAmount())) {
-                        Debug.echoDebug(scriptEntry, "Inventory does not contain at least " + qty.asInt() + " of " + item.getFullString() + "... Taking all...");
+                        Debug.echoDebug(scriptEntry, "Inventory does not contain at least " + qty.asInt() + " of " + item.identify() + "... Taking all...");
                     }
                 }
                 break;

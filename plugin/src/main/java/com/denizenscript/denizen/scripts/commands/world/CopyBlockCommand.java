@@ -1,8 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
+import com.denizenscript.denizen.utilities.blocks.FullBlockData;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.interfaces.BlockData;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
@@ -53,9 +52,7 @@ public class CopyBlockCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (arg.matchesArgumentType(LocationTag.class)
                     && !scriptEntry.hasObject("location")
                     && !arg.matchesPrefix("t", "to")) {
@@ -72,51 +69,36 @@ public class CopyBlockCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Must specify a source location.");
         }
-
         if (!scriptEntry.hasObject("destination")) {
             throw new InvalidArgumentsException("Must specify a destination location.");
         }
-
         // Set defaults
         scriptEntry.defaultObject("remove", new ElementTag(false));
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         LocationTag copy_location = scriptEntry.getObjectTag("location");
         LocationTag destination = scriptEntry.getObjectTag("destination");
         ElementTag remove_original = scriptEntry.getElement("remove");
-
         if (scriptEntry.dbCallShouldDebug()) {
-
             Debug.report(scriptEntry, getName(), (copy_location != null ? copy_location.debug() : "")
                     + destination.debug() + remove_original.debug());
-
         }
-
         List<Location> locations = new ArrayList<>();
-
         if (copy_location != null) {
             locations.add(copy_location);
         }
-
         for (Location loc : locations) {
-
             Block source = loc.getBlock();
             BlockState sourceState = source.getState();
             Block update = destination.getBlock();
-
-            // TODO: 1.13 - confirm this works
-            BlockData blockData = NMSHandler.getBlockHelper().getBlockData(source);
-            blockData.setBlock(update, false);
-
+            FullBlockData block = new FullBlockData(source);
+            block.set(update, false);
             BlockState updateState = update.getState();
-
             // Note: only a BlockState, not a Block, is actually an instance
             // of InventoryHolder
             if (sourceState instanceof InventoryHolder) {
@@ -151,13 +133,10 @@ public class CopyBlockCommand extends AbstractCommand {
                 ((CreatureSpawner) updateState).setSpawnedType(((CreatureSpawner) sourceState).getSpawnedType());
                 ((CreatureSpawner) updateState).setDelay(((CreatureSpawner) sourceState).getDelay());
             }
-
             updateState.update();
-
             if (remove_original.asBoolean()) {
                 loc.getBlock().setType(Material.AIR);
             }
-
         }
     }
 }
