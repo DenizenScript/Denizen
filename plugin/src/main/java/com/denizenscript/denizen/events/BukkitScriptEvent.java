@@ -13,6 +13,7 @@ import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.*;
 import org.bukkit.plugin.EventExecutor;
@@ -33,7 +34,6 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (index == -1) {
             return true;
         }
-
         String in = CoreUtilities.getXthArg(index + 1, lower);
         if (InventoryTag.matches(in) || CoreUtilities.equalsIgnoreCase(in, "inventory") || isAdvancedMatchable(in)) {
             return false;
@@ -358,8 +358,8 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     }
 
     public boolean runInCheck(ScriptPath path, Location location, String innote) {
-        String it = path.switches.get(innote);
-        if (it == null) {
+        String inputText = path.switches.get(innote);
+        if (inputText == null) {
             int index;
             for (index = 0; index < path.eventArgsLower.length; index++) {
                 if (path.eventArgsLower[index].equals(innote)) {
@@ -374,8 +374,8 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 return false;
             }
             Deprecations.inAreaSwitchFormat.warn();
-            it = path.eventArgLowerAt(index + 1);
-            if (it.equals("notable")) {
+            inputText = path.eventArgLowerAt(index + 1);
+            if (inputText.equals("notable")) {
                 String subit = path.eventArgLowerAt(index + 2);
                 if (subit.equals("cuboid")) {
                     return CuboidTag.getNotableCuboidsContaining(location).size() > 0;
@@ -392,31 +392,50 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (location == null) {
             return false;
         }
-        String lower = CoreUtilities.toLowerCase(it);
+        String lower = CoreUtilities.toLowerCase(inputText);
         if (lower.equals("cuboid")) {
             return CuboidTag.getNotableCuboidsContaining(location).size() > 0;
         }
         else if (lower.equals("ellipsoid")) {
             return EllipsoidTag.getNotableEllipsoidsContaining(location).size() > 0;
         }
-        else if (WorldTag.matches(it)) {
+        else if (WorldTag.matches(inputText)) {
             return CoreUtilities.equalsIgnoreCase(location.getWorld().getName(), lower);
         }
-        else if (CuboidTag.matches(it)) {
-            CuboidTag cuboid = CuboidTag.valueOf(it, getTagContext(path));
+        else if (CuboidTag.matches(inputText)) {
+            CuboidTag cuboid = CuboidTag.valueOf(inputText, getTagContext(path));
             if (cuboid == null || !cuboid.isUnique()) {
                 Debug.echoError("Invalid event 'in:<area>' switch [" + getName() + "] (invalid cuboid): '" + path.event + "' for " + path.container.getName());
                 return false;
             }
             return cuboid.isInsideCuboid(location);
         }
-        else if (EllipsoidTag.matches(it)) {
-            EllipsoidTag ellipsoid = EllipsoidTag.valueOf(it, getTagContext(path));
+        else if (EllipsoidTag.matches(inputText)) {
+            EllipsoidTag ellipsoid = EllipsoidTag.valueOf(inputText, getTagContext(path));
             if (ellipsoid == null || !ellipsoid.isUnique()) {
                 Debug.echoError("Invalid event 'in:<area>' switch [" + getName() + "] (invalid ellipsoid): '" + path.event + "' for " + path.container.getName());
                 return false;
             }
             return ellipsoid.contains(location);
+        }
+        else if (isAdvancedMatchable(lower)) {
+            MatchHelper matcher = createMatcher(lower);
+            for (CuboidTag cuboid : NotableManager.getAllType(CuboidTag.class)) {
+                if (cuboid.isInsideCuboid(location) && matcher.doesMatch(cuboid.noteName)) {
+                    return true;
+                }
+            }
+            for (EllipsoidTag ellipsoid : NotableManager.getAllType(EllipsoidTag.class)) {
+                if (ellipsoid.contains(location) && matcher.doesMatch(ellipsoid.noteName)) {
+                    return true;
+                }
+            }
+            for (World world : Bukkit.getWorlds()) {
+                if (matcher.doesMatch(CoreUtilities.toLowerCase(world.getName()))) {
+                    return true;
+                }
+            }
+            return false;
         }
         else {
             Debug.echoError("Invalid event 'in:<area>' switch [" + getName() + "] ('in:???') (did you make a typo, or forget to make a notable by that name?): '" + path.event + "' for " + path.container.getName());
