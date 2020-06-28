@@ -3,7 +3,7 @@ package com.denizenscript.denizen.objects.properties.entity;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
@@ -48,7 +48,7 @@ public class EntityAnger implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(getAnger());
+        return new DurationTag((long) getAnger()).identify();
     }
 
     @Override
@@ -74,14 +74,14 @@ public class EntityAnger implements Property {
 
         // <--[tag]
         // @attribute <EntityTag.anger>
-        // @returns ElementTag(Number)
+        // @returns DurationTag
         // @mechanism EntityTag.anger
         // @group properties
         // @description
-        // Returns the anger level of a PigZombie or Bee.
+        // Returns the remaining anger time of a PigZombie or Bee.
         // -->
         if (attribute.startsWith("anger")) {
-            return new ElementTag(getAnger())
+            return new DurationTag((long) getAnger())
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
@@ -94,18 +94,25 @@ public class EntityAnger implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name anger
-        // @input ElementTag(Boolean)
+        // @input DurationTag
         // @description
-        // Changes the anger level of a PigZombie or Bee.
+        // Changes the remaining anger time of a PigZombie or Bee.
         // @tags
         // <EntityTag.anger>
         // -->
-        if (mechanism.matches("anger") && mechanism.requireInteger()) {
-            if (entity.getBukkitEntity() instanceof PigZombie) {
-                ((PigZombie) entity.getBukkitEntity()).setAnger(mechanism.getValue().asInt());
+        if (mechanism.matches("anger")) {
+            DurationTag duration;
+            if (mechanism.getValue().isInt()) {
+                duration = new DurationTag(mechanism.getValue().asLong());
             }
             else {
-                ((Bee) entity.getBukkitEntity()).setAnger(mechanism.getValue().asInt());
+                duration = mechanism.valueAsType(DurationTag.class);
+            }
+            if (entity.getBukkitEntity() instanceof PigZombie) {
+                ((PigZombie) entity.getBukkitEntity()).setAnger(duration.getTicksAsInt());
+            }
+            else {
+                ((Bee) entity.getBukkitEntity()).setAnger(duration.getTicksAsInt());
             }
         }
     }
