@@ -1564,10 +1564,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             if (range < 1) {
                 range = 200;
             }
-            // TODO: after 1.12 support is dropped, World#rayTraceBlocks should be used.
-            Location location = NMSHandler.getEntityHelper().rayTraceBlock(object.getEyeLocation(), object.getEyeLocation().getDirection(), range);
-            if (location != null) {
-                return new LocationTag(location).getBlockLocation();
+            RayTraceResult traced = object.getWorld().rayTraceBlocks(object.getEyeLocation(), object.getEyeLocation().getDirection(), range);
+            if (traced != null && traced.getHitBlock() != null) {
+                return new LocationTag(traced.getHitBlock().getWorld(), traced.getHitPosition());
             }
             return null;
         });

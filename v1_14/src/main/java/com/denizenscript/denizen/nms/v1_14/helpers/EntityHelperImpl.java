@@ -551,40 +551,6 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public Location rayTraceBlock(Location start, Vector direction, double range) {
-        Vector startVec = start.toVector();
-        MovingObjectPosition l = rayTrace(start.getWorld(), startVec, startVec.clone().add(direction.multiply(range)));
-        if (l instanceof MovingObjectPositionBlock && l.getPos() != null) {
-            return new Location(start.getWorld(), l.getPos().x - (((MovingObjectPositionBlock) l).getDirection().getAdjacentX() * 0.05),
-                    l.getPos().y - (((MovingObjectPositionBlock) l).getDirection().getAdjacentY() * 0.05),
-                    l.getPos().z - (((MovingObjectPositionBlock) l).getDirection().getAdjacentZ() * 0.05));
-        }
-        return null;
-    }
-
-    @Override
-    public Location rayTrace(Location start, Vector direction, double range) {
-        Vector startVec = start.toVector();
-        MovingObjectPosition l = rayTrace(start.getWorld(), startVec, startVec.clone().add(direction.multiply(range)));
-        if (l != null && l.getPos() != null) {
-            return new Location(start.getWorld(), l.getPos().x, l.getPos().y, l.getPos().z);
-        }
-        return null;
-    }
-
-    @Override
-    public Location getImpactNormal(Location start, Vector direction, double range) {
-        Vector startVec = start.toVector();
-        MovingObjectPosition l = rayTrace(start.getWorld(), startVec, startVec.clone().add(direction.multiply(range)));
-        if (l instanceof MovingObjectPositionBlock && ((MovingObjectPositionBlock) l).getDirection() != null) {
-            return new Location(start.getWorld(), ((MovingObjectPositionBlock) l).getDirection().getAdjacentX(),
-                    ((MovingObjectPositionBlock) l).getDirection().getAdjacentY(),
-                    ((MovingObjectPositionBlock) l).getDirection().getAdjacentZ());
-        }
-        return null;
-    }
-
-    @Override
     public void move(Entity entity, Vector vector) {
         ((CraftEntity) entity).getHandle().move(EnumMoveType.SELF, new Vec3D(vector.getX(), vector.getY(), vector.getZ()));
     }

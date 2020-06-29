@@ -271,36 +271,6 @@ public abstract class EntityHelper {
 
     public abstract MapTraceResult mapTrace(LivingEntity from, double range);
 
-    /**
-     * Gets the precise location in the specified direction.
-     *
-     * @param start     The location to start the check from.
-     * @param direction The one-length vector to use as a direction.
-     * @param range     The maximum distance between the start and end.
-     * @return The location, or null if it isn't in range.
-     */
-    public abstract Location rayTrace(Location start, Vector direction, double range);
-
-    public abstract Location rayTraceBlock(Location start, Vector direction, double range);
-
-    public abstract Location getImpactNormal(Location start, Vector direction, double range);
-
-    /**
-     * Gets the precise location a LivingEntity is looking at.
-     *
-     * @param from  The LivingEntity to start the trace from.
-     * @param range The maximum distance between the LivingEntity and the location.
-     * @return The location, or null if it isn't in range.
-     */
-    public Location eyeTrace(LivingEntity from, double range) {
-        Location start = from.getEyeLocation();
-        double xzLen = Math.cos((start.getPitch() % 360) * (Math.PI / 180));
-        double nx = xzLen * Math.sin(-start.getYaw() * (Math.PI / 180));
-        double ny = Math.sin(start.getPitch() * (Math.PI / 180));
-        double nz = xzLen * Math.cos(start.getYaw() * (Math.PI / 180));
-        return rayTrace(start, new Vector(nx, -ny, nz), range);
-    }
-
     public Location faceLocation(Location from, Location at) {
         Vector direction = from.toVector().subtract(at.toVector()).normalize();
         Location newLocation = from.clone();
@@ -323,16 +293,6 @@ public abstract class EntityHelper {
                 : new LocationTag(from.getLocation()).getBlockLocation().add(0.5, 0.5, 0.5);
         Location rotated = faceLocation(origin, at);
         rotate(from, rotated.getYaw(), rotated.getPitch());
-    }
-
-    /**
-     * Changes an entity's yaw and pitch to make it face another entity.
-     *
-     * @param entity The Entity whose yaw and pitch you want to change.
-     * @param target The Entity it should be looking at.
-     */
-    public void faceEntity(Entity entity, Entity target) {
-        faceLocation(entity, target.getLocation());
     }
 
     public boolean isFacingLocation(Location from, Location at, float yawLimitDegrees, float pitchLimitDegrees) {

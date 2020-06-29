@@ -38,7 +38,7 @@ public class GlowCommand extends AbstractCommand {
     // @Group player
     //
     // @Description
-    // Makes the link player see the chosen entities as glowing.
+    // Makes the linked player see the chosen entities as glowing.
     // BE WARNED, THIS COMMAND IS HIGHLY EXPERIMENTAL AND MAY NOT WORK AS EXPECTED.
     // This command works by globally enabling the glow effect, then whitelisting who is allowed to see it.
     // This command does it's best to disable glow effect when the entity is unloaded, but does not guarantee it.

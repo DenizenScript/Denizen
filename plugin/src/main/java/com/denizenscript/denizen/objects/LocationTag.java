@@ -1468,10 +1468,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (range < 1) {
                 range = 200;
             }
-            // TODO: after 1.12 support is dropped, World#rayTraceBlocks should be used.
-            Location location = NMSHandler.getEntityHelper().getImpactNormal(object, object.getDirection(), range);
-            if (location != null) {
-                return new LocationTag(location);
+            RayTraceResult traced = object.getWorld().rayTraceBlocks(object, object.getDirection(), range);
+            if (traced != null && traced.getHitBlockFace() != null) {
+                return new LocationTag(traced.getHitBlockFace().getDirection());
             }
             return null;
         });
@@ -1488,10 +1487,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (range < 1) {
                 range = 200;
             }
-            // TODO: after 1.12 support is dropped, World#rayTraceBlocks should be used.
-            Location location = NMSHandler.getEntityHelper().rayTraceBlock(object, object.getDirection(), range);
-            if (location != null) {
-                return new LocationTag(location).getBlockLocation();
+            RayTraceResult traced = object.getWorld().rayTraceBlocks(object, object.getDirection(), range);
+            if (traced != null && traced.getHitBlock() != null) {
+                return new LocationTag(traced.getHitBlock().getLocation());
             }
             return null;
         });
@@ -1508,10 +1506,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (range < 1) {
                 range = 200;
             }
-            // TODO: after 1.12 support is dropped, World#rayTraceBlocks should be used.
-            Location location = NMSHandler.getEntityHelper().rayTrace(object, object.getDirection(), range);
-            if (location != null) {
-                return new LocationTag(location);
+            RayTraceResult traced = object.getWorld().rayTraceBlocks(object, object.getDirection(), range);
+            if (traced != null && traced.getHitBlock() != null) {
+                return new LocationTag(traced.getHitBlock().getWorld(), traced.getHitPosition());
             }
             return null;
         });
