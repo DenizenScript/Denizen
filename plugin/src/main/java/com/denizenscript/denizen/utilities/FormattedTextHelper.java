@@ -250,21 +250,26 @@ public class FormattedTextHelper {
                             endBracket = endIndex + "&[/insertion".length();
                         }
                         else if (innardType.equals("reset")) {
-                            char subCode = innardBase.get(1).charAt(0);
-                            if (subCode == 'k' || subCode == 'K') {
-                                nextText.setObfuscated(false);
+                            if (innardBase.get(1).length() == 1) {
+                                char subCode = innardBase.get(1).charAt(0);
+                                if (subCode == 'k' || subCode == 'K') {
+                                    nextText.setObfuscated(false);
+                                }
+                                else if (subCode == 'l' || subCode == 'L') {
+                                    nextText.setBold(false);
+                                }
+                                else if (subCode == 'm' || subCode == 'M') {
+                                    nextText.setStrikethrough(false);
+                                }
+                                else if (subCode == 'n' || subCode == 'N') {
+                                    nextText.setUnderlined(false);
+                                }
+                                else if (subCode == 'o' || subCode == 'O') {
+                                    nextText.setItalic(false);
+                                }
                             }
-                            else if (subCode == 'l' || subCode == 'L') {
-                                nextText.setBold(false);
-                            }
-                            else if (subCode == 'm' || subCode == 'M') {
-                                nextText.setStrikethrough(false);
-                            }
-                            else if (subCode == 'n' || subCode == 'N') {
-                                nextText.setUnderlined(false);
-                            }
-                            else if (subCode == 'o' || subCode == 'O') {
-                                nextText.setItalic(false);
+                            else if (innardBase.get(1).equals("font")) {
+                                nextText.setFont(doublelasttext.getFont());
                             }
                             else {
                                 nextText.setColor(doublelasttext.getColor());
@@ -278,6 +283,9 @@ public class FormattedTextHelper {
                             else if (colorChar.length() == 7) {
                                 nextText.setColor(ChatColor.of(colorChar));
                             }
+                        }
+                        else if (innardType.equals("font")) {
+                            nextText.setFont(innardBase.get(1));
                         }
                     }
                     i = endBracket;

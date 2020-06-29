@@ -605,7 +605,7 @@ public class TextTagBase {
         // Color can be a color name, color code, hex, or ColorTag... that is: "&color[gold]", "&color[6]", "&color[#AABB00]", and "&color[co@128,64,0]" are all valid.
         //
         // Note that Full RGB Color is a magic Denizen tool, and unlike other format codes (like 'bold') or the default 16 colors (like 'gold') does not appear in Spigot's API or the old Minecraft chat system.
-        // This instead generates the special modern Minecraft JSON codes for scoreboard scores through the Denizen message processor.
+        // This instead generates the special modern Minecraft JSON codes for colors through the Denizen message processor.
         // As such, it only works when sent through certain Denizen commands (narrate, announce, etc) or mechanisms (like ItemTag.book).
         // This will not be valid anywhere that isn't in the chat bar or a book (titles, items, etc. will not work).
         // -->
@@ -625,7 +625,7 @@ public class TextTagBase {
                     }
                 }
                 else if (colorName.length() == 7 && colorName.startsWith("#")) {
-                    event.setReplacedObject(new ElementTag(net.md_5.bungee.api.ChatColor.COLOR_CHAR + "[color=" + colorName + "]").getObjectAttribute(attribute.fulfill(1)));
+                    event.setReplacedObject(new ElementTag(ChatColor.COLOR_CHAR + "[color=" + colorName + "]").getObjectAttribute(attribute.fulfill(1)));
                     return;
                 }
                 else if (colorName.startsWith("co@")) {
@@ -634,7 +634,7 @@ public class TextTagBase {
                     while (hex.length() < 6) {
                         hex = "0" + hex;
                     }
-                    event.setReplacedObject(new ElementTag(net.md_5.bungee.api.ChatColor.COLOR_CHAR + "[color=#" + hex + "]").getObjectAttribute(attribute.fulfill(1)));
+                    event.setReplacedObject(new ElementTag(ChatColor.COLOR_CHAR + "[color=#" + hex + "]").getObjectAttribute(attribute.fulfill(1)));
                 }
                 if (colorOut == null) {
                     try {
@@ -649,6 +649,30 @@ public class TextTagBase {
                 event.setReplacedObject(new ElementTag(colorOut).getObjectAttribute(attribute.fulfill(1)));
             }
         }, "&color");
+
+        // <--[tag]
+        // @attribute <&font[<font>]>
+        // @returns ElementTag
+        // @description
+        // Returns a chat code that makes the following text display with the specified font.
+        // The default font is "minecraft:default".
+        //
+        // Note that this is a magic Denizen tool, and unlike other format codes (like 'bold') does not appear in Spigot's API or the old Minecraft chat system.
+        // This instead generates the special modern Minecraft JSON codes for fonts through the Denizen message processor.
+        // As such, it only works when sent through certain Denizen commands (narrate, announce, etc) or mechanisms (like ItemTag.book).
+        // This will not be valid anywhere that isn't in the chat bar or a book (titles, items, etc. will not work).
+        // -->
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                Attribute attribute = event.getAttributes();
+                if (!attribute.hasContext(1)) {
+                    return;
+                }
+                String fontName = attribute.getContext(1);
+                event.setReplacedObject(new ElementTag(ChatColor.COLOR_CHAR + "[font=" + fontName + "]").getObjectAttribute(attribute.fulfill(1)));
+            }
+        }, "&font");
 
         // <--[tag]
         // @attribute <&0>

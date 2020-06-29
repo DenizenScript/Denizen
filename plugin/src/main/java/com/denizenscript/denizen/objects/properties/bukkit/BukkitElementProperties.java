@@ -638,6 +638,26 @@ public class BukkitElementProperties implements Property {
         });
 
         // <--[tag]
+        // @attribute <ElementTag.font[<font>]>
+        // @returns ElementTag
+        // @group text manipulation
+        // @description
+        // Makes the input text display with the input font name. Equivalent to "<&font[new-font]><ELEMENT_HERE><&font[previous-font]>"
+        // The default font is "minecraft:default".
+        //
+        // Note that font is a magic Denizen tool, and unlike other format codes (like 'bold') does not appear in Spigot's API or the old Minecraft chat system.
+        // As such, it only works when sent through certain Denizen commands (narrate, announce, etc) or mechanisms (like ItemTag.book).
+        // This will not be valid anywhere that isn't in the chat bar or a book (titles, items, etc. will not work).
+        // -->
+        PropertyParser.<BukkitElementProperties>registerTag("font", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
+            String fontName = attribute.getContext(1);
+            return new ElementTag(ChatColor.COLOR_CHAR + "[font=" + fontName + "]" + object.asString() + ChatColor.COLOR_CHAR + "[reset=font]");
+        });
+
+        // <--[tag]
         // @attribute <ElementTag.rainbow[(<pattern>)]>
         // @returns ElementTag
         // @group text manipulation

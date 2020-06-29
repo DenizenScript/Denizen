@@ -342,7 +342,6 @@ public class ItemPotion implements Property {
         // <ItemTag.potion_effect[<#>].amplifier>
         // <ItemTag.potion_effect[<#>].is_ambient>
         // <ItemTag.potion_effect[<#>].has_particles>
-        // <ItemTag.potion_effect[<#>].color>
         // <ItemTag.potion_effect[<#>].icon>
         // <server.potion_types>
         // <server.potion_effect_types>
