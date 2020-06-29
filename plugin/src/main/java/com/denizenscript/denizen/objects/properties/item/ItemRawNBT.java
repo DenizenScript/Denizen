@@ -208,7 +208,7 @@ public class ItemRawNBT implements Property {
         if (tag instanceof CompoundTag) {
             MapTag result = new MapTag();
             for (Map.Entry<String, Tag> entry : ((CompoundTag) tag).getValue().entrySet()) {
-                result.map.put(new StringHolder(entry.getKey()), jnbtTagToObject(entry.getValue()));
+                result.putObject(entry.getKey(), jnbtTagToObject(entry.getValue()));
             }
             return result;
         }

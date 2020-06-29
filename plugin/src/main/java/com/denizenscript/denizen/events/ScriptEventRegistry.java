@@ -145,6 +145,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new PlayerPlacesHangingScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerPreLoginScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerPreparesAnvilCraftScriptEvent());
+        ScriptEvent.registerScriptEvent(new PlayerPreparesEnchantScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerQuitsScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerReceivesCommandsScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerReceivesMessageScriptEvent());

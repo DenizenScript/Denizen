@@ -8,7 +8,6 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
-import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -136,7 +135,7 @@ public class InventoryContents implements Property {
                 if (items[i] == null || items[i].getType() == Material.AIR) {
                     continue;
                 }
-                map.map.put(new StringHolder(String.valueOf(i + 1)), new ItemTag(items[i]));
+                map.putObject(String.valueOf(i + 1), new ItemTag(items[i]));
             }
             return map;
         });

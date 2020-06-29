@@ -64,7 +64,7 @@ public class Utilities {
 
     public static Enchantment getEnchantmentByName(String name) {
         Enchantment ench;
-        NamespacedKey key = Utilities.parseNamespacedKey(name);
+        NamespacedKey key = parseNamespacedKey(name);
         ench = Enchantment.getByKey(key);
         if (ench == null) {
             ench = Enchantment.getByName(name.toUpperCase());
