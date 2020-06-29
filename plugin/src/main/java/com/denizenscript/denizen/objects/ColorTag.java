@@ -278,6 +278,36 @@ public class ColorTag implements ObjectTag {
         });
 
         // <--[tag]
+        // @attribute <ColorTag.with_red[<red>]>
+        // @returns ColorTag
+        // @description
+        // Returns a copy of this color object with a different red value.
+        // -->
+        registerTag("with_red", (attribute, object) -> {
+            return new ColorTag(object.color.setRed(attribute.getIntContext(1)));
+        });
+
+        // <--[tag]
+        // @attribute <ColorTag.with_green[<green>]>
+        // @returns ColorTag
+        // @description
+        // Returns a copy of this color object with a different green value.
+        // -->
+        registerTag("with_green", (attribute, object) -> {
+            return new ColorTag(object.color.setGreen(attribute.getIntContext(1)));
+        });
+
+        // <--[tag]
+        // @attribute <ColorTag.with_blue[<green>]>
+        // @returns ColorTag
+        // @description
+        // Returns a copy of this color object with a different blue value.
+        // -->
+        registerTag("with_blue", (attribute, object) -> {
+            return new ColorTag(object.color.setBlue(attribute.getIntContext(1)));
+        });
+
+        // <--[tag]
         // @attribute <ColorTag.name>
         // @returns ElementTag
         // @description
