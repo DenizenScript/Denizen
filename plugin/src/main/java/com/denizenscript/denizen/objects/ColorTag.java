@@ -274,7 +274,7 @@ public class ColorTag implements ObjectTag {
         // -->
         registerTag("hsv", (attribute, object) -> {
             int[] HSV = object.ToHSB();
-            return new ElementTag(HSV[1] + "," + HSV[1] + "," + HSV[2]);
+            return new ElementTag(HSV[0] + "," + HSV[1] + "," + HSV[2]);
         });
 
         // <--[tag]
@@ -298,13 +298,49 @@ public class ColorTag implements ObjectTag {
         });
 
         // <--[tag]
-        // @attribute <ColorTag.with_blue[<green>]>
+        // @attribute <ColorTag.with_blue[<blue>]>
         // @returns ColorTag
         // @description
         // Returns a copy of this color object with a different blue value.
         // -->
         registerTag("with_blue", (attribute, object) -> {
             return new ColorTag(object.color.setBlue(attribute.getIntContext(1)));
+        });
+
+        // <--[tag]
+        // @attribute <ColorTag.with_hue[<hue>]>
+        // @returns ColorTag
+        // @description
+        // Returns a copy of this color object with a different hue value.
+        // -->
+        registerTag("with_hue", (attribute, object) -> {
+            int[] HSB = object.ToHSB();
+            HSB[0] = attribute.getIntContext(1);
+            return fromHSB(HSB);
+        });
+
+        // <--[tag]
+        // @attribute <ColorTag.with_saturation[<saturation>]>
+        // @returns ColorTag
+        // @description
+        // Returns a copy of this color object with a different saturation value.
+        // -->
+        registerTag("with_saturation", (attribute, object) -> {
+            int[] HSB = object.ToHSB();
+            HSB[1] = attribute.getIntContext(1);
+            return fromHSB(HSB);
+        });
+
+        // <--[tag]
+        // @attribute <ColorTag.with_brightness[<brightness>]>
+        // @returns ColorTag
+        // @description
+        // Returns a copy of this color object with a different brightness value.
+        // -->
+        registerTag("with_brightness", (attribute, object) -> {
+            int[] HSB = object.ToHSB();
+            HSB[2] = attribute.getIntContext(1);
+            return fromHSB(HSB);
         });
 
         // <--[tag]
@@ -364,7 +400,12 @@ public class ColorTag implements ObjectTag {
         return tagProcessor.getObjectAttribute(this, attribute);
     }
 
-    int[] ToHSB() {
+    public static ColorTag fromHSB(int[] hsv) {
+        int rgb = java.awt.Color.HSBtoRGB(hsv[0] / 255f, hsv[1] / 255f, hsv[2] / 255f);
+        return new ColorTag(Color.fromRGB(rgb));
+    }
+
+    public int[] ToHSB() {
         float[] base = java.awt.Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
         return new int[] {(int) (base[0] * 255), (int) (base[1] * 255), (int) (base[2] * 255)};
     }
