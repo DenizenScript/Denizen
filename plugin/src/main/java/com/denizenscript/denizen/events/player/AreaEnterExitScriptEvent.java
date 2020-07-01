@@ -31,6 +31,8 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Regex ^on player (enters|exits) [^\s]+$
     //
+    // @Group Player
+    //
     // @Triggers when a player enters or exits a noted area (cuboid or ellipsoid).
     //
     // @Warning cancelling this event will have different results depending on the cause. Teleporting the player away 1 tick later might be safer.

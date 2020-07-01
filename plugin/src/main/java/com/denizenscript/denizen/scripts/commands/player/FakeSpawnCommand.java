@@ -62,9 +62,7 @@ public class FakeSpawnCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("players")
                     && arg.matchesPrefix("to", "players")) {
                 scriptEntry.addObject("players", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
@@ -89,42 +87,33 @@ public class FakeSpawnCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         if (!scriptEntry.hasObject("players") && Utilities.entryHasPlayer(scriptEntry)) {
             scriptEntry.defaultObject("players", Arrays.asList(Utilities.getEntryPlayer(scriptEntry)));
         }
-
         if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("cancel")) {
             throw new InvalidArgumentsException("Must specify a valid location!");
         }
-
         if (!scriptEntry.hasObject("players")) {
             throw new InvalidArgumentsException("Must have a valid, online player attached!");
         }
-
         if (!scriptEntry.hasObject("entity")) {
             throw new InvalidArgumentsException("Must specify a valid entity!");
         }
-
         scriptEntry.defaultObject("duration", new DurationTag(10));
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         EntityTag entity = scriptEntry.getObjectTag("entity");
         LocationTag location = scriptEntry.getObjectTag("location");
         List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
         DurationTag duration = scriptEntry.getObjectTag("duration");
         ElementTag cancel = scriptEntry.getElement("cancel");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), entity.debug()
-                    + (cancel != null ? cancel.debug() :
-                    location.debug() + duration.debug())
+                    + (cancel != null ? cancel.debug() : location.debug() + duration.debug())
                     + ArgumentHelper.debugList("players", players));
         }
-
         if (cancel != null && cancel.asBoolean()) {
             if (entity.isFake) {
                 FakeEntity fakeEnt = FakeEntity.idsToEntities.get(entity.getUUID());

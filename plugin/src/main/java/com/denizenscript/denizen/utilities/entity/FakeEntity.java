@@ -69,7 +69,7 @@ public class FakeEntity {
                 playerEntities = new FakeEntity.FakeEntityMap();
                 playersToEntities.put(uuid, playerEntities);
             }
-            Entity entity = NMSHandler.getPlayerHelper().sendEntitySpawn(player.getPlayerEntity(), typeToSpawn.getBukkitEntityType(), location, typeToSpawn.getWaitingMechanisms());
+            Entity entity = NMSHandler.getPlayerHelper().sendEntitySpawn(player.getPlayerEntity(), typeToSpawn.getBukkitEntityType(), location, typeToSpawn.getWaitingMechanisms(), -1, null);
             FakeEntity fakeEntity = playerEntities.getOrAdd(player, location, entity.getEntityId());
             EntityTag entTag = new EntityTag(entity);
             entTag.isFake = true;

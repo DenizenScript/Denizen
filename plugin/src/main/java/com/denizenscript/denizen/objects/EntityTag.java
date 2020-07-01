@@ -2438,10 +2438,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns the entity's full description, including all properties.
         // -->
         registerTag("describe", (attribute, object) -> {
-            String escript = object.getEntityScript();
-            return new ElementTag("e@" + (escript != null && escript.length() > 0 ? escript : object.getEntityType().getLowercaseName())
-                    + PropertyParser.getPropertiesString(object));
+            return new ElementTag(object.describe());
         });
+    }
+
+    public String describe() {
+        String escript = getEntityScript();
+        return "e@" + (escript != null && escript.length() > 0 ? escript : getEntityType().getLowercaseName()) + PropertyParser.getPropertiesString(this);
     }
 
     public static ObjectTagProcessor<EntityTag> tagProcessor = new ObjectTagProcessor<>();

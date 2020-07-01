@@ -13,7 +13,11 @@ public abstract class PlayerHelper {
 
     public abstract void stopSound(Player player, String sound, SoundCategory category);
 
-    public Entity sendEntitySpawn(Player player, EntityType entityType, Location location, ArrayList<Mechanism> mechanisms) {
+    public Entity sendEntitySpawn(Player player, EntityType entityType, Location location, ArrayList<Mechanism> mechanisms, int customId, UUID customUUID) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void deTrackEntity(Player player, Entity entity) {
         throw new UnsupportedOperationException();
     }
 

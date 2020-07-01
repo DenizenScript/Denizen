@@ -56,18 +56,38 @@ public class PlayerHelperImpl extends PlayerHelper {
     }
 
     @Override
-    public Entity sendEntitySpawn(Player player, EntityType entityType, Location location, ArrayList<Mechanism> mechanisms) {
+    public void deTrackEntity(Player player, Entity entity) {
+        EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+        WorldServer world = (WorldServer) nmsPlayer.world;
+        PlayerChunkMap.EntityTracker tracker = world.getChunkProvider().playerChunkMap.trackedEntities.get(entity.getEntityId());
+        if (tracker == null) {
+            return;
+        }
+        sendEntityDestroy(player, entity);
+        tracker.clear(nmsPlayer);
+    }
+
+    @Override
+    public Entity sendEntitySpawn(Player player, EntityType entityType, Location location, ArrayList<Mechanism> mechanisms, int customId, UUID customUUID) {
         PlayerConnection conn = ((CraftPlayer) player).getHandle().playerConnection;
         net.minecraft.server.v1_16_R1.Entity nmsEntity = ((CraftWorld) location.getWorld()).createEntity(location,  entityType.getEntityClass());
-
+        if (customUUID != null) {
+            nmsEntity.e(customId);
+            nmsEntity.a_(customUUID);
+        }
         EntityTag entity = new EntityTag(nmsEntity.getBukkitEntity());
         for (Mechanism mechanism : mechanisms) {
             entity.safeAdjust(mechanism);
         }
-
         if (nmsEntity instanceof EntityLiving) {
             EntityLiving nmsLivingEntity = (EntityLiving) nmsEntity;
-            conn.sendPacket(new PacketPlayOutSpawnEntityLiving(nmsLivingEntity));
+            if (nmsEntity instanceof EntityPlayer) {
+                conn.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, (EntityPlayer) nmsEntity));
+                conn.sendPacket(new PacketPlayOutNamedEntitySpawn((EntityHuman) nmsEntity));
+            }
+            else {
+                conn.sendPacket(new PacketPlayOutSpawnEntityLiving(nmsLivingEntity));
+            }
             for (EnumItemSlot itemSlot : EnumItemSlot.values()) {
                 ItemStack nmsItemStack = nmsLivingEntity.getEquipment(itemSlot);
                 if (nmsItemStack != null && nmsItemStack.getItem() != Items.AIR) {
@@ -87,9 +107,7 @@ public class PlayerHelperImpl extends PlayerHelper {
         else {
             conn.sendPacket(new PacketPlayOutSpawnEntity(nmsEntity));
         }
-
         conn.sendPacket(new PacketPlayOutEntityMetadata(nmsEntity.getId(), nmsEntity.getDataWatcher(), true));
-
         return entity.getBukkitEntity();
     }
 
