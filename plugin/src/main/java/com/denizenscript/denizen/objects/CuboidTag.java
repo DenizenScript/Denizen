@@ -26,7 +26,7 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
+public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, AreaContainmentObject {
 
     // <--[language]
     // @name CuboidTag Objects
@@ -230,6 +230,16 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable {
             }
         }
         return true;
+    }
+
+    @Override
+    public String getNoteName() {
+        return noteName;
+    }
+
+    @Override
+    public boolean doesContainLocation(Location loc) {
+        return isInsideCuboid(loc);
     }
 
     ///////////////

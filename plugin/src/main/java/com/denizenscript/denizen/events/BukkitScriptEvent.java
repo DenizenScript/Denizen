@@ -47,11 +47,18 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return true;
     }
 
-    public boolean couldMatchEnum(String text, final Enum<?>[] enumVals) {
+    public boolean exactMatchesEnum(String text, final Enum<?>[] enumVals) {
         for (Enum<?> val : enumVals) {
             if (CoreUtilities.equalsIgnoreCase(val.name(), text)) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    public boolean couldMatchEnum(String text, final Enum<?>[] enumVals) {
+        if (exactMatchesEnum(text, enumVals)) {
+            return true;
         }
         return genericCouldMatchChecks(text, (t) -> couldMatchEnum(t, enumVals));
     }

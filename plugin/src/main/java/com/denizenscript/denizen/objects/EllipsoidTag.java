@@ -18,7 +18,7 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EllipsoidTag implements ObjectTag, Notable, Cloneable {
+public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainmentObject {
 
     // <--[language]
     // @name EllipsoidTag Objects
@@ -250,7 +250,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable {
     public void makeUnique(String id) {
         EllipsoidTag toNote = clone();
         toNote.noteName = id;
-        NotableManager.saveAs(this, id);
+        NotableManager.saveAs(toNote, id);
     }
 
     @Override
@@ -508,5 +508,15 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable {
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {
         return tagProcessor.getObjectAttribute(this, attribute);
+    }
+
+    @Override
+    public String getNoteName() {
+        return noteName;
+    }
+
+    @Override
+    public boolean doesContainLocation(Location loc) {
+        return contains(loc);
     }
 }
