@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.nms.abstracts;
 
-import org.bukkit.Location;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
 
@@ -55,8 +54,6 @@ public abstract class BiomeNMS {
     public abstract void setHumidity(float humidity);
 
     public abstract void setTemperature(float temperature);
-
-    public abstract void changeBlockBiome(Location location);
 
     public enum DownfallType {
         RAIN, SNOW, NONE

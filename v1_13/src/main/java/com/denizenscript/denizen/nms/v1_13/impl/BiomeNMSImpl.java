@@ -3,14 +3,9 @@ package com.denizenscript.denizen.nms.v1_13.impl;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
 import net.minecraft.server.v1_13_R2.BiomeBase;
-import net.minecraft.server.v1_13_R2.BlockPosition;
-import net.minecraft.server.v1_13_R2.Chunk;
 import net.minecraft.server.v1_13_R2.EntityTypes;
 import net.minecraft.server.v1_13_R2.EnumCreatureType;
-import net.minecraft.server.v1_13_R2.WorldServer;
-import org.bukkit.Location;
 import org.bukkit.block.Biome;
-import org.bukkit.craftbukkit.v1_13_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_13_R2.block.CraftBlock;
 import org.bukkit.entity.EntityType;
 
@@ -65,21 +60,6 @@ public class BiomeNMSImpl extends BiomeNMS {
     @Override
     public void setTemperature(float temperature) {
         ReflectionHelper.setFieldValue(BiomeBase.class, "aN", biomeBase, temperature);
-    }
-
-    @Override
-    public void changeBlockBiome(Location location) {
-        int x = location.getBlockX();
-        int z = location.getBlockZ();
-        WorldServer world = ((CraftWorld) location.getWorld()).getHandle();
-        if (world.isLoaded(new BlockPosition(x, 0, z))) {
-            Chunk chunk = world.getChunkAtWorldCoords(new BlockPosition(x, 0, z));
-
-            if (chunk != null) {
-                BiomeBase[] biomevals = chunk.getBiomeIndex();
-                biomevals[((z & 0xF) << 4) | (x & 0xF)] = biomeBase;
-            }
-        }
     }
 
     @Override

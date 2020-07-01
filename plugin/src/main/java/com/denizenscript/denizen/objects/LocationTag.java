@@ -3188,7 +3188,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <LocationTag.biome>
         // -->
         if (mechanism.matches("biome") && mechanism.requireObject(BiomeTag.class)) {
-            mechanism.valueAsType(BiomeTag.class).getBiome().changeBlockBiome(this);
+            getBlock().setBiome(mechanism.valueAsType(BiomeTag.class).bukkitBiome);
         }
 
         // <--[mechanism]

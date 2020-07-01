@@ -3,9 +3,7 @@ package com.denizenscript.denizen.nms.v1_15.impl;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
 import net.minecraft.server.v1_15_R1.*;
-import org.bukkit.Location;
 import org.bukkit.block.Biome;
-import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_15_R1.block.CraftBlock;
 import org.bukkit.entity.EntityType;
 
@@ -60,21 +58,6 @@ public class BiomeNMSImpl extends BiomeNMS {
     @Override
     public void setTemperature(float temperature) {
         ReflectionHelper.setFieldValue(BiomeBase.class, "i", biomeBase, temperature);
-    }
-
-    @Override
-    public void changeBlockBiome(Location location) {
-        int x = location.getBlockX();
-        int z = location.getBlockZ();
-        WorldServer world = ((CraftWorld) location.getWorld()).getHandle();
-        if (world.isLoaded(new BlockPosition(x, 0, z))) {
-            Chunk chunk = world.getChunkAtWorldCoords(new BlockPosition(x, 0, z));
-
-            if (chunk != null) {
-                BiomeStorage biomes = chunk.getBiomeIndex();
-                biomes.setBiome(z, 0, x, biomeBase); // TODO: 1.15 -> logic changed. Is this correct? Original: biomevals[((z & 0xF) << 4) | (x & 0xF)] = biomeBase;
-            }
-        }
     }
 
     @Override

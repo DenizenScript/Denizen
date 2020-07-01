@@ -88,6 +88,7 @@ public class BiomeTag implements ObjectTag, Adjustable {
     /////////////
 
     public BiomeTag(Biome biome) {
+        this.bukkitBiome = biome;
         this.biome = NMSHandler.getInstance().getBiomeNMS(biome);
     }
 
@@ -96,6 +97,8 @@ public class BiomeTag implements ObjectTag, Adjustable {
     /////////////////
 
     private BiomeNMS biome;
+
+    public Biome bukkitBiome;
 
     public BiomeNMS getBiome() {
         return biome;
