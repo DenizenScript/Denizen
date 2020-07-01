@@ -45,6 +45,7 @@ public class CuboidBlockSet implements BlockSet {
         center_y = (int) (center.getY() - low.getY());
         center_z = (int) (center.getZ() - low.getZ());
         final long goal = (long) (x_width * y_length * z_height);
+        blocks = new FullBlockData[(x_width * y_length * z_height)];
         new BukkitRunnable() {
             int index = 0;
             @Override
