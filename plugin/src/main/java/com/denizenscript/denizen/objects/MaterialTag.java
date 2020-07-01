@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.nms.util.ReflectionHelper;
 import com.denizenscript.denizen.objects.properties.material.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
@@ -693,6 +694,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <MaterialTag.max_stack_size>
         // @returns ElementTag(Number)
+        // @mechanism MaterialTag.max_stack_size
         // @description
         // Returns the maximum amount of this material that can be held in a stack.
         // -->
@@ -855,6 +857,21 @@ public class MaterialTag implements ObjectTag, Adjustable {
 
     @Override
     public void adjust(Mechanism mechanism) {
+
+        // <--[mechanism]
+        // @object MaterialTag
+        // @name max_stack_size
+        // @input ElementTag(Number)
+        // @description
+        // Sets the maximum stack size for all items this material type.
+        // Note that altering this will probably require a script performing "- inventory update" in the event "after player clicks in inventory:" to maintain sync.
+        // The maximum the client will interact with is stacks of 64, however you can set the max up to 127 and the client will render it, but refuse to move stacks properly.
+        // @tags
+        // <MaterialTag.max_stack_size>
+        // -->
+        if (!mechanism.isProperty && mechanism.matches("max_stack_size") && mechanism.requireInteger()) {
+            NMSHandler.getItemHelper().setMaxStackSize(material, mechanism.getValue().asInt());
+        }
 
         // <--[mechanism]
         // @object MaterialTag

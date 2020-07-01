@@ -1,8 +1,10 @@
 package com.denizenscript.denizen.nms.v1_16.helpers;
 
+import com.denizenscript.denizen.nms.util.ReflectionHelper;
 import com.denizenscript.denizen.nms.util.jnbt.*;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.nms.v1_16.impl.jnbt.CompoundTagImpl;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -41,6 +43,16 @@ public class ItemHelperImpl extends ItemHelper {
             }
         }
         return null;
+    }
+
+    public void setMaxStackSize(Material material, int size) {
+        try {
+            ReflectionHelper.getFinalSetter(Material.class, "maxStack").invoke(material, size);
+            ReflectionHelper.getFinalSetter(Item.class, "maxStackSize").invoke(IRegistry.ITEM.get(MinecraftKey.a(material.getKey().getKey())), size);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
     }
 
     @Override

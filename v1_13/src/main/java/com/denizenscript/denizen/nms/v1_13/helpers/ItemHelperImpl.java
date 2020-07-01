@@ -2,9 +2,11 @@ package com.denizenscript.denizen.nms.v1_13.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.ItemHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
+import com.denizenscript.denizen.nms.util.ReflectionHelper;
 import com.denizenscript.denizen.nms.util.jnbt.*;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.nms.v1_13.impl.jnbt.CompoundTagImpl;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -37,6 +39,16 @@ public class ItemHelperImpl extends ItemHelper {
         MinecraftKey nmsKey = CraftNamespacedKey.toMinecraft(key);
         Object2ObjectLinkedOpenHashMap<MinecraftKey, IRecipe> recipeMap = ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().recipes;
         return recipeMap.get(nmsKey);
+    }
+
+    public void setMaxStackSize(Material material, int size) {
+        try {
+            ReflectionHelper.getFinalSetter(Material.class, "maxStack").invoke(material, size);
+            ReflectionHelper.getFinalSetter(Item.class, "maxStackSize").invoke(IRegistry.ITEM.get(MinecraftKey.a(material.getKey().getKey())), size);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
     }
 
     @Override

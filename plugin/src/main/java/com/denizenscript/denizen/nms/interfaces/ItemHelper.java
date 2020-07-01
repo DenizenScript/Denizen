@@ -17,6 +17,10 @@ import java.util.List;
 
 public abstract class ItemHelper {
 
+    public void setMaxStackSize(Material material, int size) {
+        throw new UnsupportedOperationException();
+    }
+
     public abstract Integer burnTime(Material material);
 
     public abstract Recipe getRecipeById(NamespacedKey key);
