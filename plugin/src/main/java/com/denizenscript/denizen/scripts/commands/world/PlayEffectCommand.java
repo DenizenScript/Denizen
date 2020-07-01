@@ -20,6 +20,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 
@@ -27,7 +28,7 @@ public class PlayEffectCommand extends AbstractCommand {
 
     public PlayEffectCommand() {
         setName("playeffect");
-        setSyntax("playeffect [effect:<name>] [at:<location>|...] (data:<#.#>) (special_data:<data>) (visibility:<#.#>) (quantity:<#>) (offset:<#.#>,<#.#>,<#.#>) (targets:<player>|...)");
+        setSyntax("playeffect [effect:<name>] [at:<location>|...] (data:<#.#>) (special_data:<data>) (visibility:<#.#>) (quantity:<#>) (offset:<#.#>,<#.#>,<#.#>) (targets:<player>|...) (velocity:<vector>)");
         setRequiredArguments(2, 8);
         isProcedural = false;
     }
@@ -46,7 +47,7 @@ public class PlayEffectCommand extends AbstractCommand {
 
     // <--[command]
     // @Name PlayEffect
-    // @Syntax playeffect [effect:<name>] [at:<location>|...] (data:<#.#>) (special_data:<data>) (visibility:<#.#>) (quantity:<#>) (offset:<#.#>,<#.#>,<#.#>) (targets:<player>|...)
+    // @Syntax playeffect [effect:<name>] [at:<location>|...] (data:<#.#>) (special_data:<data>) (visibility:<#.#>) (quantity:<#>) (offset:<#.#>,<#.#>,<#.#>) (targets:<player>|...) (velocity:<vector>)
     // @Required 2
     // @Maximum 8
     // @Short Plays a visible or audible effect at the location.
@@ -70,6 +71,8 @@ public class PlayEffectCommand extends AbstractCommand {
     // - For REDSTONE particles, the input is of format: <size>|<color>, for example: "1.2|red". Color input is any valid ColorTag object.
     // - For FALLING_DUST, BLOCK_CRACK, or BLOCK_DUST particles, the input is any valid MaterialTag, eg "stone".
     // - For ITEM_CRACK particles, the input is any valid ItemTag, eg "stick".
+    //
+    // Optionally specify a velocity vector for standard particles to move. Note that this ignores the 'data' input if used.
     //
     // @Tags
     // None
@@ -190,6 +193,11 @@ public class PlayEffectCommand extends AbstractCommand {
                     && arg.matchesPrefix("offset", "o")) {
                 scriptEntry.addObject("offset", arg.asType(LocationTag.class));
             }
+            else if (!scriptEntry.hasObject("velocity")
+                    && arg.matchesArgumentType(LocationTag.class)
+                    && arg.matchesPrefix("velocity")) {
+                scriptEntry.addObject("velocity", arg.asType(LocationTag.class));
+            }
             else if (!scriptEntry.hasObject("targets")
                     && arg.matchesArgumentList(PlayerTag.class)
                     && arg.matchesPrefix("targets", "target", "t")) {
@@ -236,6 +244,7 @@ public class PlayEffectCommand extends AbstractCommand {
         boolean should_offset = no_offset == null || !no_offset.asBoolean();
         LocationTag offset = scriptEntry.getObjectTag("offset");
         ElementTag special_data = scriptEntry.getElement("special_data");
+        LocationTag velocity = scriptEntry.getObjectTag("velocity");
 
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), (effect != null ? ArgumentHelper.debugObj("effect", effect.name()) :
@@ -250,6 +259,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     qty.debug() +
                     offset.debug() +
                     (special_data != null ? special_data.debug() : "") +
+                    (velocity != null ? velocity.debug() : "") +
                     (should_offset ? ArgumentHelper.debugObj("note", "Location will be offset 1 block-height upward (see documentation)") : ""));
         }
 
@@ -277,9 +287,6 @@ public class PlayEffectCommand extends AbstractCommand {
 
             // Play a ParticleEffect
             else if (particleEffect != null) {
-                float osX = (float) offset.getX();
-                float osY = (float) offset.getY();
-                float osZ = (float) offset.getZ();
                 List<Player> players = new ArrayList<>();
                 if (targets == null) {
                     float rad = radius.asFloat();
@@ -298,11 +305,8 @@ public class PlayEffectCommand extends AbstractCommand {
                 }
                 for (Player player : players) {
                     Class clazz = particleEffect.neededData();
-                    if (clazz == null) {
-                        particleEffect.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat());
-                    }
-                    else {
-                        Object dataObject = null;
+                    Object dataObject = null;
+                    if (clazz != null) {
                         if (special_data == null) {
                             Debug.echoError(scriptEntry.getResidingQueue(), "Missing required special data for particle: " + particleEffect.getName());
                         }
@@ -328,7 +332,23 @@ public class PlayEffectCommand extends AbstractCommand {
                         else {
                             Debug.echoError(scriptEntry.getResidingQueue(), "Unknown particle data type: " + clazz.getCanonicalName() + " for particle: " + particleEffect.getName());
                         }
+                    }
+                    if (velocity == null) {
                         particleEffect.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), dataObject);
+                    }
+                    else {
+                        float osX = (float) offset.getX();
+                        float osY = (float) offset.getY();
+                        float osZ = (float) offset.getZ();
+                        int quantity = qty.asInt();
+                        Vector velocityVector = velocity.toVector();
+                        Random random = CoreUtilities.getRandom();
+                        for (int i = 0; i < quantity; i++) {
+                            LocationTag singleLocation = location.clone().add(random.nextDouble() * osX - osX * 0.5,
+                                    random.nextDouble() * osY - osY * 0.5,
+                                    random.nextDouble() * osZ - osZ * 0.5);
+                            particleEffect.playFor(player, singleLocation, 0, velocityVector, 1f, dataObject);
+                        }
                     }
                 }
             }
