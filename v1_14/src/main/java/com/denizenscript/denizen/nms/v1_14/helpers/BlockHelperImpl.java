@@ -1,10 +1,10 @@
 package com.denizenscript.denizen.nms.v1_14.helpers;
 
+import com.denizenscript.denizen.nms.util.jnbt.CompoundTagBuilder;
 import com.denizenscript.denizen.nms.v1_14.impl.jnbt.CompoundTagImpl;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
@@ -104,27 +104,25 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public CompoundTag getNbtData(Block block) {
-        NMSHandler.getChunkHelper().changeChunkServerThread(block.getWorld());
-        org.bukkit.block.BlockState state = block.getState();
-        NMSHandler.getChunkHelper().restoreServerThread(block.getWorld());
-        TileEntity tileEntity = getTE((CraftBlockEntityState) state);
-        if (tileEntity == null) {
-            return null;
+        TileEntity te = ((CraftWorld) block.getWorld()).getHandle().getTileEntity(new BlockPosition(block.getX(), block.getY(), block.getZ()));
+        if (te != null) {
+            NBTTagCompound compound = new NBTTagCompound();
+            te.save(compound);
+            return CompoundTagImpl.fromNMSTag(compound);
         }
-        return CompoundTagImpl.fromNMSTag(tileEntity.b());
+        return null;
     }
 
     @Override
-    public void setNbtData(Block block, CompoundTag compoundTag) {
-        NMSHandler.getChunkHelper().changeChunkServerThread(block.getWorld());
-        org.bukkit.block.BlockState state = block.getState();
-        NMSHandler.getChunkHelper().restoreServerThread(block.getWorld());
-        TileEntity tileEntity = getTE((CraftBlockEntityState) state);
-        if (tileEntity == null) {
-            return;
-        }
-        tileEntity.load(((CompoundTagImpl) compoundTag).toNMSTag());
-        tileEntity.update();
+    public void setNbtData(Block block, CompoundTag ctag) {
+        CompoundTagBuilder builder = ctag.createBuilder();
+        builder.putInt("x", block.getX());
+        builder.putInt("y", block.getY());
+        builder.putInt("z", block.getZ());
+        ctag = builder.build();
+        BlockPosition blockPos = new BlockPosition(block.getX(), block.getY(), block.getZ());
+        TileEntity te = ((CraftWorld) block.getWorld()).getHandle().getTileEntity(blockPos);
+        te.load(((CompoundTagImpl) ctag).toNMSTag());
     }
 
     private static net.minecraft.server.v1_14_R1.Block getBlockFrom(Material material) {

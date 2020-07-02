@@ -44,20 +44,24 @@ public class TeleportCommand extends AbstractCommand {
     // <EntityTag.location>
     //
     // @Usage
-    // Use to teleport a player to the location its cursor is pointing on
+    // Use to teleport a player to the location their cursor is pointing at.
     // - teleport <player> <player.cursor_on>
     //
     // @Usage
-    // Use to teleport a player high above
+    // Use to teleport a player high above.
     // - teleport <player> <player.location.add[0,200,0]>
     //
     // @Usage
-    // Use to teleport to a random online player
+    // Use to teleport to a random online player.
     // - teleport <player> <server.online_players.random.location>
     //
     // @Usage
-    // Use to teleport all players to your location
+    // Use to teleport all players to your location.
     // - teleport <server.online_players> <player.location>
+    //
+    // @Usage
+    // Use to teleport the NPC to a location that was noted wih the <@link commmand note> command.
+    // - teleport <npc> my_prenoted_location
     // -->
 
     @Override
