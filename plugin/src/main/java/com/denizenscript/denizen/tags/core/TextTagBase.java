@@ -625,8 +625,7 @@ public class TextTagBase {
                     }
                 }
                 else if (colorName.length() == 7 && colorName.startsWith("#")) {
-                    event.setReplacedObject(new ElementTag(ChatColor.COLOR_CHAR + "[color=" + colorName + "]").getObjectAttribute(attribute.fulfill(1)));
-                    return;
+                    colorOut = ChatColor.COLOR_CHAR + "[color=" + colorName + "]";
                 }
                 else if (colorName.startsWith("co@")) {
                     ColorTag color = ColorTag.valueOf(colorName, attribute.context);
@@ -634,7 +633,7 @@ public class TextTagBase {
                     while (hex.length() < 6) {
                         hex = "0" + hex;
                     }
-                    event.setReplacedObject(new ElementTag(ChatColor.COLOR_CHAR + "[color=#" + hex + "]").getObjectAttribute(attribute.fulfill(1)));
+                    colorOut = ChatColor.COLOR_CHAR + "[color=#" + hex + "]";
                 }
                 if (colorOut == null) {
                     try {
