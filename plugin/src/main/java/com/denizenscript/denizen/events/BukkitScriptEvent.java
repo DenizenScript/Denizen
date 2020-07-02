@@ -85,7 +85,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return genericCouldMatchChecks(text, this::couldMatchEntity);
     }
 
-    public boolean couldMatchVehicle(String text) {
+    public boolean exactMatchesVehicle(String text) {
         if (text.equals("vehicle")) {
             return true;
         }
@@ -100,6 +100,13 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             if (!Vehicle.class.isAssignableFrom(entity.getEntityType().getBukkitEntityType().getEntityClass())) {
                 return false;
             }
+            return true;
+        }
+        return false;
+    }
+
+    public boolean couldMatchVehicle(String text) {
+        if (exactMatchesVehicle(text)) {
             return true;
         }
         return genericCouldMatchChecks(text, this::couldMatchVehicle);
