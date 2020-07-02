@@ -401,7 +401,7 @@ public class ColorTag implements ObjectTag {
     }
 
     public static ColorTag fromHSB(int[] hsv) {
-        int rgb = java.awt.Color.HSBtoRGB(hsv[0] / 255f, hsv[1] / 255f, hsv[2] / 255f);
+        int rgb = java.awt.Color.HSBtoRGB(hsv[0] / 255f, hsv[1] / 255f, hsv[2] / 255f) & 0x00ffffff;
         return new ColorTag(Color.fromRGB(rgb));
     }
 
