@@ -1888,7 +1888,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @attribute <LocationTag.rotate_around_x[<#.#>]>
         // @returns LocationTag
         // @description
-        // Returns the location rotated around the x axis by a specified angle in radians.
+        // Returns the location-vector rotated around the x axis by a specified angle in radians.
+        // Generally used in a format like <player.location.add[<location[0,1,0].rotate_around_x[<[some_angle]>]>]>.
         // -->
         registerTag("rotate_around_x", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
@@ -1909,7 +1910,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @attribute <LocationTag.rotate_around_y[<#.#>]>
         // @returns LocationTag
         // @description
-        // Returns the location rotated around the y axis by a specified angle in radians.
+        // Returns the location-vector rotated around the y axis by a specified angle in radians.
+        // Generally used in a format like <player.location.add[<location[1,0,0].rotate_around_y[<[some_angle]>]>]>.
         // -->
         registerTag("rotate_around_y", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
@@ -1930,7 +1932,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @attribute <LocationTag.rotate_around_z[<#.#>]>
         // @returns LocationTag
         // @description
-        // Returns the location rotated around the z axis by a specified angle in radians.
+        // Returns the location-vector rotated around the z axis by a specified angle in radians.
+        // Generally used in a format like <player.location.add[<location[1,0,0].rotate_around_z[<[some_angle]>]>]>.
         // -->
         registerTag("rotate_around_z", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
