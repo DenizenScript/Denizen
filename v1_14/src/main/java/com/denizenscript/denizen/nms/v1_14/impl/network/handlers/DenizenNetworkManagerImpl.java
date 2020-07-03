@@ -8,6 +8,7 @@ import com.denizenscript.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
+import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
@@ -153,7 +154,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     }
 
     public boolean shouldSendAttachOriginal(Entity e) {
-        UUID attached = NMSHandler.getInstance().attachmentsA.get(e.getUniqueID());
+        UUID attached = EntityAttachmentHelper.attachmentsA.get(e.getUniqueID());
         return attached != null && !attached.equals(player.getUniqueID());
     }
 
@@ -165,29 +166,29 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 if (e == null) {
                     return false;
                 }
-                List<UUID> attList = NMSHandler.getInstance().attachments2.get(e.getUniqueID());
+                List<UUID> attList = EntityAttachmentHelper.attachments2.get(e.getUniqueID());
                 if (attList != null) {
                     for (UUID att : attList) {
                         org.bukkit.entity.Entity target = Bukkit.getEntity(att);
                         if (target != null) {
                             Packet pNew = (Packet) duplo(packet);
                             ENTITY_ID_PACKENT.setInt(pNew, target.getEntityId());
-                            Vector offset = NMSHandler.getInstance().attachmentOffsets.get(att);
+                            Vector offset = EntityAttachmentHelper.attachmentOffsets.get(att);
                             if (offset != null && (packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMove || packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook)) {
-                                boolean rotationBasis = NMSHandler.getInstance().attachmentRotations.contains(att);
+                                boolean rotationBasis = EntityAttachmentHelper.attachmentRotations.contains(att);
                                 Vector goalPosition;
                                 if (!rotationBasis) {
                                     goalPosition = new Vector(e.locX, e.locY, e.locZ).add(offset);
                                 }
                                 else {
-                                    goalPosition = new Vector(e.locX, e.locY, e.locZ).add(NMSHandler.fixOffset(offset, -e.yaw, e.pitch));
+                                    goalPosition = new Vector(e.locX, e.locY, e.locZ).add(EntityAttachmentHelper.fixOffset(offset, -e.yaw, e.pitch));
                                 }
-                                Vector oldPos = NMSHandler.getInstance().visiblePositions.get(target.getUniqueId());
+                                Vector oldPos = EntityAttachmentHelper.visiblePositions.get(target.getUniqueId());
                                 if (oldPos == null) {
                                     oldPos = target.getLocation().toVector();
                                 }
                                 Vector moveNeeded = goalPosition.clone().subtract(oldPos);
-                                NMSHandler.getInstance().visiblePositions.put(target.getUniqueId(), goalPosition.clone());
+                                EntityAttachmentHelper.visiblePositions.put(target.getUniqueId(), goalPosition.clone());
                                 int offX = (int) (moveNeeded.getX() * (32 * 128));
                                 int offY = (int) (moveNeeded.getY() * (32 * 128));
                                 int offZ = (int) (moveNeeded.getZ() * (32 * 128));
@@ -222,7 +223,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 if (e == null) {
                     return false;
                 }
-                List<UUID> attList = NMSHandler.getInstance().attachments2.get(e.getUniqueID());
+                List<UUID> attList = EntityAttachmentHelper.attachments2.get(e.getUniqueID());
                 if (attList != null) {
                     for (UUID att : attList) {
                         org.bukkit.entity.Entity target = Bukkit.getEntity(att);
@@ -241,30 +242,30 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 if (e == null) {
                     return false;
                 }
-                List<UUID> attList = NMSHandler.getInstance().attachments2.get(e.getUniqueID());
+                List<UUID> attList = EntityAttachmentHelper.attachments2.get(e.getUniqueID());
                 if (attList != null) {
                     for (UUID att : attList) {
                         org.bukkit.entity.Entity target = Bukkit.getEntity(att);
                         if (target != null) {
                             Packet pNew = (Packet) duplo(packet);
                             ENTITY_ID_PACKTELENT.setInt(pNew, target.getEntityId());
-                            Vector offset = NMSHandler.getInstance().attachmentOffsets.get(att);
+                            Vector offset = EntityAttachmentHelper.attachmentOffsets.get(att);
                             Vector resultPos = new Vector(POS_X_PACKTELENT.getDouble(pNew), POS_Y_PACKTELENT.getDouble(pNew), POS_Z_PACKTELENT.getDouble(pNew));
                             if (offset != null) {
-                                boolean rotationBasis = NMSHandler.getInstance().attachmentRotations.contains(att);
+                                boolean rotationBasis = EntityAttachmentHelper.attachmentRotations.contains(att);
                                 Vector goalOffset;
                                 if (!rotationBasis) {
                                     goalOffset = offset;
                                 }
                                 else {
-                                    goalOffset = NMSHandler.fixOffset(offset, -e.yaw, e.pitch);
+                                    goalOffset = EntityAttachmentHelper.fixOffset(offset, -e.yaw, e.pitch);
                                 }
                                 POS_X_PACKTELENT.setDouble(pNew, POS_X_PACKTELENT.getDouble(pNew) + goalOffset.getX());
                                 POS_Y_PACKTELENT.setDouble(pNew, POS_Y_PACKTELENT.getDouble(pNew) + goalOffset.getY());
                                 POS_Z_PACKTELENT.setDouble(pNew, POS_Z_PACKTELENT.getDouble(pNew) + goalOffset.getZ());
                                 resultPos.add(goalOffset);
                             }
-                            NMSHandler.getInstance().visiblePositions.put(target.getUniqueId(), resultPos);
+                            EntityAttachmentHelper.visiblePositions.put(target.getUniqueId(), resultPos);
                             oldManager.sendPacket(pNew);
                         }
                     }

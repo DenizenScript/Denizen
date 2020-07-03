@@ -30,7 +30,7 @@ public class PlayerLoginScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Determine
     // "KICKED" to kick the player from the server.
-    // "KICKED " + ElementTag to kick the player and specify a message to show.
+    // "KICKED:" + ElementTag to kick the player and specify a message to show.
     //
     // @Player Always.
     //
@@ -67,7 +67,7 @@ public class PlayerLoginScriptEvent extends BukkitScriptEvent implements Listene
         if (determinationObj instanceof ElementTag) {
             String determination = determinationObj.toString();
             if (CoreUtilities.toLowerCase(determination).startsWith("kicked")) {
-                String message = determination.length() > 7 ? determination.substring(7) : determination;
+                String message = determination.length() > "KICKED:".length() ? determination.substring("KICKED:".length()) : determination;
                 event.disallow(PlayerLoginEvent.Result.KICK_OTHER, message);
                 return true;
             }

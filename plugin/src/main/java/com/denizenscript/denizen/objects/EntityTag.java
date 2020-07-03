@@ -10,6 +10,7 @@ import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
+import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizencore.objects.*;
@@ -2558,10 +2559,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                         rotateWith = new ElementTag(list.get(2)).asBoolean();
                     }
                 }
-                NMSHandler.getInstance().forceAttachMove(entity, EntityTag.valueOf(list.get(0), mechanism.context).getBukkitEntity(), offset, rotateWith);
+                EntityAttachmentHelper.forceAttachMove(entity, EntityTag.valueOf(list.get(0), mechanism.context).getBukkitEntity(), offset, rotateWith);
             }
             else {
-                NMSHandler.getInstance().forceAttachMove(entity, null, null, false);
+                EntityAttachmentHelper.forceAttachMove(entity, null, null, false);
             }
         }
 
