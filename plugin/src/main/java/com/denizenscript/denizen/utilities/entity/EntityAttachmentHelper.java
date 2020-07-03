@@ -17,6 +17,17 @@ public class EntityAttachmentHelper {
         public float yawAngleOffset, pitchAngleOffset;
 
         public Location positionalOffset;
+
+        public Vector visiblePosition;
+
+        public Vector fixedForOffset(Vector offset, float yaw, float pitch) {
+            if (offsetRelative) {
+                return EntityAttachmentHelper.fixOffset(positionalOffset.toVector(), -yaw, pitch);
+            }
+            else {
+                return offset.add(positionalOffset.toVector());
+            }
+        }
     }
 
     public static Vector fixOffset(Vector offset, double yaw, double pitch) {
@@ -40,37 +51,51 @@ public class EntityAttachmentHelper {
         return offsetPatched;
     }
 
-    public static HashMap<UUID, UUID> attachmentsA = new HashMap<>(); // Key follows value
-    public static HashMap<UUID, List<UUID>> attachments2 = new HashMap<>(); // Value follows key
-    public static HashMap<UUID, Vector> attachmentOffsets = new HashMap<>();
-    public static HashSet<UUID> attachmentRotations = new HashSet<>();
-    public static HashMap<UUID, Vector> visiblePositions = new HashMap<>();
+    public static HashMap<UUID, AttachmentData> attachedEntityToData = new HashMap<>();
+    public static HashMap<UUID, List<AttachmentData>> toEntityToData = new HashMap<>();
 
-    public static void forceAttachMove(Entity a, Entity b, Vector offset, boolean matchRotation) {
-        if (attachmentsA.containsKey(a.getUniqueId())) {
-            UUID bid = attachmentsA.get(a.getUniqueId());
-            List<UUID> subAttachments = attachments2.get(bid);
-            subAttachments.remove(a.getUniqueId());
-            if (subAttachments.isEmpty()) {
-                attachments2.remove(bid);
+    public static void removeAttachment(UUID attachedId) {
+        AttachmentData data = attachedEntityToData.get(attachedId);
+        if (data != null) {
+            List<AttachmentData> subAttachments = toEntityToData.get(data.to.getUniqueId());
+            for (AttachmentData subData : subAttachments) {
+                if (subData.attached.getUniqueId().equals(attachedId)) {
+                    subAttachments.remove(subData);
+                    break;
+                }
             }
-            attachmentsA.remove(a.getUniqueId());
-            attachmentOffsets.remove(a.getUniqueId());
-            attachmentRotations.remove(a.getUniqueId());
+            if (subAttachments.isEmpty()) {
+                toEntityToData.remove(data.to.getUniqueId());
+            }
+            attachedEntityToData.remove(attachedId);
         }
-        if (b == null) {
-            return;
-        }
-        attachmentsA.put(a.getUniqueId(), b.getUniqueId());
-        List<UUID> subAttachments = attachments2.get(b.getUniqueId());
+    }
+
+    public static void registerAttachment(AttachmentData attachment) {
+        attachedEntityToData.put(attachment.attached.getUniqueId(), attachment);
+        List<AttachmentData> subAttachments = toEntityToData.get(attachment.to.getUniqueId());
         if (subAttachments == null) {
             subAttachments = new ArrayList<>();
-            attachments2.put(b.getUniqueId(), subAttachments);
+            toEntityToData.put(attachment.to.getUniqueId(), subAttachments);
         }
-        subAttachments.add(a.getUniqueId());
-        attachmentOffsets.put(a.getUniqueId(), offset);
-        if (matchRotation) {
-            attachmentRotations.add(a.getUniqueId());
+        subAttachments.add(attachment);
+    }
+
+    public static void forceAttachMove(Entity attached, Entity to, Vector offset, boolean matchRotation) {
+        removeAttachment(attached.getUniqueId());
+        if (to == null) {
+            return;
         }
+        AttachmentData data = new AttachmentData();
+        data.attached = attached;
+        data.to = to;
+        data.positionalOffset = offset == null ? null : offset.toLocation(null);
+        data.offsetRelative = matchRotation;
+        registerAttachment(data);
+    }
+
+    public static boolean shouldSendAttachOriginal(UUID player, UUID entity) {
+        AttachmentData attached = EntityAttachmentHelper.attachedEntityToData.get(entity);
+        return attached != null && !attached.to.getUniqueId().equals(player);
     }
 }
