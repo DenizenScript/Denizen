@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.nms.v1_15.impl.network.handlers;
 
+import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.nms.v1_15.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_15.impl.network.packets.*;
 import com.denizenscript.denizen.nms.v1_15.impl.blocks.BlockLightImpl;
@@ -153,6 +154,9 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     }
 
     public boolean processAttachToForPacket(Packet<?> packet) {
+        if (EntityAttachmentHelper.toEntityToData.isEmpty()) {
+            return false;
+        }
         try {
             if (packet instanceof PacketPlayOutEntity) {
                 int ider = ENTITY_ID_PACKENT.getInt(packet);
@@ -262,6 +266,9 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     }
 
     public boolean processHiddenEntitiesForPacket(Packet<?> packet) {
+        if (EntityHelper.hiddenEntitiesEntPl.isEmpty()) {
+            return false;
+        }
         try {
             if (packet instanceof PacketPlayOutNamedEntitySpawn
                     || packet instanceof PacketPlayOutSpawnEntity
