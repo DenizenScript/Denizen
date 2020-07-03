@@ -59,6 +59,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         if (Depends.citizens != null) {
             registerCommand(AnimateCommand.class);
         }
+        registerCommand(AttachCommand.class);
         registerCommand(AttackCommand.class);
         registerCommand(BurnCommand.class);
         registerCommand(CastCommand.class);

@@ -27,7 +27,6 @@ import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.net.SocketAddress;
 import java.util.List;
-import java.util.UUID;
 
 public class DenizenNetworkManagerImpl extends NetworkManager {
 
@@ -161,10 +160,11 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 if (e == null) {
                     return false;
                 }
-                List<EntityAttachmentHelper.AttachmentData> attList = EntityAttachmentHelper.toEntityToData.get(e.getUniqueID());
+                EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUniqueID());
                 if (attList != null) {
-                    for (EntityAttachmentHelper.AttachmentData att : attList) {
-                        if (att.attached.isValid()) {
+                    for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
+                        EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUniqueID());
+                        if (attMap.attached.isValid() && att != null) {
                             Packet pNew = (Packet) duplo(packet);
                             ENTITY_ID_PACKENT.setInt(pNew, att.attached.getEntityId());
                             if (att.positionalOffset != null && (packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMove || packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook)) {
@@ -201,7 +201,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                         }
                     }
                 }
-                return EntityAttachmentHelper.shouldSendAttachOriginal(player.getUniqueID(), e.getUniqueID());
+                return EntityAttachmentHelper.denyOriginalPacketSend(player.getUniqueID(), e.getUniqueID());
             }
             else if (packet instanceof PacketPlayOutEntityVelocity) {
                 int ider = ENTITY_ID_PACKVELENT.getInt(packet);
@@ -209,17 +209,18 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 if (e == null) {
                     return false;
                 }
-                List<EntityAttachmentHelper.AttachmentData> attList = EntityAttachmentHelper.toEntityToData.get(e.getUniqueID());
+                EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUniqueID());
                 if (attList != null) {
-                    for (EntityAttachmentHelper.AttachmentData att : attList) {
-                        if (att.attached.isValid()) {
+                    for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
+                        EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUniqueID());
+                        if (attMap.attached.isValid() && att != null) {
                             Packet pNew = (Packet) duplo(packet);
                             ENTITY_ID_PACKVELENT.setInt(pNew, att.attached.getEntityId());
                             oldManager.sendPacket(pNew);
                         }
                     }
                 }
-                return EntityAttachmentHelper.shouldSendAttachOriginal(player.getUniqueID(), e.getUniqueID());
+                return EntityAttachmentHelper.denyOriginalPacketSend(player.getUniqueID(), e.getUniqueID());
             }
             else if (packet instanceof PacketPlayOutEntityTeleport) {
                 int ider = ENTITY_ID_PACKTELENT.getInt(packet);
@@ -227,15 +228,16 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 if (e == null) {
                     return false;
                 }
-                List<EntityAttachmentHelper.AttachmentData> attList = EntityAttachmentHelper.toEntityToData.get(e.getUniqueID());
+                EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUniqueID());
                 if (attList != null) {
-                    for (EntityAttachmentHelper.AttachmentData att : attList) {
-                        if (att.attached.isValid()) {
+                    for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
+                        EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUniqueID());
+                        if (attMap.attached.isValid() && att != null) {
                             Packet pNew = (Packet) duplo(packet);
                             ENTITY_ID_PACKTELENT.setInt(pNew, att.attached.getEntityId());
                             Vector resultPos = new Vector(POS_X_PACKTELENT.getDouble(pNew), POS_Y_PACKTELENT.getDouble(pNew), POS_Z_PACKTELENT.getDouble(pNew));
                             if (att.positionalOffset != null) {
-                                Vector goalOffset = EntityAttachmentHelper.fixOffset(resultPos, e.yaw, e.pitch);
+                                Vector goalOffset = att.fixedForOffset(resultPos, e.yaw, e.pitch);
                                 POS_X_PACKTELENT.setDouble(pNew, goalOffset.getX());
                                 POS_Y_PACKTELENT.setDouble(pNew, goalOffset.getY());
                                 POS_Z_PACKTELENT.setDouble(pNew, goalOffset.getZ());
@@ -246,7 +248,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                         }
                     }
                 }
-                return EntityAttachmentHelper.shouldSendAttachOriginal(player.getUniqueID(), e.getUniqueID());
+                return EntityAttachmentHelper.denyOriginalPacketSend(player.getUniqueID(), e.getUniqueID());
             }
         }
         catch (Exception ex) {

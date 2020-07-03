@@ -27,7 +27,6 @@ import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.net.SocketAddress;
 import java.util.List;
-import java.util.UUID;
 
 public class DenizenNetworkManagerImpl extends NetworkManager {
 
@@ -96,9 +95,13 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     public static Field POS_X_PACKTELENT = ReflectionHelper.getFields(PacketPlayOutEntityTeleport.class).get("b");
     public static Field POS_Y_PACKTELENT = ReflectionHelper.getFields(PacketPlayOutEntityTeleport.class).get("c");
     public static Field POS_Z_PACKTELENT = ReflectionHelper.getFields(PacketPlayOutEntityTeleport.class).get("d");
+    public static Field YAW_PACKTELENT = ReflectionHelper.getFields(PacketPlayOutEntityTeleport.class).get("e");
+    public static Field PITCH_PACKTELENT = ReflectionHelper.getFields(PacketPlayOutEntityTeleport.class).get("f");
     public static Field POS_X_PACKENT = ReflectionHelper.getFields(PacketPlayOutEntity.class).get("b");
     public static Field POS_Y_PACKENT = ReflectionHelper.getFields(PacketPlayOutEntity.class).get("c");
     public static Field POS_Z_PACKENT = ReflectionHelper.getFields(PacketPlayOutEntity.class).get("d");
+    public static Field YAW_PACKENT = ReflectionHelper.getFields(PacketPlayOutEntity.class).get("e");
+    public static Field PITCH_PACKENT = ReflectionHelper.getFields(PacketPlayOutEntity.class).get("f");
     public static Field BLOCKPOS_BLOCKCHANGE = ReflectionHelper.getFields(PacketPlayOutBlockChange.class).get("a");
     public static Field CHUNKCOORD_MULTIBLOCKCHANGE = ReflectionHelper.getFields(PacketPlayOutMultiBlockChange.class).get("a");
     public static Field INFOARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(PacketPlayOutMultiBlockChange.class).get("b");
@@ -161,13 +164,20 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 if (e == null) {
                     return false;
                 }
-                List<EntityAttachmentHelper.AttachmentData> attList = EntityAttachmentHelper.toEntityToData.get(e.getUniqueID());
+                EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUniqueID());
                 if (attList != null) {
-                    for (EntityAttachmentHelper.AttachmentData att : attList) {
-                        if (att.attached.isValid()) {
+                    for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
+                        EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUniqueID());
+                        if (attMap.attached.isValid() && att != null) {
                             Packet pNew = (Packet) duplo(packet);
                             ENTITY_ID_PACKENT.setInt(pNew, att.attached.getEntityId());
                             if (att.positionalOffset != null && (packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMove || packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook)) {
+                                boolean isRotate = packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook;
+                                byte yaw = 0, pitch = 0;
+                                if (isRotate) {
+                                    yaw = EntityAttachmentHelper.adaptedCompressedAngle(YAW_PACKENT.getByte(packet), att.positionalOffset.getYaw());
+                                    pitch = EntityAttachmentHelper.adaptedCompressedAngle(PITCH_PACKENT.getByte(packet), att.positionalOffset.getPitch());
+                                }
                                 Vector goalPosition = att.fixedForOffset(new Vector(e.locX(), e.locY(), e.locZ()), e.yaw, e.pitch);
                                 Vector oldPos = att.visiblePosition;
                                 if (oldPos == null) {
@@ -186,12 +196,20 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                                     POS_X_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getX());
                                     POS_Y_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getY());
                                     POS_Z_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getZ());
+                                    if (isRotate) {
+                                        YAW_PACKTELENT.setByte(newTeleportPacket, yaw);
+                                        PITCH_PACKTELENT.setByte(newTeleportPacket, pitch);
+                                    }
                                     oldManager.sendPacket(newTeleportPacket);
                                 }
                                 else {
                                     POS_X_PACKENT.setShort(pNew, (short) MathHelper.clamp(offX, Short.MIN_VALUE, Short.MAX_VALUE));
                                     POS_Y_PACKENT.setShort(pNew, (short) MathHelper.clamp(offY, Short.MIN_VALUE, Short.MAX_VALUE));
                                     POS_Z_PACKENT.setShort(pNew, (short) MathHelper.clamp(offZ, Short.MIN_VALUE, Short.MAX_VALUE));
+                                    if (isRotate) {
+                                        YAW_PACKENT.setByte(pNew, yaw);
+                                        PITCH_PACKENT.setByte(pNew, pitch);
+                                    }
                                     oldManager.sendPacket(pNew);
                                 }
                             }
@@ -201,7 +219,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                         }
                     }
                 }
-                return EntityAttachmentHelper.shouldSendAttachOriginal(player.getUniqueID(), e.getUniqueID());
+                return EntityAttachmentHelper.denyOriginalPacketSend(player.getUniqueID(), e.getUniqueID());
             }
             else if (packet instanceof PacketPlayOutEntityVelocity) {
                 int ider = ENTITY_ID_PACKVELENT.getInt(packet);
@@ -209,17 +227,18 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 if (e == null) {
                     return false;
                 }
-                List<EntityAttachmentHelper.AttachmentData> attList = EntityAttachmentHelper.toEntityToData.get(e.getUniqueID());
+                EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUniqueID());
                 if (attList != null) {
-                    for (EntityAttachmentHelper.AttachmentData att : attList) {
-                        if (att.attached.isValid()) {
+                    for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
+                        EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUniqueID());
+                        if (attMap.attached.isValid() && att != null) {
                             Packet pNew = (Packet) duplo(packet);
                             ENTITY_ID_PACKVELENT.setInt(pNew, att.attached.getEntityId());
                             oldManager.sendPacket(pNew);
                         }
                     }
                 }
-                return EntityAttachmentHelper.shouldSendAttachOriginal(player.getUniqueID(), e.getUniqueID());
+                return EntityAttachmentHelper.denyOriginalPacketSend(player.getUniqueID(), e.getUniqueID());
             }
             else if (packet instanceof PacketPlayOutEntityTeleport) {
                 int ider = ENTITY_ID_PACKTELENT.getInt(packet);
@@ -227,26 +246,30 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 if (e == null) {
                     return false;
                 }
-                List<EntityAttachmentHelper.AttachmentData> attList = EntityAttachmentHelper.toEntityToData.get(e.getUniqueID());
+                EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUniqueID());
                 if (attList != null) {
-                    for (EntityAttachmentHelper.AttachmentData att : attList) {
-                        if (att.attached.isValid()) {
+                    for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
+                        EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUniqueID());
+                        if (attMap.attached.isValid() && att != null) {
                             Packet pNew = (Packet) duplo(packet);
                             ENTITY_ID_PACKTELENT.setInt(pNew, att.attached.getEntityId());
                             Vector resultPos = new Vector(POS_X_PACKTELENT.getDouble(pNew), POS_Y_PACKTELENT.getDouble(pNew), POS_Z_PACKTELENT.getDouble(pNew));
                             if (att.positionalOffset != null) {
-                                Vector goalOffset = EntityAttachmentHelper.fixOffset(resultPos, e.yaw, e.pitch);
-                                POS_X_PACKTELENT.setDouble(pNew, goalOffset.getX());
-                                POS_Y_PACKTELENT.setDouble(pNew, goalOffset.getY());
-                                POS_Z_PACKTELENT.setDouble(pNew, goalOffset.getZ());
-                                resultPos = goalOffset;
+                                resultPos = att.fixedForOffset(resultPos, e.yaw, e.pitch);
+                                byte yaw = EntityAttachmentHelper.adaptedCompressedAngle(YAW_PACKTELENT.getByte(packet), att.positionalOffset.getYaw());
+                                byte pitch = EntityAttachmentHelper.adaptedCompressedAngle(PITCH_PACKTELENT.getByte(packet), att.positionalOffset.getPitch());
+                                POS_X_PACKTELENT.setDouble(pNew, resultPos.getX());
+                                POS_Y_PACKTELENT.setDouble(pNew, resultPos.getY());
+                                POS_Z_PACKTELENT.setDouble(pNew, resultPos.getZ());
+                                YAW_PACKTELENT.setByte(pNew, yaw);
+                                PITCH_PACKTELENT.setByte(pNew, pitch);
                             }
                             att.visiblePosition = resultPos.clone();
                             oldManager.sendPacket(pNew);
                         }
                     }
                 }
-                return EntityAttachmentHelper.shouldSendAttachOriginal(player.getUniqueID(), e.getUniqueID());
+                return EntityAttachmentHelper.denyOriginalPacketSend(player.getUniqueID(), e.getUniqueID());
             }
         }
         catch (Exception ex) {
