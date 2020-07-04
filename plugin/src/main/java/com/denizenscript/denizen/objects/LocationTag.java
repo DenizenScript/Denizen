@@ -2995,13 +2995,13 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
-        // @attribute <LocationTag.furnace_burn_duration>
+        // @attribute <LocationTag.furnace_cook_duration>
         // @returns DurationTag
-        // @mechanism LocationTag.furnace_burn_duration
+        // @mechanism LocationTag.furnace_cook_duration
         // @description
         // Returns the cook time a furnace has been cooking its current item for.
         // -->
-        registerTag("furnace_burn_duration", (attribute, object) -> {
+        registerTag("furnace_cook_duration", (attribute, object) -> {
             return new DurationTag((long) ((Furnace) object.getBlockStateForTag(attribute)).getCookTime());
         });
         registerTag("furnace_cook_time", (attribute, object) -> {
@@ -3483,7 +3483,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @description
         // Sets the current cook time for a furnace in ticks. Maximum is 32767 ticks.
         // @tags
-        // <LocationTag.furnace_burn_duration>
+        // <LocationTag.furnace_cook_duration>
         // -->
         if (mechanism.matches("furnace_cook_duration")) {
             if (getBlockState() instanceof Furnace) {

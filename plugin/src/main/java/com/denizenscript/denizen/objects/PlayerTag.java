@@ -21,10 +21,7 @@ import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
 import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
 import com.denizenscript.denizen.tags.core.PlayerTagBase;
-import com.denizenscript.denizencore.objects.core.DurationTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.objects.core.ScriptTag;
+import com.denizenscript.denizencore.objects.core.*;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
@@ -1031,13 +1028,17 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
-        // @attribute <PlayerTag.first_played>
-        // @returns DurationTag
+        // @attribute <PlayerTag.first_played_time>
+        // @returns TimeTag
         // @description
-        // Returns the millisecond time of when the player first logged on to this server.
+        // Returns the time of when the player first logged on to this server.
         // Works with offline players.
         // -->
+        registerTag("first_played_time", (attribute, object) -> {
+            return new TimeTag(object.getOfflinePlayer().getFirstPlayed());
+        });
         registerTag("first_played", (attribute, object) -> {
+            Deprecations.playerTimePlayedTags.warn(attribute.context);
             return new DurationTag(object.getOfflinePlayer().getFirstPlayed() / 50);
         });
 
@@ -1205,14 +1206,21 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
-        // @attribute <PlayerTag.last_played>
-        // @returns DurationTag
+        // @attribute <PlayerTag.last_played_time>
+        // @returns TimeTag
         // @description
-        // Returns the datestamp of when the player was last seen as a DurationTag date/time object.
+        // Returns the time of when the player was last seen.
         // Works with offline players.
         // Not very useful for online players.
         // -->
+        registerTag("last_played_time", (attribute, object) -> {
+            if (object.isOnline()) {
+                return TimeTag.now();
+            }
+            return new TimeTag(object.getOfflinePlayer().getLastPlayed());
+        });
         registerTag("last_played", (attribute, object) -> {
+            Deprecations.playerTimePlayedTags.warn(attribute.context);
             if (object.isOnline()) {
                 return new DurationTag(System.currentTimeMillis() / 50);
             }
@@ -1244,13 +1252,21 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
-        // @attribute <PlayerTag.ban_expiration>
-        // @returns DurationTag
+        // @attribute <PlayerTag.ban_expiration_time>
+        // @returns TimeTag
         // @description
         // Returns the expiration of the player's ban, if they are banned.
         // Potentially can be null.
         // -->
+        registerTag("ban_expiration_time", (attribute, object) -> {
+            BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(object.getName());
+            if (ban == null || ban.getExpiration() == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
+                return null;
+            }
+            return new TimeTag(ban.getExpiration().getTime());
+        });
         registerTag("ban_expiration", (attribute, object) -> {
+            Deprecations.playerTimePlayedTags.warn(attribute.context);
             BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(object.getName());
             if (ban == null || ban.getExpiration() == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
                 return null;
@@ -1273,11 +1289,18 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
-        // @attribute <PlayerTag.ban_created>
-        // @returns DurationTag
+        // @attribute <PlayerTag.ban_created_time>
+        // @returns TimeTag
         // @description
         // Returns when the player's ban was created as a Duration time tag, if they are banned.
         // -->
+        registerTag("ban_created_time", (attribute, object) -> {
+            BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(object.getName());
+            if (ban == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
+                return null;
+            }
+            return new TimeTag(ban.getCreated().getTime());
+        });
         registerTag("ban_created", (attribute, object) -> {
             BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(object.getName());
             if (ban == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
@@ -2213,7 +2236,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns the time the player has been asleep.
         // -->
         registerOnlineOnlyTag("time_asleep", (attribute, object) -> {
-            return new DurationTag(object.getPlayerEntity().getSleepTicks() / 20);
+            return new DurationTag((long) object.getPlayerEntity().getSleepTicks());
         });
 
         // <--[tag]
@@ -3225,7 +3248,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Forces the player to spectate from the entity's point of view.
         // Note: They cannot cancel the spectating without a re-log -- you must make them spectate themselves to cancel the effect.
-        // (i.e. - adjust <player> "spectate:<player>")
+        // (i.e. - adjust <player> spectate:<player>)
         // -->
         if (mechanism.matches("spectate") && mechanism.requireObject(EntityTag.class)) {
             NMSHandler.getPacketHelper().forceSpectate(getPlayerEntity(), mechanism.valueAsType(EntityTag.class).getBukkitEntity());

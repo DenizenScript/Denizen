@@ -697,7 +697,7 @@ public class WorldTag implements ObjectTag, Adjustable {
 
         // <--[tag]
         // @attribute <WorldTag.border_size>
-        // @returns ElementTag
+        // @returns ElementTag(Decimal)
         // @description
         // returns the size of the world border in this world.
         // -->
@@ -717,7 +717,7 @@ public class WorldTag implements ObjectTag, Adjustable {
 
         // <--[tag]
         // @attribute <WorldTag.border_damage>
-        // @returns ElementTag
+        // @returns ElementTag(Decimal)
         // @description
         // returns the size of the world border in this world.
         // -->
@@ -727,7 +727,7 @@ public class WorldTag implements ObjectTag, Adjustable {
 
         // <--[tag]
         // @attribute <WorldTag.border_damage_buffer>
-        // @returns ElementTag
+        // @returns ElementTag(Decimal)
         // @description
         // returns the damage buffer of the world border in this world.
         // -->
@@ -737,7 +737,7 @@ public class WorldTag implements ObjectTag, Adjustable {
 
         // <--[tag]
         // @attribute <WorldTag.border_warning_distance>
-        // @returns ElementTag
+        // @returns ElementTag(Number)
         // @description
         // returns the warning distance of the world border in this world.
         // -->
