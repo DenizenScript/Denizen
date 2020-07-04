@@ -2196,7 +2196,7 @@ public class ServerTagBase {
         // <--[mechanism]
         // @object server
         // @name delete_file
-        // @input Element
+        // @input ElementTag
         // @description
         // Deletes the given file from the server.
         // Require config setting 'Commands.Delete.Allow file deletion'.

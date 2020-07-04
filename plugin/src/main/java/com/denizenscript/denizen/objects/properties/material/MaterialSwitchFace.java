@@ -85,7 +85,7 @@ public class MaterialSwitchFace implements Property {
         // <--[mechanism]
         // @object MaterialTag
         // @name switch_face
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the current attach direction for a switch.
         // @tags

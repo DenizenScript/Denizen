@@ -197,7 +197,7 @@ public class ColorTag implements ObjectTag {
         // @attribute <ColorTag.red>
         // @returns ElementTag(Number)
         // @description
-        // Returns the red value of this color.
+        // Returns the red value of this color (0 to 255).
         // -->
         registerTag("red", (attribute, object) -> {
             return new ElementTag(object.color.getRed());
@@ -207,7 +207,7 @@ public class ColorTag implements ObjectTag {
         // @attribute <ColorTag.green>
         // @returns ElementTag(Number)
         // @description
-        // Returns the green value of this color.
+        // Returns the green value of this color (0 to 255).
         // -->
         registerTag("green", (attribute, object) -> {
             return new ElementTag(object.color.getGreen());
@@ -217,7 +217,7 @@ public class ColorTag implements ObjectTag {
         // @attribute <ColorTag.blue>
         // @returns ElementTag(Number)
         // @description
-        // Returns the blue value of this color.
+        // Returns the blue value of this color (0 to 255).
         // -->
         registerTag("blue", (attribute, object) -> {
             return new ElementTag(object.color.getBlue());
@@ -239,7 +239,7 @@ public class ColorTag implements ObjectTag {
         // @attribute <ColorTag.hue>
         // @returns ElementTag(Number)
         // @description
-        // Returns the hue value of this color.
+        // Returns the hue value of this color (0 to 255).
         // -->
         registerTag("hue", (attribute, object) -> {
             return new ElementTag(object.ToHSB()[0]);
@@ -249,7 +249,7 @@ public class ColorTag implements ObjectTag {
         // @attribute <ColorTag.saturation>
         // @returns ElementTag(Number)
         // @description
-        // Returns the saturation value of this color.
+        // Returns the saturation value of this color (0 to 255).
         // -->
         registerTag("saturation", (attribute, object) -> {
             return new ElementTag(object.ToHSB()[1]);
@@ -259,7 +259,7 @@ public class ColorTag implements ObjectTag {
         // @attribute <ColorTag.brightness>
         // @returns ElementTag(Number)
         // @description
-        // Returns the brightness value of this color.
+        // Returns the brightness value of this color (0 to 255).
         // -->
         registerTag("brightness", (attribute, object) -> {
             return new ElementTag(object.ToHSB()[2]);
@@ -281,7 +281,7 @@ public class ColorTag implements ObjectTag {
         // @attribute <ColorTag.with_red[<red>]>
         // @returns ColorTag
         // @description
-        // Returns a copy of this color object with a different red value.
+        // Returns a copy of this color object with a different red value (0 to 255).
         // -->
         registerTag("with_red", (attribute, object) -> {
             return new ColorTag(object.color.setRed(attribute.getIntContext(1)));
@@ -291,7 +291,7 @@ public class ColorTag implements ObjectTag {
         // @attribute <ColorTag.with_green[<green>]>
         // @returns ColorTag
         // @description
-        // Returns a copy of this color object with a different green value.
+        // Returns a copy of this color object with a different green value (0 to 255).
         // -->
         registerTag("with_green", (attribute, object) -> {
             return new ColorTag(object.color.setGreen(attribute.getIntContext(1)));
@@ -301,7 +301,7 @@ public class ColorTag implements ObjectTag {
         // @attribute <ColorTag.with_blue[<blue>]>
         // @returns ColorTag
         // @description
-        // Returns a copy of this color object with a different blue value.
+        // Returns a copy of this color object with a different blue value (0 to 255).
         // -->
         registerTag("with_blue", (attribute, object) -> {
             return new ColorTag(object.color.setBlue(attribute.getIntContext(1)));
@@ -311,7 +311,7 @@ public class ColorTag implements ObjectTag {
         // @attribute <ColorTag.with_hue[<hue>]>
         // @returns ColorTag
         // @description
-        // Returns a copy of this color object with a different hue value.
+        // Returns a copy of this color object with a different hue value (0 to 255).
         // -->
         registerTag("with_hue", (attribute, object) -> {
             int[] HSB = object.ToHSB();
@@ -323,7 +323,7 @@ public class ColorTag implements ObjectTag {
         // @attribute <ColorTag.with_saturation[<saturation>]>
         // @returns ColorTag
         // @description
-        // Returns a copy of this color object with a different saturation value.
+        // Returns a copy of this color object with a different saturation value (0 to 255).
         // -->
         registerTag("with_saturation", (attribute, object) -> {
             int[] HSB = object.ToHSB();
@@ -335,7 +335,7 @@ public class ColorTag implements ObjectTag {
         // @attribute <ColorTag.with_brightness[<brightness>]>
         // @returns ColorTag
         // @description
-        // Returns a copy of this color object with a different brightness value.
+        // Returns a copy of this color object with a different brightness value (0 to 255).
         // -->
         registerTag("with_brightness", (attribute, object) -> {
             int[] HSB = object.ToHSB();

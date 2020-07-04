@@ -1152,8 +1152,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         registerTag("spawner_type", (attribute, object) -> {
             if (object.getBlockStateForTag(attribute) instanceof CreatureSpawner) {
-                return new EntityTag(DenizenEntityType.getByName(((CreatureSpawner) object.getBlockStateForTag(attribute))
-                        .getSpawnedType().name()));
+                return new EntityTag(DenizenEntityType.getByName(((CreatureSpawner) object.getBlockStateForTag(attribute)).getSpawnedType().name()));
             }
             else {
                 return null;
@@ -1299,7 +1298,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
                 // <--[tag]
                 // @attribute <LocationTag.skull_skin.full>
-                // @returns ElementTag|Element
+                // @returns ElementTag|ElementTag
                 // @mechanism LocationTag.skull_skin
                 // @description
                 // Returns the skin the skull item is displaying - just the name or UUID as text, not a player object,
@@ -1319,7 +1318,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
         // <--[tag]
         // @attribute <LocationTag.round>
-        // @returns ElementTag
+        // @returns LocationTag
         // @description
         // Returns a rounded version of the LocationTag's coordinates.
         // That is, each component (X, Y, Z, Yaw, Pitch) is rounded
@@ -1338,7 +1337,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
         // <--[tag]
         // @attribute <LocationTag.round_up>
-        // @returns ElementTag
+        // @returns LocationTag
         // @description
         // Returns a rounded-upward version of the LocationTag's coordinates.
         // That is, each component (X, Y, Z, Yaw, Pitch) is rounded upward
@@ -1356,7 +1355,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
         // <--[tag]
         // @attribute <LocationTag.round_down>
-        // @returns ElementTag
+        // @returns LocationTag
         // @description
         // Returns a rounded-downward version of the LocationTag's coordinates.
         // That is, each component (X, Y, Z, Yaw, Pitch) is rounded downward
@@ -1375,7 +1374,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
         // <--[tag]
         // @attribute <LocationTag.round_to[<#>]>
-        // @returns ElementTag
+        // @returns LocationTag
         // @description
         // Returns a rounded-to-precision version of the LocationTag's coordinates.
         // That is, each component (X, Y, Z, Yaw, Pitch) is rounded to the specified decimal place
@@ -1398,7 +1397,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
         // <--[tag]
         // @attribute <LocationTag.round_to_precision[<#.#>]>
-        // @returns ElementTag
+        // @returns LocationTag
         // @description
         // Returns a rounded-to-precision version of the LocationTag's coordinates.
         // That is, each component (X, Y, Z, Yaw, Pitch) is rounded to the specified precision value
@@ -1962,7 +1961,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
             // <--[tag]
             // @attribute <LocationTag.find.blocks[(<material>|...)].within[<#>]>
-            // @returns ListTag
+            // @returns ListTag(LocationTag)
             // @description
             // Returns a list of matching blocks within a radius.
             // Note: current implementation measures the center of nearby block's distance from the exact given location.
@@ -2026,7 +2025,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
             // <--[tag]
             // @attribute <LocationTag.find.surface_blocks[(<material>|...)].within[<#.#>]>
-            // @returns ListTag
+            // @returns ListTag(LocationTag)
             // @description
             // Returns a list of matching surface blocks within a radius.
             // Result list is sorted by closeness (1 = closest, 2 = next closest, ... last = farthest).
@@ -2093,7 +2092,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
             // <--[tag]
             // @attribute <LocationTag.find.players.within[<#.#>]>
-            // @returns ListTag
+            // @returns ListTag(PlayerTag)
             // @description
             // Returns a list of players within a radius.
             // Result list is sorted by closeness (1 = closest, 2 = next closest, ... last = farthest).
@@ -2119,7 +2118,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
             // <--[tag]
             // @attribute <LocationTag.find.npcs.within[<#.#>]>
-            // @returns ListTag
+            // @returns ListTag(NPCTag)
             // @description
             // Returns a list of NPCs within a radius.
             // Result list is sorted by closeness (1 = closest, 2 = next closest, ... last = farthest).
@@ -2145,7 +2144,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
             // <--[tag]
             // @attribute <LocationTag.find.entities[(<entity>|...)].within[<#.#>]>
-            // @returns ListTag
+            // @returns ListTag(EntityTag)
             // @description
             // Returns a list of entities within a radius, with an optional search parameter for the entity type.
             // Result list is sorted by closeness (1 = closest, 2 = next closest, ... last = farthest).
@@ -2183,7 +2182,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
             // <--[tag]
             // @attribute <LocationTag.find.living_entities.within[<#.#>]>
-            // @returns ListTag
+            // @returns ListTag(EntityTag)
             // @description
             // Returns a list of living entities within a radius.
             // This includes Players, mobs, NPCs, etc., but excludes dropped items, experience orbs, etc.
@@ -2787,7 +2786,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
         // <--[tag]
         // @attribute <LocationTag.ellipsoids>
-        // @returns ListTag(CuboidTag)
+        // @returns ListTag(EllipsoidTag)
         // @description
         // Returns a ListTag of all notable EllipsoidTags that include this location.
         // -->
@@ -3225,7 +3224,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <--[mechanism]
         // @object LocationTag
         // @name lock
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the container's lock password.
         // Locked containers can only be opened while holding an item with the name of the lock.
@@ -3318,7 +3317,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <--[mechanism]
         // @object LocationTag
         // @name hive_max_bees
-        // @input Element(Number)
+        // @input ElementTag(Number)
         // @description
         // Sets the maximum allowed number of bees in a beehive.
         // @tags
@@ -3365,7 +3364,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <--[mechanism]
         // @object LocationTag
         // @name command_block_name
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the name of a command block.
         // @tags
@@ -3382,7 +3381,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <--[mechanism]
         // @object LocationTag
         // @name command_block
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the command of a command block.
         // @tags
@@ -3399,7 +3398,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <--[mechanism]
         // @object LocationTag
         // @name custom_name
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the custom name of the block.
         // Use no value to reset the block's name.
@@ -3576,7 +3575,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <--[mechanism]
         // @object LocationTag
         // @name generate_tree
-        // @input Element
+        // @input ElementTag
         // @description
         // Generates a tree at this location if possible.
         // For a list of valid tree types, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/TreeType.html>

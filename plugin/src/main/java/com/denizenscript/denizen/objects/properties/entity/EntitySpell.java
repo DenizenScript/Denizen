@@ -77,7 +77,7 @@ public class EntitySpell implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name spell
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the spell the entity should cast. Valid spells are: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Spellcaster.Spell.html>
         // @tags

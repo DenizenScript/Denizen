@@ -123,7 +123,7 @@ public class ItemBaseColor implements Property {
         // <--[mechanism]
         // @object ItemTag
         // @name base_color
-        // @input Element
+        // @input ElementTag
         // @description
         // Changes the base color of a shield.
         // For the list of possible colors, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/DyeColor.html>.

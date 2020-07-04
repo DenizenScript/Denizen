@@ -1194,7 +1194,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <EntityTag.script>
-        // @returns ElementTag
+        // @returns ScriptTag
         // @group data
         // @description
         // Returns the entity script that spawned this entity, if any.
@@ -1538,7 +1538,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <EntityTag.eye_height>
-        // @returns ElementTag(Boolean)
+        // @returns ElementTag(Number)
         // @group location
         // @description
         // Returns the height of the entity's eyes above its location.
@@ -3039,7 +3039,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object EntityTag
         // @name dragon_phase
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets an EnderDragon's combat phase.
         // @tags

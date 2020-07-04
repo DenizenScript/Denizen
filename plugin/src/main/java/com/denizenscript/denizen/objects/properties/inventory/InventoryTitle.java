@@ -87,7 +87,7 @@ public class InventoryTitle implements Property {
         // <--[mechanism]
         // @object InventoryTag
         // @name title
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the title of the inventory. (Only works for "generic" inventories.)
         // @tags

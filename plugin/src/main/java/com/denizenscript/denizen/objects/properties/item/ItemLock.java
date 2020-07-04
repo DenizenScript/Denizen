@@ -100,7 +100,7 @@ public class ItemLock implements Property {
         // <--[mechanism]
         // @object ItemTag
         // @name lock
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the item's lock password.
         // Locked blocks can only be opened while holding an item with the name of the lock.

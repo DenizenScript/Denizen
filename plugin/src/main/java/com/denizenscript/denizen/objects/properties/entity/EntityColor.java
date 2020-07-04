@@ -190,7 +190,7 @@ public class EntityColor implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name color
-        // @input Element
+        // @input ElementTag
         // @description
         // Changes the entity's color.
         // For the available color options, refer to <@link language Entity Color Types>.

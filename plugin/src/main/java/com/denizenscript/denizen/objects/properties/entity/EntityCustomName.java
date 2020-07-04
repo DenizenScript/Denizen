@@ -110,7 +110,7 @@ public class EntityCustomName implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name custom_name
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the custom name of the entity.
         // @tags

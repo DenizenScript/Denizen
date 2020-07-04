@@ -104,7 +104,7 @@ public class ItemDisplayname implements Property {
         // <--[mechanism]
         // @object ItemTag
         // @name display_name
-        // @input Element
+        // @input ElementTag
         // @description
         // Changes the items display name.
         // See <@link language Property Escaping>

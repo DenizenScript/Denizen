@@ -832,7 +832,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[mechanism]
         // @object WorldTag
         // @name difficulty
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the difficulty level of this world.
         // Possible values: Peaceful, Easy, Normal, Hard.

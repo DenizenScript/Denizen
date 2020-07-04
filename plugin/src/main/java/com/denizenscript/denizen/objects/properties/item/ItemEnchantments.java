@@ -185,7 +185,7 @@ public class ItemEnchantments implements Property {
         // <--[mechanism]
         // @object ItemTag
         // @name remove_enchantments
-        // @input None
+        // @input ListTag
         // @description
         // Removes the specified enchantments from the item (as a list of enchantment names).
         // Give no value input to remove all enchantments.

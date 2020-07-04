@@ -412,7 +412,7 @@ public class EntityAreaEffectCloud implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name remove_custom_effect
-        // @input Element
+        // @input ElementTag
         // @description
         // Removes the specified custom effect from the Area Effect Cloud
         // @tags
@@ -479,7 +479,7 @@ public class EntityAreaEffectCloud implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name base_potion
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the Area Effect Cloud's base potion.
         // In the form: Type,Upgraded,Extended
@@ -544,7 +544,7 @@ public class EntityAreaEffectCloud implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name particle
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the particle of the Area Effect Cloud
         // @tags

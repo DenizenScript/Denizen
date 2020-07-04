@@ -242,7 +242,7 @@ public class ItemBook implements Property {
         // <--[mechanism]
         // @object ItemTag
         // @name book_author
-        // @input Element
+        // @input ElementTag
         // @description
         // Changes the author of a book item.
         // @tags
@@ -262,7 +262,7 @@ public class ItemBook implements Property {
         // <--[mechanism]
         // @object ItemTag
         // @name book_title
-        // @input Element
+        // @input ElementTag
         // @description
         // Changes the title of a book item.
         // @tags
@@ -282,7 +282,7 @@ public class ItemBook implements Property {
         // <--[mechanism]
         // @object ItemTag
         // @name book
-        // @input Element
+        // @input ElementTag
         // @description
         // Changes the information on a book item.
         // See <@link language Property Escaping>

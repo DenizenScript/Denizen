@@ -107,7 +107,7 @@ public class EntityRotation implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name rotation
-        // @input Element
+        // @input ElementTag
         // @description
         // Changes the entity's rotation.
         // Currently, only Hanging-type entities can have rotations.

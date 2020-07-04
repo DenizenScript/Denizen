@@ -195,7 +195,7 @@ public class EntityAge implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name age
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the entity's age.
         // Inputs can be 'baby', 'adult', or a valid age number (-24000 to 0)

@@ -823,7 +823,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
 
         // <--[tag]
         // @attribute <NPCTag.owner>
-        // @returns PlayerTag/Element
+        // @returns PlayerTag/ElementTag
         // @mechanism NPCTag.owner
         // @description
         // Returns the owner of the NPC as a PlayerTag if it's a player, otherwise as just the name.
@@ -844,7 +844,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
 
         // <--[tag]
         // @attribute <NPCTag.has_skin>
-        // @returns ElementTag
+        // @returns ElementTag(Boolean)
         // @mechanism NPCTag.skin
         // @description
         // Returns whether the NPC has a custom skin.
@@ -955,7 +955,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
 
         // <--[tag]
         // @attribute <NPCTag.teleport_on_stuck>
-        // @returns LocationTag
+        // @returns ElementTag(Boolean)
         // @mechanism NPCTag.teleport_on_stuck
         // @description
         // Returns whether the NPC teleports when it is stuck.
@@ -1197,7 +1197,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[mechanism]
         // @object NPCTag
         // @name remove_assignment
-        // @input none
+        // @input None
         // @description
         // Removes the NPC's assigment script.
         // @tags
@@ -1210,7 +1210,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[mechanism]
         // @object NPCTag
         // @name set_nickname
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the NPC's nickname.
         // @tags
@@ -1223,7 +1223,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[mechanism]
         // @object NPCTag
         // @name remove_nickname
-        // @input none
+        // @input None
         // @description
         // Removes the NPC's nickname.
         // @tags
@@ -1249,7 +1249,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[mechanism]
         // @object NPCTag
         // @name name
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the name of the NPC.
         // @tags
@@ -1280,7 +1280,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[mechanism]
         // @object NPCTag
         // @name skin_blob
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the skin blob of an NPC, in the form of "texture;signature;name".
         // Call with no value to clear the custom skin value.
@@ -1314,7 +1314,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[mechanism]
         // @object NPCTag
         // @name skin
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the skin of an NPC by name.
         // Call with no value to clear the custom skin value.
@@ -1429,7 +1429,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[mechanism]
         // @object NPCTag
         // @name despawn
-        // @input none
+        // @input None
         // @description
         // Despawns the NPC.
         // @tags
@@ -1534,7 +1534,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[mechanism]
         // @object NPCTag
         // @name name_visible
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets whether the NPC's nameplate is visible. Input is 'true' (always visible), 'false' (never visible), or 'hover' (only visible while looking at the NPC).
         // @tags

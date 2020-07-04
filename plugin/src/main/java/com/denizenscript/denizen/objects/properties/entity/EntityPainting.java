@@ -104,7 +104,7 @@ public class EntityPainting implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name painting
-        // @input Element
+        // @input ElementTag
         // @description
         // Changes the art shown by a painting.
         // @tags

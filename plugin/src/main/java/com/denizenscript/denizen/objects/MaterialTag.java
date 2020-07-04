@@ -866,7 +866,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // <--[mechanism]
         // @object MaterialTag
         // @name piston_reaction
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the piston reaction for all blocks of this material type.
         // Input may be: NORMAL (push and pull allowed), DESTROY (break when pushed), BLOCK (prevent a push or pull), IGNORE (don't use this), or PUSH_ONLY (push allowed but not pull)

@@ -71,7 +71,7 @@ public class MaterialSlab implements Property {
         // <--[mechanism]
         // @object MaterialTag
         // @name slab_type
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the current type of the slab.
         // @tags

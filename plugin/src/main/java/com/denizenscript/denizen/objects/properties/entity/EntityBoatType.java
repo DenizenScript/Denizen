@@ -77,7 +77,7 @@ public class EntityBoatType implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name boat_type
-        // @input Element
+        // @input ElementTag
         // @description
         // Changes the wood type of the boat.
         // Valid wood types: GENERIC, REDWOOD, BIRCH, JUNGLE, ACACIA, DARK_OAK.

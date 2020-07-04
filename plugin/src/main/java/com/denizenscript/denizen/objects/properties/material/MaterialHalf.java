@@ -168,7 +168,7 @@ public class MaterialHalf implements Property {
         // <--[mechanism]
         // @object MaterialTag
         // @name half
-        // @input Element
+        // @input ElementTag
         // @description
         // Sets the current half for a bisected material (like a door, double-plant, chest, or a bed).
         // @tags

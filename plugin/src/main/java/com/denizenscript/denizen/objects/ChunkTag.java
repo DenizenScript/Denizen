@@ -550,7 +550,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
 
         // <--[tag]
         // @attribute <ChunkTag.spawn_slimes>
-        // @returns ListTag(LocationTag)
+        // @returns ElementTag(Boolean)
         // @description
         // Returns whether the chunk is a specially located 'slime spawner' chunk.
         // -->
