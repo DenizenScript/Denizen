@@ -57,7 +57,12 @@ public class ItemHidden implements Property {
         ItemStack itemStack = item.getItemStack();
         if (itemStack.hasItemMeta()) {
             for (ItemFlag flag : itemStack.getItemMeta().getItemFlags()) {
-                output.add(flag.name().substring("HIDE_".length()));
+                if (flag == ItemFlag.HIDE_POTION_EFFECTS) {
+                    output.add("ITEM_DATA");
+                }
+                else {
+                    output.add(flag.name().substring("HIDE_".length()));
+                }
             }
         }
         return output;
@@ -79,8 +84,8 @@ public class ItemHidden implements Property {
         // @group properties
         // @description
         // Returns a list of item data types to be hidden from view on this item.
-        // Valid hide types include: ATTRIBUTES, DESTROYS, ENCHANTS, PLACED_ON, POTION_EFFECTS, and UNBREAKABLE
-        // NOTE: 'POTION_EFFECTS' also hides banner patterns.
+        // Valid hide types include: ATTRIBUTES, DESTROYS, ENCHANTS, PLACED_ON, ITEM_DATA, and UNBREAKABLE
+        // ITEM_DATA hides potion effects, banner patterns, etc.
         // -->
         if (attribute.startsWith("hides")) {
             return hides().getObjectAttribute(attribute.fulfill(1));
@@ -118,7 +123,8 @@ public class ItemHidden implements Property {
         // @input ListTag
         // @description
         // Sets the item's list of data types to hide.
-        // Valid hide types include: ATTRIBUTES, DESTROYS, ENCHANTS, PLACED_ON, POTION_EFFECTS, UNBREAKABLE, or ALL.
+        // Valid hide types include: ATTRIBUTES, DESTROYS, ENCHANTS, PLACED_ON, ITEM_DATA, UNBREAKABLE, or ALL.
+        // ITEM_DATA hides potion effects, banner patterns, etc.
         // Use "ALL" to automatically hide all hideable item data.
         // @tags
         // <ItemTag.hides>
@@ -137,6 +143,9 @@ public class ItemHidden implements Property {
                 }
                 if (str.equals("HIDE_ALL")) {
                     meta.addItemFlags(ItemFlag.values());
+                }
+                else if (str.equals("HIDE_ITEM_DATA")) {
+                    meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
                 }
                 else {
                     meta.addItemFlags(ItemFlag.valueOf(str));

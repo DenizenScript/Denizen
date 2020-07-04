@@ -17,9 +17,8 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
     // <--[event]
     // @Events
     // sheep dyed (<color>)
-    // player dyes sheep (<color>)
     //
-    // @Regex ^on (sheep dyed|player dyes sheep) [^\s]+$
+    // @Regex ^on sheep dyed [^\s]+$
     //
     // @Group Entity
     //
@@ -29,7 +28,7 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
     //
     // @Warning Determine color will not update the clientside, use - wait 1t and adjust <context.entity> color:YOUR_COLOR to force-update.
     //
-    // @Triggers when a sheep is dyed by a player.
+    // @Triggers when a sheep is dyed.
     //
     // @Context
     // <context.entity> returns the EntityTag of the sheep.
@@ -37,8 +36,6 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
     //
     // @Determine
     // ElementTag that matches DyeColor to dye it a different color.
-    //
-    // @Player when a player dyes a sheep, and using the 'player dyes sheep' event.
     //
     // -->
 
