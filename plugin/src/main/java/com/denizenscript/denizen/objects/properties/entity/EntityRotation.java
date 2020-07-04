@@ -32,7 +32,7 @@ public class EntityRotation implements Property {
     }
 
     public static final String[] handledTags = new String[] {
-            "rotation"
+            "rotation", "rotation_vector"
     };
 
     public static final String[] handledMechs = new String[] {
@@ -92,6 +92,7 @@ public class EntityRotation implements Property {
         // @description
         // If the entity can have a rotation, returns the entity's rotation.
         // Currently, only Hanging-type entities can have rotations.
+        // Value is from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/BlockFace.html>.
         // -->
         if (attribute.startsWith("rotation")) {
             return new ElementTag(CoreUtilities.toLowerCase(getRotation().name()))
@@ -111,6 +112,7 @@ public class EntityRotation implements Property {
         // @description
         // Changes the entity's rotation.
         // Currently, only Hanging-type entities can have rotations.
+        // Value must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/BlockFace.html>.
         // @tags
         // <EntityTag.rotation>
         // <EntityTag.rotation_vector>

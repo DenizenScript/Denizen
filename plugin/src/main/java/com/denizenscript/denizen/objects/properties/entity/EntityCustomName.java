@@ -74,7 +74,7 @@ public class EntityCustomName implements Property {
         // @mechanism EntityTag.custom_name
         // @group attributes
         // @description
-        // Returns the entity's custom name, if any.
+        // Returns the entity's custom name (as set by plugin or name tag item), if any.
         // -->
         else if (attribute.startsWith("custom_name")) {
             String name = entity.getBukkitEntity().getCustomName();
@@ -112,7 +112,7 @@ public class EntityCustomName implements Property {
         // @name custom_name
         // @input ElementTag
         // @description
-        // Sets the custom name of the entity.
+        // Sets the custom name (equivalent to a name tag item) of the entity.
         // @tags
         // <EntityTag.custom_name>
         // -->

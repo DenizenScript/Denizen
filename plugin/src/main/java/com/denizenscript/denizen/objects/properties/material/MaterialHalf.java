@@ -72,7 +72,7 @@ public class MaterialHalf implements Property {
 
         // <--[tag]
         // @attribute <MaterialTag.relative_vector>
-        // @returns ElementTag
+        // @returns LocationTag
         // @mechanism MaterialTag.half
         // @group properties
         // @description

@@ -333,7 +333,7 @@ public class ServerTagBase {
 
             // <--[tag]
             // @attribute <server.scoreboard[<board>].exists>
-            // @returns ListTag
+            // @returns ElementTag(Boolean)
             // @description
             // Returns whether a given scoreboard exists on the server.
             // -->
@@ -371,7 +371,7 @@ public class ServerTagBase {
 
                 // <--[tag]
                 // @attribute <server.scoreboard[(<board>)].objective[<name>].criteria>
-                // @returns ListTag
+                // @returns ElementTag
                 // @description
                 // Returns the criteria specified for the given objective.
                 // Optionally, specify which scoreboard to use.
@@ -382,7 +382,7 @@ public class ServerTagBase {
 
                 // <--[tag]
                 // @attribute <server.scoreboard[(<board>)].objective[<name>].display_name>
-                // @returns ListTag
+                // @returns ElementTag
                 // @description
                 // Returns the display name specified for the given objective.
                 // Optionally, specify which scoreboard to use.
@@ -393,7 +393,7 @@ public class ServerTagBase {
 
                 // <--[tag]
                 // @attribute <server.scoreboard[(<board>)].objective[<name>].display_slot>
-                // @returns ListTag
+                // @returns ElementTag
                 // @description
                 // Returns the display slot specified for the given objective. Can be: BELOW_NAME, PLAYER_LIST, or SIDEBAR.
                 // Note that not all objectives have a display slot.
@@ -1024,7 +1024,7 @@ public class ServerTagBase {
 
         // <--[tag]
         // @attribute <server.enchantment_max_level[<enchantment>]>
-        // @returns ElementTag(Integer)
+        // @returns ElementTag(Number)
         // @description
         // Returns the max level (at an enchantment table) for the given enchantment.
         // Refer also to <@link tag server.enchantment_types>.
@@ -1040,7 +1040,7 @@ public class ServerTagBase {
 
         // <--[tag]
         // @attribute <server.enchantment_start_level[<enchantment>]>
-        // @returns ElementTag(Integer)
+        // @returns ElementTag(Number)
         // @description
         // Returns the starting level (at an enchantment table) for the given enchantment.
         // Refer also to <@link tag server.enchantment_types>.
@@ -1069,7 +1069,7 @@ public class ServerTagBase {
         // @attribute <server.disk_free>
         // @returns ElementTag(Number)
         // @description
-        // How much remaining disk space is available to this server.
+        // How much remaining disk space is available to this server, in bytes.
         // This counts only the drive the server folder is on, not any other drives.
         // This may be limited below the actual drive capacity by operating system settings.
         // -->
@@ -1083,7 +1083,7 @@ public class ServerTagBase {
         // @attribute <server.disk_total>
         // @returns ElementTag(Number)
         // @description
-        // How much total disk space is on the drive containing this server.
+        // How much total disk space is on the drive containing this server, in bytes.
         // This counts only the drive the server folder is on, not any other drives.
         // -->
         if (attribute.startsWith("disk_total")) {
@@ -1096,7 +1096,7 @@ public class ServerTagBase {
         // @attribute <server.disk_usage>
         // @returns ElementTag(Number)
         // @description
-        // How much space on the drive is already in use.
+        // How much space on the drive is already in use, in bytes.
         // This counts only the drive the server folder is on, not any other drives.
         // This is approximately equivalent to "disk_total" minus "disk_free", but is not always exactly the same,
         // as this tag will not include space "used" by operating system settings that simply deny the server write access.
@@ -1216,54 +1216,6 @@ public class ServerTagBase {
         if (attribute.startsWith("current_time_millis")) {
             event.setReplacedObject(new ElementTag(System.currentTimeMillis())
                     .getObjectAttribute(attribute.fulfill(1)));
-        }
-
-        // <--[tag]
-        // @attribute <server.has_event[<event_name>]>
-        // @returns ElementTag(Number)
-        // @description
-        // Returns whether a world event exists on the server.
-        // This tag will ignore ObjectTag identifiers (see <@link language objecttag>).
-        // -->
-        if (attribute.startsWith("has_event")
-                && attribute.hasContext(1)) {
-            event.setReplacedObject(new ElementTag(OldEventManager.eventExists(attribute.getContext(1))
-                    || OldEventManager.eventExists(OldEventManager.StripIdentifiers(attribute.getContext(1))))
-                    .getObjectAttribute(attribute.fulfill(1)));
-        }
-
-        // <--[tag]
-        // @attribute <server.event_handlers[<event_name>]>
-        // @returns ListTag(ScriptTag)
-        // @description
-        // Returns a list of all world scripts that will handle a given event name.
-        // This tag will ignore ObjectTag identifiers (see <@link language objecttag>).
-        // For use with <@link tag server.has_event[<event_name>]>
-        // -->
-        if (attribute.startsWith("event_handlers")
-                && attribute.hasContext(1)) {
-            String eventName = attribute.getContext(1).toUpperCase();
-            List<WorldScriptContainer> EventsOne = OldEventManager.events.get("ON " + eventName);
-            List<WorldScriptContainer> EventsTwo = OldEventManager.events.get("ON " + OldEventManager.StripIdentifiers(eventName));
-            if (EventsOne == null && EventsTwo == null) {
-                attribute.echoError("No world scripts will handle the event '" + eventName + "'");
-            }
-            else {
-                ListTag list = new ListTag();
-                if (EventsOne != null) {
-                    for (WorldScriptContainer script : EventsOne) {
-                        list.addObject(new ScriptTag(script));
-                    }
-                }
-                if (EventsTwo != null) {
-                    for (WorldScriptContainer script : EventsTwo) {
-                        if (!list.contains(new ScriptTag(script).identify())) {
-                            list.addObject(new ScriptTag(script));
-                        }
-                    }
-                }
-                event.setReplacedObject(list.getObjectAttribute(attribute.fulfill(1)));
-            }
         }
 
         // <--[tag]

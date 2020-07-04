@@ -58,7 +58,7 @@ public class EntityPainting implements Property {
 
         // <--[tag]
         // @attribute <EntityTag.painting_width>
-        // @returns ElementTag
+        // @returns ElementTag(Number)
         // @mechanism EntityTag.painting
         // @group properties
         // @description
@@ -71,7 +71,7 @@ public class EntityPainting implements Property {
 
         // <--[tag]
         // @attribute <EntityTag.painting_height>
-        // @returns ElementTag
+        // @returns ElementTag(Number)
         // @mechanism EntityTag.painting
         // @group properties
         // @description
