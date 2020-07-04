@@ -2981,35 +2981,47 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
-        // @attribute <LocationTag.furnace_burn_time>
-        // @returns ElementTag(Number)
-        // @mechanism LocationTag.furnace_burn_time
+        // @attribute <LocationTag.furnace_burn_duration>
+        // @returns DurationTag
+        // @mechanism LocationTag.furnace_burn_duration
         // @description
         // Returns the burn time a furnace has left.
         // -->
+        registerTag("furnace_burn_duration", (attribute, object) -> {
+            return new DurationTag((long) ((Furnace) object.getBlockStateForTag(attribute)).getBurnTime());
+        });
         registerTag("furnace_burn_time", (attribute, object) -> {
+            Deprecations.furnaceTimeTags.warn(attribute.context);
             return new ElementTag(((Furnace) object.getBlockStateForTag(attribute)).getBurnTime());
         });
 
         // <--[tag]
-        // @attribute <LocationTag.furnace_cook_time>
-        // @returns ElementTag(Number)
-        // @mechanism LocationTag.furnace_cook_time
+        // @attribute <LocationTag.furnace_burn_duration>
+        // @returns DurationTag
+        // @mechanism LocationTag.furnace_burn_duration
         // @description
         // Returns the cook time a furnace has been cooking its current item for.
         // -->
+        registerTag("furnace_burn_duration", (attribute, object) -> {
+            return new DurationTag((long) ((Furnace) object.getBlockStateForTag(attribute)).getCookTime());
+        });
         registerTag("furnace_cook_time", (attribute, object) -> {
+            Deprecations.furnaceTimeTags.warn(attribute.context);
             return new ElementTag(((Furnace) object.getBlockStateForTag(attribute)).getCookTime());
         });
 
         // <--[tag]
-        // @attribute <LocationTag.furnace_cook_time_total>
-        // @returns ElementTag(Number)
-        // @mechanism LocationTag.furnace_cook_time_total
+        // @attribute <LocationTag.furnace_cook_duration_total>
+        // @returns DurationTag
+        // @mechanism LocationTag.furnace_cook_duration_total
         // @description
         // Returns the total cook time a furnace has left.
         // -->
+        registerTag("furnace_cook_duration_total", (attribute, object) -> {
+            return new DurationTag((long) ((Furnace) object.getBlockStateForTag(attribute)).getCookTimeTotal());
+        });
         registerTag("furnace_cook_time_total", (attribute, object) -> {
+            Deprecations.furnaceTimeTags.warn(attribute.context);
             return new ElementTag(((Furnace) object.getBlockStateForTag(attribute)).getCookTimeTotal());
         });
 
@@ -3442,14 +3454,22 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
         // <--[mechanism]
         // @object LocationTag
-        // @name furnace_burn_time
-        // @input ElementTag(Number)
+        // @name furnace_burn_duration
+        // @input DurationTag
         // @description
-        // Sets the burn time for a furnace in ticks. Maximum is 32767.
+        // Sets the burn time for a furnace in ticks. Maximum is 32767 ticks.
         // @tags
-        // <LocationTag.furnace_burn_time>
+        // <LocationTag.furnace_burn_duration>
         // -->
+        if (mechanism.matches("furnace_burn_duration") && mechanism.requireObject(DurationTag.class)) {
+            if (getBlockState() instanceof Furnace) {
+                Furnace furnace = (Furnace) getBlockState();
+                furnace.setBurnTime((short) mechanism.valueAsType(DurationTag.class).getTicks());
+                furnace.update();
+            }
+        }
         if (mechanism.matches("furnace_burn_time")) {
+            Deprecations.furnaceTimeTags.warn(mechanism.context);
             if (getBlockState() instanceof Furnace) {
                 Furnace furnace = (Furnace) getBlockState();
                 furnace.setBurnTime((short) mechanism.getValue().asInt());
@@ -3459,14 +3479,22 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
         // <--[mechanism]
         // @object LocationTag
-        // @name furnace_cook_time
-        // @input ElementTag(Number)
+        // @name furnace_cook_duration
+        // @input DurationTag
         // @description
-        // Sets the current cook time for a furnace in ticks. Maximum is 32767.
+        // Sets the current cook time for a furnace in ticks. Maximum is 32767 ticks.
         // @tags
-        // <LocationTag.furnace_cook_time>
+        // <LocationTag.furnace_burn_duration>
         // -->
+        if (mechanism.matches("furnace_cook_duration")) {
+            if (getBlockState() instanceof Furnace) {
+                Furnace furnace = (Furnace) getBlockState();
+                furnace.setCookTime((short) mechanism.valueAsType(DurationTag.class).getTicks());
+                furnace.update();
+            }
+        }
         if (mechanism.matches("furnace_cook_time")) {
+            Deprecations.furnaceTimeTags.warn(mechanism.context);
             if (getBlockState() instanceof Furnace) {
                 Furnace furnace = (Furnace) getBlockState();
                 furnace.setCookTime((short) mechanism.getValue().asInt());
@@ -3476,14 +3504,22 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
         // <--[mechanism]
         // @object LocationTag
-        // @name furnace_cook_time_total
-        // @input ElementTag(Number)
+        // @name furnace_cook_duration_total
+        // @input DurationTag
         // @description
-        // Sets the total cook time for a furnace in ticks. Maximum is 32767.
+        // Sets the total cook time for a furnace in ticks. Maximum is 32767 ticks.
         // @tags
-        // <LocationTag.furnace_cook_time_total>
+        // <LocationTag.furnace_cook_duration_total>
         // -->
+        if (mechanism.matches("furnace_cook_duration_total")) {
+            if (getBlockState() instanceof Furnace) {
+                Furnace furnace = (Furnace) getBlockState();
+                furnace.setCookTimeTotal((short) mechanism.valueAsType(DurationTag.class).getTicks());
+                furnace.update();
+            }
+        }
         if (mechanism.matches("furnace_cook_time_total")) {
+            Deprecations.furnaceTimeTags.warn(mechanism.context);
             if (getBlockState() instanceof Furnace) {
                 Furnace furnace = (Furnace) getBlockState();
                 furnace.setCookTimeTotal((short) mechanism.getValue().asInt());

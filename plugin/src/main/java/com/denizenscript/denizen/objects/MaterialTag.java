@@ -703,31 +703,6 @@ public class MaterialTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <MaterialTag.is_made_of[<material>]>
-        // @returns ElementTag(Boolean)
-        // @description
-        // Returns true if the material is a variety of the specified material.
-        // Example: <m@red_wool.is_made_of[m@wool]> will return true.
-        // Invalid for 1.13+ servers.
-        // -->
-        registerTag("is_made_of", (attribute, object) -> {
-            MaterialTag compared = attribute.contextAsType(1, MaterialTag.class);
-            return new ElementTag(compared != null && object.material == compared.getMaterial());
-        });
-
-        // <--[tag]
-        // @attribute <MaterialTag.bukkit_enum>
-        // @returns ElementTag
-        // @description
-        // Returns the bukkit Material enum value. For example: <m@birch_sapling.bukkit_enum>
-        // will return 'sapling'
-        // Unneeded for 1.13+ servers.
-        // -->
-        registerTag("bukkit_enum", (attribute, object) -> {
-            return new ElementTag(object.material.name());
-        });
-
-        // <--[tag]
         // @attribute <MaterialTag.translated_name>
         // @returns ElementTag
         // @description
@@ -751,24 +726,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // Returns the name of the material.
         // -->
         registerTag("name", (attribute, object) -> {
-            return new ElementTag(object.forcedIdentity != null ? object.forcedIdentityLow :
-                    CoreUtilities.toLowerCase(object.material.name()));
-        });
-
-        // <--[tag]
-        // @attribute <MaterialTag.full>
-        // @returns ElementTag
-        // @description
-        // Returns the material's full identification.
-        // Irrelevant on modern (1.13+) servers.
-        // -->
-        registerTag("full", (attribute, object) -> {
-            if (object.hasData()) {
-                return new ElementTag(object.identifyFull());
-            }
-            else {
-                return new ElementTag(object.identify());
-            }
+            return new ElementTag(object.forcedIdentity != null ? object.forcedIdentityLow : CoreUtilities.toLowerCase(object.material.name()));
         });
 
         // <--[tag]

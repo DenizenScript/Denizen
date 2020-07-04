@@ -14,6 +14,7 @@ import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
@@ -1501,14 +1502,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             return new ElementTag(notname);
         });
 
-        // <--[tag]
-        // @attribute <CuboidTag.full>
-        // @returns ElementTag
-        // @group conversion
-        // @description
-        // Returns a full reusable identification for this cuboid, without applying the notable name or other special-case formats.
-        // -->
         registerTag("full", (attribute, cuboid) -> {
+            Deprecations.cuboidFullTag.warn(attribute.context);
             return new ElementTag(cuboid.identifyFull());
         });
     }
