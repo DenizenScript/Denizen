@@ -1567,7 +1567,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             }
             RayTraceResult traced = object.getWorld().rayTraceBlocks(object.getEyeLocation(), object.getEyeLocation().getDirection(), range);
             if (traced != null && traced.getHitBlock() != null) {
-                return new LocationTag(traced.getHitBlock().getWorld(), traced.getHitPosition());
+                return new LocationTag(traced.getHitBlock().getLocation());
             }
             return null;
         });

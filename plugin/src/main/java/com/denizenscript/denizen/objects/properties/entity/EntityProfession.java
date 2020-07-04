@@ -18,7 +18,6 @@ public class EntityProfession implements Property {
             return false;
         }
         return ((EntityTag) entity).getBukkitEntityType() == EntityType.VILLAGER
-                || ((EntityTag) entity).getBukkitEntityType() == EntityType.ZOMBIE
                 || ((EntityTag) entity).getBukkitEntityType() == EntityType.ZOMBIE_VILLAGER;
     }
 
@@ -102,7 +101,7 @@ public class EntityProfession implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name profession
-        // @input Element
+        // @input ElementTag
         // @description
         // Changes the entity's profession.
         // Currently, only Villager-type entities can have professions.
