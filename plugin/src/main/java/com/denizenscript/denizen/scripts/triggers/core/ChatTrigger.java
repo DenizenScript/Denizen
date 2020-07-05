@@ -182,8 +182,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
         // If engaged or not cool, calls On Unavailable, if cool, calls On Chat
         // If available (not engaged, and cool) sets cool down and returns true.
-        TriggerTrait.TriggerContext trigger = npc.getTriggerTrait()
-                .trigger(ChatTrigger.this, denizenPlayer, context);
+        TriggerTrait.TriggerContext trigger = npc.getTriggerTrait().trigger(ChatTrigger.this, denizenPlayer, context);
 
         // Return false if determine cancelled
         if (trigger.hasDetermination()) {

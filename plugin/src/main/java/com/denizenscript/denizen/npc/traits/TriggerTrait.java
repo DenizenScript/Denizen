@@ -13,8 +13,10 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import net.citizensnpcs.api.command.exception.CommandException;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
+import net.citizensnpcs.api.util.DataKey;
 import net.citizensnpcs.api.util.Paginator;
 import net.citizensnpcs.util.Messages;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 
@@ -26,6 +28,8 @@ public class TriggerTrait extends Trait implements Listener {
 
     @Persist(value = "enabled", collectionType = HashMap.class)
     private Map<String, Boolean> enabled = new HashMap<>();
+    @Persist(value = "properly_set", collectionType = HashMap.class)
+    public Map<String, Boolean> properly_set = new HashMap<>();
     @Persist(value = "duration", collectionType = HashMap.class)
     private Map<String, Double> duration = new HashMap<>();
     @Persist(value = "cooldowntype", collectionType = HashMap.class)
@@ -42,6 +46,21 @@ public class TriggerTrait extends Trait implements Listener {
 
     public TriggerTrait() {
         super("triggers");
+        for (Map.Entry<String, Boolean> entry : enabled.entrySet()) {
+            if (!properly_set.containsKey(entry.getKey())) {
+                properly_set.put(entry.getKey(), entry.getValue());
+            }
+        }
+        for (String triggerName : DenizenAPI.getCurrentInstance().getTriggerRegistry().list().keySet()) {
+            if (!enabled.containsKey(triggerName)) {
+                enabled.put(triggerName, Settings.triggerEnabled(triggerName));
+                properly_set.put(triggerName, false);
+            }
+        }
+    }
+
+    @Override
+    public void onSpawn() {
         for (String triggerName : DenizenAPI.getCurrentInstance().getTriggerRegistry().list().keySet()) {
             if (!enabled.containsKey(triggerName)) {
                 enabled.put(triggerName, Settings.triggerEnabled(triggerName));
@@ -49,10 +68,11 @@ public class TriggerTrait extends Trait implements Listener {
         }
     }
 
-    public void onSpawn() {
-        for (String triggerName : DenizenAPI.getCurrentInstance().getTriggerRegistry().list().keySet()) {
-            if (!enabled.containsKey(triggerName)) {
-                enabled.put(triggerName, Settings.triggerEnabled(triggerName));
+    @Override
+    public void load(DataKey key) {
+        if (!key.keyExists("properly_set") && key.keyExists("enabled")) {
+            for (final String triggerName : DenizenAPI.getCurrentInstance().getTriggerRegistry().list().keySet()) {
+                Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), () -> properly_set.put(triggerName, key.getBoolean("enabled." + triggerName)));
             }
         }
     }
@@ -67,6 +87,7 @@ public class TriggerTrait extends Trait implements Listener {
     public String toggleTrigger(String triggerName, boolean toggle) {
         if (enabled.containsKey(triggerName.toUpperCase())) {
             enabled.put(triggerName.toUpperCase(), toggle);
+            properly_set.put(triggerName.toUpperCase(), true);
             return triggerName + " trigger is now " + (toggle ? "enabled." : "disabled.");
         }
         else {
@@ -82,6 +103,7 @@ public class TriggerTrait extends Trait implements Listener {
             }
             else {
                 enabled.put(triggerName.toUpperCase(), true);
+                properly_set.put(triggerName.toUpperCase(), true);
                 return triggerName + " trigger is now enabled.";
             }
         }

@@ -3283,7 +3283,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @name show_book
         // @input ItemTag
         // @description
-        // Displays a book to a player.
+        // Displays a book to a player. Must be a WRITTEN_BOOK item.
         // -->
         if (mechanism.matches("show_book")
                 && mechanism.requireObject(ItemTag.class)) {

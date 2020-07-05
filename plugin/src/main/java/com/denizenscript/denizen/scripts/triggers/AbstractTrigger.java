@@ -15,6 +15,7 @@ import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
 import com.denizenscript.denizencore.scripts.queues.core.TimedQueue;
 import com.denizenscript.denizencore.utilities.debugging.Debug.DebugElement;
+import com.denizenscript.denizencore.utilities.debugging.SlowWarning;
 
 import java.util.*;
 
@@ -70,6 +71,8 @@ public abstract class AbstractTrigger {
         return parse(npc, player, script, id, null);
     }
 
+    public static SlowWarning missetWarning = new SlowWarning("Trigger '{NAME}' on NPC '{NPC}' activated and used but not properly set via the 'trigger' command in 'on assignment'.");
+
     public boolean parse(NPCTag npc, PlayerTag player, InteractScriptContainer script, String id, Map<String, ObjectTag> context) {
         if (npc == null || player == null || script == null) {
             return false;
@@ -103,6 +106,11 @@ public abstract class AbstractTrigger {
             OldEventManager.OldEventContextSource oecs = new OldEventManager.OldEventContextSource();
             oecs.contexts = context;
             queue.setContextSource(oecs);
+        }
+        if (!npc.getTriggerTrait().properly_set.get(name)) {
+            if (missetWarning.testShouldWarn()) {
+                Debug.echoError(missetWarning.message.replace("{NAME}", name).replace("{NPC}", npc.getId() + "/" + npc.getName()));
+            }
         }
         // Start it
         queue.start();
