@@ -256,4 +256,14 @@ public class ItemHelperImpl extends ItemHelper {
             inventory.setItem(slot, item);
         }
     }
+
+    @Override
+    public IntArrayTag convertUuidToNbt(UUID id) {
+        return new IntArrayTag(GameProfileSerializer.a(id).getInts());
+    }
+
+    @Override
+    public UUID convertNbtToUuid(IntArrayTag id) {
+        return GameProfileSerializer.a(new NBTTagIntArray(id.getValue()));
+    }
 }

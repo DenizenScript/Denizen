@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.interfaces;
 
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
+import com.denizenscript.denizen.nms.util.jnbt.IntArrayTag;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -14,6 +15,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
+import java.util.UUID;
 
 public abstract class ItemHelper {
 
@@ -61,5 +63,13 @@ public abstract class ItemHelper {
 
     public void setInventoryItem(Inventory inventory, ItemStack item, int slot) {
         inventory.setItem(slot, item);
+    }
+
+    public IntArrayTag convertUuidToNbt(UUID id) {
+        throw new UnsupportedOperationException();
+    }
+
+    public UUID convertNbtToUuid(IntArrayTag id) {
+        throw new UnsupportedOperationException();
     }
 }
