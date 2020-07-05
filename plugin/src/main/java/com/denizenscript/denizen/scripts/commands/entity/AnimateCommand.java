@@ -40,7 +40,7 @@ public class AnimateCommand extends AbstractCommand {
     // specify an entity and an animation.
     //
     // Player animations require a Player-type entity or NPC. Available player animations include:
-    // ARM_SWING, CRIT, HURT, and MAGIC_CRIT, SIT, SLEEP, SNEAK, STOP_SITTING, STOP_SLEEPING, STOP_SNEAKING,
+    // ARM_SWING, HURT, CRIT, MAGIC_CRIT, SIT, SLEEP, SNEAK, STOP_SITTING, STOP_SLEEPING, STOP_SNEAKING,
     // START_USE_MAINHAND_ITEM, START_USE_OFFHAND_ITEM, STOP_USE_ITEM, EAT_FOOD, ARM_SWING_OFFHAND
     //
     // All entities also have available Bukkit's entity effect list:

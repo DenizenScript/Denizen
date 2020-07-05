@@ -48,7 +48,7 @@ public class HealCommand extends AbstractCommand {
     // - heal 10
     //
     // @Usage
-    // Use to heal a player by the name of steve fully.
+    // Use to heal a defined player fully.
     // - heal <[someplayer]>
     // -->
 

@@ -36,7 +36,7 @@ public class AttackCommand extends AbstractCommand {
     // The attack command causes a mob entity to attack a target mob entity or player.
     //
     // This technically can be used on an NPC, but it will trigger the Citizens internal punching-pathfinder.
-    // This attack mode doesn't work well. If you want NPC combat, consider using Sentinel instead.
+    // This attack mode doesn't work well. If you want NPC combat, consider using Sentinel instead: <@link url https://github.com/mcmonkeyprojects/Sentinel/blob/master/README.md>.
     //
     // To cancel an attack, use the 'cancel' argument instead of specifying a target.
     //

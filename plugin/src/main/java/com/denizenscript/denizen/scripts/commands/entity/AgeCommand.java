@@ -31,11 +31,11 @@ public class AgeCommand extends AbstractCommand {
     // @Group entity
     //
     // @Description
-    // Some living entity types are 'ageable' which can affect an entities ability to breed, or whether they appear
-    // as a baby or an adult. Using the 'age' command allows modification of an entity's age. Specify an entity and
-    // either 'baby', 'adult', or an integer age to set the age of an entity. Using the 'lock' argument will
-    // keep the entity from increasing its age automatically. NPCs which use ageable entity types can also be
-    // specified.
+    // Some living entity types are 'ageable' which can affect an entities ability to breed, or whether they appear as a baby or an adult.
+    // Using the 'age' command allows modification of an entity's age.
+    // Specify an entity and either 'baby', 'adult', or an integer age to set the age of an entity.
+    // Using the 'lock' argument will keep the entity from increasing its age automatically.
+    // NPCs which use ageable entity types can also be specified.
     //
     // @Tags
     // <EntityTag.age>
