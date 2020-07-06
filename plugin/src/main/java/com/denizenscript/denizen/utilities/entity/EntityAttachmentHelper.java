@@ -53,10 +53,14 @@ public class EntityAttachmentHelper {
                         return;
                     }
                     if (syncServer) {
-                        attached.teleport(to.getLocation());
+                        Location goal = to.getLocation();
+                        if (positionalOffset != null) {
+                            goal = fixedForOffset(goal.toVector(), goal.getYaw(), goal.getPitch()).toLocation(goal.getWorld());
+                        }
+                        attached.teleport(goal);
                     }
                 }
-            }.runTaskTimer(DenizenAPI.getCurrentInstance(), 20, 20);
+            }.runTaskTimer(DenizenAPI.getCurrentInstance(), 1, 1);
         }
 
         public void removeFrom(PlayerAttachMap map) {
