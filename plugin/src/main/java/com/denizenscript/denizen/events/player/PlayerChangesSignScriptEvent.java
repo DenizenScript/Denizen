@@ -39,7 +39,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     // <context.material> returns the MaterialTag of the sign.
     //
     // @Determine
-    // ListTag to change the lines (Uses escaping, see <@link language Property Escaping>)
+    // ListTag to change the lines (Uses escaping, see <@link language Property Escaping>).
     //
     // @Player Always.
     //

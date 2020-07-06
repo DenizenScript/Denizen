@@ -75,8 +75,7 @@ public class ChunkHelperImpl implements ChunkHelper {
         PacketPlayOutMapChunk lowPacket = new PacketPlayOutMapChunk(((CraftChunk) chunk).getHandle(), 255, false); // 00000000 11111111
         PacketPlayOutMapChunk highPacket = new PacketPlayOutMapChunk(((CraftChunk) chunk).getHandle(), 65280, false); // 11111111 00000000
         ChunkCoordIntPair pos = new ChunkCoordIntPair(chunk.getX(), chunk.getZ());
-        PlayerChunk playerChunk = ((CraftWorld) chunk.getWorld()).getHandle().getChunkProvider()
-                .playerChunkMap.visibleChunks.get(pos.pair());
+        PlayerChunk playerChunk = ((CraftWorld) chunk.getWorld()).getHandle().getChunkProvider().playerChunkMap.visibleChunks.get(pos.pair());
         if (playerChunk == null) {
             return;
         }

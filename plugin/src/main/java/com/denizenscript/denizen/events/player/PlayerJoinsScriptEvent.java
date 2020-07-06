@@ -55,7 +55,7 @@ public class PlayerJoinsScriptEvent extends BukkitScriptEvent implements Listene
         if (!runInCheck(path, event.getPlayer().getLocation())) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     @Override
