@@ -12,6 +12,7 @@ import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizencore.events.ScriptEvent;
+import net.citizensnpcs.util.NMS;
 
 public class ScriptEventRegistry {
 
@@ -64,6 +65,9 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new EntityHealsScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityInteractScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityKilledScriptEvent());
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
+            ScriptEvent.registerScriptEvent(new EntityPicksUpItemScriptEvent());
+        }
         ScriptEvent.registerScriptEvent(new EntityPotionEffectScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityResurrectScriptEvent());
         if (!Denizen.supportsPaper) {
@@ -141,7 +145,6 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new PlayerLoginScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerMendsItemScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerOpensInvScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerPicksUpScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerPlacesBlockScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerPlacesHangingScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerPreLoginScriptEvent());

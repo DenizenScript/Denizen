@@ -1,33 +1,30 @@
-package com.denizenscript.denizen.events.player;
+package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.objects.*;
+import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Listener {
+public class EntityPicksUpItemScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // player picks up item
-    // player picks up <item>
-    // player takes item
-    // player takes <item>
+    // entity picks up item
+    // entity picks up <item>
+    // <entity> picks up <item>
     //
-    // @Regex ^on player (picks up|takes) [^\s]+$
+    // @Regex ^on [^\s]+ picks up [^\s]+$
     //
     // @Group Player
     //
@@ -35,38 +32,45 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Cancellable true
     //
-    // @Triggers when a player picks up an item.
+    // @Triggers when an entity picks up an item.
     //
     // @Context
     // <context.item> returns the ItemTag.
-    // <context.entity> returns a EntityTag of the item.
+    // <context.entity> returns the EntityTag of the item being picked up.
+    // <context.swiffer_the_quicker_pickup_upper> returns the EntityTag of the entity picking up the item.
     // <context.location> returns a LocationTag of the item's location.
     //
     // @Determine
     // "ITEM:" + ItemTag to changed the item being picked up.
     //
-    // @Player Always.
+    // @Player when the entity picking up the item is a player.
+    //
+    // @NPC when the entity picking up the item is an npc.
     //
     // -->
 
-    public PlayerPicksUpScriptEvent() {
+    public EntityPicksUpItemScriptEvent() {
         instance = this;
     }
 
-    public static PlayerPicksUpScriptEvent instance;
+    public static EntityPicksUpItemScriptEvent instance;
     public ItemTag item;
+    public EntityTag entity;
     public LocationTag location;
-    public PlayerPickupItemEvent event;
+    public EntityPickupItemEvent event;
 
     private static final Set<UUID> editedItems = new HashSet<>();
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        boolean isUp = path.eventLower.startsWith("player picks up");
-        if (!isUp && !path.eventLower.startsWith("player takes")) {
+        boolean isUp = path.eventLower.contains("picks up");
+        if (!isUp && !path.eventArgLowerAt(1).equals("takes")) {
             return false;
         }
         if (path.eventArgLowerAt(3).equals("from")) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
             return false;
         }
         if (!couldMatchItem(path.eventArgLowerAt(isUp ? 3 : 2))) {
@@ -77,9 +81,14 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean matches(ScriptPath path) {
-        String iTest = path.eventArgLowerAt(1).equals("picks") ?
-                path.eventArgLowerAt(3) : path.eventArgLowerAt(2);
-        if (!tryItem(item, iTest)) {
+        if (!couldMatch(path)) {
+            return false;
+        }
+        if (!tryEntity(entity, path.eventArgAt(0))) {
+            return false;
+        }
+        String itemTest = path.eventArgLowerAt(path.eventArgLowerAt(1).equals("picks") ? 3 : 2);
+        if (!tryItem(item, itemTest)) {
             return false;
         }
         if (!runInCheck(path, location)) {
@@ -90,7 +99,7 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public String getName() {
-        return "PlayerPicksUp";
+        return "EntityPicksUpItem";
     }
 
     @Override
@@ -109,7 +118,8 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(new PlayerTag(event.getPlayer()), null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? entity.getDenizenPlayer() : null,
+                entity.isNPC() ? entity.getDenizenNPC() : null);
     }
 
     @Override
@@ -120,6 +130,9 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
         else if (name.equals("entity")) {
             return new EntityTag(event.getItem());
         }
+        else if (name.equals("swiffer_the_quicker_pickup_upper")) {
+            return entity;
+        }
         else if (name.equals("location")) {
             return location;
         }
@@ -127,10 +140,8 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @EventHandler
-    public void onPlayerPicksUp(PlayerPickupItemEvent event) {
-        if (EntityTag.isNPC(event.getPlayer())) {
-            return;
-        }
+    public void onEntityPicksUpItem(EntityPickupItemEvent event) {
+        entity = new EntityTag(event.getEntity());
         Item itemEntity = event.getItem();
         UUID itemUUID = itemEntity.getUniqueId();
         if (editedItems.contains(itemUUID)) {
