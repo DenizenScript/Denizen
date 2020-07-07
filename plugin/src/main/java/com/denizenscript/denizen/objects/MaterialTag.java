@@ -130,8 +130,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
     @Override
     public boolean equals(Object object) {
         if (object instanceof MaterialTag) {
-            return getMaterial() == ((MaterialTag) object).getMaterial()
-                    && getData((byte) 0) == ((MaterialTag) object).getData((byte) 0);
+            return getMaterial() == ((MaterialTag) object).getMaterial();
         }
         else {
             MaterialTag parsed = valueOf(object.toString(), CoreUtilities.noDebugContext);
@@ -147,24 +146,11 @@ public class MaterialTag implements ObjectTag, Adjustable {
     //   Constructors
     /////////////
 
-    /**
-     * Legacy material format. Do not use.
-     */
-    public MaterialTag(Material material, int data) {
+    public MaterialTag(Material material) {
         this.material = material;
-        if (data < 0) {
-            this.data = null;
-        }
-        else {
-            this.data = (byte) data;
-        }
         if (material.isBlock()) {
             modernData = new ModernBlockData(material);
         }
-    }
-
-    public MaterialTag(Material material) {
-        this(material, 0);
     }
 
     public MaterialTag(BlockState state) {
@@ -187,7 +173,6 @@ public class MaterialTag implements ObjectTag, Adjustable {
     /////////////////
 
     private Material material;
-    private Byte data = 0;
     private ModernBlockData modernData;
 
     public boolean hasModernData() {
@@ -208,27 +193,6 @@ public class MaterialTag implements ObjectTag, Adjustable {
 
     public String name() {
         return material.name();
-    }
-
-    public byte getData(byte fallback) {
-        if (data == null) {
-            return fallback;
-        }
-        else {
-            return data;
-        }
-    }
-
-    public Byte getData() {
-        return data;
-    }
-
-    public boolean hasData() {
-        return data != null;
-    }
-
-    public MaterialData getMaterialData() {
-        return new MaterialData(material, data != null ? data : 0);
     }
 
     public boolean isStructure() {
@@ -292,7 +256,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
 
     public String identifyFullNoIdentifier() {
         if (forcedIdentity != null) {
-            return forcedIdentityLow + (getData() != null ? "," + getData() : "");
+            return forcedIdentityLow;
         }
         return CoreUtilities.toLowerCase(material.name()) + PropertyParser.getPropertiesString(this);
     }

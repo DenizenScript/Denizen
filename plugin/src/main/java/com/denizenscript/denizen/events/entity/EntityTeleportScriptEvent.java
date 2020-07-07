@@ -74,19 +74,15 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean matches(ScriptPath path) {
-
         if (!tryEntity(entity, path.eventArgLowerAt(0))) {
             return false;
         }
-
         if (!runGenericSwitchCheck(path, "cause", cause)) {
             return false;
         }
-
         if (!runInCheck(path, from)) {
             return false;
         }
-
         return super.matches(path);
     }
 

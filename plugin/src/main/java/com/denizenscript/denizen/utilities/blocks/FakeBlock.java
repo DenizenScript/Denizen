@@ -134,14 +134,9 @@ public class FakeBlock {
         if (!player.hasChunkLoaded(location.getChunk())) {
             return;
         }
-        if (material.hasModernData()) {
-            material.getModernData().sendFakeChangeTo(player.getPlayerEntity(), location);
-            if (material.getMaterial().name().endsWith("_BANNER")) { // Banners are weird
-                location.getWorld().refreshChunk(chunkCoord.x, chunkCoord.z);
-            }
-        }
-        else {
-            player.getPlayerEntity().sendBlockChange(location, material.getMaterial(), material.getMaterialData().getData());
+        material.getModernData().sendFakeChangeTo(player.getPlayerEntity(), location);
+        if (material.getMaterial().name().endsWith("_BANNER")) { // Banners are weird
+            location.getWorld().refreshChunk(chunkCoord.x, chunkCoord.z);
         }
         if (duration != null && duration.getTicks() > 0) {
             currentTask = new BukkitRunnable() {

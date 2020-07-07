@@ -39,7 +39,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     // <context.material> returns the MaterialTag of the sign.
     //
     // @Determine
-    // ListTag to change the lines (Uses escaping, see <@link language Property Escaping>).
+    // ListTag to change the lines.
     //
     // @Player Always.
     //
@@ -92,7 +92,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
         if (determination.length() > 0 && !isDefaultDetermination(determinationObj)) {
             ListTag new_text = ListTag.valueOf(determination, getTagContext(path));
             for (int i = 0; i < 4 && i < new_text.size(); i++) {
-                event.setLine(i, EscapeTagBase.unEscape(new_text.get(i)));
+                event.setLine(i, new_text.get(i));
             }
             return true;
         }
