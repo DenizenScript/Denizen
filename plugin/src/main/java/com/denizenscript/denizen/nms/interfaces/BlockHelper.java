@@ -53,6 +53,18 @@ public interface BlockHelper {
         throw new UnsupportedOperationException();
     }
 
+    static String getMaterialNameFromBlockData(String text) {
+        int openBracket = text.indexOf('[');
+        String material = text;
+        if (openBracket > 0) {
+            material = text.substring(0, openBracket);
+        }
+        if (material.startsWith("minecraft:")) {
+            material = material.substring("minecraft:".length());
+        }
+        return material;
+    }
+
     default ModernBlockData parseBlockData(String text) {
         int openBracket = text.indexOf('[');
         String material = text;

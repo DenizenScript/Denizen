@@ -1,8 +1,12 @@
 package com.denizenscript.denizen.utilities.blocks;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.nms.util.jnbt.*;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.Material;
 import org.bukkit.util.BlockVector;
 
 import java.io.ByteArrayOutputStream;
@@ -56,7 +60,15 @@ public class SpongeSchematicHelper {
             HashMap<Integer, ModernBlockData> palette = new HashMap<>(256);
             for (String key : paletteMap.keySet()) {
                 int id = getChildTag(paletteMap, key, IntTag.class).getValue();
-                ModernBlockData data = NMSHandler.getBlockHelper().parseBlockData(key);
+                ModernBlockData data;
+                try {
+                    data = NMSHandler.getBlockHelper().parseBlockData(key);
+                }
+                catch (Exception ex) {
+                    Debug.echoError(ex);
+                    MaterialTag material = MaterialTag.valueOf(BlockHelper.getMaterialNameFromBlockData(key), CoreUtilities.noDebugContext);
+                    data = (material == null ? new MaterialTag(Material.AIR) : material).getModernData();
+                }
                 palette.put(id, data);
             }
             Map<BlockVector, Map<String, Tag>> tileEntitiesMap = new HashMap<>();
