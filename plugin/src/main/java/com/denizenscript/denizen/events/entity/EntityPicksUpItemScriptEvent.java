@@ -23,6 +23,11 @@ public class EntityPicksUpItemScriptEvent extends BukkitScriptEvent implements L
     // entity picks up item
     // entity picks up <item>
     // <entity> picks up <item>
+    // <entity> picks up item
+    // entity takes item
+    // entity takes <item>
+    // <entity> takes item
+    // <entity> takes <item>
     //
     // @Regex ^on [^\s]+ picks up [^\s]+$
     //
@@ -37,7 +42,7 @@ public class EntityPicksUpItemScriptEvent extends BukkitScriptEvent implements L
     // @Context
     // <context.item> returns the ItemTag.
     // <context.entity> returns the EntityTag of the item being picked up.
-    // <context.swiffer_the_quicker_pickup_upper> returns the EntityTag of the entity picking up the item.
+    // <context.pickup_entity> returns the EntityTag of the entity picking up the item.
     // <context.location> returns a LocationTag of the item's location.
     //
     // @Determine
@@ -130,7 +135,7 @@ public class EntityPicksUpItemScriptEvent extends BukkitScriptEvent implements L
         else if (name.equals("entity")) {
             return new EntityTag(event.getItem());
         }
-        else if (name.equals("swiffer_the_quicker_pickup_upper")) {
+        else if (name.equals("pickup_entity")) {
             return entity;
         }
         else if (name.equals("location")) {

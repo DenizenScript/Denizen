@@ -85,7 +85,7 @@ public class MaterialCount implements Property {
         // <--[tag]
         // @attribute <MaterialTag.hatch_count>
         // @returns ElementTag(Number)
-        // @mechanism MaterialTag.count
+        // @mechanism MaterialTag.hatch_count
         // @group properties
         // @description
         // Returns the amount of eggs that will hatch from a Turtle Egg material.
@@ -98,9 +98,9 @@ public class MaterialCount implements Property {
         });
 
         // <--[tag]
-        // @attribute <MaterialTag.hatch_max>
+        // @attribute <MaterialTag.hatch_count_max>
         // @returns ElementTag(Number)
-        // @mechanism MaterialTag.hatch_count_max
+        // @mechanism MaterialTag.hatch_count
         // @group properties
         // @description
         // Returns the maximum amount of eggs that will hatch from a Turtle Egg material.
@@ -216,7 +216,7 @@ public class MaterialCount implements Property {
 
         // <--[mechanism]
         // @object MaterialTag
-        // @name count
+        // @name hatch_count
         // @input ElementTag(Number)
         // @description
         // Sets the amount of eggs that will hatch from a Turtle Egg material.
