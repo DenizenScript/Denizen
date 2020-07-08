@@ -86,9 +86,6 @@ public class EntityPicksUpItemScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!couldMatch(path)) {
-            return false;
-        }
         if (!tryEntity(entity, path.eventArgAt(0))) {
             return false;
         }
