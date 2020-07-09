@@ -36,6 +36,7 @@ public class EntityColor implements Property {
                 type == EntityType.SHULKER ||
                 type == EntityType.MUSHROOM_COW ||
                 (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.CAT) ||
+                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.FOX) ||
                 (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.PANDA) ||
                 (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.ARROW) ||
                 type == EntityType.TROPICAL_FISH;
