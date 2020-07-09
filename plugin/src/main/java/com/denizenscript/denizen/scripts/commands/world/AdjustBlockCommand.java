@@ -120,7 +120,7 @@ public class AdjustBlockCommand extends AbstractCommand {
                 NMSHandler.getBlockHelper().applyPhysics(location.clone().add(0, -1, 0));
             }
             else {
-                ModifyBlockCommand.setBlock(block.getLocation(), specialMaterial, false, false);
+                ModifyBlockCommand.setBlock(block.getLocation(), specialMaterial, false, null);
             }
         }
     }
