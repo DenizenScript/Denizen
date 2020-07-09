@@ -334,7 +334,6 @@ public class NPCCommandHandler {
             Messaging.sendInfo(sender, "Nickname removed.");
             return;
         }
-
         if (trait.hasNickname()) {
             Messaging.sendInfo(sender, npc.getName() + "'s nickname is '" + trait.getNickname() + "'.");
         }
@@ -356,12 +355,10 @@ public class NPCCommandHandler {
             Messaging.sendError(sender, npc.getName() + " needs to be a Player type NPC to sit!");
             return;
         }
-
         if (!npc.hasTrait(SittingTrait.class)) {
             npc.addTrait(SittingTrait.class);
         }
         SittingTrait trait = npc.getTrait(SittingTrait.class);
-
         if (args.hasFlag('c')) {
             trait.sit(args.getSenderTargetBlockLocation());
         }
@@ -386,6 +383,10 @@ public class NPCCommandHandler {
             return;
         }
         else {
+            if (trait.isSitting()) {
+                Messaging.send(sender, npc.getName() + " is already sitting, use '/npc stand' to stand the NPC back up.");
+                return;
+            }
             trait.sit();
         }
         Messaging.send(sender, npc.getName() + " is now sitting.");
