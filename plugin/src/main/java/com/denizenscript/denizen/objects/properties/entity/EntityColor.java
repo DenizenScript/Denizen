@@ -258,7 +258,7 @@ public class EntityColor implements Property {
                 PandaHelper.setColor(colored, mechanism.getValue().asString());
             }
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.VILLAGER) {
-                ((Villager) colored.getBukkitEntity()).setVillagerType(Villager.Type.valueOf(mechanism.getValue().asString()));
+                ((Villager) colored.getBukkitEntity()).setVillagerType(Villager.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.ARROW) {
                 ((Arrow) colored.getBukkitEntity()).setColor(mechanism.valueAsType(ColorTag.class).getColor());
