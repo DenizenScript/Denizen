@@ -7,10 +7,12 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Material;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
+import org.bukkit.inventory.ItemStack;
 
 public class EntityItem implements Property {
 
@@ -109,14 +111,18 @@ public class EntityItem implements Property {
         // <EntityTag.item>
         // -->
         if (mechanism.matches("item") && mechanism.requireObject(ItemTag.class)) {
+            ItemStack itemStack = mechanism.valueAsType(ItemTag.class).getItemStack();
+            if (item.isCitizensNPC()) {
+                item.getDenizenNPC().getCitizen().data().setPersistent(NPC.ITEM_ID_METADATA, itemStack.getType().name());
+            }
             if (item.getBukkitEntity() instanceof Item) {
-                ((Item) item.getBukkitEntity()).setItemStack(mechanism.valueAsType(ItemTag.class).getItemStack());
+                ((Item) item.getBukkitEntity()).setItemStack(itemStack);
             }
             else if (item.getBukkitEntityType() == EntityType.TRIDENT) {
-                NMSHandler.getEntityHelper().setItemForTrident(item.getBukkitEntity(), mechanism.valueAsType(ItemTag.class).getItemStack());
+                NMSHandler.getEntityHelper().setItemForTrident(item.getBukkitEntity(), itemStack);
             }
             else {
-                NMSHandler.getEntityHelper().setCarriedItem((Enderman) item.getBukkitEntity(), mechanism.valueAsType(ItemTag.class).getItemStack());
+                NMSHandler.getEntityHelper().setCarriedItem((Enderman) item.getBukkitEntity(), itemStack);
             }
         }
     }
