@@ -141,7 +141,7 @@ public class CreateCommand extends AbstractCommand {
             }
         }
         for (Mechanism mechanism : type.getWaitingMechanisms()) {
-            created.adjust(mechanism);
+            created.safeAdjust(mechanism);
         }
     }
 }

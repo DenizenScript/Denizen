@@ -39,6 +39,7 @@ public class EntityColor implements Property {
                 (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.FOX) ||
                 (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.PANDA) ||
                 (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.ARROW) ||
+                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.VILLAGER) ||
                 type == EntityType.TROPICAL_FISH;
     }
 
@@ -109,6 +110,9 @@ public class EntityColor implements Property {
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.PANDA) {
             return PandaHelper.getColor(colored);
         }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.VILLAGER) {
+            return ((Villager) colored.getBukkitEntity()).getVillagerType().name();
+        }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.ARROW) {
             try {
                 return new ColorTag(((Arrow) colored.getBukkitEntity()).getColor()).identify();
@@ -153,6 +157,7 @@ public class EntityColor implements Property {
     // For foxes, the types are RED and SNOW.
     // For pandas, the format is MAIN_GENE|HIDDEN_GENE.
     //          The gene types are NORMAL, LAZY, WORRIED, PLAYFUL, BROWN, WEAK, and AGGRESSIVE.
+    // For villagers, the types are DESERT, JUNGLE, PLAINS, SAVANNA, SNOW, SWAMP, and TAIGA.
     // For tropical_fish, the input is PATTERN|BODYCOLOR|PATTERNCOLOR, where BodyColor and PatterenColor are both DyeColor (see below),
     //          and PATTERN is KOB, SUNSTREAK, SNOOPER, DASHER, BRINELY, SPOTTY, FLOPPER, STRIPEY, GLITTER, BLOCKFISH, BETTY, is CLAYFISH.
     // For sheep, wolf, and shulker entities, the input is a Dye Color.
@@ -251,6 +256,9 @@ public class EntityColor implements Property {
             }
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.PANDA) {
                 PandaHelper.setColor(colored, mechanism.getValue().asString());
+            }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.VILLAGER) {
+                ((Villager) colored.getBukkitEntity()).setVillagerType(Villager.Type.valueOf(mechanism.getValue().asString()));
             }
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.ARROW) {
                 ((Arrow) colored.getBukkitEntity()).setColor(mechanism.valueAsType(ColorTag.class).getColor());
