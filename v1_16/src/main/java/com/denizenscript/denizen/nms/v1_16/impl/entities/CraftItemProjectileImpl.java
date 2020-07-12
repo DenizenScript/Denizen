@@ -1,15 +1,14 @@
 package com.denizenscript.denizen.nms.v1_16.impl.entities;
-/*
+
 import com.denizenscript.denizen.nms.interfaces.ItemProjectile;
 import org.bukkit.craftbukkit.v1_16_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_16_R1.entity.CraftHumanEntity;
-import org.bukkit.craftbukkit.v1_16_R1.entity.CraftItem;
-import org.bukkit.craftbukkit.v1_16_R1.entity.CraftLivingEntity;
-import org.bukkit.projectiles.ProjectileSource;*/
+import org.bukkit.craftbukkit.v1_16_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
+import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.projectiles.ProjectileSource;
 
-// TODO: 1.16
-
-public class CraftItemProjectileImpl {} /* extends CraftItem implements ItemProjectile {
+public class CraftItemProjectileImpl extends CraftEntity implements ItemProjectile {
 
     private boolean doesBounce;
 
@@ -24,7 +23,27 @@ public class CraftItemProjectileImpl {} /* extends CraftItem implements ItemProj
 
     @Override
     public String getEntityTypeName() {
-        return "ITEM_PROJECTILE";
+        return getType().name();
+    }
+
+    @Override
+    public ItemStack getItemStack() {
+        return CraftItemStack.asBukkitCopy(getHandle().getItemStack());
+    }
+
+    @Override
+    public void setItemStack(ItemStack itemStack) {
+        getHandle().setItemStack(CraftItemStack.asNMSCopy(itemStack));
+    }
+
+    @Override
+    public int getPickupDelay() {
+        return 0;
+    }
+
+    @Override
+    public void setPickupDelay(int i) {
+        // Do nothing
     }
 
     @Override
@@ -33,18 +52,13 @@ public class CraftItemProjectileImpl {} /* extends CraftItem implements ItemProj
     }
 
     @Override
-    public void setShooter(ProjectileSource shooter) {
-        if (shooter instanceof CraftLivingEntity) {
-            getHandle().shooter = ((CraftLivingEntity) shooter).getHandle();
-            if (shooter instanceof CraftHumanEntity) {
-                getHandle().shooterId = ((CraftHumanEntity) shooter).getUniqueId();
-            }
+    public void setShooter(ProjectileSource projectileSource) {
+        if (projectileSource instanceof CraftEntity) {
+            getHandle().setShooter(((CraftEntity) projectileSource).getHandle());
         }
         else {
-            getHandle().shooter = null;
-            getHandle().shooterId = null;
+            getHandle().projectileSource = projectileSource;
         }
-        getHandle().projectileSource = shooter;
     }
 
     @Override
@@ -56,5 +70,9 @@ public class CraftItemProjectileImpl {} /* extends CraftItem implements ItemProj
     public void setBounce(boolean doesBounce) {
         this.doesBounce = doesBounce;
     }
+
+    @Override
+    public EntityType getType() {
+        return EntityType.DROPPED_ITEM;
+    }
 }
-*/

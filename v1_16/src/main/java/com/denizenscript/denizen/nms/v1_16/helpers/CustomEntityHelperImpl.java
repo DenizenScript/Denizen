@@ -3,6 +3,7 @@ package com.denizenscript.denizen.nms.v1_16.helpers;
 import com.denizenscript.denizen.nms.v1_16.impl.entities.CraftFakePlayerImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.entities.EntityFakeArrowImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.entities.EntityFakePlayerImpl;
+import com.denizenscript.denizen.nms.v1_16.impl.entities.EntityItemProjectileImpl;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -18,6 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_16_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -38,13 +40,9 @@ public class CustomEntityHelperImpl implements CustomEntityHelper {
 
     @Override
     public ItemProjectile spawnItemProjectile(Location location, ItemStack itemStack) {
-        // TODO: 1.16
-        throw new UnsupportedOperationException();
-        /*
         CraftWorld world = (CraftWorld) location.getWorld();
-        EntityItemProjectileImpl entity = new EntityItemProjectileImpl(world, location, itemStack);
+        EntityItemProjectileImpl entity = new EntityItemProjectileImpl(world.getHandle(), location, CraftItemStack.asNMSCopy(itemStack));
         return entity.getBukkitEntity();
-        */
     }
 
     @Override
