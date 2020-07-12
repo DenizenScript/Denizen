@@ -165,7 +165,7 @@ public class SittingTrait extends Trait implements Listener {
      * @return boolean
      */
     public boolean isSitting() {
-        return true; // If the trait is attached, let's assume the NPC is sitting
+        return sitting;
     }
 
     /**
