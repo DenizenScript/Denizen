@@ -99,56 +99,28 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
 
     @Override
     public void setMaxHealth(double input) {
-        throw new UnsupportedOperationException(); // TODO: 1.16: Attribute logic changed!
-        /*
         AttributeMapBase attributes = getAttributes();
         AttributeModifiable maxHealth = attributes.a(GenericAttributes.MAX_HEALTH);
         if (maxHealth == null) {
-            maxHealth = attributes.b(GenericAttributes.MAX_HEALTH);
+            maxHealth = attributes.a(GenericAttributes.MAX_HEALTH);
         }
         maxHealth.setValue(input);
         setAttributes(attributes);
-        */
     }
 
     private AttributeMapBase getAttributes() {
-        throw new UnsupportedOperationException(); // TODO: 1.16: Attribute logic changed!
-        /*
-        AttributeMapBase amb = new AttributeMapServer();
-        initAttributes(amb);
-        GenericAttributes.a(amb, ((CompoundTagImpl) this.compound).toNMSTag().getList("Attributes", 10));
+        AttributeMapBase amb = new AttributeMapBase(AttributeDefaults.a(EntityTypes.PLAYER));
+        amb.a(((CompoundTagImpl) this.compound).toNMSTag().getList("Attributes", 10));
         return amb;
-        */
-    }
-
-    private void initAttributes(AttributeMapBase amb) {
-        throw new UnsupportedOperationException(); // TODO: 1.16: Attribute logic changed!
-        /*
-        // --v from EntityHuman superclass (EntityLiving) v--
-        amb.b(GenericAttributes.MAX_HEALTH);
-        amb.b(GenericAttributes.KNOCKBACK_RESISTANCE);
-        //this.getAttributeMap().b(GenericAttributes.MOVEMENT_SPEED); -- merged below to simplify code
-        amb.b(GenericAttributes.ARMOR);
-        amb.b(GenericAttributes.ARMOR_TOUGHNESS);
-        // --v from EntityHuman v--
-        amb.b(GenericAttributes.ATTACK_DAMAGE).setValue(1.0D);
-        //this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(0.10000000149011612D); -- merged below
-        amb.b(GenericAttributes.MOVEMENT_SPEED).setValue(0.10000000149011612D);
-        amb.b(GenericAttributes.ATTACK_SPEED);
-        amb.b(GenericAttributes.LUCK);
-        */
     }
 
     public void setAttributes(AttributeMapBase attributes) {
-        throw new UnsupportedOperationException(); // TODO: 1.16: Attribute logic changed!
-        /*
         NBTTagCompound nbtTagCompound = ((CompoundTagImpl) compound).toNMSTag();
-        nbtTagCompound.set("Attributes", GenericAttributes.a(attributes));
+        nbtTagCompound.set("Attributes", attributes.c());
         this.compound = CompoundTagImpl.fromNMSTag(nbtTagCompound);
         if (this.autosave) {
             savePlayerData();
         }
-        */
     }
 
     @Override
