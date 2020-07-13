@@ -11,10 +11,6 @@ commands:
     description: Lists denizen commands.
     usage: /denizen help
     permission: denizen.basic
-  notable:
-    description: Lists notable commands.
-    usage: /notable help
-    permission: denizen.notable
   ex:
     description: Executes a dScript command.
     usage: Use /ex in front of a normal script entry.
@@ -26,8 +22,6 @@ permissions:
     default: op
     children:
       denizen.basic: true
-      denizen.notable: true
-      denizen.notable.basic: true
       denizen.dscript: true
       denizen.ex: true
       denizen.debug: true
