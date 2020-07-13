@@ -59,6 +59,7 @@ public class RenameCommand extends AbstractCommand {
     // Optionally specify per_player to reprocess the input tags for each player when renaming a vanilla entity
     // (meaning, if you use "- rename <player.name> t:<[someent]> per_player", every player will see their own name on that entity).
     // A per_player rename will remain active until the entity is renamed again or the server is restarted.
+    // Rename to "cancel" per_player to intentionally end a per_player rename.
     //
     // @Tags
     // <NPCTag.name>
@@ -71,6 +72,12 @@ public class RenameCommand extends AbstractCommand {
     // @Usage
     // Use to rename a different NPC.
     // - rename Bob t:<[some_npc]>
+    //
+    // @Usage
+    // Use to make an entity show players their own name for 10 seconds.
+    // - rename <green><player.name> t:<[some_entity]> per_player
+    // - wait 10s
+    // - rename cancel t:<[some_entity]> per_player
     // -->
 
     @Override
@@ -116,13 +123,28 @@ public class RenameCommand extends AbstractCommand {
             for (ObjectTag target : targets.objectForms) {
                 EntityTag entity = target.asType(EntityTag.class, CoreUtilities.noDebugContext);
                 if (entity != null) {
-                    final BukkitTagContext originalContext = (BukkitTagContext) scriptEntry.context.clone();
-                    customNames.put(entity.getBukkitEntity().getEntityId(), p -> {
-                        originalContext.player = new PlayerTag(p);
-                        return TagManager.tag(name.asString(), originalContext);
-                    });
-                    for (Player player : NMSHandler.getEntityHelper().getPlayersThatSee(entity.getBukkitEntity())) {
-                        NMSHandler.getPacketHelper().sendRename(player, entity.getBukkitEntity(), "");
+                    Entity bukkitEntity = entity.getDenizenEntity().getBukkitEntity();
+                    if (name.asString().equals("cancel")) {
+                        customNames.remove(bukkitEntity.getEntityId());
+                        if (bukkitEntity.isCustomNameVisible()) {
+                            for (Player player : NMSHandler.getEntityHelper().getPlayersThatSee(bukkitEntity)) {
+                                NMSHandler.getPacketHelper().sendRename(player, bukkitEntity, bukkitEntity.getCustomName());
+                            }
+                        }
+                        else {
+                            bukkitEntity.setCustomNameVisible(true);
+                            bukkitEntity.setCustomNameVisible(false); // Force a metadata update
+                        }
+                    }
+                    else {
+                        final BukkitTagContext originalContext = (BukkitTagContext) scriptEntry.context.clone();
+                        customNames.put(bukkitEntity.getEntityId(), p -> {
+                            originalContext.player = new PlayerTag(p);
+                            return TagManager.tag(name.asString(), originalContext);
+                        });
+                        for (Player player : NMSHandler.getEntityHelper().getPlayersThatSee(bukkitEntity)) {
+                            NMSHandler.getPacketHelper().sendRename(player, bukkitEntity, "");
+                        }
                     }
                 }
             }
