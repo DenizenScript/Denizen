@@ -1,6 +1,10 @@
 package com.denizenscript.denizen.scripts.commands.npc;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.objects.EntityFormObject;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -10,9 +14,11 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 
 public class RenameCommand extends AbstractCommand {
 
@@ -35,6 +41,12 @@ public class RenameCommand extends AbstractCommand {
     // @Description
     // Renames the linked NPC or list of entities.
     // Functions like the '/npc rename' command.
+    //
+    // Can rename a spawned or unspawned NPC to any name up to 256 characters.
+    //
+    // Can rename a vanilla entity to any name up to 256 characters, and will automatically make the nameplate visible.
+    //
+    // Can rename a player to any name up to 16 characters. This will affect only the player's nameplate.
     //
     // @Tags
     // <NPCTag.name>
@@ -81,13 +93,35 @@ public class RenameCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), name.debug() + targets.debug());
         }
+        String nameString = name.asString().length() > 256 ? name.asString().substring(0, 256) : name.asString();
         for (ObjectTag target : targets.objectForms) {
-            NPC npc = target.asType(NPCTag.class, scriptEntry.context).getCitizen();
-            Location prev = npc.isSpawned() ? npc.getEntity().getLocation() : null;
-            npc.despawn(DespawnReason.PENDING_RESPAWN);
-            npc.setName(name.asString().length() > 128 ? name.asString().substring(0, 128) : name.asString());
-            if (prev != null) {
-                npc.spawn(prev);
+            EntityFormObject entity = target.asType(EntityTag.class, CoreUtilities.noDebugContext);
+            if (entity == null) {
+                entity = target.asType(NPCTag.class, scriptEntry.context);
+            }
+            else {
+                entity = ((EntityTag) entity).getDenizenObject();
+            }
+            if (entity instanceof NPCTag) {
+                NPC npc = ((NPCTag) entity).getCitizen();
+                if (npc.isSpawned()) {
+                    Location prev = npc.getEntity().getLocation();
+                    npc.despawn(DespawnReason.PENDING_RESPAWN);
+                    npc.setName(nameString);
+                    npc.spawn(prev);
+                }
+                else {
+                    npc.setName(nameString);
+                }
+            }
+            else if (entity instanceof PlayerTag) {
+                String limitedName = nameString.length() > 16 ? nameString.substring(0, 16) : nameString;
+                NMSHandler.getInstance().getProfileEditor().setPlayerName(((PlayerTag) entity).getPlayerEntity(), limitedName);
+            }
+            else {
+                Entity bukkitEntity = entity.getDenizenEntity().getBukkitEntity();
+                bukkitEntity.setCustomName(nameString);
+                bukkitEntity.setCustomNameVisible(true);
             }
         }
     }
