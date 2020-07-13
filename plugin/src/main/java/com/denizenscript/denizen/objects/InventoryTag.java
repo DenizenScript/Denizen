@@ -16,6 +16,7 @@ import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.Note;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
@@ -757,6 +758,32 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         else {
             return new ItemStack[0];
         }
+    }
+
+    public static void addToMapIfNonAir(MapTag map, String name, ItemStack item) {
+        if (item == null || item.getType() == Material.AIR) {
+            return;
+        }
+        map.putObject(name, new ItemTag(item));
+    }
+
+    public MapTag getEquipmentMap() {
+        MapTag output = new MapTag();
+        if (inventory instanceof PlayerInventory) {
+            ItemStack[] equipment = ((PlayerInventory) inventory).getArmorContents();
+            addToMapIfNonAir(output, "boots", equipment[0]);
+            addToMapIfNonAir(output, "leggings", equipment[1]);
+            addToMapIfNonAir(output, "chestplate", equipment[2]);
+            addToMapIfNonAir(output, "helmet", equipment[3]);
+        }
+        else if (inventory instanceof HorseInventory) {
+            addToMapIfNonAir(output, "saddle", ((HorseInventory) inventory).getSaddle());
+            addToMapIfNonAir(output, "armor", ((HorseInventory) inventory).getArmor());
+        }
+        else {
+            return null;
+        }
+        return output;
     }
 
     public ListTag getEquipment() {
@@ -2272,6 +2299,19 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // -->
         registerTag("inventory_type", (attribute, object) -> {
             return new ElementTag(object.inventory instanceof HorseInventory ? "HORSE" : object.getInventory().getType().name());
+        });
+
+        // <--[tag]
+        // @attribute <InventoryTag.equipment_map>
+        // @returns MapTag
+        // @description
+        // Returns a MapTag containing the inventory's equipment.
+        // Output keys for players are boots, leggings,  chestplate, helmet.
+        // Output keys for horses are saddle, armor.
+        // Air items will be left out of the map.
+        // -->
+        registerTag("equipment_map", (attribute, object) -> {
+            return object.getEquipmentMap();
         });
 
         // <--[tag]
