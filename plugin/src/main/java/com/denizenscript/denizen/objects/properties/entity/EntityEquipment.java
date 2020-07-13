@@ -1,12 +1,15 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
@@ -28,7 +31,7 @@ public class EntityEquipment implements Property {
     }
 
     public static final String[] handledTags = new String[] {
-            "equipment"
+            "equipment", "equipment_map"
     };
 
     public static final String[] handledMechs = new String[] {
@@ -58,14 +61,8 @@ public class EntityEquipment implements Property {
             return null;
         }
 
-        // <--[tag]
-        // @attribute <EntityTag.equipment.boots>
-        // @returns ItemTag
-        // @group inventory
-        // @description
-        // Returns the item the entity is wearing as boots.
-        // -->
         if (attribute.startsWith("equipment.boots")) {
+            Deprecations.entityEquipmentSubtags.warn(attribute.context);
             if (entity.getLivingEntity().getEquipment().getBoots() != null) {
                 return new ItemTag(entity.getLivingEntity().getEquipment().getBoots())
                         .getObjectAttribute(attribute.fulfill(2));
@@ -76,15 +73,9 @@ public class EntityEquipment implements Property {
             }
         }
 
-        // <--[tag]
-        // @attribute <EntityTag.equipment.chestplate>
-        // @returns ItemTag
-        // @group inventory
-        // @description
-        // Returns the item the entity is wearing as a chestplate.
-        // -->
         else if (attribute.startsWith("equipment.chestplate") ||
                 attribute.startsWith("equipment.chest")) {
+            Deprecations.entityEquipmentSubtags.warn(attribute.context);
             if (entity.getLivingEntity().getEquipment().getChestplate() != null) {
                 return new ItemTag(entity.getLivingEntity().getEquipment().getChestplate())
                         .getObjectAttribute(attribute.fulfill(2));
@@ -95,15 +86,9 @@ public class EntityEquipment implements Property {
             }
         }
 
-        // <--[tag]
-        // @attribute <EntityTag.equipment.helmet>
-        // @returns ItemTag
-        // @group inventory
-        // @description
-        // Returns the item the entity is wearing as a helmet.
-        // -->
         else if (attribute.startsWith("equipment.helmet") ||
                 attribute.startsWith("equipment.head")) {
+            Deprecations.entityEquipmentSubtags.warn(attribute.context);
             if (entity.getLivingEntity().getEquipment().getHelmet() != null) {
                 return new ItemTag(entity.getLivingEntity().getEquipment().getHelmet())
                         .getObjectAttribute(attribute.fulfill(2));
@@ -114,15 +99,9 @@ public class EntityEquipment implements Property {
             }
         }
 
-        // <--[tag]
-        // @attribute <EntityTag.equipment.leggings>
-        // @returns ItemTag
-        // @group inventory
-        // @description
-        // Returns the item the entity is wearing as leggings.
-        // -->
         else if (attribute.startsWith("equipment.leggings") ||
                 attribute.startsWith("equipment.legs")) {
+            Deprecations.entityEquipmentSubtags.warn(attribute.context);
             if (entity.getLivingEntity().getEquipment().getLeggings() != null) {
                 return new ItemTag(entity.getLivingEntity().getEquipment().getLeggings())
                         .getObjectAttribute(attribute.fulfill(2));
