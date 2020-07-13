@@ -146,6 +146,26 @@ public class EntityEquipment implements Property {
             return entity.getEquipment().getObjectAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <EntityTag.equipment_map>
+        // @returns MapTag
+        // @mechanism EntityTag.equipment
+        // @group inventory
+        // @description
+        // Returns a MapTag containing the entity's equipment.
+        // Output keys are boots, leggings,  chestplate, helmet.
+        // Air items will be left out of the map.
+        // -->
+        else if (attribute.startsWith("equipment_map")) {
+            MapTag output = new MapTag();
+            org.bukkit.inventory.EntityEquipment equip = entity.getLivingEntity().getEquipment();
+            InventoryTag.addToMapIfNonAir(output, "boots", equip.getBoots());
+            InventoryTag.addToMapIfNonAir(output, "leggings", equip.getLeggings());
+            InventoryTag.addToMapIfNonAir(output, "chestplate", equip.getChestplate());
+            InventoryTag.addToMapIfNonAir(output, "helmet", equip.getHelmet());
+            return output.getObjectAttribute(attribute.fulfill(1));
+        }
+
         return null;
     }
 
@@ -159,16 +179,40 @@ public class EntityEquipment implements Property {
         // @description
         // Sets the entity's worn equipment.
         // Input list is boots|leggings|chestplate|helmet
+        // Also accepts a MapTag as input.
         // @tags
         // <EntityTag.equipment>
+        // <EntityTag.equipment_map>
         // -->
         if (mechanism.matches("equipment")) {
-            ListTag list = ListTag.valueOf(mechanism.getValue().asString(), mechanism.context);
-            ItemStack[] stacks = new ItemStack[list.size()];
-            for (int i = 0; i < list.size(); i++) {
-                stacks[i] = ItemTag.valueOf(list.get(i), mechanism.context).getItemStack();
+            org.bukkit.inventory.EntityEquipment equip = entity.getLivingEntity().getEquipment();
+            if (mechanism.getValue().asString().startsWith("map@")) {
+                MapTag map = mechanism.valueAsType(MapTag.class);
+                ObjectTag boots = map.getObject("boots");
+                if (boots != null) {
+                    equip.setBoots(boots.asType(ItemTag.class, mechanism.context).getItemStack());
+                }
+                ObjectTag leggings = map.getObject("leggings");
+                if (leggings != null) {
+                    equip.setLeggings(leggings.asType(ItemTag.class, mechanism.context).getItemStack());
+                }
+                ObjectTag chestplate = map.getObject("chestplate");
+                if (chestplate != null) {
+                    equip.setChestplate(chestplate.asType(ItemTag.class, mechanism.context).getItemStack());
+                }
+                ObjectTag helmet = map.getObject("helmet");
+                if (helmet != null) {
+                    equip.setHelmet(helmet.asType(ItemTag.class, mechanism.context).getItemStack());
+                }
             }
-            entity.getLivingEntity().getEquipment().setArmorContents(stacks);
+            else {
+                ListTag list = mechanism.valueAsType(ListTag.class);
+                ItemStack[] stacks = new ItemStack[list.size()];
+                for (int i = 0; i < list.size(); i++) {
+                    stacks[i] = ItemTag.valueOf(list.get(i), mechanism.context).getItemStack();
+                }
+                equip.setArmorContents(stacks);
+            }
         }
     }
 }
