@@ -304,30 +304,24 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     public static boolean matches(String arg) {
-
         // Accept anything that starts with a valid entity object identifier.
         if (arg.startsWith("n@") || arg.startsWith("e@") || arg.startsWith("p@")) {
             return true;
         }
-
         // No longer picky about e@.. let's remove it from the arg
         arg = arg.replace("e@", "").toUpperCase();
-
         // Allow 'random'
         if (arg.equals("RANDOM")) {
             return true;
         }
-
         // Allow any entity script
         if (ScriptRegistry.containsScript(arg, EntityScriptContainer.class)) {
             return true;
         }
-
         // Check first word with a valid entity_type (other groups are datas used in constructors)
         if (DenizenEntityType.isRegistered(CoreUtilities.split(arg, ',').get(0))) {
             return true;
         }
-
         // No luck otherwise!
         return false;
     }
