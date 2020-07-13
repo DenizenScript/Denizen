@@ -406,6 +406,7 @@ public class EntityHelperImpl extends EntityHelper {
         }
     }
 
+    @Override
     public List<Player> getPlayersThatSee(Entity entity) {
         PlayerChunkMap tracker = ((WorldServer) ((CraftEntity) entity).getHandle().world).getChunkProvider().playerChunkMap;
         PlayerChunkMap.EntityTracker entityTracker = tracker.trackedEntities.get(entity.getEntityId());

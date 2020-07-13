@@ -6,6 +6,7 @@ import com.denizenscript.denizen.nms.v1_15.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.nms.interfaces.PacketHelper;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.JNBTListTag;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
@@ -17,6 +18,7 @@ import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_15_R1.util.CraftChatMessage;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -25,9 +27,11 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
+import java.lang.invoke.MethodHandle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 public class PacketHelperImpl implements PacketHelper {
 
@@ -235,6 +239,42 @@ public class PacketHelperImpl implements PacketHelper {
         }
         else {
             return false;
+        }
+    }
+
+    public static MethodHandle ENTITY_METADATA_EID_SETTER = ReflectionHelper.getFinalSetter(PacketPlayOutEntityMetadata.class, "a");
+    public static MethodHandle ENTITY_METADATA_LIST_SETTER = ReflectionHelper.getFinalSetter(PacketPlayOutEntityMetadata.class, "b");
+
+    public static DataWatcherObject<Optional<IChatBaseComponent>> ENTITY_CUSTOM_NAME_METADATA;
+    public static DataWatcherObject<Boolean> ENTITY_CUSTOM_NAME_VISIBLE_METADATA;
+
+    static {
+        try {
+            ENTITY_CUSTOM_NAME_METADATA = ReflectionHelper.getFieldValue(net.minecraft.server.v1_15_R1.Entity.class, "az", null);
+            ENTITY_CUSTOM_NAME_VISIBLE_METADATA = ReflectionHelper.getFieldValue(net.minecraft.server.v1_15_R1.Entity.class, "aA", null);
+        }
+        catch (Throwable ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public void sendRename(Player player, Entity entity, String name) {
+        try {
+            PacketPlayOutEntityMetadata packet = new PacketPlayOutEntityMetadata();
+            ENTITY_METADATA_EID_SETTER.invoke(packet, entity.getEntityId());
+            List<DataWatcher.Item<?>> list = new ArrayList<>();
+            ChatComponentText text = new ChatComponentText("");
+            for (IChatBaseComponent component : CraftChatMessage.fromString(name)) {
+                text.addSibling(component);
+            }
+            list.add(new DataWatcher.Item<>(ENTITY_CUSTOM_NAME_METADATA, Optional.of(text)));
+            list.add(new DataWatcher.Item<>(ENTITY_CUSTOM_NAME_VISIBLE_METADATA, true));
+            ENTITY_METADATA_LIST_SETTER.invoke(packet, list);
+            sendPacket(player, packet);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
         }
     }
 

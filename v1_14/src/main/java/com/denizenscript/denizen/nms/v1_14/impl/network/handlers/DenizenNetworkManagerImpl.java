@@ -7,6 +7,7 @@ import com.denizenscript.denizen.nms.v1_14.impl.blocks.BlockLightImpl;
 import com.denizenscript.denizen.nms.v1_14.impl.entities.EntityFakePlayerImpl;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
 import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.scripts.commands.npc.RenameCommand;
 import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
@@ -20,6 +21,7 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_14_R1.util.CraftChatMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -28,6 +30,8 @@ import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.net.SocketAddress;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
 public class DenizenNetworkManagerImpl extends NetworkManager {
 
@@ -106,6 +110,8 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     public static Field CHUNKZ_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("b");
     public static Field BLOCKPOS_BLOCKBREAK = ReflectionHelper.getFields(PacketPlayOutBlockBreak.class).get("c");
     public static Field BLOCKDATA_BLOCKBREAK = ReflectionHelper.getFields(PacketPlayOutBlockBreak.class).get("d");
+    public static Field ENTITY_METADATA_EID = ReflectionHelper.getFields(PacketPlayOutEntityMetadata.class).get("a");
+    public static Field ENTITY_METADATA_LIST = ReflectionHelper.getFields(PacketPlayOutEntityMetadata.class).get("b");
 
     public static Object duplo(Object a) {
         try {
@@ -150,7 +156,45 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         processMirrorForPacket(packet);
         processShowFakeForPacket(packet);
         processBlockLightForPacket(packet);
+        processCustomNameForPacket(packet);
         oldManager.sendPacket(packet, genericfuturelistener);
+    }
+
+    public void processCustomNameForPacket(Packet<?> packet) {
+        if (!(packet instanceof PacketPlayOutEntityMetadata)) {
+            return;
+        }
+        if (!RenameCommand.hasAnyDynamicRenames()) {
+            return;
+        }
+        PacketPlayOutEntityMetadata metadataPacket = (PacketPlayOutEntityMetadata) packet;
+        try {
+            int eid = ENTITY_METADATA_EID.getInt(metadataPacket);
+            Function<Player, String> customNameFor = RenameCommand.getCustomNameFor(eid);
+            if (customNameFor == null) {
+                return;
+            }
+            String nameToApply = customNameFor.apply(player.getBukkitEntity());
+            List<DataWatcher.Item<?>> data = (List<DataWatcher.Item<?>>) ENTITY_METADATA_LIST.get(metadataPacket);
+            for (DataWatcher.Item item : data) {
+                DataWatcherObject<?> watcherObject = item.a();
+                int watcherId = watcherObject.a();
+                if (watcherId == 2) { // 2: Custom name metadata
+                    ChatComponentText text = new ChatComponentText("");
+                    for (IChatBaseComponent component : CraftChatMessage.fromString(nameToApply)) {
+                        text.addSibling(component);
+                    }
+                    Optional<IChatBaseComponent> name = Optional.of(text);
+                    item.a(name);
+                }
+                else if (watcherId == 3) { // 3: custom name visible metadata
+                    item.a(true);
+                }
+            }
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
     }
 
     public boolean processAttachToForPacket(Packet<?> packet) {
