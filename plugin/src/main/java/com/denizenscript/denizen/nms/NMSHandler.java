@@ -11,6 +11,7 @@ import com.denizenscript.denizen.nms.abstracts.ParticleHelper;
 import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
+import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
@@ -169,4 +170,6 @@ public abstract class NMSHandler {
     public abstract int getPort();
 
     public abstract String getTitle(Inventory inventory);
+
+    public abstract String stringForHover(HoverEvent hover);
 }

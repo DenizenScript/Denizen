@@ -170,14 +170,11 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public String getRawHoverText(ItemStack itemStack) {
-        throw new UnsupportedOperationException();
-        // TODO: 1.16
-        /*
-        if (itemStack == null || itemStack.getType() == Material.AIR) {
-            return "";
+        NBTTagCompound tag = CraftItemStack.asNMSCopy(itemStack).getTag();
+        if (tag == null) {
+            return null;
         }
-        return CraftItemStack.asNMSCopy(itemStack).C().getChatModifier().getHoverEvent().b().getText();
-        */
+        return tag.toString();
     }
 
     @Override

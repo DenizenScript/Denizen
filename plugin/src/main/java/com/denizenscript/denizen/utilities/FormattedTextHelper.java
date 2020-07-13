@@ -1,11 +1,16 @@
 package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.chat.hover.content.Content;
+import net.md_5.bungee.api.chat.hover.content.Entity;
+import net.md_5.bungee.api.chat.hover.content.Item;
+import net.md_5.bungee.api.chat.hover.content.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +65,7 @@ public class FormattedTextHelper {
         boolean hasHover = component.getHoverEvent() != null;
         if (hasHover) {
             HoverEvent hover = component.getHoverEvent();
-            builder.append(ChatColor.COLOR_CHAR).append("[hover=").append(hover.getAction().name()).append(";").append(escape(stringify(hover.getValue()))).append("]");
+            builder.append(ChatColor.COLOR_CHAR).append("[hover=").append(hover.getAction().name()).append(";").append(escape(NMSHandler.getInstance().stringForHover(hover))).append("]");
         }
         boolean hasClick = component.getClickEvent() != null;
         if (hasClick) {
@@ -205,27 +210,57 @@ public class FormattedTextHelper {
                             }
                             TextComponent hoverableText = new TextComponent();
                             HoverEvent.Action action = HoverEvent.Action.valueOf(innardBase.get(1).toUpperCase());
-                            BaseComponent[] hoverValue;
-                            if (action == HoverEvent.Action.SHOW_ITEM) {
-                                ItemTag item = ItemTag.valueOf(unescape(innardParts.get(0)), CoreUtilities.noDebugContext);
-                                if (item == null) {
-                                    continue;
+                            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
+                                Content content;
+                                if (action == HoverEvent.Action.SHOW_ITEM) {
+                                    ItemTag item = ItemTag.valueOf(unescape(innardParts.get(0)), CoreUtilities.noDebugContext);
+                                    if (item == null) {
+                                        continue;
+                                    }
+                                    // TODO: Why is there not a direct conversion method for Spigot ItemStack -> BungeeChat Item?
+                                    String itemNbt = NMSHandler.getItemHelper().getRawHoverText(item.getItemStack());
+                                    content = new Item(item.getItemStack().getType().getKey().toString(), item.getAmount(), net.md_5.bungee.api.chat.ItemTag.ofNbt(itemNbt));
                                 }
-                                // no ItemComponent?
-                                hoverValue = new BaseComponent[] { new TextComponent(NMSHandler.getItemHelper().getRawHoverText(item.getItemStack())) };
-                            }
-                            else if (action == HoverEvent.Action.SHOW_ENTITY) {
-                                EntityTag entity = EntityTag.valueOf(unescape(innardParts.get(0)), CoreUtilities.basicContext);
-                                if (entity == null) {
-                                    continue;
+                                else if (action == HoverEvent.Action.SHOW_ENTITY) {
+                                    EntityTag entity = EntityTag.valueOf(unescape(innardParts.get(0)), CoreUtilities.basicContext);
+                                    if (entity == null) {
+                                        continue;
+                                    }
+                                    BaseComponent name = null;
+                                    if (entity.getBukkitEntity() != null && entity.getBukkitEntity().isCustomNameVisible()) {
+                                        name = new TextComponent();
+                                        for (BaseComponent component : parse(entity.getBukkitEntity().getCustomName())) {
+                                            name.addExtra(component);
+                                        }
+                                    }
+                                    content = new Entity(entity.getBukkitEntityType().getKey().toString(), entity.getUUID().toString(), name);
                                 }
-                                // no EntityComponent?
-                                hoverValue = new BaseComponent[] { new TextComponent(NMSHandler.getEntityHelper().getRawHoverText(entity.getBukkitEntity())) };
+                                else {
+                                    content = new Text(parse(unescape(innardParts.get(0))));
+                                }
+                                hoverableText.setHoverEvent(new HoverEvent(action, content));
                             }
                             else {
-                                hoverValue = parse(unescape(innardParts.get(0)));
+                                BaseComponent[] hoverValue;
+                                if (action == HoverEvent.Action.SHOW_ITEM) {
+                                    ItemTag item = ItemTag.valueOf(unescape(innardParts.get(0)), CoreUtilities.noDebugContext);
+                                    if (item == null) {
+                                        continue;
+                                    }
+                                    hoverValue = new BaseComponent[] {new TextComponent(NMSHandler.getItemHelper().getRawHoverText(item.getItemStack()))};
+                                }
+                                else if (action == HoverEvent.Action.SHOW_ENTITY) {
+                                    EntityTag entity = EntityTag.valueOf(unescape(innardParts.get(0)), CoreUtilities.basicContext);
+                                    if (entity == null) {
+                                        continue;
+                                    }
+                                    hoverValue = new BaseComponent[] {new TextComponent(NMSHandler.getEntityHelper().getRawHoverText(entity.getBukkitEntity()))};
+                                }
+                                else {
+                                    hoverValue = parse(unescape(innardParts.get(0)));
+                                }
+                                hoverableText.setHoverEvent(new HoverEvent(action, hoverValue));
                             }
-                            hoverableText.setHoverEvent(new HoverEvent(action, hoverValue));
                             for (BaseComponent subComponent : parse(str.substring(endBracket + 1, endIndex))) {
                                 hoverableText.addExtra(subComponent);
                             }

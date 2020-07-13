@@ -11,6 +11,7 @@ import com.denizenscript.denizen.nms.v1_13.impl.packets.handlers.DenizenPacketLi
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
+import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
@@ -20,6 +21,7 @@ import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.minecraft.server.v1_13_R2.MinecraftServer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -172,5 +174,10 @@ public class Handler extends NMSHandler {
     @Override
     public BiomeNMS getBiomeNMS(Biome biome) {
         return new BiomeNMSImpl(biome);
+    }
+
+    @Override
+    public String stringForHover(HoverEvent hover) {
+        return FormattedTextHelper.stringify(hover.getValue());
     }
 }

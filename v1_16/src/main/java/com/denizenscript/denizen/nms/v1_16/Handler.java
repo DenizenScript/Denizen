@@ -10,6 +10,8 @@ import com.denizenscript.denizen.nms.v1_16.impl.blocks.BlockLightImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.network.handlers.DenizenPacketListenerImpl;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
@@ -19,10 +21,12 @@ import com.denizenscript.denizen.nms.util.ReflectionHelper;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.server.v1_16_R1.Entity;
-import net.minecraft.server.v1_16_R1.IInventory;
-import net.minecraft.server.v1_16_R1.INamableTileEntity;
-import net.minecraft.server.v1_16_R1.MinecraftServer;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.hover.content.Content;
+import net.md_5.bungee.api.chat.hover.content.Item;
+import net.md_5.bungee.api.chat.hover.content.Text;
+import net.minecraft.server.v1_16_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
@@ -34,6 +38,7 @@ import org.bukkit.craftbukkit.v1_16_R1.util.CraftChatMessage;
 import org.bukkit.craftbukkit.v1_16_R1.util.CraftMagicNumbers;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.spigotmc.AsyncCatcher;
 
 import java.lang.reflect.Field;
@@ -214,5 +219,36 @@ public class Handler extends NMSHandler {
     @Override
     public BiomeNMS getBiomeNMS(Biome biome) {
         return new BiomeNMSImpl(biome);
+    }
+
+    @Override
+    public String stringForHover(HoverEvent hover) {
+        if (hover.getContents().isEmpty()) {
+            return "";
+        }
+        Content contentObject = hover.getContents().get(0);
+        if (contentObject instanceof Text) {
+            Object value = ((Text) contentObject).getValue();
+            if (value instanceof BaseComponent[]) {
+                return FormattedTextHelper.stringify((BaseComponent[]) value);
+            }
+            else {
+                return value.toString();
+            }
+        }
+        else if (contentObject instanceof Item) {
+            Item item = (Item) contentObject;
+            ItemStack itemStack = new ItemStack(org.bukkit.Material.getMaterial(item.getId()), item.getCount());
+            // TODO: Apply tag somehow
+            return new ItemTag(itemStack).identify();
+        }
+        else if (contentObject instanceof net.md_5.bungee.api.chat.hover.content.Entity) {
+            net.md_5.bungee.api.chat.hover.content.Entity entity = (net.md_5.bungee.api.chat.hover.content.Entity) contentObject;
+            // TODO: Maybe a stabler way of doing this?
+            return "e@" + entity.getId();
+        }
+        else {
+            throw new UnsupportedOperationException();
+        }
     }
 }

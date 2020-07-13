@@ -49,19 +49,14 @@ public class RenameCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("name")) {
                 scriptEntry.addObject("name", arg.asElement());
             }
-
         }
-
         if (!scriptEntry.hasObject("name")) {
             throw new InvalidArgumentsException("Must specify a name!");
         }
-
         if (Utilities.getEntryNPC(scriptEntry) == null || !Utilities.getEntryNPC(scriptEntry).isValid()) {
             throw new InvalidArgumentsException("Must have a NPC attached!");
         }
@@ -69,23 +64,16 @@ public class RenameCommand extends AbstractCommand {
 
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-
         ElementTag name = scriptEntry.getElement("name");
-
         if (scriptEntry.dbCallShouldDebug()) {
-
             Debug.report(scriptEntry, getName(), name.debug());
-
         }
-
         NPC npc = Utilities.getEntryNPC(scriptEntry).getCitizen();
-
         Location prev = npc.isSpawned() ? npc.getEntity().getLocation() : null;
         npc.despawn(DespawnReason.PENDING_RESPAWN);
         npc.setName(name.asString().length() > 128 ? name.asString().substring(0, 128) : name.asString());
         if (prev != null) {
             npc.spawn(prev);
         }
-
     }
 }
