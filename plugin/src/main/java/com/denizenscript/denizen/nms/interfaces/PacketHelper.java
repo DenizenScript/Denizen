@@ -62,4 +62,8 @@ public interface PacketHelper {
     boolean showSignEditor(Player player, Location location);
 
     void forceSpectate(Player player, Entity entity);
+
+    default void sendRename(Player player, Entity entity, String name) {
+        throw new UnsupportedOperationException();
+    }
 }

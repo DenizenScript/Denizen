@@ -19,6 +19,7 @@ import org.bukkit.craftbukkit.v1_16_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R1.util.CraftChatMessage;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -31,6 +32,7 @@ import java.lang.invoke.MethodHandle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 public class PacketHelperImpl implements PacketHelper {
 
@@ -254,6 +256,42 @@ public class PacketHelperImpl implements PacketHelper {
     @Override
     public void forceSpectate(Player player, Entity entity) {
         sendPacket(player, new PacketPlayOutCamera(((CraftEntity) entity).getHandle()));
+    }
+
+    public static MethodHandle ENTITY_METADATA_EID_SETTER = ReflectionHelper.getFinalSetter(PacketPlayOutEntityMetadata.class, "a");
+    public static MethodHandle ENTITY_METADATA_LIST_SETTER = ReflectionHelper.getFinalSetter(PacketPlayOutEntityMetadata.class, "b");
+
+    public static DataWatcherObject<Optional<IChatBaseComponent>> ENTITY_CUSTOM_NAME_METADATA;
+    public static DataWatcherObject<Boolean> ENTITY_CUSTOM_NAME_VISIBLE_METADATA;
+
+    static {
+        try {
+            ENTITY_CUSTOM_NAME_METADATA = ReflectionHelper.getFieldValue(net.minecraft.server.v1_16_R1.Entity.class, "ax", null);
+            ENTITY_CUSTOM_NAME_VISIBLE_METADATA = ReflectionHelper.getFieldValue(net.minecraft.server.v1_16_R1.Entity.class, "ay", null);
+        }
+        catch (Throwable ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public void sendRename(Player player, Entity entity, String name) {
+        try {
+            PacketPlayOutEntityMetadata packet = new PacketPlayOutEntityMetadata();
+            ENTITY_METADATA_EID_SETTER.invoke(packet, entity.getEntityId());
+            List<DataWatcher.Item<?>> list = new ArrayList<>();
+            ChatComponentText text = new ChatComponentText("");
+            for (IChatBaseComponent component : CraftChatMessage.fromString(name)) {
+                text.addSibling(component);
+            }
+            list.add(new DataWatcher.Item<>(ENTITY_CUSTOM_NAME_METADATA, Optional.of(text)));
+            list.add(new DataWatcher.Item<>(ENTITY_CUSTOM_NAME_VISIBLE_METADATA, true));
+            ENTITY_METADATA_LIST_SETTER.invoke(packet, list);
+            sendPacket(player, packet);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
     }
 
     public static void sendPacket(Player player, Packet packet) {

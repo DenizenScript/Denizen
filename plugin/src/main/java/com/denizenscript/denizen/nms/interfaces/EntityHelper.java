@@ -456,4 +456,8 @@ public abstract class EntityHelper {
     public abstract boolean isCarryingChest(Entity horse);
 
     public abstract void setCarryingChest(Entity horse, boolean carrying);
+
+    public List<Player> getPlayersThatSee(Entity entity) {
+        throw new UnsupportedOperationException();
+    }
 }

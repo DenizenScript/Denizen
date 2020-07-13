@@ -406,6 +406,19 @@ public class EntityHelperImpl extends EntityHelper {
         }
     }
 
+    public List<Player> getPlayersThatSee(Entity entity) {
+        PlayerChunkMap tracker = ((WorldServer) ((CraftEntity) entity).getHandle().world).getChunkProvider().playerChunkMap;
+        PlayerChunkMap.EntityTracker entityTracker = tracker.trackedEntities.get(entity.getEntityId());
+        ArrayList<Player> output = new ArrayList<>();
+        if (entityTracker == null) {
+            return output;
+        }
+        for (EntityPlayer player : entityTracker.trackedPlayers) {
+            output.add(player.getBukkitEntity());
+        }
+        return output;
+    }
+
     /*
         Hide Entity
      */

@@ -5,35 +5,43 @@ import com.denizenscript.denizen.objects.EntityFormObject;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+
+import java.util.HashMap;
+import java.util.function.Function;
 
 public class RenameCommand extends AbstractCommand {
 
     public RenameCommand() {
         setName("rename");
-        setSyntax("rename [<name>] (t:<entity>|...)");
-        setRequiredArguments(1, 2);
+        setSyntax("rename [<name>] (t:<entity>|...) (per_player)");
+        setRequiredArguments(1, 3);
+        setParseArgs(false);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Rename
-    // @Syntax rename [<name>] (t:<entity>|...)
+    // @Syntax rename [<name>] (t:<entity>|...) (per_player)
     // @Required 1
-    // @Maximum 2
+    // @Maximum 3
     // @Plugin Citizens
     // @Short Renames the linked NPC or list of entities.
     // @Group npc
@@ -47,6 +55,10 @@ public class RenameCommand extends AbstractCommand {
     // Can rename a vanilla entity to any name up to 256 characters, and will automatically make the nameplate visible.
     //
     // Can rename a player to any name up to 16 characters. This will affect only the player's nameplate.
+    //
+    // Optionally specify per_player to reprocess the input tags for each player when renaming a vanilla entity
+    // (meaning, if you use "- rename <player.name> t:<[someent]> per_player", every player will see their own name on that entity).
+    // A per_player rename will remain active until the entity is renamed again or the server is restarted.
     //
     // @Tags
     // <NPCTag.name>
@@ -64,12 +76,16 @@ public class RenameCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-            if (!scriptEntry.hasObject("name")) {
-                scriptEntry.addObject("name", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("targets")
+            if (!scriptEntry.hasObject("targets")
                     && arg.matchesPrefix("t", "target", "targets")) {
-                scriptEntry.addObject("targets", arg.asType(ListTag.class));
+                scriptEntry.addObject("targets", ListTag.getListFor(TagManager.tagObject(arg.getValue(), scriptEntry.getContext()), scriptEntry.getContext()));
+            }
+            else if (!scriptEntry.hasObject("per_player")
+                    && arg.matches("per_player")) {
+                scriptEntry.addObject("per_player", new ElementTag(true));
+            }
+            else if (!scriptEntry.hasObject("name")) {
+                scriptEntry.addObject("name", new ElementTag(arg.raw_value));
             }
             else {
                 arg.reportUnhandled();
@@ -88,12 +104,38 @@ public class RenameCommand extends AbstractCommand {
 
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-        ElementTag name = scriptEntry.getElement("name");
+        final ElementTag name = scriptEntry.getElement("name");
+        ElementTag perPlayer = scriptEntry.getElement("per_player");
         ListTag targets = scriptEntry.getObjectTag("targets");
-        if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), name.debug() + targets.debug());
+        if (perPlayer != null && perPlayer.asBoolean()) {
+            if (scriptEntry.dbCallShouldDebug()) {
+                Debug.report(scriptEntry, getName(), name.debug()
+                        + targets.debug()
+                        + perPlayer.debug());
+            }
+            for (ObjectTag target : targets.objectForms) {
+                EntityTag entity = target.asType(EntityTag.class, CoreUtilities.noDebugContext);
+                if (entity != null) {
+                    final BukkitTagContext originalContext = (BukkitTagContext) scriptEntry.context.clone();
+                    customNames.put(entity.getBukkitEntity().getEntityId(), p -> {
+                        originalContext.player = new PlayerTag(p);
+                        return TagManager.tag(name.asString(), originalContext);
+                    });
+                    for (Player player : NMSHandler.getEntityHelper().getPlayersThatSee(entity.getBukkitEntity())) {
+                        NMSHandler.getPacketHelper().sendRename(player, entity.getBukkitEntity(), "");
+                    }
+                }
+            }
+            return;
         }
-        String nameString = name.asString().length() > 256 ? name.asString().substring(0, 256) : name.asString();
+        String nameString = TagManager.tag(name.asString(), scriptEntry.context);
+        if (nameString.length() > 256) {
+            nameString = nameString.substring(0, 256);
+        }
+        if (scriptEntry.dbCallShouldDebug()) {
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("name", nameString)
+                    + targets.debug());
+        }
         for (ObjectTag target : targets.objectForms) {
             EntityFormObject entity = target.asType(EntityTag.class, CoreUtilities.noDebugContext);
             if (entity == null) {
@@ -120,9 +162,20 @@ public class RenameCommand extends AbstractCommand {
             }
             else {
                 Entity bukkitEntity = entity.getDenizenEntity().getBukkitEntity();
+                customNames.remove(bukkitEntity.getEntityId());
                 bukkitEntity.setCustomName(nameString);
                 bukkitEntity.setCustomNameVisible(true);
             }
         }
+    }
+
+    public static HashMap<Integer, Function<Player, String>> customNames = new HashMap<>();
+
+    public static boolean hasAnyDynamicRenames() {
+        return !customNames.isEmpty();
+    }
+
+    public static Function<Player, String> getCustomNameFor(int eid) {
+        return customNames.get(eid);
     }
 }
