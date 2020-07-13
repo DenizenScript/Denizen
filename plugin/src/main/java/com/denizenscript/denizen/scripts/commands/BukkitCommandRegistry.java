@@ -77,6 +77,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCommand(MountCommand.class);
         registerCommand(PushCommand.class);
         registerCommand(RemoveCommand.class);
+        registerCommand(RenameCommand.class);
         registerCommand(RotateCommand.class);
         registerCommand(ShootCommand.class);
         registerCommand(SpawnCommand.class);
@@ -107,7 +108,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
             registerCommand(PauseCommand.ResumeCommand.class);
             registerCommand(PoseCommand.class);
             registerCommand(PushableCommand.class);
-            registerCommand(RenameCommand.class);
             registerCommand(SitCommand.class);
             registerCommand(SleepCommand.class);
             registerCommand(StandCommand.class);

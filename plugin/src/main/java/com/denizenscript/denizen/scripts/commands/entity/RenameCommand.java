@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.scripts.commands.npc;
+package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.EntityFormObject;
@@ -44,9 +44,8 @@ public class RenameCommand extends AbstractCommand {
     // @Syntax rename [<name>] (t:<entity>|...) (per_player) (for:<player>|...)
     // @Required 1
     // @Maximum 4
-    // @Plugin Citizens
     // @Short Renames the linked NPC or list of entities.
-    // @Group npc
+    // @Group entity
     //
     // @Description
     // Renames the linked NPC or list of entities.
