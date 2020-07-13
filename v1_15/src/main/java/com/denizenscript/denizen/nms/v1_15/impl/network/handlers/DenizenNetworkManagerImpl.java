@@ -31,7 +31,6 @@ import java.lang.reflect.Field;
 import java.net.SocketAddress;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 public class DenizenNetworkManagerImpl extends NetworkManager {
 
@@ -170,11 +169,10 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         PacketPlayOutEntityMetadata metadataPacket = (PacketPlayOutEntityMetadata) packet;
         try {
             int eid = ENTITY_METADATA_EID.getInt(metadataPacket);
-            Function<Player, String> customNameFor = RenameCommand.getCustomNameFor(eid);
-            if (customNameFor == null) {
+            String nameToApply = RenameCommand.getCustomNameFor(eid, player.getBukkitEntity());
+            if (nameToApply == null) {
                 return;
             }
-            String nameToApply = customNameFor.apply(player.getBukkitEntity());
             List<DataWatcher.Item<?>> data = (List<DataWatcher.Item<?>>) ENTITY_METADATA_LIST.get(metadataPacket);
             for (DataWatcher.Item item : data) {
                 DataWatcherObject<?> watcherObject = item.a();

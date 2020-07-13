@@ -25,23 +25,25 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 
 public class RenameCommand extends AbstractCommand {
 
     public RenameCommand() {
         setName("rename");
-        setSyntax("rename [<name>] (t:<entity>|...) (per_player)");
-        setRequiredArguments(1, 3);
+        setSyntax("rename [<name>] (t:<entity>|...) (per_player) (for:<player>|...)");
+        setRequiredArguments(1, 4);
         setParseArgs(false);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Rename
-    // @Syntax rename [<name>] (t:<entity>|...) (per_player)
+    // @Syntax rename [<name>] (t:<entity>|...) (per_player) (for:<player>|...)
     // @Required 1
-    // @Maximum 3
+    // @Maximum 4
     // @Plugin Citizens
     // @Short Renames the linked NPC or list of entities.
     // @Group npc
@@ -56,10 +58,11 @@ public class RenameCommand extends AbstractCommand {
     //
     // Can rename a player to any name up to 16 characters. This will affect only the player's nameplate.
     //
-    // Optionally specify per_player to reprocess the input tags for each player when renaming a vanilla entity
+    // Optionally specify 'per_player' to reprocess the input tags for each player when renaming a vanilla entity
     // (meaning, if you use "- rename <player.name> t:<[someent]> per_player", every player will see their own name on that entity).
     // A per_player rename will remain active until the entity is renamed again or the server is restarted.
     // Rename to "cancel" per_player to intentionally end a per_player rename.
+    // Optionally specify "for:" a list of players when using per_player.
     //
     // @Tags
     // <NPCTag.name>
@@ -86,6 +89,10 @@ public class RenameCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("targets")
                     && arg.matchesPrefix("t", "target", "targets")) {
                 scriptEntry.addObject("targets", ListTag.getListFor(TagManager.tagObject(arg.getValue(), scriptEntry.getContext()), scriptEntry.getContext()));
+            }
+            else if (!scriptEntry.hasObject("players")
+                    && arg.matchesPrefix("for")) {
+                scriptEntry.addObject("players", ListTag.getListFor(TagManager.tagObject(arg.getValue(), scriptEntry.getContext()), scriptEntry.getContext()).filter(PlayerTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("per_player")
                     && arg.matches("per_player")) {
@@ -114,11 +121,13 @@ public class RenameCommand extends AbstractCommand {
         final ElementTag name = scriptEntry.getElement("name");
         ElementTag perPlayer = scriptEntry.getElement("per_player");
         ListTag targets = scriptEntry.getObjectTag("targets");
+        List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
         if (perPlayer != null && perPlayer.asBoolean()) {
             if (scriptEntry.dbCallShouldDebug()) {
                 Debug.report(scriptEntry, getName(), name.debug()
                         + targets.debug()
-                        + perPlayer.debug());
+                        + perPlayer.debug()
+                        + (players == null ? "" : ArgumentHelper.debugList("for", players)));
             }
             for (ObjectTag target : targets.objectForms) {
                 EntityTag entity = target.asType(EntityTag.class, CoreUtilities.noDebugContext);
@@ -127,8 +136,15 @@ public class RenameCommand extends AbstractCommand {
                     if (name.asString().equals("cancel")) {
                         customNames.remove(bukkitEntity.getEntityId());
                         if (bukkitEntity.isCustomNameVisible()) {
-                            for (Player player : NMSHandler.getEntityHelper().getPlayersThatSee(bukkitEntity)) {
-                                NMSHandler.getPacketHelper().sendRename(player, bukkitEntity, bukkitEntity.getCustomName());
+                            if (players == null) {
+                                for (Player player : NMSHandler.getEntityHelper().getPlayersThatSee(bukkitEntity)) {
+                                    NMSHandler.getPacketHelper().sendRename(player, bukkitEntity, bukkitEntity.getCustomName());
+                                }
+                            }
+                            else {
+                                for (PlayerTag player : players) {
+                                    NMSHandler.getPacketHelper().sendRename(player.getPlayerEntity(), bukkitEntity, bukkitEntity.getCustomName());
+                                }
                             }
                         }
                         else {
@@ -138,12 +154,32 @@ public class RenameCommand extends AbstractCommand {
                     }
                     else {
                         final BukkitTagContext originalContext = (BukkitTagContext) scriptEntry.context.clone();
-                        customNames.put(bukkitEntity.getEntityId(), p -> {
+                        HashMap<UUID, Function<Player, String>> playerToFuncMap = customNames.get(bukkitEntity.getEntityId());
+                        if (playerToFuncMap == null) {
+                            playerToFuncMap = new HashMap<>();
+                            customNames.put(bukkitEntity.getEntityId(), playerToFuncMap);
+                        }
+                        Function<Player, String> nameGetter = p -> {
                             originalContext.player = new PlayerTag(p);
                             return TagManager.tag(name.asString(), originalContext);
-                        });
-                        for (Player player : NMSHandler.getEntityHelper().getPlayersThatSee(bukkitEntity)) {
-                            NMSHandler.getPacketHelper().sendRename(player, bukkitEntity, "");
+                        };
+                        if (players == null) {
+                            playerToFuncMap.put(null, nameGetter);
+                        }
+                        else {
+                            for (PlayerTag player : players) {
+                                playerToFuncMap.put(player.getOfflinePlayer().getUniqueId(), nameGetter);
+                            }
+                        }
+                        if (players == null) {
+                            for (Player player : NMSHandler.getEntityHelper().getPlayersThatSee(bukkitEntity)) {
+                                NMSHandler.getPacketHelper().sendRename(player, bukkitEntity, "");
+                            }
+                        }
+                        else {
+                            for (PlayerTag player : players) {
+                                NMSHandler.getPacketHelper().sendRename(player.getPlayerEntity(), bukkitEntity, "");
+                            }
                         }
                     }
                 }
@@ -191,13 +227,24 @@ public class RenameCommand extends AbstractCommand {
         }
     }
 
-    public static HashMap<Integer, Function<Player, String>> customNames = new HashMap<>();
+    public static HashMap<Integer, HashMap<UUID, Function<Player, String>>> customNames = new HashMap<>();
 
     public static boolean hasAnyDynamicRenames() {
         return !customNames.isEmpty();
     }
 
-    public static Function<Player, String> getCustomNameFor(int eid) {
-        return customNames.get(eid);
+    public static String getCustomNameFor(int eid, Player player) {
+        HashMap<UUID, Function<Player, String>> map = customNames.get(eid);
+        if (map == null) {
+            return null;
+        }
+        Function<Player, String> func = map.get(player.getUniqueId());
+        if (func == null) {
+            func = map.get(null);
+            if (func == null) {
+                return null;
+            }
+        }
+        return func.apply(player);
     }
 }
