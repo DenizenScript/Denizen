@@ -230,9 +230,6 @@ public class EntityColor implements Property {
             else if (type == EntityType.RABBIT && mechanism.getValue().matchesEnum(Rabbit.Type.values())) {
                 ((Rabbit) colored.getBukkitEntity()).setRabbitType(Rabbit.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (type == EntityType.RABBIT && mechanism.getValue().matchesEnum(Rabbit.Type.values())) {
-                ((Rabbit) colored.getBukkitEntity()).setRabbitType(Rabbit.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
-            }
             else if (type == EntityType.LLAMA) {
                 ((Llama) colored.getBukkitEntity()).setColor(Llama.Color.valueOf(mechanism.getValue().asString().toUpperCase()));
             }

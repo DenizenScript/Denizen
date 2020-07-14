@@ -46,10 +46,6 @@ public class EquipCommand extends AbstractCommand {
     //
     // @Tags
     // <EntityTag.equipment>
-    // <EntityTag.equipment.helmet>
-    // <EntityTag.equipment.chestplate>
-    // <EntityTag.equipment.leggings>
-    // <EntityTag.equipment.boots>
     // <InventoryTag.equipment>
     //
     // @Usage

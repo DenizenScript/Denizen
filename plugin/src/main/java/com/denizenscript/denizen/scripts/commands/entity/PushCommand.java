@@ -290,7 +290,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
                     Vector v1 = lastEntity.getLocation().toVector();
                     Vector v3 = v2.clone().subtract(v1).normalize();
                     if (forceAlong) {
-                        Vector newDest = v2.clone().subtract(Origin).normalize().multiply(runs / 20).add(Origin);
+                        Vector newDest = v2.clone().subtract(Origin).normalize().multiply(runs * speed / 20).add(Origin);
                         lastEntity.teleport(new Location(lastEntity.getLocation().getWorld(),
                                 newDest.getX(), newDest.getY(), newDest.getZ(),
                                 lastEntity.getLocation().getYaw(), lastEntity.getLocation().getPitch()));
