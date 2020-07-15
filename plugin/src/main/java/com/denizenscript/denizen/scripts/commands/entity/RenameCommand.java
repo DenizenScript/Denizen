@@ -33,7 +33,7 @@ public class RenameCommand extends AbstractCommand {
 
     public RenameCommand() {
         setName("rename");
-        setSyntax("rename [<name>] (t:<entity>|...) (per_player) (for:<player>|...)");
+        setSyntax("rename [<name>/cancel] (t:<entity>|...) (per_player) (for:<player>|...)");
         setRequiredArguments(1, 4);
         setParseArgs(false);
         isProcedural = false;
@@ -41,7 +41,7 @@ public class RenameCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Rename
-    // @Syntax rename [<name>] (t:<entity>|...) (per_player) (for:<player>|...)
+    // @Syntax rename [<name>/cancel] (t:<entity>|...) (per_player) (for:<player>|...)
     // @Required 1
     // @Maximum 4
     // @Short Renames the linked NPC or list of entities.
@@ -68,11 +68,11 @@ public class RenameCommand extends AbstractCommand {
     // <NPCTag.nickname>
     //
     // @Usage
-    // Use to rename the linked NPC.
+    // Use to rename the linked NPC to 'Bob'.
     // - rename Bob
     //
     // @Usage
-    // Use to rename a different NPC.
+    // Use to rename a different NPC to 'Bob'.
     // - rename Bob t:<[some_npc]>
     //
     // @Usage

@@ -165,6 +165,10 @@ public class AttachCommand extends AbstractCommand {
             }
         };
         for (EntityTag entity : entities) {
+            if (!entity.isSpawned() && !shouldCancel) {
+                Debug.echoError("Cannot attach entity '" + entity + "': entity is not spawned.");
+                continue;
+            }
             if (forPlayers == null) {
                 procPlayer.accept(entity, null);
             }

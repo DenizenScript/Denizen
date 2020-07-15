@@ -59,9 +59,7 @@ public class CreateWorldCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("generator")
                     && arg.matchesPrefix("generator", "g")) {
                 scriptEntry.addObject("generator", arg.asElement());
@@ -96,21 +94,17 @@ public class CreateWorldCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         if (!scriptEntry.hasObject("world_name")) {
             throw new InvalidArgumentsException("Must specify a world name.");
         }
-
         if (!scriptEntry.hasObject("worldtype")) {
             scriptEntry.addObject("worldtype", new ElementTag("NORMAL"));
         }
-
         scriptEntry.defaultObject("environment", new ElementTag("NORMAL"));
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         ElementTag worldName = scriptEntry.getElement("world_name");
         ElementTag generator = scriptEntry.getElement("generator");
         ElementTag worldType = scriptEntry.getElement("worldtype");
@@ -118,9 +112,7 @@ public class CreateWorldCommand extends AbstractCommand {
         ElementTag copy_from = scriptEntry.getElement("copy_from");
         ElementTag settings = scriptEntry.getElement("settings");
         ElementTag seed = scriptEntry.getElement("seed");
-
         if (scriptEntry.dbCallShouldDebug()) {
-
             Debug.report(scriptEntry, getName(), worldName.debug() +
                     (generator != null ? generator.debug() : "") +
                     environment.debug() +
@@ -128,9 +120,7 @@ public class CreateWorldCommand extends AbstractCommand {
                     (settings != null ? settings.debug() : "") +
                     worldType.debug() +
                     (seed != null ? seed.debug() : ""));
-
         }
-
         if (copy_from != null) {
             try {
                 if (copy_from.asString().contains("..")) {
@@ -158,30 +148,22 @@ public class CreateWorldCommand extends AbstractCommand {
                 return;
             }
         }
-
         World world;
-
         WorldCreator worldCreator = WorldCreator.name(worldName.asString())
                 .environment(World.Environment.valueOf(environment.asString().toUpperCase()))
                 .type(WorldType.valueOf(worldType.asString().toUpperCase()));
-
         if (generator != null) {
             worldCreator.generator(generator.asString());
         }
-
         if (seed != null) {
             worldCreator.seed(seed.asLong());
         }
-
         if (settings != null) {
             worldCreator.generatorSettings(settings.asString());
         }
-
         world = Bukkit.getServer().createWorld(worldCreator);
-
         if (world == null) {
             Debug.echoDebug(scriptEntry, "World is null, something went wrong in creation!");
         }
-
     }
 }
