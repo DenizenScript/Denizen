@@ -93,6 +93,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(InventoryContents.class, InventoryTag.class);
         PropertyParser.registerProperty(InventoryScriptName.class, InventoryTag.class);
         PropertyParser.registerProperty(InventoryTitle.class, InventoryTag.class);
+        PropertyParser.registerProperty(InventoryTrades.class, InventoryTag.class);
         PropertyParser.registerProperty(InventoryUniquifier.class, InventoryTag.class);
 
         // register core ItemTag properties

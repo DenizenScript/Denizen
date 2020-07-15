@@ -35,14 +35,11 @@ public class EntityTrades implements Property {
     };
 
     public ListTag getTradeRecipes() {
-        if (entity.getBukkitEntity() instanceof Merchant) {
-            ArrayList<TradeTag> recipes = new ArrayList<>();
-            for (MerchantRecipe recipe : ((Merchant) entity.getBukkitEntity()).getRecipes()) {
-                recipes.add(new TradeTag(recipe));
-            }
-            return new ListTag(recipes);
+        ArrayList<TradeTag> recipes = new ArrayList<>();
+        for (MerchantRecipe recipe : ((Merchant) entity.getBukkitEntity()).getRecipes()) {
+            recipes.add(new TradeTag(recipe));
         }
-        return null;
+        return new ListTag(recipes);
     }
 
     private EntityTag entity;
@@ -52,9 +49,6 @@ public class EntityTrades implements Property {
     }
 
     public String getPropertyString() {
-        if (((Merchant) entity.getBukkitEntity()).getRecipes() == null) {
-            return null;
-        }
         return getTradeRecipes().identify();
     }
 
