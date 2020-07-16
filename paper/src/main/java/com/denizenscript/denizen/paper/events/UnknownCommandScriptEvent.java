@@ -48,7 +48,7 @@ public class UnknownCommandScriptEvent extends BukkitScriptEvent implements List
     // ElementTag to change the message returned to the command sender.
     // "NONE" to cancel the message.
     //
-    // @Player when the command sender is a player.
+    // @Player when source_type is player.
     //
     // -->
 

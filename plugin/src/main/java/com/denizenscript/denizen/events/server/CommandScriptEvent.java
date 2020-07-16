@@ -49,6 +49,8 @@ public class CommandScriptEvent extends BukkitScriptEvent implements Listener {
     // @Determine
     // "FULFILLED" to tell Bukkit the command was handled.
     //
+    // @Player when source_type is player.
+    //
     // -->
 
     public CommandScriptEvent() {
