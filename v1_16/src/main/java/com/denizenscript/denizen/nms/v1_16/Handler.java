@@ -26,6 +26,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.hover.content.Content;
 import net.md_5.bungee.api.chat.hover.content.Item;
 import net.md_5.bungee.api.chat.hover.content.Text;
+import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.server.v1_16_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -250,5 +251,10 @@ public class Handler extends NMSHandler {
         else {
             throw new UnsupportedOperationException();
         }
+    }
+
+    public static IChatMutableComponent componentToNMS(BaseComponent[] spigot) {
+        String json = ComponentSerializer.toString(spigot);
+        return IChatBaseComponent.ChatSerializer.b(json);
     }
 }

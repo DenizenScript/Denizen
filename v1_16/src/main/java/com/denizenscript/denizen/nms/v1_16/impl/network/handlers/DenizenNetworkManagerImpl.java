@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.nms.v1_16.impl.network.handlers;
 
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
+import com.denizenscript.denizen.nms.v1_16.Handler;
 import com.denizenscript.denizen.nms.v1_16.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.network.packets.*;
 import com.denizenscript.denizen.nms.v1_16.impl.blocks.BlockLightImpl;
@@ -8,6 +9,7 @@ import com.denizenscript.denizen.nms.v1_16.impl.entities.EntityFakePlayerImpl;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.scripts.commands.entity.RenameCommand;
+import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
@@ -21,7 +23,6 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_16_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_16_R1.util.CraftChatMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -182,11 +183,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 DataWatcherObject<?> watcherObject = item.a();
                 int watcherId = watcherObject.a();
                 if (watcherId == 2) { // 2: Custom name metadata
-                    ChatComponentText text = new ChatComponentText("");
-                    for (IChatBaseComponent component : CraftChatMessage.fromString(nameToApply)) {
-                        text.addSibling(component);
-                    }
-                    Optional<IChatBaseComponent> name = Optional.of(text);
+                    Optional<IChatBaseComponent> name = Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(nameToApply)));
                     item.a(name);
                 }
                 else if (watcherId == 3) { // 3: custom name visible metadata

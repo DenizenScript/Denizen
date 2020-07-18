@@ -1,7 +1,9 @@
 package com.denizenscript.denizen.nms.v1_16.impl;
 
+import com.denizenscript.denizen.nms.v1_16.Handler;
 import com.denizenscript.denizen.nms.v1_16.helpers.PacketHelperImpl;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
+import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import net.minecraft.server.v1_16_R1.*;
 import org.bukkit.entity.Player;
 
@@ -15,7 +17,7 @@ public class SidebarImpl extends Sidebar {
 
     public SidebarImpl(Player player) {
         super(player);
-        IChatBaseComponent chatComponentTitle = new ChatComponentText(title);
+        IChatBaseComponent chatComponentTitle = Handler.componentToNMS(FormattedTextHelper.parse(title));
         this.obj1 = new ScoreboardObjective(dummyScoreboard, "dummy_1", dummyCriteria, chatComponentTitle, IScoreboardCriteria.EnumScoreboardHealthDisplay.INTEGER);
         this.obj2 = new ScoreboardObjective(dummyScoreboard, "dummy_2", dummyCriteria, chatComponentTitle, IScoreboardCriteria.EnumScoreboardHealthDisplay.INTEGER);
     }
@@ -23,7 +25,7 @@ public class SidebarImpl extends Sidebar {
     @Override
     protected void setDisplayName(String title) {
         if (this.obj1 != null) {
-            IChatBaseComponent chatComponentTitle = new ChatComponentText(title);
+            IChatBaseComponent chatComponentTitle = Handler.componentToNMS(FormattedTextHelper.parse(title));
             this.obj1.setDisplayName(chatComponentTitle);
             this.obj2.setDisplayName(chatComponentTitle);
         }

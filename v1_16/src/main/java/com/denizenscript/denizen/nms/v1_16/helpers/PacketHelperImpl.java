@@ -2,10 +2,12 @@ package com.denizenscript.denizen.nms.v1_16.helpers;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
+import com.denizenscript.denizen.nms.v1_16.Handler;
 import com.denizenscript.denizen.nms.v1_16.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.nms.interfaces.PacketHelper;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.JNBTListTag;
+import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.server.v1_16_R1.*;
@@ -19,7 +21,6 @@ import org.bukkit.craftbukkit.v1_16_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_16_R1.util.CraftChatMessage;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -170,8 +171,8 @@ public class PacketHelperImpl implements PacketHelper {
     @Override
     public void showTabListHeaderFooter(Player player, String header, String footer) {
         PacketPlayOutPlayerListHeaderFooter packet = new PacketPlayOutPlayerListHeaderFooter();
-        packet.header = new ChatComponentText(header);
-        packet.footer = new ChatComponentText(footer);
+        packet.header = Handler.componentToNMS(FormattedTextHelper.parse(header));
+        packet.footer = Handler.componentToNMS(FormattedTextHelper.parse(footer));
         sendPacket(player, packet);
     }
 
@@ -184,10 +185,10 @@ public class PacketHelperImpl implements PacketHelper {
     public void showTitle(Player player, String title, String subtitle, int fadeInTicks, int stayTicks, int fadeOutTicks) {
         sendPacket(player, new PacketPlayOutTitle(fadeInTicks, stayTicks, fadeOutTicks));
         if (title != null) {
-            sendPacket(player, new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, new ChatComponentText(title)));
+            sendPacket(player, new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, Handler.componentToNMS(FormattedTextHelper.parse(title))));
         }
         if (subtitle != null) {
-            sendPacket(player, new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, new ChatComponentText(subtitle)));
+            sendPacket(player, new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, Handler.componentToNMS(FormattedTextHelper.parse(subtitle))));
         }
     }
 
@@ -280,11 +281,7 @@ public class PacketHelperImpl implements PacketHelper {
             PacketPlayOutEntityMetadata packet = new PacketPlayOutEntityMetadata();
             ENTITY_METADATA_EID_SETTER.invoke(packet, entity.getEntityId());
             List<DataWatcher.Item<?>> list = new ArrayList<>();
-            ChatComponentText text = new ChatComponentText("");
-            for (IChatBaseComponent component : CraftChatMessage.fromString(name)) {
-                text.addSibling(component);
-            }
-            list.add(new DataWatcher.Item<>(ENTITY_CUSTOM_NAME_METADATA, Optional.of(text)));
+            list.add(new DataWatcher.Item<>(ENTITY_CUSTOM_NAME_METADATA, Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(name)))));
             list.add(new DataWatcher.Item<>(ENTITY_CUSTOM_NAME_VISIBLE_METADATA, true));
             ENTITY_METADATA_LIST_SETTER.invoke(packet, list);
             sendPacket(player, packet);
