@@ -407,6 +407,6 @@ public class ColorTag implements ObjectTag {
 
     public int[] ToHSB() {
         float[] base = java.awt.Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
-        return new int[] {(int) (base[0] * 255), (int) (base[1] * 255), (int) (base[2] * 255)};
+        return new int[] {Math.round(base[0] * 255f), Math.round(base[1] * 255f), Math.round(base[2] * 255f)};
     }
 }
