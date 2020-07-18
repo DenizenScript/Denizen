@@ -92,7 +92,7 @@ public class DenizenCommand extends Command {
             if (Depends.citizens != null && npc == null) {
                 NPC citizen = CitizensAPI.getDefaultNPCSelector().getSelected(target);
                 if (citizen != null) {
-                    npc = NPCTag.mirrorCitizensNPC(citizen);
+                    npc = new NPCTag(citizen);
                 }
             }
             // <permission> is built into Bukkit... let's keep it here
@@ -155,7 +155,7 @@ public class DenizenCommand extends Command {
         if (Depends.citizens != null && npc == null) {
             NPC citizen = CitizensAPI.getDefaultNPCSelector().getSelected(commandSender);
             if (citizen != null) {
-                npc = NPCTag.mirrorCitizensNPC(citizen);
+                npc = new NPCTag(citizen);
             }
         }
         script.runCommandScript(player, npc, context);
@@ -203,7 +203,7 @@ public class DenizenCommand extends Command {
         if (Depends.citizens != null && npc == null) {
             NPC citizen = CitizensAPI.getDefaultNPCSelector().getSelected(commandSender);
             if (citizen != null) {
-                npc = NPCTag.mirrorCitizensNPC(citizen);
+                npc = new NPCTag(citizen);
             }
         }
         return script.runTabCompleteProcedure(player, npc, context);

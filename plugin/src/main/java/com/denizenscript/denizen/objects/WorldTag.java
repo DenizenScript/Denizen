@@ -292,7 +292,7 @@ public class WorldTag implements ObjectTag, Adjustable {
 
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
                 if (npc.isSpawned() && npc.getEntity().getLocation().getWorld().equals(thisWorld)) {
-                    npcs.add(NPCTag.mirrorCitizensNPC(npc));
+                    npcs.add(new NPCTag(npc));
                 }
             }
 
@@ -315,7 +315,7 @@ public class WorldTag implements ObjectTag, Adjustable {
                 if (location != null) {
                     World world = location.getWorld();
                     if (world != null && world.equals(thisWorld)) {
-                        npcs.add(NPCTag.mirrorCitizensNPC(npc));
+                        npcs.add(new NPCTag(npc));
                     }
                 }
             }

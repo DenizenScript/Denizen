@@ -43,6 +43,7 @@ import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.command.CommandContext;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.npc.NPCRegistry;
 import net.citizensnpcs.api.trait.TraitInfo;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
@@ -1248,7 +1249,7 @@ public class ServerTagBase {
             String name = attribute.getContext(1);
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
                 if (CoreUtilities.equalsIgnoreCase(npc.getName(), name)) {
-                    npcs.addObject(NPCTag.mirrorCitizensNPC(npc));
+                    npcs.addObject(new NPCTag(npc));
                 }
             }
             event.setReplacedObject(npcs.getObjectAttribute(attribute.fulfill(1)));
@@ -1621,7 +1622,7 @@ public class ServerTagBase {
                 for (NPC npc : CitizensAPI.getNPCRegistry()) {
                     if (npc.hasTrait(AssignmentTrait.class) && npc.getTrait(AssignmentTrait.class).hasAssignment()
                             && CoreUtilities.equalsIgnoreCase(npc.getTrait(AssignmentTrait.class).getAssignment().getName(), script.getName())) {
-                        npcs.addObject(NPCTag.mirrorCitizensNPC(npc));
+                        npcs.addObject(new NPCTag(npc));
                     }
                 }
                 event.setReplacedObject(npcs.getObjectAttribute(attribute.fulfill(1)));
@@ -1681,7 +1682,7 @@ public class ServerTagBase {
             String flag = attribute.getContext(1);
             ListTag npcs = new ListTag();
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                NPCTag dNpc = NPCTag.mirrorCitizensNPC(npc);
+                NPCTag dNpc = new NPCTag(npc);
                 if (dNpc.isSpawned() && FlagManager.npcHasFlag(dNpc, flag)) {
                     npcs.addObject(dNpc);
                 }
@@ -1702,7 +1703,7 @@ public class ServerTagBase {
             String flag = attribute.getContext(1);
             ListTag npcs = new ListTag();
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                NPCTag dNpc = NPCTag.mirrorCitizensNPC(npc);
+                NPCTag dNpc = new NPCTag(npc);
                 if (FlagManager.npcHasFlag(dNpc, flag)) {
                     npcs.addObject(dNpc);
                 }
@@ -1712,7 +1713,22 @@ public class ServerTagBase {
         }
 
         // <--[tag]
-        // @attribute <server.npcs>
+        // @attribute <server.npc_registries>
+        // @returns ListTag
+        // @description
+        // Returns a list of all NPC registries.
+        // -->
+        if (attribute.startsWith("npc_registries") && Depends.citizens != null) {
+            ListTag result = new ListTag();
+            for (NPCRegistry registry : CitizensAPI.getNPCRegistries()) {
+                result.add(registry.getName());
+            }
+            event.setReplacedObject(result.getObjectAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.npcs[(<registry>)]>
         // @returns ListTag(NPCTag)
         // @description
         // Returns a list of all NPCs.
@@ -1720,8 +1736,16 @@ public class ServerTagBase {
         if ((attribute.startsWith("npcs") || attribute.startsWith("list_npcs")) && Depends.citizens != null) {
             listDeprecateWarn(attribute);
             ListTag npcs = new ListTag();
-            for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                npcs.addObject(NPCTag.mirrorCitizensNPC(npc));
+            NPCRegistry registry = CitizensAPI.getNPCRegistry();
+            if (attribute.hasContext(1)) {
+                registry = NPCTag.getRegistryByName(attribute.getContext(1));
+                if (registry == null) {
+                    attribute.echoError("NPC Registry '" + attribute.getContext(1) + "' does not exist.");
+                    return;
+                }
+            }
+            for (NPC npc : registry) {
+                npcs.addObject(new NPCTag(npc));
             }
             event.setReplacedObject(npcs.getObjectAttribute(attribute.fulfill(1)));
             return;

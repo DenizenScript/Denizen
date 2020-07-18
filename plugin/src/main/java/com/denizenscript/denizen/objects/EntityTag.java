@@ -36,6 +36,7 @@ import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.npc.ai.NPCHolder;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -109,11 +110,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         if (!CitizensAPI.hasImplementation()) {
             return false;
         }
-        NPC npc = CitizensAPI.getNPCRegistry().getNPC(entity);
-        if (npc == null) {
+        if (!(entity instanceof NPCHolder)) {
             return false;
         }
-        if (npc.getOwningRegistry() != CitizensAPI.getNPCRegistry()) {
+        NPC npc = ((NPCHolder) entity).getNPC();
+        if (npc == null) {
             return false;
         }
         return true;
@@ -996,13 +997,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
 
         // Check if entity is an NPC
         if (npc != null) {
-            return "n@" + npc.getId();
+            return npc.identify();
         }
 
         // Check if entity is a Player or is spawned
         if (entity != null) {
             if (isPlayer()) {
-                return "p@" + getPlayer().getUniqueId();
+                return getDenizenPlayer().identify();
             }
 
             // TODO:

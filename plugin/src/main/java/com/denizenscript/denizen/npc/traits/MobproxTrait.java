@@ -131,7 +131,7 @@ public class MobproxTrait extends Trait {
     @Override
     public void onSpawn() {
         liveEnt = (LivingEntity) getNPC().getEntity();
-        dnpc = NPCTag.mirrorCitizensNPC(getNPC());
+        dnpc = new NPCTag(getNPC());
         frange = DenizenAPI.getCurrentInstance().flagManager().getNPCFlag(dnpc.getId(), "mobprox_range");
         if (frange.isEmpty()) {
             frange.set("10");

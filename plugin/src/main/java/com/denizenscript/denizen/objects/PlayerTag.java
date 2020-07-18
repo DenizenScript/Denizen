@@ -253,7 +253,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         if (Depends.citizens != null && CitizensAPI.hasImplementation()) {
             NPC npc = CitizensAPI.getDefaultNPCSelector().getSelected(getPlayerEntity());
             if (npc != null) {
-                return NPCTag.mirrorCitizensNPC(npc);
+                return new NPCTag(npc);
             }
         }
         return null;

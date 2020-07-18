@@ -63,7 +63,7 @@ public class WalkCommandCitizensEvents implements Listener {
                     tally.remove(x--);
                 }
             }
-            tally.remove(NPCTag.mirrorCitizensNPC(e.getNPC()));
+            tally.remove(new NPCTag(e.getNPC()));
             if (tally.isEmpty()) {
                 Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), () -> entry.setFinished(true), 1);
                 WalkCommand.held.remove(i--);

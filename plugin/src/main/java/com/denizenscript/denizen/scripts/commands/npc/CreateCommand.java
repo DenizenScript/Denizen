@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPCRegistry;
 import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
@@ -18,24 +19,28 @@ public class CreateCommand extends AbstractCommand {
 
     public CreateCommand() {
         setName("create");
-        setSyntax("create [<entity>] [<name>] (<location>) (traits:<trait>|...)");
-        setRequiredArguments(1, 4);
+        setSyntax("create [<entity>] [<name>] (<location>) (traits:<trait>|...) (registry:<name>)");
+        setRequiredArguments(1, 5);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Create
-    // @Syntax create [<entity>] [<name>] (<location>) (traits:<trait>|...)
+    // @Syntax create [<entity>] [<name>] (<location>) (traits:<trait>|...) (registry:<name>)
     // @Required 1
-    // @Maximum 4
+    // @Maximum 5
     // @Plugin Citizens
     // @Short Creates a new NPC, and optionally spawns it at a location.
     // @Group npc
     //
     // @Description
-    // Creates an npc which the entity type specified, or specify an existing npc to create a copy. If no location
-    // is specified the npc is created despawned. Use the 'save:<savename>' argument to return the npc for later
-    // use in a script.
+    // Creates an npc which the entity type specified, or specify an existing npc to create a copy.
+    // If no location is specified the npc is created despawned.
+    // Use the 'save:<savename>' argument to return the npc for later use in a script.
+    //
+    // Optionally specify a list of traits to immediately apply when creating the NPC.
+    //
+    // Optionally specify a custom registry to create the NPC into.
     //
     // @Tags
     // <server.npcs>
@@ -52,9 +57,7 @@ public class CreateCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("entity_type")
                     && arg.matchesArgumentType(EntityTag.class)) {
                 // Avoid duplication of objects
@@ -75,11 +78,14 @@ public class CreateCommand extends AbstractCommand {
                     && arg.matchesPrefix("t", "trait", "traits")) {
                 scriptEntry.addObject("traits", arg.asType(ListTag.class));
             }
+            else if (!scriptEntry.hasObject("registry")
+                    && arg.matchesPrefix("registry")) {
+                scriptEntry.addObject("registry", arg.asElement());
+            }
             else {
                 arg.reportUnhandled();
             }
         }
-
         if (!scriptEntry.hasObject("name")) {
             throw new InvalidArgumentsException("Must specify a name!");
         }
@@ -90,32 +96,33 @@ public class CreateCommand extends AbstractCommand {
 
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-
         ElementTag name = scriptEntry.getElement("name");
         EntityTag type = scriptEntry.getObjectTag("entity_type");
         LocationTag loc = scriptEntry.getObjectTag("spawn_location");
         ListTag traits = scriptEntry.getObjectTag("traits");
-
+        ElementTag registry = scriptEntry.getElement("registry");
         if (scriptEntry.dbCallShouldDebug()) {
-
             Debug.report(scriptEntry, getName(), name.debug() + type.debug() + (loc != null ? loc.debug() : "")
-                    + (traits != null ? traits.debug() : ""));
-
+                    + (traits != null ? traits.debug() : "") + (registry != null ? registry.debug() : ""));
         }
-
         NPCTag created;
         if (!type.isGeneric() && type.isCitizensNPC()) {
             created = new NPCTag(type.getDenizenNPC().getCitizen().clone());
             created.getCitizen().setName(name.asString());
         }
         else {
-            created = NPCTag.mirrorCitizensNPC(CitizensAPI.getNPCRegistry()
-                    .createNPC(type.getBukkitEntityType(), name.asString()));
+            NPCRegistry actualRegistry = CitizensAPI.getNPCRegistry();
+            if (registry != null) {
+                actualRegistry = NPCTag.getRegistryByName(registry.asString());
+                if (actualRegistry == null) {
+                    Debug.echoError("Invalid registry name '" + registry.asString() + "'.");
+                    return;
+                }
+            }
+            created = new NPCTag(actualRegistry.createNPC(type.getBukkitEntityType(), name.asString()));
         }
-
         // Add the created NPC into the script entry so it can be utilized if need be.
         scriptEntry.addObject("created_npc", created);
-
         if (created.isSpawned()) {
             if (loc != null) {
                 created.getCitizen().teleport(loc, PlayerTeleportEvent.TeleportCause.PLUGIN);

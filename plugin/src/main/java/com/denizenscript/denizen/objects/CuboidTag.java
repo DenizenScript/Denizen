@@ -1376,7 +1376,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             registerTag("_npcs", (attribute, cuboid) -> {
                 ArrayList<NPCTag> npcs = new ArrayList<>();
                 for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                    NPCTag dnpc = NPCTag.mirrorCitizensNPC(npc);
+                    NPCTag dnpc = new NPCTag(npc);
                     if (cuboid.isInsideCuboid(dnpc.getLocation())) {
                         npcs.add(dnpc);
                     }

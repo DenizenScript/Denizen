@@ -110,7 +110,7 @@ public class HealthTrait extends Trait implements Listener {
     }
 
     public Location getRespawnLocation() {
-        TagContext context = new BukkitTagContext(null, NPCTag.mirrorCitizensNPC(npc), null, false, null);
+        TagContext context = new BukkitTagContext(null, new NPCTag(npc), null, false, null);
         return LocationTag.valueOf(TagManager.tag(respawnLocation, context), context);
     }
 

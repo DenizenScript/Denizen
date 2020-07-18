@@ -25,9 +25,11 @@ import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.ai.TeleportStuckAction;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.npc.NPCRegistry;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Equipment;
 import net.citizensnpcs.api.trait.trait.Owner;
+import net.citizensnpcs.npc.ai.NPCHolder;
 import net.citizensnpcs.npc.skin.SkinnableEntity;
 import net.citizensnpcs.trait.Anchors;
 import net.citizensnpcs.trait.LookClose;
@@ -63,12 +65,21 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
     //
     // -->
 
-    public static NPCTag mirrorCitizensNPC(NPC npc) {
-        return new NPCTag(npc);
+    public static NPCRegistry getRegistryByName(String name) {
+        NPCRegistry registry = CitizensAPI.getNamedNPCRegistry(name);
+        if (registry != null) {
+            return registry;
+        }
+        for (NPCRegistry possible : CitizensAPI.getNPCRegistries()) {
+            if (possible.getName().equals(name)) {
+                return possible;
+            }
+        }
+        return null;
     }
 
     public static NPCTag fromEntity(Entity entity) {
-        return mirrorCitizensNPC(CitizensAPI.getNPCRegistry().getNPC(entity));
+        return new NPCTag(((NPCHolder) entity).getNPC());
     }
 
     @Deprecated
@@ -81,73 +92,59 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         if (string == null) {
             return null;
         }
-
-        ////////
-        // Match NPC id
-
-        string = string.toUpperCase().replace("N@", "");
-        NPC npc;
-        if (ArgumentHelper.matchesInteger(string)) {
-            int id = Integer.parseInt(string);
-
-            npc = CitizensAPI.getNPCRegistry().getById(id);
+        if (string.startsWith("n@")) {
+            string = string.substring("n@".length());
+        }
+        NPCRegistry registry;
+        int commaIndex = string.indexOf(',');
+        String idText = string;
+        if (commaIndex == -1) {
+            registry = CitizensAPI.getNPCRegistry();
+        }
+        else {
+            registry = getRegistryByName(string.substring(commaIndex + 1));
+            if (registry == null) {
+                if (context == null || context.debug) {
+                    Debug.echoError("Unknown NPC registry for '" + string + "'.");
+                }
+                return null;
+            }
+            idText = string.substring(0, commaIndex);
+        }
+        if (ArgumentHelper.matchesInteger(idText)) {
+            int id = Integer.parseInt(idText);
+            NPC npc = registry.getById(id);
             if (npc != null) {
                 return new NPCTag(npc);
             }
+            else if (context == null || context.debug) {
+                Debug.echoError("NPC '" + id + "' does not exist in " + registry.getName() + ".");
+            }
         }
-
         return null;
     }
 
     public static boolean matches(String string) {
-
-        // If using object notation, assume it's valid
         if (CoreUtilities.toLowerCase(string).startsWith("n@")) {
             return true;
         }
-
-        // Otherwise, let's do checks
-        string = string.toUpperCase().replace("N@", "");
-        NPC npc;
-        if (ArgumentHelper.matchesInteger(string)) {
-            npc = CitizensAPI.getNPCRegistry().getById(Integer.parseInt(string));
-            if (npc != null) {
-                return true;
-            }
-        }
-        else {
-            for (NPC test : CitizensAPI.getNPCRegistry()) {
-                if (test.getName().equalsIgnoreCase(string)) {
-                    return true;
-                }
-            }
+        if (valueOf(string, CoreUtilities.noDebugContext) != null) {
+            return true;
         }
         return false;
     }
 
     public boolean isValid() {
-        return getCitizen() != null;
+        return npc != null && npc.getOwningRegistry().getById(npc.getId()) != null;
     }
 
-    private int npcid = -1;
-    private final org.bukkit.Location locationCache = new org.bukkit.Location(null, 0, 0, 0);
+    public NPC npc;
 
     public NPCTag(NPC citizensNPC) {
-        if (citizensNPC != null) {
-            this.npcid = citizensNPC.getId();
-        }
+        this.npc = citizensNPC;
     }
 
     public NPC getCitizen() {
-        if (npcid < 0) {
-            return null;
-        }
-        NPC npc = CitizensAPI.getNPCRegistry().getById(npcid);
-        if (npc == null) {
-            //dB.echoError(new RuntimeException("StackTraceOutput"));
-            //dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC. " +
-            //        "Has this NPC been removed?");
-        }
         return npc;
     }
 
@@ -218,7 +215,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
     }
 
     public int getId() {
-        return npcid;
+        return npc.getId();
     }
 
     public String getName() {
@@ -281,8 +278,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
     }
 
     public boolean isSpawned() {
-        NPC npc = CitizensAPI.getNPCRegistry().getById(npcid);
-        return npc != null && npc.isSpawned();
+        return npc.isSpawned();
     }
 
     public String getOwner() {
@@ -324,14 +320,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         return npc.getTrait(FishingTrait.class);
     }
 
-    public HealthTrait getHealthTrait() {
-        NPC npc = getCitizen();
-        if (!npc.hasTrait(HealthTrait.class)) {
-            npc.addTrait(HealthTrait.class);
-        }
-        return npc.getTrait(HealthTrait.class);
-    }
-
     public net.citizensnpcs.api.trait.trait.Inventory getInventoryTrait() {
         NPC npc = getCitizen();
         if (!npc.hasTrait(net.citizensnpcs.api.trait.trait.Inventory.class)) {
@@ -366,19 +354,10 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
 
     public String action(String actionName, PlayerTag player, Map<String, ObjectTag> context) {
         if (getCitizen() != null) {
-            if (getCitizen().hasTrait(AssignmentTrait.class))
-            // Return the result from the ActionHandler
-            {
-                return DenizenAPI.getCurrentInstance().getNPCHelper()
-                        .getActionHandler().doAction(
-                                actionName,
-                                this,
-                                player,
-                                getAssignmentTrait().getAssignment(),
-                                context);
+            if (getCitizen().hasTrait(AssignmentTrait.class)) {
+                return DenizenAPI.getCurrentInstance().getNPCHelper().getActionHandler().doAction(actionName, this, player, getAssignmentTrait().getAssignment(), context);
             }
         }
-
         return "none";
     }
 
@@ -395,7 +374,12 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
 
     @Override
     public String debuggable() {
-        return "n@" + npcid + "<GR> (" + getName() + ")";
+        if (npc.getOwningRegistry() == CitizensAPI.getNPCRegistry()) {
+            return "n@" + npc.getId() + "<GR> (" + getName() + ")";
+        }
+        else {
+            return "n@" + npc.getId() + "<G>," + npc.getOwningRegistry().getName() + "<GR> (" + getName() + ")";
+        }
     }
 
     @Override
@@ -410,7 +394,12 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
 
     @Override
     public String identify() {
-        return "n@" + npcid;
+        if (npc.getOwningRegistry() == CitizensAPI.getNPCRegistry()) {
+            return "n@" + npc.getId();
+        }
+        else {
+            return "n@" + npc.getId() + "," + npc.getOwningRegistry().getName();
+        }
     }
 
     @Override
@@ -1145,6 +1134,16 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 return null;
             }
             return new EntityTag(object.getNavigator().getEntityTarget().getTarget());
+        });
+
+        // <--[tag]
+        // @attribute <NPCTag.registry_name>
+        // @returns ElementTag
+        // @description
+        // Returns the name of the registry this NPC came from.
+        // -->
+        registerTag("registry_name", (attribute, object) -> {
+            return new ElementTag(object.getCitizen().getOwningRegistry().getName());
         });
 
         registerTag("navigator", (attribute, object) -> {
