@@ -671,10 +671,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // @returns ElementTag
         // @description
         // Returns the localized name of the material.
-        // Note that this is a magic Denizen tool, and unlike other format codes (like 'bold') does not appear in Spigot's API or the old Minecraft chat system.
-        // This instead generates the special modern Minecraft JSON codes for translatable text through the Denizen message processor.
-        // As such, it only works when sent through certain Denizen commands (narrate, announce, etc) or mechanisms (like ItemTag.book).
-        // This will not be valid anywhere that isn't in the chat bar or a book (titles, items, etc. will not work).
+        // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         registerTag("translated_name", (attribute, object) -> {
             String key = object.material.getKey().getKey();

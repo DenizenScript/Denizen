@@ -13,6 +13,26 @@ import java.util.List;
 
 public class FormattedTextHelper {
 
+    // <--[language]
+    // @name Denizen Text Formatting
+    // @group Denizen Magic
+    // @description
+    // Denizen provides a variety of special chat format options like "on_hover" and "on_click".
+    // These options exist within Denizen and do not appear in the historical Minecraft legacy chat format that most plugins and systems read.
+    // That legacy system has 16 colors (0-9, A-F) and a few toggleable formats (bold, italic, etc). It does not contain anything that needs more than just an on/off.
+    //
+    // Modern Minecraft, however, supports a JSON based "raw" message format that can do click events, hover events, full RGB colors, etc.
+    //
+    // Denizen therefore has its own internal system that works like the legacy format system, but also supports the new options normally only available as 'raw JSON'.
+    //
+    // Because it is entirely processed within Denizen, these options only work within Denizen, when performing actions that support raw JSON input.
+    // This magic tool exists to let you write messages without having to write the messy JSON.
+    //
+    // Be aware that many inputs do not support raw JSON, and as such are limited only the historical Minecraft legacy format.
+    // Also be aware that click events, hover evers, etc. are exclusively limited to the chat bar and the pages of books, as you cannot mouse over anything else.
+    // -->
+
+
     public static String escape(String input) {
         return input.replace("&", "&amp").replace(";", "&sc").replace("[", "&lb").replace("]", "&rb").replace(String.valueOf(ChatColor.COLOR_CHAR), "&ss");
     }
