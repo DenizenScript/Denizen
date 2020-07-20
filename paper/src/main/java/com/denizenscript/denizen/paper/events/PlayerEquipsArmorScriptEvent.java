@@ -34,6 +34,9 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
     // <context.new_item> returns the ItemTag that is now in the slot.
     // <context.old_item> returns the ItemTag that used to be in the slot.
     // <context.slot> returns the name of the slot.
+    //
+    // @Player Always.
+    //
     // -->
 
     public static HashMap<String, PlayerArmorChangeEvent.SlotType> slotsByName = new HashMap<>();

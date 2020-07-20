@@ -28,7 +28,7 @@ public class ChunkUnloadScriptEvent extends BukkitScriptEvent implements Listene
     // @Triggers when a chunk is unloaded
     //
     // @Context
-    // <context.chunk> returns the loading chunk.
+    // <context.chunk> returns the unloading chunk.
     //
     // -->
 

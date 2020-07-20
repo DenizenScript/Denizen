@@ -3,7 +3,9 @@ package com.denizenscript.denizen.events.block;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,7 +33,7 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
     // <context.item> returns the ItemTag burnt.
     //
     // @Determine
-    // ElementTag(Number) to set the burn time for this fuel.
+    // DurationTag to set the burn time for this fuel.
     //
     // -->
 
@@ -77,6 +79,9 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
         if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
             event.setBurnTime(((ElementTag) determinationObj).asInt());
             return true;
+        }
+        else if (DurationTag.matches(determinationObj.toString())) {
+            event.setBurnTime(DurationTag.valueOf(determinationObj.toString(), getTagContext(path)).getTicksAsInt());
         }
         return super.applyDetermination(path, determinationObj);
     }

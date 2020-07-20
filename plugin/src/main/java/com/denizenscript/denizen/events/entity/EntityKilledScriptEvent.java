@@ -7,8 +7,10 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -51,7 +53,7 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
     // <context.final_damage> returns an ElementTag(Decimal) of the amount of damage dealt, after armor is calculated.
     // <context.damager> returns the EntityTag damaging the other entity.
     // <context.projectile> returns a EntityTag of the projectile shot by the damager, if any.
-    // <context.damage_TYPE> returns the damage dealt by a specific damage type where TYPE can be any of: BASE, HARD_HAT, BLOCKING, ARMOR, RESISTANCE, MAGIC, ABSORPTION.
+    // <context.damage_type_map> returns a MapTag the damage dealt by a specific damage type with keys: BASE, HARD_HAT, BLOCKING, ARMOR, RESISTANCE, MAGIC, ABSORPTION.
     //
     // @Determine
     // ElementTag(Decimal) to set the amount of damage the entity receives, instead of dying.
@@ -166,7 +168,15 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
         else if (name.equals("projectile") && projectile != null) {
             return projectile.getDenizenObject();
         }
+        else if (name.equals("damage_type_map")) {
+            MapTag map = new MapTag();
+            for (EntityDamageEvent.DamageModifier dm : EntityDamageEvent.DamageModifier.values()) {
+                map.putObject(dm.name(), new ElementTag(event.getDamage(dm)));
+            }
+            return map;
+        }
         else if (name.startsWith("damage_")) {
+            Deprecations.damageEventTypeMap.warn();
             for (EntityDamageEvent.DamageModifier dm : EntityDamageEvent.DamageModifier.values()) {
                 if (name.equals("damage_" + CoreUtilities.toLowerCase(dm.name()))) {
                     return new ElementTag(event.getDamage(dm));

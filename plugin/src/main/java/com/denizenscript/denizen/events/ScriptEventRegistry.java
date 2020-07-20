@@ -4,6 +4,7 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.block.*;
 import com.denizenscript.denizen.events.entity.*;
 import com.denizenscript.denizen.events.item.*;
+import com.denizenscript.denizen.events.npc.NPCSpawnScriptEvent;
 import com.denizenscript.denizen.events.player.*;
 import com.denizenscript.denizen.events.server.*;
 import com.denizenscript.denizen.events.vehicle.*;
@@ -80,15 +81,17 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new FireworkBurstsScriptEvent());
         ScriptEvent.registerScriptEvent(new HangingBreaksScriptEvent());
         ScriptEvent.registerScriptEvent(new HorseJumpsScriptEvent());
-        if (Depends.citizens != null) {
-            ScriptEvent.registerScriptEvent(new NPCSpawnScriptEvent());
-        }
         ScriptEvent.registerScriptEvent(new PigZappedScriptEvent());
         ScriptEvent.registerScriptEvent(new ProjectileHitsScriptEvent());
         ScriptEvent.registerScriptEvent(new ProjectileLaunchedScriptEvent());
         ScriptEvent.registerScriptEvent(new SheepDyedScriptEvent());
         ScriptEvent.registerScriptEvent(new SheepRegrowsScriptEvent());
         ScriptEvent.registerScriptEvent(new SlimeSplitsScriptEvent());
+
+        // NPC events
+        if (Depends.citizens != null) {
+            ScriptEvent.registerScriptEvent(new NPCSpawnScriptEvent());
+        }
 
         // Item events
         ScriptEvent.registerScriptEvent(new InventoryPicksUpItemScriptEvent());

@@ -28,7 +28,7 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
     // @Context
     // <context.entity> returns the EntityTag of the creeper.
     // <context.lightning> returns the EntityTag of the lightning.
-    // <context.cause> returns an ElementTag of the cause for the creeper being powered.
+    // <context.cause> returns an ElementTag of the cause for the creeper being powered. Refer to <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/CreeperPowerEvent.PowerCause.html>.
     //
     // -->
 

@@ -29,8 +29,8 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Context
     // <context.location> returns the LocationTag of the block that was set on fire.
-    // <context.entity> returns the EntityTag of the entity that ignited the block.
-    // <context.origin_location> returns the LocationTag of the fire block that ignited this block.
+    // <context.entity> returns the EntityTag of the entity that ignited the block (if any).
+    // <context.origin_location> returns the LocationTag of the fire block that ignited this block (if any).
     // <context.cause> returns an ElementTag of the cause of the event: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/block/BlockIgniteEvent.IgniteCause.html>.
     //
     // -->

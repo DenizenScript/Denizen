@@ -35,7 +35,7 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
     // @Context
     // <context.world> returns the WorldTag the structure grew in.
     // <context.location> returns the LocationTag the structure grew at.
-    // <context.structure> returns an ElementTag of the structure's type.
+    // <context.structure> returns an ElementTag of the structure's type. Refer to <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/StructureType.html>.
     // <context.blocks> returns a ListTag of all block locations to be modified.
     // <context.new_materials> returns a ListTag of the new block materials, to go with <context.blocks>.
     //

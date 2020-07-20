@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.events.entity;
+package com.denizenscript.denizen.events.npc;
 
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.NPCTag;
@@ -18,7 +18,7 @@ public class NPCSpawnScriptEvent extends BukkitScriptEvent implements Listener {
     //
     // @Regex ^on npc spawns$
     //
-    // @Group Entity
+    // @Group NPC
     //
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     //
@@ -28,6 +28,8 @@ public class NPCSpawnScriptEvent extends BukkitScriptEvent implements Listener {
     //
     // @Context
     // <context.location> returns the location the entity will spawn at.
+    //
+    // @NPC Always.
     //
     // -->
 

@@ -6,8 +6,10 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -55,7 +57,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     // <context.damage> returns an ElementTag(Decimal) of the amount of damage dealt.
     // <context.final_damage> returns an ElementTag(Decimal) of the amount of damage dealt, after armor is calculated.
     // <context.projectile> returns a EntityTag of the projectile, if one caused the event.
-    // <context.damage_TYPE> returns the damage dealt by a specific damage type where TYPE can be any of: BASE, HARD_HAT, BLOCKING, ARMOR, RESISTANCE, MAGIC, ABSORPTION.
+    // <context.damage_type_map> returns a MapTag the damage dealt by a specific damage type with keys: BASE, HARD_HAT, BLOCKING, ARMOR, RESISTANCE, MAGIC, ABSORPTION.
     //
     // @Determine
     // ElementTag(Decimal) to set the amount of damage the entity receives.
@@ -98,7 +100,6 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
         String attacker = cmd.equals("damages") ? path.eventArgLowerAt(0) :
                 path.eventArgLowerAt(2).equals("by") ? path.eventArgLowerAt(3) : "";
         String target = cmd.equals("damages") ? path.eventArgLowerAt(2) : path.eventArgLowerAt(0);
-
         if (!attacker.isEmpty()) {
             if (damager != null) {
                 if (!cause.asString().equals(attacker) && !tryEntity(projectile, attacker) && !tryEntity(damager, attacker)) {
@@ -111,19 +112,15 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
                 }
             }
         }
-
         if (!tryEntity(entity, target)) {
             return false;
         }
-
         if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
-
         if (!runWithCheck(path, held)) {
             return false;
         }
-
         return super.matches(path);
     }
 
@@ -167,7 +164,15 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
         else if (name.equals("projectile") && projectile != null) {
             return projectile.getDenizenObject();
         }
+        else if (name.equals("damage_type_map")) {
+            MapTag map = new MapTag();
+            for (EntityDamageEvent.DamageModifier dm : EntityDamageEvent.DamageModifier.values()) {
+                map.putObject(dm.name(), new ElementTag(event.getDamage(dm)));
+            }
+            return map;
+        }
         else if (name.startsWith("damage_")) {
+            Deprecations.damageEventTypeMap.warn();
             for (EntityDamageEvent.DamageModifier dm : EntityDamageEvent.DamageModifier.values()) {
                 if (name.equals("damage_" + CoreUtilities.toLowerCase(dm.name()))) {
                     return new ElementTag(event.getDamage(dm));

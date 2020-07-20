@@ -45,6 +45,8 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
     // <context.to> returns the location the player moved to.
     // <context.from> returns the location the player moved from (when available).
     //
+    // @Player Always.
+    //
     // -->
 
     public AreaEnterExitScriptEvent() {

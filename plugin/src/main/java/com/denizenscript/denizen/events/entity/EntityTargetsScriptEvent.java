@@ -31,7 +31,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Context
     // <context.entity> returns the targeting entity.
-    // <context.reason> returns the reason the entity changed targets.
+    // <context.reason> returns the reason the entity changed targets. Refer to <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EntityTargetEvent.TargetReason.html>.
     // <context.target> returns the targeted entity.
     //
     // @Determine

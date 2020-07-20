@@ -38,8 +38,8 @@ public class EntityPotionEffectScriptEvent extends BukkitScriptEvent implements 
     // <context.cause> returns the cause of the effect change, based on <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EntityPotionEffectEvent.Cause.html>
     // <context.action> returns the action of the effect changed, which can be 'added', 'changed', 'cleared', or 'removed'
     // <context.override> returns whether the new potion effect will override the old.
-    // <context.new_effect> returns the new potion effect (in the same format as <@link tag EntityTag.list_effects>).
-    // <context.old_effect> returns the new potion effect (in the same format as <@link tag EntityTag.list_effects>).
+    // <context.new_effect> returns the new potion effect (in the same format as <@link tag EntityTag.list_effects>) (if any).
+    // <context.old_effect> returns the old potion effect (in the same format as <@link tag EntityTag.list_effects>) (if any).
     // <context.effect_type> returns the name of the modified potion effect type.
     //
     // @Determine
