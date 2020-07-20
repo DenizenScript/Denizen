@@ -14,6 +14,7 @@ import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
@@ -27,13 +28,26 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import javax.crypto.SecretKey;
+import java.io.IOException;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.net.SocketAddress;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 public class DenizenNetworkManagerImpl extends NetworkManager {
+
+    public static void copyPacket(Packet<?> original, Packet<?> newPacket) {
+        try {
+            PacketDataSerializer copier = new PacketDataSerializer(Unpooled.buffer());
+            original.b(copier);
+            newPacket.a(copier);
+        }
+        catch (IOException ex) {
+            com.denizenscript.denizen.utilities.debugging.Debug.echoError(ex);
+        }
+    }
 
     public final NetworkManager oldManager;
     public final DenizenPacketListenerImpl packetListener;
@@ -154,11 +168,11 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         if (processAttachToForPacket(packet)
             || processHiddenEntitiesForPacket(packet)
             || processPacketHandlerForPacket(packet)
-            || processMirrorForPacket(packet)) {
+            || processMirrorForPacket(packet)
+            || processShowFakeForPacket(packet, genericfuturelistener)) {
             return;
         }
         processMirrorForPacket(packet);
-        processShowFakeForPacket(packet);
         processBlockLightForPacket(packet);
         processCustomNameForPacket(packet);
         oldManager.sendPacket(packet, genericfuturelistener);
@@ -400,34 +414,39 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         return false;
     }
 
-    public void processShowFakeForPacket(Packet<?> packet) {
+    public boolean processShowFakeForPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
         try {
             if (packet instanceof PacketPlayOutMapChunk) {
                 FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(player.getUniqueID());
                 if (map == null) {
-                    return;
+                    return false;
                 }
                 int chunkX = CHUNKX_MAPCHUNK.getInt(packet);
                 int chunkZ = CHUNKZ_MAPCHUNK.getInt(packet);
                 ChunkCoordinate chunkCoord = new ChunkCoordinate(chunkX, chunkZ, player.getWorld().getWorld().getName());
                 List<FakeBlock> blocks = FakeBlock.getFakeBlocksFor(player.getUniqueID(), chunkCoord);
                 if (blocks == null) {
-                    return;
+                    return false;
                 }
-                FakeBlockHelper.handleMapChunkPacket((PacketPlayOutMapChunk) packet, blocks);
+                PacketPlayOutMapChunk newPacket = FakeBlockHelper.handleMapChunkPacket((PacketPlayOutMapChunk) packet, blocks);
+                oldManager.sendPacket(newPacket, genericfuturelistener);
+                return true;
             }
             else if (packet instanceof PacketPlayOutMultiBlockChange) {
                 FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(player.getUniqueID());
                 if (map == null) {
-                    return;
+                    return false;
                 }
                 ChunkCoordIntPair coord = (ChunkCoordIntPair) CHUNKCOORD_MULTIBLOCKCHANGE.get(packet);
                 ChunkCoordinate coordinateDenizen = new ChunkCoordinate(coord.x, coord.z, player.getWorld().getWorld().getName());
                 if (!map.byChunk.containsKey(coordinateDenizen)) {
-                    return;
+                    return false;
                 }
+                PacketPlayOutMultiBlockChange newPacket = new PacketPlayOutMultiBlockChange();
+                copyPacket(packet, newPacket);
                 LocationTag location = new LocationTag(player.getWorld().getWorld(), 0, 0, 0);
-                PacketPlayOutMultiBlockChange.MultiBlockChangeInfo[] changeArr = (PacketPlayOutMultiBlockChange.MultiBlockChangeInfo[]) INFOARRAY_MULTIBLOCKCHANGE.get(packet);
+                PacketPlayOutMultiBlockChange.MultiBlockChangeInfo[] originalChangeArr = (PacketPlayOutMultiBlockChange.MultiBlockChangeInfo[]) INFOARRAY_MULTIBLOCKCHANGE.get(newPacket);
+                PacketPlayOutMultiBlockChange.MultiBlockChangeInfo[] changeArr = Arrays.copyOf(originalChangeArr, originalChangeArr.length);
                 for (int i = 0; i < changeArr.length; i++) {
                     short blockInd = changeArr[i].b();
                     int x = blockInd & 0xF0;
@@ -438,16 +457,22 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                     location.setZ((coord.z << 4) + z);
                     FakeBlock block = map.byLocation.get(location);
                     if (block != null) {
-                        changeArr[i] = ((PacketPlayOutMultiBlockChange) packet).new MultiBlockChangeInfo(blockInd, FakeBlockHelper.getNMSState(block));
+                        changeArr[i] = newPacket.new MultiBlockChangeInfo(blockInd, FakeBlockHelper.getNMSState(block));
                     }
                 }
+                oldManager.sendPacket(newPacket, genericfuturelistener);
+                return true;
             }
             else if (packet instanceof PacketPlayOutBlockChange) {
                 BlockPosition pos = (BlockPosition) BLOCKPOS_BLOCKCHANGE.get(packet);
                 LocationTag loc = new LocationTag(player.getWorld().getWorld(), pos.getX(), pos.getY(), pos.getZ());
                 FakeBlock block = FakeBlock.getFakeBlockFor(player.getUniqueID(), loc);
                 if (block != null) {
-                    ((PacketPlayOutBlockChange) packet).block = FakeBlockHelper.getNMSState(block);
+                    PacketPlayOutBlockChange newPacket = new PacketPlayOutBlockChange();
+                    copyPacket(packet, newPacket);
+                    newPacket.block = FakeBlockHelper.getNMSState(block);
+                    oldManager.sendPacket(newPacket, genericfuturelistener);
+                    return true;
                 }
             }
             else if (packet instanceof PacketPlayOutBlockBreak) {
@@ -455,13 +480,18 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 LocationTag loc = new LocationTag(player.getWorld().getWorld(), pos.getX(), pos.getY(), pos.getZ());
                 FakeBlock block = FakeBlock.getFakeBlockFor(player.getUniqueID(), loc);
                 if (block != null) {
-                    BLOCKDATA_BLOCKBREAK.set(packet, FakeBlockHelper.getNMSState(block));
+                    PacketPlayOutBlockBreak newPacket = new PacketPlayOutBlockBreak();
+                    copyPacket(packet, newPacket);
+                    BLOCKDATA_BLOCKBREAK.set(newPacket, FakeBlockHelper.getNMSState(block));
+                    oldManager.sendPacket(newPacket, genericfuturelistener);
+                    return true;
                 }
             }
         }
         catch (Exception ex) {
             Debug.echoError(ex);
         }
+        return false;
     }
 
     public void processBlockLightForPacket(Packet<?> packet) {

@@ -59,7 +59,8 @@ public class ItemPotion implements Property {
                 .append(effect.getAmplifier()).append(",")
                 .append(effect.getDuration()).append(",")
                 .append(effect.isAmbient()).append(",")
-                .append(effect.hasParticles());
+                .append(effect.hasParticles()).append(",")
+                .append(effect.hasIcon());
         return sb.toString();
     }
 
@@ -328,11 +329,10 @@ public class ItemPotion implements Property {
         // @input ListTag
         // @description
         // Sets the potion's potion effect(s).
-        // Input is a formed like: Type,Upgraded,Extended(,Color)|Effect,Amplifier,Duration,Ambient,Particles(,Icon)|...
+        // Input is a formed like: Type,Upgraded,Extended(,Color)|Effect,Amplifier,Duration,Ambient,Particles,Icon|...
         // For example: SPEED,true,false|SPEED,2,200,false,true,true
         // Second example: REGEN,false,true,RED|REGENERATION,1,500,true,false,false
         // Color can also be used like "255&comma128&comma0" (r,g,b but replace ',' with '&comma').
-        // NOTE: In pre-1.13 Minecraft versions, you could set a color in the custom effects list instead of "icon".
         // The primary type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html>.
         // The effect type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
         // @tags

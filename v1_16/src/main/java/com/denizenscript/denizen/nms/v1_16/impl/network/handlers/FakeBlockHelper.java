@@ -9,6 +9,7 @@ import net.minecraft.server.v1_16_R1.*;
 import org.bukkit.craftbukkit.v1_16_R1.block.data.CraftBlockData;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -52,15 +53,18 @@ public class FakeBlockHelper {
         return -1;
     }
 
-    public static void handleMapChunkPacket(PacketPlayOutMapChunk packet, List<FakeBlock> blocks) {
+    public static PacketPlayOutMapChunk handleMapChunkPacket(PacketPlayOutMapChunk originalPacket, List<FakeBlock> blocks) {
         try {
+            PacketPlayOutMapChunk packet = new PacketPlayOutMapChunk();
+            DenizenNetworkManagerImpl.copyPacket(originalPacket, packet);
             // TODO: properly update HeightMap?
             int bitmask = BITMASK_MAPCHUNK.getInt(packet);
             byte[] data = (byte[]) DATA_MAPCHUNK.get(packet);
             PacketDataSerializer serial = new PacketDataSerializer(Unpooled.wrappedBuffer(data));
             PacketDataSerializer outputSerial = new PacketDataSerializer(Unpooled.buffer(data.length));
             boolean isFull = packet.f();
-            List<NBTTagCompound> blockEntities = (List<NBTTagCompound>) BLOCKENTITIES_MAPCHUNK.get(packet);
+            List<NBTTagCompound> blockEntities = new ArrayList<>((List<NBTTagCompound>) BLOCKENTITIES_MAPCHUNK.get(packet));
+            BLOCKENTITIES_MAPCHUNK.set(packet, blockEntities);
             ListIterator<NBTTagCompound> iterator = blockEntities.listIterator();
             while (iterator.hasNext()) {
                 NBTTagCompound blockEnt = iterator.next();
@@ -161,9 +165,11 @@ public class FakeBlockHelper {
             }
             byte[] outputBytes = outputSerial.array();
             DATA_MAPCHUNK.set(packet, outputBytes);
+            return packet;
         }
         catch (Exception ex) {
             Debug.echoError(ex);
         }
+        return null;
     }
 }

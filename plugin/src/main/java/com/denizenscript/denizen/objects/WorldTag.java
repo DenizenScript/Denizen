@@ -719,7 +719,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @attribute <WorldTag.border_damage>
         // @returns ElementTag(Decimal)
         // @description
-        // returns the size of the world border in this world.
+        // returns the amount of damage caused by crossing the world border in this world.
         // -->
         registerTag("border_damage", (attribute, object) -> {
             return new ElementTag(object.getWorld().getWorldBorder().getDamageAmount());
