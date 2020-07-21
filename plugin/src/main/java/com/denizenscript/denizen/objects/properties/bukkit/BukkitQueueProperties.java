@@ -42,7 +42,7 @@ public class BukkitQueueProperties implements Property {
         // <--[tag]
         // @attribute <QueueTag.npc>
         // @returns NPCTag
-        // @mechanism ScriptQueue.linked_npc
+        // @mechanism QueueTag.linked_npc
         // @description
         // Returns the NPCTag linked to a queue.
         // -->
@@ -63,7 +63,7 @@ public class BukkitQueueProperties implements Property {
         // <--[tag]
         // @attribute <QueueTag.player>
         // @returns PlayerTag
-        // @mechanism ScriptQueue.linked_player
+        // @mechanism QueueTag.linked_player
         // @description
         // Returns the PlayerTag linked to a queue.
         // -->

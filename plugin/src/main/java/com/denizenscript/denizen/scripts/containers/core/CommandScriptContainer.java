@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.utilities.command.scripted.DenizenCommand;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -11,13 +12,16 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
+import com.denizenscript.denizencore.scripts.queues.ContextSource;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
+import com.denizenscript.denizencore.utilities.text.StringHolder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -93,29 +97,29 @@ public class CommandScriptContainer extends ScriptContainer {
     //   allowed help:
     //   - determine <player.has_flag[special_allowed_help_flag]||<context.server>>
     //
-    //   # The procedure-based script that will run when a player uses tab completion to predict words.
-    //   # This should return a ListTag of words that the player can tab through, based on the arguments they have already typed.
-    //   #Leaving this node out will result in using Bukkit's built-in tab completion.
+    //   # You can optionally specify tab completions on a per-argument basis.
     //   # Available context:
     //   # <context.args> returns a list of input arguments.
     //   # <context.raw_args> returns all the arguments as raw text.
     //   # <context.server> returns whether the server is using tab completion (a player if false).
     //   # <context.alias> returns the command alias being used.
-    //   # | This key is great to have when used well, but if you're not going to take full advantage of it and write a complex handler, leave it off.
+    //   # | This key is great to have when used well, but is not required.
+    //   tab completions:
+    //     # This will complete "alpha" and "beta" for the first argument
+    //     1: alpha|beta
+    //     # This will complete any online player name for the second argument
+    //     2: <server.online_players.parse[name]>
+    //     # This will allow flags "-a", "-b", or "-c" to be entered in the third, fourth, or fifth argument.
+    //     3 4 5: -a|-b|-c
+    //     # Any argument other than the ones explicitly listed will be handled here with a tab complete that just says 'StopTyping'.
+    //     default: StopTyping
+    //
+    //   # You can also optionally use the 'tab complete' key to build custom procedure-style tab complete logic
+    //   # if the simply numeric argument basis isn't sufficient.
+    //   # Has the same context available as 'tab completions'.
+    //   # | Most scripts should leave this key off, though it can be useful to some.
     //   tab complete:
-    //   - if !<player.is_op||<context.server>>:
-    //     - stop
-    //   # This is a (temporary until we have something better) trick to figure out which arg is being typed in
-    //   - choose "<context.raw_args.to_list.count[ ]>":
-    //     # The first argument
-    //     - case 0:
-    //       - determine alpha|beta
-    //     # The second argument
-    //     - case 1:
-    //       - determine <server.online_players.parse[name].include[pizza|potato|anchovy].filter[starts_with[<context.args.last>]]>
-    //     # All additional arguments
-    //     - default:
-    //       - determine <list>
+    //   - determine some|dynamic|logic|here
     //
     //   # The script that will run when the command is executed.
     //   # No, you do not need '- determine fulfilled' or anything of the sort, since the command is fully registered.
@@ -141,7 +145,34 @@ public class CommandScriptContainer extends ScriptContainer {
     public CommandScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
         CommandScriptHelper.registerDenizenCommand(new DenizenCommand(this));
+        if (contains("tab complete")) {
+            hasProcStyleTabComplete = true;
+        }
+        if (contains("tab completions")) {
+            tabCompletionTaggables = new HashMap<>();
+            YamlConfiguration section = getConfigurationSection("tab completions");
+            for (StringHolder key : section.getKeys(false)) {
+                String val = section.getString(key.str);
+                if (key.str.equals("default")) {
+                    tabCompletionTaggables.put(-1, val);
+                }
+                else {
+                    try {
+                        for (String num : key.str.split(" ")) {
+                            tabCompletionTaggables.put(Integer.parseInt(num), val);
+                        }
+                    }
+                    catch (NumberFormatException ex) {
+                        Debug.echoError("Invalid tab completion argument number key '" + key.str + "'.");
+                    }
+                }
+            }
+        }
     }
+
+    public boolean hasProcStyleTabComplete = false;
+
+    public HashMap<Integer, String> tabCompletionTaggables;
 
     public String getCommandName() {
         return CoreUtilities.toLowerCase(getString("name", null));
@@ -196,23 +227,38 @@ public class CommandScriptContainer extends ScriptContainer {
         return queue.determinations != null && queue.determinations.size() > 0 && queue.determinations.get(0).equalsIgnoreCase("true");
     }
 
-    public List<String> runTabCompleteProcedure(PlayerTag player, NPCTag npc, Map<String, ObjectTag> context) {
-        List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(player, npc), "tab complete");
-
-        ScriptQueue queue = new InstantQueue(getName()).addEntries(entries);
+    public List<String> runTabCompleteProcedure(PlayerTag player, NPCTag npc, Map<String, ObjectTag> context, String[] originalArguments) {
+        BukkitTagContext tagContext = new BukkitTagContext(player, npc, new ScriptTag(this));
+        ContextSource contextSrc = null;
         if (context != null) {
             OldEventManager.OldEventContextSource oecs = new OldEventManager.OldEventContextSource();
             oecs.contexts = context;
-            queue.setContextSource(oecs);
+            tagContext.contextSource = oecs;
+            contextSrc = oecs;
         }
-        queue.start();
-        if (queue.determinations != null && queue.determinations.size() > 0) {
-            BukkitTagContext tagContext = new BukkitTagContext(player, npc, new ScriptTag(this));
-            return ListTag.getListFor(queue.determinations.getObject(0), tagContext);
+        ListTag list = new ListTag();
+        if (tabCompletionTaggables != null) {
+            int argCount = Math.max(originalArguments.length, 1);
+            String taggable = tabCompletionTaggables.get(argCount);
+            if (taggable == null) {
+                taggable = tabCompletionTaggables.get(-1);
+            }
+            if (taggable != null) {
+                list.addAll(ListTag.getListFor(TagManager.tagObject(taggable, tagContext), tagContext));
+            }
         }
-        else {
-            return new ArrayList<>();
+        if (hasProcStyleTabComplete) {
+            List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(player, npc), "tab complete");
+            ScriptQueue queue = new InstantQueue(getName()).addEntries(entries);
+            if (contextSrc != null) {
+                queue.setContextSource(contextSrc);
+            }
+            queue.start();
+            if (queue.determinations != null && queue.determinations.size() > 0) {
+                list.addAll(ListTag.getListFor(queue.determinations.getObject(0), tagContext));
+            }
         }
+        return list;
     }
 
     public boolean hasAllowedHelpProcedure() {
@@ -220,6 +266,6 @@ public class CommandScriptContainer extends ScriptContainer {
     }
 
     public boolean hasTabCompleteProcedure() {
-        return contains("tab complete");
+        return hasProcStyleTabComplete || tabCompletionTaggables != null;
     }
 }

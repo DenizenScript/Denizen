@@ -206,6 +206,6 @@ public class DenizenCommand extends Command {
                 npc = new NPCTag(citizen);
             }
         }
-        return script.runTabCompleteProcedure(player, npc, context);
+        return script.runTabCompleteProcedure(player, npc, context, arguments);
     }
 }

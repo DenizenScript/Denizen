@@ -108,7 +108,7 @@ public class ItemColor implements Property {
         // @name color
         // @input ColorTag
         // @description
-        // Sets the leather armor item's dye color or the potion item's color in the format RED,GREEN,BLUE.
+        // Sets the leather armor item's dye color or the potion item's color.
         // @tags
         // <ItemTag.color>
         // -->
@@ -116,9 +116,7 @@ public class ItemColor implements Property {
                 || mechanism.matches("color")) && (mechanism.requireObject(ColorTag.class))) {
             ColorTag color = mechanism.valueAsType(ColorTag.class);
             Material mat = item.getItemStack().getType();
-            if (mat == Material.POTION
-                    || mat == Material.LINGERING_POTION
-                    || mat == Material.SPLASH_POTION) {
+            if (mat == Material.POTION || mat == Material.LINGERING_POTION || mat == Material.SPLASH_POTION) {
                 PotionMeta meta = (PotionMeta) item.getItemStack().getItemMeta();
                 meta.setColor(color.getColor());
                 item.getItemStack().setItemMeta(meta);
