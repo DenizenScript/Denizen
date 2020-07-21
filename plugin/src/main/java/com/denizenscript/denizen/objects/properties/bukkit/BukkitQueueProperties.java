@@ -96,7 +96,7 @@ public class BukkitQueueProperties implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object ScriptQueue
+        // @object QueueTag
         // @name linked_player
         // @input PlayerTag
         // @description
@@ -113,7 +113,7 @@ public class BukkitQueueProperties implements Property {
         }
 
         // <--[mechanism]
-        // @object ScriptQueue
+        // @object QueueTag
         // @name linked_npc
         // @input NPCTag
         // @description

@@ -3145,7 +3145,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name fake_equipment
-        // @input EntityTag(|Element|ItemTag)
+        // @input EntityTag(|ElementTag|ItemTag)
         // @description
         // Shows the player fake equipment on the specified living entity, which has no real non-visual effects.
         // Input is in the form Entity|Slot|Item, where the slot can be one of the following: HAND, OFF_HAND, BOOTS, LEGS, CHEST, HEAD

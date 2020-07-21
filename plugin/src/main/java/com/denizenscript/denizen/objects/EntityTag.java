@@ -2785,6 +2785,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Releases the player's left shoulder entity.
         // Only applies to player-typed entities.
+        // @tags
+        // <EntityTag.left_shoulder>
         // -->
         if (getLivingEntity() instanceof HumanEntity
                 && mechanism.matches("release_left_shoulder")) {
@@ -2806,6 +2808,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Releases the player's right shoulder entity.
         // Only applies to player-typed entities.
+        // @tags
+        // <EntityTag.right_shoulder>
         // -->
         if (getLivingEntity() instanceof HumanEntity
                 && mechanism.matches("release_right_shoulder")) {

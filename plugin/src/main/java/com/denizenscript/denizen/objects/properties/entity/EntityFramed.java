@@ -124,7 +124,6 @@ public class EntityFramed implements Property {
             return new ElementTag(hasItem())
                     .getObjectAttribute(attribute.fulfill(1));
         }
-
         return null;
     }
 
@@ -134,7 +133,7 @@ public class EntityFramed implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name framed
-        // @input ItemTag(|Element)
+        // @input ItemTag(|ElementTag)
         // @description
         // Sets the entity's framed item and optionally the rotation as well.
         // Valid rotations: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Rotation.html>

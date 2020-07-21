@@ -920,7 +920,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @description
         // Sets whether the world's spawn area should be kept loaded into memory.
         // @tags
-        // <WorldTag.time.full>
+        // <WorldTag.keep_spawn>
         // -->
         if (mechanism.matches("keep_spawn") && mechanism.requireBoolean()) {
             getWorld().setKeepSpawnInMemory(mechanism.getValue().asBoolean());
@@ -1074,7 +1074,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @name weather_duration
         // @input DurationTag
         // @description
-        // Set the remaining time in ticks of the current conditions.
+        // Set the remaining time of the current conditions.
         // @tags
         // <WorldTag.weather_duration>
         // -->
