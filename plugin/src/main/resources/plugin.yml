@@ -11,6 +11,10 @@ commands:
     description: Lists denizen commands.
     usage: /denizen help
     permission: denizen.basic
+  denizenclickable:
+    description: Executes a Denizen clickable command.
+    usage: /denizenclickable
+    permission: denizen.clickable
   ex:
     description: Executes a dScript command.
     usage: Use /ex in front of a normal script entry.

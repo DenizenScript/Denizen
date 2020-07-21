@@ -122,6 +122,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         if (Depends.citizens != null) {
             registerCommand(ChatCommand.class);
         }
+        registerCommand(ClickableCommand.class);
         registerCommand(CompassCommand.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)) {
             registerCommand(DisguiseCommand.class);

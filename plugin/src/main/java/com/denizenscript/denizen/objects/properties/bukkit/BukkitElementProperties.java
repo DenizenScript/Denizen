@@ -404,7 +404,7 @@ public class BukkitElementProperties implements Property {
         });
 
         // <--[tag]
-        // @attribute <ElementTag.on_click[<click command>]>
+        // @attribute <ElementTag.on_click[<command>]>
         // @returns ElementTag
         // @group text manipulation
         // @description

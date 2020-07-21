@@ -13,6 +13,7 @@ import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.objects.properties.PropertyRegistry;
 import com.denizenscript.denizen.scripts.commands.BukkitCommandRegistry;
+import com.denizenscript.denizen.scripts.commands.player.ClickableCommand;
 import com.denizenscript.denizen.scripts.containers.ContainerRegistry;
 import com.denizenscript.denizen.scripts.containers.core.*;
 import com.denizenscript.denizen.scripts.triggers.TriggerRegistry;
@@ -69,6 +70,7 @@ import java.io.*;
 import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -674,6 +676,20 @@ public class Denizen extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String cmdName, String[] args) {
+        if (cmd.getName().equals("denizenclickable")) {
+            if (args.length != 1 || !(sender instanceof Player)) {
+                return false;
+            }
+            UUID id;
+            try {
+                id = UUID.fromString(args[0]);
+            }
+            catch (IllegalArgumentException ex) {
+                return false;
+            }
+            ClickableCommand.runClickable(id, (Player) sender);
+            return true;
+        }
         String modifier = args.length > 0 ? args[0] : "";
         if (!commandManager.hasCommand(cmd, modifier) && !modifier.isEmpty()) {
             return suggestClosestModifier(sender, cmd.getName(), modifier);
