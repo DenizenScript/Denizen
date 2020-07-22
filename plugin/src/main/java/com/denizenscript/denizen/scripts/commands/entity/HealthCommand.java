@@ -49,6 +49,7 @@ public class HealthCommand extends AbstractCommand {
     //
     // @Tags
     // <EntityTag.health>
+    // <EntityTag.health_max>
     // <NPCTag.has_trait[health]>
     //
     // @Usage

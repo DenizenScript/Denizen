@@ -38,6 +38,7 @@ public class HealCommand extends AbstractCommand {
     //
     // @Tags
     // <EntityTag.health>
+    // <EntityTag.health_max>
     //
     // @Usage
     // Use to fully heal a player.

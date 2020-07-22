@@ -40,6 +40,7 @@ public class BurnCommand extends AbstractCommand {
     //
     // @Tags
     // <EntityTag.fire_time>
+    // <EntityTag.on_fire>
     //
     // @Usage
     // Use to set an entity on fire.

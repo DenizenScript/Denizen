@@ -41,9 +41,13 @@ public class FakeItemCommand extends AbstractCommand {
     //
     // @Description
     // This command allows you to display an item in an inventory that is not really there.
+    //
     // To make it automatically disappear at a specific time, use the 'duration:' argument.
-    // By default, it will use any inventory the player currently has open. To force it to use only the player's
-    // inventory, use the 'player_only' argument.
+    //
+    // By default, it will use any inventory the player currently has open.
+    // To force it to use only the player's inventory, use the 'player_only' argument.
+    //
+    // The slot argument can be any valid slot, see <@link language Slot Inputs>.
     //
     // @Tags
     // None

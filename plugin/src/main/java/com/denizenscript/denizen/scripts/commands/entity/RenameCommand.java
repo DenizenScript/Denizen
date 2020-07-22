@@ -64,7 +64,7 @@ public class RenameCommand extends AbstractCommand {
     // Optionally specify "for:" a list of players when using per_player.
     //
     // @Tags
-    // <NPCTag.name>
+    // <EntityTag.name>
     // <NPCTag.nickname>
     //
     // @Usage

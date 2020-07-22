@@ -2043,7 +2043,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @returns ElementTag(Decimal)
         // @mechanism PlayerTag.saturation
         // @description
-        // Returns the current saturation of the player.
+        // Returns the current food saturation of the player.
         // -->
         registerOnlineOnlyTag("saturation", (attribute, object) -> {
             return new ElementTag(object.getPlayerEntity().getSaturation());

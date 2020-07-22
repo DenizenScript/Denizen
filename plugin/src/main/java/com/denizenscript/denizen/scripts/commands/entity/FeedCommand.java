@@ -46,6 +46,7 @@ public class FeedCommand extends AbstractCommand {
     // @Tags
     // <PlayerTag.food_level>
     // <PlayerTag.formatted_food_level>
+    // <PlayerTag.saturation>
     //
     // @Usage
     // Use to feed the player for 5 foodpoints (or 2.5 bars).

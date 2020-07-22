@@ -85,6 +85,8 @@ public class InventoryCommand extends AbstractCommand {
     // Note that to add items to an inventory, you should usually use <@link command give>,
     // and to remove items from an inventory, you should usually use <@link command take>.
     //
+    // The slot argument can be any valid slot, see <@link language Slot Inputs>.
+    //
     // @Tags
     // <PlayerTag.inventory>
     // <PlayerTag.enderchest>
