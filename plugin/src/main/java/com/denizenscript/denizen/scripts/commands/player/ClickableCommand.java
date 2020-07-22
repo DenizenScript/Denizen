@@ -31,7 +31,7 @@ public class ClickableCommand extends AbstractCommand {
     }
 
     // <--[command]
-    // @Name clickable
+    // @Name Clickable
     // @Syntax clickable [<script>] (def:<element>|...) (usages:<#>) (for:<player>|...) (until:<duration>)
     // @Required 1
     // @Maximum 5
@@ -46,6 +46,8 @@ public class ClickableCommand extends AbstractCommand {
     // Optionally specify a maximum number of usages (defaults to unlimited).
     //
     // Optionally specify what players are allowed to use it. Defaults to unrestricted (any player may use it).
+    //
+    // Players will need the permission "denizen.clickable" to be able to use this.
     //
     // @Tags
     // <entry[saveName].command> returns the command to use in "on_click"

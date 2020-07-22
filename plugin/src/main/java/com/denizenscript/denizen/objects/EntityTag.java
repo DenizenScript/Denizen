@@ -489,7 +489,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         if (entity == null && npc == null) {
             return null;
         }
-
         if (isCitizensNPC()) {
             return getDenizenNPC();
         }

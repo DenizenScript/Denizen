@@ -131,7 +131,11 @@ public class RenameCommand extends AbstractCommand {
             for (ObjectTag target : targets.objectForms) {
                 EntityTag entity = target.asType(EntityTag.class, CoreUtilities.noDebugContext);
                 if (entity != null) {
-                    Entity bukkitEntity = entity.getDenizenEntity().getBukkitEntity();
+                    Entity bukkitEntity = entity.getBukkitEntity();
+                    if (bukkitEntity == null) {
+                        Debug.echoError("Invalid entity in rename command.");
+                        continue;
+                    }
                     if (name.asString().equals("cancel")) {
                         customNames.remove(bukkitEntity.getEntityId());
                         if (bukkitEntity.isCustomNameVisible()) {
@@ -200,6 +204,10 @@ public class RenameCommand extends AbstractCommand {
             }
             else {
                 entity = ((EntityTag) entity).getDenizenObject();
+            }
+            if (entity == null) {
+                Debug.echoError("Invalid entity in rename command.");
+                continue;
             }
             if (entity instanceof NPCTag) {
                 NPC npc = ((NPCTag) entity).getCitizen();
