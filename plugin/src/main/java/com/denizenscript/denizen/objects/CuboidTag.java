@@ -1373,7 +1373,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Gets a list of all NPCs currently within the CuboidTag.
         // -->
         if (Depends.citizens != null) {
-            registerTag("_npcs", (attribute, cuboid) -> {
+            registerTag("npcs", (attribute, cuboid) -> {
                 ArrayList<NPCTag> npcs = new ArrayList<>();
                 for (NPC npc : CitizensAPI.getNPCRegistry()) {
                     NPCTag dnpc = new NPCTag(npc);

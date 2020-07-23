@@ -2,6 +2,7 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -12,7 +13,12 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -496,6 +502,72 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
             LocationTag loc = object.loc.clone();
             loc.setWorld(attribute.contextAsType(1, WorldTag.class).getWorld());
             return new EllipsoidTag(loc, object.size.clone());
+        });
+
+        // <--[tag]
+        // @attribute <EllipsoidTag.players>
+        // @returns ListTag(PlayerTag)
+        // @description
+        // Gets a list of all players currently within the EllipsoidTag.
+        // -->
+        registerTag("players", (attribute, object) -> {
+            ArrayList<PlayerTag> players = new ArrayList<>();
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (object.contains(player.getLocation())) {
+                    players.add(PlayerTag.mirrorBukkitPlayer(player));
+                }
+            }
+            return new ListTag(players);
+        });
+
+        // <--[tag]
+        // @attribute <EllipsoidTag.npcs>
+        // @returns ListTag(NPCTag)
+        // @description
+        // Gets a list of all NPCs currently within the EllipsoidTag.
+        // -->
+        if (Depends.citizens != null) {
+            registerTag("npcs", (attribute, object) -> {
+                ArrayList<NPCTag> npcs = new ArrayList<>();
+                for (NPC npc : CitizensAPI.getNPCRegistry()) {
+                    NPCTag dnpc = new NPCTag(npc);
+                    if (object.contains(dnpc.getLocation())) {
+                        npcs.add(dnpc);
+                    }
+                }
+                return new ListTag(npcs);
+            });
+        }
+
+        // <--[tag]
+        // @attribute <EllipsoidTag.entities[(<entity>|...)]>
+        // @returns ListTag(EntityTag)
+        // @description
+        // Gets a list of all entities currently within the EllipsoidTag, with an optional search parameter for the entity type.
+        // -->
+        registerTag("entities", (attribute, object) -> {
+            ArrayList<EntityTag> entities = new ArrayList<>();
+            ListTag types = new ListTag();
+            if (attribute.hasContext(1)) {
+                types = attribute.contextAsType(1, ListTag.class);
+            }
+            for (Entity ent : new WorldTag(object.loc.getWorld()).getEntitiesForTag()) {
+                EntityTag current = new EntityTag(ent);
+                if (object.contains(ent.getLocation())) {
+                    if (!types.isEmpty()) {
+                        for (String type : types) {
+                            if (current.identifySimpleType().equalsIgnoreCase(type)) {
+                                entities.add(current);
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        entities.add(new EntityTag(ent));
+                    }
+                }
+            }
+            return new ListTag(entities);
         });
     }
 
