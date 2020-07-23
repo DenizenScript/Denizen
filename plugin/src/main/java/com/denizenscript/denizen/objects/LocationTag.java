@@ -2101,7 +2101,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 ArrayList<PlayerTag> found = new ArrayList<>();
                 attribute.fulfill(2);
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (!player.isDead() && Utilities.checkLocation(object, player.getLocation(), radius)) {
+                    if (!player.isDead() && Utilities.checkLocationWithBoundingBox(object, player, radius)) {
                         found.add(new PlayerTag(player));
                     }
                 }
@@ -2127,7 +2127,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 ArrayList<NPCTag> found = new ArrayList<>();
                 attribute.fulfill(2);
                 for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                    if (npc.isSpawned() && Utilities.checkLocation(object.getBlockForTag(attribute).getLocation(), npc.getStoredLocation(), radius)) {
+                    if (npc.isSpawned() && Utilities.checkLocationWithBoundingBox(object, npc.getEntity(), radius)) {
                         found.add(new NPCTag(npc));
                     }
                 }
