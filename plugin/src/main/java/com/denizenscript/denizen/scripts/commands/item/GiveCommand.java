@@ -72,10 +72,10 @@ public class GiveCommand extends AbstractCommand {
         /* Match arguments to expected variables */
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
-            if (!scriptEntry.hasObject("qty")
+            if (!scriptEntry.hasObject("quantity")
                     && arg.matchesPrefix("q", "qty", "quantity")
                     && arg.matchesFloat()) {
-                scriptEntry.addObject("qty", arg.asElement());
+                scriptEntry.addObject("quantity", arg.asElement());
                 scriptEntry.addObject("set_quantity", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("type")
@@ -118,7 +118,7 @@ public class GiveCommand extends AbstractCommand {
         scriptEntry.defaultObject("type", Type.ITEM)
                 .defaultObject("engrave", new ElementTag(false))
                 .defaultObject("unlimit_stack_size", new ElementTag(false))
-                .defaultObject("qty", new ElementTag(1))
+                .defaultObject("quantity", new ElementTag(1))
                 .defaultObject("slot", new ElementTag(1));
 
         Type type = (Type) scriptEntry.getObject("type");
@@ -143,7 +143,7 @@ public class GiveCommand extends AbstractCommand {
         ElementTag engrave = scriptEntry.getElement("engrave");
         ElementTag unlimit_stack_size = scriptEntry.getElement("unlimit_stack_size");
         InventoryTag inventory = scriptEntry.getObjectTag("inventory");
-        ElementTag qty = scriptEntry.getElement("qty");
+        ElementTag quantity = scriptEntry.getElement("quantity");
         Type type = (Type) scriptEntry.getObject("type");
         ElementTag slot = scriptEntry.getElement("slot");
 
@@ -159,7 +159,7 @@ public class GiveCommand extends AbstractCommand {
             Debug.report(scriptEntry, getName(),
                     ArgumentHelper.debugObj("Type", type.name())
                             + (inventory != null ? inventory.debug() : "")
-                            + ArgumentHelper.debugObj("Quantity", qty.asDouble())
+                            + quantity.debug()
                             + engrave.debug()
                             + unlimit_stack_size.debug()
                             + (items != null ? ArgumentHelper.debugObj("Items", items) : "")
@@ -171,7 +171,7 @@ public class GiveCommand extends AbstractCommand {
 
             case MONEY:
                 if (Depends.economy != null) {
-                    Depends.economy.depositPlayer(Utilities.getEntryPlayer(scriptEntry).getOfflinePlayer(), qty.asDouble());
+                    Depends.economy.depositPlayer(Utilities.getEntryPlayer(scriptEntry).getOfflinePlayer(), quantity.asDouble());
                 }
                 else {
                     Debug.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
@@ -179,7 +179,7 @@ public class GiveCommand extends AbstractCommand {
                 break;
 
             case EXP:
-                Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().giveExp(qty.asInt());
+                Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().giveExp(quantity.asInt());
                 break;
 
             case ITEM:
@@ -192,7 +192,7 @@ public class GiveCommand extends AbstractCommand {
                         continue;
                     }
                     if (set_quantity) {
-                        is.setAmount(qty.asInt());
+                        is.setAmount(quantity.asInt());
                     }
                     // TODO: Should engrave be kept?
                     if (engrave.asBoolean()) {

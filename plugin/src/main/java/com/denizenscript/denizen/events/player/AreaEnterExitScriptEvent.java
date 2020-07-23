@@ -41,7 +41,7 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Context
     // <context.area> returns the area object that was entered or exited.
-    // <context.cause> returns the cause of the event. Can be: WALK, WORLD_CHANGE, JOIN, LEAVE, TELEPORT, VEHICLE.
+    // <context.cause> returns the cause of the event. Can be: WALK, WORLD_CHANGE, JOIN, QUIT, TELEPORT, VEHICLE.
     // <context.to> returns the location the player moved to.
     // <context.from> returns the location the player moved from (when available).
     //

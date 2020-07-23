@@ -211,6 +211,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
                 Debug.echoError(scriptEntry.getResidingQueue(), value + " is an invalid player!");
             }
             ((BukkitScriptEntryData) scriptEntry.entryData).setPlayer(player);
+            ((BukkitTagContext) scriptEntry.context).player = player;
             return true;
         }
 
@@ -227,6 +228,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
                 return false;
             }
             ((BukkitScriptEntryData) scriptEntry.entryData).setNPC(npc);
+            ((BukkitTagContext) scriptEntry.context).npc = npc;
             return true;
         }
         return false;

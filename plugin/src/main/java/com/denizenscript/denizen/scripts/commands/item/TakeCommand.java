@@ -105,10 +105,10 @@ public class TakeCommand extends AbstractCommand {
                     && arg.matches("item_in_hand", "iteminhand")) {
                 scriptEntry.addObject("type", Type.ITEMINHAND);
             }
-            else if (!scriptEntry.hasObject("qty")
+            else if (!scriptEntry.hasObject("quantity")
                     && arg.matchesPrefix("q", "qty", "quantity")
                     && arg.matchesFloat()) {
-                scriptEntry.addObject("qty", arg.asElement());
+                scriptEntry.addObject("quantity", arg.asElement());
             }
             else if (!scriptEntry.hasObject("items")
                     && arg.matchesPrefix("bydisplay")
@@ -172,7 +172,7 @@ public class TakeCommand extends AbstractCommand {
         }
 
         scriptEntry.defaultObject("type", Type.ITEM)
-                .defaultObject("qty", new ElementTag(1));
+                .defaultObject("quantity", new ElementTag(1));
 
         Type type = (Type) scriptEntry.getObject("type");
 
@@ -194,7 +194,7 @@ public class TakeCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         InventoryTag inventory = scriptEntry.getObjectTag("inventory");
-        ElementTag qty = scriptEntry.getElement("qty");
+        ElementTag quantity = scriptEntry.getElement("quantity");
         ElementTag displayname = scriptEntry.getElement("displayname");
         ItemTag scriptitem = scriptEntry.getObjectTag("scriptitem");
         ElementTag slot = scriptEntry.getElement("slot");
@@ -212,7 +212,7 @@ public class TakeCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("Type", type.name())
-                            + qty.debug()
+                            + quantity.debug()
                             + (inventory != null ? inventory.debug() : "")
                             + (displayname != null ? displayname.debug() : "")
                             + (scriptitem != null ? scriptitem.debug() : "")
@@ -230,7 +230,7 @@ public class TakeCommand extends AbstractCommand {
             }
             case ITEMINHAND: {
                 int inHandAmt = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().getEquipment().getItemInMainHand().getAmount();
-                int theAmount = (int) qty.asDouble();
+                int theAmount = (int) quantity.asDouble();
                 ItemStack newHandItem = new ItemStack(Material.AIR);
                 if (theAmount > inHandAmt) {
                     Debug.echoDebug(scriptEntry, "...player did not have enough of the item in hand, taking all...");
@@ -256,19 +256,19 @@ public class TakeCommand extends AbstractCommand {
                     Debug.echoError(scriptEntry.getResidingQueue(), "No economy loaded! Have you installed Vault and a compatible economy plugin?");
                     return;
                 }
-                Depends.economy.withdrawPlayer(Utilities.getEntryPlayer(scriptEntry).getOfflinePlayer(), qty.asDouble());
+                Depends.economy.withdrawPlayer(Utilities.getEntryPlayer(scriptEntry).getOfflinePlayer(), quantity.asDouble());
                 break;
             }
             case XP: {
-                Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().giveExp(-qty.asInt());
+                Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().giveExp(-quantity.asInt());
                 break;
             }
             case ITEM: {
                 for (ItemTag item : items) {
                     ItemStack is = item.getItemStack();
-                    is.setAmount(qty.asInt());
+                    is.setAmount(quantity.asInt());
                     if (!inventory.removeItem(item, item.getAmount())) {
-                        Debug.echoDebug(scriptEntry, "Inventory does not contain at least " + qty.asInt() + " of " + item.identify() + "... Taking all...");
+                        Debug.echoDebug(scriptEntry, "Inventory does not contain at least " + quantity.asInt() + " of " + item.identify() + "... Taking all...");
                     }
                 }
                 break;
@@ -279,7 +279,7 @@ public class TakeCommand extends AbstractCommand {
                     return;
                 }
                 takeByMatcher(inventory, (item) -> item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
-                        item.getItemMeta().getDisplayName().equalsIgnoreCase(displayname.identify()), qty.asInt());
+                        item.getItemMeta().getDisplayName().equalsIgnoreCase(displayname.identify()), quantity.asInt());
                 break;
             }
             case BYCOVER: {
@@ -287,7 +287,7 @@ public class TakeCommand extends AbstractCommand {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Must specify a cover!");
                     return;
                 }
-                inventory.removeBook(titleAuthor.get(0), titleAuthor.size() > 1 ? titleAuthor.get(1) : null, qty.asInt());
+                inventory.removeBook(titleAuthor.get(0), titleAuthor.size() > 1 ? titleAuthor.get(1) : null, quantity.asInt());
                 break;
             }
             case NBT: {
@@ -295,7 +295,7 @@ public class TakeCommand extends AbstractCommand {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Must specify an NBT key!");
                     return;
                 }
-                takeByMatcher(inventory, (item) -> CustomNBT.hasCustomNBT(item, nbtKey.asString(), CustomNBT.KEY_DENIZEN), qty.asInt());
+                takeByMatcher(inventory, (item) -> CustomNBT.hasCustomNBT(item, nbtKey.asString(), CustomNBT.KEY_DENIZEN), quantity.asInt());
                 break;
             }
             case SCRIPTNAME: {
@@ -303,7 +303,7 @@ public class TakeCommand extends AbstractCommand {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Must specify a valid script name!");
                     return;
                 }
-                takeByMatcher(inventory, (item) -> scriptitem.getScriptName().equalsIgnoreCase(new ItemTag(item).getScriptName()), qty.asInt());
+                takeByMatcher(inventory, (item) -> scriptitem.getScriptName().equalsIgnoreCase(new ItemTag(item).getScriptName()), quantity.asInt());
                 break;
             }
             case MATERIAL: {
@@ -311,7 +311,7 @@ public class TakeCommand extends AbstractCommand {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Must specify a valid material!");
                     return;
                 }
-                takeByMatcher(inventory, (item) -> item.getType() == material.getMaterial() && !(new ItemTag(item).isItemscript()), qty.asInt());
+                takeByMatcher(inventory, (item) -> item.getType() == material.getMaterial() && !(new ItemTag(item).isItemscript()), quantity.asInt());
                 break;
             }
             case SLOT: {
@@ -322,8 +322,8 @@ public class TakeCommand extends AbstractCommand {
                 }
                 ItemStack original = inventory.getInventory().getItem(slotId);
                 if (original != null && original.getType() != Material.AIR) {
-                    if (original.getAmount() > qty.asInt()) {
-                        original.setAmount(original.getAmount() - qty.asInt());
+                    if (original.getAmount() > quantity.asInt()) {
+                        original.setAmount(original.getAmount() - quantity.asInt());
                         inventory.setSlots(slotId, original);
                     }
                     else {

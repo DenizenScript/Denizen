@@ -1,11 +1,7 @@
 package com.denizenscript.denizen.tags.core;
 
 import com.denizenscript.denizen.objects.ChunkTag;
-import com.denizenscript.denizencore.tags.TagRunnable;
-import com.denizenscript.denizencore.tags.Attribute;
-import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 
 public class ChunkTagBase {
 
@@ -18,32 +14,12 @@ public class ChunkTagBase {
         // Returns a chunk object constructed from the input value.
         // Refer to <@link language ChunkTag objects>.
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                chunkTags(event);
+        TagManager.registerTagHandler("chunk", (attribute) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("Chunk tag base must have input.");
+                return null;
             }
-        }, "chunk");
-    }
-
-    public void chunkTags(ReplaceableTagEvent event) {
-
-        if (!event.matches("chunk") || event.replaced()) {
-            return;
-        }
-
-        ChunkTag chunk = null;
-
-        if (event.hasNameContext()) {
-            chunk = ChunkTag.valueOf(event.getNameContext(), event.getAttributes().context);
-        }
-
-        if (chunk == null) {
-            return;
-        }
-
-        Attribute attribute = event.getAttributes();
-        event.setReplacedObject(CoreUtilities.autoAttrib(chunk, attribute.fulfill(1)));
-
+            return ChunkTag.valueOf(attribute.getContext(1), attribute.context);
+        });
     }
 }

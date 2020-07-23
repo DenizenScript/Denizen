@@ -1,11 +1,7 @@
 package com.denizenscript.denizen.tags.core;
 
 import com.denizenscript.denizen.objects.WorldTag;
-import com.denizenscript.denizencore.tags.TagRunnable;
-import com.denizenscript.denizencore.tags.Attribute;
-import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 
 public class WorldTagBase {
 
@@ -18,32 +14,12 @@ public class WorldTagBase {
         // Returns a world object constructed from the input value.
         // Refer to <@link language WorldTag objects>.
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                worldTags(event);
+        TagManager.registerTagHandler("world", (attribute) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("World tag base must have input.");
+                return null;
             }
-        }, "world");
-    }
-
-    public void worldTags(ReplaceableTagEvent event) {
-
-        if (!event.matches("world") || event.replaced()) {
-            return;
-        }
-
-        WorldTag world = null;
-
-        if (event.hasNameContext()) {
-            world = WorldTag.valueOf(event.getNameContext(), event.getAttributes().context);
-        }
-
-        if (world == null) {
-            return;
-        }
-
-        Attribute attribute = event.getAttributes();
-        event.setReplacedObject(CoreUtilities.autoAttrib(world, attribute.fulfill(1)));
-
+            return WorldTag.valueOf(attribute.getContext(1), attribute.context);
+        });
     }
 }

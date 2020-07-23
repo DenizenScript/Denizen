@@ -81,17 +81,14 @@ public class ServerTagBase {
             public void run(ReplaceableTagEvent event) {
                 serverTag(event);
             }
-        }, "server", "svr", "global");
+        }, "server", "global");
     }
 
     public static final long serverStartTimeMillis = System.currentTimeMillis();
 
     public void serverTag(ReplaceableTagEvent event) {
-        if (!event.matches("server", "svr", "global") || event.replaced()) {
+        if (!event.matches("server", "global") || event.replaced()) {
             return;
-        }
-        if (event.matches("srv")) {
-            Deprecations.serverShorthand.warn(event.getScriptEntry());
         }
         if (event.matches("global")) {
             Deprecations.globalTagName.warn(event.getScriptEntry());

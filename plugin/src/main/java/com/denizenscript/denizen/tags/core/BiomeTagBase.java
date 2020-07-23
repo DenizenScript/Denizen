@@ -1,11 +1,7 @@
 package com.denizenscript.denizen.tags.core;
 
 import com.denizenscript.denizen.objects.BiomeTag;
-import com.denizenscript.denizencore.tags.TagRunnable;
-import com.denizenscript.denizencore.tags.Attribute;
-import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 
 public class BiomeTagBase {
 
@@ -18,32 +14,12 @@ public class BiomeTagBase {
         // Returns a biome object constructed from the input value.
         // Refer to <@link language BiomeTag objects>.
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                biomeTags(event);
+        TagManager.registerTagHandler("biome", (attribute) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("Biome tag base must have input.");
+                return null;
             }
-        }, "biome");
-    }
-
-    public void biomeTags(ReplaceableTagEvent event) {
-
-        if (!event.matches("biome") || event.replaced()) {
-            return;
-        }
-
-        BiomeTag biome = null;
-
-        if (event.hasNameContext()) {
-            biome = BiomeTag.valueOf(event.getNameContext(), event.getAttributes().context);
-        }
-
-        if (biome == null) {
-            return;
-        }
-
-        Attribute attribute = event.getAttributes();
-        event.setReplacedObject(CoreUtilities.autoAttrib(biome, attribute.fulfill(1)));
-
+            return BiomeTag.valueOf(attribute.getContext(1), attribute.context);
+        });
     }
 }

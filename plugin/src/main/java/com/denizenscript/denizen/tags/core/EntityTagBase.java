@@ -1,11 +1,7 @@
 package com.denizenscript.denizen.tags.core;
 
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizencore.tags.TagRunnable;
-import com.denizenscript.denizencore.tags.Attribute;
-import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 
 public class EntityTagBase {
 
@@ -18,36 +14,12 @@ public class EntityTagBase {
         // Returns an entity object constructed from the input value.
         // Refer to <@link language EntityTag objects>.
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                entityTags(event);
+        TagManager.registerTagHandler("entity", (attribute) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("Entity tag base must have input.");
+                return null;
             }
-        }, "entity");
-    }
-
-    //////////
-    //  ReplaceableTagEvent handler
-    ////////
-
-    public void entityTags(ReplaceableTagEvent event) {
-
-        if (!event.matches("entity") || event.replaced()) {
-            return;
-        }
-
-        EntityTag entity = null;
-
-        if (event.hasNameContext()) {
-            entity = EntityTag.valueOf(event.getNameContext(), event.getAttributes().context);
-        }
-
-        if (entity == null) {
-            return;
-        }
-
-        Attribute attribute = event.getAttributes();
-        event.setReplacedObject(CoreUtilities.autoAttrib(entity, attribute.fulfill(1)));
-
+            return EntityTag.valueOf(attribute.getContext(1), attribute.context);
+        });
     }
 }
