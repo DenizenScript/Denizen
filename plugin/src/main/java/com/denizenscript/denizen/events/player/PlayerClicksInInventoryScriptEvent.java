@@ -73,7 +73,7 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
     // player clicks in inventory
     // player (<click type>) clicks (<item>) in <inventory>
     //
-    // @Regex ^on player( [^\s]+)? clicks [^\s]+( in [^\s]+)?$
+    // @Regex ^on player( [^\s]+)? clicks( [^\s]+)? in [^\s]+$
     //
     // @Group Player
     //
