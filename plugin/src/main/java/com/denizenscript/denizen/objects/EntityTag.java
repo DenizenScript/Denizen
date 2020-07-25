@@ -3095,7 +3095,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Works with offline players.
         // -->
         if (mechanism.matches("hide_from_players")) {
-            NMSHandler.getEntityHelper().hideEntity(null, getBukkitEntity(), false);
+            NMSHandler.getEntityHelper().hideEntity(null, getBukkitEntity());
         }
 
         // <--[mechanism]

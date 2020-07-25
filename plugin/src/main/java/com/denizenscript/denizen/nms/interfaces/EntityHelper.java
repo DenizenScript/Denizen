@@ -156,7 +156,7 @@ public abstract class EntityHelper {
         return hidden.add(player);
     }
 
-    public void hideEntity(Player player, Entity entity, boolean keepInTabList) { // TODO: remove or reimplement tablist option somehow?
+    public void hideEntity(Player player, Entity entity) {
         if (player == null) {
             addHide(DEFAULT_HIDE, entity.getUniqueId());
             if (entity instanceof Player) {

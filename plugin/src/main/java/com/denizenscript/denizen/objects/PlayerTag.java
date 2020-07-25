@@ -3023,10 +3023,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object PlayerTag
         // @name hide_entity
-        // @input EntityTag(|ElementTag(Boolean))
+        // @input EntityTag
         // @description
         // Hides an entity from the player.
-        // You can optionally also specify a boolean to determine whether the entity should be kept in the tab list (players only).
         // -->
         if (mechanism.matches("hide_entity")) {
             if (!mechanism.getValue().asString().isEmpty()) {
@@ -3036,12 +3035,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                     if (!entity.isSpawnedOrValidForTag()) {
                         Debug.echoError("Can't hide the unspawned entity '" + split.get(0) + "'!");
                     }
-                    else if (split.size() > 1 && new ElementTag(split.get(1)).isBoolean()) {
-                        NMSHandler.getEntityHelper().hideEntity(getPlayerEntity(), entity.getBukkitEntity(),
-                                new ElementTag(split.get(1)).asBoolean());
-                    }
                     else {
-                        NMSHandler.getEntityHelper().hideEntity(getPlayerEntity(), entity.getBukkitEntity(), false);
+                        NMSHandler.getEntityHelper().hideEntity(getPlayerEntity(), entity.getBukkitEntity());
                     }
                 }
                 else {

@@ -5,6 +5,8 @@ An implementation of the Denizen Scripting Language for Spigot servers, with str
 
 **Version 1.1.5**: Compatible with Spigot 1.13.2, 1.14.4, 1.15.2, and 1.16.1!
 
+**Learn about Denizen from the Beginner's guide:** https://guide.denizenscript.com/guides/background/index.html
+
 #### Download Links:
 
 - **Release builds**: https://ci.citizensnpcs.co/job/Denizen/
