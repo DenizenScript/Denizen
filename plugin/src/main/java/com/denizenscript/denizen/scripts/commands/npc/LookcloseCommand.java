@@ -27,19 +27,17 @@ public class LookcloseCommand extends AbstractCommand {
     // @Required 0
     // @Maximum 4
     // @Plugin Citizens
-    // @Short Interacts with an NPCs 'lookclose' trait as provided by Citizens2.
+    // @Short Interacts with an NPCs 'lookclose' trait as provided by Citizens.
     // @Group npc
     //
     // @Description
-    // Use this command with any NPC to alter the state and options of its 'lookclose'
-    // trait. When an NPC's 'lookclose' trait is toggled to true, the NPC's head will
-    // follow nearby players. Specifying realistic will enable a higher precision
-    // and detection of players, while taking into account 'line-of-sight', however can
-    // use more CPU cycles. You may also specify a range integer to specify the number
-    // of blocks that will trigger the NPC's attention.
+    // Use this command with any NPC to alter the state and options of its 'lookclose' trait.
+    // When an NPC's 'lookclose' trait is toggled to true, the NPC's head will follow nearby players.
+    // Specifying realistic will enable a higher precision and detection of players, while taking into account 'line-of-sight', however can use more CPU cycles.
+    // You may also specify a range integer to specify the number of blocks that will trigger the NPC's attention.
     //
     // @Tags
-    // None
+    // <NPCTag.lookclose>
     //
     // @Usage
     // Use to cause the NPC to begin looking at nearby players.

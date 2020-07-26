@@ -34,7 +34,7 @@ public class AnchorCommand extends AbstractCommand {
     // @Group npc
     //
     // @Description
-    // The anchor system inside Citizens2 allows locations to be 'bound' to an NPC, saved by an 'id'.
+    // The anchor system inside Citizens allows locations to be 'bound' to an NPC, saved by an 'id'.
     // The anchor command can add and remove new anchors.
     // The Anchors Trait can also be used as a sort of 'waypoints' system.
     // As the Anchor command is an NPC specific command, a valid npc object must be referenced in the script entry.

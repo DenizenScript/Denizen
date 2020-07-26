@@ -78,6 +78,7 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
     // @Group Player
     //
     // @Switch with:<item> to only process the event if a specified cursor item was used.
+    // @Switch in_area:<area> to only process the event if it occurred within a specified area.
     //
     // @Triggers when a player clicks in an inventory. Note that you likely will also want to listen to <@link event player drags in inventory>.
     //
@@ -166,6 +167,9 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
             return false;
         }
         if (!nonSwitchWithCheck(path, cursor)) {
+            return false;
+        }
+        if (!runInCheck(path, event.getWhoClicked().getLocation(), "in_area")) {
             return false;
         }
         return super.matches(path);
