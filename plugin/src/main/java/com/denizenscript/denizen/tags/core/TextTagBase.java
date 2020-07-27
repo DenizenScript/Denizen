@@ -576,7 +576,6 @@ public class TextTagBase {
         // @description
         // Returns a chat code that makes the following text be the specified color.
         // Color can be a color name, color code, hex, or ColorTag... that is: "&color[gold]", "&color[6]", "&color[#AABB00]", and "&color[co@128,64,0]" are all valid.
-        // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
@@ -594,15 +593,12 @@ public class TextTagBase {
                     }
                 }
                 else if (colorName.length() == 7 && colorName.startsWith("#")) {
-                    colorOut = ChatColor.COLOR_CHAR + "[color=" + colorName + "]";
+                    colorOut = FormattedTextHelper.stringifyRGBSpigot(colorName.substring(1));
                 }
                 else if (colorName.startsWith("co@")) {
                     ColorTag color = ColorTag.valueOf(colorName, attribute.context);
                     String hex = Integer.toHexString(color.getColor().asRGB());
-                    while (hex.length() < 6) {
-                        hex = "0" + hex;
-                    }
-                    colorOut = ChatColor.COLOR_CHAR + "[color=#" + hex + "]";
+                    colorOut = FormattedTextHelper.stringifyRGBSpigot(hex);
                 }
                 if (colorOut == null) {
                     try {

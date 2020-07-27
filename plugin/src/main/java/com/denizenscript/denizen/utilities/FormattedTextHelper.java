@@ -53,6 +53,18 @@ public class FormattedTextHelper {
         return bool != null && bool;
     }
 
+    public static String stringifyRGBSpigot(String hex) {
+        while (hex.length() < 6) {
+            hex = "0" + hex;
+        }
+        hex = "x" + hex;
+        StringBuilder outColor = new StringBuilder();
+        for (char c : hex.toCharArray()) {
+            outColor.append(org.bukkit.ChatColor.COLOR_CHAR).append(c);
+        }
+        return outColor.toString();
+    }
+
     public static String stringify(BaseComponent component) {
         StringBuilder builder = new StringBuilder(128);
         ChatColor color = component.getColorRaw();
@@ -348,6 +360,27 @@ public class FormattedTextHelper {
                     nextText.setText(nextText.getText() + str.substring(started, i));
                     outputList.add(nextText);
                     nextText = new TextComponent();
+                }
+                else if (code == 'x') {
+                    if (i + 13 >= chars.length) {
+                        continue;
+                    }
+                    StringBuilder color = new StringBuilder(12);
+                    color.append("#");
+                    for (int c = 1; c <= 6; c++) {
+                        if (chars[i + c * 2] != ChatColor.COLOR_CHAR) {
+                            color = null;
+                            break;
+                        }
+                        color.append(chars[i + 1 + c * 2]);
+                    }
+                    if (color == null) {
+                        continue;
+                    }
+                    nextText.setColor(ChatColor.of(color.toString()));
+                    i += 13;
+                    started = i + 1;
+                    continue;
                 }
                 else {
                     continue;
