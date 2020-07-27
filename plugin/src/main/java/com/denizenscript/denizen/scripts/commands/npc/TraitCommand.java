@@ -49,7 +49,8 @@ public class TraitCommand extends AbstractCommand {
     //
     // @Tags
     // <NPCTag.has_trait[<trait>]>
-    // <NPCTag.list_traits>
+    // <NPCTag.traits>
+    // <server.traits>
     //
     // @Usage
     // Use to add the Sentinel trait to the linked NPC.

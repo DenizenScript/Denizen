@@ -42,7 +42,7 @@ public class NarrateCommand extends AbstractCommand {
     // @Description
     // Prints some text into the target's chat area. If no target is specified it will default to the attached player or the console.
     //
-    // Accepts the 'format:<script>' argument, which will reformat the text according to the specified format script.
+    // Accepts the 'format:<script>' argument, which will reformat the text according to the specified format script. See <@link language Format Script Containers>.
     //
     // Optionally use 'per_player' with a list of player targets, to have the tags in the text input be reparsed for each and every player.
     // So, for example, "- narrate 'hello <player.name>' targets:<server.online_players>"

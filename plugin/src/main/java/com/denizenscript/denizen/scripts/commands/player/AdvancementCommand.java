@@ -61,7 +61,9 @@ public class AdvancementCommand extends AbstractCommand {
     // WARNING: Failure to re-create advancements on every server start may result in loss of data.
     //
     // @Tags
-    // None
+    // <PlayerTag.has_advancement[<advancement>]>
+    // <PlayerTag.advancements>
+    // <server.advancement_types>
     //
     // @Usage
     // Creates a new advancement that has a potato icon.

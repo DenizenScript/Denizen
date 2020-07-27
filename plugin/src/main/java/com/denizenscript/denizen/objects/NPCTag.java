@@ -497,18 +497,18 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         });
 
         // <--[tag]
-        // @attribute <NPCTag.list_traits>
+        // @attribute <NPCTag.traits>
         // @returns ListTag
         // @description
         // Returns a list of all of the NPC's traits.
         // -->
-        registerTag("list_traits", (attribute, object) -> {
+        registerTag("traits", (attribute, object) -> {
             List<String> list = new ArrayList<>();
             for (Trait trait : object.getCitizen().getTraits()) {
                 list.add(trait.getName());
             }
             return new ListTag(list);
-        });
+        }, "list_traits");
 
         // <--[tag]
         // @attribute <NPCTag.has_trait[<trait>]>

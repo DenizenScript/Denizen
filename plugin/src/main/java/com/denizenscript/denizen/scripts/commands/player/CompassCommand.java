@@ -42,16 +42,16 @@ public class CompassCommand extends AbstractCommand {
     // <PlayerTag.compass_target>
     //
     // @Usage
-    // Use to reset the compass direction to its default
+    // Use to reset the compass direction to its default.
     // - compass reset
     //
     // @Usage
-    // Use to point with a compass to the player's current location
+    // Use to point with a compass to the player's current location.
     // - compass <player.location>
     //
     // @Usage
-    // Use to point with a compass to the world's spawn location
-    // - compass <WorldTag.spawn_location>
+    // Use to point with a compass to the world's spawn location.
+    // - compass <player.world.spawn_location>
     // -->
 
     @Override

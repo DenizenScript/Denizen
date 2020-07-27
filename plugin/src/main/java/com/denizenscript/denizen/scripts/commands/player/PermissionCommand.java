@@ -56,7 +56,7 @@ public class PermissionCommand extends AbstractCommand {
     //
     // @Usage
     // Use to remove a permissions node from the group 'Members' in the Creative world.
-    // - permission remove bukkit.version group:Members w@Creative
+    // - permission remove bukkit.version group:Members Creative
     // -->
 
     private enum Action {ADD, REMOVE}

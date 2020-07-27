@@ -2214,12 +2214,12 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
-        // @attribute <PlayerTag.list_advancements>
+        // @attribute <PlayerTag.advancements>
         // @returns ListTag
         // @description
         // Returns a list of the names of all advancements the player has completed.
         // -->
-        registerOnlineOnlyTag("list_advancements", (attribute, object) -> {
+        registerOnlineOnlyTag("advancements", (attribute, object) -> {
             ListTag list = new ListTag();
             Bukkit.advancementIterator().forEachRemaining((adv) -> {
                 if (object.getPlayerEntity().getAdvancementProgress(adv).isDone()) {
@@ -2227,7 +2227,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 }
             });
             return list;
-        });
+        }, "list_advancements");
 
         // <--[tag]
         // @attribute <PlayerTag.time_asleep>

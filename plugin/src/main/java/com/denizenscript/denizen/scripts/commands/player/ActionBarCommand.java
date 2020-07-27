@@ -42,7 +42,7 @@ public class ActionBarCommand extends AbstractCommand {
     // @Description
     // Sends a message to the target's action bar area.
     // If no target is specified it will default to the attached player.
-    // Accepts the 'format:<name>' argument, which will reformat the text according to the specified format script.
+    // Accepts the 'format:<name>' argument, which will reformat the text according to the specified format script. See <@link language Format Script Containers>.
     //
     // Optionally use 'per_player' with a list of player targets, to have the tags in the text input be reparsed for each and every player.
     // So, for example, "- actionbar 'hello <player.name>' targets:<server.online_players>"
