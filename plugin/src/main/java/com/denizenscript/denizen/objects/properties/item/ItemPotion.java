@@ -40,7 +40,7 @@ public class ItemPotion implements Property {
     }
 
     public static final String[] handledTags = new String[] {
-            "potion_base_type", "potion_base", "has_potion_effect", "potion_effect"
+            "potion_base_type", "potion_base", "has_potion_effect", "potion_effect", "potion_effects"
     };
 
     public static final String[] handledMechs = new String[] {
@@ -154,6 +154,24 @@ public class ItemPotion implements Property {
                     + "," + meta.getBasePotionData().isExtended() + "," + (item.getItemStack().getType() == Material.SPLASH_POTION)
                     + (meta.hasColor() ? "," + new ColorTag(meta.getColor()).identify() : "")
                 ).getObjectAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <ItemTag.potion_effects>
+        // @returns ListTag
+        // @mechanism ItemTag.potion_effects
+        // @group properties
+        // @description
+        // Returns the list of potion effects on this item.
+        // The effect type will be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
+        // -->
+        if (attribute.startsWith("potion_effects") && item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof PotionMeta) {
+            ListTag result = new ListTag();
+            PotionMeta meta = ((PotionMeta) item.getItemStack().getItemMeta());
+            for (PotionEffect pot : meta.getCustomEffects()) {
+                result.add(stringifyEffect(pot));
+            }
+            return result.getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
