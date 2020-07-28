@@ -377,6 +377,9 @@ public class FormattedTextHelper {
                     if (color == null) {
                         continue;
                     }
+                    nextText.setText(nextText.getText() + str.substring(started, i));
+                    outputList.add(nextText);
+                    nextText = new TextComponent();
                     nextText.setColor(ChatColor.of(color.toString()));
                     i += 13;
                     started = i + 1;
