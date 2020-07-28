@@ -80,7 +80,6 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     // For 'paste' and 'create', this delays how many blocks can be processed at once, spread over many ticks.
     //
     // The "load" option by default will load '.schem' files. If no '.schem' file is available, will attempt to load a legacy '.schematic' file instead.
-    // The "save" option will save to '.schem' files, unless you are on MC 1.12.2 (in which case it will save legacy '.schematic' files).
     //
     // For load and save, the "filename" option is available to specify the name of the file to look for.
     // If unspecified, the filename will default to the same as the "name" input.

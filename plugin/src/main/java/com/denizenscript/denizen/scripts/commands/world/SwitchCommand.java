@@ -57,6 +57,8 @@ public class SwitchCommand extends AbstractCommand {
     //
     // @Tags
     // <LocationTag.switched>
+    // <MaterialTag.is_switchable>
+    // <MaterialTag.switched>
     //
     // @Usage
     // At the player's location, switch the state of the block to on, no matter what state it was in before.

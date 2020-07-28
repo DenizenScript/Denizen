@@ -47,9 +47,10 @@ public class DropCommand extends AbstractCommand {
     // You can also add 'delay:' to set the pickup delay of the item.
     //
     // @Tags
-    // <EntityTag.item>
     // <entry[saveName].dropped_entities> returns a list of entities that were dropped.
     // <entry[saveName].dropped_entity> returns a single entity that was dropped (if only one).
+    // <EntityTag.item>
+    // <EntityTag.experience>
     //
     // @Usage
     // Use to drop some loot around the player.
@@ -61,7 +62,7 @@ public class DropCommand extends AbstractCommand {
     //
     // @Usage
     // Use to drop a nasty surprise (exploding TNT).
-    // - drop e@primed_tnt <player.location>
+    // - drop primed_tnt <player.location>
     //
     // @Usage
     // Use to drop an item with a pickup delay at the player's location.

@@ -20,7 +20,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.meta.BlockStateMeta;
-import org.bukkit.material.MaterialData;
 
 import java.util.List;
 

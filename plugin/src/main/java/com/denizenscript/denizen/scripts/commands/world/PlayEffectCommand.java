@@ -74,7 +74,8 @@ public class PlayEffectCommand extends AbstractCommand {
     // Optionally specify a velocity vector for standard particles to move. Note that this ignores the 'data' input if used.
     //
     // @Tags
-    // None
+    // <server.effect_types>
+    // <server.particle_types>
     //
     // @Usage
     // Use to create a fake explosion.
