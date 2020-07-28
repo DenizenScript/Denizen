@@ -21,14 +21,14 @@ public class FakeSpawnCommand extends AbstractCommand {
 
     public FakeSpawnCommand() {
         setName("fakespawn");
-        setSyntax("fakespawn [<entity>] [cancel/<location>] (players:<player>|...) (d:<duration>{10s})");
+        setSyntax("fakespawn [<entity>] [<location>/cancel] (players:<player>|...) (d:<duration>{10s})");
         setRequiredArguments(2, 4);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name FakeSpawn
-    // @Syntax fakespawn [<entity>] [<location>] (players:<player>|...) (d:<duration>{10s})
+    // @Syntax fakespawn [<entity>] [<location>/cancel] (players:<player>|...) (d:<duration>{10s})
     // @Required 2
     // @Maximum 4
     // @Short Makes the player see a fake entity spawn that didn't actually happen.
@@ -36,19 +36,14 @@ public class FakeSpawnCommand extends AbstractCommand {
     //
     // @Description
     // Makes the player see a fake entity spawn that didn't actually happen.
-    // This means that the server will not track the entity,
-    // and players not included in the command will not see the entity.
+    // This means that the server will not track the entity, and players not included in the command will not see the entity.
     //
-    // You must specify a location and an entity to spawn.
+    // You must specify an entity to spawn and a location to spawn it at, or to remove a fake entity, specify the fake entity object and 'cancel' instead of a location.
     //
-    // Optionally, specify a list of players to show the entity to.
-    // If unspecified, will default to the linked player.
+    // Optionally, specify a list of players to show the entity to. If unspecified, will default to the linked player.
     //
-    // Optionally, specify how long the fake entity should remain for.
-    // If unspecified, will default to 10 seconds.
+    // Optionally, specify how long the fake entity should remain for. If unspecified, will default to 10 seconds.
     // After the duration is up, the entity will be removed from the player(s).
-    //
-    // To remove a fake entity, specify the fake entity object and 'cancel' instead of a location.
     //
     // @Tags
     // <PlayerTag.fake_entities>

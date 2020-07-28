@@ -57,6 +57,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
     // @Tags
     // <WorldTag.loaded_chunks>
     // <ChunkTag.is_loaded>
+    // <ChunkTag.force_loaded>
     //
     // @Usage
     // Use to load a chunk.
