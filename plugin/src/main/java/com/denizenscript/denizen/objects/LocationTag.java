@@ -2749,6 +2749,20 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             return null;
         });
 
+        // <--[tag]
+        // @attribute <LocationTag.to_cuboid[<location>]>
+        // @returns CuboidTag
+        // @description
+        // Returns a cuboid from this location to the specified location.
+        // -->
+        registerTag("to_cuboid", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("to_cuboid[...] tag must have input.");
+                return null;
+            }
+            return new CuboidTag(object.clone(), attribute.getContextObject(1).asType(LocationTag.class, attribute.context));
+        });
+
         /////////////////////
         //   STATE ATTRIBUTES
         /////////////////
