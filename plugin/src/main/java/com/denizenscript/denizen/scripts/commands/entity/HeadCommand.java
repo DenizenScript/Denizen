@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import net.citizensnpcs.api.trait.trait.Equipment;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -28,35 +29,6 @@ public class HeadCommand extends AbstractCommand {
         setRequiredArguments(1, 2);
         isProcedural = false;
     }
-
-    // <--[command]
-    // @Name Head
-    // @Syntax head (<entity>|...) [skin:<player_name>]
-    // @Required 1
-    // @Maximum 2
-    // @Short Makes players or NPCs wear a specific player's head.
-    // @Group entity
-    //
-    // @Description
-    // Equips a player's head onto the player(s) or npc(s) specified. If no player or npc is specified, it defaults
-    // to the player attached to the script queue. It accepts a single entity or list of entities.
-    //
-    // @Tags
-    // <ItemTag.skin>
-    // <ItemTag.has_skin>
-    //
-    // @Usage
-    // Use to stick a player's head on your head with the head command.
-    // - head <player> skin:Notch
-    //
-    // @Usage
-    // Use to equip a different NPC with your own head.
-    // - head <[some_npc]> skin:<player.name>
-    //
-    // @Usage
-    // Use to equip all online players with Notch's head.
-    // - head <server.online_players> skin:Notch
-    // -->
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -99,7 +71,7 @@ public class HeadCommand extends AbstractCommand {
     @SuppressWarnings("unchecked")
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
+        Deprecations.headCommand.warn(scriptEntry);
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         ElementTag skin = scriptEntry.getElement("skin");
         MaterialTag material = scriptEntry.getObjectTag("material");
