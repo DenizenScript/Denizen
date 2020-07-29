@@ -38,9 +38,12 @@ public class CommandScriptEvent extends BukkitScriptEvent implements Listener {
     // @Triggers when a player, console, or command block/minecart runs a Bukkit command. This happens before
     // any code of established commands, allowing scripts to 'override' existing commands.
     // Note that for the sake of the event line, escaping is used, so 'bukkit:plugins' becomes 'bukkit&coplugins'
+    //
+    // @Warning This event is to override existing commands, and should not be used to create new commands - use a command script instead.
+    //
     // @Context
-    // <context.command> returns the command name as an Element.
-    // <context.raw_args> returns any args used as an Element.
+    // <context.command> returns the command name as an ElementTag.
+    // <context.raw_args> returns any args used as a ListTag.
     // <context.args> returns a ListTag of the arguments.
     // <context.source_type> returns the source of the command. Can be: PLAYER, SERVER, COMMAND_BLOCK, or COMMAND_MINECART.
     // <context.command_block_location> returns the command block's location (if the command was run from one).

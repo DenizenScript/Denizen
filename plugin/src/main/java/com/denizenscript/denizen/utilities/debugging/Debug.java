@@ -270,7 +270,7 @@ public class Debug {
     // @Events
     // server generates exception
     //
-    // @Regex ^on script generates exception$
+    // @Regex ^on server generates exception$
     //
     // @Triggers when an exception occurs on the server.
     // @Context

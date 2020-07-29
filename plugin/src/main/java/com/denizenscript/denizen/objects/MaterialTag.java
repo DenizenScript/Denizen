@@ -38,6 +38,8 @@ public class MaterialTag implements ObjectTag, Adjustable {
     // Block materials may sometimes also contain property data,
     // for specific values on the block material such as the growth stage of a plant or the orientation of a stair block.
     //
+    // Material types: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html>.
+    //
     // -->
 
     /**
