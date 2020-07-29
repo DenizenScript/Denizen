@@ -29,6 +29,37 @@ import java.util.function.Function;
 
 public abstract class BukkitScriptEvent extends ScriptEvent {
 
+    // <--[language]
+    // @name Script Event Object Matchables
+    // @group Script Events
+    // @description
+    // Script events have a variety of matchable object inputs, and the range of inputs they accept may not always be obvious.
+    // For example, an event might be "player clicks <block>"... what can "<block>" be filled with?
+    //
+    // "<block>" usually indicates that a MaterialTag will be matched against.
+    // This means you can specify any valid block material name, like "stone" or "air".
+    // You can also use "block" or "material" as catch-alls.
+    //
+    // "<entity>", "<projectile>", "<vehicle>", etc. are examples of where an EntityTag will be expected.
+    // You can generally specify any potentially relevant entity type, such as "creeper" under "<entity>", or "arrow" for "<projectile>",
+    // but you can also specify "entity" (catch-all), "player" (real players, NOT player-type NPCs), "npc" (Citizens NPC),
+    // "vehicle" (minecarts, boats, horses, etc), "fish" (cod, pufferfish, etc), "projectile" (arrow, trident, etc), "hanging" (painting, item_frame, etc).
+    //
+    // "<item>" or similar expects of course an ItemTag.
+    // You can use any valid item material type like "stick", or the name of an item script, or "item" as a catch-all, or "potion" for any potion item.
+    //
+    // "<inventory>" or similar expects of course an InventoryTag.
+    // You can use "inventory" as a catch-all, "note" to mean any noted inventory, the name of an inventory script,
+    // the name of an inventory note, or the name of an inventory type (like "chest").
+    //
+    // You will also often see match inputs like "<cause>" or "<reason>" or similar,
+    // which will expect the name from an enumeration documented elsewhere in the event meta (usually alongside a "<context.cause>" or similar).
+    //
+    // You can also do more advanced multi-matchers in any of these inputs.
+    // For details on that, see <@link language Advanced Script Event Matching>.
+    // -->
+
+
     public boolean couldMatchInArea(String lower) {
         int index = CoreUtilities.split(lower, ' ').indexOf("in");
         if (index == -1) {
