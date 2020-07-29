@@ -1488,19 +1488,19 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         }, "list_partial_chunks");
 
         // <--[tag]
-        // @attribute <CuboidTag.notable_name>
+        // @attribute <CuboidTag.note_name>
         // @returns ElementTag
         // @description
-        // Gets the name of a Notable CuboidTag. If the cuboid isn't noted,
+        // Gets the name of a noted CuboidTag. If the cuboid isn't noted,
         // this is null.
         // -->
-        registerTag("notable_name", (attribute, cuboid) -> {
+        registerTag("note_name", (attribute, cuboid) -> {
             String notname = NotableManager.getSavedId(cuboid);
             if (notname == null) {
                 return null;
             }
             return new ElementTag(notname);
-        });
+        }, "notable_name");
 
         registerTag("full", (attribute, cuboid) -> {
             Deprecations.cuboidFullTag.warn(attribute.context);

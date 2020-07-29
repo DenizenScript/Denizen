@@ -2477,19 +2477,19 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
-        // @attribute <LocationTag.notable_name>
+        // @attribute <LocationTag.note_name>
         // @returns ElementTag
         // @description
-        // Gets the name of a Notable LocationTag. If the location isn't noted,
+        // Gets the name of a noted LocationTag. If the location isn't noted,
         // this is null.
         // -->
-        registerTag("notable_name", (attribute, object) -> {
+        registerTag("note_name", (attribute, object) -> {
             String notname = NotableManager.getSavedId((object));
             if (notname == null) {
                 return null;
             }
             return new ElementTag(notname);
-        });
+        }, "notable_name");
 
         /////////////////////
         //   MATHEMATICAL ATTRIBUTES
@@ -2787,7 +2787,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @attribute <LocationTag.cuboids>
         // @returns ListTag(CuboidTag)
         // @description
-        // Returns a ListTag of all notable CuboidTags that include this location.
+        // Returns a ListTag of all noted CuboidTags that include this location.
         // -->
         registerTag("cuboids", (attribute, object) -> {
             List<CuboidTag> cuboids = CuboidTag.getNotableCuboidsContaining(object);
@@ -2802,7 +2802,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @attribute <LocationTag.ellipsoids>
         // @returns ListTag(EllipsoidTag)
         // @description
-        // Returns a ListTag of all notable EllipsoidTags that include this location.
+        // Returns a ListTag of all noted EllipsoidTags that include this location.
         // -->
         registerTag("ellipsoids", (attribute, object) -> {
             List<EllipsoidTag> ellipsoids = EllipsoidTag.getNotableEllipsoidsContaining(object);

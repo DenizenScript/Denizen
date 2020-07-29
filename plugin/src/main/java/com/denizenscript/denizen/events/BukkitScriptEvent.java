@@ -38,9 +38,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (InventoryTag.matches(in) || CoreUtilities.equalsIgnoreCase(in, "inventory") || isAdvancedMatchable(in)) {
             return false;
         }
-        if (CoreUtilities.equalsIgnoreCase(in, "notable")) {
+        if (in.equals("notable") || in.equals("noted")) {
             String next = CoreUtilities.getXthArg(index + 2, lower);
-            if (!CoreUtilities.equalsIgnoreCase(next, "cuboid") && !CoreUtilities.equalsIgnoreCase(next, "ellipsoid")) {
+            if (!next.equals("cuboid") && !next.equals("ellipsoid")) {
                 return false;
             }
         }
@@ -389,7 +389,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             }
             Deprecations.inAreaSwitchFormat.warn();
             inputText = path.eventArgLowerAt(index + 1);
-            if (inputText.equals("notable")) {
+            if (inputText.equals("notable") || inputText.equals("noted")) {
                 String subit = path.eventArgLowerAt(index + 2);
                 if (subit.equals("cuboid")) {
                     return CuboidTag.getNotableCuboidsContaining(location).size() > 0;
@@ -617,7 +617,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (comparedto.equals("inventory")) {
             return true;
         }
-        if (comparedto.equals("notable")) {
+        if (comparedto.equals("notable") || comparedto.equals("note")) {
             return NotableManager.isSaved(inv);
         }
         MatchHelper matcher = createMatcher(comparedto);
