@@ -1,6 +1,8 @@
 package com.denizenscript.denizen.objects.properties.bukkit;
 
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -8,6 +10,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import org.bukkit.ChatColor;
 
 public class BukkitListProperties implements Property {
     public static boolean describes(ObjectTag list) {
@@ -46,40 +49,53 @@ public class BukkitListProperties implements Property {
             if (list.isEmpty()) {
                 return new ElementTag("");
             }
-            StringBuilder dScriptArg = new StringBuilder();
-
-            for (int n = 0; n < list.size(); n++) {
-                if (list.get(n).startsWith("p@")) {
-                    PlayerTag gotten = PlayerTag.valueOf(list.get(n), attribute.context);
+            StringBuilder output = new StringBuilder();
+            for (int i = 0; i < list.size(); i++) {
+                ObjectTag object = list.getObject(i);
+                String val = object.toString();
+                boolean handled = false;
+                if (val.startsWith("p@")) {
+                    PlayerTag gotten = object.asType(PlayerTag.class, attribute.context);
                     if (gotten != null) {
-                        dScriptArg.append(gotten.getName());
+                        output.append(gotten.getName());
+                        handled = true;
+                    }
+                }
+                if (val.startsWith("e@") || val.startsWith("n@")) {
+                    EntityTag gotten = object.asType(EntityTag.class, attribute.context);
+                    if (gotten != null) {
+                        output.append(gotten.getName());
+                        handled = true;
+                    }
+                }
+                if (val.startsWith("i@")) {
+                    ItemTag item = object.asType(ItemTag.class, attribute.context);
+                    if (item != null) {
+                        output.append(item.formattedName());
+                    }
+                }
+                if (val.startsWith("m@")) {
+                    MaterialTag material = object.asType(MaterialTag.class, attribute.context);
+                    if (material != null) {
+                        output.append(material.name());
+                    }
+                }
+                if (!handled) {
+                    if (object instanceof ElementTag) {
+                        output.append(val.replaceAll("\\w+@", ""));
                     }
                     else {
-                        dScriptArg.append(list.get(n).replaceAll("\\w+@", ""));
+                        output.append(ChatColor.stripColor(object.debuggable()));
                     }
                 }
-                else if (list.get(n).startsWith("e@") || list.get(n).startsWith("n@")) {
-                    EntityTag gotten = EntityTag.valueOf(list.get(n), attribute.context);
-                    if (gotten != null) {
-                        dScriptArg.append(gotten.getName());
-                    }
-                    else {
-                        dScriptArg.append(list.get(n).replaceAll("\\w+@", ""));
-                    }
+                if (i == list.size() - 2) {
+                    output.append(i == 0 ? " and " : ", and ");
                 }
                 else {
-                    dScriptArg.append(list.get(n).replaceAll("\\w+@", ""));
-                }
-
-                if (n == list.size() - 2) {
-                    dScriptArg.append(n == 0 ? " and " : ", and ");
-                }
-                else {
-                    dScriptArg.append(", ");
+                    output.append(", ");
                 }
             }
-
-            return new ElementTag(dScriptArg.toString().substring(0, dScriptArg.length() - 2));
+            return new ElementTag(output.toString().substring(0, output.length() - 2));
         });
     }
 

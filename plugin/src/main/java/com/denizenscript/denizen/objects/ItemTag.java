@@ -794,69 +794,59 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         // Correctly uses singular and plural forms of item names, among other things.
         // -->
         registerTag("formatted", (attribute, object) -> {
-            String id = CoreUtilities.toLowerCase(object.getMaterial().realName()).replace('_', ' ');
-
-            if (id.equals("air")) {
-                return new ElementTag("nothing");
-            }
-
-            if (id.equals("ice") || id.equals("dirt")) {
-                return new ElementTag(id);
-            }
-
-            if (object.getItemStack().getAmount() > 1) {
-                if (id.equals("cactus")) {
-                    return new ElementTag("cactuses");
-                }
-
-                if (id.endsWith(" off")) {
-                    id = id.substring(0, id.length() - 4);
-                }
-                if (id.endsWith(" on")) {
-                    id = id.substring(0, id.length() - 3);
-                }
-
-                if (id.equals("rotten flesh") || id.equals("cooked fish")
-                        || id.equals("raw fish") || id.endsWith("s")) {
-                    return new ElementTag(id);
-                }
-                if (id.endsWith("y")) {
-                    return new ElementTag(id.substring(0, id.length() - 1) + "ies")
-                            ;  // ex: lily -> lilies
-                }
-                if (id.endsWith("sh") || id.endsWith("ch")) {
-                    return new ElementTag(id + "es");
-                }
-                // else
-                return new ElementTag(id + "s")
-                        ; // iron sword -> iron swords
-
-            }
-            else {
-                if (id.equals("cactus")) {
-                    return new ElementTag("a cactus");
-                }
-                if (id.endsWith("s")) {
-                    return new ElementTag(id);
-                }
-
-                if (id.endsWith(" off")) {
-                    return new ElementTag("a " + id.substring(0, id.length() - 4));
-                }
-                if (id.endsWith(" on")) {
-                    return new ElementTag("a " + id.substring(0, id.length() - 3));
-                }
-
-                if (id.startsWith("a") || id.startsWith("e") || id.startsWith("i")
-                        || id.startsWith("o") || id.startsWith("u")) {
-                    return new ElementTag("an " + id)
-                            ;// ex: emerald -> an emerald
-                }
-                // else
-                return new ElementTag("a " + id)
-                        ;// ex: diamond -> a diamond
-            }
+            return new ElementTag(object.formattedName());
         });
+    }
+
+    public String formattedName() {
+        String id = CoreUtilities.toLowerCase(getMaterial().realName()).replace('_', ' ');
+        if (id.equals("air")) {
+            return "nothing";
+        }
+        if (id.equals("ice") || id.equals("dirt")) {
+            return id;
+        }
+        if (getItemStack().getAmount() > 1) {
+            if (id.equals("cactus")) {
+                return "cactuses";
+            }
+            if (id.endsWith(" off")) {
+                id = id.substring(0, id.length() - 4);
+            }
+            if (id.endsWith(" on")) {
+                id = id.substring(0, id.length() - 3);
+            }
+            if (id.equals("rotten flesh") || id.equals("cooked fish")
+                    || id.equals("raw fish") || id.endsWith("s")) {
+                return id;
+            }
+            if (id.endsWith("y")) {
+                return id.substring(0, id.length() - 1) + "ies";  // ex: lily -> lilies
+            }
+            if (id.endsWith("sh") || id.endsWith("ch")) {
+                return id + "es";
+            }
+            return id + "s"; // iron sword -> iron swords
+        }
+        else {
+            if (id.equals("cactus")) {
+                return "a cactus";
+            }
+            if (id.endsWith("s")) {
+                return id;
+            }
+            if (id.endsWith(" off")) {
+                return "a " + id.substring(0, id.length() - 4);
+            }
+            if (id.endsWith(" on")) {
+                return "a " + id.substring(0, id.length() - 3);
+            }
+            if (id.startsWith("a") || id.startsWith("e") || id.startsWith("i")
+                    || id.startsWith("o") || id.startsWith("u")) {
+                return "an " + id; // ex: emerald -> an emerald
+            }
+            return "a " + id; // ex: diamond -> a diamond
+        }
     }
 
     public static ObjectTagProcessor<ItemTag> tagProcessor = new ObjectTagProcessor<>();
