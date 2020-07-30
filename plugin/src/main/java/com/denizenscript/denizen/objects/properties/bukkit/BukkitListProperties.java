@@ -72,12 +72,14 @@ public class BukkitListProperties implements Property {
                     ItemTag item = object.asType(ItemTag.class, attribute.context);
                     if (item != null) {
                         output.append(item.formattedName());
+                        handled = true;
                     }
                 }
                 if (val.startsWith("m@")) {
                     MaterialTag material = object.asType(MaterialTag.class, attribute.context);
                     if (material != null) {
                         output.append(material.name());
+                        handled = true;
                     }
                 }
                 if (!handled) {
