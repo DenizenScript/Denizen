@@ -508,7 +508,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // @attribute <EllipsoidTag.players>
         // @returns ListTag(PlayerTag)
         // @description
-        // Gets a list of all players currently within the EllipsoidTag.
+        // Returns a list of all players currently within the EllipsoidTag.
         // -->
         registerTag("players", (attribute, object) -> {
             ArrayList<PlayerTag> players = new ArrayList<>();
@@ -524,7 +524,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // @attribute <EllipsoidTag.npcs>
         // @returns ListTag(NPCTag)
         // @description
-        // Gets a list of all NPCs currently within the EllipsoidTag.
+        // Returns a list of all NPCs currently within the EllipsoidTag.
         // -->
         if (Depends.citizens != null) {
             registerTag("npcs", (attribute, object) -> {
@@ -543,7 +543,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // @attribute <EllipsoidTag.entities[(<entity>|...)]>
         // @returns ListTag(EntityTag)
         // @description
-        // Gets a list of all entities currently within the EllipsoidTag, with an optional search parameter for the entity type.
+        // Returns a list of all entities currently within the EllipsoidTag, with an optional search parameter for the entity type.
         // -->
         registerTag("entities", (attribute, object) -> {
             ArrayList<EntityTag> entities = new ArrayList<>();
