@@ -796,7 +796,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @attribute <CuboidTag.spawnable_blocks[<Material>|...]>
         // @returns ListTag(LocationTag)
         // @description
-        // Returns each LocationTag within the CuboidTag that is
+        // Returns each location within the CuboidTag that is
         // safe for players or similar entities to spawn in.
         // Optionally, specify a list of materials to only return locations
         // with that block type.
@@ -966,6 +966,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // <--[tag]
         // @attribute <CuboidTag.set[<cuboid>].at[<index>]>
         // @returns CuboidTag
+        // @Mechanism CuboidTag.set_member
         // @description
         // Returns a modified copy of this cuboid, with the specific sub-cuboid index changed to hold the input cuboid.
         // -->
@@ -1354,7 +1355,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @attribute <CuboidTag.players>
         // @returns ListTag(PlayerTag)
         // @description
-        // Gets a list of all players currently within the CuboidTag.
+        // Returns a list of all players currently within the CuboidTag.
         // -->
         registerTag("players", (attribute, cuboid) -> {
             ArrayList<PlayerTag> players = new ArrayList<>();
@@ -1370,7 +1371,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @attribute <CuboidTag.npcs>
         // @returns ListTag(NPCTag)
         // @description
-        // Gets a list of all NPCs currently within the CuboidTag.
+        // Returns a list of all NPCs currently within the CuboidTag.
         // -->
         if (Depends.citizens != null) {
             registerTag("npcs", (attribute, cuboid) -> {
@@ -1389,8 +1390,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @attribute <CuboidTag.entities[(<entity>|...)]>
         // @returns ListTag(EntityTag)
         // @description
-        // Gets a list of all entities currently within the CuboidTag, with
-        // an optional search parameter for the entity type.
+        // Returns a list of all entities currently within the CuboidTag, with
+        // an optional search parameter for the entity type(s).
         // -->
         registerTag("entities", (attribute, cuboid) -> {
             ArrayList<EntityTag> entities = new ArrayList<>();
@@ -1421,8 +1422,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @attribute <CuboidTag.living_entities>
         // @returns ListTag(EntityTag)
         // @description
-        // Gets a list of all living entities currently within the CuboidTag.
-        // This includes Players, mobs, NPCs, etc., but excludes dropped items, experience orbs, etc.
+        // Returns a list of all living entities currently within the CuboidTag.
+        // This includes players, mobs, NPCs, etc., but excludes dropped items, experience orbs, etc.
         // -->
         registerTag("living_entities", (attribute, cuboid) -> {
             ArrayList<EntityTag> entities = new ArrayList<>();
@@ -1438,7 +1439,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @attribute <CuboidTag.chunks>
         // @returns ListTag(ChunkTag)
         // @description
-        // Gets a list of all chunks entirely within the CuboidTag (ignoring the Y axis).
+        // Returns a list of all chunks entirely within the CuboidTag (ignoring the Y axis).
         // -->
         registerTag("chunks", (attribute, cuboid) -> {
             ListTag chunks = new ListTag();
@@ -1491,7 +1492,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @attribute <CuboidTag.note_name>
         // @returns ElementTag
         // @description
-        // Gets the name of a noted CuboidTag. If the cuboid isn't noted,
+        // Returns the name of the noted CuboidTag. If the cuboid isn't noted,
         // this is null.
         // -->
         registerTag("note_name", (attribute, cuboid) -> {
@@ -1566,7 +1567,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Input is of the form like "2,cu@..." where 2 is the sub-cuboid index, or just a direct CuboidTag input.
         // The default index, if unspecified, is 1 (ie the first member).
         // @tags
-        // <CuboidTag.get>
+        // <CuboidTag.get[<index>]>
         // <CuboidTag.set[<cuboid>].at[<#>]>
         // -->
         if (mechanism.matches("set_member")) {
@@ -1597,7 +1598,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Input is of the form like "2,cu@..." where 2 is the sub-cuboid index, or just a direct CuboidTag input.
         // Note that the index is where the member will end up. So, index 1 will add the cuboid as the very first member (moving the rest up +1 index value).
         // @tags
-        // <CuboidTag.get>
+        // <CuboidTag.get[<index>]>
         // <CuboidTag.add_member[<cuboid>]>
         // <CuboidTag.add_member[<cuboid>].at[<#>]>
         // -->
