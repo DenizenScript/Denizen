@@ -2165,7 +2165,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // @attribute <InventoryTag.note_name>
         // @returns ElementTag
         // @description
-        // Gets the name of a noted InventoryTag. If the inventory isn't noted, this is null.
+        // Gets the name of the noted InventoryTag. If the inventory isn't noted, this is null.
         // -->
         registerTag("note_name", (attribute, object) -> {
             String notname = NotableManager.getSavedId(object);
@@ -2304,6 +2304,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // <--[tag]
         // @attribute <InventoryTag.equipment_map>
         // @returns MapTag
+        // @Mechanism EntityTag.equipment
         // @description
         // Returns a MapTag containing the inventory's equipment.
         // Output keys for players are boots, leggings,  chestplate, helmet.
@@ -2317,6 +2318,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // <--[tag]
         // @attribute <InventoryTag.equipment>
         // @returns ListTag(ItemTag)
+        // @Mechanism EntityTag.equipment
         // @description
         // Returns the equipment of an inventory as a list of items.
         // For players, the order is boots|leggings|chestplate|helmet.
