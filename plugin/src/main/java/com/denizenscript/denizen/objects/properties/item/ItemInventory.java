@@ -22,8 +22,8 @@ public class ItemInventory implements Property {
 
     public static boolean describes(ObjectTag item) {
         return item instanceof ItemTag
-                && ((ItemTag) item).getItemStack().getItemMeta() instanceof BlockStateMeta
-                && ((BlockStateMeta) ((ItemTag) item).getItemStack().getItemMeta()).getBlockState() instanceof InventoryHolder;
+                && ((ItemTag) item).getItemMeta() instanceof BlockStateMeta
+                && ((BlockStateMeta) ((ItemTag) item).getItemMeta()).getBlockState() instanceof InventoryHolder;
     }
 
     public static ItemInventory getFrom(ObjectTag _item) {
@@ -44,7 +44,7 @@ public class ItemInventory implements Property {
     };
 
     private InventoryTag getItemInventory() {
-        return InventoryTag.mirrorBukkitInventory(((InventoryHolder) ((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()).getInventory());
+        return InventoryTag.mirrorBukkitInventory(((InventoryHolder) ((BlockStateMeta) item.getItemMeta()).getBlockState()).getInventory());
     }
 
     private ItemInventory(ItemTag _item) {

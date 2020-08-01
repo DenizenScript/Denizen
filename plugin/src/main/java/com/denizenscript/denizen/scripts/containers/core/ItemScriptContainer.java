@@ -228,7 +228,7 @@ public class ItemScriptContainer extends ScriptContainer {
             }
             // Set Display Name
             if (contains("display name")) {
-                ItemMeta meta = stack.getItemStack().getItemMeta();
+                ItemMeta meta = stack.getItemMeta();
                 String displayName = TagManager.tag(getString("display name"), context);
                 meta.setDisplayName(displayName);
                 stack.getItemStack().setItemMeta(meta);
@@ -240,7 +240,7 @@ public class ItemScriptContainer extends ScriptContainer {
             }
             // Set Lore
             if (contains("lore")) {
-                ItemMeta meta = stack.getItemStack().getItemMeta();
+                ItemMeta meta = stack.getItemMeta();
                 List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
                 for (String line : getStringList("lore")) {
                     line = TagManager.tag(line, context);

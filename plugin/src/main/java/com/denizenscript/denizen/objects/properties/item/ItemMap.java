@@ -68,12 +68,12 @@ public class ItemMap implements Property {
     }
 
     public boolean hasMapId() {
-        MapMeta map = (MapMeta) item.getItemStack().getItemMeta();
+        MapMeta map = (MapMeta) item.getItemMeta();
         return map.hasMapId();
     }
 
     public int getMapId() {
-        MapMeta map = (MapMeta) item.getItemStack().getItemMeta();
+        MapMeta map = (MapMeta) item.getItemMeta();
         if (!map.hasMapId()) {
             return 0;
         }
@@ -81,7 +81,7 @@ public class ItemMap implements Property {
     }
 
     public void setMapId(int id) {
-        MapMeta map = (MapMeta) item.getItemStack().getItemMeta();
+        MapMeta map = (MapMeta) item.getItemMeta();
         map.setMapId(id);
         item.getItemStack().setItemMeta(map);
     }

@@ -49,7 +49,7 @@ public class ItemBook implements Property {
     }
 
     public BookMeta getBookInfo() {
-        return (BookMeta) item.getItemStack().getItemMeta();
+        return (BookMeta) item.getItemMeta();
     }
 
     ItemTag item;
@@ -117,7 +117,7 @@ public class ItemBook implements Property {
 
         if (attribute.startsWith("book")) {
             Deprecations.itemBookTags.warn(attribute.context);
-            BookMeta bookInfo = (BookMeta) item.getItemStack().getItemMeta();
+            BookMeta bookInfo = (BookMeta) item.getItemMeta();
             attribute = attribute.fulfill(1);
 
             if (item.getItemStack().getType() == Material.WRITTEN_BOOK) {
@@ -177,7 +177,7 @@ public class ItemBook implements Property {
 
     public MapTag getBookMap() {
         MapTag outMap = new MapTag();
-        BookMeta bookInfo = (BookMeta) item.getItemStack().getItemMeta();
+        BookMeta bookInfo = (BookMeta) item.getItemMeta();
         if (item.getItemStack().getType().equals(Material.WRITTEN_BOOK) && bookInfo.hasAuthor() && bookInfo.hasTitle()) {
             outMap.putObject("author", new ElementTag(bookInfo.getAuthor()));
             outMap.putObject("author", new ElementTag(bookInfo.getTitle()));
@@ -196,7 +196,7 @@ public class ItemBook implements Property {
     @Deprecated
     public String getOutputString() {
         StringBuilder output = new StringBuilder(128);
-        BookMeta bookInfo = (BookMeta) item.getItemStack().getItemMeta();
+        BookMeta bookInfo = (BookMeta) item.getItemMeta();
         if (item.getItemStack().getType().equals(Material.WRITTEN_BOOK) && bookInfo.hasAuthor() && bookInfo.hasTitle()) {
             output.append("author|").append(EscapeTagBase.escape(bookInfo.getAuthor()))
                     .append("|title|").append(EscapeTagBase.escape(bookInfo.getTitle())).append("|");
@@ -220,7 +220,7 @@ public class ItemBook implements Property {
 
         if (mechanism.matches("book_raw_pages")) {
             Deprecations.bookItemRawTags.warn(mechanism.context);
-            BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
+            BookMeta meta = (BookMeta) item.getItemMeta();
             ListTag data = mechanism.valueAsType(ListTag.class);
             ArrayList<BaseComponent[]> newPages = new ArrayList<>();
             for (String str : data) {
@@ -241,7 +241,7 @@ public class ItemBook implements Property {
         // <ItemTag.book_pages>
         // -->
         if (mechanism.matches("book_pages")) {
-            BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
+            BookMeta meta = (BookMeta) item.getItemMeta();
             ListTag data = mechanism.valueAsType(ListTag.class);
             ArrayList<BaseComponent[]> newPages = new ArrayList<>();
             for (String str : data) {
@@ -265,7 +265,7 @@ public class ItemBook implements Property {
                 Debug.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
             }
             else {
-                BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
+                BookMeta meta = (BookMeta) item.getItemMeta();
                 meta.setAuthor(mechanism.getValue().asString());
                 item.getItemStack().setItemMeta(meta);
             }
@@ -285,7 +285,7 @@ public class ItemBook implements Property {
                 Debug.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
             }
             else {
-                BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
+                BookMeta meta = (BookMeta) item.getItemMeta();
                 meta.setTitle(mechanism.getValue().asString());
                 item.getItemStack().setItemMeta(meta);
             }
@@ -305,7 +305,7 @@ public class ItemBook implements Property {
         // <ItemTag.book_pages>
         // -->
         if (mechanism.matches("book")) {
-            BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
+            BookMeta meta = (BookMeta) item.getItemMeta();
             if (mechanism.getValue().asString().startsWith("map@")) {
                 MapTag mapData = mechanism.valueAsType(MapTag.class);
                 ObjectTag author = mapData.getObject("author");

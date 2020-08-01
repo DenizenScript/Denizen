@@ -13,7 +13,7 @@ public class ItemRepairCost implements Property {
 
     public static boolean describes(ObjectTag item) {
         return item instanceof ItemTag
-                && ((ItemTag) item).getItemStack().getItemMeta() instanceof Repairable;
+                && ((ItemTag) item).getItemMeta() instanceof Repairable;
     }
 
     public static ItemRepairCost getFrom(ObjectTag _item) {
@@ -56,7 +56,7 @@ public class ItemRepairCost implements Property {
         // Note that zero indicates no repair cost.
         // -->
         if (attribute.startsWith("repair_cost")) {
-            return new ElementTag(((Repairable) item.getItemStack().getItemMeta()).getRepairCost())
+            return new ElementTag(((Repairable) item.getItemMeta()).getRepairCost())
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
@@ -65,7 +65,7 @@ public class ItemRepairCost implements Property {
 
     @Override
     public String getPropertyString() {
-        int cost = ((Repairable) item.getItemStack().getItemMeta()).getRepairCost();
+        int cost = ((Repairable) item.getItemMeta()).getRepairCost();
         if (cost != 0) {
             return String.valueOf(cost);
         }
@@ -92,7 +92,7 @@ public class ItemRepairCost implements Property {
         // <ItemTag.repair_cost>
         // -->
         if (mechanism.matches("repair_cost") && mechanism.requireInteger()) {
-            Repairable meta = ((Repairable) item.getItemStack().getItemMeta());
+            Repairable meta = ((Repairable) item.getItemMeta());
             meta.setRepairCost(mechanism.getValue().asInt());
             item.getItemStack().setItemMeta((ItemMeta) meta);
         }

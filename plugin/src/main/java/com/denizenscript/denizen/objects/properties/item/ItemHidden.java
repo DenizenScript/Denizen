@@ -9,7 +9,6 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemHidden implements Property {
@@ -43,26 +42,20 @@ public class ItemHidden implements Property {
     @Deprecated
     public ListTag flags() {
         ListTag output = new ListTag();
-        ItemStack itemStack = item.getItemStack();
-        if (itemStack.hasItemMeta()) {
-            for (ItemFlag flag : itemStack.getItemMeta().getItemFlags()) {
-                output.add(flag.name());
-            }
+        for (ItemFlag flag : item.getItemMeta().getItemFlags()) {
+            output.add(flag.name());
         }
         return output;
     }
 
     public ListTag hides() {
         ListTag output = new ListTag();
-        ItemStack itemStack = item.getItemStack();
-        if (itemStack.hasItemMeta()) {
-            for (ItemFlag flag : itemStack.getItemMeta().getItemFlags()) {
-                if (flag == ItemFlag.HIDE_POTION_EFFECTS) {
-                    output.add("ITEM_DATA");
-                }
-                else {
-                    output.add(flag.name().substring("HIDE_".length()));
-                }
+        for (ItemFlag flag : item.getItemMeta().getItemFlags()) {
+            if (flag == ItemFlag.HIDE_POTION_EFFECTS) {
+                output.add("ITEM_DATA");
+            }
+            else {
+                output.add(flag.name().substring("HIDE_".length()));
             }
         }
         return output;
@@ -133,7 +126,7 @@ public class ItemHidden implements Property {
             if (mechanism.matches("flags")) {
                 Deprecations.itemFlagsProperty.warn(mechanism.context);
             }
-            ItemMeta meta = item.getItemStack().getItemMeta();
+            ItemMeta meta = item.getItemMeta();
             meta.removeItemFlags(ItemFlag.values());
             ListTag new_hides = mechanism.valueAsType(ListTag.class);
             for (String str : new_hides) {

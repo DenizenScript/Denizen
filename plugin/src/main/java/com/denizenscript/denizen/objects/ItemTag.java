@@ -208,11 +208,6 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         this(new ItemStack(material));
     }
 
-    private static ItemStack fixQty(ItemStack item, int qty) {
-        item.setAmount(qty);
-        return item;
-    }
-
     public ItemTag(Material material, int qty) {
         this(new ItemStack(material, qty));
     }
@@ -238,16 +233,29 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
     //   INSTANCE FIELDS/METHODS
     /////////////////
 
-    // Bukkit itemstack associated
-
     private ItemStack item;
+
+    private ItemMeta meta;
 
     public ItemStack getItemStack() {
         return item;
     }
 
+    public ItemMeta getItemMeta() {
+        if (meta == null) {
+            meta = item.getItemMeta();
+        }
+        return meta;
+    }
+
+    public void setItemMeta(ItemMeta meta) {
+        this.meta = meta;
+        item.setItemMeta(meta);
+    }
+
     public void setItemStack(ItemStack item) {
         this.item = item;
+        meta = null;
     }
 
     // Compare item to item.
@@ -355,49 +363,6 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
             }
 
         return determination;
-    }
-
-    // Additional helper methods
-
-    public void setStackSize(int size) {
-        getItemStack().setAmount(size);
-    }
-
-    /**
-     * Check whether this item contains a lore that starts
-     * with a certain prefix.
-     *
-     * @param prefix The prefix
-     * @return True if it does, otherwise false
-     */
-    public boolean containsLore(String prefix) {
-
-        if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore()) {
-            for (String itemLore : getItemStack().getItemMeta().getLore()) {
-                if (itemLore.startsWith(prefix)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Get the lore from this item that starts with a
-     * certain prefix.
-     *
-     * @param prefix The prefix
-     * @return String  The lore
-     */
-    public String getLore(String prefix) {
-        for (String itemLore : getItemStack().getItemMeta().getLore()) {
-            if (itemLore.startsWith(prefix)) {
-                return itemLore.substring(prefix.length());
-            }
-        }
-
-        return "";
     }
 
     /**
@@ -694,13 +659,13 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
             if (attribute.getAttribute(2).equals("formatted")) {
                 return object;
             }
-            if (object.getItemStack().hasItemMeta() && object.getItemStack().getItemMeta() instanceof BlockStateMeta) {
+            if (object.getItemMeta() instanceof BlockStateMeta) {
                 if (object.getItemStack().getType() == Material.SHIELD) {
                     MaterialTag material = new MaterialTag(Material.SHIELD);
-                    material.setModernData(new ModernBlockData(((BlockStateMeta) object.getItemStack().getItemMeta()).getBlockState()));
+                    material.setModernData(new ModernBlockData(((BlockStateMeta) object.getItemMeta()).getBlockState()));
                     return material;
                 }
-                return new MaterialTag(new ModernBlockData(((BlockStateMeta) object.getItemStack().getItemMeta()).getBlockState()));
+                return new MaterialTag(new ModernBlockData(((BlockStateMeta) object.getItemMeta()).getBlockState()));
             }
             return object.getMaterial();
         });

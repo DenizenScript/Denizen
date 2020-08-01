@@ -699,8 +699,8 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // -->
         registerTag("item", (attribute, object) -> {
             ItemTag item = new ItemTag(object, 1);
-            if (item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof BlockStateMeta) {
-                ((BlockStateMeta) item.getItemStack().getItemMeta()).setBlockState(object.modernData.getBlockState());
+            if (item.getItemMeta() instanceof BlockStateMeta) {
+                ((BlockStateMeta) item.getItemMeta()).setBlockState(object.modernData.getBlockState());
             }
             return item;
         });

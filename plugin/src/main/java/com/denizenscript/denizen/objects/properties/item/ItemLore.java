@@ -38,8 +38,7 @@ public class ItemLore implements Property {
     };
 
     public boolean hasLore() {
-        return item.getItemStack().hasItemMeta()
-                && (item.getItemStack().getItemMeta().hasLore());
+        return item.getItemMeta().hasLore();
     }
 
     private ItemLore(ItemTag _item) {
@@ -87,7 +86,7 @@ public class ItemLore implements Property {
 
     public ListTag getLoreList() {
         ListTag output = new ListTag();
-        for (String itemLore : item.getItemStack().getItemMeta().getLore()) {
+        for (String itemLore : item.getItemMeta().getLore()) {
             if (!itemLore.startsWith(ItemTag.itemscriptIdentifier)
                     && !itemLore.startsWith(ItemScriptHelper.ItemScriptHashID)) {
                 output.add(itemLore);
@@ -125,7 +124,7 @@ public class ItemLore implements Property {
         // <ItemTag.lore>
         // -->
         if (mechanism.matches("lore")) {
-            ItemMeta meta = item.getItemStack().getItemMeta();
+            ItemMeta meta = item.getItemMeta();
             ListTag lore = mechanism.valueAsType(ListTag.class);
             CoreUtilities.fixNewLinesToListSeparation(lore);
             if (item.isItemscript()) {

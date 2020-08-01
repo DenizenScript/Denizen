@@ -21,8 +21,8 @@ public class ItemFirework implements Property {
 
     public static boolean describes(ObjectTag item) {
         return item instanceof ItemTag
-                && ((((ItemTag) item).getItemStack().getItemMeta() instanceof FireworkMeta)
-                || (((ItemTag) item).getItemStack().getItemMeta() instanceof FireworkEffectMeta));
+                && ((((ItemTag) item).getItemMeta() instanceof FireworkMeta)
+                || (((ItemTag) item).getItemMeta() instanceof FireworkEffectMeta));
     }
 
     public static ItemFirework getFrom(ObjectTag _item) {
@@ -51,15 +51,15 @@ public class ItemFirework implements Property {
     public ListTag getFireworkData() {
         List<FireworkEffect> effects;
         ListTag list = new ListTag();
-        if (item.getItemStack().getItemMeta() instanceof FireworkMeta) {
-            effects = ((FireworkMeta) item.getItemStack().getItemMeta()).getEffects();
-            int power = ((FireworkMeta) item.getItemStack().getItemMeta()).getPower();
+        if (item.getItemMeta() instanceof FireworkMeta) {
+            effects = ((FireworkMeta) item.getItemMeta()).getEffects();
+            int power = ((FireworkMeta) item.getItemMeta()).getPower();
             if (power != 0) {
                 list.add(String.valueOf(power));
             }
         }
         else {
-            effects = Arrays.asList(((FireworkEffectMeta) item.getItemStack().getItemMeta()).getEffect());
+            effects = Arrays.asList(((FireworkEffectMeta) item.getItemMeta()).getEffect());
         }
         if (effects != null) {
             for (FireworkEffect effect : effects) {
@@ -127,7 +127,7 @@ public class ItemFirework implements Property {
         // -->
         if (mechanism.matches("firework")) {
             ListTag fireworks = mechanism.valueAsType(ListTag.class);
-            ItemMeta meta = item.getItemStack().getItemMeta();
+            ItemMeta meta = item.getItemMeta();
             for (String effect : fireworks) {
                 String[] data = effect.split(",");
                 if (data.length == 9) {

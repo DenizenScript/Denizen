@@ -47,7 +47,7 @@ public class ItemBaseColor implements Property {
     ItemTag item;
 
     private DyeColor getBaseColor() {
-        ItemMeta itemMeta = item.getItemStack().getItemMeta();
+        ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta instanceof BlockStateMeta) {
             if (item.getItemStack().getType() == Material.SHIELD) { // Hack to avoid blank shields misdisplaying as white
                 if (!itemMeta.serialize().containsKey("internal")) {

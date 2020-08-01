@@ -6,7 +6,6 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemUnbreakable implements Property {
@@ -58,8 +57,7 @@ public class ItemUnbreakable implements Property {
     }
 
     public String getPropertyString() {
-        ItemStack itemStack = item.getItemStack();
-        return (itemStack.hasItemMeta() && itemStack.getItemMeta().isUnbreakable()) ? "true" : null;
+        return item.getItemMeta().isUnbreakable() ? "true" : null;
     }
 
     public String getPropertyId() {
@@ -78,11 +76,9 @@ public class ItemUnbreakable implements Property {
         // <ItemTag.unbreakable>
         // -->
         if (mechanism.matches("unbreakable") && mechanism.requireBoolean()) {
-            ItemStack itemStack = item.getItemStack().clone();
-            ItemMeta meta = itemStack.getItemMeta();
+            ItemMeta meta = item.getItemMeta();
             meta.setUnbreakable(mechanism.getValue().asBoolean());
-            itemStack.setItemMeta(meta);
-            item.setItemStack(itemStack);
+            item.setItemMeta(meta);
         }
     }
 }

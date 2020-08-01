@@ -19,8 +19,8 @@ public class ItemSignContents implements Property {
 
     public static boolean describes(ObjectTag item) {
         return item instanceof ItemTag
-                && ((ItemTag) item).getItemStack().getItemMeta() instanceof BlockStateMeta
-                && ((BlockStateMeta) ((ItemTag) item).getItemStack().getItemMeta()).getBlockState() instanceof Sign;
+                && ((ItemTag) item).getItemMeta() instanceof BlockStateMeta
+                && ((BlockStateMeta) ((ItemTag) item).getItemMeta()).getBlockState() instanceof Sign;
     }
 
     public static ItemSignContents getFrom(ObjectTag _item) {
@@ -41,7 +41,7 @@ public class ItemSignContents implements Property {
     };
 
     private ListTag getSignContents() {
-        return new ListTag(Arrays.asList(((Sign) ((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()).getLines()));
+        return new ListTag(Arrays.asList(((Sign) ((BlockStateMeta) item.getItemMeta()).getBlockState()).getLines()));
     }
 
     private ItemSignContents(ItemTag _item) {

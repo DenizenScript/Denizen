@@ -105,14 +105,14 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
             if (lower.startsWith("result:")) {
                 String itemText = determination.substring("result:".length());
                 item = ItemTag.valueOf(itemText, path.container);
-                event.getItem().setItemMeta(item.getItemStack().getItemMeta());
+                event.getItem().setItemMeta(item.getItemMeta());
                 return true;
             }
             else if (lower.startsWith("enchants:")) {
                 String itemText = determination.substring("enchants:".length());
                 ItemTag enchantsRes = ItemTag.valueOf(itemText, path.container);
                 event.getEnchantsToAdd().clear();
-                event.getEnchantsToAdd().putAll(enchantsRes.getItemStack().getItemMeta().getEnchants());
+                event.getEnchantsToAdd().putAll(enchantsRes.getItemMeta().getEnchants());
                 return true;
             }
         }

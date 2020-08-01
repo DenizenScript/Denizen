@@ -13,7 +13,7 @@ public class ItemBlockMaterial implements Property {
 
     public static boolean describes(ObjectTag item) {
         return item instanceof ItemTag
-                && ((ItemTag) item).getItemStack().getItemMeta() instanceof BlockDataMeta;
+                && ((ItemTag) item).getItemMeta() instanceof BlockDataMeta;
     }
 
     public static ItemBlockMaterial getFrom(ObjectTag _item) {
@@ -55,7 +55,7 @@ public class ItemBlockMaterial implements Property {
         // Returns the material for an item with complex-block-data attached.
         // -->
         if (attribute.startsWith("block_material")) {
-            BlockDataMeta meta = (BlockDataMeta) item.getItemStack().getItemMeta();
+            BlockDataMeta meta = (BlockDataMeta) item.getItemMeta();
             if (meta.hasBlockData()) {
                 return new MaterialTag(new ModernBlockData(meta.getBlockData(item.getItemStack().getType())))
                         .getObjectAttribute(attribute.fulfill(1));
@@ -67,7 +67,7 @@ public class ItemBlockMaterial implements Property {
 
     @Override
     public String getPropertyString() {
-        BlockDataMeta meta = (BlockDataMeta) item.getItemStack().getItemMeta();
+        BlockDataMeta meta = (BlockDataMeta) item.getItemMeta();
         if (meta.hasBlockData()) {
             return new MaterialTag(new ModernBlockData(meta.getBlockData(item.getItemStack().getType()))).identify();
         }
@@ -92,7 +92,7 @@ public class ItemBlockMaterial implements Property {
         // <ItemTag.block_material>
         // -->
         if (mechanism.matches("block_material") && mechanism.requireObject(MaterialTag.class)) {
-            BlockDataMeta meta = (BlockDataMeta) item.getItemStack().getItemMeta();
+            BlockDataMeta meta = (BlockDataMeta) item.getItemMeta();
             MaterialTag mat = mechanism.valueAsType(MaterialTag.class);
             meta.setBlockData(mat.getModernData().data);
             item.getItemStack().setItemMeta(meta);

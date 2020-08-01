@@ -13,8 +13,8 @@ public class ItemSpawnerType implements Property {
 
     public static boolean describes(ObjectTag item) {
         return item instanceof ItemTag
-                && ((ItemTag) item).getItemStack().getItemMeta() instanceof BlockStateMeta
-                && ((BlockStateMeta) ((ItemTag) item).getItemStack().getItemMeta()).getBlockState() instanceof CreatureSpawner;
+                && ((ItemTag) item).getItemMeta() instanceof BlockStateMeta
+                && ((BlockStateMeta) ((ItemTag) item).getItemMeta()).getBlockState() instanceof CreatureSpawner;
     }
 
     public static ItemSpawnerType getFrom(ObjectTag _item) {
@@ -56,7 +56,7 @@ public class ItemSpawnerType implements Property {
         // Returns the spawn type for a spawner block item.
         // -->
         if (attribute.startsWith("spawner_type")) {
-            BlockStateMeta meta = (BlockStateMeta) item.getItemStack().getItemMeta();
+            BlockStateMeta meta = (BlockStateMeta) item.getItemMeta();
             CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
             return new EntityTag(state.getSpawnedType())
                     .getObjectAttribute(attribute.fulfill(1));
@@ -67,7 +67,7 @@ public class ItemSpawnerType implements Property {
 
     @Override
     public String getPropertyString() {
-        BlockStateMeta meta = (BlockStateMeta) item.getItemStack().getItemMeta();
+        BlockStateMeta meta = (BlockStateMeta) item.getItemMeta();
         CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
         return state.getSpawnedType().name();
     }
@@ -90,7 +90,7 @@ public class ItemSpawnerType implements Property {
         // <ItemTag.spawner_type>
         // -->
         if (mechanism.matches("spawner_type") && mechanism.requireObject(EntityTag.class)) {
-            BlockStateMeta meta = (BlockStateMeta) item.getItemStack().getItemMeta();
+            BlockStateMeta meta = (BlockStateMeta) item.getItemMeta();
             CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
             state.setSpawnedType(mechanism.valueAsType(EntityTag.class).getBukkitEntityType());
             meta.setBlockState(state);

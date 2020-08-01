@@ -153,8 +153,8 @@ public class ItemEnchantments implements Property {
         if (item.getItemStack().getEnchantments().size() > 0) {
             return item.getItemStack().getEnchantments().entrySet();
         }
-        else if (item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof EnchantmentStorageMeta) {
-            return ((EnchantmentStorageMeta) item.getItemStack().getItemMeta()).getStoredEnchants().entrySet();
+        else if (item.getItemMeta() instanceof EnchantmentStorageMeta) {
+            return ((EnchantmentStorageMeta) item.getItemMeta()).getStoredEnchants().entrySet();
         }
         return new HashSet<>();
     }
@@ -203,7 +203,7 @@ public class ItemEnchantments implements Property {
                 }
             }
             if (item.getItemStack().getType() == Material.ENCHANTED_BOOK) {
-                EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemStack().getItemMeta();
+                EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
                 for (Enchantment ench : new ArrayList<>(meta.getStoredEnchants().keySet())) {
                     if (names == null || names.contains(CoreUtilities.toLowerCase(ench.getName())) ||
                             names.contains(CoreUtilities.toLowerCase(getName(ench)))) {
@@ -249,7 +249,7 @@ public class ItemEnchantments implements Property {
                             Enchantment ench = Utilities.getEnchantmentByName(data[0]);
                             if (ench != null) {
                                 if (item.getItemStack().getType() == Material.ENCHANTED_BOOK) {
-                                    EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemStack().getItemMeta();
+                                    EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
                                     meta.addStoredEnchant(ench, Integer.valueOf(data[1]), true);
                                     item.getItemStack().setItemMeta(meta);
                                 }

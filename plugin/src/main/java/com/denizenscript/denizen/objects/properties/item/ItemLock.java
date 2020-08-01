@@ -15,8 +15,8 @@ public class ItemLock implements Property {
 
     public static boolean describes(ObjectTag item) {
         return item instanceof ItemTag
-                && ((ItemTag) item).getItemStack().getItemMeta() instanceof BlockStateMeta
-                && ((BlockStateMeta) ((ItemTag) item).getItemStack().getItemMeta()).getBlockState() instanceof Lockable;
+                && ((ItemTag) item).getItemMeta() instanceof BlockStateMeta
+                && ((BlockStateMeta) ((ItemTag) item).getItemMeta()).getBlockState() instanceof Lockable;
     }
 
     public static ItemLock getFrom(ObjectTag _item) {
@@ -37,11 +37,11 @@ public class ItemLock implements Property {
     };
 
     private String getItemLock() {
-        return ((Lockable) ((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()).getLock();
+        return ((Lockable) ((BlockStateMeta) item.getItemMeta()).getBlockState()).getLock();
     }
 
     private boolean isLocked() {
-        return ((Lockable) ((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()).isLocked();
+        return ((Lockable) ((BlockStateMeta) item.getItemMeta()).getBlockState()).isLocked();
     }
 
     private ItemLock(ItemTag _item) {

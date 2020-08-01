@@ -64,7 +64,7 @@ public class ItemPatterns implements Property {
     }
 
     private List<Pattern> getPatterns() {
-        ItemMeta itemMeta = item.getItemStack().getItemMeta();
+        ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta instanceof BannerMeta) {
             return ((BannerMeta) itemMeta).getPatterns();
         }

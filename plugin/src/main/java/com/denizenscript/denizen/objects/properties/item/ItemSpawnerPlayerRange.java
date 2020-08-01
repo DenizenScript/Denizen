@@ -13,8 +13,8 @@ public class ItemSpawnerPlayerRange implements Property {
 
     public static boolean describes(ObjectTag item) {
         return item instanceof ItemTag
-                && ((ItemTag) item).getItemStack().getItemMeta() instanceof BlockStateMeta
-                && ((BlockStateMeta) ((ItemTag) item).getItemStack().getItemMeta()).getBlockState() instanceof CreatureSpawner;
+                && ((ItemTag) item).getItemMeta() instanceof BlockStateMeta
+                && ((BlockStateMeta) ((ItemTag) item).getItemMeta()).getBlockState() instanceof CreatureSpawner;
     }
 
     public static ItemSpawnerPlayerRange getFrom(ObjectTag _item) {
@@ -56,7 +56,7 @@ public class ItemSpawnerPlayerRange implements Property {
         // Returns the maximum player range for a spawner block item (ie how close a player must be for this spawner to be active).
         // -->
         if (attribute.startsWith("spawner_player_range")) {
-            BlockStateMeta meta = (BlockStateMeta) item.getItemStack().getItemMeta();
+            BlockStateMeta meta = (BlockStateMeta) item.getItemMeta();
             CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
             return new ElementTag(state.getRequiredPlayerRange())
                     .getObjectAttribute(attribute.fulfill(1));
@@ -67,7 +67,7 @@ public class ItemSpawnerPlayerRange implements Property {
 
     @Override
     public String getPropertyString() {
-        BlockStateMeta meta = (BlockStateMeta) item.getItemStack().getItemMeta();
+        BlockStateMeta meta = (BlockStateMeta) item.getItemMeta();
         CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
         return String.valueOf(state.getRequiredPlayerRange());
     }
@@ -90,7 +90,7 @@ public class ItemSpawnerPlayerRange implements Property {
         // <ItemTag.spawner_player_range>
         // -->
         if (mechanism.matches("spawner_player_range") && mechanism.requireInteger()) {
-            BlockStateMeta meta = (BlockStateMeta) item.getItemStack().getItemMeta();
+            BlockStateMeta meta = (BlockStateMeta) item.getItemMeta();
             CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
             state.setRequiredPlayerRange(mechanism.getValue().asInt());
             meta.setBlockState(state);
