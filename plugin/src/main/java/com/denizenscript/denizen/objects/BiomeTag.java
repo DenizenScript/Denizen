@@ -192,6 +192,7 @@ public class BiomeTag implements ObjectTag, Adjustable {
         // @returns ListTag(EntityTag)
         // @description
         // Returns all entities that spawn naturally in this biome.
+        // Default examples: BAT, PIG, CHICKEN, COW, CREEPER, ZOMBIE, SQUID, ...
         // -->
         registerTag("spawnable_entities", (attribute, object) -> {
             BiomeNMS biome = object.biome;
