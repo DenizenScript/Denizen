@@ -384,7 +384,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // @returns ListTag(EntityTag)
         // @description
         // Returns a list of entities in the chunk.
-        // Optionally specify entity types to filter down to.
+        // Optionally, specify entity type(s) to filter down to.
         // -->
         registerTag("entities", (attribute, object) -> {
             ListTag entities = new ListTag();
