@@ -2047,13 +2047,18 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
-        // @attribute <EntityTag.remove_when_far>
+        // @attribute <EntityTag.persistent>
         // @returns ElementTag(Boolean)
         // @group attributes
+        // @mechanism EntityTag.persistent
         // @description
-        // Returns whether the entity despawns when away from players.
+        // Returns whether the entity should be be saved to file when chunks unload (otherwise, the entity is gone entirely if despawned for any reason).
         // -->
+        registerSpawnedOnlyTag("persistent", (attribute, object) -> {
+            return new ElementTag(!object.getLivingEntity().getRemoveWhenFarAway());
+        });
         registerSpawnedOnlyTag("remove_when_far", (attribute, object) -> {
+            Deprecations.entityRemoveWhenFar.warn(attribute.context);
             return new ElementTag(object.getLivingEntity().getRemoveWhenFarAway());
         });
 
@@ -2790,8 +2795,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @tags
         // <EntityTag.left_shoulder>
         // -->
-        if (getLivingEntity() instanceof HumanEntity
-                && mechanism.matches("release_left_shoulder")) {
+        if (mechanism.matches("release_left_shoulder") && getLivingEntity() instanceof HumanEntity) {
             Entity bukkitEnt = ((HumanEntity) getLivingEntity()).getShoulderEntityLeft();
             if (bukkitEnt != null) {
                 EntityTag ent = new EntityTag(bukkitEnt);
@@ -2813,8 +2817,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @tags
         // <EntityTag.right_shoulder>
         // -->
-        if (getLivingEntity() instanceof HumanEntity
-                && mechanism.matches("release_right_shoulder")) {
+        if (mechanism.matches("release_right_shoulder") && getLivingEntity() instanceof HumanEntity) {
             Entity bukkitEnt = ((HumanEntity) getLivingEntity()).getShoulderEntityRight();
             if (bukkitEnt != null) {
                 EntityTag ent = new EntityTag(bukkitEnt);
@@ -2839,8 +2842,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @tags
         // <EntityTag.left_shoulder>
         // -->
-        if (getLivingEntity() instanceof HumanEntity
-                && mechanism.matches("left_shoulder")) {
+        if (mechanism.matches("left_shoulder") && getLivingEntity() instanceof HumanEntity) {
             if (mechanism.hasValue()) {
                 if (mechanism.requireObject(EntityTag.class)) {
                     ((HumanEntity) getLivingEntity()).setShoulderEntityLeft(mechanism.valueAsType(EntityTag.class).getBukkitEntity());
@@ -2864,8 +2866,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @tags
         // <EntityTag.right_shoulder>
         // -->
-        if (getLivingEntity() instanceof HumanEntity
-                && mechanism.matches("right_shoulder")) {
+        if (mechanism.matches("right_shoulder") && getLivingEntity() instanceof HumanEntity) {
             if (mechanism.hasValue()) {
                 if (mechanism.requireObject(EntityTag.class)) {
                     ((HumanEntity) getLivingEntity()).setShoulderEntityRight(mechanism.valueAsType(EntityTag.class).getBukkitEntity());
@@ -2878,15 +2879,19 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
 
         // <--[mechanism]
         // @object EntityTag
-        // @name remove_when_far_away
+        // @name persistent
         // @input ElementTag(Boolean)
         // @description
-        // Sets whether the entity should be removed entirely when despawned.
+        // Sets whether the entity should be be saved to file when chunks unload (otherwise, the entity is gone entirely if despawned for any reason).
         // The entity must be living.
         // @tags
-        // <EntityTag.remove_when_far>
+        // <EntityTag.persistent>
         // -->
+        if (mechanism.matches("persistent") && mechanism.requireBoolean()) {
+            getLivingEntity().setRemoveWhenFarAway(!mechanism.getValue().asBoolean());
+        }
         if (mechanism.matches("remove_when_far_away") && mechanism.requireBoolean()) {
+            Deprecations.entityRemoveWhenFar.warn(mechanism.context);
             getLivingEntity().setRemoveWhenFarAway(mechanism.getValue().asBoolean());
         }
 
@@ -2899,8 +2904,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @tags
         // <EntityTag.is_sheared>
         // -->
-        if (mechanism.matches("sheared") && mechanism.requireBoolean()
-                && getBukkitEntity() instanceof Sheep) {
+        if (mechanism.matches("sheared") && mechanism.requireBoolean() && getBukkitEntity() instanceof Sheep) {
             ((Sheep) getBukkitEntity()).setSheared(mechanism.getValue().asBoolean());
         }
 
@@ -2914,8 +2918,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @tags
         // <EntityTag.is_collidable>
         // -->
-        if (mechanism.matches("collidable")
-                && mechanism.requireBoolean()) {
+        if (mechanism.matches("collidable") && mechanism.requireBoolean()) {
             getLivingEntity().setCollidable(mechanism.getValue().asBoolean());
         }
 
@@ -2983,14 +2986,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             NMSHandler.getEntityHelper().forceInteraction(getPlayer(), interactLocation);
         }
 
-        // <--[mechanism]
-        // @object EntityTag
-        // @name play_death
-        // @input None
-        // @description
-        // Animates the entity dying.
-        // -->
         if (mechanism.matches("play_death")) {
+            Deprecations.entityPlayDeath.warn(mechanism.context);
             getLivingEntity().playEffect(EntityEffect.DEATH);
         }
 
