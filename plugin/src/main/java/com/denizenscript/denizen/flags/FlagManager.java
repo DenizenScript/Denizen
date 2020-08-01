@@ -906,18 +906,6 @@ public class FlagManager {
             return new ListTag(values);
         }
 
-        public ListTag asList(String prefix) {
-            if (values == null) {
-                ListTag toReturn = new ListTag();
-                toReturn.setPrefix(prefix);
-                if (size != 0) {
-                    toReturn.add(firstValue);
-                }
-                return toReturn;
-            }
-            return new ListTag(values, prefix);
-        }
-
         /**
          * Returns a String value of the value in the specified index. If
          * the value doesn't exist, "" is returned.

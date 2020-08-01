@@ -100,7 +100,10 @@ public class FormattedTextHelper {
             ClickEvent click = component.getClickEvent();
             builder.append(ChatColor.COLOR_CHAR).append("[click=").append(click.getAction().name()).append(";").append(escape(click.getValue())).append("]");
         }
-        if (component instanceof TranslatableComponent) {
+        if (component instanceof TextComponent) {
+            builder.append(((TextComponent) component).getText());
+        }
+        else if (component instanceof TranslatableComponent) {
             builder.append(ChatColor.COLOR_CHAR).append("[translate=").append(escape(((TranslatableComponent) component).getTranslate()));
             List<BaseComponent> with = ((TranslatableComponent) component).getWith();
             if (with != null) {
@@ -121,9 +124,6 @@ public class FormattedTextHelper {
                     .append(";").append(escape(((ScoreComponent) component).getObjective()))
                     .append(";").append(escape(((ScoreComponent) component).getValue())).append("]");
         }
-        else if (component instanceof TextComponent) {
-            builder.append(((TextComponent) component).getText());
-        }
         List<BaseComponent> after = component.getExtra();
         if (after != null) {
             for (BaseComponent afterComponent : after) {
@@ -142,7 +142,7 @@ public class FormattedTextHelper {
         builder.append(RESET);
         String output = builder.toString();
         while (output.contains(RESET + RESET)) {
-            output = output.replace(RESET  + RESET, RESET);
+            output = output.replace(RESET + RESET, RESET);
         }
         return output;
     }
@@ -163,7 +163,7 @@ public class FormattedTextHelper {
     public static BaseComponent[] parse(String str) {
         str = CoreUtilities.clearNBSPs(str);
         char[] chars = str.toCharArray();
-        List<BaseComponent> outputList = new ArrayList<>();
+        List<BaseComponent> outputList = new ArrayList<>(2);
         int started = 0;
         TextComponent nextText = new TextComponent();
         TextComponent lastText = new TextComponent();
