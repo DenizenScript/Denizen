@@ -36,16 +36,16 @@ public class InventoryContents implements Property {
         this.inventory = inventory;
     }
 
-    public ListTag getContents(int simpleOrFull) {
+    public ListTag getContents(boolean simple) {
         if (inventory.getInventory() == null) {
             return null;
         }
+        int lastNonAir = -1;
         ListTag contents = new ListTag();
-        boolean containsNonAir = false;
         for (ItemStack item : inventory.getInventory().getContents()) {
             if (item != null && item.getType() != Material.AIR) {
-                containsNonAir = true;
-                if (simpleOrFull == 1) {
+                lastNonAir = contents.size();
+                if (simple) {
                     contents.add(new ItemTag(item).identifySimple());
                 }
                 else {
@@ -56,16 +56,9 @@ public class InventoryContents implements Property {
                 contents.addObject(new ItemTag(Material.AIR));
             }
         }
-        if (!containsNonAir) {
-            contents.clear();
-        }
-        else {
-            for (int x = contents.size() - 1; x >= 0; x--) {
-                if (!contents.get(x).equals("i@air")) {
-                    break;
-                }
-                contents.remove(x);
-            }
+        lastNonAir++;
+        while (contents.size() > lastNonAir) {
+            contents.remove(lastNonAir);
         }
         return contents;
     }
@@ -103,7 +96,7 @@ public class InventoryContents implements Property {
         if (!inventory.getIdType().equals("generic") && !inventory.isUnique()) {
             return null;
         }
-        ListTag contents = getContents(0);
+        ListTag contents = getContents(false);
         if (contents == null || contents.isEmpty()) {
             return null;
         }
@@ -160,7 +153,7 @@ public class InventoryContents implements Property {
             // -->
             if (attribute.startsWith("simple", 2)) {
                 attribute.fulfill(1);
-                return contents.getContents(1);
+                return contents.getContents(true);
             }
 
             // <--[tag]
@@ -198,7 +191,7 @@ public class InventoryContents implements Property {
                 return contents.getContentsWithLore(lore, false);
             }
 
-            return contents.getContents(0);
+            return contents.getContents(false);
         });
     }
 
