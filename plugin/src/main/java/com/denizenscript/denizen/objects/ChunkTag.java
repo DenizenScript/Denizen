@@ -293,8 +293,10 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <ChunkTag.is_loaded>
         // @returns ElementTag(Boolean)
+        // @Mechanism ChunkTag.load, ChunkTag.unload
         // @description
         // Returns true if the chunk is currently loaded into memory.
+        // This is related to the <@link command chunkload> command.
         // -->
         registerTag("is_loaded", (attribute, object) -> {
             return new ElementTag(object.isLoadedSafe());
@@ -419,7 +421,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // @returns ListTag(EntityTag)
         // @description
         // Returns a list of living entities in the chunk.
-        // This includes Players, mobs, NPCs, etc., but excludes dropped items, experience orbs, etc.
+        // This includes players, mobs, NPCs, etc., but excludes dropped items, experience orbs, etc.
         // -->
         registerTag("living_entities", (attribute, object) -> {
             ListTag entities = new ListTag();
@@ -503,7 +505,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // @attribute <ChunkTag.is_flat[(<#>)]>
         // @returns ElementTag(Boolean)
         // @description
-        // scans the heights of the blocks to check variance between them. If no number is supplied, is_flat will return
+        // Scans the heights of the blocks to check variance between them. If no number is supplied, is_flat will return
         // true if all the blocks are less than 2 blocks apart in height. Specifying a number will modify the number
         // criteria for determining if it is flat.
         // -->
