@@ -1265,7 +1265,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             // @attribute <EntityTag.flag[<flag_name>].is_expired>
             // @returns ElementTag(Boolean)
             // @description
-            // returns true if the flag is expired or does not exist, false if it is not yet expired or has no expiration.
+            // Returns true if the flag is expired or does not exist, or false if it is not yet expired or has no expiration.
             // -->
             if (attribute.startsWith("is_expired", 2) || attribute.startsWith("isexpired", 2)) {
                 attribute.fulfill(1);
@@ -1297,8 +1297,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @attribute <EntityTag.list_flags[(regex:)<search>]>
         // @returns ListTag
         // @description
-        // Returns a list of an entity's flag names, with an optional search for names containing a certain pattern.
+        // Returns a list of an entity's flag name(s).
         // Note that this is exclusively for debug/testing reasons, and should never be used in a real script.
+        // Specify regex: at the start of the search element to use regex to find flag(s) within a certain pattern.
         // -->
         registerSpawnedOnlyTag("list_flags", (attribute, object) -> {
             FlagManager.listFlagsTagWarning.warn(attribute.context);
@@ -1390,7 +1391,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @returns ItemTag
         // @group inventory
         // @description
-        // If the entity is a horse, returns the item equipped as the horses armor, or air if none.
+        // If the entity is a horse, returns the item equipped as the horse's armor, or air if none.
         // -->
         registerSpawnedOnlyTag("horse_armor", (attribute, object) -> {
             if (object.getBukkitEntityType() == EntityType.HORSE) {
@@ -1404,7 +1405,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @returns ElementTag(Boolean)
         // @group inventory
         // @description
-        // If the entity s a pig or horse, returns whether it has a saddle equipped.
+        // If the entity is a pig or horse, it returns whether it has a saddle equipped.
         // -->
         registerSpawnedOnlyTag("has_saddle", (attribute, object) -> {
             if (object.getBukkitEntityType() == EntityType.HORSE) {
@@ -1816,7 +1817,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @returns EntityTag
         // @group attributes
         // @description
-        // If the entity is in a vehicle, returns the vehicle as a EntityTag.
+        // If the entity is in a vehicle, it returns the vehicle as a EntityTag.
         // -->
         registerSpawnedOnlyTag("vehicle", (attribute, object) -> {
             if (object.entity.isInsideVehicle()) {
@@ -2063,7 +2064,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @group attributes
         // @description
         // Returns the target entity of the creature, if any.
-        // Note: use <NPCTag.navigator.target_entity> for NPC's.
+        // Note: Use <@link tag NPCTag.target_entity> for NPCs.
         // -->
         registerSpawnedOnlyTag("target", (attribute, object) -> {
             if (object.getBukkitEntity() instanceof Creature) {
@@ -2250,7 +2251,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @returns ElementTag(Boolean)
         // @group data
         // @description
-        // Returns whether the entity type is a mob (Not a player or NPC).
+        // Returns whether the entity type is a mob (not a player or NPC).
         // -->
         registerTag("is_mob", (attribute, object) -> {
             if (object.entity == null && object.entity_type != null) {
@@ -2379,7 +2380,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @mechanism EntityTag.dragon_phase
         // @group properties
         // @description
-        // Returns the phase an EnderDragon is currently in.
+        // Returns the phase an ender dragon is currently in.
         // Valid phases: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EnderDragon.Phase.html>
         // -->
         registerSpawnedOnlyTag("dragon_phase", (attribute, object) -> {
@@ -2666,7 +2667,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Sets whether the entity is trying to mate with another of its kind.
         // The entity must be living and an animal.
         // @tags
-        // <EntityTag.can_breed>
+        // <EntityTag.breeding>
         // -->
         if (mechanism.matches("breed") && mechanism.requireBoolean()) {
             ((Animals) getLivingEntity()).setLoveModeTicks(mechanism.getValue().asBoolean() ? 600 : 0);
@@ -3042,7 +3043,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @name dragon_phase
         // @input ElementTag
         // @description
-        // Sets an EnderDragon's combat phase.
+        // Sets an ender dragon's combat phase.
         // @tags
         // <EntityTag.dragon_phase>
         // -->
