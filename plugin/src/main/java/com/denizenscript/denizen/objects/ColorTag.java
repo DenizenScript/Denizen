@@ -378,7 +378,7 @@ public class ColorTag implements ObjectTag {
         // @attribute <ColorTag.to_particle_offset>
         // @returns LocationTag
         // @description
-        // Returns the color as a particle offset, for use with PlayEffect.
+        // Returns the color as a particle offset, for use with <@link command playeffect>.
         // -->
         registerTag("to_particle_offset", (attribute, object) -> {
             Color valid = object.color;
