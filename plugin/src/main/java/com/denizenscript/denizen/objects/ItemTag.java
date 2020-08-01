@@ -235,7 +235,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
 
     private ItemStack item;
 
-    private ItemMeta meta;
+    public ItemMeta meta;
 
     public ItemStack getItemStack() {
         return item;

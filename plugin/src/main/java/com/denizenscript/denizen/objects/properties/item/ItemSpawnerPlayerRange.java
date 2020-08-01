@@ -94,7 +94,7 @@ public class ItemSpawnerPlayerRange implements Property {
             CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
             state.setRequiredPlayerRange(mechanism.getValue().asInt());
             meta.setBlockState(state);
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
     }
 }

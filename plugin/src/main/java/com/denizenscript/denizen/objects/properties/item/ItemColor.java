@@ -119,12 +119,12 @@ public class ItemColor implements Property {
             if (mat == Material.POTION || mat == Material.LINGERING_POTION || mat == Material.SPLASH_POTION) {
                 PotionMeta meta = (PotionMeta) item.getItemMeta();
                 meta.setColor(color.getColor());
-                item.getItemStack().setItemMeta(meta);
+                item.setItemMeta(meta);
                 return;
             }
             LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
             meta.setColor(color.getColor());
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
 
     }

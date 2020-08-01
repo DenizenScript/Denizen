@@ -95,7 +95,7 @@ public class ItemBlockMaterial implements Property {
             BlockDataMeta meta = (BlockDataMeta) item.getItemMeta();
             MaterialTag mat = mechanism.valueAsType(MaterialTag.class);
             meta.setBlockData(mat.getModernData().data);
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
     }
 }

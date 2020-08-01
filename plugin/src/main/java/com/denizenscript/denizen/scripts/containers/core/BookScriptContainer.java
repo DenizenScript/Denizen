@@ -88,7 +88,7 @@ public class BookScriptContainer extends ScriptContainer {
                 bookInfo.spigot().addPage(FormattedTextHelper.parse(page));
             }
         }
-        book.getItemStack().setItemMeta(bookInfo);
+        book.setItemMeta(bookInfo);
         return book;
     }
 }

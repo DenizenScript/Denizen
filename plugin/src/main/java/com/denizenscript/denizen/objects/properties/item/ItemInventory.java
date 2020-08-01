@@ -119,8 +119,7 @@ public class ItemInventory implements Property {
                 return;
             }
 
-            ItemStack itemStack = item.getItemStack();
-            BlockStateMeta bsm = ((BlockStateMeta) itemStack.getItemMeta());
+            BlockStateMeta bsm = ((BlockStateMeta) item.getItemMeta());
             InventoryHolder invHolder = (InventoryHolder) bsm.getBlockState();
 
             ListTag items = InventoryContents.getFrom(inventoryPair.getValue()).getContents(false);
@@ -135,7 +134,7 @@ public class ItemInventory implements Property {
 
             invHolder.getInventory().setContents(itemArray);
             bsm.setBlockState((BlockState) invHolder);
-            itemStack.setItemMeta(bsm);
+            item.setItemMeta(bsm);
         }
     }
 }

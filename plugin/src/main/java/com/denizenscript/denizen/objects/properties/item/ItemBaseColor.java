@@ -9,7 +9,6 @@ import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.Banner;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -62,8 +61,7 @@ public class ItemBaseColor implements Property {
     }
 
     private void setBaseColor(DyeColor color) {
-        ItemStack itemStack = item.getItemStack();
-        ItemMeta itemMeta = itemStack.getItemMeta();
+        ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta instanceof BlockStateMeta) {
             Banner banner = (Banner) ((BlockStateMeta) itemMeta).getBlockState();
             banner.setBaseColor(color);
@@ -73,7 +71,7 @@ public class ItemBaseColor implements Property {
         else {
             ((BannerMeta) itemMeta).setBaseColor(color);
         }
-        itemStack.setItemMeta(itemMeta);
+        item.setItemMeta(itemMeta);
     }
 
     @Override

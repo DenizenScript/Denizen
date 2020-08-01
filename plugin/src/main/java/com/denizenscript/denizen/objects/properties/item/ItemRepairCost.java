@@ -94,7 +94,7 @@ public class ItemRepairCost implements Property {
         if (mechanism.matches("repair_cost") && mechanism.requireInteger()) {
             Repairable meta = ((Repairable) item.getItemMeta());
             meta.setRepairCost(mechanism.getValue().asInt());
-            item.getItemStack().setItemMeta((ItemMeta) meta);
+            item.setItemMeta((ItemMeta) meta);
         }
     }
 }

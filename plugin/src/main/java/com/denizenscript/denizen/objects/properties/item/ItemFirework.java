@@ -167,7 +167,7 @@ public class ItemFirework implements Property {
                     Debug.echoError("Invalid firework data '" + effect + "'");
                 }
             }
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
     }
 }

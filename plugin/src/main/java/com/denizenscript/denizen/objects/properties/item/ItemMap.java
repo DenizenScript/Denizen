@@ -83,7 +83,7 @@ public class ItemMap implements Property {
     public void setMapId(int id) {
         MapMeta map = (MapMeta) item.getItemMeta();
         map.setMapId(id);
-        item.getItemStack().setItemMeta(map);
+        item.setItemMeta(map);
     }
 
     @Override

@@ -134,7 +134,7 @@ public class ItemSpawnerDelay implements Property {
             state.setMinSpawnDelay(Integer.parseInt(list.get(1)));
             state.setMaxSpawnDelay(Integer.parseInt(list.get(2)));
             meta.setBlockState(state);
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
     }
 }

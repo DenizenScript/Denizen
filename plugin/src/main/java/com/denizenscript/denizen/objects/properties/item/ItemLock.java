@@ -8,7 +8,6 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Lockable;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 
 public class ItemLock implements Property {
@@ -110,13 +109,11 @@ public class ItemLock implements Property {
         // <ItemTag.is_lockable>
         // -->
         if (mechanism.matches("lock")) {
-            ItemStack itemStack = item.getItemStack();
-            BlockStateMeta bsm = ((BlockStateMeta) itemStack.getItemMeta());
+            BlockStateMeta bsm = ((BlockStateMeta) item.getItemMeta());
             Lockable lockable = (Lockable) bsm.getBlockState();
-
             lockable.setLock(mechanism.hasValue() ? mechanism.getValue().asString() : null);
             bsm.setBlockState((BlockState) lockable);
-            itemStack.setItemMeta(bsm);
+            item.setItemMeta(bsm);
         }
     }
 }

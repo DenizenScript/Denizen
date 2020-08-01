@@ -94,7 +94,7 @@ public class ItemSpawnerMaxNearbyEntities implements Property {
             CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
             state.setMaxNearbyEntities(mechanism.getValue().asInt());
             meta.setBlockState(state);
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
     }
 }

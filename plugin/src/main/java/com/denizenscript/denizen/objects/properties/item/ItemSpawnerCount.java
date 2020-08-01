@@ -94,7 +94,7 @@ public class ItemSpawnerCount implements Property {
             CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
             state.setSpawnCount(mechanism.getValue().asInt());
             meta.setBlockState(state);
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
     }
 }

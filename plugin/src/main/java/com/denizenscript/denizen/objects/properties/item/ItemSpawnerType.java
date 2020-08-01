@@ -94,7 +94,7 @@ public class ItemSpawnerType implements Property {
             CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
             state.setSpawnedType(mechanism.valueAsType(EntityTag.class).getBukkitEntityType());
             meta.setBlockState(state);
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
     }
 }

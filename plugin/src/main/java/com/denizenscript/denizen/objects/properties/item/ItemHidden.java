@@ -144,7 +144,7 @@ public class ItemHidden implements Property {
                     meta.addItemFlags(ItemFlag.valueOf(str));
                 }
             }
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
 
     }

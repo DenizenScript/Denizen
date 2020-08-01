@@ -210,13 +210,14 @@ public class ItemEnchantments implements Property {
                         meta.removeStoredEnchant(ench);
                     }
                 }
-                item.getItemStack().setItemMeta(meta);
+                item.setItemMeta(meta);
             }
             else {
                 for (Enchantment ench : new ArrayList<>(item.getItemStack().getEnchantments().keySet())) {
                     if (names == null || names.contains(CoreUtilities.toLowerCase(ench.getName())) ||
                             names.contains(CoreUtilities.toLowerCase(getName(ench)))) {
                         item.getItemStack().removeEnchantment(ench);
+                        item.meta = null;
                     }
                 }
             }
@@ -251,10 +252,11 @@ public class ItemEnchantments implements Property {
                                 if (item.getItemStack().getType() == Material.ENCHANTED_BOOK) {
                                     EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
                                     meta.addStoredEnchant(ench, Integer.valueOf(data[1]), true);
-                                    item.getItemStack().setItemMeta(meta);
+                                    item.setItemMeta(meta);
                                 }
                                 else {
                                     item.getItemStack().addUnsafeEnchantment(ench, Integer.valueOf(data[1]));
+                                    item.meta = null;
                                 }
                             }
                             else {

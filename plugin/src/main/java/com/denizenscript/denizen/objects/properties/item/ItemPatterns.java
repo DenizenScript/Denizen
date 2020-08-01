@@ -14,7 +14,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Banner;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -78,8 +77,7 @@ public class ItemPatterns implements Property {
     }
 
     private void setPatterns(List<Pattern> patterns) {
-        ItemStack itemStack = item.getItemStack();
-        ItemMeta itemMeta = itemStack.getItemMeta();
+        ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta instanceof BannerMeta) {
             ((BannerMeta) itemMeta).setPatterns(patterns);
         }
@@ -98,7 +96,7 @@ public class ItemPatterns implements Property {
         else {
             // ...???
         }
-        itemStack.setItemMeta(itemMeta);
+        item.setItemMeta(itemMeta);
     }
 
     @Override

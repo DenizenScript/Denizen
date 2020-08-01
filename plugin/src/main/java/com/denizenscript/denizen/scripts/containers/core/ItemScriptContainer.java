@@ -231,7 +231,7 @@ public class ItemScriptContainer extends ScriptContainer {
                 ItemMeta meta = stack.getItemMeta();
                 String displayName = TagManager.tag(getString("display name"), context);
                 meta.setDisplayName(displayName);
-                stack.getItemStack().setItemMeta(meta);
+                stack.setItemMeta(meta);
             }
             // Set if the object is bound to the player
             if (contains("bound")) {
@@ -247,7 +247,7 @@ public class ItemScriptContainer extends ScriptContainer {
                     lore.add(line);
                 }
                 meta.setLore(lore);
-                stack.getItemStack().setItemMeta(meta);
+                stack.setItemMeta(meta);
             }
             // Set Durability
             if (contains("durability")) {

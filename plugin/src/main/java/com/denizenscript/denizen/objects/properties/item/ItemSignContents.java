@@ -10,7 +10,6 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.core.EscapeTagBase;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.block.Sign;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 
 import java.util.Arrays;
@@ -100,8 +99,7 @@ public class ItemSignContents implements Property {
         // <ItemTag.sign_contents>
         // -->
         if (mechanism.matches("sign_contents")) {
-            ItemStack itemStack = item.getItemStack();
-            BlockStateMeta bsm = ((BlockStateMeta) itemStack.getItemMeta());
+            BlockStateMeta bsm = ((BlockStateMeta) item.getItemMeta());
             Sign sign = (Sign) bsm.getBlockState();
 
             for (int i = 0; i < 4; i++) {
@@ -119,7 +117,7 @@ public class ItemSignContents implements Property {
             }
 
             bsm.setBlockState(sign);
-            itemStack.setItemMeta(bsm);
+            item.setItemMeta(bsm);
         }
     }
 }

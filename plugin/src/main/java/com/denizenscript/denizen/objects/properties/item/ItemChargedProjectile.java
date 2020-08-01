@@ -125,7 +125,7 @@ public class ItemChargedProjectile implements Property {
                     Debug.echoError("Charged crossbow projectiles may only be arrows or fireworks!");
                 }
             }
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
 
         // <--[mechanism]
@@ -146,7 +146,7 @@ public class ItemChargedProjectile implements Property {
             catch (IllegalArgumentException e) {
                 Debug.echoError("Charged crossbow projectiles may only be arrows or fireworks!");
             }
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
 
         // <--[mechanism]
@@ -162,7 +162,7 @@ public class ItemChargedProjectile implements Property {
         if (mechanism.matches("remove_charged_projectiles")) {
             CrossbowMeta meta = (CrossbowMeta) item.getItemMeta();
             meta.setChargedProjectiles(null);
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
     }
 }

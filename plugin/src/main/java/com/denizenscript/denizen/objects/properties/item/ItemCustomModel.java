@@ -115,7 +115,7 @@ public class ItemCustomModel implements Property {
             else {
                 meta.setCustomModelData(null);
             }
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
     }
 }

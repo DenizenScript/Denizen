@@ -227,7 +227,7 @@ public class ItemBook implements Property {
                 newPages.add(ComponentSerializer.parse(EscapeTagBase.unEscape(str)));
             }
             meta.spigot().setPages(newPages);
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
 
         // <--[mechanism]
@@ -248,7 +248,7 @@ public class ItemBook implements Property {
                 newPages.add(FormattedTextHelper.parse(EscapeTagBase.unEscape(str)));
             }
             meta.spigot().setPages(newPages);
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
 
         // <--[mechanism]
@@ -267,7 +267,7 @@ public class ItemBook implements Property {
             else {
                 BookMeta meta = (BookMeta) item.getItemMeta();
                 meta.setAuthor(mechanism.getValue().asString());
-                item.getItemStack().setItemMeta(meta);
+                item.setItemMeta(meta);
             }
         }
 
@@ -287,7 +287,7 @@ public class ItemBook implements Property {
             else {
                 BookMeta meta = (BookMeta) item.getItemMeta();
                 meta.setTitle(mechanism.getValue().asString());
-                item.getItemStack().setItemMeta(meta);
+                item.setItemMeta(meta);
             }
         }
 
@@ -328,7 +328,7 @@ public class ItemBook implements Property {
                     }
                     meta.spigot().setPages(newPages);
                 }
-                item.getItemStack().setItemMeta(meta);
+                item.setItemMeta(meta);
                 return;
             }
             ListTag data = mechanism.valueAsType(ListTag.class);
@@ -370,7 +370,7 @@ public class ItemBook implements Property {
             else {
                 Debug.echoError("Invalid book input!");
             }
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
     }
 }

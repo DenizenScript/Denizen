@@ -114,7 +114,7 @@ public class ItemKnowledgeBookRecipes implements Property {
                 recipes.add(Utilities.parseNamespacedKey(str));
             }
             meta.setRecipes(recipes);
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
 
     }

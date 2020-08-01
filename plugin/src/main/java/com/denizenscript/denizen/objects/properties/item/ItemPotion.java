@@ -375,7 +375,7 @@ public class ItemPotion implements Property {
             for (int i = 1; i < data.size(); i++) {
                 meta.addCustomEffect(parseEffect(data.get(i)), false);
             }
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
 
         if (mechanism.matches("potion")) {

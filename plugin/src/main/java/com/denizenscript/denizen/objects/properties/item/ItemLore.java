@@ -140,7 +140,7 @@ public class ItemLore implements Property {
                 lore.set(i, CoreUtilities.clearNBSPs(loreLine));
             }
             meta.setLore(lore);
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
 
     }
