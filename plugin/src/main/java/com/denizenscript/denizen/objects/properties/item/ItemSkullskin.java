@@ -172,6 +172,9 @@ public class ItemSkullskin implements Property {
             if (texture != null) { // Ensure we didn't get overwritten
                 profile.setTexture(texture);
             }
+            if (profile.getTexture() == null) {
+                return; // Can't set a skull skin to nothing.
+            }
             item.setItemStack(NMSHandler.getItemHelper().setSkullSkin(item.getItemStack(), profile));
         }
     }

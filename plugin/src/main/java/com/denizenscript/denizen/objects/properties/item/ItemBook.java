@@ -180,7 +180,7 @@ public class ItemBook implements Property {
         BookMeta bookInfo = (BookMeta) item.getItemMeta();
         if (item.getItemStack().getType().equals(Material.WRITTEN_BOOK) && bookInfo.hasAuthor() && bookInfo.hasTitle()) {
             outMap.putObject("author", new ElementTag(bookInfo.getAuthor()));
-            outMap.putObject("author", new ElementTag(bookInfo.getTitle()));
+            outMap.putObject("title", new ElementTag(bookInfo.getTitle()));
         }
         if (bookInfo.hasPages()) {
             List<BaseComponent[]> pages = bookInfo.spigot().getPages();
