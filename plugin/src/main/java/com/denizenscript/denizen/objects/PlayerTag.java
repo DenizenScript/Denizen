@@ -3283,7 +3283,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         if (mechanism.matches("show_book")
                 && mechanism.requireObject(ItemTag.class)) {
             ItemTag book = mechanism.valueAsType(ItemTag.class);
-            if (!book.getItemStack().hasItemMeta() || !(book.getItemStack().getItemMeta() instanceof BookMeta)) {
+            if (!(book.getItemMeta() instanceof BookMeta)) {
                 Debug.echoError("show_book mechanism must have a book as input.");
                 return;
             }

@@ -43,7 +43,7 @@ public class EntityInventory implements Property {
 
     @Override
     public String getPropertyString() {
-        return new InventoryContents(entity.getInventory()).getContents(0).identify();
+        return new InventoryContents(entity.getInventory()).getContents(false).identify();
     }
 
     @Override

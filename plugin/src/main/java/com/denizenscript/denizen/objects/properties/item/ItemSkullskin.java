@@ -20,7 +20,7 @@ public class ItemSkullskin implements Property {
 
     public static boolean describes(ObjectTag item) {
         return item instanceof ItemTag
-                && ((ItemTag) item).getItemStack().getItemMeta() instanceof SkullMeta;
+                && ((ItemTag) item).getItemMeta() instanceof SkullMeta;
     }
 
     public static ItemSkullskin getFrom(ObjectTag _item) {

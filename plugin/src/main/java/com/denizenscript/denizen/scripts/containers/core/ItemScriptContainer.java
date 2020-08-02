@@ -228,10 +228,10 @@ public class ItemScriptContainer extends ScriptContainer {
             }
             // Set Display Name
             if (contains("display name")) {
-                ItemMeta meta = stack.getItemStack().getItemMeta();
+                ItemMeta meta = stack.getItemMeta();
                 String displayName = TagManager.tag(getString("display name"), context);
                 meta.setDisplayName(displayName);
-                stack.getItemStack().setItemMeta(meta);
+                stack.setItemMeta(meta);
             }
             // Set if the object is bound to the player
             if (contains("bound")) {
@@ -240,14 +240,14 @@ public class ItemScriptContainer extends ScriptContainer {
             }
             // Set Lore
             if (contains("lore")) {
-                ItemMeta meta = stack.getItemStack().getItemMeta();
+                ItemMeta meta = stack.getItemMeta();
                 List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
                 for (String line : getStringList("lore")) {
                     line = TagManager.tag(line, context);
                     lore.add(line);
                 }
                 meta.setLore(lore);
-                stack.getItemStack().setItemMeta(meta);
+                stack.setItemMeta(meta);
             }
             // Set Durability
             if (contains("durability")) {

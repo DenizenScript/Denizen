@@ -90,13 +90,10 @@ public class ItemPotion implements Property {
 
     @Override
     public String getPropertyString() {
-        if (!item.getItemStack().hasItemMeta()) {
+        if (!(item.getItemMeta() instanceof PotionMeta)) {
             return null;
         }
-        if (!(item.getItemStack().getItemMeta() instanceof PotionMeta)) {
-            return null;
-        }
-        PotionMeta meta = (PotionMeta) item.getItemStack().getItemMeta();
+        PotionMeta meta = (PotionMeta) item.getItemMeta();
         ListTag effects = new ListTag();
         effects.add(meta.getBasePotionData().getType()
                 + "," + meta.getBasePotionData().isUpgraded()
@@ -121,8 +118,8 @@ public class ItemPotion implements Property {
             return null;
         }
 
-        boolean has = item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof PotionMeta
-                && ((PotionMeta) item.getItemStack().getItemMeta()).hasCustomEffects();
+        boolean has = item.getItemMeta() instanceof PotionMeta
+                && ((PotionMeta) item.getItemMeta()).hasCustomEffects();
 
         // <--[tag]
         // @attribute <ItemTag.potion_base_type>
@@ -133,8 +130,8 @@ public class ItemPotion implements Property {
         // Returns the base potion type name for this potion item.
         // The type will be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html>.
         // -->
-        if (attribute.startsWith("potion_base_type") && item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof PotionMeta) {
-            PotionMeta meta = ((PotionMeta) item.getItemStack().getItemMeta());
+        if (attribute.startsWith("potion_base_type") && item.getItemMeta() instanceof PotionMeta) {
+            PotionMeta meta = ((PotionMeta) item.getItemMeta());
             return new ElementTag(meta.getBasePotionData().getType().name()).getObjectAttribute(attribute.fulfill(1));
         }
 
@@ -148,8 +145,8 @@ public class ItemPotion implements Property {
         // In the format Type,Level,Extended,Splash,Color
         // The type will be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html>.
         // -->
-        if (attribute.startsWith("potion_base") && item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof PotionMeta) {
-            PotionMeta meta = ((PotionMeta) item.getItemStack().getItemMeta());
+        if (attribute.startsWith("potion_base") && item.getItemMeta() instanceof PotionMeta) {
+            PotionMeta meta = ((PotionMeta) item.getItemMeta());
             return new ElementTag(meta.getBasePotionData().getType().name() + "," + (meta.getBasePotionData().isUpgraded() ? 2 : 1)
                     + "," + meta.getBasePotionData().isExtended() + "," + (item.getItemStack().getType() == Material.SPLASH_POTION)
                     + (meta.hasColor() ? "," + new ColorTag(meta.getColor()).identify() : "")
@@ -165,9 +162,9 @@ public class ItemPotion implements Property {
         // Returns the list of potion effects on this item.
         // The effect type will be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
         // -->
-        if (attribute.startsWith("potion_effects") && item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof PotionMeta) {
+        if (attribute.startsWith("potion_effects") && item.getItemMeta() instanceof PotionMeta) {
             ListTag result = new ListTag();
-            PotionMeta meta = ((PotionMeta) item.getItemStack().getItemMeta());
+            PotionMeta meta = ((PotionMeta) item.getItemMeta());
             for (PotionEffect pot : meta.getCustomEffects()) {
                 result.add(stringifyEffect(pot));
             }
@@ -188,7 +185,7 @@ public class ItemPotion implements Property {
 
         if (has) {
             if (attribute.startsWith("potion_effect")) {
-                PotionMeta meta = ((PotionMeta) item.getItemStack().getItemMeta());
+                PotionMeta meta = ((PotionMeta) item.getItemMeta());
 
                 int potN = attribute.hasContext(1) ? attribute.getIntContext(1) - 1 : 0;
                 if (potN < 0 || potN > meta.getCustomEffects().size()) {
@@ -367,7 +364,7 @@ public class ItemPotion implements Property {
         if (mechanism.matches("potion_effects")) {
             ListTag data = mechanism.valueAsType(ListTag.class);
             String[] d1 = data.get(0).split(",");
-            PotionMeta meta = (PotionMeta) item.getItemStack().getItemMeta();
+            PotionMeta meta = (PotionMeta) item.getItemMeta();
             meta.setBasePotionData(new PotionData(PotionType.valueOf(d1[0].toUpperCase()),
                     CoreUtilities.equalsIgnoreCase(d1[2], "true"),
                     CoreUtilities.equalsIgnoreCase(d1[1], "true")));
@@ -378,7 +375,7 @@ public class ItemPotion implements Property {
             for (int i = 1; i < data.size(); i++) {
                 meta.addCustomEffect(parseEffect(data.get(i)), false);
             }
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
 
         if (mechanism.matches("potion")) {

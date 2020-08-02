@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.objects;
 
-import com.denizenscript.denizen.nms.util.ReflectionHelper;
 import com.denizenscript.denizen.objects.properties.material.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
@@ -699,8 +698,8 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // -->
         registerTag("item", (attribute, object) -> {
             ItemTag item = new ItemTag(object, 1);
-            if (item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof BlockStateMeta) {
-                ((BlockStateMeta) item.getItemStack().getItemMeta()).setBlockState(object.modernData.getBlockState());
+            if (item.getItemMeta() instanceof BlockStateMeta) {
+                ((BlockStateMeta) item.getItemMeta()).setBlockState(object.modernData.getBlockState());
             }
             return item;
         });

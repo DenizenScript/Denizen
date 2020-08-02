@@ -22,8 +22,8 @@ public class ItemInventory implements Property {
 
     public static boolean describes(ObjectTag item) {
         return item instanceof ItemTag
-                && ((ItemTag) item).getItemStack().getItemMeta() instanceof BlockStateMeta
-                && ((BlockStateMeta) ((ItemTag) item).getItemStack().getItemMeta()).getBlockState() instanceof InventoryHolder;
+                && ((ItemTag) item).getItemMeta() instanceof BlockStateMeta
+                && ((BlockStateMeta) ((ItemTag) item).getItemMeta()).getBlockState() instanceof InventoryHolder;
     }
 
     public static ItemInventory getFrom(ObjectTag _item) {
@@ -44,7 +44,7 @@ public class ItemInventory implements Property {
     };
 
     private InventoryTag getItemInventory() {
-        return InventoryTag.mirrorBukkitInventory(((InventoryHolder) ((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()).getInventory());
+        return InventoryTag.mirrorBukkitInventory(((InventoryHolder) ((BlockStateMeta) item.getItemMeta()).getBlockState()).getInventory());
     }
 
     private ItemInventory(ItemTag _item) {
@@ -84,7 +84,7 @@ public class ItemInventory implements Property {
         if (inventory == null) {
             return null;
         }
-        return InventoryContents.getFrom(inventory).getContents(0);
+        return InventoryContents.getFrom(inventory).getContents(false);
     }
 
     @Override
@@ -119,11 +119,10 @@ public class ItemInventory implements Property {
                 return;
             }
 
-            ItemStack itemStack = item.getItemStack();
-            BlockStateMeta bsm = ((BlockStateMeta) itemStack.getItemMeta());
+            BlockStateMeta bsm = ((BlockStateMeta) item.getItemMeta());
             InventoryHolder invHolder = (InventoryHolder) bsm.getBlockState();
 
-            ListTag items = InventoryContents.getFrom(inventoryPair.getValue()).getContents(0);
+            ListTag items = InventoryContents.getFrom(inventoryPair.getValue()).getContents(false);
             if (items.size() > invHolder.getInventory().getSize()) {
                 Debug.echoError("Invalid inventory_contents input size; expected " + invHolder.getInventory().getSize() + " or less.");
                 return;
@@ -135,7 +134,7 @@ public class ItemInventory implements Property {
 
             invHolder.getInventory().setContents(itemArray);
             bsm.setBlockState((BlockState) invHolder);
-            itemStack.setItemMeta(bsm);
+            item.setItemMeta(bsm);
         }
     }
 }

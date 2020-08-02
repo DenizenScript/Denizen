@@ -70,7 +70,7 @@ public class ItemChargedProjectile implements Property {
         // Returns whether this crossbow is charged.
         // -->
         if (attribute.startsWith("is_charged")) {
-            return new ElementTag(((CrossbowMeta) item.getItemStack().getItemMeta()).hasChargedProjectiles())
+            return new ElementTag(((CrossbowMeta) item.getItemMeta()).hasChargedProjectiles())
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
@@ -78,7 +78,7 @@ public class ItemChargedProjectile implements Property {
     }
 
     public ListTag getChargedProjectiles() {
-        CrossbowMeta meta = (CrossbowMeta) item.getItemStack().getItemMeta();
+        CrossbowMeta meta = (CrossbowMeta) item.getItemMeta();
         ListTag list = new ListTag();
         if (!meta.hasChargedProjectiles()) {
             return list;
@@ -115,7 +115,7 @@ public class ItemChargedProjectile implements Property {
         // <ItemTag.is_charged>
         // -->
         if (mechanism.matches("charged_projectiles")) {
-            CrossbowMeta meta = (CrossbowMeta) item.getItemStack().getItemMeta();
+            CrossbowMeta meta = (CrossbowMeta) item.getItemMeta();
             meta.setChargedProjectiles(null);
             for (ItemTag projectile : mechanism.valueAsType(ListTag.class).filter(ItemTag.class, mechanism.context)) {
                 try {
@@ -125,7 +125,7 @@ public class ItemChargedProjectile implements Property {
                     Debug.echoError("Charged crossbow projectiles may only be arrows or fireworks!");
                 }
             }
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
 
         // <--[mechanism]
@@ -139,14 +139,14 @@ public class ItemChargedProjectile implements Property {
         // <ItemTag.is_charged>
         // -->
         if (mechanism.matches("add_charged_projectile") && mechanism.requireObject(ItemTag.class)) {
-            CrossbowMeta meta = (CrossbowMeta) item.getItemStack().getItemMeta();
+            CrossbowMeta meta = (CrossbowMeta) item.getItemMeta();
             try {
                 meta.addChargedProjectile(mechanism.valueAsType(ItemTag.class).getItemStack());
             }
             catch (IllegalArgumentException e) {
                 Debug.echoError("Charged crossbow projectiles may only be arrows or fireworks!");
             }
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
 
         // <--[mechanism]
@@ -160,9 +160,9 @@ public class ItemChargedProjectile implements Property {
         // <ItemTag.is_charged>
         // -->
         if (mechanism.matches("remove_charged_projectiles")) {
-            CrossbowMeta meta = (CrossbowMeta) item.getItemStack().getItemMeta();
+            CrossbowMeta meta = (CrossbowMeta) item.getItemMeta();
             meta.setChargedProjectiles(null);
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
     }
 }

@@ -41,8 +41,7 @@ public class ItemDisplayname implements Property {
     ItemTag item;
 
     public boolean hasDisplayName() {
-        return item.getItemStack().hasItemMeta()
-                && item.getItemStack().getItemMeta().hasDisplayName();
+        return item.getItemMeta().hasDisplayName();
     }
 
     @Override
@@ -62,7 +61,7 @@ public class ItemDisplayname implements Property {
         // -->
         if (attribute.startsWith("display")) {
             if (hasDisplayName()) {
-                return new ElementTag(item.getItemStack().getItemMeta().getDisplayName())
+                return new ElementTag(item.getItemMeta().getDisplayName())
                         .getObjectAttribute(attribute.fulfill(1));
             }
         }
@@ -86,7 +85,7 @@ public class ItemDisplayname implements Property {
     @Override
     public String getPropertyString() {
         if (hasDisplayName()) {
-            return EscapeTagBase.escape(item.getItemStack().getItemMeta().getDisplayName());
+            return EscapeTagBase.escape(item.getItemMeta().getDisplayName());
         }
         else {
             return null;
@@ -112,9 +111,9 @@ public class ItemDisplayname implements Property {
         // <ItemTag.display>
         // -->
         if (mechanism.matches("display_name")) {
-            ItemMeta meta = item.getItemStack().getItemMeta();
+            ItemMeta meta = item.getItemMeta();
             meta.setDisplayName(mechanism.hasValue() ? CoreUtilities.clearNBSPs(EscapeTagBase.unEscape(mechanism.getValue().asString())) : null);
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
     }
 }

@@ -268,21 +268,22 @@ public class ItemScriptHelper implements Listener {
         rebuildRecipes();
     }
 
-    public static boolean isItemscript(ItemStack item) {
+    public static boolean isItemscript(ItemTag item) {
         return getItemScriptContainer(item) != null;
     }
 
-    public static ItemScriptContainer getItemScriptContainer(ItemStack item) {
+    public static ItemScriptContainer getItemScriptContainer(ItemTag item) {
         if (item == null) {
             return null;
         }
-        String nbt = NMSHandler.getItemHelper().getNbtData(item).getString("Denizen Item Script");
+        String nbt = NMSHandler.getItemHelper().getNbtData(item.getItemStack()).getString("Denizen Item Script");
         if (nbt != null && !nbt.equals("")) {
             return item_scripts_by_hash_id.get(nbt);
         }
-        if (!item.hasItemMeta() || !item.getItemMeta().hasLore()) {
+        if (!item.getItemMeta().hasLore()) {
             return null;
         }
+        // TODO: Remove legacy lore script support?
         for (String itemLore : item.getItemMeta().getLore()) {
             if (itemLore.startsWith(ItemTag.itemscriptIdentifier)) {
                 return item_scripts.get(itemLore.replace(ItemTag.itemscriptIdentifier, ""));

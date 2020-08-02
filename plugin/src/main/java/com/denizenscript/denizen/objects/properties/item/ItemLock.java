@@ -8,15 +8,14 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Lockable;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 
 public class ItemLock implements Property {
 
     public static boolean describes(ObjectTag item) {
         return item instanceof ItemTag
-                && ((ItemTag) item).getItemStack().getItemMeta() instanceof BlockStateMeta
-                && ((BlockStateMeta) ((ItemTag) item).getItemStack().getItemMeta()).getBlockState() instanceof Lockable;
+                && ((ItemTag) item).getItemMeta() instanceof BlockStateMeta
+                && ((BlockStateMeta) ((ItemTag) item).getItemMeta()).getBlockState() instanceof Lockable;
     }
 
     public static ItemLock getFrom(ObjectTag _item) {
@@ -37,11 +36,11 @@ public class ItemLock implements Property {
     };
 
     private String getItemLock() {
-        return ((Lockable) ((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()).getLock();
+        return ((Lockable) ((BlockStateMeta) item.getItemMeta()).getBlockState()).getLock();
     }
 
     private boolean isLocked() {
-        return ((Lockable) ((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()).isLocked();
+        return ((Lockable) ((BlockStateMeta) item.getItemMeta()).getBlockState()).isLocked();
     }
 
     private ItemLock(ItemTag _item) {
@@ -110,13 +109,11 @@ public class ItemLock implements Property {
         // <ItemTag.is_lockable>
         // -->
         if (mechanism.matches("lock")) {
-            ItemStack itemStack = item.getItemStack();
-            BlockStateMeta bsm = ((BlockStateMeta) itemStack.getItemMeta());
+            BlockStateMeta bsm = ((BlockStateMeta) item.getItemMeta());
             Lockable lockable = (Lockable) bsm.getBlockState();
-
             lockable.setLock(mechanism.hasValue() ? mechanism.getValue().asString() : null);
             bsm.setBlockState((BlockState) lockable);
-            itemStack.setItemMeta(bsm);
+            item.setItemMeta(bsm);
         }
     }
 }

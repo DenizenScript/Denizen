@@ -54,7 +54,7 @@ public class ItemCustomModel implements Property {
         // Also see <@link tag ItemTag.custom_model_data>.
         // -->
         if (attribute.startsWith("has_custom_model_data")) {
-            return new ElementTag(item.getItemStack().getItemMeta().hasCustomModelData())
+            return new ElementTag(item.getItemMeta().hasCustomModelData())
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
@@ -69,8 +69,8 @@ public class ItemCustomModel implements Property {
         // Also see <@link tag ItemTag.has_custom_model_data>.
         // -->
         if (attribute.startsWith("custom_model_data")) {
-            if (item.getItemStack().getItemMeta().hasCustomModelData()) {
-                return new ElementTag(item.getItemStack().getItemMeta().getCustomModelData())
+            if (item.getItemMeta().hasCustomModelData()) {
+                return new ElementTag(item.getItemMeta().getCustomModelData())
                         .getObjectAttribute(attribute.fulfill(1));
             }
         }
@@ -80,8 +80,8 @@ public class ItemCustomModel implements Property {
 
     @Override
     public String getPropertyString() {
-        if (item.getItemStack().getItemMeta().hasCustomModelData()) {
-            return String.valueOf(item.getItemStack().getItemMeta().getCustomModelData());
+        if (item.getItemMeta().hasCustomModelData()) {
+            return String.valueOf(item.getItemMeta().getCustomModelData());
         }
         else {
             return null;
@@ -108,14 +108,14 @@ public class ItemCustomModel implements Property {
         // <ItemTag.custom_model_data>
         // -->
         if (mechanism.matches("custom_model_data")) {
-            ItemMeta meta = (item.getItemStack().getItemMeta());
+            ItemMeta meta = (item.getItemMeta());
             if (mechanism.hasValue() && mechanism.requireInteger()) {
                 meta.setCustomModelData(mechanism.getValue().asInt());
             }
             else {
                 meta.setCustomModelData(null);
             }
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
     }
 }

@@ -17,9 +17,9 @@ public class LeatherColorer {
         if (ColorTag.matches(colorArg)) {
 
             try {
-                LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemStack().getItemMeta();
+                LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
                 meta.setColor(ColorTag.valueOf(colorArg, CoreUtilities.basicContext).getColor());
-                item.getItemStack().setItemMeta(meta);
+                item.setItemMeta(meta);
             }
             catch (Exception e) {
                 Debug.echoError("Unable to color '" + item.identify() + "'.");

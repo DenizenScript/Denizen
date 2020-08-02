@@ -65,7 +65,7 @@ public class BookScriptContainer extends ScriptContainer {
             context = new BukkitTagContext(null, null, new ScriptTag(this));
         }
         // Get current ItemMeta from the book
-        BookMeta bookInfo = (BookMeta) book.getItemStack().getItemMeta();
+        BookMeta bookInfo = (BookMeta) book.getItemMeta();
         if (contains("title")) {
             String title = getString("title");
             title = TagManager.tag(title, context);
@@ -88,7 +88,7 @@ public class BookScriptContainer extends ScriptContainer {
                 bookInfo.spigot().addPage(FormattedTextHelper.parse(page));
             }
         }
-        book.getItemStack().setItemMeta(bookInfo);
+        book.setItemMeta(bookInfo);
         return book;
     }
 }

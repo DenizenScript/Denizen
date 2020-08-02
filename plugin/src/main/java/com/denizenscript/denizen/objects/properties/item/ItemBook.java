@@ -7,6 +7,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.core.EscapeTagBase;
@@ -17,6 +18,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.meta.BookMeta;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ItemBook implements Property {
 
@@ -35,7 +37,7 @@ public class ItemBook implements Property {
     }
 
     public static final String[] handledTags = new String[] {
-            "book", "book_author", "book_title", "book_pages"
+            "book", "book_author", "book_title", "book_pages", "book_map"
     };
 
     public static final String[] handledMechs = new String[] {
@@ -47,7 +49,7 @@ public class ItemBook implements Property {
     }
 
     public BookMeta getBookInfo() {
-        return (BookMeta) item.getItemStack().getItemMeta();
+        return (BookMeta) item.getItemMeta();
     }
 
     ItemTag item;
@@ -101,29 +103,38 @@ public class ItemBook implements Property {
             return output.getObjectAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <ItemTag.book_map>
+        // @returns MapTag
+        // @mechanism ItemTag.book
+        // @group properties
+        // @description
+        // Returns a MapTag of data about the book, with keys "pages" (a ListTag), and when available, "author" and "title".
+        // -->
+        if (attribute.startsWith("book_map")) {
+            return getBookMap().getObjectAttribute(attribute.fulfill(1));
+        }
+
         if (attribute.startsWith("book")) {
-            BookMeta bookInfo = (BookMeta) item.getItemStack().getItemMeta();
+            Deprecations.itemBookTags.warn(attribute.context);
+            BookMeta bookInfo = (BookMeta) item.getItemMeta();
             attribute = attribute.fulfill(1);
 
             if (item.getItemStack().getType() == Material.WRITTEN_BOOK) {
                 if (attribute.startsWith("author")) {
-                    Deprecations.itemBookTags.warn(attribute.context);
                     return new ElementTag(bookInfo.getAuthor())
                             .getObjectAttribute(attribute.fulfill(1));
                 }
                 if (attribute.startsWith("title")) {
-                    Deprecations.itemBookTags.warn(attribute.context);
                     return new ElementTag(bookInfo.getTitle())
                             .getObjectAttribute(attribute.fulfill(1));
                 }
             }
             if (attribute.startsWith("page_count")) {
-                Deprecations.itemBookTags.warn(attribute.context);
                 return new ElementTag(bookInfo.getPageCount())
                         .getObjectAttribute(attribute.fulfill(1));
             }
             if ((attribute.startsWith("page") || attribute.startsWith("get_page")) && attribute.hasContext(1)) {
-                Deprecations.itemBookTags.warn(attribute.context);
                 return new ElementTag(FormattedTextHelper.stringify(bookInfo.spigot().getPage(attribute.getIntContext(1))))
                         .getObjectAttribute(attribute.fulfill(1));
             }
@@ -133,7 +144,6 @@ public class ItemBook implements Property {
                         .getObjectAttribute(attribute.fulfill(1));
             }
             if (attribute.startsWith("pages")) {
-                Deprecations.itemBookTags.warn(attribute.context);
                 ListTag output = new ListTag();
                 for (BaseComponent[] page : bookInfo.spigot().getPages()) {
                     output.add(FormattedTextHelper.stringify(page));
@@ -148,19 +158,6 @@ public class ItemBook implements Property {
                 }
                 return output.getObjectAttribute(attribute.fulfill(1));
             }
-
-            // <--[tag]
-            // @attribute <ItemTag.book>
-            // @returns ElementTag
-            // @mechanism ItemTag.book
-            // @group properties
-            // @description
-            // Returns full information on the book item, in the format
-            // author|AUTHOR|title|TITLE|raw_pages|PAGE_ONE|PAGE_TWO|...
-            // or as raw_pages|PAGE_ONE|PAGE_TWO|...
-            // Pre-escaped to prevent issues.
-            // See <@link language Property Escaping>
-            // -->
             String output = getOutputString();
             if (output == null) {
                 output = "null";
@@ -174,18 +171,33 @@ public class ItemBook implements Property {
 
     @Override
     public String getPropertyString() {
-        String output = getOutputString();
-        if (output.equals("raw_pages")) {
-            return null;
-        }
-        return output;
+        MapTag map = getBookMap();
+        return map.toString();
     }
 
+    public MapTag getBookMap() {
+        MapTag outMap = new MapTag();
+        BookMeta bookInfo = (BookMeta) item.getItemMeta();
+        if (item.getItemStack().getType().equals(Material.WRITTEN_BOOK) && bookInfo.hasAuthor() && bookInfo.hasTitle()) {
+            outMap.putObject("author", new ElementTag(bookInfo.getAuthor()));
+            outMap.putObject("author", new ElementTag(bookInfo.getTitle()));
+        }
+        if (bookInfo.hasPages()) {
+            List<BaseComponent[]> pages = bookInfo.spigot().getPages();
+            ListTag pageList = new ListTag(pages.size());
+            for (BaseComponent[] page : pages) {
+                pageList.addObject(new ElementTag(FormattedTextHelper.stringify(page)));
+            }
+            outMap.putObject("pages", pageList);
+        }
+        return outMap;
+    }
+
+    @Deprecated
     public String getOutputString() {
-        StringBuilder output = new StringBuilder();
-        BookMeta bookInfo = (BookMeta) item.getItemStack().getItemMeta();
-        if (item.getItemStack().getType().equals(Material.WRITTEN_BOOK)
-                && bookInfo.hasAuthor() && bookInfo.hasTitle()) {
+        StringBuilder output = new StringBuilder(128);
+        BookMeta bookInfo = (BookMeta) item.getItemMeta();
+        if (item.getItemStack().getType().equals(Material.WRITTEN_BOOK) && bookInfo.hasAuthor() && bookInfo.hasTitle()) {
             output.append("author|").append(EscapeTagBase.escape(bookInfo.getAuthor()))
                     .append("|title|").append(EscapeTagBase.escape(bookInfo.getTitle())).append("|");
         }
@@ -208,14 +220,14 @@ public class ItemBook implements Property {
 
         if (mechanism.matches("book_raw_pages")) {
             Deprecations.bookItemRawTags.warn(mechanism.context);
-            BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
+            BookMeta meta = (BookMeta) item.getItemMeta();
             ListTag data = mechanism.valueAsType(ListTag.class);
             ArrayList<BaseComponent[]> newPages = new ArrayList<>();
             for (String str : data) {
                 newPages.add(ComponentSerializer.parse(EscapeTagBase.unEscape(str)));
             }
             meta.spigot().setPages(newPages);
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
 
         // <--[mechanism]
@@ -229,14 +241,14 @@ public class ItemBook implements Property {
         // <ItemTag.book_pages>
         // -->
         if (mechanism.matches("book_pages")) {
-            BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
+            BookMeta meta = (BookMeta) item.getItemMeta();
             ListTag data = mechanism.valueAsType(ListTag.class);
             ArrayList<BaseComponent[]> newPages = new ArrayList<>();
             for (String str : data) {
                 newPages.add(FormattedTextHelper.parse(EscapeTagBase.unEscape(str)));
             }
             meta.spigot().setPages(newPages);
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
 
         // <--[mechanism]
@@ -253,9 +265,9 @@ public class ItemBook implements Property {
                 Debug.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
             }
             else {
-                BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
+                BookMeta meta = (BookMeta) item.getItemMeta();
                 meta.setAuthor(mechanism.getValue().asString());
-                item.getItemStack().setItemMeta(meta);
+                item.setItemMeta(meta);
             }
         }
 
@@ -273,19 +285,19 @@ public class ItemBook implements Property {
                 Debug.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
             }
             else {
-                BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
+                BookMeta meta = (BookMeta) item.getItemMeta();
                 meta.setTitle(mechanism.getValue().asString());
-                item.getItemStack().setItemMeta(meta);
+                item.setItemMeta(meta);
             }
         }
 
         // <--[mechanism]
         // @object ItemTag
         // @name book
-        // @input ElementTag
+        // @input MapTag
         // @description
         // Changes the information on a book item.
-        // See <@link language Property Escaping>
+        // Should have keys "pages" (a ListTag), and optionally "title" and "author".
         // @tags
         // <ItemTag.is_book>
         // <ItemTag.book_title>
@@ -293,7 +305,32 @@ public class ItemBook implements Property {
         // <ItemTag.book_pages>
         // -->
         if (mechanism.matches("book")) {
-            BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
+            BookMeta meta = (BookMeta) item.getItemMeta();
+            if (mechanism.getValue().asString().startsWith("map@")) {
+                MapTag mapData = mechanism.valueAsType(MapTag.class);
+                ObjectTag author = mapData.getObject("author");
+                ObjectTag title = mapData.getObject("title");
+                if (author != null && title != null) {
+                    if (!item.getItemStack().getType().equals(Material.WRITTEN_BOOK)) {
+                        Debug.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
+                    }
+                    else {
+                        meta.setAuthor(author.toString());
+                        meta.setTitle(title.toString());
+                    }
+                }
+                ObjectTag pages = mapData.getObject("pages");
+                if (pages != null) {
+                    ListTag pageList = ListTag.getListFor(pages, mechanism.context);
+                    ArrayList<BaseComponent[]> newPages = new ArrayList<>(pageList.size());
+                    for (int i = 1; i < pageList.size(); i++) {
+                        newPages.add(FormattedTextHelper.parse(pageList.get(i)));
+                    }
+                    meta.spigot().setPages(newPages);
+                }
+                item.setItemMeta(meta);
+                return;
+            }
             ListTag data = mechanism.valueAsType(ListTag.class);
             if (data.size() < 1) {
                 Debug.echoError("Invalid book input!");
@@ -312,19 +349,19 @@ public class ItemBook implements Property {
                     meta.setAuthor(EscapeTagBase.unEscape(data.get(1)));
                     meta.setTitle(EscapeTagBase.unEscape(data.get(3)));
                     for (int i = 0; i < 4; i++) {
-                        data.remove(0); // No .removeRange?
+                        data.removeObject(0); // No .removeRange?
                     }
                 }
             }
             if (data.get(0).equalsIgnoreCase("raw_pages")) {
-                ArrayList<BaseComponent[]> newPages = new ArrayList<>();
+                ArrayList<BaseComponent[]> newPages = new ArrayList<>(data.size());
                 for (int i = 1; i < data.size(); i++) {
                     newPages.add(ComponentSerializer.parse(EscapeTagBase.unEscape(data.get(i))));
                 }
                 meta.spigot().setPages(newPages);
             }
             else if (data.get(0).equalsIgnoreCase("pages")) {
-                ArrayList<BaseComponent[]> newPages = new ArrayList<>();
+                ArrayList<BaseComponent[]> newPages = new ArrayList<>(data.size());
                 for (int i = 1; i < data.size(); i++) {
                     newPages.add(FormattedTextHelper.parse(EscapeTagBase.unEscape(data.get(i))));
                 }
@@ -333,7 +370,7 @@ public class ItemBook implements Property {
             else {
                 Debug.echoError("Invalid book input!");
             }
-            item.getItemStack().setItemMeta(meta);
+            item.setItemMeta(meta);
         }
     }
 }
