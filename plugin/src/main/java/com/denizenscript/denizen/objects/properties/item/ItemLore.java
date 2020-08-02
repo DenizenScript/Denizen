@@ -38,7 +38,7 @@ public class ItemLore implements Property {
     };
 
     public boolean hasLore() {
-        return item.getItemMeta().hasLore();
+        return item.getItemMeta() != null && item.getItemMeta().hasLore();
     }
 
     private ItemLore(ItemTag _item) {

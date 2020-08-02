@@ -91,12 +91,7 @@ public class ItemScript implements Property {
 
     @Override
     public String getPropertyString() {
-        if (item.isItemscript()) {
-            return item.getScriptName();
-        }
-        else {
-            return null;
-        }
+        return item.getScriptName();
     }
 
     @Override

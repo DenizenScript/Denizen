@@ -50,6 +50,9 @@ public class ItemHidden implements Property {
 
     public ListTag hides() {
         ListTag output = new ListTag();
+        if (item.getItemMeta() == null) {
+            return output;
+        }
         for (ItemFlag flag : item.getItemMeta().getItemFlags()) {
             if (flag == ItemFlag.HIDE_POTION_EFFECTS) {
                 output.add("ITEM_DATA");
