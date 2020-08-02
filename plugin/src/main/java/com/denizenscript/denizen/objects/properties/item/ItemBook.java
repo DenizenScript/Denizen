@@ -323,7 +323,7 @@ public class ItemBook implements Property {
                 if (pages != null) {
                     ListTag pageList = ListTag.getListFor(pages, mechanism.context);
                     ArrayList<BaseComponent[]> newPages = new ArrayList<>(pageList.size());
-                    for (int i = 1; i < pageList.size(); i++) {
+                    for (int i = 0; i < pageList.size(); i++) {
                         newPages.add(FormattedTextHelper.parse(pageList.get(i)));
                     }
                     meta.spigot().setPages(newPages);
