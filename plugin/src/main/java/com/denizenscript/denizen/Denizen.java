@@ -163,10 +163,12 @@ public class Denizen extends JavaPlugin {
         if (!javaVersion.startsWith("8") && !javaVersion.startsWith("1.8")) {
             if (javaVersion.startsWith("9") || javaVersion.startsWith("1.9") || javaVersion.startsWith("10") || javaVersion.startsWith("1.10") || javaVersion.startsWith("11")) {
                 getLogger().warning("Running unreliable Java version. Minecraft is built for Java 8. Newer Java versions are not guaranteed to function properly (due to changes Oracle made to how reflection works).");
+                getLogger().warning("Found java version: " + javaVersion);
             }
             else {
                 getLogger().warning("-------------------------------------");
                 getLogger().warning("Running incompatible Java version! Minecraft is built for Java 8. Older versions will not work, and newer versions will cause errors (due to Oracle removing reflection support)!");
+                getLogger().warning("Found java version: " + javaVersion);
                 getLogger().warning("-------------------------------------");
             }
         }
