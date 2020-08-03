@@ -3169,6 +3169,25 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             getLivingEntity().setSwimming(mechanism.getValue().asBoolean());
         }
 
+        // <--[mechanism]
+        // @object EntityTag
+        // @name detonate
+        // @input None
+        // @description
+        // If the entity is a firework or a creeper, detonates it.
+        // -->
+        if (mechanism.matches("detonate")) {
+            if (getBukkitEntity() instanceof Firework) {
+                ((Firework) getBukkitEntity()).detonate();
+            }
+            else if (getBukkitEntity() instanceof Creeper) {
+                ((Creeper) getBukkitEntity()).explode();
+            }
+            else {
+                Debug.echoError("Cannot detonate entity of type '" + getBukkitEntityType().name() + "'.");
+            }
+        }
+
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 }

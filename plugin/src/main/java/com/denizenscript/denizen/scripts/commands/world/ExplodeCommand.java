@@ -58,41 +58,32 @@ public class ExplodeCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(LocationTag.class)) {
-
                 scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("power")
                     && arg.matchesFloat()
                     && arg.matchesPrefix("power", "p")) {
-
                 scriptEntry.addObject("power", arg.asElement());
             }
             else if (!scriptEntry.hasObject("breakblocks")
                     && arg.matches("breakblocks")) {
-
                 scriptEntry.addObject("breakblocks", "");
             }
             else if (!scriptEntry.hasObject("fire")
                     && arg.matches("fire")) {
-
                 scriptEntry.addObject("fire", "");
             }
             else {
                 arg.reportUnhandled();
             }
         }
-
-        // Use default values if necessary
         scriptEntry.defaultObject("power", new ElementTag(1.0));
         scriptEntry.defaultObject("location",
                 Utilities.entryHasNPC(scriptEntry) ? Utilities.getEntryNPC(scriptEntry).getLocation() : null,
                 Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getLocation() : null);
-
         if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Missing location argument!");
         }
@@ -100,12 +91,10 @@ public class ExplodeCommand extends AbstractCommand {
 
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-
         final LocationTag location = scriptEntry.getObjectTag("location");
         ElementTag power = scriptEntry.getElement("power");
         boolean breakblocks = scriptEntry.hasObject("breakblocks");
         boolean fire = scriptEntry.hasObject("fire");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     (ArgumentHelper.debugObj("location", location.toString()) +
@@ -113,9 +102,6 @@ public class ExplodeCommand extends AbstractCommand {
                             ArgumentHelper.debugObj("breakblocks", breakblocks) +
                             ArgumentHelper.debugObj("fire", fire)));
         }
-
-        location.getWorld().createExplosion
-                (location.getX(), location.getY(), location.getZ(),
-                        power.asFloat(), fire, breakblocks);
+        location.getWorld().createExplosion(location.getX(), location.getY(), location.getZ(), power.asFloat(), fire, breakblocks);
     }
 }
