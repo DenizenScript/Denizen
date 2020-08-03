@@ -57,7 +57,7 @@ public class ItemUnbreakable implements Property {
     }
 
     public String getPropertyString() {
-        return item.getItemMeta().isUnbreakable() ? "true" : null;
+        return (item.getItemMeta() != null && item.getItemMeta().isUnbreakable()) ? "true" : null;
     }
 
     public String getPropertyId() {

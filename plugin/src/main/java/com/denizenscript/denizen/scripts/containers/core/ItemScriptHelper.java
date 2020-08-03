@@ -22,6 +22,7 @@ import org.bukkit.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.*;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -280,11 +281,12 @@ public class ItemScriptHelper implements Listener {
         if (nbt != null && !nbt.equals("")) {
             return item_scripts_by_hash_id.get(nbt);
         }
-        if (!item.getItemMeta().hasLore()) {
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null || !meta.hasLore()) {
             return null;
         }
         // TODO: Remove legacy lore script support?
-        for (String itemLore : item.getItemMeta().getLore()) {
+        for (String itemLore : meta.getLore()) {
             if (itemLore.startsWith(ItemTag.itemscriptIdentifier)) {
                 return item_scripts.get(itemLore.replace(ItemTag.itemscriptIdentifier, ""));
             }

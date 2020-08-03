@@ -41,7 +41,7 @@ public class ItemDisplayname implements Property {
     ItemTag item;
 
     public boolean hasDisplayName() {
-        return item.getItemMeta().hasDisplayName();
+        return item.getItemMeta() != null && item.getItemMeta().hasDisplayName();
     }
 
     @Override

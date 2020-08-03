@@ -133,7 +133,7 @@ public class InventoryContents implements Property {
             return map;
         });
 
-            // <--[tag]
+        // <--[tag]
         // @attribute <InventoryTag.list_contents>
         // @returns ListTag(ItemTag)
         // @group properties
