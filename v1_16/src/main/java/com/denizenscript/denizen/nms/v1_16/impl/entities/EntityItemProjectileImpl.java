@@ -54,6 +54,12 @@ public class EntityItemProjectileImpl extends EntityProjectile {
     }
 
     @Override
+    protected void a(MovingObjectPositionBlock movingobjectpositionblock) {
+        super.a(movingobjectpositionblock);
+        die();
+    }
+
+    @Override
     public void a(DataWatcherObject<?> datawatcherobject) {
         super.a(datawatcherobject);
         if (ITEM.equals(datawatcherobject)) {

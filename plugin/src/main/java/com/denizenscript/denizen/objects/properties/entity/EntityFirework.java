@@ -33,7 +33,7 @@ public class EntityFirework implements Property {
     };
 
     public static final String[] handledMechs = new String[] {
-            "firework_item", "detonate"
+            "firework_item"
     };
 
     private EntityFirework(EntityTag entity) {
@@ -98,19 +98,6 @@ public class EntityFirework implements Property {
             else {
                 Debug.echoError("'" + mechanism.getValue().asString() + "' is not a valid firework item.");
             }
-        }
-
-        // <--[mechanism]
-        // @object EntityTag
-        // @name detonate
-        // @input None
-        // @description
-        // If the entity is a firework, detonates it.
-        // @tags
-        // <EntityTag.firework_item>
-        // -->
-        if (mechanism.matches("detonate")) {
-            ((Firework) firework.getBukkitEntity()).detonate();
         }
     }
 }

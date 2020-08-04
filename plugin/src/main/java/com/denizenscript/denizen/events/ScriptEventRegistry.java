@@ -65,6 +65,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new EntityHealsScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityInteractScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityKilledScriptEvent());
+        ScriptEvent.registerScriptEvent(new EntityPicksUpItemScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityPotionEffectScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityResurrectScriptEvent());
         if (!Denizen.supportsPaper) {
@@ -144,7 +145,6 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new PlayerLoginScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerMendsItemScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerOpensInvScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerPicksUpScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerPlacesBlockScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerPlacesHangingScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerPreLoginScriptEvent());
