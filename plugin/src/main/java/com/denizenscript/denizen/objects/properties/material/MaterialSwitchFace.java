@@ -45,7 +45,7 @@ public class MaterialSwitchFace implements Property {
         // @group properties
         // @description
         // Returns the current attach direction for a switch.
-        // Output is "CEILING", "FLOOR", or "WALL".
+        // Possible returns include: CEILING, FLOOR, or WALL.
         // -->
         PropertyParser.<MaterialSwitchFace>registerTag("switch_face", (attribute, material) -> {
             return new ElementTag(material.getSwitch().getFace().name());
@@ -88,6 +88,7 @@ public class MaterialSwitchFace implements Property {
         // @input ElementTag
         // @description
         // Sets the current attach direction for a switch.
+        // Possible options include: CEILING, FLOOR, or WALL.
         // @tags
         // <MaterialTag.switch_face>
         // -->

@@ -59,7 +59,7 @@ public class EntityRiptide implements Property {
         // @mechanism EntityTag.is_using_riptide
         // @group properties
         // @description
-        // Returns whether this entity is using the Riptide enchantment.
+        // Returns whether this entity is using the riptide enchantment.
         // -->
         if (attribute.startsWith("is_using_riptide")) {
             return new ElementTag(entity.getLivingEntity().isRiptiding())
@@ -77,7 +77,7 @@ public class EntityRiptide implements Property {
         // @name is_using_riptide
         // @input ElementTag(Boolean)
         // @description
-        // Sets whether this entity is using the Riptide enchantment.
+        // Sets whether this entity is using the triptide enchantment.
         // @tags
         // <EntityTag.is_using_riptide>
         // -->

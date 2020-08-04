@@ -66,7 +66,7 @@ public class EntitySize implements Property {
         // @mechanism EntityTag.size
         // @group properties
         // @description
-        // Returns the size of a slime-type entity or a Phantom (1-120).
+        // Returns the size of a slime-type entity or phantom (1-120).
         // -->
         if (attribute.startsWith("size")) {
             if (entity.getBukkitEntity() instanceof Phantom) {
@@ -88,7 +88,7 @@ public class EntitySize implements Property {
         // @name size
         // @input ElementTag(Number)
         // @description
-        // Sets the size of a slime-type entity or a Phantom (1-120).
+        // Sets the size of a slime-type entity or phantom (1-120).
         // @tags
         // <EntityTag.size>
         // -->

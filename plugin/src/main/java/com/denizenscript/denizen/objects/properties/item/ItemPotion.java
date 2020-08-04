@@ -277,7 +277,7 @@ public class ItemPotion implements Property {
                 // @mechanism ItemTag.potion_effects
                 // @group properties
                 // @description
-                // Returns the duration in ticks of the potion.
+                // Returns the duration, in ticks, of the potion.
                 // -->
                 if (attribute.startsWith("duration")) {
                     return new ElementTag(meta.getCustomEffects().get(potN).getDuration())

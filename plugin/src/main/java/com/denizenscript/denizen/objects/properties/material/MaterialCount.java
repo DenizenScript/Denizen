@@ -46,7 +46,7 @@ public class MaterialCount implements Property {
         // @mechanism MaterialTag.count
         // @group properties
         // @description
-        // Returns the amount of pickles in a Sea Pickle material, or eggs in a TurtleEgg material.
+        // Returns the amount of pickles in a sea pickle material, or eggs in a turtle egg material.
         // -->
         PropertyParser.<MaterialCount>registerTag("count", (attribute, material) -> {
             return new ElementTag(material.getCurrent());
@@ -58,7 +58,7 @@ public class MaterialCount implements Property {
         // @mechanism MaterialTag.count
         // @group properties
         // @description
-        // Returns the maximum amount of pickles allowed in a Sea Pickle material, or eggs in a TurtleEgg material.
+        // Returns the maximum amount of pickles allowed in a sea pickle material, or eggs in a turtle egg material.
         // -->
         PropertyParser.<MaterialCount>registerTag("count_max", (attribute, material) -> {
             return new ElementTag(material.getMax());
@@ -70,7 +70,7 @@ public class MaterialCount implements Property {
         // @mechanism MaterialTag.count
         // @group properties
         // @description
-        // Returns the minimum amount of pickles allowed in a Sea Pickle material, or eggs in a TurtleEgg material.
+        // Returns the minimum amount of pickles allowed in a sea pickle material, or eggs in a turtle egg material.
         // -->
         PropertyParser.<MaterialCount>registerTag("count_min", (attribute, material) -> {
             return new ElementTag(material.getMin());
@@ -135,7 +135,7 @@ public class MaterialCount implements Property {
         // @name count
         // @input ElementTag(Number)
         // @description
-        // Sets the amount of pickles in a Sea Pickle material, or eggs in a TurtleEgg material.
+        // Sets the amount of pickles in a sea pickle material, or eggs in a turtle egg material.
         // @tags
         // <MaterialTag.count>
         // <MaterialTag.count_min>

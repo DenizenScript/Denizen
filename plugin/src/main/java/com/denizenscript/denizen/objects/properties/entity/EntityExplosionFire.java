@@ -60,7 +60,7 @@ public class EntityExplosionFire implements Property {
         // @mechanism EntityTag.explosion_fire
         // @group properties
         // @description
-        // If this entity is explosive, returns whether its explosion creates fire.
+        // If this entity is explosive, returns whether the entity's explosion will create fire.
         // -->
         if (attribute.startsWith("explosion_fire")) {
             return new ElementTag(isIncendiary())

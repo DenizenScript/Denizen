@@ -60,6 +60,7 @@ public class EntityPickupStatus implements Property {
         // @group properties
         // @description
         // If the entity is an arrow or trident, returns the pickup status of the arrow/trident.
+        // Available pickup statuses can be found here: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/AbstractArrow.PickupStatus.html>.
         // -->
         if (attribute.startsWith("pickup_status")) {
             return new ElementTag(NMSHandler.getEntityHelper().getArrowPickupStatus(dentity.getBukkitEntity()))
@@ -78,7 +79,7 @@ public class EntityPickupStatus implements Property {
         // @input ElementTag
         // @description
         // Changes the pickup status of an arrow/trident.
-        // Available pickup statuses can be found here: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/AbstractArrow.PickupStatus.html>
+        // Available pickup statuses can be found here: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/AbstractArrow.PickupStatus.html>.
         // @tags
         // <EntityTag.pickup_status>
         // -->

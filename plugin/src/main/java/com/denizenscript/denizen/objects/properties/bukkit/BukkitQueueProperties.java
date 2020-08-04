@@ -43,6 +43,7 @@ public class BukkitQueueProperties implements Property {
         // @attribute <QueueTag.npc>
         // @returns NPCTag
         // @mechanism QueueTag.linked_npc
+        // @plugin Citizens
         // @description
         // Returns the NPCTag linked to a queue.
         // -->
@@ -116,6 +117,7 @@ public class BukkitQueueProperties implements Property {
         // @object QueueTag
         // @name linked_npc
         // @input NPCTag
+        // @plugin Citizens
         // @description
         // Sets the linked NPC for the remainder of the queue.
         // @tags

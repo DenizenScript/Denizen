@@ -66,7 +66,7 @@ public class EntityTrades implements Property {
         // @returns ListTag(TradeTag)
         // @mechanism EntityTag.trades
         // @description
-        // Returns a list of the Villager's trade recipes.
+        // Returns a list of the villager's trade recipes.
         // -->
         if (attribute.startsWith("trades")) {
             return getTradeRecipes().getObjectAttribute(attribute.fulfill(1));
@@ -82,7 +82,7 @@ public class EntityTrades implements Property {
         // @name trades
         // @input ListTag(TradeTag)
         // @description
-        // Sets the trades that the entity will offer.
+        // Sets the trades that the villager will offer.
         // @tags
         // <EntityTag.trades>
         // -->

@@ -56,6 +56,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
     // <--[language]
     // @name NPCTag Objects
     // @group Object System
+    // @plugin Citizens
     // @description
     // An NPCTag represents an NPC configured through Citizens.
     //
@@ -451,6 +452,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.previous_location>
         // @returns LocationTag
+        // @plugin Citizens
         // @description
         // Returns the NPC's previous navigated location.
         // -->
@@ -466,6 +468,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.has_nickname>
         // @returns ElementTag(Boolean)
+        // @plugin Citizens
         // @description
         // Returns true if the NPC has a nickname.
         // -->
@@ -477,6 +480,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.nickname>
         // @returns ElementTag
+        // @plugin Citizens
         // @description
         // Returns the NPC's display name, as set by the Nickname trait (or the default NPC name).
         // -->
@@ -499,6 +503,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.traits>
         // @returns ListTag
+        // @plugin Citizens
         // @description
         // Returns a list of all of the NPC's traits.
         // -->
@@ -513,8 +518,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.has_trait[<trait>]>
         // @returns ElementTag(Boolean)
+        // @plugin Citizens
         // @description
-        // Returns whether the NPC has a specified trait.
+        // Returns whether the NPC has the specified trait.
         // -->
         registerTag("has_trait", (attribute, object) -> {
             if (attribute.hasContext(1)) {
@@ -529,6 +535,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.pushable>
         // @returns ElementTag(Boolean)
+        // @plugin Citizens
         // @description
         // Returns whether the NPC is pushable.
         // -->
@@ -539,6 +546,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.has_trigger[<trigger>]>
         // @returns ElementTag(Boolean)
+        // @plugin Citizens
         // @description
         // Returns whether the NPC has a specified trigger.
         // -->
@@ -556,6 +564,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.has_anchors>
         // @returns ElementTag(Boolean)
+        // @plugin Citizens
         // @description
         // Returns whether the NPC has anchors assigned.
         // -->
@@ -566,6 +575,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.list_anchors>
         // @returns ListTag
+        // @plugin Citizens
         // @description
         // Returns a list of anchor names currently assigned to the NPC.
         // -->
@@ -580,6 +590,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.anchor[<name>]>
         // @returns LocationTag
+        // @plugin Citizens
         // @description
         // Returns the location associated with the specified anchor, or null if it doesn't exist.
         // -->
@@ -613,6 +624,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.has_flag[<flag_name>]>
         // @returns ElementTag(Boolean)
+        // @plugin Citizens
         // @description
         // Returns true if the NPC has the specified flag, otherwise returns false.
         // -->
@@ -630,6 +642,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.flag[<flag_name>]>
         // @returns Flag ListTag
+        // @plugin Citizens
         // @description
         // Returns the specified flag from the NPC.
         // -->
@@ -642,8 +655,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             // <--[tag]
             // @attribute <NPCTag.flag[<flag_name>].is_expired>
             // @returns ElementTag(Boolean)
+            // @plugin Citizens
             // @description
-            // returns true if the flag is expired or does not exist, false if it is not yet expired or has no expiration.
+            // Returns true if the flag is expired or does not exist, or false if it is not yet expired or has no expiration.
             // -->
             if (attribute.startsWith("is_expired", 2) || attribute.startsWith("isexpired", 22)) {
                 attribute.fulfill(1);
@@ -660,6 +674,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 // <--[tag]
                 // @attribute <NPCTag.flag[<flag_name>].expiration>
                 // @returns DurationTag
+                // @plugin Citizens
                 // @description
                 // Returns a DurationTag of the time remaining on the flag, if it has an expiration.
                 // -->
@@ -676,8 +691,10 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.list_flags[(regex:)<search>]>
         // @returns ListTag
+        // @plugin Citizens
         // @description
-        // Returns a list of an NPC's flag names, with an optional search for names containing a certain pattern.
+        // Returns a list of an NPC's flag name(s).
+        // Optionally, specify regex: at the start of the search element to use regex to find flag(s) containing a certain pattern.
         // Note that this is exclusively for debug/testing reasons, and should never be used in a real script.
         // -->
         registerTag("list_flags", (attribute, object) -> {
@@ -716,6 +733,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.constant[<constant_name>]>
         // @returns ElementTag
+        // @plugin Citizens
         // @description
         // Returns the specified constant from the NPC.
         // -->
@@ -736,6 +754,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.has_pose[<name>]>
         // @returns ElementTag(Boolean)
+        // @plugin Citizens
         // @description
         // Returns true if the NPC has the specified pose, otherwise returns false.
         // -->
@@ -751,6 +770,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.pose[<name>]>
         // @returns LocationTag
+        // @plugin Citizens
         // @description
         // Returns the pose as a LocationTag with x, y, and z set to 0, and the world set to the first
         // possible available world Bukkit knows about.
@@ -768,6 +788,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.is_sneaking>
         // @returns ElementTag(Boolean)
+        // @plugin Citizens
         // @description
         // Returns whether the NPC is currently sneaking. Only works for player-type NPCs.
         // -->
@@ -781,6 +802,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.engaged>
         // @returns ElementTag(Boolean)
+        // @plugin Citizens
         // @description
         // Returns whether the NPC is currently engaged.
         // See <@link command engage>
@@ -792,6 +814,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.invulnerable>
         // @returns ElementTag(Boolean)
+        // @plugin Citizens
         // @description
         // Returns whether the NPC is currently invulnerable.
         // See <@link command vulnerable>
@@ -803,6 +826,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.id>
         // @returns ElementTag(Number)
+        // @plugin Citizens
         // @description
         // Returns the NPC's ID number.
         // -->
@@ -812,8 +836,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
 
         // <--[tag]
         // @attribute <NPCTag.owner>
-        // @returns PlayerTag/ElementTag
+        // @returns PlayerTag or ElementTag
         // @mechanism NPCTag.owner
+        // @plugin Citizens
         // @description
         // Returns the owner of the NPC as a PlayerTag if it's a player, otherwise as just the name.
         // -->
@@ -835,6 +860,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @attribute <NPCTag.has_skin>
         // @returns ElementTag(Boolean)
         // @mechanism NPCTag.skin
+        // @plugin Citizens
         // @description
         // Returns whether the NPC has a custom skin.
         // -->
@@ -846,6 +872,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @attribute <NPCTag.skin_blob>
         // @returns ElementTag
         // @mechanism NPCTag.skin_blob
+        // @plugin Citizens
         // @description
         // Returns the NPC's custom skin blob, if any.
         // In the format: "texture;signature" (two values separated by a semicolon).
@@ -866,6 +893,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.skull_skin>
         // @returns ElementTag
+        // @plugin Citizens
         // @description
         // Returns the NPC's current skin blob, formatted for input to a Player Skull item.
         // In the format: "UUID|Texture" (two values separated by pipes).
@@ -883,6 +911,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @attribute <NPCTag.skin>
         // @returns ElementTag
         // @mechanism NPCTag.skin
+        // @plugin Citizens
         // @description
         // Returns the NPC's custom skin, if any.
         // -->
@@ -896,6 +925,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.inventory>
         // @returns InventoryTag
+        // @plugin Citizens
         // @description
         // Returns the InventoryTag of the NPC.
         // -->
@@ -906,6 +936,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.is_spawned>
         // @returns ElementTag(Boolean)
+        // @plugin Citizens
         // @description
         // Returns whether the NPC is spawned.
         // -->
@@ -916,6 +947,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.is_protected>
         // @returns ElementTag(Boolean)
+        // @plugin Citizens
         // @description
         // Returns whether the NPC is protected.
         // -->
@@ -927,6 +959,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @attribute <NPCTag.lookclose>
         // @returns ElementTag(Boolean)
         // @mechanism NPCTag.lookclose
+        // @plugin Citizens
         // @description
         // Returns whether the NPC has lookclose enabled.
         // -->
@@ -946,6 +979,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @attribute <NPCTag.teleport_on_stuck>
         // @returns ElementTag(Boolean)
         // @mechanism NPCTag.teleport_on_stuck
+        // @plugin Citizens
         // @description
         // Returns whether the NPC teleports when it is stuck.
         // -->
@@ -956,6 +990,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.has_script>
         // @returns ElementTag(Boolean)
+        // @Mechanism NPCTag.set_assignment, NPCTag.remove_assignment
+        // @plugin Citizens
         // @description
         // Returns true if the NPC has an assignment script.
         // -->
@@ -967,6 +1003,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.script>
         // @returns ScriptTag
+        // @Mechanism NPCTag.set_assignment, NPCTag.remove_assignment
+        // @plugin Citizens
         // @description
         // Returns the NPC's assigned script.
         // -->
@@ -984,6 +1022,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @attribute <NPCTag.distance_margin>
         // @returns ElementTag(Decimal)
         // @mechanism NPCTag.distance_margin
+        // @plugin Citizens
         // @description
         // Returns the NPC's current pathfinding distance margin. That is, how close it needs to get to its destination (in block-lengths).
         // -->
@@ -995,6 +1034,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @attribute <NPCTag.path_distance_margin>
         // @returns ElementTag(Decimal)
         // @mechanism NPCTag.path_distance_margin
+        // @plugin Citizens
         // @description
         // Returns the NPC's current pathfinding distance margin. That is, how close it needs to get to individual points along its path.
         // -->
@@ -1005,6 +1045,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.is_navigating>
         // @returns ElementTag(Boolean)
+        // @plugin Citizens
         // @description
         // Returns whether the NPC is currently navigating.
         // -->
@@ -1016,6 +1057,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @attribute <NPCTag.speed>
         // @returns ElementTag(Decimal)
         // @mechanism NPCTag.speed
+        // @plugin Citizens
         // @description
         // Returns the current speed of the NPC.
         // -->
@@ -1027,6 +1069,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @attribute <NPCTag.range>
         // @returns ElementTag(Decimal)
         // @mechanism NPCTag.range
+        // @plugin Citizens
         // @description
         // Returns the NPC's current maximum pathfinding range.
         // -->
@@ -1038,6 +1081,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @attribute <NPCTag.attack_range>
         // @returns ElementTag(Decimal)
         // @mechanism NPCTag.attack_range
+        // @plugin Citizens
         // @description
         // Returns the NPC's current navigator attack range limit.
         // -->
@@ -1048,6 +1092,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.attack_strategy>
         // @returns ElementTag
+        // @plugin Citizens
         // @description
         // Returns the NPC's current navigator attack strategy.
         // Not related to Sentinel combat.
@@ -1059,6 +1104,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.speed_modifier>
         // @returns ElementTag(Decimal)
+        // @plugin Citizens
         // @description
         // Returns the NPC's current movement speed modifier (a multiplier applied over their base speed).
         // -->
@@ -1069,6 +1115,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.base_speed>
         // @returns ElementTag(Decimal)
+        // @plugin Citizens
         // @description
         // Returns the NPC's base navigation speed.
         // -->
@@ -1079,6 +1126,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.avoid_water>
         // @returns ElementTag(Boolean)
+        // @plugin Citizens
         // @description
         // Returns whether the NPC will avoid water.
         // -->
@@ -1089,6 +1137,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.target_location>
         // @returns LocationTag
+        // @plugin Citizens
         // @description
         // Returns the location the NPC is currently navigating towards (if any).
         // -->
@@ -1102,6 +1151,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.is_fighting>
         // @returns ElementTag(Boolean)
+        // @plugin Citizens
         // @description
         // Returns whether the NPC is currently targeting an entity for the Citizens internal punching pathfinder.
         // Not compatible with Sentinel.
@@ -1113,6 +1163,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.target_type>
         // @returns ElementTag
+        // @plugin Citizens
         // @description
         // Returns the entity type of the NPC's current navigation target (if any).
         // -->
@@ -1126,6 +1177,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.target_entity>
         // @returns EntityTag
+        // @plugin Citizens
         // @description
         // Returns the entity being targeted by the NPC's current navigation (if any).
         // -->
@@ -1139,6 +1191,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[tag]
         // @attribute <NPCTag.registry_name>
         // @returns ElementTag
+        // @plugin Citizens
         // @description
         // Returns the name of the registry this NPC came from.
         // -->
@@ -1184,6 +1237,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name set_assignment
         // @input ScriptTag
+        // @plugin Citizens
         // @description
         // Sets the NPC's assignment script.
         // @tags
@@ -1197,6 +1251,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name remove_assignment
         // @input None
+        // @plugin Citizens
         // @description
         // Removes the NPC's assigment script.
         // @tags
@@ -1210,6 +1265,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name set_nickname
         // @input ElementTag
+        // @plugin Citizens
         // @description
         // Sets the NPC's nickname.
         // @tags
@@ -1223,6 +1279,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name remove_nickname
         // @input None
+        // @plugin Citizens
         // @description
         // Removes the NPC's nickname.
         // @tags
@@ -1236,6 +1293,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name set_entity_type
         // @input EntityTag
+        // @plugin Citizens
         // @description
         // Sets the NPC's entity type.
         // @tags
@@ -1249,6 +1307,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name name
         // @input ElementTag
+        // @plugin Citizens
         // @description
         // Sets the name of the NPC.
         // @tags
@@ -1262,6 +1321,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name owner
         // @input PlayerTag
+        // @plugin Citizens
         // @description
         // Sets the owner of the NPC.
         // @tags
@@ -1280,6 +1340,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name skin_blob
         // @input ElementTag
+        // @plugin Citizens
         // @description
         // Sets the skin blob of an NPC, in the form of "texture;signature;name".
         // Call with no value to clear the custom skin value.
@@ -1314,6 +1375,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name skin
         // @input ElementTag
+        // @plugin Citizens
         // @description
         // Sets the skin of an NPC by name.
         // Call with no value to clear the custom skin value.
@@ -1340,6 +1402,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name item_type
         // @input ItemTag
+        // @plugin Citizens
         // @description
         // Sets the item type of the item.
         // -->
@@ -1371,6 +1434,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name spawn
         // @input LocationTag
+        // @plugin Citizens
         // @description
         // Spawns the NPC at a location. If no location is specified, the NPC will spawn
         // at its last known location.
@@ -1390,6 +1454,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name range
         // @input ElementTag(Decimal)
+        // @plugin Citizens
         // @description
         // Sets the maximum movement distance of the NPC.
         // @tags
@@ -1403,6 +1468,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name attack_range
         // @input ElementTag(Decimal)
+        // @plugin Citizens
         // @description
         // Sets the maximum attack distance of the NPC.
         // @tags
@@ -1416,6 +1482,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name speed
         // @input ElementTag(Decimal)
+        // @plugin Citizens
         // @description
         // Sets the movement speed of the NPC.
         // @tags
@@ -1429,6 +1496,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name despawn
         // @input None
+        // @plugin Citizens
         // @description
         // Despawns the NPC.
         // @tags
@@ -1442,6 +1510,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name set_sneaking
         // @input ElementTag(Boolean)
+        // @plugin Citizens
         // @description
         // Sets whether the NPC is sneaking or not. Only works for player-type NPCs.
         // @tags
@@ -1464,6 +1533,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name set_protected
         // @input ElementTag(Boolean)
+        // @plugin Citizens
         // @description
         // Sets whether or not the NPC is protected.
         // @tags
@@ -1477,6 +1547,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name lookclose
         // @input ElementTag(Boolean)
+        // @plugin Citizens
         // @description
         // Sets the NPC's lookclose value.
         // @tags
@@ -1490,6 +1561,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name teleport_on_stuck
         // @input ElementTag(Boolean)
+        // @plugin Citizens
         // @description
         // Sets whether the NPC teleports when it is stuck.
         // @tags
@@ -1508,6 +1580,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name distance_margin
         // @input ElementTag(Decimal)
+        // @plugin Citizens
         // @description
         // Sets the NPC's distance margin.
         // @tags
@@ -1521,6 +1594,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name path_distance_margin
         // @input ElementTag(Decimal)
+        // @plugin Citizens
         // @description
         // Sets the NPC's path distance margin.
         // @tags
@@ -1534,6 +1608,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name name_visible
         // @input ElementTag
+        // @plugin Citizens
         // @description
         // Sets whether the NPC's nameplate is visible. Input is 'true' (always visible), 'false' (never visible), or 'hover' (only visible while looking at the NPC).
         // @tags
@@ -1547,6 +1622,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name clear_waypoints
         // @input None
+        // @plugin Citizens
         // @description
         // Clears all waypoint locations in the NPC's path.
         // @tags
@@ -1573,6 +1649,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name add_waypoint
         // @input LocationTag
+        // @plugin Citizens
         // @description
         // Add a waypoint location to the NPC's path.
         // @tags

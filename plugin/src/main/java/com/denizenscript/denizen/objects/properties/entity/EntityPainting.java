@@ -88,7 +88,8 @@ public class EntityPainting implements Property {
         // @mechanism EntityTag.painting
         // @group properties
         // @description
-        // If the entity is a painting, returns what art it shows. Art types: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Art.html>.
+        // If the entity is a painting, returns what art it shows.
+        // Art types: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Art.html>.
         // -->
         if (attribute.startsWith("painting")) {
             return new ElementTag(((Painting) painting.getBukkitEntity()).getArt().name())
@@ -106,7 +107,8 @@ public class EntityPainting implements Property {
         // @name painting
         // @input ElementTag
         // @description
-        // Changes the art shown by a painting. Valid a types: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Art.html>.
+        // Changes the art shown by a painting.
+        // Art types: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Art.html>.
         // @tags
         // <EntityTag.painting>
         // -->

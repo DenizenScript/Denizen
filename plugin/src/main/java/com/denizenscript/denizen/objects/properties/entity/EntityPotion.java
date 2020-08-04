@@ -92,8 +92,8 @@ public class EntityPotion implements Property {
         // @mechanism EntityTag.potion
         // @group properties
         // @description
-        // If the entity is a Tipped Arrow, returns an ItemTag of a potion with the base potion data of the arrow.
-        // If the entity is a Splash Potion, returns an ItemTag of the splash potion's full potion data.
+        // If the entity is a tipped arrow, returns an ItemTag of a potion with the base potion data of the arrow.
+        // If the entity is a splash potion, returns an ItemTag of the splash potion's full potion data.
         // -->
         if (attribute.startsWith("potion")) {
             return new ItemTag(getPotion()).getObjectAttribute(attribute.fulfill(1));
@@ -111,8 +111,8 @@ public class EntityPotion implements Property {
         // @input ItemTag
         // @description
         // Input must be a potion item!
-        // If the entity is a Tipped Arrow, sets the arrow's base potion data based on the item input.
-        // If the entity is a splash Potion, sets the splash potion's full potion data from the item input.
+        // If the entity is a tipped arrow, sets the arrow's base potion data based on the item input.
+        // If the entity is a splash potion, sets the splash potion's full potion data from the item input.
         // @tags
         // <EntityTag.potion>
         // -->

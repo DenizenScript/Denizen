@@ -78,7 +78,7 @@ public class EntityAnger implements Property {
         // @mechanism EntityTag.anger
         // @group properties
         // @description
-        // Returns the remaining anger time of a PigZombie or Bee.
+        // Returns the remaining anger time of a zombie pigman or bee.
         // -->
         if (attribute.startsWith("anger")) {
             return new DurationTag((long) getAnger())
@@ -96,7 +96,7 @@ public class EntityAnger implements Property {
         // @name anger
         // @input DurationTag
         // @description
-        // Changes the remaining anger time of a PigZombie or Bee.
+        // Changes the remaining anger time of a zombie pigman or bee.
         // @tags
         // <EntityTag.anger>
         // -->

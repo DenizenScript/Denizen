@@ -65,7 +65,7 @@ public class EntityExplosionRadius implements Property {
         // @mechanism EntityTag.explosion_radius
         // @group properties
         // @description
-        // If this entity can explode, returns its explosion radius.
+        // If this entity can explode, returns the entity's explosion radius.
         // -->
         if (attribute.startsWith("explosion_radius")) {
             return new ElementTag(getExplosionRadius())
@@ -83,7 +83,7 @@ public class EntityExplosionRadius implements Property {
         // @name explosion_radius
         // @input ElementTag(Decimal)
         // @description
-        // If this entity can explode, sets its explosion radius.
+        // If this entity can explode, sets the entity's explosion radius.
         // @tags
         // <EntityTag.explosion_radius>
         // -->

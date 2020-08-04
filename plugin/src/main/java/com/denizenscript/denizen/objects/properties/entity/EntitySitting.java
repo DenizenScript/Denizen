@@ -64,7 +64,7 @@ public class EntitySitting implements Property {
         // @mechanism EntityTag.sitting
         // @group properties
         // @description
-        // If the entity is a wolf, cat, or parrot, returns whether the animal is sitting.
+        // If the entity is a wolf, cat, or parrot, returns whether the entity is sitting.
         // -->
         if (attribute.startsWith("sitting")) {
             return new ElementTag(((Sittable) entity.getBukkitEntity()).isSitting())

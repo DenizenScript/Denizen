@@ -37,6 +37,7 @@ public class NPCTagBase implements Listener {
         // <--[tag]
         // @attribute <npc[(<npc>)]>
         // @returns NPCTag
+        // @plugin Citizens
         // @description
         // Returns an npc object constructed from the input value.
         // Refer to <@link language NPCTag objects>.

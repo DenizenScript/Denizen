@@ -64,7 +64,7 @@ public class ItemBook implements Property {
         // <--[tag]
         // @attribute <ItemTag.book_author>
         // @returns ElementTag
-        // @mechanism ItemTag.book
+        // @mechanism ItemTag.book_author
         // @group properties
         // @description
         // Returns the author of the book.
@@ -77,7 +77,7 @@ public class ItemBook implements Property {
         // <--[tag]
         // @attribute <ItemTag.book_title>
         // @returns ElementTag
-        // @mechanism ItemTag.book
+        // @mechanism ItemTag.book_title
         // @group properties
         // @description
         // Returns the title of the book.
@@ -90,7 +90,7 @@ public class ItemBook implements Property {
         // <--[tag]
         // @attribute <ItemTag.book_pages>
         // @returns ListTag
-        // @mechanism ItemTag.book
+        // @mechanism ItemTag.book_pages
         // @group properties
         // @description
         // Returns the plain-text pages of the book as a ListTag.

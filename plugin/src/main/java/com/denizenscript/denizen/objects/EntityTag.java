@@ -1298,8 +1298,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @returns ListTag
         // @description
         // Returns a list of an entity's flag name(s).
+        // Optionally, specify regex: at the start of the search element to use regex to find flag(s) containing a certain pattern.
         // Note that this is exclusively for debug/testing reasons, and should never be used in a real script.
-        // Specify regex: at the start of the search element to use regex to find flag(s) within a certain pattern.
         // -->
         registerSpawnedOnlyTag("list_flags", (attribute, object) -> {
             FlagManager.listFlagsTagWarning.warn(attribute.context);
@@ -1359,6 +1359,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the name of the entity.
         // This can be a player name, an NPC name, a custom_name, or the entity type.
+        // Note that using this on NPCs requires Citizens.
         // Works with offline players.
         // -->
         registerSpawnedOnlyTag("name", (attribute, object) -> {
@@ -1577,7 +1578,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Returns the location of the entity.
         // For living entities, this is at the center of their feet.
-        // For eye location, use <@link tag EntityTag.eye_location>
+        // For eye location, use <@link tag EntityTag.eye_location>.
+        // To modify this with players, see <@link mechanism PlayerTag.location>.
         // Works with offline players.
         // -->
         registerSpawnedOnlyTag("location", (attribute, object) -> {
@@ -2270,6 +2272,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @attribute <EntityTag.is_npc>
         // @returns ElementTag(Boolean)
         // @group data
+        // @plugin Citizens
         // @description
         // Returns whether the entity is a Citizens NPC.
         // -->
@@ -3025,6 +3028,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @input ElementTag(Boolean)
         // @description
         // Sets whether this entity is glowing.
+        // Note that adjusting NPCs requires Citizens.
         // @tags
         // <EntityTag.glowing>
         // -->
@@ -3107,6 +3111,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Sets the visible skin layers on a player-type entity (PlayerTag or player-type NPCTag).
         // Input is a list of values from the set of:
         // CAPE, HAT, JACKET, LEFT_PANTS, LEFT_SLEEVE, RIGHT_PANTS, RIGHT_SLEEVE, or "ALL"
+        // Note that adjusting NPCs requires Citizens.
         // @tags
         // <EntityTag.skin_layers>
         // -->
@@ -3131,7 +3136,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @input ElementTag(Boolean)
         // @description
         // Makes the player-like entity have the same skin as the player looking at it.
-        // For NPCs, this will add the Mirror trait.
+        // For NPCs, this will add the Mirror trait (also requires Citizens).
         // -->
         if (mechanism.matches("mirror_player") && mechanism.requireBoolean()) {
             if (isNPC()) {

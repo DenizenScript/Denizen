@@ -96,6 +96,7 @@ public class EntityAttributes implements Property {
         // @group properties
         // @description
         // Returns a list of all attributes on the entity, formatted in a way that can be sent back into the 'attributes' mechanism.
+        // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>.
         // -->
         if (attribute.startsWith("attributes")) {
             return getAttributes().getObjectAttribute(attribute.fulfill(1));
@@ -108,7 +109,7 @@ public class EntityAttributes implements Property {
         // @group properties
         // @description
         // Returns whether the entity has the named attribute.
-        // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
+        // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>.
         // -->
         if (attribute.startsWith("has_attribute") && attribute.hasContext(1)) {
             AttributeInstance instance = ((Attributable) entity.getBukkitEntity()).getAttribute(
@@ -124,7 +125,7 @@ public class EntityAttributes implements Property {
         // @description
         // Returns the final calculated value of the named attribute for the entity.
         // See also <@link tag EntityTag.has_attribute>.
-        // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
+        // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>.
         // -->
         if (attribute.startsWith("attribute_value") && attribute.hasContext(1)) {
             org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(attribute.getContext(1).toUpperCase());

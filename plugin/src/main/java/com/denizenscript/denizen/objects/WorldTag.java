@@ -222,7 +222,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @returns ListTag(EntityTag)
         // @description
         // Returns a list of entities in this world.
-        // Optionally specify entity types to filter down to.
+        // Optionally, specify entity types to filter down to.
         // -->
         registerTag("entities", (attribute, object) -> {
             ListTag entities = new ListTag();
@@ -249,7 +249,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @returns ListTag(EntityTag)
         // @description
         // Returns a list of living entities in this world.
-        // This includes Players, mobs, NPCs, etc., but excludes dropped items, experience orbs, etc.
+        // This includes players, mobs, NPCs, etc., but excludes dropped items, experience orbs, etc.
         // -->
         registerTag("living_entities", (attribute, object) -> {
             ArrayList<EntityTag> entities = new ArrayList<>();
@@ -282,6 +282,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <WorldTag.spawned_npcs>
         // @returns ListTag(NPCTag)
+        // @plugin Citizens
         // @description
         // Returns a list of spawned NPCs in this world.
         // -->
@@ -302,6 +303,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <WorldTag.npcs>
         // @returns ListTag(NPCTag)
+        // @plugin Citizens
         // @description
         // Returns a list of all NPCs in this world.
         // -->
@@ -340,6 +342,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <WorldTag.loaded_chunks>
         // @returns ListTag(ChunkTag)
+        // @Mechanism ChunkTag.load, ChunkTag.unload, ChunkTag.unload_without_saving
         // @description
         // Returns a list of all the currently loaded chunks.
         // -->
@@ -384,7 +387,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @returns ElementTag
         // @description
         // Returns the world type of the world.
-        // Can return any enum from: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/WorldType.html>
+        // Return options can be any of the following: AMPLIFIED, FLAT, LARGE_BIOMES, NORMAL
         // -->
         registerTag("world_type", (attribute, object) -> {
             return new ElementTag(object.getWorld().getWorldType().getName());
@@ -540,7 +543,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @returns DurationTag
         // @Mechanism WorldTag.ticks_per_animal_spawns
         // @description
-        // Returns the world's ticks per animal spawn value.
+        // Returns the world's ticks per animal spawn value in a DurationTag.
         // -->
         registerTag("ticks_per_animal_spawn", (attribute, object) -> {
             return new DurationTag(object.getWorld().getTicksPerAnimalSpawns());
@@ -551,7 +554,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @returns DurationTag
         // @Mechanism WorldTag.ticks_per_monster_spawns
         // @description
-        // Returns the world's ticks per monster spawn value.
+        // Returns the world's ticks per monster spawn value in a DurationTag.
         // -->
         registerTag("ticks_per_monster_spawn", (attribute, object) -> {
             return new DurationTag(object.getWorld().getTicksPerMonsterSpawns());
@@ -573,7 +576,7 @@ public class WorldTag implements ObjectTag, Adjustable {
             // @attribute <WorldTag.time.duration>
             // @returns DurationTag
             // @description
-            // Returns the relative in-game time of this world as a duration.
+            // Returns the relative in-game time of this world as a DurationTag.
             // -->
             if (attribute.startsWith("duration", 2)) {
                 attribute.fulfill(1);
@@ -627,7 +630,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @attribute <WorldTag.moon_phase>
         // @returns ElementTag(Number)
         // @description
-        // Returns the current phase of the moon, as an integer from 1 to 8.
+        // Returns the current phase of the moon, options are from 1 to 8.
         // -->
         registerTag("moon_phase", (attribute, object) -> {
             return new ElementTag((int) ((object.getWorld().getFullTime() / 24000) % 8) + 1);
@@ -699,7 +702,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @attribute <WorldTag.border_size>
         // @returns ElementTag(Decimal)
         // @description
-        // returns the size of the world border in this world.
+        // Returns the size of the world border in this world.
         // -->
         registerTag("border_size", (attribute, object) -> {
             return new ElementTag(object.getWorld().getWorldBorder().getSize());
@@ -709,7 +712,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @attribute <WorldTag.border_center>
         // @returns LocationTag
         // @description
-        // returns the center of the world border in this world.
+        // Returns the center of the world border in this world.
         // -->
         registerTag("border_center", (attribute, object) -> {
             return new LocationTag(object.getWorld().getWorldBorder().getCenter());
@@ -719,7 +722,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @attribute <WorldTag.border_damage>
         // @returns ElementTag(Decimal)
         // @description
-        // returns the amount of damage caused by crossing the world border in this world.
+        // Returns the amount of damage caused by crossing the world border in this world.
         // -->
         registerTag("border_damage", (attribute, object) -> {
             return new ElementTag(object.getWorld().getWorldBorder().getDamageAmount());
@@ -729,7 +732,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @attribute <WorldTag.border_damage_buffer>
         // @returns ElementTag(Decimal)
         // @description
-        // returns the damage buffer of the world border in this world.
+        // Returns the damage buffer of the world border in this world.
         // -->
         registerTag("border_damage_buffer", (attribute, object) -> {
             return new ElementTag(object.getWorld().getWorldBorder().getDamageBuffer());
@@ -739,7 +742,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @attribute <WorldTag.border_warning_distance>
         // @returns ElementTag(Number)
         // @description
-        // returns the warning distance of the world border in this world.
+        // Returns the warning distance of the world border in this world.
         // -->
         registerTag("border_warning_distance", (attribute, object) -> {
             return new ElementTag(object.getWorld().getWorldBorder().getWarningDistance());
@@ -749,7 +752,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @attribute <WorldTag.border_warning_time>
         // @returns DurationTag
         // @description
-        // returns warning time of the world border in this world as a duration.
+        // Returns warning time of the world border in this world as a duration.
         // -->
         registerTag("border_warning_time", (attribute, object) -> {
             return new DurationTag(object.getWorld().getWorldBorder().getWarningTime());
@@ -759,7 +762,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @attribute <WorldTag.gamerule[<gamerule>]>
         // @returns ElementTag
         // @description
-        // returns the current value of the specified gamerule in the world.
+        // Returns the current value of the specified gamerule in the world.
         // Note that the name is case-sensitive... so "doFireTick" is correct, but "dofiretick" is not.
         // -->
         registerTag("gamerule", (attribute, object) -> {

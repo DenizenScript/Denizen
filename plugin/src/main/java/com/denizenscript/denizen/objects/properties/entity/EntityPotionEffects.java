@@ -92,7 +92,7 @@ public class EntityPotionEffects implements Property {
         // Returns the list of active potion effects on the entity, in the format: TYPE,AMPLIFIER,DURATION,IS_AMBIENT,HAS_PARTICLES,HAS_ICON|...
         // Note that AMPLIFIER is a number representing the level, and DURATION is a number representing the time, in ticks, it will last for.
         // IS_AMBIENT, HAS_PARTICLES, and HAS_ICON are booleans.
-        // The effect type will be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
+        // The effect type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
         // -->
         if (attribute.startsWith("list_effects")) {
             ListTag effects = new ListTag();

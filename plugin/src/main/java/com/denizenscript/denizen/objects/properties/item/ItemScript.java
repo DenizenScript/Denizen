@@ -78,7 +78,7 @@ public class ItemScript implements Property {
         // @returns ScriptTag
         // @group scripts
         // @description
-        // Returns the script of the item if it was created by an item script.
+        // Returns the ScriptTag that created the item if it was created by an item script.
         // -->
         if (attribute.startsWith("script")) {
             if (item.isItemscript()) {

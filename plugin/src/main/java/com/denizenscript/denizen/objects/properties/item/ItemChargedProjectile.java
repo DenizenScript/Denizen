@@ -55,6 +55,7 @@ public class ItemChargedProjectile implements Property {
         // @group properties
         // @description
         // Returns a list of charged projectile items on this crossbow.
+        // Charged projectiles may only be arrows and fireworks
         // -->
         if (attribute.startsWith("charged_projectiles")) {
             return getChargedProjectiles()
@@ -109,7 +110,8 @@ public class ItemChargedProjectile implements Property {
         // @name charged_projectiles
         // @input ListTag(ItemTag)
         // @description
-        // Sets the charged projectile items on this crossbow. Charged projectiles may only be arrows and fireworks.
+        // Sets the charged projectile items on this crossbow.
+        // Charged projectiles may only be arrows and fireworks.
         // @tags
         // <ItemTag.charged_projectiles>
         // <ItemTag.is_charged>
@@ -133,7 +135,8 @@ public class ItemChargedProjectile implements Property {
         // @name add_charged_projectile
         // @input ItemTag
         // @description
-        // Adds a new charged projectile item on this crossbow. Charged projectiles may only be arrows and fireworks.
+        // Adds a new charged projectile item on this crossbow.
+        // Charged projectiles may only be arrows and fireworks.
         // @tags
         // <ItemTag.charged_projectiles>
         // <ItemTag.is_charged>

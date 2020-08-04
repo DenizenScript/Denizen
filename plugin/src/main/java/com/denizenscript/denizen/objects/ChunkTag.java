@@ -293,7 +293,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <ChunkTag.is_loaded>
         // @returns ElementTag(Boolean)
-        // @Mechanism ChunkTag.load, ChunkTag.unload
+        // @Mechanism ChunkTag.load, ChunkTag.unload, ChunkTag.unload_without_saving
         // @description
         // Returns true if the chunk is currently loaded into memory.
         // This is related to the <@link command chunkload> command.

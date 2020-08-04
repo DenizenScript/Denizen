@@ -49,7 +49,7 @@ public class MaterialSwitchable  implements Property {
         // @mechanism MaterialTag.switched
         // @group properties
         // @description
-        // Returns whether a Powerable material (like pressure plates) or an Openable material (like doors), or a dispenser, or a daylight sensor is switched.
+        // Returns whether a powerable material (like pressure plates), an openable material (like doors), a dispenser, or a daylight sensor is switched.
         // -->
         PropertyParser.<MaterialSwitchable>registerTag("switched", (attribute, material) -> {
             return new ElementTag(material.getState());
@@ -132,7 +132,7 @@ public class MaterialSwitchable  implements Property {
         // @name switched
         // @input ElementTag(Boolean)
         // @description
-        // Sets whether a Powerable material (like pressure plates) or an Openable material (like doors), or a dispenser, or a daylight sensor is switched.
+        // Sets whether a powerable material (like pressure plates), an openable material (like doors), a dispenser, or a daylight sensor is switched.
         // @tags
         // <MaterialTag.switched>
         // -->

@@ -53,7 +53,7 @@ public class BukkitElementProperties implements Property {
         // @returns ChunkTag
         // @group conversion
         // @description
-        // Returns the element as a chunk. Note: the value must be a valid chunk.
+        // Returns the element as a ChunkTag. Note: the value must be a valid chunk.
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("as_chunk", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), ChunkTag.valueOf(object.asString(),
@@ -77,7 +77,7 @@ public class BukkitElementProperties implements Property {
         // @returns CuboidTag
         // @group conversion
         // @description
-        // Returns the element as a cuboid. Note: the value must be a valid cuboid.
+        // Returns the element as a CuboidTag. Note: the value must be a valid cuboid.
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("as_cuboid", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), CuboidTag.valueOf(object.asString(),
@@ -89,7 +89,7 @@ public class BukkitElementProperties implements Property {
         // @returns EntityTag
         // @group conversion
         // @description
-        // Returns the element as an entity. Note: the value must be a valid entity.
+        // Returns the element as an EntityTag. Note: the value must be a valid entity.
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("as_entity", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), EntityTag.valueOf(object.asString(),
@@ -101,7 +101,7 @@ public class BukkitElementProperties implements Property {
         // @returns InventoryTag
         // @group conversion
         // @description
-        // Returns the element as an inventory. Note: the value must be a valid inventory.
+        // Returns the element as an InventoryTag. Note: the value must be a valid inventory.
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("as_inventory", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), InventoryTag.valueOf(object.asString(),
@@ -113,7 +113,7 @@ public class BukkitElementProperties implements Property {
         // @returns ItemTag
         // @group conversion
         // @description
-        // Returns the element as an item. Note: the value must be a valid item.
+        // Returns the element as an ItemTag. Note: the value must be a valid item.
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("as_item", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), ItemTag.valueOf(object.asString(),
@@ -125,7 +125,7 @@ public class BukkitElementProperties implements Property {
         // @returns LocationTag
         // @group conversion
         // @description
-        // Returns the element as a location. Note: the value must be a valid location.
+        // Returns the element as a LocationTag. Note: the value must be a valid location.
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("as_location", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), LocationTag.valueOf(object.asString(),
@@ -137,7 +137,7 @@ public class BukkitElementProperties implements Property {
         // @returns MaterialTag
         // @group conversion
         // @description
-        // Returns the element as a material. Note: the value must be a valid material.
+        // Returns the element as a MaterialTag. Note: the value must be a valid material.
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("as_material", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), MaterialTag.valueOf(object.asString(),
@@ -148,8 +148,9 @@ public class BukkitElementProperties implements Property {
         // @attribute <ElementTag.as_npc>
         // @returns NPCTag
         // @group conversion
+        // @plugin Citizens
         // @description
-        // Returns the element as an NPC. Note: the value must be a valid NPC.
+        // Returns the element as an NPCTag. Note: the value must be a valid NPC.
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("as_npc", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), NPCTag.valueOf(object.asString(),
@@ -161,7 +162,8 @@ public class BukkitElementProperties implements Property {
         // @returns PlayerTag
         // @group conversion
         // @description
-        // Returns the element as a player. Note: the value must be a valid player. Can be online or offline.
+        // Returns the element as a PlayerTag. Note: the value must be a valid player.
+        // Can be online or offline.
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("as_player", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), PlayerTag.valueOf(object.asString(),
@@ -173,7 +175,7 @@ public class BukkitElementProperties implements Property {
         // @returns WorldTag
         // @group conversion
         // @description
-        // Returns the element as a world.
+        // Returns the element as a WorldTag. Note: the value must be a valid world.
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("as_world", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), WorldTag.valueOf(object.asString(),
@@ -185,7 +187,7 @@ public class BukkitElementProperties implements Property {
         // @returns PluginTag
         // @group conversion
         // @description
-        // Returns the element as a plugin. Note: the value must be a valid plugin.
+        // Returns the element as a PluginTag. Note: the value must be a valid plugin.
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("as_plugin", (attribute, object) -> {
             return ElementTag.handleNull(object.asString(), PluginTag.valueOf(object.asString(),
@@ -269,7 +271,7 @@ public class BukkitElementProperties implements Property {
         // @returns ElementTag
         // @group text checking
         // @description
-        // Returns the ChatColors used last in an element.
+        // Returns the last chat color used in the element.
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("last_color", (attribute, object) -> {
             return new ElementTag(org.bukkit.ChatColor.getLastColors(object.asString()));
@@ -292,7 +294,7 @@ public class BukkitElementProperties implements Property {
         // @group text manipulation
         // @description
         // Returns the element with all color codes parsed.
-        // Optionally, specify a character to prefix the color ids. Defaults to '&' if not specified.
+        // Optionally, specify a character to prefix the color IDs. Defaults to '&' if not specified.
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("parse_color", (attribute, object) -> {
             char prefix = '&';
@@ -391,7 +393,7 @@ public class BukkitElementProperties implements Property {
             // @group text manipulation
             // @description
             // Adds a hover message to the element, which makes the element display the input hover text when the mouse is left over it.
-            // Optionally specify the hover type as one of: SHOW_TEXT, SHOW_ACHIEVEMENT, SHOW_ITEM, or SHOW_ENTITY.
+            // Optionally, specify the hover type as one of: SHOW_TEXT, SHOW_ACHIEVEMENT, SHOW_ITEM, or SHOW_ENTITY.
             // Note: for "SHOW_ITEM", replace the text with a valid ItemTag. For "SHOW_ENTITY", replace the text with a valid spawned EntityTag (requires F3+H to see entities).
             // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
             // -->
@@ -409,7 +411,7 @@ public class BukkitElementProperties implements Property {
         // @group text manipulation
         // @description
         // Adds a click command to the element, which makes the element execute the input command when clicked.
-        // To execute a command "/" should be used at the start. Otherwise, it will display as chat.
+        // To execute a command, "/" should be used at the start. Otherwise, it will display as chat.
         // For example: - narrate "You can <element[click here].on_click[wow]> to say wow!"
         // For example: - narrate "You can <element[click here].on_click[/help]> for help!"
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
@@ -427,7 +429,7 @@ public class BukkitElementProperties implements Property {
             // @group text manipulation
             // @description
             // Adds a click command to the element, which makes the element execute the input command when clicked.
-            // Optionally specify the hover type as one of: OPEN_URL, OPEN_FILE, RUN_COMMAND, SUGGEST_COMMAND, or CHANGE_PAGE.
+            // Optionally, specify the hover type as one of: OPEN_URL, OPEN_FILE, RUN_COMMAND, SUGGEST_COMMAND, or CHANGE_PAGE.
             // For example: - narrate "You can <element[click here].on_click[https://denizenscript.com].type[OPEN_URL]> to learn about Denizen!"
             // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
             // -->

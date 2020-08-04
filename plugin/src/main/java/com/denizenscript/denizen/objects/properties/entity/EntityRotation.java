@@ -77,7 +77,8 @@ public class EntityRotation implements Property {
         // @group properties
         // @description
         // If the entity can have a rotation, returns the entity's rotation as a direction vector.
-        // Currently, only Hanging-type entities can have rotations.
+        // Currently, only hanging-type entities can have rotations.
+        // Value is from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/BlockFace.html>.
         // -->
         if (attribute.startsWith("rotation_vector")) {
             return new LocationTag(getRotation().getDirection())
@@ -91,7 +92,7 @@ public class EntityRotation implements Property {
         // @group properties
         // @description
         // If the entity can have a rotation, returns the entity's rotation.
-        // Currently, only Hanging-type entities can have rotations.
+        // Currently, only hanging-type entities can have rotations.
         // Value is from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/BlockFace.html>.
         // -->
         if (attribute.startsWith("rotation")) {

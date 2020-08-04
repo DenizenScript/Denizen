@@ -247,13 +247,14 @@ public class EntityAreaEffectCloud implements Property {
         }
 
         // <--[tag]
-        // @attribute <EntityTag.has_custom_effect[<effect>]>
+        // @attribute <EntityTag.has_custom_effect[(<effect>)]>
         // @returns ElementTag(Boolean)
         // @mechanism EntityTag.custom_effects
         // @group properties
         // @description
-        // Returns whether the Area Effect Cloud has a specified effect.
-        // If no effect is specified, returns whether it has any custom effect.
+        // Returns whether the Area Effect Cloud has any custom effect.
+        // Optionally, specify an effect to check whether the Area Effect
+        // Cloud has the specified effect.
         // -->
         if (attribute.startsWith("has_custom_effect")) {
 

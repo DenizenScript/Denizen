@@ -44,7 +44,7 @@ public class MaterialSlab implements Property {
         // @group properties
         // @description
         // Returns the current type for a slab.
-        // Output is "BOTTOM", "TOP", or "DOUBLE".
+        // Possible returns include: BOTTOM, TOP, or DOUBLE.
         // -->
         PropertyParser.<MaterialSlab>registerTag("slab_type", (attribute, material) -> {
             return new ElementTag(material.getSlab().getType().name());
@@ -74,6 +74,7 @@ public class MaterialSlab implements Property {
         // @input ElementTag
         // @description
         // Sets the current type of the slab.
+        // Possible types include: BOTTOM, TOP, or DOUBLE.
         // @tags
         // <MaterialTag.slab_type>
         // -->

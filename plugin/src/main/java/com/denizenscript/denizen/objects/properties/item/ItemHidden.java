@@ -79,7 +79,7 @@ public class ItemHidden implements Property {
         // @mechanism ItemTag.hides
         // @group properties
         // @description
-        // Returns a list of item data types to be hidden from view on this item.
+        // Returns a ListTag of item data types to be hidden from view on this item.
         // Valid hide types include: ATTRIBUTES, DESTROYS, ENCHANTS, PLACED_ON, ITEM_DATA, and UNBREAKABLE
         // ITEM_DATA hides potion effects, banner patterns, etc.
         // -->

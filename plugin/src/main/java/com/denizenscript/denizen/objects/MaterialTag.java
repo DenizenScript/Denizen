@@ -419,7 +419,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // @returns ElementTag(Boolean)
         // @group properties
         // @description
-        // Returns whether the material has a 'count' value, which applies to SeaPickles and TurtleEggs.
+        // Returns whether the material has a 'count' value, which applies to sea pickles and turtle eggs.
         // When this returns true, <@link tag MaterialTag.count>,
         // <@link tag MaterialTag.count_max>, <@link tag MaterialTag.count_min>,
         // and <@link mechanism MaterialTag.count> are accessible.
@@ -506,7 +506,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // @description
         // Returns whether the material is a holdable item.
         // Note that most blocks are valid items as well.
-        // This only returns "false" for certain non-holdable "special" blocks, like Fire.
+        // This only returns "false" for certain non-holdable "special" blocks, such as fire.
         // -->
         registerTag("is_item", (attribute, object) -> {
             return new ElementTag(object.material.isItem());
@@ -600,7 +600,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // @attribute <MaterialTag.is_switchable>
         // @returns ElementTag(Boolean)
         // @description
-        // Returns whether the material is Openable, Powerable, or a Dispenser.
+        // Returns whether the material is openable, powerable, or a dispenser.
         // -->
         registerTag("is_switchable", (attribute, object) -> {
             return new ElementTag(MaterialSwitchable.describes(object));
@@ -710,6 +710,8 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // @mechanism MaterialTag.piston_reaction
         // @description
         // Returns the material's piston reaction. (Only for block materials).
+        // Possible results are: NORMAL (push and pull allowed), DESTROY (break when pushed),
+        // BLOCK (prevent a push or pull), IGNORE (don't use this), or PUSH_ONLY (push allowed but not pull)
         // -->
         registerTag("piston_reaction", (attribute, object) -> {
             String res = NMSHandler.getBlockHelper().getPushReaction(object.material);

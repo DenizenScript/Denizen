@@ -93,6 +93,7 @@ public class EntityFramed implements Property {
         // @group properties
         // @description
         // If the entity is an item frame, returns the rotation of the item currently framed.
+        // Valid rotations can be found at: <@link url url/https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Rotation.html>.
         // -->
         if (attribute.startsWith("framed_item_rotation")) {
             return new ElementTag(CoreUtilities.toLowerCase(getItemFrameEntity().getRotation().name()))

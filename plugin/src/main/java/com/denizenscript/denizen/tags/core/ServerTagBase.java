@@ -195,11 +195,10 @@ public class ServerTagBase {
         // @attribute <server.recipe_ids[(<type>)]>
         // @returns ListTag
         // @description
-        // Returns a list of all recipe IDs on the server.
-        // Returns a list in the Namespace:Key format, for example "minecraft:gold_nugget".
+        // Returns a list of all recipe IDs on the server in the Namespace:Key format, for example "minecraft:gold_nugget".
         // Optionally, specify a recipe type (CRAFTING, FURNACE, COOKING, BLASTING, SHAPED, SHAPELESS, SMOKING, CAMPFIRE, STONECUTTING)
         // to limit to just recipes of that type.
-        // Note: this will produce an error if all recipes of any one type have been removed from the server, due to an error in Spigot.
+        // Note: This will produce an error if all recipes of one type have been removed from the server, due to an error in Spigot.
         // -->
         if (attribute.startsWith("recipe_ids") || attribute.startsWith("list_recipe_ids")) {
             listDeprecateWarn(attribute);
@@ -287,7 +286,7 @@ public class ServerTagBase {
         // @returns ElementTag
         // @description
         // Returns the type of recipe that the given recipe ID is.
-        // Will be one of FURNACE, BLASTING, SHAPED, SHAPELESS, SMOKING, CAMPFIRE, STONECUTTING.
+        // Possible returns include: FURNACE, BLASTING, SHAPED, SHAPELESS, SMOKING, CAMPFIRE, or STONECUTTING.
         // -->
         if (attribute.startsWith("recipe_type") && attribute.hasContext(1)) {
             NamespacedKey key = Utilities.parseNamespacedKey(attribute.getContext(1));
@@ -303,7 +302,7 @@ public class ServerTagBase {
         // @attribute <server.recipe_result[<id>]>
         // @returns ItemTag
         // @description
-        // Returns the item that a recipe will create when crafted.
+        // Returns the ItemTag that a recipe will create when crafted.
         // -->
         if (attribute.startsWith("recipe_result") && attribute.hasContext(1)) {
             NamespacedKey key = Utilities.parseNamespacedKey(attribute.getContext(1));
@@ -331,7 +330,7 @@ public class ServerTagBase {
             // @attribute <server.scoreboard[<board>].exists>
             // @returns ElementTag(Boolean)
             // @description
-            // Returns whether a given scoreboard exists on the server.
+            // Returns whether a specified scoreboard exists on the server.
             // -->
             if (attribute.startsWith("exists")) {
                 event.setReplacedObject(new ElementTag(board != null).getObjectAttribute(attribute.fulfill(1)));
@@ -430,7 +429,7 @@ public class ServerTagBase {
         // @attribute <server.object_is_valid[<object>]>
         // @returns ElementTag(Boolean)
         // @description
-        // Returns whether the object is a valid object (non-null), as well as not an Element.
+        // Returns whether the object is a valid object (non-null), as well as not an ElementTag.
         // -->
         if (attribute.startsWith("object_is_valid")) {
             ObjectTag o = ObjectFetcher.pickObjectFor(attribute.getContext(1), new BukkitTagContext(null, null, null, false, null));
@@ -481,7 +480,7 @@ public class ServerTagBase {
             // @attribute <server.flag[<flag_name>].is_expired>
             // @returns ElementTag(Boolean)
             // @description
-            // returns true if the flag is expired or does not exist, false if it is not yet expired or has no expiration.
+            // Returns true if the flag is expired or does not exist, or false if it is not yet expired or has no expiration.
             // -->
             if (attribute.startsWith("is_expired")
                     || attribute.startsWith("isexpired")) {
@@ -568,7 +567,7 @@ public class ServerTagBase {
         // @attribute <server.nbt_attribute_types>
         // @returns ListTag
         // @description
-        // Returns a list of all registered advancement names.
+        // Returns a list of all registered attribute names.
         // Generally used with <@link tag EntityTag.has_attribute>.
         // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>.
         // -->
@@ -606,7 +605,7 @@ public class ServerTagBase {
         // @description
         // Returns a list of all biomes known to the server.
         // Generally used with <@link language BiomeTag Objects>.
-        // This is based on Bukkit Biome enum, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Biome.html>.
+        // This is based on Bukkit biome enum, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Biome.html>.
         // -->
         if (attribute.startsWith("biome_types") || attribute.startsWith("list_biome_types")) {
             listDeprecateWarn(attribute);
@@ -631,8 +630,8 @@ public class ServerTagBase {
         // @returns ListTag
         // @description
         // Returns a list of all enchantments known to the server.
-        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html>.
         // Generally, prefer <@link tag server.enchantment_keys>.
+        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html>.
         // -->
         if (attribute.startsWith("enchantment_types") || attribute.startsWith("list_enchantments")) {
             if (attribute.matches("list_enchantments")) {
@@ -916,7 +915,7 @@ public class ServerTagBase {
         // This is NOT their Bukkit names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/StructureType.html>.
         // Instead these are the internal names tracked by Spigot and presumably matching Minecraft internals.
         // These are all lowercase, as the internal names are lowercase and supposedly are case-sensitive.
-        // It is unclear why the "StructureType" class in Bukkit is not simply an enum as most similar listings are.
+        // It is unclear why the StructureType class in Bukkit is not simply an enum as most similar listings are.
         // -->
         if (attribute.startsWith("structure_types") || attribute.startsWith("list_structure_types")) {
             listDeprecateWarn(attribute);
@@ -927,7 +926,8 @@ public class ServerTagBase {
         // @attribute <server.list_flags[(regex:)<search>]>
         // @returns ListTag
         // @description
-        // Returns a list of the server's flag names, with an optional search for names containing a certain pattern.
+        // Returns a list of the server's flag name(s).
+        // Optionally, specify regex: at the start of the search element to use regex to find flag(s) containing a certain pattern.
         // Note that this is exclusively for debug/testing reasons, and should never be used in a real script.
         // -->
         if (attribute.startsWith("list_flags")) {
@@ -968,10 +968,11 @@ public class ServerTagBase {
         }
 
         // <--[tag]
-        // @attribute <server.notables[<type>]>
+        // @attribute <server.notables[(<type>)]>
         // @returns ListTag
         // @description
-        // Lists all saved notable objects of a specific type currently on the server.
+        // Lists all saved notable objects currently on the server.
+        // Optionally, specify a type to only find notables of the specified type.
         // Valid types: locations, cuboids, ellipsoids, inventories
         // This is primarily intended for debugging purposes, and it's best to avoid using this in a live script if possible.
         // -->
@@ -1003,7 +1004,7 @@ public class ServerTagBase {
         // @description
         // Returns the qualifier type of the given statistic.
         // Generally relevant to usage with <@link tag PlayerTag.statistic.qualifier>.
-        // Returns UNTYPED, ITEM, ENTITY, or BLOCK.
+        // Possible returns include: UNTYPED, ITEM, ENTITY, or BLOCK.
         // Refer also to <@link tag server.statistic_types>.
         // -->
         if (attribute.startsWith("statistic_type") && attribute.hasContext(1)) {
@@ -1022,7 +1023,7 @@ public class ServerTagBase {
         // @attribute <server.enchantment_max_level[<enchantment>]>
         // @returns ElementTag(Number)
         // @description
-        // Returns the max level (at an enchantment table) for the given enchantment.
+        // Returns the maximum level (at an enchantment table) for the given enchantment.
         // Refer also to <@link tag server.enchantment_types>.
         // -->
         if (attribute.startsWith("enchantment_max_level") && attribute.hasContext(1)) {
@@ -1207,7 +1208,7 @@ public class ServerTagBase {
         // @returns ElementTag(Number)
         // @description
         // Returns the number of milliseconds since Jan 1, 1970.
-        // Note that this can change every time the tag is read!
+        // Note that this will change every time the tag is read!
         // -->
         if (attribute.startsWith("current_time_millis")) {
             event.setReplacedObject(new ElementTag(System.currentTimeMillis())
@@ -1217,6 +1218,7 @@ public class ServerTagBase {
         // <--[tag]
         // @attribute <server.selected_npc>
         // @returns NPCTag
+        // @plugin Citizens
         // @description
         // Returns the server's currently selected NPC.
         // -->
@@ -1235,6 +1237,7 @@ public class ServerTagBase {
         // <--[tag]
         // @attribute <server.npcs_named[<name>]>
         // @returns ListTag(NPCTag)
+        // @plugin Citizens
         // @description
         // Returns a list of NPCs with a certain name.
         // -->
@@ -1310,6 +1313,7 @@ public class ServerTagBase {
         // <--[tag]
         // @attribute <server.has_permissions>
         // @returns ElementTag(Boolean)
+        // @plugin Vault
         // @description
         // Returns whether the server has a known permission plugin loaded.
         // Note: should not be considered incredibly reliable.
@@ -1422,8 +1426,9 @@ public class ServerTagBase {
         // <--[tag]
         // @attribute <server.group_prefix[<group>]>
         // @returns ElementTag
+        // @plugin Vault
         // @description
-        // Returns an ElementTag of a group's chat prefix.
+        // Returns the specified group's chat prefix.
         // -->
         if (attribute.startsWith("group_prefix")) {
 
@@ -1442,8 +1447,9 @@ public class ServerTagBase {
             // <--[tag]
             // @attribute <server.group_prefix[<group>].world[<world>]>
             // @returns ElementTag
+            // @plugin Vault
             // @description
-            // Returns an ElementTag of a group's chat prefix for the specified WorldTag.
+            // Returns the specified group's chat prefix for the specified world.
             // -->
             if (attribute.startsWith("world", 2)) {
                 WorldTag world = attribute.contextAsType(2, WorldTag.class);
@@ -1463,8 +1469,9 @@ public class ServerTagBase {
         // <--[tag]
         // @attribute <server.group_suffix[<group>]>
         // @returns ElementTag
+        // @plugin Vault
         // @description
-        // Returns an ElementTag of a group's chat suffix.
+        // Returns the specified group's chat suffix.
         // -->
         if (attribute.startsWith("group_suffix")) {
 
@@ -1483,8 +1490,9 @@ public class ServerTagBase {
             // <--[tag]
             // @attribute <server.group_suffix[<group>].world[<world>]>
             // @returns ElementTag
+            // @plugin Vault
             // @description
-            // Returns an ElementTag of a group's chat suffix for the specified WorldTag.
+            // Returns the specified group's chat suffix for the specified world.
             // -->
             if (attribute.startsWith("world", 2)) {
                 WorldTag world = attribute.contextAsType(2, WorldTag.class);
@@ -1504,6 +1512,7 @@ public class ServerTagBase {
         // <--[tag]
         // @attribute <server.permission_groups>
         // @returns ListTag
+        // @plugin Vault
         // @description
         // Returns a list of all permission groups on the server.
         // -->
@@ -1602,6 +1611,7 @@ public class ServerTagBase {
         // <--[tag]
         // @attribute <server.npcs_assigned[<assignment_script>]>
         // @returns ListTag(NPCTag)
+        // @plugin Citizens
         // @description
         // Returns a list of all NPCs assigned to a specified script.
         // -->
@@ -1629,7 +1639,7 @@ public class ServerTagBase {
         // @attribute <server.online_players_flagged[<flag_name>]>
         // @returns ListTag(PlayerTag)
         // @description
-        // Returns a list of all online players with a specified flag set.
+        // Returns a list of all online players with the specified flag.
         // -->
         if ((attribute.startsWith("online_players_flagged") || attribute.startsWith("list_online_players_flagged"))
                 && attribute.hasContext(1)) {
@@ -1649,7 +1659,7 @@ public class ServerTagBase {
         // @attribute <server.players_flagged[<flag_name>]>
         // @returns ListTag(PlayerTag)
         // @description
-        // Returns a list of all players with a specified flag set.
+        // Returns a list of all players (online or offline) with the specified flag.
         // -->
         if ((attribute.startsWith("players_flagged") || attribute.startsWith("list_players_flagged"))
                 && attribute.hasContext(1)) {
@@ -1668,8 +1678,9 @@ public class ServerTagBase {
         // <--[tag]
         // @attribute <server.spawned_npcs_flagged[<flag_name>]>
         // @returns ListTag(NPCTag)
+        // @plugin Citizens
         // @description
-        // Returns a list of all spawned NPCs with a specified flag set.
+        // Returns a list of all spawned NPCs with the specified flag.
         // -->
         if ((attribute.startsWith("spawned_npcs_flagged") || attribute.startsWith("list_spawned_npcs_flagged")) && Depends.citizens != null
                 && attribute.hasContext(1)) {
@@ -1689,8 +1700,9 @@ public class ServerTagBase {
         // <--[tag]
         // @attribute <server.npcs_flagged[<flag_name>]>
         // @returns ListTag(NPCTag)
+        // @plugin Citizens
         // @description
-        // Returns a list of all NPCs with a specified flag set.
+        // Returns a list of all NPCs with the specified flag.
         // -->
         if ((attribute.startsWith("npcs_flagged") || attribute.startsWith("list_npcs_flagged")) && Depends.citizens != null
                 && attribute.hasContext(1)) {
@@ -1710,6 +1722,7 @@ public class ServerTagBase {
         // <--[tag]
         // @attribute <server.npc_registries>
         // @returns ListTag
+        // @plugin Citizens
         // @description
         // Returns a list of all NPC registries.
         // -->
@@ -1725,6 +1738,7 @@ public class ServerTagBase {
         // <--[tag]
         // @attribute <server.npcs[(<registry>)]>
         // @returns ListTag(NPCTag)
+        // @plugin Citizens
         // @description
         // Returns a list of all NPCs.
         // -->
@@ -1750,7 +1764,7 @@ public class ServerTagBase {
         // @attribute <server.worlds>
         // @returns ListTag(WorldTag)
         // @description
-        // Returns a list of all worlds.
+        // Returns a list of all worlds known to the server.
         // -->
         if (attribute.startsWith("worlds") || attribute.startsWith("list_worlds")) {
             listDeprecateWarn(attribute);
@@ -1766,7 +1780,7 @@ public class ServerTagBase {
         // @attribute <server.plugins>
         // @returns ListTag(PluginTag)
         // @description
-        // Gets a list of currently enabled PluginTags from the server.
+        // Gets a list of currently enabled plugins on the server.
         // -->
         if (attribute.startsWith("plugins") || attribute.startsWith("list_plugins")) {
             listDeprecateWarn(attribute);
@@ -1782,7 +1796,7 @@ public class ServerTagBase {
         // @attribute <server.players>
         // @returns ListTag(PlayerTag)
         // @description
-        // Returns a list of all players that have ever played on the server, online or not.
+        // Returns a list of all players (online or offline) known to the server.
         // -->
         if (attribute.startsWith("players") || attribute.startsWith("list_players")) {
             listDeprecateWarn(attribute);
@@ -1849,7 +1863,7 @@ public class ServerTagBase {
         // @attribute <server.banned_addresses>
         // @returns ListTag
         // @description
-        // Returns a list of all banned ip addresses.
+        // Returns a list of all banned IP addresses.
         // -->
         if (attribute.startsWith("banned_addresses") || attribute.startsWith("list_banned_addresses")) {
             listDeprecateWarn(attribute);
@@ -1863,7 +1877,7 @@ public class ServerTagBase {
         // @attribute <server.is_banned[<address>]>
         // @returns ElementTag(Boolean)
         // @description
-        // Returns whether the given ip address is banned.
+        // Returns whether the specified IP address is banned.
         // -->
         if (attribute.startsWith("is_banned") && attribute.hasContext(1)) {
             // BanList contains an isBanned method that doesn't check expiration time
@@ -1893,7 +1907,7 @@ public class ServerTagBase {
             // @attribute <server.ban_info[<address>].expiration>
             // @returns DurationTag
             // @description
-            // Returns the expiration of the ip address's ban, if it is banned.
+            // Returns the expiration of the IP address's ban, if it is banned.
             // Potentially can be null.
             // -->
             if (attribute.startsWith("expiration") && ban.getExpiration() != null) {
@@ -1905,7 +1919,7 @@ public class ServerTagBase {
             // @attribute <server.ban_info[<address>].reason>
             // @returns ElementTag
             // @description
-            // Returns the reason for the ip address's ban, if it is banned.
+            // Returns the reason for the IP address's ban, if it is banned.
             // -->
             else if (attribute.startsWith("reason")) {
                 event.setReplacedObject(new ElementTag(ban.getReason())
@@ -1916,7 +1930,7 @@ public class ServerTagBase {
             // @attribute <server.ban_info[<address>].created>
             // @returns DurationTag
             // @description
-            // Returns when the ip address's ban was created, if it is banned.
+            // Returns when the IP address's ban was created, if it is banned.
             // -->
             else if (attribute.startsWith("created")) {
                 event.setReplacedObject(new DurationTag(ban.getCreated().getTime() / 50)
@@ -1927,7 +1941,7 @@ public class ServerTagBase {
             // @attribute <server.ban_info[<address>].source>
             // @returns ElementTag
             // @description
-            // Returns the source of the ip address's ban, if it is banned.
+            // Returns the source of the IP address's ban, if it is banned.
             // -->
             else if (attribute.startsWith("source")) {
                 event.setReplacedObject(new ElementTag(ban.getSource())
@@ -1941,7 +1955,7 @@ public class ServerTagBase {
         // @attribute <server.ops>
         // @returns ListTag(PlayerTag)
         // @description
-        // Returns a list of all ops, online or not.
+        // Returns a list of all operators, online or not.
         // -->
         if (attribute.startsWith("ops") || attribute.startsWith("list_ops")) {
             listDeprecateWarn(attribute);
@@ -1957,7 +1971,7 @@ public class ServerTagBase {
         // @attribute <server.online_ops>
         // @returns ListTag(PlayerTag)
         // @description
-        // Returns a list of all online ops.
+        // Returns a list of all online operators.
         // -->
         if (attribute.startsWith("online_ops") || attribute.startsWith("list_online_ops")) {
             listDeprecateWarn(attribute);
@@ -1975,7 +1989,7 @@ public class ServerTagBase {
         // @attribute <server.offline_ops>
         // @returns ListTag(PlayerTag)
         // @description
-        // Returns a list of all offline ops.
+        // Returns a list of all offline operators.
         // -->
         if (attribute.startsWith("offline_ops") || attribute.startsWith("list_offline_ops")) {
             listDeprecateWarn(attribute);
@@ -2015,7 +2029,7 @@ public class ServerTagBase {
         // @attribute <server.entity_is_spawned[<entity>]>
         // @returns ElementTag(Boolean)
         // @description
-        // Returns whether an entity is spawned and valid.
+        // Returns whether the specified entity is spawned and valid.
         // -->
         else if (attribute.startsWith("entity_is_spawned")
                 && attribute.hasContext(1)) {
@@ -2039,8 +2053,9 @@ public class ServerTagBase {
         // <--[tag]
         // @attribute <server.npc_is_valid[<npc>]>
         // @returns ElementTag(Boolean)
+        // @plugin Citizens
         // @description
-        // Returns whether an NPC exists and is usable.
+        // Returns whether the specified NPC exists and is usable.
         // -->
         else if (attribute.startsWith("npc_is_valid")
                 && attribute.hasContext(1)) {
@@ -2169,7 +2184,7 @@ public class ServerTagBase {
         // @name delete_file
         // @input ElementTag
         // @description
-        // Deletes the given file from the server.
+        // Deletes the specified file from the server.
         // Require config setting 'Commands.Delete.Allow file deletion'.
         // @tags
         // <server.has_file[<file>]>
@@ -2213,7 +2228,7 @@ public class ServerTagBase {
         // @name reset_event_stats
         // @input None
         // @description
-        // Resets the statistics on events for the queue.stats tag.
+        // Resets the statistics on events for <@link tag queue.stats>.
         // @tags
         // <queue.stats>
         // -->
@@ -2261,7 +2276,7 @@ public class ServerTagBase {
         // @input None
         // @description
         // Suggests to the internal systems that it's a good time to clean the memory.
-        // Does NOT force a memory cleaning.
+        // Note: This does NOT force a memory cleaning.
         // @tags
         // <server.ram_free>
         // -->
@@ -2274,7 +2289,7 @@ public class ServerTagBase {
         // @name restart
         // @input None
         // @description
-        // Immediately stops the server entirely (Plugins will still finalize, and the shutdown event will fire), then starts it again.
+        // Immediately stops the server entirely (plugins will still finalize, and the shutdown event will fire), then starts it again.
         // Requires setting "Commands.Restart.Allow server restart"!
         // Note that if your server is not configured to restart, this mechanism will simply stop the server without starting it again!
         // -->
@@ -2302,6 +2317,7 @@ public class ServerTagBase {
         // @object server
         // @name save_citizens
         // @input None
+        // @plugin Citizens
         // @description
         // Immediately saves the Citizens saves files.
         // -->
