@@ -503,9 +503,9 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // @attribute <ChunkTag.is_flat[(<#>)]>
         // @returns ElementTag(Boolean)
         // @description
-        // scans the heights of the blocks to check variance between them. If no number is supplied, is_flat will return
-        // true if all the blocks are less than 2 blocks apart in height. Specifying a number will modify the number
-        // criteria for determining if it is flat.
+        // Scans the heights of the blocks to check variance between them.
+        // If no number is supplied, is_flat will return true if all the blocks are less than 2 blocks apart in height.
+        // Specifying a number will modify the number criteria for determining if it is flat.
         // -->
         registerTag("is_flat", (attribute, object) -> {
             Chunk chunk = object.getChunkForTag(attribute);
@@ -565,7 +565,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <ChunkTag.inhabited_time>
         // @returns DurationTag
-        // @Mechanism ChunkTag.inhabited_time
+        // @mechanism ChunkTag.inhabited_time
         // @description
         // Returns the total time the chunk has been inhabited for.
         // This is a primary deciding factor in the "local difficulty" setting.

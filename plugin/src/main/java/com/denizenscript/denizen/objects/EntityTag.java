@@ -1404,7 +1404,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @returns ElementTag(Boolean)
         // @group inventory
         // @description
-        // If the entity s a pig or horse, returns whether it has a saddle equipped.
+        // If the entity is a pig or horse, returns whether it has a saddle equipped.
         // -->
         registerSpawnedOnlyTag("has_saddle", (attribute, object) -> {
             if (object.getBukkitEntityType() == EntityType.HORSE) {
@@ -1769,7 +1769,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @attribute <EntityTag.shooter>
         // @returns EntityTag
         // @group attributes
-        // @Mechanism EntityTag.shooter
+        // @mechanism EntityTag.shooter
         // @description
         // Returns the entity's shooter, if any.
         // -->
@@ -1840,6 +1840,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <EntityTag.breeding>
         // @returns ElementTag(Boolean)
+        // @mechanism EntityTag.breed
         // @group attributes
         // @description
         // Returns whether the animal entity is trying to with another of its kind.
@@ -2068,7 +2069,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @group attributes
         // @description
         // Returns the target entity of the creature, if any.
-        // Note: use <NPCTag.navigator.target_entity> for NPC's.
+        // Note: use <@link tag NPCTag.navigator.target_entity> for NPCs.
         // -->
         registerSpawnedOnlyTag("target", (attribute, object) -> {
             if (object.getBukkitEntity() instanceof Creature) {
@@ -2671,7 +2672,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Sets whether the entity is trying to mate with another of its kind.
         // The entity must be living and an animal.
         // @tags
-        // <EntityTag.can_breed>
+        // <EntityTag.breeding>
         // -->
         if (mechanism.matches("breed") && mechanism.requireBoolean()) {
             ((Animals) getLivingEntity()).setLoveModeTicks(mechanism.getValue().asBoolean() ? 600 : 0);

@@ -1292,7 +1292,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @attribute <PlayerTag.ban_created_time>
         // @returns TimeTag
         // @description
-        // Returns when the player's ban was created as a Duration time tag, if they are banned.
+        // Returns when the player's ban was created, if they are banned.
         // -->
         registerTag("ban_created_time", (attribute, object) -> {
             BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(object.getName());
@@ -1550,6 +1550,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <PlayerTag.list_name>
         // @returns ElementTag
+        // @mechanism PlayerTag.player_list_name
         // @description
         // Returns the name of the player as shown in the player list.
         // -->
@@ -1687,7 +1688,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <PlayerTag.item_on_cursor>
         // @returns ItemTag
-        // @Mechanism PlayerTag.item_on_cursor
+        // @mechanism PlayerTag.item_on_cursor
         // @description
         // Returns the item on the player's cursor, if any. This includes
         // chest interfaces, inventories, and hotbars, etc.
@@ -1719,7 +1720,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @attribute <PlayerTag.sidebar_lines>
         // @returns ListTag
         // @description
-        // Returns the current lines set on the player's Sidebar via the Sidebar command.
+        // Returns the current lines set on the player's Sidebar via <@link command sidebar>.
         // -->
         registerOnlineOnlyTag("sidebar_lines", (attribute, object) -> {
             Sidebar sidebar = SidebarCommand.getSidebar(object);
@@ -1733,7 +1734,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @attribute <PlayerTag.sidebar_title>
         // @returns ElementTag
         // @description
-        // Returns the current title set on the player's Sidebar via the Sidebar command.
+        // Returns the current title set on the player's Sidebar via <@link command sidebar>.
         // -->
         registerOnlineOnlyTag("sidebar_title", (attribute, object) -> {
             Sidebar sidebar = SidebarCommand.getSidebar(object);
@@ -1747,7 +1748,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @attribute <PlayerTag.sidebar_scores>
         // @returns ListTag
         // @description
-        // Returns the current scores set on the player's Sidebar via the Sidebar command,
+        // Returns the current scores set on the player's Sidebar via <@link command sidebar>,
         // in the same order as <@link tag PlayerTag.sidebar_lines>.
         // -->
         registerOnlineOnlyTag("sidebar_scores", (attribute, object) -> {
@@ -1895,8 +1896,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @returns NPCTag
         // @mechanism PlayerTag.selected_npc
         // @description
-        // Returns the NPCTag that the player currently has selected with
-        // '/npc select', null if no player selected.
+        // Returns the NPCTag that the player currently has selected with '/npc select', null if no NPC selected.
         // -->
         registerOnlineOnlyTag("selected_npc", (attribute, object) -> {
             if (object.getPlayerEntity().hasMetadata("selected")) {
@@ -1914,7 +1914,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @returns EntityTag
         // @description
         // Returns the EntityTag object of the player.
-        // (Note: This should never actually be needed. <PlayerTag> is considered a valid EntityTag by script commands.)
+        // (Note: This should never actually be needed. PlayerTags are considered valid EntityTags.)
         // -->
         registerOnlineOnlyTag("entity", (attribute, object) -> {
             return new EntityTag(object.getPlayerEntity());
@@ -3208,7 +3208,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @name item_message
         // @input ElementTag
         // @description
-        // Shows the player an item message as if the item they are carrying had changed names to the specified Element.
+        // Shows the player an item message as if the item they are carrying had changed names to the input message.
         // -->
         if (mechanism.matches("item_message")) {
             ItemChangeMessage.sendMessage(getPlayerEntity(), mechanism.getValue().asString());

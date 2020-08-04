@@ -51,7 +51,7 @@ public class FakeSpawnCommand extends AbstractCommand {
     //
     // @Usage
     // Use to show a fake creeper in front of the attached player.
-    // - fakespawn creeper <player.forward[5]>
+    // - fakespawn creeper <player.location.forward[5]>
     //
     // -->
 

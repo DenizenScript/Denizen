@@ -2324,8 +2324,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @attribute <LocationTag.raw>
         // @returns LocationTag
         // @description
-        // Returns the raw representation of this location,
-        //         ignoring any notables it might match.
+        // Returns the raw representation of this location, without any note name.
         // -->
         registerTag("raw", (attribute, object) -> {
             LocationTag rawLocation = new LocationTag(object);
@@ -2480,8 +2479,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @attribute <LocationTag.note_name>
         // @returns ElementTag
         // @description
-        // Gets the name of a noted LocationTag. If the location isn't noted,
-        // this is null.
+        // Gets the name of a noted LocationTag. If the location isn't noted, this is null.
         // -->
         registerTag("note_name", (attribute, object) -> {
             String notname = NotableManager.getSavedId((object));

@@ -430,7 +430,7 @@ public class ServerTagBase {
         // @attribute <server.object_is_valid[<object>]>
         // @returns ElementTag(Boolean)
         // @description
-        // Returns whether the object is a valid object (non-null), as well as not an Element.
+        // Returns whether the object is a valid object (non-null), as well as not an ElementTag.
         // -->
         if (attribute.startsWith("object_is_valid")) {
             ObjectTag o = ObjectFetcher.pickObjectFor(attribute.getContext(1), new BukkitTagContext(null, null, null, false, null));
@@ -568,7 +568,7 @@ public class ServerTagBase {
         // @attribute <server.nbt_attribute_types>
         // @returns ListTag
         // @description
-        // Returns a list of all registered advancement names.
+        // Returns a list of all registered attribute names.
         // Generally used with <@link tag EntityTag.has_attribute>.
         // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>.
         // -->

@@ -538,7 +538,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <WorldTag.ticks_per_animal_spawn>
         // @returns DurationTag
-        // @Mechanism WorldTag.ticks_per_animal_spawns
+        // @mechanism WorldTag.ticks_per_animal_spawns
         // @description
         // Returns the world's ticks per animal spawn value.
         // -->
@@ -549,7 +549,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // <--[tag]
         // @attribute <WorldTag.ticks_per_monster_spawn>
         // @returns DurationTag
-        // @Mechanism WorldTag.ticks_per_monster_spawns
+        // @mechanism WorldTag.ticks_per_monster_spawns
         // @description
         // Returns the world's ticks per monster spawn value.
         // -->
@@ -627,7 +627,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @attribute <WorldTag.moon_phase>
         // @returns ElementTag(Number)
         // @description
-        // Returns the current phase of the moon, as an integer from 1 to 8.
+        // Returns the current phase of the moon, as a number from 1 to 8.
         // -->
         registerTag("moon_phase", (attribute, object) -> {
             return new ElementTag((int) ((object.getWorld().getFullTime() / 24000) % 8) + 1);
@@ -699,7 +699,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @attribute <WorldTag.border_size>
         // @returns ElementTag(Decimal)
         // @description
-        // returns the size of the world border in this world.
+        // Returns the size of the world border in this world.
         // -->
         registerTag("border_size", (attribute, object) -> {
             return new ElementTag(object.getWorld().getWorldBorder().getSize());
@@ -709,7 +709,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @attribute <WorldTag.border_center>
         // @returns LocationTag
         // @description
-        // returns the center of the world border in this world.
+        // Returns the center of the world border in this world.
         // -->
         registerTag("border_center", (attribute, object) -> {
             return new LocationTag(object.getWorld().getWorldBorder().getCenter());
@@ -719,7 +719,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @attribute <WorldTag.border_damage>
         // @returns ElementTag(Decimal)
         // @description
-        // returns the amount of damage caused by crossing the world border in this world.
+        // Returns the amount of damage caused by crossing the world border in this world.
         // -->
         registerTag("border_damage", (attribute, object) -> {
             return new ElementTag(object.getWorld().getWorldBorder().getDamageAmount());
@@ -729,7 +729,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @attribute <WorldTag.border_damage_buffer>
         // @returns ElementTag(Decimal)
         // @description
-        // returns the damage buffer of the world border in this world.
+        // Returns the damage buffer of the world border in this world.
         // -->
         registerTag("border_damage_buffer", (attribute, object) -> {
             return new ElementTag(object.getWorld().getWorldBorder().getDamageBuffer());
@@ -739,7 +739,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @attribute <WorldTag.border_warning_distance>
         // @returns ElementTag(Number)
         // @description
-        // returns the warning distance of the world border in this world.
+        // Returns the warning distance of the world border in this world.
         // -->
         registerTag("border_warning_distance", (attribute, object) -> {
             return new ElementTag(object.getWorld().getWorldBorder().getWarningDistance());
@@ -749,7 +749,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @attribute <WorldTag.border_warning_time>
         // @returns DurationTag
         // @description
-        // returns warning time of the world border in this world as a duration.
+        // Returns warning time of the world border in this world as a duration.
         // -->
         registerTag("border_warning_time", (attribute, object) -> {
             return new DurationTag(object.getWorld().getWorldBorder().getWarningTime());
@@ -759,7 +759,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         // @attribute <WorldTag.gamerule[<gamerule>]>
         // @returns ElementTag
         // @description
-        // returns the current value of the specified gamerule in the world.
+        // Returns the current value of the specified gamerule in the world.
         // Note that the name is case-sensitive... so "doFireTick" is correct, but "dofiretick" is not.
         // -->
         registerTag("gamerule", (attribute, object) -> {

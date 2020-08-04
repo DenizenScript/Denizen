@@ -20,8 +20,7 @@ public class MaterialCount implements Property {
                 && ((MaterialTag) material).hasModernData()
                 && (((MaterialTag) material).getModernData().data instanceof SeaPickle
                 || ((MaterialTag) material).getModernData().data instanceof TurtleEgg
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)
-                    && ((MaterialTag) material).getModernData().data instanceof RespawnAnchor));
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && ((MaterialTag) material).getModernData().data instanceof RespawnAnchor));
     }
 
     public static MaterialCount getFrom(ObjectTag _material) {

@@ -132,7 +132,7 @@ public class EntityEquipment implements Property {
         // @group inventory
         // @description
         // Returns a MapTag containing the entity's equipment.
-        // Output keys are boots, leggings,  chestplate, helmet.
+        // Output keys are boots, leggings, chestplate, helmet.
         // Air items will be left out of the map.
         // -->
         else if (attribute.startsWith("equipment_map")) {

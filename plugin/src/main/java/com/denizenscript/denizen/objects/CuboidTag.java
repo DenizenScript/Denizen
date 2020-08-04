@@ -770,8 +770,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @returns ListTag(LocationTag)
         // @description
         // Returns each block location within the CuboidTag.
-        // Optionally, specify a list of materials to only return locations
-        // with that block type.
+        // Optionally, specify a list of materials to only return locations with that block type.
         // -->
         registerTag("blocks", (attribute, cuboid) -> {
             if (attribute.hasContext(1)) {
@@ -796,10 +795,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @attribute <CuboidTag.spawnable_blocks[<Material>|...]>
         // @returns ListTag(LocationTag)
         // @description
-        // Returns each LocationTag within the CuboidTag that is
-        // safe for players or similar entities to spawn in.
-        // Optionally, specify a list of materials to only return locations
-        // with that block type.
+        // Returns each LocationTag within the CuboidTag that is safe for players or similar entities to spawn in.
+        // Optionally, specify a list of materials to only return locations with that block type.
         // -->
         registerTag("spawnable_blocks", (attribute, cuboid) -> {
             if (attribute.hasContext(1)) {
@@ -966,6 +963,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // <--[tag]
         // @attribute <CuboidTag.set[<cuboid>].at[<index>]>
         // @returns CuboidTag
+        // @mechanism CuboidTag.set_member
         // @description
         // Returns a modified copy of this cuboid, with the specific sub-cuboid index changed to hold the input cuboid.
         // -->
@@ -1491,8 +1489,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @attribute <CuboidTag.note_name>
         // @returns ElementTag
         // @description
-        // Gets the name of a noted CuboidTag. If the cuboid isn't noted,
-        // this is null.
+        // Gets the name of a noted CuboidTag. If the cuboid isn't noted, this is null.
         // -->
         registerTag("note_name", (attribute, cuboid) -> {
             String notname = NotableManager.getSavedId(cuboid);

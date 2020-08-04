@@ -76,7 +76,7 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? entity.getDenizenPlayer() : null, null);
+        return new BukkitScriptEntryData(entity);
     }
 
     @Override
