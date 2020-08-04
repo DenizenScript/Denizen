@@ -9,7 +9,6 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.RespawnAnchor;
 import org.bukkit.block.data.type.SeaPickle;
 import org.bukkit.block.data.type.TurtleEgg;
@@ -52,7 +51,7 @@ public class MaterialCount implements Property {
         // @mechanism MaterialTag.count
         // @group properties
         // @description
-        // Returns the amount of pickles in a Sea Pickle material, or eggs in a Turtle Egg material, or charges in a Respawn Anchor material.
+        // Returns the amount of pickles in a Sea Pickle material, eggs in a Turtle Egg material, or charges in a Respawn Anchor material.
         // -->
         PropertyParser.<MaterialCount>registerTag("count", (attribute, material) -> {
             return new ElementTag(material.getCurrent());
@@ -64,7 +63,7 @@ public class MaterialCount implements Property {
         // @mechanism MaterialTag.count
         // @group properties
         // @description
-        // Returns the maximum amount of pickles allowed in a Sea Pickle material, or eggs in a Turtle Egg material, or charges in a Respawn Anchor material.
+        // Returns the maximum amount of pickles allowed in a Sea Pickle material, eggs in a Turtle Egg material, or charges in a Respawn Anchor material.
         // -->
         PropertyParser.<MaterialCount>registerTag("count_max", (attribute, material) -> {
             return new ElementTag(material.getMax());
@@ -76,7 +75,7 @@ public class MaterialCount implements Property {
         // @mechanism MaterialTag.count
         // @group properties
         // @description
-        // Returns the minimum amount of pickles allowed in a Sea Pickle material, or eggs in a Turtle Egg material, or charges in a Respawn Anchor material.
+        // Returns the minimum amount of pickles allowed in a Sea Pickle material, eggs in a Turtle Egg material, or charges in a Respawn Anchor material.
         // -->
         PropertyParser.<MaterialCount>registerTag("count_min", (attribute, material) -> {
             return new ElementTag(material.getMin());
@@ -89,10 +88,6 @@ public class MaterialCount implements Property {
 
     public boolean isTurtleEgg() {
         return material.getModernData().data instanceof TurtleEgg;
-    }
-
-    public boolean isRespawnAnchor() {
-        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && material.getModernData().data instanceof RespawnAnchor;
     }
 
     public TurtleEgg getTurtleEgg() {
@@ -110,10 +105,9 @@ public class MaterialCount implements Property {
         else if (isTurtleEgg()) {
             return getTurtleEgg().getEggs();
         }
-        else if (isRespawnAnchor()) {
+        else {
             return ((RespawnAnchor) material.getModernData().data).getCharges();
         }
-        return 0;
     }
 
     public int getMax() {
@@ -123,10 +117,9 @@ public class MaterialCount implements Property {
         else if (isTurtleEgg()) {
             return getTurtleEgg().getMaximumEggs();
         }
-        else if (isRespawnAnchor()) {
+        else {
             return ((RespawnAnchor) material.getModernData().data).getMaximumCharges();
         }
-        return 0;
     }
 
     public int getMin() {
@@ -136,10 +129,9 @@ public class MaterialCount implements Property {
         else if (isTurtleEgg()) {
             return getTurtleEgg().getMinimumEggs();
         }
-        else if (isRespawnAnchor()) {
+        else { // Respawn anchor
             return 0;
         }
-        return 0;
     }
 
     @Override
@@ -160,7 +152,7 @@ public class MaterialCount implements Property {
         // @name count
         // @input ElementTag(Number)
         // @description
-        // Sets the amount of pickles in a Sea Pickle material, or eggs in a Turtle Egg material, or charges in a Respawn Anchor material.
+        // Sets the amount of pickles in a Sea Pickle material, eggs in a Turtle Egg material, or charges in a Respawn Anchor material.
         // @tags
         // <MaterialTag.count>
         // <MaterialTag.count_min>
@@ -178,7 +170,7 @@ public class MaterialCount implements Property {
             else if (isTurtleEgg()) {
                 getTurtleEgg().setEggs(count);
             }
-            else if (isRespawnAnchor()) {
+            else {
                 ((RespawnAnchor) material.getModernData().data).setCharges(count);
             }
         }

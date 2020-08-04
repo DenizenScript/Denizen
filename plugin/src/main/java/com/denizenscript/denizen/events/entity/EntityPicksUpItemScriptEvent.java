@@ -10,7 +10,6 @@ import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -86,7 +85,7 @@ public class EntityPicksUpItemScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!tryEntity(entity, path.eventArgAt(0))) {
+        if (!tryEntity(entity, path.eventArgLowerAt(0))) {
             return false;
         }
         String itemTest = path.eventArgLowerAt(path.eventArgLowerAt(1).equals("picks") ? 3 : 2);
@@ -120,8 +119,7 @@ public class EntityPicksUpItemScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? entity.getDenizenPlayer() : null,
-                entity.isNPC() ? entity.getDenizenNPC() : null);
+        return new BukkitScriptEntryData(entity);
     }
 
     @Override
