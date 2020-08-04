@@ -49,7 +49,7 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
         if (!path.eventArgLowerAt(1).equals("picks") || !path.eventArgLowerAt(2).equals("up")) {
             return false;
         }
-        if (path.eventArgLowerAt(0).equals("player")) {
+        if (couldMatchEntity(path.eventArgLowerAt(0))) {
             return false;
         }
         if (!couldMatchInventory(path.eventArgLowerAt(0))) {
