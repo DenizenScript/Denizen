@@ -267,13 +267,15 @@ public class ItemScriptContainer extends ScriptContainer {
                             level = Integer.valueOf(split[1].replace(" ", ""));
                             enchantment = split[0].replace(" ", "");
                         }
+                        else {
+                            Debug.echoError("Item script '" + getName() + "' has enchantment '" + enchantment + "' without a level.");
+                        }
                         // Add enchantment
                         Enchantment ench = Utilities.getEnchantmentByName(enchantment);
                         stack.getItemStack().addUnsafeEnchantment(ench, level);
                     }
                     catch (Exception ex) {
-                        Debug.echoError("While constructing '" + getName() + "', encountered error: '"
-                                + enchantment + "' is an invalid enchantment: " + ex.getClass().getName() + ": " + ex.getMessage());
+                        Debug.echoError("While constructing '" + getName() + "', encountered error: '" + enchantment + "' is an invalid enchantment: " + ex.getClass().getName() + ": " + ex.getMessage());
                         if (Debug.verbose) {
                             Debug.echoError(ex);
                         }
