@@ -86,8 +86,10 @@ public class EntityResurrectScriptEvent extends BukkitScriptEvent implements Lis
 
     @EventHandler
     public void onEntityResurrect(EntityResurrectEvent event) {
+        EntityTag.rememberEntity(event.getEntity());
         entity = new EntityTag(event.getEntity());
         this.event = event;
         fire(event);
+        EntityTag.forgetEntity(event.getEntity());
     }
 }
