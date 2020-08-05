@@ -29,7 +29,9 @@ public class FormattedTextHelper {
     // This magic tool exists to let you write messages without having to write the messy JSON.
     //
     // Be aware that many inputs do not support raw JSON, and as such are limited only the historical Minecraft legacy format.
-    // Also be aware that click events, hover evers, etc. are exclusively limited to the chat bar and the pages of books, as you cannot mouse over anything else.
+    // Also be aware that click events, hover events, etc. are exclusively limited to the chat bar and the pages of books, as you cannot mouse over anything else.
+    //
+    // Also note that RGB colors use a format that Spigot invented, meaning they will work in places that use Spigot's parser OR Denizen's version, but nowhere that uses the vanilla format still.
     // -->
 
 

@@ -69,9 +69,6 @@ public abstract class Sidebar {
         setCount = Math.min(lines.size(), MAX_LENGTH);
         for (int i = 0; i < setCount; i++) {
             String line = lines.get(i).text;
-            if (line.length() > 40) {
-                line = line.substring(0, 40);
-            }
             this.lines[i] = line;
             this.scores[i] = lines.get(i).score;
         }

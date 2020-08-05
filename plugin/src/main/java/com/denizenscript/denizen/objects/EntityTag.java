@@ -2069,7 +2069,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @group attributes
         // @description
         // Returns the target entity of the creature, if any.
-        // Note: use <@link tag NPCTag.navigator.target_entity> for NPCs.
         // -->
         registerSpawnedOnlyTag("target", (attribute, object) -> {
             if (object.getBukkitEntity() instanceof Creature) {

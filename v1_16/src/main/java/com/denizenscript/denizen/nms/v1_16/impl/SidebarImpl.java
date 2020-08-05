@@ -4,8 +4,12 @@ import com.denizenscript.denizen.nms.v1_16.Handler;
 import com.denizenscript.denizen.nms.v1_16.helpers.PacketHelperImpl;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.Utilities;
 import net.minecraft.server.v1_16_R1.*;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SidebarImpl extends Sidebar {
 
@@ -31,28 +35,42 @@ public class SidebarImpl extends Sidebar {
         }
     }
 
+    public List<ScoreboardTeam> generatedTeams = new ArrayList<>();
+
     @Override
     public void sendUpdate() {
+        List<ScoreboardTeam> oldTeams = generatedTeams;
+        generatedTeams = new ArrayList<>();
         PacketHelperImpl.sendPacket(player, new PacketPlayOutScoreboardObjective(this.obj1, 0));
         for (int i = 0; i < this.lines.length; i++) {
             String line = this.lines[i];
             if (line == null) {
                 break;
             }
-            ScoreboardScore score = new ScoreboardScore(dummyScoreboard, this.obj1, line);
-            score.setScore(this.scores[i]);
-            // CraftScoreboardManager setPlayerBoard
-            PacketHelperImpl.sendPacket(player, new PacketPlayOutScoreboardScore(ScoreboardServer.Action.CHANGE, score.getObjective().getName(), score.getPlayerName(), score.getScore()));
+            String lineId = Utilities.generateRandomColors(8);
+            ScoreboardTeam team = new ScoreboardTeam(dummyScoreboard, lineId);
+            team.getPlayerNameSet().add(lineId);
+            team.setPrefix(Handler.componentToNMS(FormattedTextHelper.parse(line)));
+            generatedTeams.add(team);
+            PacketHelperImpl.sendPacket(player, new PacketPlayOutScoreboardTeam(team, 0));
+            PacketHelperImpl.sendPacket(player, new PacketPlayOutScoreboardScore(ScoreboardServer.Action.CHANGE, obj1.getName(), lineId, this.scores[i]));
         }
         PacketHelperImpl.sendPacket(player, new PacketPlayOutScoreboardDisplayObjective(1, this.obj1));
         PacketHelperImpl.sendPacket(player, new PacketPlayOutScoreboardObjective(this.obj2, 1));
         ScoreboardObjective temp = this.obj2;
         this.obj2 = this.obj1;
         this.obj1 = temp;
+        for (ScoreboardTeam team : oldTeams) {
+            PacketHelperImpl.sendPacket(player, new PacketPlayOutScoreboardTeam(team, 1));
+        }
     }
 
     @Override
     public void remove() {
+        for (ScoreboardTeam team : generatedTeams) {
+            PacketHelperImpl.sendPacket(player, new PacketPlayOutScoreboardTeam(team, 1));
+        }
+        generatedTeams.clear();
         PacketHelperImpl.sendPacket(player, new PacketPlayOutScoreboardObjective(this.obj2, 1));
     }
 }

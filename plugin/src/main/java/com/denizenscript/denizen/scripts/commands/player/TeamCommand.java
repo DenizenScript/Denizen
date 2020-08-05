@@ -135,8 +135,8 @@ public class TeamCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify something to do with the team!");
         }
 
-        if ((prefix != null && prefix.length() > 16) || (suffix != null && suffix.length() > 16)) {
-            throw new InvalidArgumentsException("Prefixes and suffixes must be 16 characters or less!");
+        if ((prefix != null && prefix.length() > 64) || (suffix != null && suffix.length() > 64)) {
+            throw new InvalidArgumentsException("Prefixes and suffixes must be 64 characters or less!");
         }
 
         if (scriptEntry.hasObject("option") != scriptEntry.hasObject("status")) {
