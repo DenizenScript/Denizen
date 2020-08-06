@@ -61,24 +61,18 @@ public class MountCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         List<EntityTag> entities = null;
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("cancel")
                     && arg.matches("cancel")) {
-
                 scriptEntry.addObject("cancel", "");
             }
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(LocationTag.class)) {
-                // Location arg
                 scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(EntityTag.class)) {
-                // Entity arg
                 entities = arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry);
                 scriptEntry.addObject("entities", entities);
             }
@@ -86,11 +80,9 @@ public class MountCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         if (!scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Must specify entity/entities!");
         }
-
         if (!scriptEntry.hasObject("location")) {
             if (entities != null) {
                 for (int i = entities.size() - 1; i >= 0; i--) {
@@ -104,7 +96,6 @@ public class MountCommand extends AbstractCommand {
                     Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getLocation() : null,
                     Utilities.entryHasNPC(scriptEntry) ? Utilities.getEntryNPC(scriptEntry).getLocation() : null);
         }
-
         if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Must specify a location!");
         }
@@ -113,31 +104,23 @@ public class MountCommand extends AbstractCommand {
     @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-
         LocationTag location = scriptEntry.getObjectTag("location");
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         boolean cancel = scriptEntry.hasObject("cancel");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
                     ArgumentHelper.debugObj("location", location) +
                     ArgumentHelper.debugObj("entities", entities.toString()));
         }
-
-        // Mount or dismount all of the entities
         if (!cancel) {
-
-            // Go through all the entities, spawning/teleporting them
             for (EntityTag entity : entities) {
                 entity.spawnAt(location);
             }
-
             Position.mount(Conversion.convertEntities(entities));
         }
         else {
             Position.dismount(Conversion.convertEntities(entities));
         }
-
         ListTag entityList = new ListTag();
         entityList.addObjects((List) entities);
         scriptEntry.addObject("mounted_entities", entityList);
