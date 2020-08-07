@@ -2022,6 +2022,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @mechanism PlayerTag.fly_speed
         // @description
         // Returns the speed the player can fly at.
+        // Default value is '0.2'.
         // -->
         registerOnlineOnlyTag("fly_speed", (attribute, object) -> {
             return new ElementTag(object.getPlayerEntity().getFlySpeed());

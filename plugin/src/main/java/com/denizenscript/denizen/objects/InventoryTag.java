@@ -2058,20 +2058,24 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // -->
         registerTag("find", (attribute, object) -> {
             // <--[tag]
-            // @attribute <InventoryTag.find.material[<material>]>
+            // @attribute <InventoryTag.find.material[<material>|...]>
             // @returns ElementTag(Number)
             // @description
-            // Returns the location of the first slot that contains the material.
+            // Returns the location of the first slot that contains any of the given materials.
             // Returns -1 if there's no match.
             // -->
             if (attribute.startsWith("material", 2)) {
-                MaterialTag material = attribute.contextAsType(2, MaterialTag.class);
-                if (material == null) {
+                ListTag list = attribute.contextAsType(2, ListTag.class);
+                if (list == null) {
                     return null;
+                }
+                HashSet<Material> materials = new HashSet<>();
+                for (ObjectTag obj : list.objectForms) {
+                    materials.add(obj.asType(MaterialTag.class, attribute.context).getMaterial());
                 }
                 int slot = -1;
                 for (int i = 0; i < object.inventory.getSize(); i++) {
-                    if (object.inventory.getItem(i) != null && object.inventory.getItem(i).getType() == material.getMaterial()) {
+                    if (object.inventory.getItem(i) != null && materials.contains(object.inventory.getItem(i).getType())) {
                         slot = i + 1;
                         break;
                     }
