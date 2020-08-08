@@ -88,7 +88,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new SheepDyedScriptEvent());
         ScriptEvent.registerScriptEvent(new SheepRegrowsScriptEvent());
         ScriptEvent.registerScriptEvent(new SlimeSplitsScriptEvent());
-        ScriptEvent.registerScriptEvent(new VillagerAcquiresTradeScriptevent());
+        ScriptEvent.registerScriptEvent(new VillagerAcquiresTradeScriptEvent());
         ScriptEvent.registerScriptEvent(new VillagerChangesProfessionScriptEvent());
         ScriptEvent.registerScriptEvent(new VillagerReplenishesTradeScriptEvent());
 

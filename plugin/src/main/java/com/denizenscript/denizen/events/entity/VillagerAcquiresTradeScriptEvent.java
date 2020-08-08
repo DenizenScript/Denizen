@@ -8,7 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.VillagerAcquireTradeEvent;
 
-public class VillagerAcquiresTradeScriptevent extends BukkitScriptEvent implements Listener {
+public class VillagerAcquiresTradeScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -32,11 +32,11 @@ public class VillagerAcquiresTradeScriptevent extends BukkitScriptEvent implemen
     // TradeTag to change the new trade.
     // -->
 
-    public VillagerAcquiresTradeScriptevent() {
+    public VillagerAcquiresTradeScriptEvent() {
         instance = this;
     }
 
-    public static VillagerAcquiresTradeScriptevent instance;
+    public static VillagerAcquiresTradeScriptEvent instance;
     public EntityTag entity;
     public VillagerAcquireTradeEvent event;
 
