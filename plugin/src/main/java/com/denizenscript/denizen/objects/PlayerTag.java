@@ -1228,7 +1228,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
-        // @attribute <PlayerTag.groups>
+        // @attribute <PlayerTag.groups[(<world>)]>
         // @returns ListTag
         // @description
         // Returns a list of all groups the player is in.
@@ -1242,9 +1242,17 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 return null;
             }
             ListTag list = new ListTag();
-            // TODO: optionally specify world
+            String world = null;
+            if (attribute.hasContext(1)) {
+                if (WorldTag.matches(attribute.getContext(1))) {
+                    world = attribute.getAttribute(1);
+                }
+                else {
+                    return null;
+                }
+            }
             for (String group : Depends.permissions.getGroups()) {
-                if (Depends.permissions.playerInGroup(null, object.getOfflinePlayer(), group)) {
+                if (Depends.permissions.playerInGroup(world, object.getOfflinePlayer(), group)) {
                     list.add(group);
                 }
             }
