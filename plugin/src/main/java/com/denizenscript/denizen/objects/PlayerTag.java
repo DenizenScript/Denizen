@@ -1242,17 +1242,17 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 return null;
             }
             ListTag list = new ListTag();
-            String world = null;
+            WorldTag world = null;
             if (attribute.hasContext(1)) {
                 if (WorldTag.matches(attribute.getContext(1))) {
-                    world = attribute.getAttribute(1);
+                    world = attribute.contextAsType(1, WorldTag.class);
                 }
                 else {
                     return null;
                 }
             }
             for (String group : Depends.permissions.getGroups()) {
-                if (Depends.permissions.playerInGroup(world, object.getOfflinePlayer(), group)) {
+                if (Depends.permissions.playerInGroup(world.getName(), object.getOfflinePlayer(), group)) {
                     list.add(group);
                 }
             }
