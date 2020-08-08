@@ -88,6 +88,10 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new SheepDyedScriptEvent());
         ScriptEvent.registerScriptEvent(new SheepRegrowsScriptEvent());
         ScriptEvent.registerScriptEvent(new SlimeSplitsScriptEvent());
+        ScriptEvent.registerScriptEvent(new VillagerAcquiresTradeScriptevent());
+        ScriptEvent.registerScriptEvent(new VillagerChangesProfessionScriptEvent());
+        ScriptEvent.registerScriptEvent(new VillagerReplenishesTradeScriptEvent());
+
 
         // NPC events
         if (Depends.citizens != null) {
