@@ -74,7 +74,7 @@ public class Conversion {
     }
 
     /**
-     * Gets a InventoryTag from an Object, which can be a
+     * Gets the InventoryTag from an Object, which can be a
      * EntityTag, LocationTag, InventoryTag, or a ListTag of ItemTags
      *
      * @param arg An argument to parse

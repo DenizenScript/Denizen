@@ -144,7 +144,7 @@ public class InventoryCommand extends AbstractCommand {
                 isAdjust = arg.toString().equalsIgnoreCase("adjust");
             }
 
-            // Check for an origin, which can be a InventoryTag, EntityTag, LocationTag
+            // Check for an origin, which can be an InventoryTag, EntityTag, LocationTag
             // or a ListTag of ItemTags
             else if (!scriptEntry.hasObject("origin")
                     && arg.matchesPrefix("origin", "o", "source", "items", "item", "i", "from", "f")
@@ -153,7 +153,7 @@ public class InventoryCommand extends AbstractCommand {
                 scriptEntry.addObject("origin", Conversion.getInventory(arg, scriptEntry));
             }
 
-            // Check for a destination, which can be a InventoryTag, EntityTag
+            // Check for a destination, which can be an InventoryTag, EntityTag
             // or LocationTag
             else if (!scriptEntry.hasObject("destination")
                     && arg.matchesPrefix("destination", "dest", "d", "target", "to", "t")

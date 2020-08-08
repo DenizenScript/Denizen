@@ -1621,7 +1621,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @attribute <PlayerTag.inventory>
         // @returns InventoryTag
         // @description
-        // Returns a InventoryTag of the player's current inventory.
+        // Returns the InventoryTag of the player's inventory.
         // Works with offline players.
         // -->
         registerTag("inventory", (attribute, object) -> {
@@ -1632,7 +1632,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @attribute <PlayerTag.enderchest>
         // @returns InventoryTag
         // @description
-        // Gets the player's enderchest inventory.
+        // Returns the InventoryTag of the player's enderchest inventory.
         // Works with offline players.
         // -->
         registerTag("enderchest", (attribute, object) -> {
@@ -1647,8 +1647,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @attribute <PlayerTag.open_inventory>
         // @returns InventoryTag
         // @description
-        // Gets the inventory the player currently has open. If the player has no open
-        // inventory, this returns the player's inventory.
+        // Returns the InventoryTag for the inventory the player has open.
+        // If the player has no open inventory, this returns the player's inventory.
         // -->
         registerOnlineOnlyTag("open_inventory", (attribute, object) -> {
             return InventoryTag.mirrorBukkitInventory(object.getPlayerEntity().getOpenInventory().getTopInventory());
