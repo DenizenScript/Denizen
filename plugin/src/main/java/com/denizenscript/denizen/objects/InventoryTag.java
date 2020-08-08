@@ -1835,23 +1835,27 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 return new ElementTag(found_items >= qty);
             }
             // <--[tag]
-            // @attribute <InventoryTag.contains.scriptname[<scriptname>]>
+            // @attribute <InventoryTag.contains.scriptname[<scriptname>|...]>
             // @returns ElementTag(Boolean)
             // @description
-            // Returns whether the inventory contains an item with the specified scriptname.
+            // Returns whether the inventory contains an item with the specified scriptname(s).
             // -->
             if (attribute.startsWith("scriptname", 2)) {
                 if (!attribute.hasContext(2)) {
                     return null;
                 }
-                String scrName = attribute.getContext(2);
+                ListTag scrNameList = attribute.contextAsType(2, ListTag.class);
+                HashSet<String> scrNames = new HashSet<>();
+                for (String name : scrNameList) {
+                    scrNames.add(CoreUtilities.toLowerCase(name));
+                }
                 int qty = 1;
 
                 // <--[tag]
-                // @attribute <InventoryTag.contains.scriptname[<scriptname>].quantity[<#>]>
+                // @attribute <InventoryTag.contains.scriptname[<scriptname>|...].quantity[<#>]>
                 // @returns ElementTag(Boolean)
                 // @description
-                // Returns whether the inventory contains a certain quantity of an item with the specified scriptname.
+                // Returns whether the inventory contains a certain quantity of an item with the specified scriptname(s).
                 // -->
                 if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
                     if (attribute.startsWith("qty", 3)) {
@@ -1864,7 +1868,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 int found_items = 0;
 
                 for (ItemStack item : object.getContents()) {
-                    if (item != null && scrName.equalsIgnoreCase(new ItemTag(item).getScriptName())) {
+                    if (item != null && scrNames.contains(CoreUtilities.toLowerCase(new ItemTag(item).getScriptName()))) {
                         found_items += item.getAmount();
                         if (found_items >= qty) {
                             break;

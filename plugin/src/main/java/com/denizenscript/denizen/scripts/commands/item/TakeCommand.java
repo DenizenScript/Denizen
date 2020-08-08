@@ -90,9 +90,7 @@ public class TakeCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("type")
                     && arg.matches("money", "coins")) {
                 scriptEntry.addObject("type", Type.MONEY);
@@ -170,29 +168,22 @@ public class TakeCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         scriptEntry.defaultObject("type", Type.ITEM)
                 .defaultObject("quantity", new ElementTag(1));
-
         Type type = (Type) scriptEntry.getObject("type");
-
         if (type != Type.MONEY && scriptEntry.getObject("inventory") == null) {
             scriptEntry.addObject("inventory", Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getInventory() : null);
         }
-
         if (!scriptEntry.hasObject("inventory") && type != Type.MONEY) {
             throw new InvalidArgumentsException("Must specify an inventory to take from!");
         }
-
         if (type == Type.ITEM && scriptEntry.getObject("items") == null) {
             throw new InvalidArgumentsException("Must specify item/items!");
         }
-
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         InventoryTag inventory = scriptEntry.getObjectTag("inventory");
         ElementTag quantity = scriptEntry.getElement("quantity");
         ElementTag displayname = scriptEntry.getElement("displayname");
@@ -202,14 +193,11 @@ public class TakeCommand extends AbstractCommand {
         ElementTag nbtKey = scriptEntry.getElement("nbt_key");
         MaterialTag material = scriptEntry.getObjectTag("material");
         Type type = (Type) scriptEntry.getObject("type");
-
         Object items_object = scriptEntry.getObject("items");
         List<ItemTag> items = null;
-
         if (items_object != null) {
             items = (List<ItemTag>) items_object;
         }
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("Type", type.name())
                             + quantity.debug()
@@ -222,7 +210,6 @@ public class TakeCommand extends AbstractCommand {
                             + (material != null ? material.debug() : "")
                             + (titleAuthor != null ? titleAuthor.debug() : ""));
         }
-
         switch (type) {
             case INVENTORY: {
                 inventory.clear();
