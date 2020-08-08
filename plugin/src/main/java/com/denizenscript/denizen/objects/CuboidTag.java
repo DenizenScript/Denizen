@@ -766,7 +766,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
     public static void registerTags() {
 
         // <--[tag]
-        // @attribute <CuboidTag.blocks[<material>|...]>
+        // @attribute <CuboidTag.blocks[(<material>|...)]>
         // @returns ListTag(LocationTag)
         // @description
         // Returns each block location within the CuboidTag.
@@ -792,7 +792,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         });
 
         // <--[tag]
-        // @attribute <CuboidTag.spawnable_blocks[<Material>|...]>
+        // @attribute <CuboidTag.spawnable_blocks[(<material>|...)]>
         // @returns ListTag(LocationTag)
         // @description
         // Returns each LocationTag within the CuboidTag that is safe for players or similar entities to spawn in.
