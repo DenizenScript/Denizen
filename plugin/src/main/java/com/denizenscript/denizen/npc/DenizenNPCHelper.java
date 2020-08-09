@@ -70,7 +70,7 @@ public class DenizenNPCHelper implements Listener {
     }
 
     /**
-     * Returns the InventoryTag object from the Inventory trait of a valid NPC.
+     * Returns a InventoryTag object from the Inventory trait of a valid NPC.
      *
      * @param npc the Citizens NPC
      * @return the NPC's InventoryTag
