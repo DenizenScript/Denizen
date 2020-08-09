@@ -33,7 +33,7 @@ public class TakeCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Take
-    // @Syntax take [money/xp/iteminhand/iteminoffhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/nbt:<key>/material:<material>/<item>|...] (quantity:<#>) (from:<inventory>)
+    // @Syntax take [money/xp/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/nbt:<key>/material:<material>/<item>|...] (quantity:<#>) (from:<inventory>)
     // @Required 1
     // @Maximum 3
     // @Short Takes an item from the player.
@@ -49,8 +49,6 @@ public class TakeCommand extends AbstractCommand {
     // Using 'nbt:' with a key will take items with the specified NBT key, as set by <@link mechanism ItemTag.nbt>.
     //
     // Using 'iteminhand' will take from the player's held item slot.
-    //
-    // Using 'iteminoffhand' will take from the player's off-hand item slot.
     //
     // Using 'scriptname:' will take items with the specified item script name.
     //
@@ -88,7 +86,7 @@ public class TakeCommand extends AbstractCommand {
     // - take material:emerald quantity:5
     // -->
 
-    private enum Type {MONEY, XP, ITEMINHAND, ITEMINOFFHAND, ITEM, INVENTORY, BYDISPLAY, SLOT, BYCOVER, SCRIPTNAME, NBT, MATERIAL}
+    private enum Type {MONEY, XP, ITEMINHAND, ITEM, INVENTORY, BYDISPLAY, SLOT, BYCOVER, SCRIPTNAME, NBT, MATERIAL}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -106,10 +104,6 @@ public class TakeCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("type")
                     && arg.matches("item_in_hand", "iteminhand")) {
                 scriptEntry.addObject("type", Type.ITEMINHAND);
-            }
-            else if (!scriptEntry.hasObject("type")
-                    && arg.matches("item_in_off_hand", "iteminoffhand")) {
-                scriptEntry.addObject("type", Type.ITEMINOFFHAND);
             }
             else if (!scriptEntry.hasObject("quantity")
                     && arg.matchesPrefix("q", "qty", "quantity")
@@ -240,41 +234,18 @@ public class TakeCommand extends AbstractCommand {
                 ItemStack newHandItem = new ItemStack(Material.AIR);
                 if (theAmount > inHandAmt) {
                     Debug.echoDebug(scriptEntry, "...player did not have enough of the item in hand, taking all...");
-                    Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().getEquipment().setItemInMainHand(newHandItem);
+                    Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().setItemInHand(newHandItem);
                 }
                 else {
                     // amount is just right!
                     if (theAmount == inHandAmt) {
-                        Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().getEquipment().setItemInMainHand(newHandItem);
+                        Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().setItemInHand(newHandItem);
                     }
                     else {
                         // amount is less than what's in hand, need to make a new itemstack of what's left...
                         newHandItem = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().getEquipment().getItemInMainHand().clone();
                         newHandItem.setAmount(inHandAmt - theAmount);
-                        Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().getEquipment().setItemInMainHand(newHandItem);
-                        Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().updateInventory();
-                    }
-                }
-                break;
-            }
-            case ITEMINOFFHAND: {
-                int inHandAmt = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().getEquipment().getItemInOffHand().getAmount();
-                int theAmount = (int) quantity.asDouble();
-                ItemStack newHandItem = new ItemStack(Material.AIR);
-                if (theAmount > inHandAmt) {
-                    Debug.echoDebug(scriptEntry, "...player did not have enough of the item in hand, taking all...");
-                    Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().getEquipment().setItemInOffHand(newHandItem);
-                }
-                else {
-                    // amount is just right!
-                    if (theAmount == inHandAmt) {
-                        Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().getEquipment().setItemInOffHand(newHandItem);
-                    }
-                    else {
-                        // amount is less than what's in hand, need to make a new itemstack of what's left...
-                        newHandItem = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().getEquipment().getItemInOffHand().clone();
-                        newHandItem.setAmount(inHandAmt - theAmount);
-                        Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().getEquipment().setItemInOffHand(newHandItem);
+                        Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().setItemInHand(newHandItem);
                         Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().updateInventory();
                     }
                 }
