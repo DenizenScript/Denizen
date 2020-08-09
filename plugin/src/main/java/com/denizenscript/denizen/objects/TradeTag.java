@@ -122,7 +122,7 @@ public class TradeTag implements ObjectTag, Adjustable {
     }
 
     public String identify() {
-        return "trade@" + PropertyParser.getPropertiesString(this);
+        return getPrefix() + "@trade" + PropertyParser.getPropertiesString(this);
     }
 
     public String identifySimple() {
