@@ -61,7 +61,7 @@ public class VillagerAcquiresTradeScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof TradeTag) {
+        if (TradeTag.matches(determinationObj.toString())) {
             event.setRecipe(((TradeTag) determinationObj).getRecipe());
             return true;
         }

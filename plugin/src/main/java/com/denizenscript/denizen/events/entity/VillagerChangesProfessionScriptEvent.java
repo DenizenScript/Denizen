@@ -2,6 +2,7 @@ package com.denizenscript.denizen.events.entity;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.entity.Villager;
@@ -28,10 +29,10 @@ public class VillagerChangesProfessionScriptEvent extends BukkitScriptEvent impl
     // @Context
     // <context.entity> returns the EntityTag of the villager.
     // <context.profession> returns the name of the new profession.
-    // <context.reason> returns the reason for the change. https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/VillagerCareerChangeEvent.ChangeReason.html
+    // <context.reason> returns the reason for the change. <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/VillagerCareerChangeEvent.ChangeReason.html>
     //
     // @Determine
-    // ElementTag to change the profession. Valid professions: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Villager.Profession.html
+    // ElementTag to change the profession. Valid professions: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Villager.Profession.html>
     // -->
 
     public VillagerChangesProfessionScriptEvent() {
@@ -70,6 +71,7 @@ public class VillagerChangesProfessionScriptEvent extends BukkitScriptEvent impl
             return true;
         }
         catch (IllegalArgumentException e) {
+            Debug.echoError("Invalid profession specified: " + determination);
         }
         return super.applyDetermination(path, determinationObj);
     }
