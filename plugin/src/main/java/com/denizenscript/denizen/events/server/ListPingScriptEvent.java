@@ -2,6 +2,7 @@ package com.denizenscript.denizen.events.server;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -10,7 +11,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;
+import org.bukkit.util.CachedServerIcon;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -34,6 +38,7 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
     //
     // @Determine
     // ElementTag(Number) to change the max player amount that will show.
+    // "ICON:" + ElementTag of a file path to an icon image, to change the icon that will display.
     // ElementTag to change the MOTD that will show.
     //
     // -->
@@ -59,9 +64,37 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
         return "ServerListPing";
     }
 
+    // Despite the 'cached' class name, there's no actual internal cache.
+    public static HashMap<String, CachedServerIcon> iconCache = new HashMap<>();
+
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
+        if (determination.startsWith("icon:")) {
+            String iconFile = determination.substring("icon:".length());
+            CachedServerIcon icon = iconCache.get(iconFile);
+            if (icon != null) {
+                event.setServerIcon(icon);
+                return true;
+            }
+            File file = new File(iconFile);
+            if (!Utilities.canReadFile(file)) {
+                Debug.echoError("Cannot read icon file '" + iconFile + "'");
+                return false;
+            }
+            try {
+                icon = Bukkit.loadServerIcon(file);
+            }
+            catch (Exception ex) {
+                Debug.echoError(ex);
+            }
+            if (icon != null) {
+                iconCache.put(iconFile, icon);
+                event.setServerIcon(icon);
+            }
+            return true;
+
+        }
         if (determination.length() > 0 && !determination.equalsIgnoreCase("none")) {
             List<String> values = CoreUtilities.split(determination, '|', 2);
             if (new ElementTag(values.get(0)).isInt()) {
