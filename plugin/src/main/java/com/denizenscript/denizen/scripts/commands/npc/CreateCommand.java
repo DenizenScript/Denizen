@@ -40,7 +40,7 @@ public class CreateCommand extends AbstractCommand {
     //
     // Optionally specify a list of traits to immediately apply when creating the NPC.
     //
-    // Optionally specify a custom registry to create the NPC into.
+    // Optionally specify a custom registry to create the NPC into. (Most users, leave this option off).
     //
     // @Tags
     // <server.npcs>

@@ -324,17 +324,20 @@ public class TakeCommand extends AbstractCommand {
 
     public void takeByMatcher(InventoryTag inventory, Function<ItemStack, Boolean> matcher, int quantity) {
         int itemsTaken = 0;
-        for (ItemStack it : inventory.getContents()) {
+        ItemStack[] contents = inventory.getInventory().getContents();
+        for (int i = 0; i < contents.length; i++) {
+            ItemStack it = contents[i];
             if (itemsTaken < quantity
                     && it != null
                     && matcher.apply(it)) {
                 int amt = it.getAmount();
                 if (itemsTaken + amt <= quantity) {
-                    inventory.getInventory().removeItem(it);
+                    inventory.getInventory().setItem(i, new ItemStack(Material.AIR));
                     itemsTaken += amt;
                 }
                 else {
                     it.setAmount(amt - (quantity - itemsTaken));
+                    inventory.getInventory().setItem(i, it);
                     break;
                 }
             }

@@ -2381,7 +2381,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // World, yaw, and pitch will be excluded from this output.
         // -->
         registerTag("xyz", (attribute, object) -> {
-            return new ElementTag(object.getX() + "," + object.getY() + "," + object.getZ());
+            return new ElementTag(CoreUtilities.doubleToString(object.getX()) + "," + CoreUtilities.doubleToString(object.getY()) + "," + CoreUtilities.doubleToString(object.getZ()));
         });
 
         // <--[tag]
