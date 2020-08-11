@@ -596,8 +596,7 @@ public class EntityHelperImpl extends EntityHelper {
     public void setBoundingBox(Entity entity, BoundingBox boundingBox) {
         Vector low = boundingBox.getLow();
         Vector high = boundingBox.getHigh();
-        ((CraftEntity) entity).getHandle().a(new AxisAlignedBB(low.getX(), low.getY(), low.getZ(),
-                high.getX(), high.getY(), high.getZ()));
+        ((CraftEntity) entity).getHandle().a(new AxisAlignedBB(low.getX(), low.getY(), low.getZ(), high.getX(), high.getY(), high.getZ()));
     }
 
     @Override

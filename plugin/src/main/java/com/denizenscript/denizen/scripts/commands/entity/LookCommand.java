@@ -72,20 +72,17 @@ public class LookCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(EntityTag.class)) {
-                // Entity arg
                 scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
             }
         }
-
         if (!scriptEntry.hasObject("entities")) {
             scriptEntry.defaultObject("entities",
                     Utilities.entryHasNPC(scriptEntry) && Utilities.getEntryNPC(scriptEntry).isSpawned() ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null,
                     Utilities.entryHasPlayer(scriptEntry) && Utilities.getEntryPlayer(scriptEntry).isOnline() ? Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()) : null);
         }
-
         if (!scriptEntry.hasObject("location") || !scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Must specify a location and entity!");
         }
@@ -94,18 +91,13 @@ public class LookCommand extends AbstractCommand {
     @SuppressWarnings("unchecked")
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         final LocationTag loc = scriptEntry.getObjectTag("location");
         final List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         final DurationTag duration = scriptEntry.getObjectTag("duration");
-
         if (scriptEntry.dbCallShouldDebug()) {
-
             Debug.report(scriptEntry, getName(), loc.debug() +
                     ArgumentHelper.debugObj("entities", entities.toString()));
-
         }
-
         for (EntityTag entity : entities) {
             if (entity.isSpawned()) {
                 NMSHandler.getEntityHelper().faceLocation(entity.getBukkitEntity(), loc);
@@ -114,7 +106,6 @@ public class LookCommand extends AbstractCommand {
         if (duration != null && duration.getTicks() > 2) {
             BukkitRunnable task = new BukkitRunnable() {
                 long bounces = 0;
-
                 public void run() {
                     bounces += 2;
                     if (bounces > duration.getTicks()) {
