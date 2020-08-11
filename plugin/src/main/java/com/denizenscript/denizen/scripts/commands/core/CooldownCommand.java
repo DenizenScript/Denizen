@@ -26,20 +26,18 @@ public class CooldownCommand extends AbstractCommand {
     // @Syntax cooldown [<duration>] (global) (script:<script>)
     // @Required 1
     // @Maximum 3
-    // @Short Temporarily disables a script-container from meeting requirements.
+    // @Short Temporarily disables an interact script for the linked player.
     // @Group core
     //
     // @Description
-    // Cools down a script-container.
-    // If an interact-container, this will automatically prevent the script from running.
-    // If any other type of script, a manual check is needed,
-    // using <@link tag ScriptTag.cooled_down[player]>, which will return false until the cooldown period is completed.
-    // Cooldown requires a type (player or global), a script, and a duration. It also requires
-    // a valid link to a PlayerTag if using a non-global cooldown.
+    // Temporarily disables an interact script for the linked player.
+    //
+    // Cooldown requires a type (player or global), a script, and a duration.
+    // It also requires a valid link to a PlayerTag if using a non-global cooldown.
     //
     // To cooldown non-interact scripts automatically, consider <@link command ratelimit>.
     //
-    // Cooldown periods are persistent through a server restart as they are saved in the saves.yml.
+    // Cooldown periods are persistent through a server restart as they are saved in the 'saves.yml'.
     //
     // @Tags
     // <ScriptTag.cooled_down[player]>

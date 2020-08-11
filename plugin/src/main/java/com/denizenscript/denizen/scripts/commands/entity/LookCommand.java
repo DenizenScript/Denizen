@@ -10,26 +10,30 @@ import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class LookCommand extends AbstractCommand {
 
     public LookCommand() {
         setName("look");
-        setSyntax("look (<entity>|...) [<location>] (duration:<duration>)");
+        setSyntax("look (<entity>|...) [<location>/cancel] (duration:<duration>)");
         setRequiredArguments(1, 3);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Look
-    // @Syntax look (<entity>|...) [<location>] (duration:<duration>)
+    // @Syntax look (<entity>|...) [<location>/cancel] (duration:<duration>)
     // @Required 1
     // @Maximum 3
     // @Short Causes the NPC or other entity to look at a target location.
@@ -40,8 +44,8 @@ public class LookCommand extends AbstractCommand {
     //
     // Can be used on players.
     //
-    // If a duration is set, the entity cannot look away from the location until the duration has expired
-    // (unless they are forced to look at a different location).
+    // If a duration is set, the entity cannot look away from the location until the duration has expired.
+    // Use the cancel argument to end the duration earlier.
     //
     // @Tags
     // <LocationTag.yaw>
@@ -58,12 +62,16 @@ public class LookCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("location")
+                    && !scriptEntry.hasObject("cancel")
                     && arg.matchesArgumentType(LocationTag.class)) {
                 scriptEntry.addObject("location", arg.asType(LocationTag.class));
+            }
+            else if (!scriptEntry.hasObject("cancel")
+                    && !scriptEntry.hasObject("location")
+                    && arg.matches("cancel")) {
+                scriptEntry.addObject("cancel", new ElementTag("true"));
             }
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesArgumentType(DurationTag.class)
@@ -83,20 +91,37 @@ public class LookCommand extends AbstractCommand {
                     Utilities.entryHasNPC(scriptEntry) && Utilities.getEntryNPC(scriptEntry).isSpawned() ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null,
                     Utilities.entryHasPlayer(scriptEntry) && Utilities.getEntryPlayer(scriptEntry).isOnline() ? Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()) : null);
         }
-        if (!scriptEntry.hasObject("location") || !scriptEntry.hasObject("entities")) {
-            throw new InvalidArgumentsException("Must specify a location and entity!");
+        if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("cancel")) {
+            throw new InvalidArgumentsException("Must specify a location or 'cancel'!");
+        }
+        if (!scriptEntry.hasObject("entities")) {
+            throw new InvalidArgumentsException("Must specify an entity!");
         }
     }
+
+    public static HashMap<UUID, BukkitTask> lookTasks = new HashMap<>();
 
     @SuppressWarnings("unchecked")
     @Override
     public void execute(ScriptEntry scriptEntry) {
         final LocationTag loc = scriptEntry.getObjectTag("location");
-        final List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
+        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         final DurationTag duration = scriptEntry.getObjectTag("duration");
+        ElementTag cancel = scriptEntry.getElement("cancel");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), loc.debug() +
+            Debug.report(scriptEntry, getName(), (cancel != null ? cancel.debug() : loc.debug()) +
                     ArgumentHelper.debugObj("entities", entities.toString()));
+        }
+        for (EntityTag entity : entities) {
+            if (entity.isSpawned()) {
+                BukkitTask task = lookTasks.remove(entity.getUUID());
+                if (task != null) {
+                    task.cancel();
+                }
+            }
+        }
+        if (cancel != null && cancel.asBoolean()) {
+            return;
         }
         for (EntityTag entity : entities) {
             if (entity.isSpawned()) {
@@ -104,22 +129,24 @@ public class LookCommand extends AbstractCommand {
             }
         }
         if (duration != null && duration.getTicks() > 2) {
-            BukkitRunnable task = new BukkitRunnable() {
-                long bounces = 0;
-                public void run() {
-                    bounces += 2;
-                    if (bounces > duration.getTicks()) {
-                        this.cancel();
-                        return;
-                    }
-                    for (EntityTag entity : entities) {
+            for (EntityTag entity : entities) {
+                BukkitRunnable task = new BukkitRunnable() {
+                    long bounces = 0;
+                    public void run() {
+                        bounces += 2;
+                        if (bounces > duration.getTicks()) {
+                            this.cancel();
+                            lookTasks.remove(entity.getUUID());
+                            return;
+                        }
                         if (entity.isSpawned()) {
                             NMSHandler.getEntityHelper().faceLocation(entity.getBukkitEntity(), loc);
                         }
                     }
-                }
-            };
-            task.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, 2);
+                };
+                BukkitTask newTask = task.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, 2);
+                lookTasks.put(entity.getUUID(), newTask);
+            }
         }
     }
 }
