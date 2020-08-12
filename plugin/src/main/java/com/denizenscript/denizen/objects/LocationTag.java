@@ -3259,7 +3259,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @description
         // Sets the contents of a sign block.
         // Note that this takes an escaped list.
-        // See <@link language property escaping>.
+        // See <@link language Escape Tags>.
         // @tags
         // <LocationTag.sign_contents>
         // -->

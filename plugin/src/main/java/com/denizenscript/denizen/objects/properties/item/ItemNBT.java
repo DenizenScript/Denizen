@@ -85,7 +85,7 @@ public class ItemNBT implements Property {
         // @description
         // Returns the value of this item's Denizen NBT key as an ElementTag as best it can.
         // If no key is specified, returns the full list of NBT key/value pairs (valid for input to nbt mechanism).
-        // See also <@link language property escaping>.
+        // See also <@link language Escape Tags>.
         // -->
         if (attribute.matches("nbt")) {
             if (!attribute.hasContext(1)) {
@@ -172,7 +172,7 @@ public class ItemNBT implements Property {
         // @input ListTag
         // @description
         // Adds Denizen NBT to this item in the format key/value|key/value...
-        // See also <@link language property escaping>.
+        // See also <@link language Escape Tags>.
         // @tags
         // <ItemTag.has_nbt[<key>]>
         // <ItemTag.nbt_keys>

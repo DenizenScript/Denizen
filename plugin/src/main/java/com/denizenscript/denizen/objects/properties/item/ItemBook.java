@@ -236,7 +236,7 @@ public class ItemBook implements Property {
         // @input ListTag
         // @description
         // Changes the plain-text pages of a book item.
-        // See <@link language Property Escaping>
+        // See <@link language Escape Tags>.
         // @tags
         // <ItemTag.book_pages>
         // -->

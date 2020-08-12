@@ -396,7 +396,7 @@ public class FormattedTextHelper {
             else if (i + "https://a.".length() < chars.length && chars[i] == 'h' && chars[i + 1] == 't' && chars[i + 2] == 't' && chars[i  + 3] == 'p') {
                 String subStr = str.substring(i, i + "https://a.".length());
                 if (subStr.startsWith("https://") || subStr.startsWith("http://")) {
-                    int nextSpace = str.indexOf(' ', i);
+                    int nextSpace = CoreUtilities.indexOfAny(str, i, ' ', '\t', '\n');
                     if (nextSpace == -1) {
                         nextSpace = str.length();
                     }

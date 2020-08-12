@@ -106,7 +106,7 @@ public class ItemDisplayname implements Property {
         // @input ElementTag
         // @description
         // Changes the items display name.
-        // See <@link language Property Escaping>
+        // See <@link language Escape Tags>.
         // @tags
         // <ItemTag.display>
         // -->

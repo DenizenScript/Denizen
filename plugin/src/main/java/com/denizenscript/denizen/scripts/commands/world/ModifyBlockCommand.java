@@ -101,9 +101,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (arg.matchesArgumentType(CuboidTag.class)
                     && !scriptEntry.hasObject("locations")
                     && !scriptEntry.hasObject("location_list")
@@ -169,24 +167,17 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                 arg.reportUnhandled();
             }
         }
-
-        // Must have material
         if (!scriptEntry.hasObject("materials")) {
             throw new InvalidArgumentsException("Missing material argument!");
         }
-
-        // ..and at least one location.
         if (!scriptEntry.hasObject("locations") && !scriptEntry.hasObject("location_list")) {
             throw new InvalidArgumentsException("Missing location argument!");
         }
-
-        // Set some defaults
         scriptEntry.defaultObject("radius", new ElementTag(0))
                 .defaultObject("height", new ElementTag(0))
                 .defaultObject("depth", new ElementTag(0))
                 .defaultObject("physics", new ElementTag(true))
                 .defaultObject("delayed", new ElementTag(false));
-
     }
 
     public static LocationTag getLocAt(ListTag list, int index, ScriptEntry entry) {
@@ -199,7 +190,6 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-
         final ListTag materials = scriptEntry.getObjectTag("materials");
         final List<LocationTag> locations = (List<LocationTag>) scriptEntry.getObject("locations");
         final ListTag location_list = scriptEntry.getObjectTag("location_list");
@@ -212,14 +202,11 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         final ScriptTag script = scriptEntry.getObjectTag("script");
         final PlayerTag source = scriptEntry.getObjectTag("source");
         ListTag percents = scriptEntry.getObjectTag("percents");
-
         if (percents != null && percents.size() != materials.size()) {
             Debug.echoError(scriptEntry.getResidingQueue(), "Percents length != materials length");
             percents = null;
         }
-
         final List<MaterialTag> materialList = materials.filter(MaterialTag.class, scriptEntry);
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), (locations == null ? location_list.debug() : ArgumentHelper.debugList("locations", locations))
                     + materials.debug()
@@ -233,7 +220,6 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                     + (percents != null ? percents.debug() : "")
                     + (source != null ? source.debug() : ""));
         }
-
         Player sourcePlayer = source == null ? null : source.getPlayerEntity();
         final boolean doPhysics = physics.asBoolean();
         final int radius = radiusElement.asInt();
@@ -247,7 +233,6 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             }
         }
         final List<Float> percs = percentages;
-
         if (locations == null && location_list == null) {
             Debug.echoError("Must specify a valid location!");
             return;
@@ -259,12 +244,10 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             Debug.echoError("Must specify a valid material!");
             return;
         }
-
         no_physics = !doPhysics;
         if (delayed.asBoolean()) {
             new BukkitRunnable() {
                 int index = 0;
-
                 @Override
                 public void run() {
                     long start = System.currentTimeMillis();
@@ -352,7 +335,6 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
     void handleLocation(LocationTag location, int index, List<MaterialTag> materialList, boolean doPhysics,
                         ItemTag natural, int radius, int height, int depth, List<Float> percents, Player source, ScriptEntry entry) {
-
         MaterialTag material;
         if (percents == null) {
             material = materialList.get(index % materialList.size());
@@ -370,9 +352,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                 return;
             }
         }
-
         World world = location.getWorld();
-
         location.setX(location.getBlockX());
         location.setY(location.getBlockY());
         location.setZ(location.getBlockZ());
@@ -393,7 +373,6 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             }
         }
         setBlock(location, material, doPhysics, natural);
-
         if (radius != 0) {
             for (int x = 0; x < 2 * radius + 1; x++) {
                 for (int z = 0; z < 2 * radius + 1; z++) {
@@ -401,7 +380,6 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                 }
             }
         }
-
         if (height != 0) {
             for (int x = 0; x < 2 * radius + 1; x++) {
                 for (int z = 0; z < 2 * radius + 1; z++) {
@@ -411,7 +389,6 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                 }
             }
         }
-
         if (depth != 0) {
             for (int x = 0; x < 2 * radius + 1; x++) {
                 for (int z = 0; z < 2 * radius + 1; z++) {
