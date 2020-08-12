@@ -391,7 +391,7 @@ public class BukkitElementProperties implements Property {
             // @group text manipulation
             // @description
             // Adds a hover message to the element, which makes the element display the input hover text when the mouse is left over it.
-            // Optionally specify the hover type as one of: SHOW_TEXT, SHOW_ACHIEVEMENT, SHOW_ITEM, or SHOW_ENTITY.
+            // Available hover types: SHOW_TEXT, SHOW_ACHIEVEMENT, SHOW_ITEM, or SHOW_ENTITY.
             // Note: for "SHOW_ITEM", replace the text with a valid ItemTag. For "SHOW_ENTITY", replace the text with a valid spawned EntityTag (requires F3+H to see entities).
             // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
             // -->
@@ -427,7 +427,7 @@ public class BukkitElementProperties implements Property {
             // @group text manipulation
             // @description
             // Adds a click command to the element, which makes the element execute the input command when clicked.
-            // Optionally specify the hover type as one of: OPEN_URL, OPEN_FILE, RUN_COMMAND, SUGGEST_COMMAND, or CHANGE_PAGE.
+            // Available command types: OPEN_URL, OPEN_FILE, RUN_COMMAND, SUGGEST_COMMAND, or CHANGE_PAGE.
             // For example: - narrate "You can <element[click here].on_click[https://denizenscript.com].type[OPEN_URL]> to learn about Denizen!"
             // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
             // -->

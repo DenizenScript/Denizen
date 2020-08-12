@@ -1228,7 +1228,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
-        // @attribute <PlayerTag.groups>
+        // @attribute <PlayerTag.groups[(<world>)]>
         // @returns ListTag
         // @description
         // Returns a list of all groups the player is in.
@@ -1242,9 +1242,16 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 return null;
             }
             ListTag list = new ListTag();
-            // TODO: optionally specify world
+            WorldTag world = null;
+            if (attribute.hasContext(1)) {
+                world = attribute.contextAsType(1, WorldTag.class);
+                if (world == null) {
+                    Debug.echoError("Invalid world specified: " + attribute.getContext(1));
+                    return null;
+                }
+            }
             for (String group : Depends.permissions.getGroups()) {
-                if (Depends.permissions.playerInGroup(null, object.getOfflinePlayer(), group)) {
+                if (Depends.permissions.playerInGroup(world != null ? world.getName() : null, object.getOfflinePlayer(), group)) {
                     list.add(group);
                 }
             }
@@ -1397,9 +1404,16 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
 
             // Permission in certain world
             else if (attribute.startsWith("world", 2)) {
-                String world = attribute.getContext(2);
+                WorldTag world = null;
+                if (attribute.hasContext(2)) {
+                    world = attribute.contextAsType(2, WorldTag.class);
+                    if (world == null) {
+                        Debug.echoError("Invalid world specified: " + attribute.getContext(2));
+                        return null;
+                    }
+                }
                 attribute.fulfill(1);
-                return new ElementTag(Depends.permissions.playerInGroup(world, object.getOfflinePlayer(), group));
+                return new ElementTag(Depends.permissions.playerInGroup(world != null ? world.getName() : null, object.getOfflinePlayer(), group));
             }
 
             // Permission in current world

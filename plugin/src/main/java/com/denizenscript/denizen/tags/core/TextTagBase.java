@@ -362,7 +362,7 @@ public class TextTagBase {
                   // @description
                   // Returns a special chat code that makes the following text display the input hover text when the mouse is left over it.
                   // This tag must be followed by an <&end_hover> tag.
-                  // Optionally specify the hover type as one of: SHOW_TEXT, SHOW_ACHIEVEMENT, SHOW_ITEM, or SHOW_ENTITY.
+                  // Available hover types: SHOW_TEXT, SHOW_ACHIEVEMENT, SHOW_ITEM, or SHOW_ENTITY.
                   // For example: - narrate "There is a <&hover[you found it!].type[SHOW_TEXT]>secret<&end_hover> in this message!"
                   // Note: for "SHOW_ITEM", replace the text with a valid ItemTag. For "SHOW_ENTITY", replace the text with a valid spawned EntityTag (requires F3+H to see entities).
                   // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
@@ -399,7 +399,7 @@ public class TextTagBase {
                 // @description
                 // Returns a special chat code that makes the following text execute the input command when clicked.
                 // This tag must be followed by an <&end_click> tag.
-                // Optionally specify the hover type as one of: OPEN_URL, OPEN_FILE, RUN_COMMAND, SUGGEST_COMMAND, or CHANGE_PAGE.
+                // Available command types: OPEN_URL, OPEN_FILE, RUN_COMMAND, SUGGEST_COMMAND, or CHANGE_PAGE.
                 // For example: - narrate "You can <&click[https://denizenscript.com].type[OPEN_URL]>click here<&end_click> to learn about Denizen!"
                 // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
                 // -->
