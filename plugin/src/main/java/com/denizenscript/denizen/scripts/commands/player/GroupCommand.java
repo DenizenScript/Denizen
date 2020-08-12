@@ -41,7 +41,7 @@ public class GroupCommand extends AbstractCommand {
     // <PlayerTag.in_group[<group>]>
     // <PlayerTag.in_group[<group>].global>
     // <PlayerTag.in_group[<group>].world>
-    // <PlayerTag.groups>
+    // <PlayerTag.groups[(<world>)]>
     // <server.permission_groups>
     //
     // @Usage
