@@ -28,11 +28,11 @@ public class VillagerChangesProfessionScriptEvent extends BukkitScriptEvent impl
     //
     // @Context
     // <context.entity> returns the EntityTag of the villager.
-    // <context.profession> returns the name of the new profession.
+    // <context.profession> returns the name of the new profession. <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Villager.Profession.html>
     // <context.reason> returns the reason for the change. <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/VillagerCareerChangeEvent.ChangeReason.html>
     //
     // @Determine
-    // ElementTag to change the profession. Valid professions: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Villager.Profession.html>
+    // ElementTag to change the profession.
     // -->
 
     public VillagerChangesProfessionScriptEvent() {
