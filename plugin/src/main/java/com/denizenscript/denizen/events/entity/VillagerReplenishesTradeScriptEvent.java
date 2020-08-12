@@ -65,10 +65,10 @@ public class VillagerReplenishesTradeScriptEvent extends BukkitScriptEvent imple
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (TradeTag.matches(determinationObj.toString())) {
-            event.setRecipe(((TradeTag) determinationObj).getRecipe());
+            event.setRecipe(determinationObj.asType(TradeTag.class, getTagContext(path)).getRecipe());
             return true;
         }
-        else if (((ElementTag) determinationObj).isInt()) {
+        else if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
             event.setBonus(((ElementTag) determinationObj).asInt());
             return true;
         }

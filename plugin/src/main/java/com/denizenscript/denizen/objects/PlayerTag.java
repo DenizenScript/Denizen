@@ -1244,10 +1244,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             ListTag list = new ListTag();
             WorldTag world = null;
             if (attribute.hasContext(1)) {
-                if (WorldTag.matches(attribute.getContext(1))) {
-                    world = (WorldTag) attribute.getContextObject(1);
-                }
-                else {
+                world = attribute.contextAsType(1, WorldTag.class);
+                if (world == null) {
                     Debug.echoError("Invalid world specified: " + attribute.getContext(1));
                     return null;
                 }
@@ -1408,10 +1406,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
             else if (attribute.startsWith("world", 2)) {
                 WorldTag world = null;
                 if (attribute.hasContext(2)) {
-                    if (WorldTag.matches(attribute.getContext(2))) {
-                        world = (WorldTag) attribute.getContextObject(2);
-                    }
-                    else {
+                    world = attribute.contextAsType(2, WorldTag.class);
+                    if (world == null) {
                         Debug.echoError("Invalid world specified: " + attribute.getContext(2));
                         return null;
                     }
