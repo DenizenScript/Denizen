@@ -1242,12 +1242,18 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 return null;
             }
             ListTag list = new ListTag();
-            String world = null;
+            WorldTag world = null;
             if (attribute.hasContext(1)) {
-                    world = attribute.getContext(1);
+                if (WorldTag.matches(attribute.getContext(1))) {
+                    world = (WorldTag) attribute.getContextObject(1);
+                }
+                else {
+                    Debug.echoError("Invalid world specified: " + attribute.getContext(1));
+                    return null;
+                }
             }
             for (String group : Depends.permissions.getGroups()) {
-                if (Depends.permissions.playerInGroup(world, object.getOfflinePlayer(), group)) {
+                if (Depends.permissions.playerInGroup(world != null ? world.getName() : null, object.getOfflinePlayer(), group)) {
                     list.add(group);
                 }
             }
@@ -1400,9 +1406,18 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
 
             // Permission in certain world
             else if (attribute.startsWith("world", 2)) {
-                String world = attribute.getContext(2);
+                WorldTag world = null;
+                if (attribute.hasContext(2)) {
+                    if (WorldTag.matches(attribute.getContext(2))) {
+                        world = (WorldTag) attribute.getContextObject(2);
+                    }
+                    else {
+                        Debug.echoError("Invalid world specified: " + attribute.getContext(2));
+                        return null;
+                    }
+                }
                 attribute.fulfill(1);
-                return new ElementTag(Depends.permissions.playerInGroup(world, object.getOfflinePlayer(), group));
+                return new ElementTag(Depends.permissions.playerInGroup(world != null ? world.getName() : null, object.getOfflinePlayer(), group));
             }
 
             // Permission in current world
