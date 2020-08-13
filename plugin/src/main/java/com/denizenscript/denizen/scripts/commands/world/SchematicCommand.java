@@ -231,7 +231,6 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     + (fakeTo != null ? ArgumentHelper.debugList("fake_to", fakeTo) : "")
                     + (fakeDuration != null ? fakeDuration.debug() : ""));
         }
-
         CuboidBlockSet set;
         Type ttype = Type.valueOf(type.asString());
         String fname = filename != null ? filename.asString() : name.asString();

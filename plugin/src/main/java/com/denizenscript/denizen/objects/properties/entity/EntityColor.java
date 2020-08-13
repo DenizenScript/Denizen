@@ -40,6 +40,7 @@ public class EntityColor implements Property {
                 (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.PANDA) ||
                 (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.ARROW) ||
                 (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.VILLAGER) ||
+                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.TRADER_LLAMA) ||
                 type == EntityType.TROPICAL_FISH;
     }
 
@@ -85,7 +86,7 @@ public class EntityColor implements Property {
         else if (type == EntityType.RABBIT) {
             return ((Rabbit) colored.getBukkitEntity()).getRabbitType().name();
         }
-        else if (type == EntityType.LLAMA) {
+        else if (type == EntityType.LLAMA || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.TRADER_LLAMA)) {
             return ((Llama) colored.getBukkitEntity()).getColor().name();
         }
         else if (type == EntityType.PARROT) {
@@ -230,10 +231,10 @@ public class EntityColor implements Property {
             else if (type == EntityType.RABBIT && mechanism.getValue().matchesEnum(Rabbit.Type.values())) {
                 ((Rabbit) colored.getBukkitEntity()).setRabbitType(Rabbit.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (type == EntityType.LLAMA) {
+            else if ((type == EntityType.LLAMA || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.TRADER_LLAMA)) && mechanism.getValue().matchesEnum(Llama.Color.values())) {
                 ((Llama) colored.getBukkitEntity()).setColor(Llama.Color.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (type == EntityType.PARROT) {
+            else if (type == EntityType.PARROT && mechanism.getValue().matchesEnum(Parrot.Variant.values())) {
                 ((Parrot) colored.getBukkitEntity()).setVariant(Parrot.Variant.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (type == EntityType.SHULKER && mechanism.getValue().matchesEnum(DyeColor.values())) {
