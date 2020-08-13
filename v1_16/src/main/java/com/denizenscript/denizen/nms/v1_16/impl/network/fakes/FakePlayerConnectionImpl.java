@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.nms.v1_16.impl.network.fakes;
 
-import net.minecraft.server.v1_16_R1.*;
+import net.minecraft.server.v1_16_R2.*;
 
 public class FakePlayerConnectionImpl extends PlayerConnection {
 

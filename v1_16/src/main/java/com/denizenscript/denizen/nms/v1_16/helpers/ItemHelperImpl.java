@@ -11,17 +11,17 @@ import com.mojang.authlib.properties.Property;
 import com.denizenscript.denizen.nms.interfaces.ItemHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import net.minecraft.server.v1_16_R1.*;
+import net.minecraft.server.v1_16_R2.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import org.bukkit.craftbukkit.v1_16_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftInventoryPlayer;
-import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_16_R1.util.CraftMagicNumbers;
-import org.bukkit.craftbukkit.v1_16_R1.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_16_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_16_R2.inventory.CraftInventoryPlayer;
+import org.bukkit.craftbukkit.v1_16_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R2.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_16_R2.util.CraftNamespacedKey;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.Recipe;
@@ -179,7 +179,7 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public PlayerProfile getSkullSkin(ItemStack is) {
-        net.minecraft.server.v1_16_R1.ItemStack itemStack = CraftItemStack.asNMSCopy(is);
+        net.minecraft.server.v1_16_R2.ItemStack itemStack = CraftItemStack.asNMSCopy(is);
         if (itemStack.hasTag()) {
             NBTTagCompound tag = itemStack.getTag();
             if (tag.hasKeyOfType("SkullOwner", 10)) {
@@ -207,7 +207,7 @@ public class ItemHelperImpl extends ItemHelper {
                 gameProfile.getProperties().put("textures", new Property("textures", playerProfile.getTexture()));
             }
         }
-        net.minecraft.server.v1_16_R1.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+        net.minecraft.server.v1_16_R2.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         NBTTagCompound tag = nmsItemStack.hasTag() ? nmsItemStack.getTag() : new NBTTagCompound();
         tag.set("SkullOwner", GameProfileSerializer.serialize(new NBTTagCompound(), gameProfile));
         nmsItemStack.setTag(tag);
@@ -216,7 +216,7 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public ItemStack addNbtData(ItemStack itemStack, String key, Tag value) {
-        net.minecraft.server.v1_16_R1.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+        net.minecraft.server.v1_16_R2.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         NBTTagCompound tag = nmsItemStack.hasTag() ? nmsItemStack.getTag() : new NBTTagCompound();
         CompoundTag compound = CompoundTagImpl.fromNMSTag(tag).createBuilder().put(key, value).build();
         nmsItemStack.setTag(((CompoundTagImpl) compound).toNMSTag());
@@ -225,7 +225,7 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public CompoundTag getNbtData(ItemStack itemStack) {
-        net.minecraft.server.v1_16_R1.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+        net.minecraft.server.v1_16_R2.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         if (nmsItemStack != null && nmsItemStack.hasTag()) {
             return CompoundTagImpl.fromNMSTag(nmsItemStack.getTag());
         }
@@ -234,7 +234,7 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public ItemStack setNbtData(ItemStack itemStack, CompoundTag compoundTag) {
-        net.minecraft.server.v1_16_R1.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+        net.minecraft.server.v1_16_R2.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         nmsItemStack.setTag(((CompoundTagImpl) compoundTag).toNMSTag());
         return CraftItemStack.asBukkitCopy(nmsItemStack);
     }

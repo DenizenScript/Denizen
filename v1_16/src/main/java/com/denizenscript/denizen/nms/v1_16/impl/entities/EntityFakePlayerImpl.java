@@ -5,9 +5,9 @@ import com.denizenscript.denizen.nms.v1_16.impl.network.fakes.FakeNetworkManager
 import com.denizenscript.denizen.nms.v1_16.impl.network.fakes.FakePlayerConnectionImpl;
 import com.mojang.authlib.GameProfile;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.server.v1_16_R1.*;
+import net.minecraft.server.v1_16_R2.*;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_16_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_16_R2.CraftServer;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
 public class EntityFakePlayerImpl extends EntityPlayer {

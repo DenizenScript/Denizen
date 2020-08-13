@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.nms.v1_16.impl.network.packets;
 
 import com.denizenscript.denizen.nms.interfaces.packets.PacketInResourcePackStatus;
-import net.minecraft.server.v1_16_R1.PacketPlayInResourcePackStatus;
+import net.minecraft.server.v1_16_R2.PacketPlayInResourcePackStatus;
 
 public class PacketInResourcePackStatusImpl implements PacketInResourcePackStatus {
 
