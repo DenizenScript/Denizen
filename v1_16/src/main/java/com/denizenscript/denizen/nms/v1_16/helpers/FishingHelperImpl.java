@@ -62,7 +62,7 @@ public class FishingHelperImpl implements FishingHelper {
         LootTableInfo.Builder playerFishEvent2 = new LootTableInfo.Builder(worldServer);
         LootTableRegistry registry = hook.getWorld().getMinecraftServer().getLootTableRegistry();
         // registry.getLootTable(key).getLootContextParameterSet()
-        LootTableInfo info = playerFishEvent2.set(LootContextParameters.POSITION, new BlockPosition(hook.locX(), hook.locY(), hook.locZ()))
+        LootTableInfo info = playerFishEvent2.set(LootContextParameters.ORIGIN, new Vec3D(hook.locX(), hook.locY(), hook.locZ()))
                 .set(LootContextParameters.TOOL, new ItemStack(Items.FISHING_ROD)).build(LootContextParameterSets.FISHING);
         List<ItemStack> itemStacks = registry.getLootTable(key).populateLoot(info);
         return itemStacks.get(worldServer.random.nextInt(itemStacks.size()));

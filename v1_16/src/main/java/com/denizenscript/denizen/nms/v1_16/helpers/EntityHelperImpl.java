@@ -127,7 +127,7 @@ public class EntityHelperImpl extends EntityHelper {
 
     public List<String> getDiscoveredRecipes(Player player) {
         try {
-            RecipeBookServer book = ((CraftPlayer) player).getHandle().B();
+            RecipeBookServer book = ((CraftPlayer) player).getHandle().getRecipeBook();
             Set<MinecraftKey> set = (Set<MinecraftKey>) RECIPE_BOOK_DISCOVERED_SET.get(book);
             List<String> output = new ArrayList<>();
             for (MinecraftKey key : set) {
@@ -491,7 +491,7 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public float getBaseYaw(Entity entity) {
         net.minecraft.server.v1_16_R2.Entity handle = ((CraftEntity) entity).getHandle();
-        return ((EntityLiving) handle).aK;
+        return ((EntityLiving) handle).aD;
     }
 
     @Override
@@ -507,11 +507,11 @@ public class EntityHelperImpl extends EntityHelper {
                 while (yaw >= 180.0F) {
                     yaw -= 360.0F;
                 }
-                livingHandle.aK = yaw;
+                livingHandle.aD = yaw;
                 if (!(handle instanceof EntityHuman)) {
-                    livingHandle.aJ = yaw;
+                    livingHandle.aC = yaw;
                 }
-                livingHandle.aL = yaw;
+                livingHandle.aE = yaw;
             }
             handle.pitch = pitch;
         }

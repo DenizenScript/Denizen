@@ -160,7 +160,7 @@ public class PlayerHelperImpl extends PlayerHelper {
 
     @Override
     public float getMaxAttackCooldownTicks(Player player) {
-        return ((CraftPlayer) player).getHandle().eR() + 3;
+        return ((CraftPlayer) player).getHandle().eQ() + 3;
     }
 
     @Override
@@ -234,13 +234,13 @@ public class PlayerHelperImpl extends PlayerHelper {
 
     @Override
     public void resendDiscoveredRecipes(Player player) {
-        RecipeBookServer recipeBook = ((CraftPlayer) player).getHandle().B();
+        RecipeBookServer recipeBook = ((CraftPlayer) player).getHandle().getRecipeBook();
         recipeBook.a(((CraftPlayer) player).getHandle());
     }
 
     @Override
     public void quietlyAddRecipe(Player player, NamespacedKey key) {
-        RecipeBookServer recipeBook = ((CraftPlayer) player).getHandle().B();
+        RecipeBookServer recipeBook = ((CraftPlayer) player).getHandle().getRecipeBook();
         IRecipe<?> recipe = ItemHelperImpl.getNMSRecipe(key);
         if (recipe == null) {
             Debug.echoError("Cannot add recipe '" + key + "': it does not exist.");

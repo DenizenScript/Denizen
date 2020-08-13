@@ -122,8 +122,9 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     public static Field YAW_PACKENT = ReflectionHelper.getFields(PacketPlayOutEntity.class).get("e");
     public static Field PITCH_PACKENT = ReflectionHelper.getFields(PacketPlayOutEntity.class).get("f");
     public static Field BLOCKPOS_BLOCKCHANGE = ReflectionHelper.getFields(PacketPlayOutBlockChange.class).get("a");
-    public static Field CHUNKCOORD_MULTIBLOCKCHANGE = ReflectionHelper.getFields(PacketPlayOutMultiBlockChange.class).get("a");
-    public static Field INFOARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(PacketPlayOutMultiBlockChange.class).get("b");
+    public static Field SECTIONPOS_MULTIBLOCKCHANGE = ReflectionHelper.getFields(PacketPlayOutMultiBlockChange.class).get("a");
+    public static Field OFFSETARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(PacketPlayOutMultiBlockChange.class).get("b");
+    public static Field BLOCKARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(PacketPlayOutMultiBlockChange.class).get("c");
     public static Field CHUNKX_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("a");
     public static Field CHUNKZ_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("b");
     public static Field BLOCKPOS_BLOCKBREAK = ReflectionHelper.getFields(PacketPlayOutBlockBreak.class).get("c");
@@ -437,27 +438,29 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 if (map == null) {
                     return false;
                 }
-                ChunkCoordIntPair coord = (ChunkCoordIntPair) CHUNKCOORD_MULTIBLOCKCHANGE.get(packet);
-                ChunkCoordinate coordinateDenizen = new ChunkCoordinate(coord.x, coord.z, player.getWorld().getWorld().getName());
+                SectionPosition coord = (SectionPosition) SECTIONPOS_MULTIBLOCKCHANGE.get(packet);
+                ChunkCoordinate coordinateDenizen = new ChunkCoordinate(coord.getX(), coord.getZ(), player.getWorld().getWorld().getName());
                 if (!map.byChunk.containsKey(coordinateDenizen)) {
                     return false;
                 }
                 PacketPlayOutMultiBlockChange newPacket = new PacketPlayOutMultiBlockChange();
                 copyPacket(packet, newPacket);
                 LocationTag location = new LocationTag(player.getWorld().getWorld(), 0, 0, 0);
-                PacketPlayOutMultiBlockChange.MultiBlockChangeInfo[] originalChangeArr = (PacketPlayOutMultiBlockChange.MultiBlockChangeInfo[]) INFOARRAY_MULTIBLOCKCHANGE.get(newPacket);
-                PacketPlayOutMultiBlockChange.MultiBlockChangeInfo[] changeArr = Arrays.copyOf(originalChangeArr, originalChangeArr.length);
-                for (int i = 0; i < changeArr.length; i++) {
-                    short blockInd = changeArr[i].b();
-                    int x = blockInd & 0xF0;
-                    int y = (blockInd & 0x00FF) >> 8;
-                    int z = (blockInd & 0X0F) >> 4;
-                    location.setX((coord.x << 4) + x);
-                    location.setY(y);
-                    location.setZ((coord.z << 4) + z);
+                short[] originalOffsetArray = (short[])OFFSETARRAY_MULTIBLOCKCHANGE.get(newPacket);
+                IBlockData[] originalDataArray = (IBlockData[])BLOCKARRAY_MULTIBLOCKCHANGE.get(newPacket);
+                short[] offsetArray = Arrays.copyOf(originalOffsetArray, originalOffsetArray.length);
+                IBlockData[] dataArray = Arrays.copyOf(originalDataArray, originalDataArray.length);
+                OFFSETARRAY_MULTIBLOCKCHANGE.set(newPacket, offsetArray);
+                BLOCKARRAY_MULTIBLOCKCHANGE.set(newPacket, dataArray);
+                for (int i = 0; i < offsetArray.length; i++) {
+                    short offset = offsetArray[i];
+                    int x = SectionPosition.a(offset), y = SectionPosition.b(offset), z = SectionPosition.c(offset);
+                    location.setX((coord.getX() << 4) + x);
+                    location.setY((coord.getY() << 4) + y);
+                    location.setZ((coord.getZ() << 4) + z);
                     FakeBlock block = map.byLocation.get(location);
                     if (block != null) {
-                        changeArr[i] = newPacket.new MultiBlockChangeInfo(blockInd, FakeBlockHelper.getNMSState(block));
+                        dataArray[i] = FakeBlockHelper.getNMSState(block);
                     }
                 }
                 oldManager.sendPacket(newPacket, genericfuturelistener);
@@ -534,18 +537,18 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     }
 
     @Override
-    public boolean h() {
-        return oldManager.h();
-    }
-
-    @Override
-    public PacketListener i() {
+    public boolean i() {
         return oldManager.i();
     }
 
     @Override
-    public IChatBaseComponent j() {
+    public PacketListener j() {
         return oldManager.j();
+    }
+
+    @Override
+    public IChatBaseComponent k() {
+        return oldManager.k();
     }
 
     @Override
@@ -561,6 +564,11 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     @Override
     public void handleDisconnection() {
         oldManager.handleDisconnection();
+    }
+
+    @Override
+    public float n() {
+        return oldManager.n();
     }
 
     @Override

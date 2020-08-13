@@ -32,7 +32,7 @@ public class AnimationHelperImpl extends AnimationHelper {
         });
         register("HORSE_BUCK", entity -> {
             if (entity instanceof Horse) {
-                ((CraftHorse) entity).getHandle().fn();
+                ((CraftHorse) entity).getHandle().fm();
             }
         });
     }

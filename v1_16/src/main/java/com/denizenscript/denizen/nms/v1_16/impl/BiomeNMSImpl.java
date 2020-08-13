@@ -3,7 +3,10 @@ package com.denizenscript.denizen.nms.v1_16.impl;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizen.nms.util.ReflectionHelper;
 import net.minecraft.server.v1_16_R2.*;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.block.Biome;
+import org.bukkit.craftbukkit.v1_16_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R2.block.CraftBlock;
 import org.bukkit.entity.EntityType;
 
@@ -17,7 +20,8 @@ public class BiomeNMSImpl extends BiomeNMS {
 
     public BiomeNMSImpl(Biome biome) {
         super(biome);
-        this.biomeBase = CraftBlock.biomeToBiomeBase(biome);
+        World world = Bukkit.getWorlds().get(0); // TODO: Biomes can now be world-unique as of 1.16.2
+        this.biomeBase = CraftBlock.biomeToBiomeBase(((CraftWorld) world).getHandle().r().b(IRegistry.ay), biome);
     }
 
     @Override
@@ -27,7 +31,7 @@ public class BiomeNMSImpl extends BiomeNMS {
 
     @Override
     public float getTemperature() {
-        return biomeBase.getTemperature();
+        return biomeBase.k();
     }
 
     @Override
@@ -62,17 +66,22 @@ public class BiomeNMSImpl extends BiomeNMS {
 
     @Override
     protected boolean getDoesRain() {
-        return biomeBase.d() == BiomeBase.Precipitation.RAIN;
+        return biomeBase.c() == BiomeBase.Precipitation.RAIN;
     }
 
     @Override
     protected boolean getDoesSnow() {
-        return biomeBase.d() == BiomeBase.Precipitation.SNOW;
+        return biomeBase.c() == BiomeBase.Precipitation.SNOW;
     }
 
     private List<EntityType> getSpawnableEntities(EnumCreatureType creatureType) {
+        BiomeSettingsMobs mobs = biomeBase.b();
+        List<BiomeSettingsMobs.c> typeSettingList = mobs.a(creatureType);
         List<EntityType> entityTypes = new ArrayList<>();
-        for (BiomeBase.BiomeMeta meta : biomeBase.getMobs(creatureType)) {
+        if (typeSettingList == null) {
+            return entityTypes;
+        }
+        for (BiomeSettingsMobs.c meta : typeSettingList) {
             // TODO: check if this works
             try {
                 String n = EntityTypes.getName(meta.c).getKey();
