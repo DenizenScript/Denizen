@@ -41,7 +41,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     static {
         DataWatcherObject<Byte> skinlayers = null;
         try {
-            skinlayers = (DataWatcherObject<Byte>) ReflectionHelper.getFields(EntityHuman.class).get("bq").get(null);
+            skinlayers = (DataWatcherObject<Byte>) ReflectionHelper.getFields(EntityHuman.class).get("bi").get(null);
         }
         catch (Throwable ex) {
             ex.printStackTrace();

@@ -36,9 +36,7 @@ import java.util.*;
 
 public class EntityHelperImpl extends EntityHelper {
 
-    public static final Field RECIPE_BOOK_DISCOVERED_SET = ReflectionHelper.getFields(RecipeBook.class).get("a");
-
-    public static final MethodHandle ENTITY_HOVER_TEXT_GETTER = ReflectionHelper.getMethodHandle(net.minecraft.server.v1_16_R2.Entity.class, "ca");
+    public static final Field RECIPE_BOOK_DISCOVERED_SET = ReflectionHelper.getFields(RecipeBook.class).get("recipes");
 
     public static final MethodHandle ENTITY_SETPOSE = ReflectionHelper.getMethodHandle(net.minecraft.server.v1_16_R2.Entity.class, "setPose", EntityPose.class);
 
@@ -114,15 +112,6 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public String getRawHoverText(Entity entity) {
         throw new UnsupportedOperationException();
-        /*
-        try {
-            ChatHoverable hoverable = (ChatHoverable) ENTITY_HOVER_TEXT_GETTER.invoke(((CraftEntity) entity).getHandle());
-            return hoverable.b().getText();
-        }
-        catch (Throwable ex) {
-            ex.printStackTrace();
-            return null;
-        }*/
     }
 
     public List<String> getDiscoveredRecipes(Player player) {

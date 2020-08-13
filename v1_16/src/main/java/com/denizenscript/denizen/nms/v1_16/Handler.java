@@ -80,7 +80,7 @@ public class Handler extends NMSHandler {
 
     @Override
     public boolean isCorrectMappingsCode() {
-        return ((CraftMagicNumbers) CraftMagicNumbers.INSTANCE).getMappingsVersion().equals("25afc67716a170ea965092c1067ff439");
+        return ((CraftMagicNumbers) CraftMagicNumbers.INSTANCE).getMappingsVersion().equals("c2d5d7871edcc4fb0f81d18959c647af");
     }
 
     @Override

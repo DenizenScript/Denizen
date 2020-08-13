@@ -267,7 +267,7 @@ public class PacketHelperImpl implements PacketHelper {
 
     static {
         try {
-            ENTITY_CUSTOM_NAME_METADATA = ReflectionHelper.getFieldValue(net.minecraft.server.v1_16_R2.Entity.class, "ax", null);
+            ENTITY_CUSTOM_NAME_METADATA = ReflectionHelper.getFieldValue(net.minecraft.server.v1_16_R2.Entity.class, "aq", null);
             ENTITY_CUSTOM_NAME_VISIBLE_METADATA = ReflectionHelper.getFieldValue(net.minecraft.server.v1_16_R2.Entity.class, "ay", null);
         }
         catch (Throwable ex) {

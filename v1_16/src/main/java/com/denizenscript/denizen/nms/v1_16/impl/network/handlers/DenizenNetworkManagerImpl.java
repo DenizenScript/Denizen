@@ -454,10 +454,10 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 BLOCKARRAY_MULTIBLOCKCHANGE.set(newPacket, dataArray);
                 for (int i = 0; i < offsetArray.length; i++) {
                     short offset = offsetArray[i];
-                    int x = SectionPosition.a(offset), y = SectionPosition.b(offset), z = SectionPosition.c(offset);
-                    location.setX((coord.getX() << 4) + x);
-                    location.setY((coord.getY() << 4) + y);
-                    location.setZ((coord.getZ() << 4) + z);
+                    BlockPosition pos = coord.g(offset);
+                    location.setX(pos.getX());
+                    location.setY(pos.getY());
+                    location.setZ(pos.getZ());
                     FakeBlock block = map.byLocation.get(location);
                     if (block != null) {
                         dataArray[i] = FakeBlockHelper.getNMSState(block);
