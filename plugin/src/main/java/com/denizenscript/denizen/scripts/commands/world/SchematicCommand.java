@@ -141,9 +141,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("type")
                     && arg.matchesEnum(Type.values())) {
                 scriptEntry.addObject("type", new ElementTag(arg.raw_value.toUpperCase()));
@@ -209,7 +207,6 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-
         ElementTag angle = scriptEntry.getElement("angle");
         ElementTag type = scriptEntry.getElement("type");
         ElementTag name = scriptEntry.getElement("name");
@@ -221,9 +218,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         List<PlayerTag> fakeTo = (List<PlayerTag>) scriptEntry.getObject("fake_to");
         DurationTag fakeDuration = scriptEntry.getObjectTag("fake_duration");
         CuboidTag cuboid = scriptEntry.getObjectTag("cuboid");
-
         if (scriptEntry.dbCallShouldDebug()) {
-
             Debug.report(scriptEntry, getName(), type.debug()
                     + name.debug()
                     + (location != null ? location.debug() : "")
@@ -235,7 +230,6 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     + (mask != null ? ArgumentHelper.debugList("mask", mask) : "")
                     + (fakeTo != null ? ArgumentHelper.debugList("fake_to", fakeTo) : "")
                     + (fakeDuration != null ? fakeDuration.debug() : ""));
-
         }
 
         CuboidBlockSet set;
@@ -302,16 +296,28 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                         CuboidBlockSet newSet;
                         newSet = SpongeSchematicHelper.fromSpongeStream(fs);
                         fs.close();
-                        Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), () -> {
+                        Runnable storeSchem = () -> {
                             schematics.put(name.asString().toUpperCase(), newSet);
                             scriptEntry.setFinished(true);
-                        });
+                        };
+                        if (delayed != null && delayed.asBoolean()) {
+                            Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), storeSchem);
+                        }
+                        else {
+                            storeSchem.run();
+                        }
                     }
                     catch (Exception ex) {
-                        Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), () -> {
+                        Runnable showError = () -> {
                             Debug.echoError(scriptEntry.getResidingQueue(), "Error loading schematic file " + name.asString() + ".");
                             Debug.echoError(scriptEntry.getResidingQueue(), ex);
-                        });
+                        };
+                        if (delayed != null && delayed.asBoolean()) {
+                            Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), showError);
+                        }
+                        else {
+                            showError.run();
+                        }
                         return;
                     }
                 };
@@ -479,16 +485,13 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     }
 
     public void schematicTags(ReplaceableTagEvent event) {
-
         if (!event.matches("schematic", "schem")) {
             return;
         }
         if (event.matches("schem")) {
             Deprecations.schematicShorthand.warn(event.getContext());
         }
-
         String id = event.hasNameContext() ? event.getNameContext().toUpperCase() : null;
-
         Attribute attribute = event.getAttributes().fulfill(1);
 
         // <--[tag]
@@ -500,11 +503,9 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         if (attribute.startsWith("list")) {
             event.setReplaced(new ListTag(schematics.keySet()).getAttribute(attribute.fulfill(1)));
         }
-
         if (id == null) {
             return;
         }
-
         if (!schematics.containsKey(id)) {
             // Meta below
             if (attribute.startsWith("exists")) {
@@ -512,16 +513,10 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                         .getAttribute(attribute.fulfill(1)));
                 return;
             }
-
             Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null, "Schematic file " + id + " is not loaded.");
             return;
         }
-
         CuboidBlockSet set = schematics.get(id);
-
-        //
-        // Check attributes
-        //
 
         // <--[tag]
         // @attribute <schematic[<name>].exists>

@@ -62,23 +62,18 @@ public class SpawnCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(EntityTag.class)) {
-
                 scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(LocationTag.class)) {
-
                 scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("target")
                     && arg.matchesArgumentType(EntityTag.class)
                     && arg.matchesPrefix("target")) {
-
                 scriptEntry.addObject("target", arg.asType(EntityTag.class));
             }
             else if (!scriptEntry.hasObject("spread")
@@ -87,24 +82,19 @@ public class SpawnCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("persistent")
                     && arg.matches("persistent")) {
-
                 scriptEntry.addObject("persistent", "");
             }
             else {
                 arg.reportUnhandled();
             }
         }
-
         // Use the NPC or player's locations as the location if one is not specified
         scriptEntry.defaultObject("location",
                 Utilities.entryHasNPC(scriptEntry) ? Utilities.getEntryNPC(scriptEntry).getLocation() : null,
                 Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getLocation() : null);
-
-        // Check to make sure required arguments have been filled
         if (!scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Must specify entity/entities!");
         }
-
         if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Must specify a location!");
         }
@@ -118,7 +108,6 @@ public class SpawnCommand extends AbstractCommand {
         EntityTag target = scriptEntry.getObjectTag("target");
         ElementTag spread = scriptEntry.getElement("spread");
         boolean persistent = scriptEntry.hasObject("persistent");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("entities", entities.toString()) +
                     location.debug() +
@@ -126,15 +115,9 @@ public class SpawnCommand extends AbstractCommand {
                     (target != null ? target.debug() : "") +
                     (persistent ? ArgumentHelper.debugObj("persistent", "true") : ""));
         }
-
-        // Keep a ListTag of entities that can be called using <entry[name].spawned_entities>
-        // later in the script queue
-
+        // Keep a ListTag of entities that can be called using <entry[name].spawned_entities> later in the script queue
         ListTag entityList = new ListTag();
-
-        // Go through all the entities and spawn them or teleport them,
-        // then set their targets if applicable
-
+        // Go through all the entities and spawn them or teleport them, then set their targets if applicable
         for (EntityTag entity : entities) {
             Location loc = location.clone();
             if (spread != null) {
@@ -142,11 +125,8 @@ public class SpawnCommand extends AbstractCommand {
                         0,
                         CoreUtilities.getRandom().nextInt(spread.asInt() * 2) - spread.asInt());
             }
-
             entity.spawnAt(loc);
-
             entityList.addObject(entity);
-
             if (!entity.isSpawned()) {
                 Debug.echoDebug(scriptEntry, "Failed to spawn " + entity + " (blocked by other plugin, script, or gamerule?).");
             }
@@ -159,10 +139,7 @@ public class SpawnCommand extends AbstractCommand {
                 }
             }
         }
-
-        // Add entities to context so that the specific entities created/spawned
-        // can be fetched.
-
+        // Add entities to context so that the specific entities created/spawned can be fetched.
         scriptEntry.addObject("spawned_entities", entityList);
         if (entities.size() != 0) {
             scriptEntry.addObject("spawned_entity", entities.get(0));
