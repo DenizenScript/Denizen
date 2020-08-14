@@ -96,14 +96,12 @@ public class PauseCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (arg.matchesArgumentType(DurationTag.class)
                     && !scriptEntry.hasObject("duration")) {
                 scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
-            if (!scriptEntry.hasObject("pause_type")
+            else if (!scriptEntry.hasObject("pause_type")
                     && arg.matchesEnum(PauseType.values())) {
                 scriptEntry.addObject("pause_type", arg.asElement());
             }
@@ -111,7 +109,6 @@ public class PauseCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         if (!scriptEntry.hasObject("pause_type")) {
             throw new InvalidArgumentsException("Must specify a pause type!");
         }
@@ -119,23 +116,17 @@ public class PauseCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         DurationTag duration = scriptEntry.getObjectTag("duration");
         ElementTag pauseTypeElement = scriptEntry.getElement("pause_type");
-
         PauseType pauseType = PauseType.valueOf(pauseTypeElement.asString().toUpperCase());
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), (duration == null ? "" : duration.debug()) + pauseTypeElement.debug());
         }
-
         NPCTag npc = null;
         if (Utilities.getEntryNPC(scriptEntry) != null) {
             npc = Utilities.getEntryNPC(scriptEntry);
         }
         pause(npc, pauseType, !scriptEntry.getCommandName().equalsIgnoreCase("RESUME"));
-
-        // If duration...
         if (duration != null) {
             if (durations.containsKey(npc.getCitizen().getId() + pauseType.name())) {
                 try {
@@ -145,10 +136,8 @@ public class PauseCommand extends AbstractCommand {
                     Debug.echoError(scriptEntry.getResidingQueue(), "There was an error pausing that!");
                     Debug.echoError(scriptEntry.getResidingQueue(), e);
                 }
-
             }
             Debug.echoDebug(scriptEntry, "Running delayed task: Unpause " + pauseType.toString());
-
             final NPCTag theNpc = npc;
             final ScriptEntry se = scriptEntry;
             durations.put(npc.getId() + pauseType.name(), DenizenAPI.getCurrentInstance()
@@ -166,21 +155,17 @@ public class PauseCommand extends AbstractCommand {
 
     public void pause(NPCTag denizen, PauseType pauseType, boolean pause) {
         switch (pauseType) {
-
             case WAYPOINTS:
                 denizen.getCitizen().getTrait(Waypoints.class).getCurrentProvider().setPaused(pause);
                 if (pause) {
                     denizen.getNavigator().cancelNavigation();
                 }
                 return;
-
             case ACTIVITY:
                 denizen.getCitizen().getDefaultGoalController().setPaused(pause);
                 return;
-
             case NAVIGATION:
                 // TODO: Finish this
         }
-
     }
 }

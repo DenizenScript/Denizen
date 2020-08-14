@@ -11,7 +11,7 @@ public class Position {
         for (Entity entity : entities) {
             if (entity != null) {
                 if (lastEntity != null && entity != lastEntity) {
-                    if (entity.getPassengers().contains(lastEntity)) {
+                    if (!entity.getPassengers().contains(lastEntity)) {
                         lastEntity.teleport(entity.getLocation());
                         entity.addPassenger(lastEntity);
                     }
