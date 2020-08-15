@@ -1,12 +1,12 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
@@ -14,27 +14,33 @@ public class ExplodeCommand extends AbstractCommand {
 
     public ExplodeCommand() {
         setName("explode");
-        setSyntax("explode (power:<#.#>) (<location>) (fire) (breakblocks)");
-        setRequiredArguments(0, 4);
+        setSyntax("explode (power:<#.#>) (<location>) (fire) (breakblocks) (source:<entity>)");
+        setRequiredArguments(0, 5);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Explode
-    // @Syntax explode (power:<#.#>) (<location>) (fire) (breakblocks)
+    // @Syntax explode (power:<#.#>) (<location>) (fire) (breakblocks) (source:<entity>)
     // @Required 0
-    // @Maximum 4
+    // @Maximum 5
     // @Short Causes an explosion at the location.
     // @Group world
     //
     // @Description
     // This command causes an explosion at the location specified (or the npc / player location).
     // By default, this will not destroy blocks or set fire to blocks within the explosion.
+    //
     // Specify the 'fire' argument to set blocks on fire within the explosion radius.
+    //
     // Specify the 'breakblocks' argument to cause the explosion to break blocks within the power radius.
+    //
     // If no power is specified, the default power will be 1.
+    //
     // If no location is given, the default will be the linked NPC or player's location.
     // It is highly recommended you specify a location to be safe.
+    //
+    // Optionally specify a source entity that will be tracked as the damage cause.
     //
     // @Tags
     // None
@@ -68,19 +74,26 @@ public class ExplodeCommand extends AbstractCommand {
                     && arg.matchesPrefix("power", "p")) {
                 scriptEntry.addObject("power", arg.asElement());
             }
+            else if (!scriptEntry.hasObject("source")
+                    && arg.matchesArgumentType(EntityTag.class)
+                    && arg.matchesPrefix("source")) {
+                scriptEntry.addObject("source", arg.asElement());
+            }
             else if (!scriptEntry.hasObject("breakblocks")
                     && arg.matches("breakblocks")) {
-                scriptEntry.addObject("breakblocks", "");
+                scriptEntry.addObject("breakblocks", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("fire")
                     && arg.matches("fire")) {
-                scriptEntry.addObject("fire", "");
+                scriptEntry.addObject("fire", new ElementTag(true));
             }
             else {
                 arg.reportUnhandled();
             }
         }
         scriptEntry.defaultObject("power", new ElementTag(1.0));
+        scriptEntry.defaultObject("fire", new ElementTag(false));
+        scriptEntry.defaultObject("breakblocks", new ElementTag(false));
         scriptEntry.defaultObject("location",
                 Utilities.entryHasNPC(scriptEntry) ? Utilities.getEntryNPC(scriptEntry).getLocation() : null,
                 Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getLocation() : null);
@@ -90,18 +103,20 @@ public class ExplodeCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(final ScriptEntry scriptEntry) {
-        final LocationTag location = scriptEntry.getObjectTag("location");
+    public void execute(ScriptEntry scriptEntry) {
+        LocationTag location = scriptEntry.getObjectTag("location");
         ElementTag power = scriptEntry.getElement("power");
-        boolean breakblocks = scriptEntry.hasObject("breakblocks");
-        boolean fire = scriptEntry.hasObject("fire");
+        ElementTag breakblocks = scriptEntry.getElement("breakblocks");
+        ElementTag fire = scriptEntry.getElement("fire");
+        EntityTag source = scriptEntry.getObjectTag("source");
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
-                    (ArgumentHelper.debugObj("location", location.toString()) +
-                            ArgumentHelper.debugObj("power", power) +
-                            ArgumentHelper.debugObj("breakblocks", breakblocks) +
-                            ArgumentHelper.debugObj("fire", fire)));
+                    location.debug() +
+                            (source == null ? "" : source.debug()) +
+                            power.debug() +
+                            breakblocks.debug() +
+                            fire.debug());
         }
-        location.getWorld().createExplosion(location.getX(), location.getY(), location.getZ(), power.asFloat(), fire, breakblocks);
+        location.getWorld().createExplosion(location, power.asFloat(), fire.asBoolean(), breakblocks.asBoolean(), source == null ? null : source.getBukkitEntity());
     }
 }
