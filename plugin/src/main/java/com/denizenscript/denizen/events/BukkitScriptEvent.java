@@ -43,7 +43,8 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // "<entity>", "<projectile>", "<vehicle>", etc. are examples of where an EntityTag will be expected.
     // You can generally specify any potentially relevant entity type, such as "creeper" under "<entity>", or "arrow" for "<projectile>",
     // but you can also specify "entity" (catch-all), "player" (real players, NOT player-type NPCs), "npc" (Citizens NPC),
-    // "vehicle" (minecarts, boats, horses, etc), "fish" (cod, pufferfish, etc), "projectile" (arrow, trident, etc), "hanging" (painting, item_frame, etc), "monster".
+    // "vehicle" (minecarts, boats, horses, etc), "fish" (cod, pufferfish, etc), "projectile" (arrow, trident, etc), "hanging" (painting, item_frame, etc),
+    // "monster" (creepers, zombies, etc), "animals" (pigs, cows, etc), "mob" (creepers, pigs, etc).
     //
     // "<item>" or similar expects of course an ItemTag.
     // You can use any valid item material type like "stick", or the name of an item script, or "item" as a catch-all, or "potion" for any potion item.
@@ -104,7 +105,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return genericCouldMatchChecks(text, this::couldMatchInventory);
     }
 
-    public static HashSet<String> specialEntityMatchables = new HashSet<>(Arrays.asList("player", "entity", "npc", "vehicle", "fish", "projectile", "hanging", "monster"));
+    public static HashSet<String> specialEntityMatchables = new HashSet<>(Arrays.asList("player", "entity", "npc", "vehicle", "fish", "projectile", "hanging", "monster", "mob", "animal"));
 
     public boolean couldMatchEntity(String text) {
         if (specialEntityMatchables.contains(text)) {
@@ -758,6 +759,12 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
         else if (comparedto.equals("monster")) {
             return bEntity instanceof Monster;
+        }
+        else if (comparedto.equals("mob")) {
+            return bEntity instanceof Mob;
+        }
+        else if (comparedto.equals("animal")) {
+            return bEntity instanceof Animals;
         }
         MatchHelper matcher = createMatcher(comparedto);
         if (entity.getEntityScript() != null && matcher.doesMatch(entity.getEntityScript())) {

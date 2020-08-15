@@ -2260,9 +2260,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         registerTag("is_mob", (attribute, object) -> {
             if (object.entity == null && object.entity_type != null) {
                 EntityType type = object.entity_type.getBukkitEntityType();
-                return new ElementTag(type != EntityType.PLAYER && LivingEntity.class.isAssignableFrom(type.getEntityClass()));
+                return new ElementTag(Mob.class.isAssignableFrom(type.getEntityClass()));
             }
-            return new ElementTag(!object.isPlayer() && !object.isNPC() && object.isLivingEntity());
+            return new ElementTag(!object.isNPC() && object.getBukkitEntity() instanceof Mob);
         });
 
         // <--[tag]
