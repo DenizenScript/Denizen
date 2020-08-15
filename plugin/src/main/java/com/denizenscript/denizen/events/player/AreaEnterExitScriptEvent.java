@@ -28,6 +28,8 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
     // @Events
     // player enters <area>
     // player exits <area>
+    // player enters/exits cuboid
+    // player enters/exits ellipsoid
     //
     // @Regex ^on player (enters|exits) [^\s]+$
     //
@@ -85,8 +87,24 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         if (!isEntering && !path.eventArgLowerAt(1).equals("exits")) {
             return false;
         }
-        if (!createMatcher(path.eventArgLowerAt(2)).doesMatch(area.getNoteName())) {
-            return false;
+        String areaName = path.eventArgLowerAt(2);
+        if (areaName.equals("notable")) {
+            areaName = path.eventArgLowerAt(3);
+        }
+        if (areaName.equals("cuboid")) {
+            if (!(area instanceof CuboidTag)) {
+                return false;
+            }
+        }
+        else if (areaName.equals("ellipsoid")) {
+            if (!(area instanceof EllipsoidTag)) {
+                return false;
+            }
+        }
+        else {
+            if (!runGenericCheck(areaName, area.getNoteName())) {
+                return false;
+            }
         }
         return super.matches(path);
     }
@@ -157,7 +175,14 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         List<MatchHelper> matchList = new ArrayList<>();
         for (ScriptPath path : eventPaths) {
             String area = path.eventArgLowerAt(2);
-            if (area.equals("notable") && path.eventArgLowerAt(3).equals("cuboid")) {
+            if (area.equals("notable")) {
+                area = path.eventArgLowerAt(3);
+            }
+            if (area.equals("cuboid")) {
+                doTrackAll = true;
+                break;
+            }
+            else if (area.equals("ellipsoid")) {
                 doTrackAll = true;
                 break;
             }
@@ -253,7 +278,7 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
             for (String name : exactTracked) {
                 Notable obj = NotableManager.getSavedObject(name);
                 if (!(obj instanceof AreaContainmentObject)) {
-                    Debug.echoError("Invalid cuboid enter/exit event area '" + name + "'");
+                    Debug.echoError("Invalid area enter/exit event area '" + name + "'");
                     continue;
                 }
                 processSingle((AreaContainmentObject) obj, player, inAreas, pos, eventCause);
