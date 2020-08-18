@@ -60,10 +60,9 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
         String ani = path.eventArgLowerAt(2);
-        if (ani.length() > 0 && !ani.equals("in") && !ani.equalsIgnoreCase(animation)) {
+        if (ani.length() > 0 && !ani.equals("in") && !runGenericCheck(ani, animation)) {
             return false;
         }
-
         return super.matches(path);
     }
 

@@ -7,7 +7,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
@@ -53,7 +52,7 @@ public class PlayerChangesGamemodeScriptEvent extends BukkitScriptEvent implemen
     public boolean matches(ScriptPath path) {
         String mode = path.eventArgLowerAt(4);
         if (mode.length() > 0) {
-            if (!CoreUtilities.equalsIgnoreCase(gamemode.asString(), mode)) {
+            if (!runGenericCheck(mode, gamemode.asString())) {
                 return false;
             }
         }

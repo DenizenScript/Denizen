@@ -48,9 +48,6 @@ public class ExperienceBottleBreaksScriptEvent extends BukkitScriptEvent impleme
         if (!path.eventLower.startsWith("experience bottle breaks")) {
             return false;
         }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
         return true;
     }
 

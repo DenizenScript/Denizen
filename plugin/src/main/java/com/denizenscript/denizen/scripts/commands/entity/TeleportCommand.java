@@ -60,7 +60,7 @@ public class TeleportCommand extends AbstractCommand {
     // - teleport <server.online_players> <player.location>
     //
     // @Usage
-    // Use to teleport the NPC to a location that was noted wih the <@link commmand note> command.
+    // Use to teleport the NPC to a location that was noted wih the <@link command note> command.
     // - teleport <npc> my_prenoted_location
     // -->
 

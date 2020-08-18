@@ -7,7 +7,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -68,20 +67,16 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean matches(ScriptPath path) {
-
         if (!tryEntity(entity, path.eventArgLowerAt(0))) {
             return false;
         }
-
         if (path.eventArgLowerAt(2).equals("because")
-                && !CoreUtilities.equalsIgnoreCase(path.eventArgLowerAt(3), reason.toString())) {
+                && !runGenericCheck(path.eventArgLowerAt(3), reason.toString())) {
             return false;
         }
-
         if (!runInCheck(path, location)) {
             return false;
         }
-
         return super.matches(path);
     }
 
@@ -120,5 +115,4 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
         fire(event);
         EntityTag.forgetEntity(entity);
     }
-
 }
