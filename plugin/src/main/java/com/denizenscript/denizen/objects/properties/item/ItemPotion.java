@@ -421,7 +421,6 @@ public class ItemPotion implements Property {
                     pot.setHasExtendedDuration(data2.asBoolean());
                 }
                 pot.setSplash(data3.asBoolean());
-                item.setDurability((short) 0);
                 pot.apply(item.getItemStack());
             }
         }

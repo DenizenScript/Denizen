@@ -35,6 +35,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.BlockStateMeta;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
@@ -105,15 +106,6 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
             string = string.substring("i@".length());
         }
         string = CoreUtilities.toLowerCase(string);
-        int commaIndex = string.indexOf(',');
-        if (commaIndex == -1) {
-            commaIndex = string.indexOf(':');
-        }
-        String dataValue = null;
-        if (commaIndex != -1) {
-            dataValue = string.substring(commaIndex + 1);
-            string = string.substring(0, commaIndex);
-        }
         try {
             if (ScriptRegistry.containsScript(string, ItemScriptContainer.class)) {
                 ItemScriptContainer isc = ScriptRegistry.getScriptContainerAs(string, ItemScriptContainer.class);
@@ -145,9 +137,6 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
                 stack = new ItemTag(mat.getMaterial());
             }
             if (stack != null) {
-                if (dataValue != null) {
-                    stack.setDurability(Short.valueOf(dataValue));
-                }
                 return stack;
             }
         }
@@ -425,19 +414,13 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
     }
 
     public void setDurability(short value) {
-        if (item != null) {
-            item.setDurability(value);
-        }
-    }
-
-    public void setData(byte value) {
-        if (item != null) {
-            item.getData().setData(value);
+        if (getItemMeta() instanceof Damageable) {
+            ((Damageable) item.getItemMeta()).setDamage(value);
         }
     }
 
     public boolean isRepairable() {
-        return item.getType().getMaxDurability() > 0;
+        return getItemMeta() instanceof Damageable;
     }
 
     //////////////////////////////

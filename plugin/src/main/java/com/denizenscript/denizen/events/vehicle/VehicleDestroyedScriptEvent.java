@@ -88,10 +88,7 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        if (entity != null) {
-            return new BukkitScriptEntryData(entity);
-        }
-        return new BukkitScriptEntryData(null, null);
+        return new BukkitScriptEntryData(entity);
     }
 
     @Override

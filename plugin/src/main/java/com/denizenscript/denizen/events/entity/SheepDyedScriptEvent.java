@@ -1,11 +1,9 @@
 package com.denizenscript.denizen.events.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.DyeColor;
 import org.bukkit.event.EventHandler;
@@ -89,11 +87,6 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
             }
         }
         return super.applyDetermination(path, determinationObj);
-    }
-
-    @Override
-    public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(null, null);
     }
 
     @Override

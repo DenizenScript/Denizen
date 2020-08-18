@@ -2,11 +2,9 @@ package com.denizenscript.denizen.events.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
@@ -93,11 +91,6 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
             return true;
         }
         return super.applyDetermination(path, determinationObj);
-    }
-
-    @Override
-    public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(null, null);
     }
 
     @Override

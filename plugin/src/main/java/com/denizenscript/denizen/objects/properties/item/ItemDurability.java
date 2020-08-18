@@ -6,6 +6,7 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
+import org.bukkit.inventory.meta.Damageable;
 
 public class ItemDurability implements Property {
 
@@ -53,7 +54,7 @@ public class ItemDurability implements Property {
         // Returns the current durability (number of uses) on the item.
         // -->
         if (attribute.startsWith("durability")) {
-            return new ElementTag(item.getItemStack().getDurability())
+            return new ElementTag(((Damageable) item.getItemMeta()).getDamage())
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
@@ -75,8 +76,9 @@ public class ItemDurability implements Property {
 
     @Override
     public String getPropertyString() {
-        if (item.getItemStack().getDurability() != 0) {
-            return String.valueOf(item.getItemStack().getDurability());
+        int durability = ((Damageable) item.getItemMeta()).getDamage();
+        if (durability != 0) {
+            return String.valueOf(durability);
         }
         else {
             return null;
@@ -103,7 +105,6 @@ public class ItemDurability implements Property {
         // <ItemTag.repairable>
         // -->
         if (mechanism.matches("durability") && mechanism.requireInteger()) {
-            item.getItemStack().getData().setData((byte) mechanism.getValue().asInt());
             item.setDurability((short) mechanism.getValue().asInt());
         }
     }
