@@ -414,8 +414,10 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
     }
 
     public void setDurability(short value) {
-        if (getItemMeta() instanceof Damageable) {
-            ((Damageable) item.getItemMeta()).setDamage(value);
+        ItemMeta meta = getItemMeta();
+        if (meta instanceof Damageable) {
+            ((Damageable) meta).setDamage(value);
+            setItemMeta(meta);
         }
     }
 
