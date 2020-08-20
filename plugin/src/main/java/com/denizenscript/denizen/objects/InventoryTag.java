@@ -1700,9 +1700,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     qty = attribute.getIntContext(3);
                     attribute.fulfill(1);
                 }
-
                 int found_items = 0;
-
                 if (strict) {
                     for (ItemStack item : object.getContents()) {
                         if (item != null && item.getType() == Material.WRITTEN_BOOK
@@ -1741,7 +1739,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                         }
                     }
                 }
-
                 attribute.fulfill(1);
                 return new ElementTag(found_items >= qty);
             }
@@ -1784,9 +1781,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     qty = attribute.getIntContext(3);
                     attribute.fulfill(1);
                 }
-
                 int found_items = 0;
-
                 if (strict) {
                     strict_items:
                     for (ItemStack item : object.getContents()) {
@@ -1831,7 +1826,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     }
                 }
                 attribute.fulfill(1);
-
                 return new ElementTag(found_items >= qty);
             }
             // <--[tag]
@@ -1864,19 +1858,19 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     qty = attribute.getIntContext(3);
                     attribute.fulfill(1);
                 }
-
                 int found_items = 0;
-
                 for (ItemStack item : object.getContents()) {
-                    if (item != null && scrNames.contains(CoreUtilities.toLowerCase(new ItemTag(item).getScriptName()))) {
-                        found_items += item.getAmount();
-                        if (found_items >= qty) {
-                            break;
+                    if (item != null) {
+                        String itemName = new ItemTag(item).getScriptName();
+                        if (itemName != null && scrNames.contains(CoreUtilities.toLowerCase(itemName))) {
+                            found_items += item.getAmount();
+                            if (found_items >= qty) {
+                                break;
+                            }
                         }
                     }
                 }
                 attribute.fulfill(1);
-
                 return new ElementTag(found_items >= qty);
             }
             // <--[tag]
@@ -1905,9 +1899,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     qty = attribute.getIntContext(3);
                     attribute.fulfill(1);
                 }
-
                 int found_items = 0;
-
                 for (ItemStack item : object.getContents()) {
                     if (CustomNBT.hasCustomNBT(item, keyName, CustomNBT.KEY_DENIZEN)) {
                         found_items += item.getAmount();
@@ -1917,7 +1909,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     }
                 }
                 attribute.fulfill(1);
-
                 return new ElementTag(found_items >= qty);
             }
             // <--[tag]
@@ -1946,9 +1937,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     qty = attribute.getIntContext(3);
                     attribute.fulfill(1);
                 }
-
                 int found_items = 0;
-
                 mainLoop:
                 for (ItemStack item : object.getContents()) {
                     if (item == null) {
@@ -1964,7 +1953,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     }
                 }
                 attribute.fulfill(1);
-
                 return new ElementTag(found_items >= qty);
             }
             if (!attribute.hasContext(1)) {
