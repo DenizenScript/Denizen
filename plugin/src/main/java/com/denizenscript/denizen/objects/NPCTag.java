@@ -1367,17 +1367,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             }
         }
 
-        // <--[mechanism]
-        // @object NPCTag
-        // @name spawn
-        // @input LocationTag
-        // @description
-        // Spawns the NPC at a location. If no location is specified, the NPC will spawn
-        // at its last known location.
-        // @tags
-        // <NPCTag.is_spawned>
-        // -->
         if (mechanism.matches("spawn")) {
+            Deprecations.npcSpawnMechanism.warn(mechanism.context);
             if (mechanism.requireObject("Invalid LocationTag specified. Assuming last known NPC location.", LocationTag.class)) {
                 getCitizen().spawn(mechanism.valueAsType(LocationTag.class));
             }
