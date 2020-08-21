@@ -14,8 +14,7 @@ import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.meta.BlockStateMeta;
@@ -733,6 +732,24 @@ public class MaterialTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <MaterialTag.has_vanilla_data_tag[<data_tag_name>]>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns whether this material has the specified Minecraft vanilla Data Pack Tag.
+        // See <@link url https://minecraft.gamepedia.com/Tag>.
+        // -->
+        registerTag("has_data_tag", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("MaterialTag.has_vanilla_data_tag[...] tag must have an input value.");
+                return null;
+            }
+            NamespacedKey key = NamespacedKey.minecraft(CoreUtilities.toLowerCase(attribute.getContext(1)));
+            Tag<Material> tagBlock = Bukkit.getTag("blocks", key, Material.class);
+            Tag<Material> tagItem = Bukkit.getTag("items", key, Material.class);
+            return new ElementTag((tagBlock != null && tagBlock.isTagged(object.getMaterial()) || (tagItem != null && tagItem.isTagged(object.getMaterial()))));
+        });
+
+        // <--[tag]
         // @attribute <MaterialTag.with[<mechanism>=<value>;...]>
         // @returns MaterialTag
         // @group properties
@@ -741,7 +758,8 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // -->
         registerTag("with", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
-                Debug.echoError("MaterialTag.with[...] tag must have an input mechanism list.");
+                attribute.echoError("MaterialTag.with[...] tag must have an input mechanism list.");
+                return null;
             }
             MaterialTag mat = new MaterialTag(object.getModernData().clone());
             List<String> properties = ObjectFetcher.separateProperties("[" + attribute.getContext(1) + "]");
