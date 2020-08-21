@@ -738,7 +738,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // Returns whether this material has the specified Minecraft vanilla Data Pack Tag.
         // See <@link url https://minecraft.gamepedia.com/Tag>.
         // -->
-        registerTag("has_data_tag", (attribute, object) -> {
+        registerTag("has_vanilla_data_tag", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("MaterialTag.has_vanilla_data_tag[...] tag must have an input value.");
                 return null;

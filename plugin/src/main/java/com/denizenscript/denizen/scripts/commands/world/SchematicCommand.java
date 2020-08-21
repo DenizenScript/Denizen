@@ -238,14 +238,17 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             case CREATE: {
                 if (schematics.containsKey(name.asString().toUpperCase())) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is already loaded.");
+                    scriptEntry.setFinished(true);
                     return;
                 }
                 if (cuboid == null) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Missing cuboid argument!");
+                    scriptEntry.setFinished(true);
                     return;
                 }
                 if (location == null) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin location argument!");
+                    scriptEntry.setFinished(true);
                     return;
                 }
                 try {
@@ -273,18 +276,21 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             case LOAD: {
                 if (schematics.containsKey(name.asString().toUpperCase())) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is already loaded.");
+                    scriptEntry.setFinished(true);
                     return;
                 }
                 String directory = URLDecoder.decode(System.getProperty("user.dir"));
                 File f = new File(directory + "/plugins/Denizen/schematics/" + fname + ".schem");
                 if (!Utilities.canReadFile(f)) {
                     Debug.echoError("Server config denies reading files in that location.");
+                    scriptEntry.setFinished(true);
                     return;
                 }
                 if (!f.exists()) {
                     f = new File(directory + "/plugins/Denizen/schematics/" + fname + ".schematic");
                     if (!f.exists()) {
                         Debug.echoError("Schematic file " + fname + " does not exist. Are you sure it's in " + directory + "/plugins/Denizen/schematics/?");
+                        scriptEntry.setFinished(true);
                         return;
                     }
                 }
@@ -317,6 +323,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                         else {
                             showError.run();
                         }
+                        scriptEntry.setFinished(true);
                         return;
                     }
                 };
@@ -332,6 +339,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             case UNLOAD: {
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
+                    scriptEntry.setFinished(true);
                     return;
                 }
                 schematics.remove(name.asString().toUpperCase());
@@ -341,10 +349,12 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             case ROTATE: {
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
+                    scriptEntry.setFinished(true);
                     return;
                 }
                 if (angle == null) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Missing angle argument!");
+                    scriptEntry.setFinished(true);
                     return;
                 }
                 Runnable rotateRunnable = () -> {
@@ -373,6 +383,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             case FLIP_X: {
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
+                    scriptEntry.setFinished(true);
                     return;
                 }
                 schematics.get(name.asString().toUpperCase()).flipX();
@@ -382,6 +393,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             case FLIP_Y: {
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
+                    scriptEntry.setFinished(true);
                     return;
                 }
                 schematics.get(name.asString().toUpperCase()).flipY();
@@ -391,6 +403,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             case FLIP_Z: {
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
+                    scriptEntry.setFinished(true);
                     return;
                 }
                 schematics.get(name.asString().toUpperCase()).flipZ();
@@ -400,10 +413,12 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             case PASTE: {
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
+                    scriptEntry.setFinished(true);
                     return;
                 }
                 if (location == null) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Missing location argument!");
+                    scriptEntry.setFinished(true);
                     return;
                 }
                 try {
@@ -437,6 +452,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                 catch (Exception ex) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Exception pasting schematic file " + name.asString() + ".");
                     Debug.echoError(scriptEntry.getResidingQueue(), ex);
+                    scriptEntry.setFinished(true);
                     return;
                 }
                 break;
@@ -452,6 +468,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                 File f = new File(directory + "/plugins/Denizen/schematics/" + fname + extension);
                 if (!Utilities.canWriteToFile(f)) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Cannot edit that file!");
+                    scriptEntry.setFinished(true);
                     return;
                 }
                 Runnable saveRunnable = () -> {
@@ -468,6 +485,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                             Debug.echoError(scriptEntry.getResidingQueue(), "Error saving schematic file " + fname + ".");
                             Debug.echoError(scriptEntry.getResidingQueue(), ex);
                         });
+                        scriptEntry.setFinished(true);
                         return;
                     }
                 };
