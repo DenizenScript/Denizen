@@ -488,9 +488,12 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         if (inventory != null && NMSHandler.getInstance().getTitle(inventory).equals(title)) {
             return;
         }
+        uniquifier = null;
         if (inventory == null) {
             inventory = Bukkit.getServer().createInventory(null, maxSlots, title);
-            loadIdentifiers();
+            if (!getIdType().equals("script")) {
+                loadIdentifiers();
+            }
             return;
         }
         else if (notableColors != null) {
@@ -506,7 +509,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             inventory = Bukkit.getServer().createInventory(null, inventory.getType(), title);
         }
         inventory.setContents(contents);
-        loadIdentifiers();
+        if (!getIdType().equals("script")) {
+            loadIdentifiers();
+        }
+        trackTemporaryInventory(this);
     }
 
     public boolean containsItem(ItemTag item, int amount) {
@@ -614,7 +620,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             return;
         }
         trackTemporaryInventory(this);
-
         if (holder != null) {
             if (holder instanceof NPCTag) {
                 idType = "npc";
