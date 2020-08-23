@@ -295,9 +295,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         if (string == null) {
             return null;
         }
-
-        ///////
-        // Handle objects with properties through the object fetcher
         if (ObjectFetcher.isObjectWithProperties(string)) {
             InventoryTag result = ObjectFetcher.getObjectFrom(InventoryTag.class, string, context);
             if (result != null && result.uniquifier != null) {
@@ -310,21 +307,17 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             trackTemporaryInventory(result);
             return result;
         }
-
         if (string.startsWith("in@")) {
             string = string.substring("in@".length());
         }
-
         if (ScriptRegistry.containsScript(string, InventoryScriptContainer.class)) {
             return ScriptRegistry.getScriptContainerAs(string, InventoryScriptContainer.class).getInventoryFrom(
                     context == null ? null : ((BukkitTagContext) context).player, context == null ? null : ((BukkitTagContext) context).npc);
         }
-
         Notable noted = NotableManager.getSavedObject(string);
         if (noted instanceof InventoryTag) {
             return (InventoryTag) noted;
         }
-
         for (String idType : idTypes) {
             if (string.equalsIgnoreCase(idType)) {
                 InventoryTag result = new InventoryTag(string);
@@ -332,7 +325,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 return result;
             }
         }
-
         if (context == null || context.debug) {
             Debug.echoError("Value of InventoryTag returning null. Invalid InventoryTag specified: " + string);
         }
@@ -346,11 +338,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
      * @return true if matched, otherwise false
      */
     public static boolean matches(String arg) {
-
         if (CoreUtilities.toLowerCase(arg).startsWith("in@")) {
             return true;
         }
-
         String tid = arg;
         if (arg.contains("[")) {
             tid = arg.substring(0, arg.indexOf('['));
@@ -358,21 +348,17 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         if (new ElementTag(tid).matchesEnum(InventoryType.values())) {
             return true;
         }
-
         if (ScriptRegistry.containsScript(tid, InventoryScriptContainer.class)) {
             return true;
         }
-
         if (NotableManager.isType(tid, InventoryTag.class)) {
             return true;
         }
-
         for (String idType : idTypes) {
             if (tid.equalsIgnoreCase(idType)) {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -916,7 +902,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         if (inventory == null || items == null) {
             return this;
         }
-
         for (int i = 0; i < items.length; i++) {
             ItemStack item = items[i];
             if (item == null) {
@@ -927,12 +912,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             while (true) {
                 // Do we already have a stack of it?
                 int firstPartial = firstPartial(slot, item);
-
                 // Drat! no partial stack
                 if (firstPartial == -1) {
                     // Find a free spot!
                     int firstFree = firstEmpty(slot);
-
                     if (firstFree == -1) {
                         // No space at all!
                         break;
@@ -955,23 +938,19 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 else {
                     // So, apparently it might only partially fit, well lets do just that
                     ItemStack partialItem = inventory.getItem(firstPartial);
-
                     int partialAmount = partialItem.getAmount();
                     int total = amount + partialAmount;
-
                     // Check if it fully fits
                     if (total <= max) {
                         partialItem.setAmount(total);
                         break;
                     }
-
                     // It fits partially
                     partialItem.setAmount(max);
                     item.setAmount(amount = total - max);
                 }
             }
         }
-
         return this;
     }
 
@@ -979,9 +958,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         if (inventory == null || items == null) {
             return null;
         }
-
         List<ItemStack> leftovers = new ArrayList<>();
-
         for (int i = 0; i < items.length; i++) {
             ItemStack item = items[i];
             if (item == null) {
@@ -998,7 +975,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             while (true) {
                 // Do we already have a stack of it?
                 int firstPartial = firstPartial(slot, item);
-
                 // Drat! no partial stack
                 if (firstPartial == -1) {
                     // Find a free spot!
@@ -1027,23 +1003,19 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 else {
                     // So, apparently it might only partially fit, well lets do just that
                     ItemStack partialItem = inventory.getItem(firstPartial);
-
                     int partialAmount = partialItem.getAmount();
                     int total = amount + partialAmount;
-
                     // Check if it fully fits
                     if (total <= max) {
                         partialItem.setAmount(total);
                         break;
                     }
-
                     // It fits partially
                     partialItem.setAmount(max);
                     item.setAmount(amount = total - max);
                 }
             }
         }
-
         return leftovers;
     }
 
@@ -1051,9 +1023,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         if (inventory == null || items == null) {
             return null;
         }
-
         List<ItemStack> leftovers = new ArrayList<>();
-
         for (int i = 0; i < items.length; i++) {
             ItemStack item = items[i];
             try {
@@ -1063,7 +1033,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 leftovers.add(i + slot, item);
             }
         }
-
         return leftovers;
     }
 
@@ -1111,9 +1080,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         if (inventory == null) {
             return 0;
         }
-
         int qty = 0;
-
         for (ItemStack invStack : inventory) {
             // If ItemStacks are empty here, they are null
             if (invStack != null) {
@@ -1125,7 +1092,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 }
             }
         }
-
         return qty;
     }
 
@@ -1138,38 +1104,28 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
      */
 
     public InventoryTag keep(ItemStack[] items) {
-
         if (inventory == null || items == null) {
             return this;
         }
-
         for (ItemStack invStack : inventory) {
-
             if (invStack != null) {
-
                 boolean keep = false;
-
                 // See if the item array contains
                 // this inventory item
                 for (ItemStack item : items) {
-
                     if (invStack.isSimilar(item)) {
-
                         keep = true;
                         break;
                     }
                 }
-
                 // If the item array did not contain
                 // this inventory item, remove it
                 // from the inventory
                 if (!keep) {
-
                     this.remove(invStack);
                 }
             }
         }
-
         return this;
     }
 
@@ -1183,20 +1139,15 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
      */
 
     public InventoryTag exclude(ItemStack[] items) {
-
         if (inventory == null || items == null) {
             return this;
         }
-
         int oldCount = this.count(null, false);
         int newCount = -1;
-
         while (oldCount != newCount) {
-
             oldCount = newCount;
             newCount = this.remove(items).count(null, false);
         }
-
         return this;
     }
 
@@ -1210,20 +1161,15 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
      */
 
     public InventoryTag fill(ItemStack[] items) {
-
         if (inventory == null || items == null) {
             return this;
         }
-
         int oldCount = this.count(null, false);
         int newCount = -1;
-
         while (oldCount != newCount) {
-
             oldCount = newCount;
             newCount = this.add(0, items).count(null, false);
         }
-
         return this;
     }
 
@@ -1236,17 +1182,14 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
      */
 
     public InventoryTag remove(ItemStack[] items) {
-
         if (inventory == null || items == null) {
             return this;
         }
-
         for (ItemStack item : items) {
             if (item != null) {
                 inventory.removeItem(item.clone());
             }
         }
-
         return this;
     }
 
@@ -1264,31 +1207,23 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
      */
 
     public InventoryTag removeBook(String title, String author, int quantity) {
-
         if (inventory == null || (title == null && author == null)) {
             return this;
         }
-
         for (ItemStack invStack : inventory) {
-
             if (quantity == 0) {
                 break;
             }
-
             if (invStack != null && invStack.getItemMeta() instanceof BookMeta) {
-
                 BookMeta invMeta = (BookMeta) invStack.getItemMeta();
-
                 String invTitle = invMeta.getTitle();
                 String invAuthor = invMeta.getAuthor();
-
                 if ((invTitle == null && title != null) || (invAuthor == null && author != null)) {
                     continue;
                 }
                 else if (invTitle == null || invAuthor == null) {
                     continue;
                 }
-
                 if (equalOrNull(invAuthor, author) && equalOrNull(invTitle, title)) {
                     // Make sure we don't remove more books than we need to
                     // TODO: WTF is this logic???
@@ -1303,7 +1238,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 }
             }
         }
-
         return this;
     }
 
@@ -1319,21 +1253,16 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
      */
 
     public void replace(InventoryTag destination) {
-
         if (inventory == null || destination == null) {
             return;
         }
-
         // If the destination is smaller than our current inventory,
         // add as many items as possible
-
         if (destination.getSize() < this.getSize()) {
-
             destination.clear();
             destination.add(0, this.getContents());
         }
         else {
-
             destination.setContents(this.getContents());
         }
     }
@@ -1350,11 +1279,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
      * @return The resulting InventoryTag
      */
     public InventoryTag setSlots(int slot, ItemStack[] items, int c) {
-
         if (inventory == null || items == null) {
             return this;
         }
-
         for (int i = 0; i < c; i++) {
             if (i >= items.length || items[i] == null) {
                 NMSHandler.getItemHelper().setInventoryItem(inventory, new ItemStack(Material.AIR), slot + i);
@@ -1369,7 +1296,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             NPCTag.valueOf(idHolder, CoreUtilities.basicContext).getInventoryTrait().setContents(inventory.getContents());
         }
         return this;
-
     }
 
     public void clear() {
@@ -1415,16 +1341,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             }
             return "in@" + (getIdType().equals("script") ? idHolder
                     : (idType + PropertyParser.getPropertiesString(this)));
-        }
-    }
-
-    public String bestName() {
-        if (isUnique()) {
-            return NotableManager.getSavedId(this);
-        }
-        else {
-            return (getIdType().equals("script") || getIdType().equals("notable")
-                    ? idHolder : (idType));
         }
     }
 
