@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.util.jnbt.*;
 import com.denizenscript.denizen.objects.properties.entity.EntityDisabledSlots.Action;
+import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -55,7 +56,6 @@ public class CustomNBT {
             return null;
         }
         CompoundTag compoundTag = NMSHandler.getItemHelper().getNbtData(itemStack);
-
         List<CompoundTag> attribs = new ArrayList<>();
         if (compoundTag.getValue().containsKey(KEY_ATTRIBUTES)) {
             List<Tag> temp = (List<Tag>) compoundTag.getValue().get(KEY_ATTRIBUTES).getValue();
@@ -63,9 +63,7 @@ public class CustomNBT {
                 attribs.add((CompoundTag) tag);
             }
         }
-
         List<AttributeReturn> attrs = new ArrayList<>();
-
         for (int i = 0; i < attribs.size(); i++) {
             CompoundTag ct = attribs.get(i);
             AttributeReturn atr = new AttributeReturn();
@@ -109,7 +107,6 @@ public class CustomNBT {
             }
             attrs.add(atr);
         }
-
         return attrs;
     }
 
@@ -132,12 +129,38 @@ public class CustomNBT {
         }
     }
 
+    public static final AsciiMatcher uppercaseMatcher = new AsciiMatcher("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+
+    public static final HashMap<String, String> attributeNameUpdates = new HashMap<>();
+
+    static {
+        attributeNameUpdates.put("generic.maxHealth", "generic.max_health");
+        attributeNameUpdates.put("generic.followRange", "generic.follow_range");
+        attributeNameUpdates.put("generic.knockbackResistance", "generic.knockback_resistance");
+        attributeNameUpdates.put("generic.movementSpeed", "generic.movement_speed");
+        attributeNameUpdates.put("generic.flyingSpeed", "generic.flying_speed");
+        attributeNameUpdates.put("generic.attackDamage", "generic.attack_damage");
+        attributeNameUpdates.put("generic.attackKnockback", "generic.attack_knockback");
+        attributeNameUpdates.put("generic.attackSpeed", "generic.attack_speed");
+        attributeNameUpdates.put("generic.armorToughness", "generic.armor_toughness");
+    }
+
+    public static String fixAttributeName1_16(String input) {
+        if (!uppercaseMatcher.containsAnyMatch(input)) {
+            return input;
+        }
+        String replacement = attributeNameUpdates.get(input);
+        if (replacement != null) {
+            return replacement;
+        }
+        return CoreUtilities.toLowerCase(input);
+    }
+
     public static ItemStack addAttribute(ItemStack itemStack, String attr, String slot, int op, double amt) {
         if (itemStack == null || itemStack.getType() == Material.AIR) {
             return null;
         }
         CompoundTag compoundTag = NMSHandler.getItemHelper().getNbtData(itemStack);
-
         List<CompoundTag> attribs = new ArrayList<>();
         if (compoundTag.getValue().containsKey(KEY_ATTRIBUTES)) {
             List<Tag> temp = (List<Tag>) compoundTag.getValue().get(KEY_ATTRIBUTES).getValue();
@@ -145,18 +168,17 @@ public class CustomNBT {
                 attribs.add((CompoundTag) tag);
             }
         }
-
         HashMap<String, Tag> tmap = new HashMap<>();
-
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
+            attr = fixAttributeName1_16(attr);
+        }
         tmap.put("AttributeName", new StringTag(attr));
         tmap.put("Name", new StringTag(attr));
         tmap.put("Slot", new StringTag(slot));
         tmap.put("Operation", new IntTag(op));
         tmap.put("Amount", new DoubleTag(amt));
-
         long uuidhelp = uuidChoice(itemStack);
         UUID fullUuid = new UUID(uuidhelp + 88512 + attribs.size(), uuidhelp * 2 + 1250025L + attribs.size());
-
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
             tmap.put("UUID", NMSHandler.getItemHelper().convertUuidToNbt(fullUuid));
         }
@@ -164,12 +186,10 @@ public class CustomNBT {
             tmap.put("UUIDMost", new LongTag(fullUuid.getMostSignificantBits()));
             tmap.put("UUIDLeast", new LongTag(fullUuid.getLeastSignificantBits()));
         }
-
         CompoundTag ct = NMSHandler.getInstance().createCompoundTag(tmap);
         attribs.add(ct);
         JNBTListTag lt = new JNBTListTag(CompoundTag.class, attribs);
         compoundTag = compoundTag.createBuilder().put(KEY_ATTRIBUTES, lt).build();
-
         return NMSHandler.getItemHelper().setNbtData(itemStack, compoundTag);
     }
 
@@ -177,9 +197,7 @@ public class CustomNBT {
         if (itemStack == null || itemStack.getType() == Material.AIR) {
             return null;
         }
-
         CompoundTag compoundTag = NMSHandler.getItemHelper().getNbtData(itemStack);
-
         List<Material> materials = new ArrayList<>();
         if (compoundTag.getValue().containsKey(key)) {
             List<StringTag> temp = (List<StringTag>) compoundTag.getValue().get(key).getValue();
@@ -187,7 +205,6 @@ public class CustomNBT {
                 materials.add(NMSHandler.getItemHelper().getMaterialFromInternalName(tag.getValue()));
             }
         }
-
         return materials;
     }
 
@@ -195,22 +212,17 @@ public class CustomNBT {
         if (itemStack == null || itemStack.getType() == Material.AIR) {
             return null;
         }
-
         CompoundTag compoundTag = NMSHandler.getItemHelper().getNbtData(itemStack);
         compoundTag = compoundTag.createBuilder().remove(key).build();
-
         if (materials.isEmpty()) {
             return NMSHandler.getItemHelper().setNbtData(itemStack, compoundTag);
         }
-
         List<StringTag> internalMaterials = new ArrayList<>();
         for (Material material : materials) {
             internalMaterials.add(new StringTag(NMSHandler.getItemHelper().getInternalNameFromMaterial(material)));
         }
-
         JNBTListTag lt = new JNBTListTag(StringTag.class, internalMaterials);
         compoundTag = compoundTag.createBuilder().put(key, lt).build();
-
         return NMSHandler.getItemHelper().setNbtData(itemStack, compoundTag);
     }
 
@@ -219,7 +231,6 @@ public class CustomNBT {
             return null;
         }
         CompoundTag compoundTag = NMSHandler.getItemHelper().getNbtData(itemStack);
-
         CompoundTag denizenTag;
         if (compoundTag.getValue().containsKey(basekey)) {
             denizenTag = (CompoundTag) compoundTag.getValue().get(basekey);
@@ -227,12 +238,9 @@ public class CustomNBT {
         else {
             denizenTag = NMSHandler.getInstance().createCompoundTag(new HashMap<>());
         }
-
         // Add custom NBT
         denizenTag = denizenTag.createBuilder().putString(CoreUtilities.toLowerCase(key), value).build();
-
         compoundTag = compoundTag.createBuilder().put(basekey, denizenTag).build();
-
         // Write tag back
         return NMSHandler.getItemHelper().setNbtData(itemStack, compoundTag);
     }
@@ -242,9 +250,7 @@ public class CustomNBT {
             return null;
         }
         CompoundTag compoundTag = NMSHandler.getItemHelper().getNbtData(itemStack);
-
         compoundTag = compoundTag.createBuilder().remove(key).build();
-
         // Write tag back
         return NMSHandler.getItemHelper().setNbtData(itemStack, compoundTag);
     }
@@ -254,7 +260,6 @@ public class CustomNBT {
             return null;
         }
         CompoundTag compoundTag = NMSHandler.getItemHelper().getNbtData(itemStack);
-
         CompoundTag denizenTag;
         if (compoundTag.getValue().containsKey(basekey)) {
             denizenTag = (CompoundTag) compoundTag.getValue().get(basekey);
@@ -262,12 +267,9 @@ public class CustomNBT {
         else {
             return itemStack;
         }
-
         // Remove custom NBT
         denizenTag = denizenTag.createBuilder().remove(CoreUtilities.toLowerCase(key)).build();
-
         compoundTag = compoundTag.createBuilder().put(basekey, denizenTag).build();
-
         // Write tag back
         return NMSHandler.getItemHelper().setNbtData(itemStack, compoundTag);
     }
@@ -277,7 +279,6 @@ public class CustomNBT {
             return false;
         }
         CompoundTag compoundTag = NMSHandler.getItemHelper().getNbtData(itemStack);
-
         CompoundTag denizenTag;
         if (compoundTag.getValue().containsKey(basekey)) {
             denizenTag = (CompoundTag) compoundTag.getValue().get(basekey);
@@ -285,7 +286,6 @@ public class CustomNBT {
         else {
             return false;
         }
-
         return denizenTag.getValue().containsKey(CoreUtilities.toLowerCase(key));
     }
 
@@ -294,7 +294,6 @@ public class CustomNBT {
             return null;
         }
         CompoundTag compoundTag = NMSHandler.getItemHelper().getNbtData(itemStack);
-
         if (compoundTag.getValue().containsKey(basekey)) {
             CompoundTag denizenTag = (CompoundTag) compoundTag.getValue().get(basekey);
             String lowerKey = CoreUtilities.toLowerCase(key);
@@ -302,7 +301,6 @@ public class CustomNBT {
                 return denizenTag.getString(lowerKey);
             }
         }
-
         return null;
     }
 
@@ -312,12 +310,10 @@ public class CustomNBT {
             return nbt;
         }
         CompoundTag compoundTag = NMSHandler.getItemHelper().getNbtData(itemStack);
-
         if (compoundTag.getValue().containsKey(basekey)) {
             CompoundTag denizenTag = (CompoundTag) compoundTag.getValue().get(basekey);
             nbt.addAll(denizenTag.getValue().keySet());
         }
-
         return nbt;
     }
 
@@ -326,10 +322,8 @@ public class CustomNBT {
             return;
         }
         CompoundTag compoundTag = NMSHandler.getEntityHelper().getNbtData(entity);
-
         // Add custom NBT
         compoundTag = compoundTag.createBuilder().putString(key, value).build();
-
         // Write tag back
         NMSHandler.getEntityHelper().setNbtData(entity, compoundTag);
     }
@@ -339,10 +333,8 @@ public class CustomNBT {
             return;
         }
         CompoundTag compoundTag = NMSHandler.getEntityHelper().getNbtData(entity);
-
         // Add custom NBT
         compoundTag = compoundTag.createBuilder().putInt(key, value).build();
-
         // Write tag back
         NMSHandler.getEntityHelper().setNbtData(entity, compoundTag);
     }
@@ -352,10 +344,8 @@ public class CustomNBT {
             return;
         }
         CompoundTag compoundTag = NMSHandler.getEntityHelper().getNbtData(entity);
-
         // Remove custom NBT
         compoundTag = compoundTag.createBuilder().remove(key).build();
-
         // Write tag back
         NMSHandler.getEntityHelper().setNbtData(entity, compoundTag);
     }
@@ -365,7 +355,6 @@ public class CustomNBT {
             return false;
         }
         CompoundTag compoundTag = NMSHandler.getEntityHelper().getNbtData(entity);
-
         // Check for key
         return compoundTag.getValue().containsKey(key);
     }
@@ -375,7 +364,6 @@ public class CustomNBT {
             return null;
         }
         CompoundTag compoundTag = NMSHandler.getEntityHelper().getNbtData(entity);
-
         // Return contents of the tag
         return compoundTag.getString(key);
     }
@@ -385,7 +373,6 @@ public class CustomNBT {
             return 0;
         }
         CompoundTag compoundTag = NMSHandler.getEntityHelper().getNbtData(entity);
-
         // Return contents of the tag
         return compoundTag.getInt(key);
     }
@@ -407,20 +394,16 @@ public class CustomNBT {
         if (entity == null) {
             return null;
         }
-
         Map<EquipmentSlot, Set<Action>> map = new HashMap<>();
         CompoundTag compoundTag = NMSHandler.getEntityHelper().getNbtData(entity);
         int disabledSlots = compoundTag.getInt(KEY_DISABLED_SLOTS);
-
         if (disabledSlots == 0) {
             return map;
         }
-
         slotLoop:
         for (EquipmentSlot slot : slotMap.keySet()) {
             for (Action action : Action.values()) {
                 int matchedSlot = disabledSlots & 1 << slotMap.get(slot) + action.getId();
-
                 if (matchedSlot != 0) {
                     Set<Action> set = map.get(slot);
                     if (set == null) {
@@ -428,7 +411,6 @@ public class CustomNBT {
                         map.put(slot, set);
                     }
                     set.add(action);
-
                     disabledSlots -= matchedSlot;
                     if (disabledSlots == 0) {
                         break slotLoop;
@@ -436,7 +418,6 @@ public class CustomNBT {
                 }
             }
         }
-
         return map;
     }
 }
