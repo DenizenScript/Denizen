@@ -1156,6 +1156,18 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         });
 
         // <--[tag]
+        // @attribute <EntityTag.translated_name>
+        // @returns ElementTag
+        // @description
+        // Returns the localized name of the entity.
+        // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+        // -->
+        registerTag("translated_name", (attribute, object) -> {
+            String key = object.getEntityType().getBukkitEntityType().getKey().getKey();
+            return new ElementTag(ChatColor.COLOR_CHAR + "[translate=entity.minecraft." + key + "]");
+        });
+
+        // <--[tag]
         // @attribute <EntityTag.is_spawned>
         // @returns ElementTag(Boolean)
         // @group data
