@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.item;
 
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -15,9 +16,12 @@ import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.Material;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 
 import java.util.List;
 import java.util.function.Function;
@@ -254,7 +258,7 @@ public class TakeCommand extends AbstractCommand {
                 for (ItemTag item : items) {
                     ItemStack is = item.getItemStack();
                     is.setAmount(quantity.asInt());
-                    if (!inventory.removeItem(item, item.getAmount())) {
+                    if (!removeItem(inventory.getInventory(), item, item.getAmount())) {
                         Debug.echoDebug(scriptEntry, "Inventory does not contain at least " + quantity.asInt() + " of " + item.identify() + "... Taking all...");
                     }
                 }
@@ -274,7 +278,9 @@ public class TakeCommand extends AbstractCommand {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Must specify a cover!");
                     return;
                 }
-                inventory.removeBook(titleAuthor.get(0), titleAuthor.size() > 1 ? titleAuthor.get(1) : null, quantity.asInt());
+                takeByMatcher(inventory, (item) -> item.hasItemMeta() && item.getItemMeta() instanceof BookMeta
+                                && equalOrNull(titleAuthor.get(0), ((BookMeta) item.getItemMeta()).getTitle())
+                                && (titleAuthor.size() == 1 || equalOrNull(titleAuthor.get(1), ((BookMeta) item.getItemMeta()).getAuthor())), quantity.asInt());
                 break;
             }
             case NBT: {
@@ -322,6 +328,10 @@ public class TakeCommand extends AbstractCommand {
         }
     }
 
+    private static boolean equalOrNull(String a, String b) {
+        return b == null || a == null || a.equalsIgnoreCase(b);
+    }
+
     public void takeByMatcher(InventoryTag inventory, Function<ItemStack, Boolean> matcher, int quantity) {
         int itemsTaken = 0;
         ItemStack[] contents = inventory.getInventory().getContents();
@@ -342,5 +352,40 @@ public class TakeCommand extends AbstractCommand {
                 }
             }
         }
+    }
+
+    public boolean removeItem(Inventory inventory, ItemTag item, int amount) {
+        if (item == null) {
+            return false;
+        }
+        item = new ItemTag(item.getItemStack().clone());
+        item.setAmount(1);
+        String myItem = CoreUtilities.toLowerCase(item.identify());
+        for (int i = 0; i < inventory.getSize(); i++) {
+            ItemStack is = inventory.getItem(i);
+            if (is == null) {
+                continue;
+            }
+            is = is.clone();
+            int count = is.getAmount();
+            is.setAmount(1);
+            // Note: this double-parsing is intentional, as part of a hotfix for a larger issue
+            String newItem = CoreUtilities.toLowerCase(ItemTag.valueOf(new ItemTag(is).identify(), false).identify());
+            if (myItem.equals(newItem)) {
+                if (count <= amount) {
+                    NMSHandler.getItemHelper().setInventoryItem(inventory, null, i);
+                    amount -= count;
+                    if (amount == 0) {
+                        return true;
+                    }
+                }
+                else {
+                    is.setAmount(count - amount);
+                    NMSHandler.getItemHelper().setInventoryItem(inventory, is, i);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

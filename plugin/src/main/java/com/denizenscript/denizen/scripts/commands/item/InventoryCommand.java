@@ -1,14 +1,11 @@
 package com.denizenscript.denizen.scripts.commands.item;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
-import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizen.objects.InventoryTag;
-import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -17,6 +14,8 @@ import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.Deprecations;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.AbstractMap;
 import java.util.List;
@@ -132,41 +131,28 @@ public class InventoryCommand extends AbstractCommand {
     @SuppressWarnings("unchecked")
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         boolean isAdjust = false;
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
-            // Check for a ListTag of actions
             if (!scriptEntry.hasObject("actions")
                     && arg.matchesEnumList(Action.values())) {
                 scriptEntry.addObject("actions", arg.asType(ListTag.class).filter(Action.values()));
                 isAdjust = arg.toString().equalsIgnoreCase("adjust");
             }
-
-            // Check for an origin, which can be an InventoryTag, EntityTag, LocationTag
-            // or a ListTag of ItemTags
             else if (!scriptEntry.hasObject("origin")
                     && arg.matchesPrefix("origin", "o", "source", "items", "item", "i", "from", "f")
                     && (arg.matchesArgumentTypes(InventoryTag.class, EntityTag.class, LocationTag.class, MapTag.class)
                     || arg.matchesArgumentList(ItemTag.class))) {
                 scriptEntry.addObject("origin", Conversion.getInventory(arg, scriptEntry));
             }
-
-            // Check for a destination, which can be an InventoryTag, EntityTag
-            // or LocationTag
             else if (!scriptEntry.hasObject("destination")
                     && arg.matchesPrefix("destination", "dest", "d", "target", "to", "t")
                     && arg.matchesArgumentTypes(InventoryTag.class, EntityTag.class, LocationTag.class)) {
                 scriptEntry.addObject("destination", Conversion.getInventory(arg, scriptEntry));
             }
-
-            // Check for specified slot number
             else if (!scriptEntry.hasObject("slot")
                     && arg.matchesPrefix("slot", "s")) {
                 scriptEntry.addObject("slot", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("mechanism")
                     && isAdjust) {
                 if (arg.hasPrefix()) {
@@ -177,32 +163,24 @@ public class InventoryCommand extends AbstractCommand {
                     scriptEntry.addObject("mechanism", arg.asElement());
                 }
             }
-
             else {
                 arg.reportUnhandled();
             }
         }
-
         // Check to make sure required arguments have been filled
         if (!scriptEntry.hasObject("actions")) {
             throw new InvalidArgumentsException("Must specify an Inventory action!");
         }
-
         if (isAdjust && !scriptEntry.hasObject("mechanism")) {
             throw new InvalidArgumentsException("Inventory adjust must have a mechanism!");
         }
-
         if (isAdjust && !scriptEntry.hasObject("slot")) {
             throw new InvalidArgumentsException("Inventory adjust must have an explicit slot!");
         }
-
         scriptEntry.defaultObject("slot", new ElementTag(1));
-
         scriptEntry.defaultObject("destination",
                 Utilities.entryHasPlayer(scriptEntry) ?
-                        new AbstractMap.SimpleEntry<>(0,
-                                Utilities.getEntryPlayer(scriptEntry).getDenizenEntity().getInventory()) : null);
-
+                        new AbstractMap.SimpleEntry<>(0, Utilities.getEntryPlayer(scriptEntry).getDenizenEntity().getInventory()) : null);
         if (!scriptEntry.hasObject("destination")) {
             throw new InvalidArgumentsException("Must specify a Destination Inventory!");
         }
@@ -219,7 +197,6 @@ public class InventoryCommand extends AbstractCommand {
         ElementTag slot = scriptEntry.getElement("slot");
         ElementTag mechanism = scriptEntry.getElement("mechanism");
         ElementTag mechanismValue = scriptEntry.getElement("mechanism_value");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     ArgumentHelper.debugObj("actions", actions.toString())
@@ -229,7 +206,6 @@ public class InventoryCommand extends AbstractCommand {
                             + (mechanismValue != null ? mechanismValue.debug() : "")
                             + slot.debug());
         }
-
         int slotId = SlotHelper.nameToIndex(slot.asString());
         if (slotId < 0) {
             if (slotId == -1) {
@@ -240,59 +216,51 @@ public class InventoryCommand extends AbstractCommand {
             }
             return;
         }
-
         for (String action : actions) {
             switch (Action.valueOf(action.toUpperCase())) {
-
                 // Make the attached player open the destination inventory
                 case OPEN:
                     // Use special method to make opening workbenches work properly
                     if (destination.getIdType().equals("workbench")
-                            || destination.getIdHolder().equalsIgnoreCase("workbench")) {
-                        Utilities.getEntryPlayer(scriptEntry).getPlayerEntity()
-                                .openWorkbench(null, true);
+                            || destination.getIdHolder().equals(new ElementTag("workbench"))) {
+                        Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().openWorkbench(null, true);
                     }
                     // Otherwise, open inventory as usual
                     else {
                         Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().openInventory(destination.getInventory());
                     }
                     break;
-
                 // Make the attached player close any open inventory
                 case CLOSE:
                     Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().closeInventory();
                     break;
-
                 // Turn destination's contents into a copy of origin's
                 case COPY:
                     if (origin == null) {
                         Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
                         return;
                     }
-                    origin.replace(destination);
+                    replace(origin, destination);
                     break;
-
                 // Copy origin's contents to destination, then empty origin
                 case MOVE:
                     if (origin == null) {
                         Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
                         return;
                     }
-                    origin.replace(destination);
+                    replace(origin, destination);
                     origin.clear();
                     break;
-
                 // Swap the contents of the two inventories
                 case SWAP:
                     if (origin == null) {
                         Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
                         return;
                     }
-                    InventoryTag temp = new InventoryTag(destination.getInventory());
-                    origin.replace(destination);
-                    temp.replace(origin);
+                    InventoryTag temp = new InventoryTag(destination.getInventory().getContents());
+                    replace(origin, destination);
+                    replace(temp, origin);
                     break;
-
                 // Add origin's contents to destination
                 case ADD:
                     Deprecations.oldInventoryCommands.warn(scriptEntry);
@@ -302,7 +270,6 @@ public class InventoryCommand extends AbstractCommand {
                     }
                     destination.add(slotId, origin.getContents());
                     break;
-
                 // Remove origin's contents from destination
                 case REMOVE:
                     Deprecations.oldInventoryCommands.warn(scriptEntry);
@@ -310,9 +277,8 @@ public class InventoryCommand extends AbstractCommand {
                         Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
                         return;
                     }
-                    destination.remove(origin.getContents());
+                    remove(destination.getInventory(), origin.getContents());
                     break;
-
                 // Set items by slot
                 case SET:
                     if (origin == null) {
@@ -322,53 +288,100 @@ public class InventoryCommand extends AbstractCommand {
                     destination.setSlots(slotId, origin.getContents(), originentry.getKey());
                     break;
 
-                // Keep only items from the origin's contents in the
-                // destination
-                case KEEP:
+                // Keep only items from the origin's contents in the destination
+                case KEEP: {
                     if (origin == null) {
                         Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
                         return;
                     }
-                    destination.keep(origin.getContents());
+                    ItemStack[] items = origin.getContents();
+                    for (ItemStack invStack : destination.getInventory()) {
+                        if (invStack != null) {
+                            boolean keep = false;
+                            // See if the item array contains
+                            // this inventory item
+                            for (ItemStack item : items) {
+                                if (invStack.isSimilar(item)) {
+                                    keep = true;
+                                    break;
+                                }
+                            }
+                            // If the item array did not contain
+                            // this inventory item, remove it
+                            // from the inventory
+                            if (!keep) {
+                                destination.getInventory().remove(invStack);
+                            }
+                        }
+                    }
                     break;
-
-                // Exclude all items from the origin's contents in the
-                // destination
-                case EXCLUDE:
+                }
+                // Exclude all items from the origin's contents in the destination
+                case EXCLUDE: {
                     if (origin == null) {
                         Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
                         return;
                     }
-                    destination.exclude(origin.getContents());
+                    int oldCount = destination.count(null, false);
+                    int newCount = -1;
+                    while (oldCount != newCount) {
+                        oldCount = newCount;
+                        remove(destination.getInventory(), origin.getContents());
+                        newCount = destination.count(null, false);
+                    }
                     break;
-
-                // Add origin's contents over and over to destination
-                // until it is full
-                case FILL:
+                }
+                // Add origin's contents over and over to destination until it is full
+                case FILL: {
                     if (origin == null) {
                         Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
                         return;
                     }
-                    destination.fill(origin.getContents());
+                    int oldCount = destination.count(null, false);
+                    int newCount = -1;
+                    while (oldCount != newCount) {
+                        oldCount = newCount;
+                        newCount = destination.add(0, origin.getContents()).count(null, false);
+                    }
                     break;
-
+                }
                 // Clear the content of the destination inventory
                 case CLEAR:
                     destination.clear();
                     break;
-
                 // If this is a player inventory, update it
                 case UPDATE:
-                    if (!destination.update()) {
+                    if (destination.idHolder instanceof PlayerTag) {
+                        ((PlayerTag) destination.idHolder).getPlayerEntity().updateInventory();
+                    }
+                    else {
                         Debug.echoError("Only player inventories can be force-updated!");
                     }
                     break;
-
                 case ADJUST:
                     ItemTag toAdjust = new ItemTag(destination.getInventory().getItem(slotId));
                     toAdjust.safeAdjust(new Mechanism(mechanism, mechanismValue, scriptEntry.entryData.getTagContext()));
                     NMSHandler.getItemHelper().setInventoryItem(destination.getInventory(), toAdjust.getItemStack(), slotId);
                     break;
+            }
+        }
+    }
+
+    public void replace(InventoryTag origin, InventoryTag destination) {
+        // If the destination is smaller than our current inventory, add as many items as possible
+        if (destination.getSize() < origin.getSize()) {
+            destination.clear();
+            destination.add(0, origin.getContents());
+        }
+        else {
+            destination.setContents(origin.getContents());
+        }
+    }
+
+    public void remove(Inventory inventory, ItemStack[] items) {
+        for (ItemStack item : items) {
+            if (item != null) {
+                inventory.removeItem(item.clone());
             }
         }
     }

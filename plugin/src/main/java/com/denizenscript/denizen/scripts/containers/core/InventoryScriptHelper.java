@@ -17,12 +17,10 @@ import java.util.UUID;
 
 public class InventoryScriptHelper implements Listener {
 
-    public static Map<String, InventoryScriptContainer> inventory_scripts = new HashMap<>();
-    public static Map<String, InventoryTag> notableInventories = new HashMap<>();
+    public static Map<Inventory, InventoryTag> notedInventories = new HashMap<>();
 
     public InventoryScriptHelper() {
-        DenizenAPI.getCurrentInstance().getServer().getPluginManager()
-                .registerEvents(this, DenizenAPI.getCurrentInstance());
+        DenizenAPI.getCurrentInstance().getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
     }
 
     public static void _savePlayerInventories() {

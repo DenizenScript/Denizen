@@ -6,6 +6,7 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import org.bukkit.event.inventory.InventoryType;
 
 public class InventorySize implements Property {
 
@@ -44,8 +45,7 @@ public class InventorySize implements Property {
 
     @Override
     public String getPropertyString() {
-        if (getSize() > 0 && inventory.getIdType().equals("generic")
-                && inventory.getIdHolder().equals("CHEST")) {
+        if (getSize() > 0 && inventory.getIdType().equals("generic") && inventory.getInventoryType() == InventoryType.CHEST) {
             return String.valueOf(getSize());
         }
         else {

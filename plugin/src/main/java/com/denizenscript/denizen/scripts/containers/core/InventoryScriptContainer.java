@@ -1,19 +1,17 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.objects.NPCTag;
-import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.Material;
@@ -94,25 +92,13 @@ public class InventoryScriptContainer extends ScriptContainer {
 
     public InventoryScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
-        InventoryScriptHelper.inventory_scripts.put(getName(), this);
     }
 
-    public InventoryType getInventoryType() {
-        String typeStr = getString("inventory", "CHEST");
-
-        try {
-            return InventoryType.valueOf(typeStr.toUpperCase());
-        }
-        catch (Exception e) {
-            return InventoryType.CHEST;
-        }
-    }
-
-    public InventoryTag getInventoryFrom(PlayerTag player, NPCTag npc) {
-
+    public InventoryTag getInventoryFrom(TagContext context) {
         InventoryTag inventory;
-        BukkitTagContext context = new BukkitTagContext(player, npc, new ScriptTag(this));
-
+        context = (context == null ? CoreUtilities.basicContext : context).clone();
+        ScriptTag thisScript = new ScriptTag(this);
+        context.script = thisScript;
         try {
             InventoryType type = InventoryType.CHEST;
             if (contains("inventory")) {
@@ -165,12 +151,15 @@ public class InventoryScriptContainer extends ScriptContainer {
                 inventory = new InventoryTag(size, title != null ? title : "Chest");
             }
             else {
-                inventory = new InventoryTag(type);
+                if (title == null) {
+                    inventory = new InventoryTag(type);
+                }
+                else {
+                    inventory = new InventoryTag(type, title);
+                }
             }
-            if (title != null) {
-                inventory.setTitle(title);
-            }
-            inventory.setIdentifiers("script", getName());
+            inventory.idType = "script";
+            inventory.idHolder = thisScript;
             boolean[] filledSlots = new boolean[size];
             if (contains("slots")) {
                 ItemStack[] finalItems = new ItemStack[size];
@@ -221,7 +210,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                 inventory.setContents(finalItems);
             }
             if (contains("procedural items")) {
-                List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(player, npc), "procedural items");
+                List<ScriptEntry> entries = getEntries(context.getScriptEntryData(), "procedural items");
                 if (!entries.isEmpty()) {
                     InstantQueue queue = new InstantQueue("INV_SCRIPT_ITEM_PROC");
                     queue.addEntries(entries);
@@ -261,7 +250,6 @@ public class InventoryScriptContainer extends ScriptContainer {
 
         if (inventory != null) {
             InventoryTag.trackTemporaryInventory(inventory);
-            inventory.scriptName = getName();
         }
 
         return inventory;

@@ -8,6 +8,9 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import org.bukkit.Bukkit;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.ItemStack;
 
 public class InventoryTitle implements Property {
 
@@ -37,10 +40,7 @@ public class InventoryTitle implements Property {
         if (inventory.getInventory() != null) {
             String title = NMSHandler.getInstance().getTitle(inventory.getInventory());
             if (title != null) {
-                if (inventory.isUnique()) {
-                    return title.substring(0, title.length() - InventoryTag.inventoryNameNotableRequired);
-                }
-                else if (!title.startsWith("container.")) {
+                if (!title.startsWith("container.")) {
                     return title;
                 }
             }
@@ -51,9 +51,7 @@ public class InventoryTitle implements Property {
     @Override
     public String getPropertyString() {
         // Only show a property string for titles that can actually change
-        if (inventory.isUnique()
-                || inventory.getIdType().equals("generic")
-                || inventory.getIdType().equals("location")) {
+        if (inventory.isGeneric() || inventory.isSaving) {
             return getTitle();
         }
         else {
@@ -94,12 +92,30 @@ public class InventoryTitle implements Property {
         // <InventoryTag.title>
         // -->
         if (mechanism.matches("title")) {
-            if (inventory.getIdType().equals("generic") || inventory.getIdType().equals("script")) {
-                inventory.setTitle(mechanism.getValue().asString());
+            if (!inventory.isGeneric() && !inventory.isUnique()) {
+                Debug.echoError("Cannot set a title on a non-generic inventory.");
+                return;
+            }
+            String title = mechanism.getValue().asString();
+            if (inventory.getInventory() != null && NMSHandler.getInstance().getTitle(inventory.getInventory()).equals(title)) {
+                return;
+            }
+            inventory.uniquifier = null;
+            if (inventory.getInventory() == null) {
+                inventory.setInventory(Bukkit.getServer().createInventory(null, InventoryTag.maxSlots, title));
+                InventoryTag.trackTemporaryInventory(inventory);
+                return;
+            }
+            ItemStack[] contents = inventory.getContents();
+            if (inventory.getInventory().getType() == InventoryType.CHEST) {
+                inventory.setInventory(Bukkit.getServer().createInventory(null, inventory.getSize(), title));
             }
             else {
-                Debug.echoError("Cannot set a title on a non-generic inventory.");
+                inventory.setInventory(Bukkit.getServer().createInventory(null, inventory.getInventory().getType(), title));
             }
+            inventory.setContents(contents);
+            InventoryTag.trackTemporaryInventory(inventory);
+            Debug.log("Set title: " + NMSHandler.getInstance().getTitle(inventory.getInventory()));
         }
 
     }

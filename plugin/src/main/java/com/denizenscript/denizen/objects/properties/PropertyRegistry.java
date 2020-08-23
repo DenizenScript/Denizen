@@ -89,10 +89,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityVisible.class, EntityTag.class);
 
         // register core InventoryTag properties
-        PropertyParser.registerProperty(InventoryHolder.class, InventoryTag.class); // Holder must be loaded first to initiate correctly
-        PropertyParser.registerProperty(InventorySize.class, InventoryTag.class); // Same with size... (too small for contents)
         PropertyParser.registerProperty(InventoryContents.class, InventoryTag.class);
-        PropertyParser.registerProperty(InventoryScriptName.class, InventoryTag.class);
+        PropertyParser.registerProperty(InventoryHolder.class, InventoryTag.class);
+        PropertyParser.registerProperty(InventorySize.class, InventoryTag.class);
         PropertyParser.registerProperty(InventoryTitle.class, InventoryTag.class);
         PropertyParser.registerProperty(InventoryTrades.class, InventoryTag.class);
         PropertyParser.registerProperty(InventoryUniquifier.class, InventoryTag.class);

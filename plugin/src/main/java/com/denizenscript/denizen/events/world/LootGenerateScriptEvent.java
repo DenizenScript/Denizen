@@ -105,7 +105,7 @@ public class LootGenerateScriptEvent extends BukkitScriptEvent implements Listen
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("inventory") && event.getInventoryHolder() != null) {
-            return new InventoryTag(event.getInventoryHolder().getInventory());
+            return InventoryTag.mirrorBukkitInventory(event.getInventoryHolder().getInventory());
         }
         else if (name.equals("entity") && event.getEntity() != null) {
             return new EntityTag(event.getEntity()).getDenizenObject();

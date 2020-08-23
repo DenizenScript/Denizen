@@ -9,9 +9,7 @@ public class InventoryUniquifier implements Property {
 
     public static boolean describes(ObjectTag inventory) {
         return inventory instanceof InventoryTag
-                && (((InventoryTag) inventory).getIdType() != null
-                && (((InventoryTag) inventory).getIdType().equals("generic")
-                || ((InventoryTag) inventory).getIdType().equals("script")));
+                && ((InventoryTag) inventory).isGeneric();
     }
 
     public static InventoryUniquifier getFrom(ObjectTag inventory) {
@@ -22,8 +20,7 @@ public class InventoryUniquifier implements Property {
     }
 
     public static final String[] handledMechs = new String[] {
-            "uniquifier"
-    };
+    }; // The mechanism exists as part of the internal load sequence.
 
     InventoryTag inventory;
 
@@ -33,7 +30,7 @@ public class InventoryUniquifier implements Property {
 
     @Override
     public String getPropertyString() {
-        if (inventory.uniquifier == null) {
+        if (inventory.uniquifier == null || inventory.isSaving) {
             return null;
         }
         return String.valueOf(inventory.uniquifier);
@@ -50,10 +47,5 @@ public class InventoryUniquifier implements Property {
 
     @Override
     public void adjust(Mechanism mechanism) {
-
-        // Undocumented / internal
-        if (mechanism.matches("uniquifier")) {
-            inventory.uniquifier = mechanism.getValue().asLong();
-        }
     }
 }
