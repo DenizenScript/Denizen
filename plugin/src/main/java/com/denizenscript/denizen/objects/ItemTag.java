@@ -95,7 +95,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         }
         ItemTag stack = null;
         if (ObjectFetcher.isObjectWithProperties(string)) {
-            return ObjectFetcher.getObjectFrom(ItemTag.class, string, context);
+            return ObjectFetcher.getObjectFromWithProperties(ItemTag.class, string, context);
         }
         Notable noted = NotableManager.getSavedObject(string);
         if (noted instanceof ItemTag) {
@@ -111,14 +111,14 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
                 ItemScriptContainer isc = ScriptRegistry.getScriptContainerAs(string, ItemScriptContainer.class);
                 // TODO: If a script does not contain tags, get the clean reference here.
                 stack = isc.getItemFrom(context);
-                if (stack == null && (context == null || context.debug)) {
+                if (stack == null && (context == null || context.showErrors())) {
                     Debug.echoError("Item script '" + isc.getName() + "' returned a null item.");
                 }
             }
             else if (ScriptRegistry.containsScript(string, BookScriptContainer.class)) {
                 BookScriptContainer book = ScriptRegistry.getScriptContainerAs(string, BookScriptContainer.class);
                 stack = book.getBookFrom(context);
-                if (stack == null && (context == null || context.debug)) {
+                if (stack == null && (context == null || context.showErrors())) {
                     Debug.echoError("Book script '" + book.getName() + "' returned a null item.");
                 }
             }
@@ -141,14 +141,14 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
             }
         }
         catch (Exception ex) {
-            if (!string.equalsIgnoreCase("none") && (context == null || context.debug)) {
+            if (!string.equalsIgnoreCase("none") && (context == null || context.showErrors())) {
                 Debug.log("Does not match a valid item ID or material: " + string);
             }
             if (Debug.verbose) {
                 Debug.echoError(ex);
             }
         }
-        if (context == null || context.debug) {
+        if (context == null || context.showErrors()) {
             Debug.log("valueOf ItemTag returning null: " + string);
         }
         return null;

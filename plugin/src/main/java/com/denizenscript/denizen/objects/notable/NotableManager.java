@@ -118,7 +118,7 @@ public class NotableManager {
             }
             for (String notableRaw : section.getKeys(false)) {
                 String notable = EscapeTagBase.unEscape(notableRaw.replace("DOT", "."));
-                Notable obj = (Notable) ObjectFetcher.getObjectFrom(clazz, section.getString(notableRaw), CoreUtilities.noDebugContext);
+                Notable obj = (Notable) ObjectFetcher.getObjectFrom(clazz, section.getString(notableRaw), CoreUtilities.errorButNoDebugContext);
                 if (obj != null) {
                     obj.makeUnique(notable);
                 }

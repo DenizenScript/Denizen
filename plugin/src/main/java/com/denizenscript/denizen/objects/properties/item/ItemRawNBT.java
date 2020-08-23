@@ -197,7 +197,7 @@ public class ItemRawNBT implements Property {
             return new EndTag();
         }
         else {
-            if (context == null || context.debug) {
+            if (context == null || context.showErrors()) {
                 Debug.echoError("Unknown raw NBT value: " + object);
             }
             return null;

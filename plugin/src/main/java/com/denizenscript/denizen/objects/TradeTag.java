@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizencore.objects.*;
-import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
@@ -50,14 +49,9 @@ public class TradeTag implements ObjectTag, Adjustable {
         if (string == null) {
             return null;
         }
-
-        ///////
-        // Handle objects with properties through the object fetcher
         if (ObjectFetcher.isObjectWithProperties(string)) {
-            return ObjectFetcher.getObjectFrom(TradeTag.class, string, new BukkitTagContext(((BukkitTagContext) context).player,
-                    ((BukkitTagContext) context).npc, null, !context.debug, null));
+            return ObjectFetcher.getObjectFromWithProperties(TradeTag.class, string, context);
         }
-
         string = CoreUtilities.toLowerCase(string).replace("trade@", "");
         if (string.toLowerCase().matches("trade")) {
             MerchantRecipe recipe = new MerchantRecipe(new ItemStack(Material.AIR), 0);

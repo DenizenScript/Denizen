@@ -70,7 +70,7 @@ public class WorldTag implements ObjectTag, Adjustable {
 
     @Fetchable("w")
     public static WorldTag valueOf(String string, TagContext context) {
-        return valueOf(string, context == null || context.debug);
+        return valueOf(string, context == null || context.showErrors());
     }
 
     public static WorldTag valueOf(String string, boolean announce) {

@@ -183,7 +183,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             return null;
         }
         if (ObjectFetcher.isObjectWithProperties(string)) {
-            return ObjectFetcher.getObjectFrom(EntityTag.class, string, context);
+            return ObjectFetcher.getObjectFromWithProperties(EntityTag.class, string, context);
         }
         // Choose a random entity type if "RANDOM" is used
         if (string.equalsIgnoreCase("RANDOM")) {
@@ -223,7 +223,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                         return new EntityTag(npc);
                     }
                     else {
-                        if (context != null && context.debug) {
+                        if (context != null && context.showErrors()) {
                             Debug.echoDebug(context.entry, "NPC '" + string + "' is not spawned, errors may follow!");
                         }
                         return new EntityTag(npc);
@@ -240,7 +240,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                 if (returnable != null) {
                     return new EntityTag(returnable);
                 }
-                else if (context == null || context.debug) {
+                else if (context == null || context.showErrors()) {
                     Debug.echoError("Invalid Player! '" + string + "' could not be found. Has the player logged off?");
                 }
             }
@@ -285,7 +285,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         catch (Exception ex) {
             // DO NOTHING
         }
-        if (context == null || context.debug) {
+        if (context == null || context.showErrors()) {
             Debug.log("valueOf EntityTag returning null: " + string);
         }
         return null;

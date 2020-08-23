@@ -85,7 +85,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         }
         for (int i = 0; i < 7; i++) {
             if (i != 3 && !ArgumentHelper.matchesDouble(split.get(i))) {
-                if (context == null || context.debug) {
+                if (context == null || context.showErrors()) {
                     Debug.echoError("EllipsoidTag input is not a valid decimal number: " + split.get(i));
                     return null;
                 }

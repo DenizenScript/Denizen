@@ -106,7 +106,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                     && LocationTag.matches(positions.get(0))
                     && LocationTag.matches(positions.get(1))) {
                 if (positions.size() % 2 != 0) {
-                    if (context == null || context.debug) {
+                    if (context == null || context.showErrors()) {
                         Debug.echoError("valueOf CuboidTag returning null (Uneven number of locations): '" + string + "'.");
                     }
                     return null;
@@ -116,13 +116,13 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                     LocationTag pos_1 = LocationTag.valueOf(positions.get(i), context);
                     LocationTag pos_2 = LocationTag.valueOf(positions.get(i + 1), context);
                     if (pos_1 == null || pos_2 == null) {
-                        if (context == null || context.debug) {
+                        if (context == null || context.showErrors()) {
                             Debug.echoError("valueOf in CuboidTag returning null (null locations): '" + string + "'.");
                         }
                         return null;
                     }
                     if (pos_1.getWorldName() == null || pos_2.getWorldName() == null) {
-                        if (context == null || context.debug) {
+                        if (context == null || context.showErrors()) {
                             Debug.echoError("valueOf in CuboidTag returning null (null worlds): '" + string + "'.");
                         }
                         return null;
@@ -137,7 +137,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         else if (CoreUtilities.contains(string, ',')) {
             List<String> subStrs = CoreUtilities.split(string, ',');
             if (subStrs.size() < 7 || (subStrs.size() - 1) % 6 != 0) {
-                if (context == null || context.debug) {
+                if (context == null || context.showErrors()) {
                     Debug.echoError("valueOf CuboidTag returning null (Improper number of commas): '" + string + "'.");
                 }
                 return null;
@@ -157,7 +157,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                 }
             }
             catch (NumberFormatException ex) {
-                if (context == null || context.debug) {
+                if (context == null || context.showErrors()) {
                     Debug.echoError("valueOf CuboidTag returning null (Improper number value inputs): '" + ex.getMessage() + "'.");
                 }
                 return null;
@@ -172,7 +172,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             return (CuboidTag) noted;
         }
 
-        if (context == null || context.debug) {
+        if (context == null || context.showErrors()) {
             Debug.echoError("Minor: valueOf CuboidTag returning null: " + string);
         }
         return null;

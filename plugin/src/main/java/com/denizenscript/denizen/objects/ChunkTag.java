@@ -83,7 +83,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
                 return new ChunkTag(WorldTag.valueOf(parts[2], context), Integer.valueOf(parts[0]), Integer.valueOf(parts[1]));
             }
             catch (Exception e) {
-                if (context == null || context.debug) {
+                if (context == null || context.showErrors()) {
                     Debug.log("Minor: valueOf ChunkTag returning null: " + "ch@" + string);
                 }
                 return null;
@@ -91,7 +91,7 @@ public class ChunkTag implements ObjectTag, Adjustable {
 
         }
         else {
-            if (context == null || context.debug) {
+            if (context == null || context.showErrors()) {
                 Debug.log("Minor: valueOf ChunkTag unable to handle malformed format: " + "ch@" + string);
             }
         }

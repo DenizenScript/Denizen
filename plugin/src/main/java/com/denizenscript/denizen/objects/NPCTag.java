@@ -104,7 +104,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         else {
             registry = getRegistryByName(string.substring(commaIndex + 1));
             if (registry == null) {
-                if (context == null || context.debug) {
+                if (context == null || context.showErrors()) {
                     Debug.echoError("Unknown NPC registry for '" + string + "'.");
                 }
                 return null;
@@ -117,7 +117,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             if (npc != null) {
                 return new NPCTag(npc);
             }
-            else if (context == null || context.debug) {
+            else if (context == null || context.showErrors()) {
                 Debug.echoError("NPC '" + id + "' does not exist in " + registry.getName() + ".");
             }
         }
@@ -203,7 +203,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
     }
 
     public InventoryTag getDenizenInventory() {
-        return new InventoryTag(this);
+        return new InventoryTag(getInventory(), this);
     }
 
     public EntityType getEntityType() {

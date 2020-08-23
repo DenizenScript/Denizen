@@ -73,7 +73,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
     @Fetchable("m")
     public static MaterialTag valueOf(String string, TagContext context) {
         if (ObjectFetcher.isObjectWithProperties(string)) {
-            return ObjectFetcher.getObjectFrom(MaterialTag.class, string, context);
+            return ObjectFetcher.getObjectFromWithProperties(MaterialTag.class, string, context);
         }
         string = string.toUpperCase();
         if (string.startsWith("M@")) {

@@ -128,7 +128,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         if (string == null) {
             return null;
         }
-        boolean announce = context == null ? defaultAnnounce : context.debug;
+        boolean announce = context == null ? defaultAnnounce : context.showErrors();
 
         string = string.replace("p@", "").replace("P@", "");
 

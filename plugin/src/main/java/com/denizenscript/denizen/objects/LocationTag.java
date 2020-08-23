@@ -193,7 +193,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                         Double.valueOf(split.get(1)));
             }
             catch (Exception e) {
-                if (context == null || context.debug) {
+                if (context == null || context.showErrors()) {
                     Debug.log("Minor: valueOf LocationTag returning null: " + string + "(internal exception:" + e.getMessage() + ")");
                 }
                 return null;
@@ -227,7 +227,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 return output;
             }
             catch (Exception e) {
-                if (context == null || context.debug) {
+                if (context == null || context.showErrors()) {
                     Debug.log("Minor: valueOf LocationTag returning null: " + string + "(internal exception:" + e.getMessage() + ")");
                 }
                 return null;
@@ -257,7 +257,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 return output;
             }
             catch (Exception e) {
-                if (context == null || context.debug) {
+                if (context == null || context.showErrors()) {
                     Debug.log("Minor: valueOf LocationTag returning null: " + string + "(internal exception:" + e.getMessage() + ")");
                 }
                 return null;
@@ -277,7 +277,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                         Float.valueOf(split.get(4)));
             }
             catch (Exception e) {
-                if (context == null || context.debug) {
+                if (context == null || context.showErrors()) {
                     Debug.log("Minor: valueOf LocationTag returning null: " + string + "(internal exception:" + e.getMessage() + ")");
                 }
                 return null;
@@ -312,14 +312,14 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 return output;
             }
             catch (Exception e) {
-                if (context == null || context.debug) {
+                if (context == null || context.showErrors()) {
                     Debug.log("Minor: valueOf LocationTag returning null: " + string + "(internal exception:" + e.getMessage() + ")");
                 }
                 return null;
             }
         }
 
-        if (context == null || context.debug) {
+        if (context == null || context.showErrors()) {
             Debug.log("Minor: valueOf LocationTag returning null: " + string);
         }
 
