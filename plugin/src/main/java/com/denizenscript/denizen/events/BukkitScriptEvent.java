@@ -662,6 +662,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (matcher.doesMatch(inv.getIdHolder().toString())) {
             return true;
         }
+        if (inv.getIdHolder() instanceof ScriptTag && matcher.doesMatch(((ScriptTag) inv.getIdHolder()).getName())) {
+            return true;
+        }
         String notedId = NotableManager.getSavedId(inv);
         if (notedId != null && matcher.doesMatch(notedId)) {
             return true;
