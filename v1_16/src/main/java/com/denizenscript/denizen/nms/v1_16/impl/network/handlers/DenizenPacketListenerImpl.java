@@ -63,8 +63,9 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
             Debug.log("Custom packet payload: " + packet.tag.toString() + " sent from " + player.getName());
         }
         if (packet.tag.getNamespace().equals("minecraft") && packet.tag.getKey().equals("brand")) {
-            int i = packet.data.i(); // read off the varInt of length to get rid of it
-            brand = StandardCharsets.UTF_8.decode(packet.data.nioBuffer()).toString();
+            PacketDataSerializer newData = new PacketDataSerializer(packet.data.copy());
+            int i = newData.i(); // read off the varInt of length to get rid of it
+            brand = StandardCharsets.UTF_8.decode(newData.nioBuffer()).toString();
         }
         super.a(packet);
     }
