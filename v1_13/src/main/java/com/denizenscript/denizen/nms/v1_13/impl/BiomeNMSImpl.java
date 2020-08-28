@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.nms.v1_13.impl;
 
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
-import com.denizenscript.denizen.nms.util.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.minecraft.server.v1_13_R2.BiomeBase;
 import net.minecraft.server.v1_13_R2.EntityTypes;
 import net.minecraft.server.v1_13_R2.EnumCreatureType;

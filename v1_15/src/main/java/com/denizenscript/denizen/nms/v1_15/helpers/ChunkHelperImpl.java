@@ -2,7 +2,7 @@ package com.denizenscript.denizen.nms.v1_15.helpers;
 
 import com.denizenscript.denizen.utilities.implementation.DenizenCoreImplementation;
 import com.denizenscript.denizen.nms.interfaces.ChunkHelper;
-import com.denizenscript.denizen.nms.util.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.World;

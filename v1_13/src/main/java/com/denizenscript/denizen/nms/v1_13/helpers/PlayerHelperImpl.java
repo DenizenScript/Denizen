@@ -2,7 +2,7 @@ package com.denizenscript.denizen.nms.v1_13.helpers;
 
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
-import com.denizenscript.denizen.nms.util.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.v1_13.impl.ImprovedOfflinePlayerImpl;
 import com.denizenscript.denizen.nms.v1_13.impl.packets.handlers.AbstractListenerPlayInImpl;
 import com.denizenscript.denizen.nms.v1_13.impl.packets.handlers.DenizenNetworkManagerImpl;

@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.nms.v1_13.impl.packets;
 
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutChat;
-import com.denizenscript.denizen.nms.util.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;

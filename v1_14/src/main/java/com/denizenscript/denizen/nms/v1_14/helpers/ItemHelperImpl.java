@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.nms.v1_14.helpers;
 
-import com.denizenscript.denizen.nms.util.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.util.jnbt.*;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.nms.v1_14.impl.jnbt.CompoundTagImpl;

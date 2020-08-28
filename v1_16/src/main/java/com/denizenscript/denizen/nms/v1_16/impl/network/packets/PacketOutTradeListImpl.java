@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.nms.v1_16.impl.network.packets;
 
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutTradeList;
-import com.denizenscript.denizen.nms.util.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.util.TradeOffer;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_16_R2.MerchantRecipe;

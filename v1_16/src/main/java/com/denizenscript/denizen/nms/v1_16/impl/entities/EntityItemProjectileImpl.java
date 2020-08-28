@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.nms.v1_16.impl.entities;
 
-import com.denizenscript.denizen.nms.util.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.google.common.base.Preconditions;
 import net.minecraft.server.v1_16_R2.*;

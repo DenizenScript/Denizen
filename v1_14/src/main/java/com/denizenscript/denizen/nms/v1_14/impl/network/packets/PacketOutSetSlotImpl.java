@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.nms.v1_14.impl.network.packets;
 
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutSetSlot;
-import com.denizenscript.denizen.nms.util.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_14_R1.ItemStack;
 import net.minecraft.server.v1_14_R1.PacketPlayOutSetSlot;

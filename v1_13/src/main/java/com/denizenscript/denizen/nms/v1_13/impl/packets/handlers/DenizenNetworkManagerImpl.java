@@ -6,7 +6,7 @@ import com.denizenscript.denizen.nms.v1_13.impl.entities.EntityFakePlayerImpl;
 import com.denizenscript.denizen.nms.v1_13.impl.packets.PacketOutChatImpl;
 import com.denizenscript.denizen.nms.v1_13.impl.packets.PacketOutSpawnEntityImpl;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
-import com.denizenscript.denizen.nms.util.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import io.netty.buffer.Unpooled;

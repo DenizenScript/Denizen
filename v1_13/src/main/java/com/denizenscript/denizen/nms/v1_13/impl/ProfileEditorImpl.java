@@ -5,7 +5,7 @@ import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.nms.v1_13.helpers.PacketHelperImpl;
 import com.denizenscript.denizen.nms.v1_13.impl.packets.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
-import com.denizenscript.denizen.nms.util.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import io.netty.util.concurrent.Future;

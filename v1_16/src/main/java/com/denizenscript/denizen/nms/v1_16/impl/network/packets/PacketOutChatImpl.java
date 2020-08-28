@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.nms.v1_16.impl.network.packets;
 
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutChat;
-import com.denizenscript.denizen.nms.util.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.v1_16.Handler;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;

@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.nms.v1_14.impl;
 
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
-import com.denizenscript.denizen.nms.util.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.v1_14_R1.block.CraftBlock;
