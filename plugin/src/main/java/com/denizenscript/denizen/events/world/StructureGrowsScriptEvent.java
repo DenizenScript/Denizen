@@ -8,6 +8,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.TreeType;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -35,7 +36,7 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
     // @Context
     // <context.world> returns the WorldTag the structure grew in.
     // <context.location> returns the LocationTag the structure grew at.
-    // <context.structure> returns an ElementTag of the structure's type. Refer to <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/StructureType.html>.
+    // <context.structure> returns an ElementTag of the structure's type. Refer to <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/TreeType.html>.
     // <context.blocks> returns a ListTag of all block locations to be modified.
     // <context.new_materials> returns a ListTag of the new block materials, to go with <context.blocks>.
     //
@@ -46,9 +47,6 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
     }
 
     public static StructureGrowsScriptEvent instance;
-    public WorldTag world;
-    public LocationTag location;
-    public ElementTag structure;
     public StructureGrowEvent event;
 
     @Override
@@ -56,16 +54,18 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
         if (!path.eventArgLowerAt(1).equals("grows")) {
             return false;
         }
-        String block = path.eventArgLowerAt(0);
-        MaterialTag mat = MaterialTag.valueOf(block, CoreUtilities.basicContext);
-        return block.equals("structure") || block.equals("plant") || (mat != null && mat.isStructure());
+        String type = path.eventArgLowerAt(0);
+        if (!type.equals("structure") && !type.equals("plant") && !couldMatchEnum(type, TreeType.values())) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public boolean matches(ScriptPath path) {
         String struct = path.eventArgLowerAt(0);
         if (!struct.equals("structure") && !struct.equals("plant") &&
-                !struct.equals(CoreUtilities.toLowerCase(structure.asString()))) {
+                !struct.equals(CoreUtilities.toLowerCase(event.getSpecies().name()))) {
             return false;
         }
         if (path.eventArgLowerAt(2).equals("from") && !event.isFromBonemeal()) {
@@ -74,7 +74,7 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
         else if (path.eventArgLowerAt(2).equals("naturally") && event.isFromBonemeal()) {
             return false;
         }
-        if (!runInCheck(path, location)) {
+        if (!runInCheck(path, event.getLocation())) {
             return false;
         }
         return super.matches(path);
@@ -88,13 +88,13 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("world")) {
-            return world;
+            return new WorldTag(event.getWorld());
         }
         else if (name.equals("location")) {
-            return location;
+            return new LocationTag(event.getLocation());
         }
         else if (name.equals("structure")) {
-            return structure;
+            return new ElementTag(event.getSpecies().name());
         }
         else if (name.equals("blocks")) {
             ListTag blocks = new ListTag();
@@ -115,9 +115,6 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
 
     @EventHandler
     public void onStructureGrow(StructureGrowEvent event) {
-        world = new WorldTag(event.getWorld());
-        location = new LocationTag(event.getLocation());
-        structure = new ElementTag(event.getSpecies().name());
         this.event = event;
         fire(event);
     }
