@@ -21,16 +21,16 @@ public class AttachCommand extends AbstractCommand {
 
     public AttachCommand() {
         setName("attach");
-        setSyntax("attach [<entity>|...] [to:<entity>/cancel] (offset:<offset>) (relative) (yaw_offset:<#.#>) (pitch_offset:<#.#>) (sync_server) (for:<player>|...)");
-        setRequiredArguments(2, 8);
+        setSyntax("attach [<entity>|...] [to:<entity>/cancel] (offset:<offset>) (relative) (yaw_offset:<#.#>) (pitch_offset:<#.#>) (sync_server) (no_rotate) (for:<player>|...)");
+        setRequiredArguments(2, 9);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name attach
-    // @Syntax attach [<entity>|...] [to:<entity>/cancel] (offset:<offset>) (relative) (yaw_offset:<#.#>) (pitch_offset:<#.#>) (sync_server) (for:<player>|...)
+    // @Syntax attach [<entity>|...] [to:<entity>/cancel] (offset:<offset>) (relative) (yaw_offset:<#.#>) (pitch_offset:<#.#>) (sync_server) (no_rotate) (for:<player>|...)
     // @Required 2
-    // @Maximum 8
+    // @Maximum 9
     // @Short Attaches a list of entities to another entity, for client-visible motion sync.
     // @Group entity
     //
@@ -52,6 +52,8 @@ public class AttachCommand extends AbstractCommand {
     // Optionally, specify 'sync_server' to keep the serverside position of the attached entities near the target entity.
     // This can reduce some visual artifacts (such as entity unloading at distance), but may produce unintended functional artifacts.
     // Note that you should generally only use 'sync_server' when you exclude the 'for' argument.
+    //
+    // Optionally specify 'no_rotate' to retain the attached entity's own rotation and ignore the target rotation.
     //
     // @Tags
     // None.
@@ -82,6 +84,10 @@ public class AttachCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("sync_server")
                     && arg.matches("sync_server")) {
                 scriptEntry.addObject("sync_server", new ElementTag(true));
+            }
+            else if (!scriptEntry.hasObject("no_rotate")
+                    && arg.matches("no_rotate")) {
+                scriptEntry.addObject("no_rotate", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("yaw_offset")
                     && arg.matchesPrefix("yaw_offset")
@@ -120,6 +126,7 @@ public class AttachCommand extends AbstractCommand {
         scriptEntry.defaultObject("cancel", new ElementTag(false));
         scriptEntry.defaultObject("relative", new ElementTag(false));
         scriptEntry.defaultObject("sync_server", new ElementTag(false));
+        scriptEntry.defaultObject("no_rotate", new ElementTag(false));
         scriptEntry.defaultObject("yaw_offset", new ElementTag(0f));
         scriptEntry.defaultObject("pitch_offset", new ElementTag(0f));
     }
@@ -134,6 +141,7 @@ public class AttachCommand extends AbstractCommand {
         ElementTag cancel = scriptEntry.getElement("cancel");
         ElementTag relative = scriptEntry.getElement("relative");
         ElementTag sync_server = scriptEntry.getElement("sync_server");
+        ElementTag no_rotate = scriptEntry.getElement("no_rotate");
         ElementTag yaw_offset = scriptEntry.getElement("yaw_offset");
         ElementTag pitch_offset = scriptEntry.getElement("pitch_offset");
         boolean shouldCancel = cancel.asBoolean();
@@ -145,6 +153,7 @@ public class AttachCommand extends AbstractCommand {
                     + yaw_offset.debug()
                     + pitch_offset.debug()
                     + sync_server.debug()
+                    + no_rotate.debug()
                     + (forPlayers == null ? "" : ArgumentHelper.debugList("for", forPlayers)));
         }
         BiConsumer<EntityTag, UUID> procPlayer = (entity, player) -> {
@@ -161,6 +170,7 @@ public class AttachCommand extends AbstractCommand {
                 attachment.pitchAngleOffset = pitch_offset.asFloat();
                 attachment.syncServer = sync_server.asBoolean();
                 attachment.forPlayer = player;
+                attachment.noRotate = no_rotate.asBoolean();
                 EntityAttachmentHelper.registerAttachment(attachment);
             }
         };

@@ -65,21 +65,15 @@ public class AnimateCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         AnimationHelper animationHelper = NMSHandler.getAnimationHelper();
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(EntityTag.class)) {
-                // Entity arg
                 scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
-
             if (!scriptEntry.hasObject("animation") &&
                     !scriptEntry.hasObject("effect") &&
                     !scriptEntry.hasObject("nms_animation")) {
-
                 if (arg.matchesEnum(PlayerAnimation.values())) {
                     scriptEntry.addObject("animation", PlayerAnimation.valueOf(arg.getValue().toUpperCase()));
                 }
@@ -91,13 +85,9 @@ public class AnimateCommand extends AbstractCommand {
                 }
             }
         }
-
-        // Check to make sure required arguments have been filled
-
         if (!scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Must specify entity/entities!");
         }
-
         if (!scriptEntry.hasObject("effect") && !scriptEntry.hasObject("animation") && !scriptEntry.hasObject("nms_animation")) {
             throw new InvalidArgumentsException("Must specify a valid animation!");
         }
@@ -107,30 +97,20 @@ public class AnimateCommand extends AbstractCommand {
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
-        PlayerAnimation animation = scriptEntry.hasObject("animation") ?
-                (PlayerAnimation) scriptEntry.getObject("animation") : null;
-        EntityEffect effect = scriptEntry.hasObject("effect") ?
-                (EntityEffect) scriptEntry.getObject("effect") : null;
-        String nmsAnimation = scriptEntry.hasObject("nms_animation") ?
-                (String) scriptEntry.getObject("nms_animation") : null;
-
+        PlayerAnimation animation = scriptEntry.hasObject("animation") ? (PlayerAnimation) scriptEntry.getObject("animation") : null;
+        EntityEffect effect = scriptEntry.hasObject("effect") ? (EntityEffect) scriptEntry.getObject("effect") : null;
+        String nmsAnimation = scriptEntry.hasObject("nms_animation") ? (String) scriptEntry.getObject("nms_animation") : null;
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (animation != null ?
-                    ArgumentHelper.debugObj("animation", animation.name()) : effect != null ?
-                    ArgumentHelper.debugObj("effect", effect.name()) :
-                    ArgumentHelper.debugObj("animation", nmsAnimation)) +
+            Debug.report(scriptEntry, getName(),
+                    (animation != null ? ArgumentHelper.debugObj("animation", animation.name()) :
+                    effect != null ? ArgumentHelper.debugObj("effect", effect.name()) : ArgumentHelper.debugObj("animation", nmsAnimation)) +
                     ArgumentHelper.debugObj("entities", entities.toString()));
         }
-
-        // Go through all the entities and animate them
         for (EntityTag entity : entities) {
             if (entity.isSpawned()) {
-
                 try {
                     if (animation != null && entity.getBukkitEntity() instanceof Player) {
-
                         Player player = (Player) entity.getBukkitEntity();
-
                         animation.play(player);
                     }
                     else if (effect != null) {
@@ -143,7 +123,7 @@ public class AnimateCommand extends AbstractCommand {
                 }
                 catch (Exception e) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Error playing that animation!");
-                } // We tried!
+                }
             }
         }
     }

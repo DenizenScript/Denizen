@@ -28,6 +28,8 @@ public class EntityAttachmentHelper {
 
         public boolean syncServer;
 
+        public boolean noRotate;
+
         public BukkitTask checkTask;
 
         public UUID forPlayer;
@@ -56,6 +58,11 @@ public class EntityAttachmentHelper {
                         Location goal = to.getLocation();
                         if (positionalOffset != null) {
                             goal = fixedForOffset(goal.toVector(), goal.getYaw(), goal.getPitch()).toLocation(goal.getWorld());
+                        }
+                        if (noRotate) {
+                            Location attachLoc = attached.getLocation();
+                            goal.setYaw(attachLoc.getYaw());
+                            goal.setPitch(attachLoc.getPitch());
                         }
                         attached.teleport(goal);
                     }
@@ -150,6 +157,11 @@ public class EntityAttachmentHelper {
         angleF += offset;
         angleF %= 180;
         return (byte)((int)(angleF * (256F / 360F)));
+    }
+
+    public static byte compressAngle(float angle) {
+        angle %= 180;
+        return (byte)((int)(angle * (256F / 360F)));
     }
 
     public static Vector fixOffset(Vector offset, double yaw, double pitch) {

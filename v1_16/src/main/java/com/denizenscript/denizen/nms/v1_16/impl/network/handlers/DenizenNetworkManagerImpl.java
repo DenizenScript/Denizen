@@ -23,6 +23,7 @@ import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_16_R2.*;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_16_R2.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -231,10 +232,23 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                             ENTITY_ID_PACKENT.setInt(pNew, att.attached.getEntityId());
                             if (att.positionalOffset != null && (packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMove || packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook)) {
                                 boolean isRotate = packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook;
-                                byte yaw = 0, pitch = 0;
+                                byte yaw, pitch;
+                                if (att.noRotate) {
+                                    Entity attachedEntity = ((CraftEntity) att.attached).getHandle();
+                                    yaw = EntityAttachmentHelper.compressAngle(attachedEntity.yaw);
+                                    pitch = EntityAttachmentHelper.compressAngle(attachedEntity.pitch);
+                                }
+                                else if (isRotate) {
+                                    yaw = YAW_PACKENT.getByte(packet);
+                                    pitch = PITCH_PACKENT.getByte(packet);
+                                }
+                                else {
+                                    yaw = EntityAttachmentHelper.compressAngle(e.yaw);
+                                    pitch = EntityAttachmentHelper.compressAngle(e.pitch);
+                                }
                                 if (isRotate) {
-                                    yaw = EntityAttachmentHelper.adaptedCompressedAngle(YAW_PACKENT.getByte(packet), att.positionalOffset.getYaw());
-                                    pitch = EntityAttachmentHelper.adaptedCompressedAngle(PITCH_PACKENT.getByte(packet), att.positionalOffset.getPitch());
+                                    yaw = EntityAttachmentHelper.adaptedCompressedAngle(yaw, att.positionalOffset.getYaw());
+                                    pitch = EntityAttachmentHelper.adaptedCompressedAngle(pitch, att.positionalOffset.getPitch());
                                 }
                                 Vector goalPosition = att.fixedForOffset(new Vector(e.locX(), e.locY(), e.locZ()), e.yaw, e.pitch);
                                 Vector oldPos = att.visiblePosition;
@@ -254,10 +268,8 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                                     POS_X_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getX());
                                     POS_Y_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getY());
                                     POS_Z_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getZ());
-                                    if (isRotate) {
-                                        YAW_PACKTELENT.setByte(newTeleportPacket, yaw);
-                                        PITCH_PACKTELENT.setByte(newTeleportPacket, pitch);
-                                    }
+                                    YAW_PACKTELENT.setByte(newTeleportPacket, yaw);
+                                    PITCH_PACKTELENT.setByte(newTeleportPacket, pitch);
                                     oldManager.sendPacket(newTeleportPacket);
                                 }
                                 else {
@@ -314,8 +326,18 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                             Vector resultPos = new Vector(POS_X_PACKTELENT.getDouble(pNew), POS_Y_PACKTELENT.getDouble(pNew), POS_Z_PACKTELENT.getDouble(pNew));
                             if (att.positionalOffset != null) {
                                 resultPos = att.fixedForOffset(resultPos, e.yaw, e.pitch);
-                                byte yaw = EntityAttachmentHelper.adaptedCompressedAngle(YAW_PACKTELENT.getByte(packet), att.positionalOffset.getYaw());
-                                byte pitch = EntityAttachmentHelper.adaptedCompressedAngle(PITCH_PACKTELENT.getByte(packet), att.positionalOffset.getPitch());
+                                byte yaw, pitch;
+                                if (att.noRotate) {
+                                    Entity attachedEntity = ((CraftEntity) att.attached).getHandle();
+                                    yaw = EntityAttachmentHelper.compressAngle(attachedEntity.yaw);
+                                    pitch = EntityAttachmentHelper.compressAngle(attachedEntity.pitch);
+                                }
+                                else {
+                                    yaw = YAW_PACKTELENT.getByte(packet);
+                                    pitch = PITCH_PACKTELENT.getByte(packet);
+                                }
+                                yaw = EntityAttachmentHelper.adaptedCompressedAngle(yaw, att.positionalOffset.getYaw());
+                                pitch = EntityAttachmentHelper.adaptedCompressedAngle(pitch, att.positionalOffset.getPitch());
                                 POS_X_PACKTELENT.setDouble(pNew, resultPos.getX());
                                 POS_Y_PACKTELENT.setDouble(pNew, resultPos.getY());
                                 POS_Z_PACKTELENT.setDouble(pNew, resultPos.getZ());
