@@ -26,7 +26,6 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagRunnable;
-import com.denizenscript.denizencore.tags.core.EscapeTagBase;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
@@ -1032,7 +1031,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             // Build the pseudo-property-string, if any
             StringBuilder properties = new StringBuilder();
             for (Mechanism mechanism : mechanisms) {
-                properties.append(mechanism.getName()).append("=").append(EscapeTagBase.escape(mechanism.getValue().asString())).append(";");
+                properties.append(mechanism.getName()).append("=").append(PropertyParser.escapePropertyValue(mechanism.getValue().asString())).append(";");
             }
             String propertyOutput = "";
             if (properties.length() > 0) {
