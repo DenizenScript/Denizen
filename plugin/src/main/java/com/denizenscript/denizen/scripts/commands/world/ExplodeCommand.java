@@ -77,7 +77,7 @@ public class ExplodeCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("source")
                     && arg.matchesArgumentType(EntityTag.class)
                     && arg.matchesPrefix("source")) {
-                scriptEntry.addObject("source", arg.asElement());
+                scriptEntry.addObject("source", arg.asType(EntityTag.class));
             }
             else if (!scriptEntry.hasObject("breakblocks")
                     && arg.matches("breakblocks")) {
