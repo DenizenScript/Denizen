@@ -41,6 +41,8 @@ public class ProjectileCollideScriptEvent extends BukkitScriptEvent implements L
 
     public static ProjectileCollideScriptEvent instance;
     public ProjectileCollideEvent event;
+    public EntityTag projectile;
+    public EntityTag collidedWith;
 
     @Override
     public boolean couldMatch(ScriptPath path) {
@@ -58,6 +60,12 @@ public class ProjectileCollideScriptEvent extends BukkitScriptEvent implements L
         if (!runInCheck(path, event.getEntity().getLocation())) {
             return false;
         }
+        if (!tryEntity(projectile, path.eventArgLowerAt(0))) {
+            return false;
+        }
+        if (!tryEntity(collidedWith, path.eventArgLowerAt(3))) {
+            return false;
+        }
         return super.matches(path);
     }
 
@@ -68,16 +76,16 @@ public class ProjectileCollideScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(event.getCollidedWith());
+        return new BukkitScriptEntryData(collidedWith);
     }
 
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
-            return new EntityTag(event.getCollidedWith());
+            return collidedWith;
         }
         else if (name.equals("projectile")) {
-            return new EntityTag(event.getEntity());
+            return projectile;
         }
         return super.getContext(name);
     }
@@ -85,6 +93,8 @@ public class ProjectileCollideScriptEvent extends BukkitScriptEvent implements L
     @EventHandler
     public void projectileCollideEvent(ProjectileCollideEvent event) {
         this.event = event;
+        collidedWith = new EntityTag(event.getCollidedWith());
+        projectile = new EntityTag(event.getEntity());
         fire(event);
     }
 }
