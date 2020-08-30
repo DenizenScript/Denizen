@@ -393,9 +393,11 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         return idType.equals("generic") || idType.equals("script") && !isUnique();
     }
 
+    public static final ElementTag defaultIdHolder = new ElementTag("unknown");
+
     public String idType = null;
 
-    public ObjectTag idHolder = null;
+    public ObjectTag idHolder = defaultIdHolder;
 
     public Long uniquifier = null;
 
@@ -454,10 +456,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
 
     public InventoryTag(int size) {
         this(size, "Chest");
-    }
-
-    public InventoryTag(String idType) {
-        this.idType = CoreUtilities.toLowerCase(idType);
     }
 
     public Inventory getInventory() {
@@ -574,7 +572,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             else {
                 idType = "location";
                 idHolder = getLocation(holder);
-                return;
+                if (idHolder != null) {
+                    return;
+                }
             }
         }
         else if (getIdType().equals("player")) {
