@@ -88,9 +88,11 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new SheepDyedScriptEvent());
         ScriptEvent.registerScriptEvent(new SheepRegrowsScriptEvent());
         ScriptEvent.registerScriptEvent(new SlimeSplitsScriptEvent());
-        ScriptEvent.registerScriptEvent(new VillagerAcquiresTradeScriptEvent());
-        ScriptEvent.registerScriptEvent(new VillagerChangesProfessionScriptEvent());
-        ScriptEvent.registerScriptEvent(new VillagerReplenishesTradeScriptEvent());
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
+            ScriptEvent.registerScriptEvent(new VillagerAcquiresTradeScriptEvent());
+            ScriptEvent.registerScriptEvent(new VillagerChangesProfessionScriptEvent());
+            ScriptEvent.registerScriptEvent(new VillagerReplenishesTradeScriptEvent());
+        }
 
         // NPC events
         if (Depends.citizens != null) {

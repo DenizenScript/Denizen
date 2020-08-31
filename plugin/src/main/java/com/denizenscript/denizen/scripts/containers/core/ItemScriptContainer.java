@@ -89,7 +89,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //           # Note that the internal rules for Recipe IDs are very strict (limited to "a-z", "0-9", "/", ".", "_", or "-").
     //           recipe_id: my_custom_item_id
     //           # You can optional add a group as well. If unspecified, the item will have no group.
-    //           # Groups are used to merge together similar recipes (in particular, multiple recipes for one item).
+    //           # Groups are used to merge together similar recipes in the recipe book (in particular, multiple recipes for one item).
     //           group: my_custom_group
     //           # You can optionally specify the quantity to output. The default is 1 (or whatever the item script's quantity is).
     //           output_quantity: 4
