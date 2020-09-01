@@ -2084,6 +2084,17 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             return null;
         });
         tagProcessor.registerFutureTagDeprecation("smelting", "input");
+
+        // <--[tag]
+        // @attribute <InventoryTag.property_map>
+        // @returns MapTag
+        // @group properties
+        // @description
+        // Returns the inventory's property map.
+        // -->
+        registerTag("property_map", (attribute, object) -> {
+            return PropertyParser.getPropertiesMap(object);
+        });
     }
 
     public static ObjectTagProcessor<InventoryTag> tagProcessor = new ObjectTagProcessor<>();

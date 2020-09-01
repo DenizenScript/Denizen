@@ -548,6 +548,17 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <ItemTag.property_map>
+        // @returns MapTag
+        // @group properties
+        // @description
+        // Returns the item's property map.
+        // -->
+        registerTag("property_map", (attribute, object) -> {
+            return PropertyParser.getPropertiesMap(object);
+        });
+
+        // <--[tag]
         // @attribute <ItemTag.repairable>
         // @returns ElementTag(Boolean)
         // @group properties

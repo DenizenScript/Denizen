@@ -774,6 +774,17 @@ public class MaterialTag implements ObjectTag, Adjustable {
             }
             return mat;
         });
+
+        // <--[tag]
+        // @attribute <MaterialTag.property_map>
+        // @returns MapTag
+        // @group properties
+        // @description
+        // Returns the material's property map.
+        // -->
+        registerTag("property_map", (attribute, object) -> {
+            return PropertyParser.getPropertiesMap(object);
+        });
     }
 
     public static ObjectTagProcessor<MaterialTag> tagProcessor = new ObjectTagProcessor<>();

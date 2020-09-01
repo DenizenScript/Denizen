@@ -2454,6 +2454,17 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         registerTag("describe", (attribute, object) -> {
             return new ElementTag(object.describe());
         });
+
+        // <--[tag]
+        // @attribute <EntityTag.property_map>
+        // @returns MapTag
+        // @group properties
+        // @description
+        // Returns the entity's property map.
+        // -->
+        registerTag("property_map", (attribute, object) -> {
+            return PropertyParser.getPropertiesMap(object);
+        });
     }
 
     public String describe() {
