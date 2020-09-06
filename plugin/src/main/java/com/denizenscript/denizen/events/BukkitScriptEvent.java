@@ -724,9 +724,6 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         else if (matcher.doesMatch(mat.identifySimpleNoIdentifier())) {
             return true;
         }
-        else if (matcher.doesMatch(mat.identifyFullNoIdentifier())) {
-            return true;
-        }
         return false;
     }
 

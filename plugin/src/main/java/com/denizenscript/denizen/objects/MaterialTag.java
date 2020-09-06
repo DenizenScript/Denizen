@@ -41,30 +41,6 @@ public class MaterialTag implements ObjectTag, Adjustable {
     // -->
 
     /**
-     * Legacy MaterialTag identities.
-     */
-    private String forcedIdentity = null,
-            forcedIdentityLow = null;
-
-    /**
-     * Legacy MaterialTag identities. Do not use.
-     */
-    public MaterialTag forceIdentifyAs(String string) {
-        forcedIdentity = string;
-        forcedIdentityLow = CoreUtilities.toLowerCase(string);
-        return this;
-    }
-
-    //////////////////
-    //    OBJECT FETCHER
-    ////////////////
-
-    @Deprecated
-    public static MaterialTag valueOf(String string) {
-        return valueOf(string, null);
-    }
-
-    /**
      * Gets a Material Object from a string form.
      *
      * @param string the string
@@ -141,10 +117,6 @@ public class MaterialTag implements ObjectTag, Adjustable {
         return getMaterial() == b.getType();
     }
 
-    ///////////////
-    //   Constructors
-    /////////////
-
     public MaterialTag(Material material) {
         this.material = material;
         if (material.isBlock()) {
@@ -166,10 +138,6 @@ public class MaterialTag implements ObjectTag, Adjustable {
         this.modernData = data;
         this.material = data.getMaterial();
     }
-
-    /////////////////////
-    //   INSTANCE FIELDS/METHODS
-    /////////////////
 
     private Material material;
     private ModernBlockData modernData;
@@ -223,41 +191,21 @@ public class MaterialTag implements ObjectTag, Adjustable {
         return "m@" + identifyNoIdentifier();
     }
 
-    public String identifyFull() {
-        return "m@" + identifyFullNoIdentifier();
-    }
-
     @Override
     public String identifySimple() {
         return "m@" + identifySimpleNoIdentifier();
     }
 
     public String identifyNoPropertiesNoIdentifier() {
-        if (forcedIdentity != null) {
-            return forcedIdentityLow;
-        }
         return CoreUtilities.toLowerCase(material.name());
     }
 
     public String identifyNoIdentifier() {
-        if (forcedIdentity != null) {
-            return forcedIdentityLow;
-        }
         return CoreUtilities.toLowerCase(material.name()) + PropertyParser.getPropertiesString(this);
     }
 
     public String identifySimpleNoIdentifier() {
-        if (forcedIdentity != null) {
-            return forcedIdentityLow;
-        }
         return CoreUtilities.toLowerCase(material.name());
-    }
-
-    public String identifyFullNoIdentifier() {
-        if (forcedIdentity != null) {
-            return forcedIdentityLow;
-        }
-        return CoreUtilities.toLowerCase(material.name()) + PropertyParser.getPropertiesString(this);
     }
 
     @Override
@@ -266,9 +214,6 @@ public class MaterialTag implements ObjectTag, Adjustable {
     }
 
     public String realName() {
-        if (forcedIdentity != null) {
-            return forcedIdentityLow;
-        }
         return CoreUtilities.toLowerCase(material.name());
     }
 
@@ -686,7 +631,7 @@ public class MaterialTag implements ObjectTag, Adjustable {
         // Returns the name of the material.
         // -->
         registerTag("name", (attribute, object) -> {
-            return new ElementTag(object.forcedIdentity != null ? object.forcedIdentityLow : CoreUtilities.toLowerCase(object.material.name()));
+            return new ElementTag(CoreUtilities.toLowerCase(object.material.name()));
         });
 
         // <--[tag]

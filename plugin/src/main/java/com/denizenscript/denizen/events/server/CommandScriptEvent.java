@@ -43,7 +43,7 @@ public class CommandScriptEvent extends BukkitScriptEvent implements Listener {
     //
     // @Context
     // <context.command> returns the command name as an ElementTag.
-    // <context.raw_args> returns any args used as a ListTag.
+    // <context.raw_args> returns any args used, unmodified as plaintext.
     // <context.args> returns a ListTag of the arguments.
     // <context.source_type> returns the source of the command. Can be: PLAYER, SERVER, COMMAND_BLOCK, or COMMAND_MINECART.
     // <context.command_block_location> returns the command block's location (if the command was run from one).
