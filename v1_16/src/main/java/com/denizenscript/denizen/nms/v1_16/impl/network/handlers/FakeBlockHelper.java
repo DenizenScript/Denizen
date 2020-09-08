@@ -158,10 +158,9 @@ public class FakeBlockHelper {
                 }
             }
             if (isFull) {
-                BiomeStorage biomes = (BiomeStorage) BIOMESTORAGE_MAPCHUNK.get(packet);
+                int[] biomes = (int[]) BIOMESTORAGE_MAPCHUNK.get(packet);
                 if (biomes != null) {
-                    int[] biomeData = biomes.a();
-                    outputSerial.a(biomeData);
+                    outputSerial.a(biomes);
                 }
             }
             byte[] outputBytes = outputSerial.array();
