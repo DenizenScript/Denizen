@@ -17,6 +17,7 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.scheduling.OneTimeSchedulable;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
@@ -59,10 +60,7 @@ public class FakeItemCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
-        /* Match arguments to expected variables */
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("slot")
                     && arg.matchesPrefix("slot")) {
                 scriptEntry.addObject("slot", arg.asElement());
@@ -88,59 +86,46 @@ public class FakeItemCommand extends AbstractCommand {
             else {
                 arg.reportUnhandled();
             }
-
         }
-
         if (!scriptEntry.hasObject("item")) {
             throw new InvalidArgumentsException("Must specify a valid item to fake!");
         }
-
         if (!scriptEntry.hasObject("slot")) {
             throw new InvalidArgumentsException("Must specify a valid slot!");
         }
-
         scriptEntry.defaultObject("duration", DurationTag.ZERO).defaultObject("player_only", new ElementTag(false))
                 .defaultObject("players", Arrays.asList(Utilities.getEntryPlayer(scriptEntry)));
-
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         List<ItemTag> items = (List<ItemTag>) scriptEntry.getObject("item");
         final ElementTag elSlot = scriptEntry.getElement("slot");
         DurationTag duration = scriptEntry.getObjectTag("duration");
         final List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
         final ElementTag player_only = scriptEntry.getElement("player_only");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugList("items", items) + elSlot.debug() + duration.debug()
                     + ArgumentHelper.debugList("players", players) + player_only.debug());
         }
-
         int slot = SlotHelper.nameToIndex(elSlot.asString());
         if (slot == -1) {
             Debug.echoError(scriptEntry.getResidingQueue(), "The input '" + elSlot.asString() + "' is not a valid slot!");
             return;
         }
         final boolean playerOnly = player_only.asBoolean();
-
         final PacketHelper packetHelper = NMSHandler.getPacketHelper();
-
         for (ItemTag item : items) {
             if (item == null) {
                 slot++;
                 continue;
             }
-
             for (PlayerTag player : players) {
                 Player ent = player.getPlayerEntity();
                 packetHelper.setSlot(ent, translateSlot(ent, slot, playerOnly), item.getItemStack(), playerOnly);
             }
-
             final int slotSnapshot = slot;
             slot++;
-
             if (duration.getSeconds() > 0) {
                 DenizenCore.schedule(new OneTimeSchedulable(new Runnable() {
                     @Override
@@ -158,11 +143,16 @@ public class FakeItemCommand extends AbstractCommand {
     }
 
     static int translateSlot(Player player, int slot, boolean player_only) {
-        // This is (probably?) a translation from standard player inventory slots to ones that work with the full crafting inventory system
-        if (slot < 0) {
-            return 0;
+        // This translates Spigot slot standards to vanilla slots.
+        // The slot order is different when a player is viewing an inventory vs not doing so, leading to this chaos.
+        int total;
+        if (player_only || player.getOpenInventory().getTopInventory() instanceof CraftingInventory) {
+            total = 46;
         }
-        int total = player_only ? 46 : player.getOpenInventory().countSlots();
+        else {
+            total = 36 + player.getOpenInventory().getTopInventory().getSize();
+        }
+        int result;
         if (total == 46) {
             if (slot == 45) {
                 return slot;
@@ -172,10 +162,21 @@ public class FakeItemCommand extends AbstractCommand {
                 return slot;
             }
             total -= 1;
+            result = (int) (slot + (total - 9) - (9 * (2 * Math.floor(slot / 9.0))));
         }
-        if (slot > total) {
+        else {
+            int row = (int) Math.floor(slot / 9.0);
+            int column = slot - (row * 9);
+            int rowCount = (int) Math.ceil(total / 9.0);
+            int realRow = rowCount - row - 1;
+            result = realRow * 9 + column;
+        }
+        if (result < 0) {
+            return 0;
+        }
+        if (result > total) {
             return total;
         }
-        return (int) (slot + (total - 9) - (9 * (2 * Math.floor(slot / 9.0))));
+        return result;
     }
 }
