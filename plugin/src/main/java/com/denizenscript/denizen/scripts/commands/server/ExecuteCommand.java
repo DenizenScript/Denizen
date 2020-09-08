@@ -44,10 +44,14 @@ public class ExecuteCommand extends AbstractCommand {
     // Allows the execution of server commands through a Denizen script.
     // Commands can be executed as the server, as an npc, as an opped player, or as a player, as though it was typed by the respective source.
     //
+    // Note that you should generally avoid using 'as_op', which is only meant for very specific special cases. 'as_server' is usually a better option.
+    //
     // Note: do not include the slash at the start. A slash at the start will be interpreted equivalent to typing two slashes at the front in-game.
     //
     // Note that this is a Denizen script command that executes Bukkit commands.
     // This can be considered the inverse of '/ex' (a Bukkit command that executes Denizen script commands).
+    //
+    // The 'silent' option can be specified with 'as_server' to hide the output. Note that 'silent' might or might not work with different plugins depending on how they operate.
     //
     // Generally, you should never use this to execute a vanilla command, there is almost always a script command that should be used instead.
     // Usually the 'execute' command should be reserved for interacting with external plugins.
@@ -71,9 +75,7 @@ public class ExecuteCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (arg.matches("asplayer", "as_player")
                     && !scriptEntry.hasObject("type")) {
                 if (!Utilities.entryHasPlayer(scriptEntry)) {
@@ -110,37 +112,28 @@ public class ExecuteCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         if (!scriptEntry.hasObject("type")) {
             throw new InvalidArgumentsException("Missing execution type!");
         }
-
         if (!scriptEntry.hasObject("command")) {
             throw new InvalidArgumentsException("Missing command text!");
         }
-
         scriptEntry.defaultObject("silent", new ElementTag("false"));
-
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         ElementTag cmd = scriptEntry.getElement("command");
         ElementTag type = scriptEntry.getElement("type");
         ElementTag silent = scriptEntry.getElement("silent");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     type.debug()
                             + cmd.debug()
                             + silent.debug());
         }
-
         String command = cmd.asString();
-
         switch (Type.valueOf(type.asString())) {
-
             case AS_PLAYER:
                 try {
                     PlayerCommandPreprocessEvent pcpe = new PlayerCommandPreprocessEvent(Utilities.getEntryPlayer(scriptEntry).getPlayerEntity(), "/" + command);
@@ -163,7 +156,6 @@ public class ExecuteCommand extends AbstractCommand {
                     Debug.echoError(scriptEntry.getResidingQueue(), e);
                 }
                 break;
-
             case AS_OP:
                 if (CoreUtilities.equalsIgnoreCase(command, "stop")) {
                     Debug.echoError("Please use as_server to execute 'stop'.");
@@ -198,7 +190,6 @@ public class ExecuteCommand extends AbstractCommand {
                     playerHelper.setTemporaryOp(player, false);
                 }
                 break;
-
             case AS_NPC:
                 if (!Utilities.getEntryNPC(scriptEntry).isSpawned()) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Cannot EXECUTE AS_NPC unless the NPC is Spawned.");
@@ -218,7 +209,6 @@ public class ExecuteCommand extends AbstractCommand {
                 }
                 Utilities.getEntryNPC(scriptEntry).getEntity().setOp(false);
                 break;
-
             case AS_SERVER:
                 dcs.clearOutput();
                 dcs.silent = silent.asBoolean();

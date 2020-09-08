@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.core;
 
+import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptHelper;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
@@ -38,6 +39,7 @@ public class ZapCommand extends AbstractCommand implements Listener {
     // Changes the current interact script step for the linked player.
     //
     // The step name input should match the name of a step in the interact script.
+    // The step name can be '*' to automatically zap to the default step.
     //
     // If used inside an interact script, will default to the current interact script.
     // For anywhere else, you must specify the script by name.
@@ -51,8 +53,12 @@ public class ZapCommand extends AbstractCommand implements Listener {
     // <ScriptTag.step[<player>]>
     //
     // @Usage
-    // Use to change the step to 2
+    // Use to change the step to 2.
     // - zap 2
+    //
+    // @Usage
+    // Use to return to the default step.
+    // - zap *
     //
     // @Usage
     // Use to change the step to 3 in a script called Interact_Example.
@@ -66,8 +72,6 @@ public class ZapCommand extends AbstractCommand implements Listener {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
-            // If the scripter uses the 'script:step' format, handle it.
             if (!scriptEntry.hasObject("script")
                     && !scriptEntry.hasObject("step")
                     && arg.hasPrefix()
@@ -75,20 +79,14 @@ public class ZapCommand extends AbstractCommand implements Listener {
                 scriptEntry.addObject("script", arg.getPrefix().asType(ScriptTag.class));
                 scriptEntry.addObject("step", arg.asElement());
             }
-
-            // If a script is found, use that to ZAP
             else if (!scriptEntry.hasObject("script")
                     && arg.matchesArgumentType(ScriptTag.class)
                     && !arg.matchesPrefix("step")) {
                 scriptEntry.addObject("script", arg.asType(ScriptTag.class));
             }
-
-            // Add argument as step
             else if (!scriptEntry.hasObject("step")) {
                 scriptEntry.addObject("step", arg.asElement());
             }
-
-            // Lastly duration
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesArgumentType(DurationTag.class)) {
                 scriptEntry.addObject("duration", arg.asType(DurationTag.class));
@@ -97,11 +95,7 @@ public class ZapCommand extends AbstractCommand implements Listener {
                 arg.reportUnhandled();
             }
         }
-
-        // Add default script if none was specified.
         scriptEntry.defaultObject("script", scriptEntry.getScript());
-
-        // Check if player is valid
         if (!Utilities.entryHasPlayer(scriptEntry) || !Utilities.getEntryPlayer(scriptEntry).isValid()) {
             throw new InvalidArgumentsException("Must have player context!");
         }
@@ -112,24 +106,17 @@ public class ZapCommand extends AbstractCommand implements Listener {
 
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-
         final ScriptTag script = scriptEntry.getObjectTag("script");
         DurationTag duration = scriptEntry.getObjectTag("duration");
-
         if (scriptEntry.dbCallShouldDebug()) {
-
             Debug.report(scriptEntry, getName(), Utilities.getEntryPlayer(scriptEntry).debug() + script.debug()
                     + (scriptEntry.hasObject("step")
                     ? scriptEntry.getElement("step").debug() : ArgumentHelper.debugObj("step", "++ (inc)"))
                     + (duration != null ? duration.debug() : ""));
-
         }
 
         String step = scriptEntry.hasObject("step") ? scriptEntry.getElement("step").asString() : null;
-
-        // Let's get the current step for reference.
         String currentStep = InteractScriptHelper.getCurrentStep(Utilities.getEntryPlayer(scriptEntry), script.getName());
-
         // Special-case for backwards compatibility: ability to use ZAP to count up steps.
         if (step == null) {
             // Okay, no step was identified.. that means we should count up,
@@ -143,15 +130,15 @@ public class ZapCommand extends AbstractCommand implements Listener {
                 step = "1";
             }
         }
-
+        else if (step.equals("*")) {
+            step = ((InteractScriptContainer) script.getContainer()).getDefaultStepName();
+        }
         if (step.equalsIgnoreCase(currentStep)) {
             Debug.echoError(scriptEntry.getResidingQueue(), "Zapping to own current step!");
             return;
         }
-
         // If the durationsMap already contains an entry for this player/script combination,
-        // cancel the task since it's probably not desired to change back anymore if another
-        // ZAP for this script is taking place.
+        // cancel the task since it's probably not desired to change back anymore if another ZAP for this script is taking place.
         String durationKey = Utilities.getEntryPlayer(scriptEntry).getSaveName() + "," + script.getName();
         Integer durationObj = durations.get(durationKey);
         if (durationObj != null) {
@@ -162,23 +149,10 @@ public class ZapCommand extends AbstractCommand implements Listener {
                 Debug.echoError(ex);
             }
         }
-
-        // One last thing... check for duration.
         if (duration != null && duration.getSeconds() > 0) {
-            // If a DURATION is specified, the currentStep should be remembered and
-            // restored after the duration.
             scriptEntry.addObject("step", new ElementTag(currentStep));
-            // And let's take away the duration that was set to avoid a re-duration
-            // inception-ion-ion-ion-ion... ;)
             scriptEntry.addObject("duration", DurationTag.ZERO);
-
-            // Now let's add a delayed task to set it back after the duration
-
-            // Delays are in ticks, so let's multiply our duration (which is in seconds) by 20.
-            // 20 ticks per second.
             long delay = (long) (duration.getSeconds() * 20);
-
-            // Set delayed task and put id in a map
             Debug.log("Setting delayed task 'RESET ZAP' for '" + script.identify() + "'");
             durations.put(durationKey,
                     DenizenAPI.getCurrentInstance().getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
@@ -191,11 +165,6 @@ public class ZapCommand extends AbstractCommand implements Listener {
                                 }
                             }, delay));
         }
-
-        //
-        // FINALLY! ZAP! Change the step in Saves... your step is now ZAPPED!
-        // Fun fact: ZAP is named in homage of ZZT-OOPs ZAP command. Google it.
-        //
         DenizenAPI.getCurrentInstance().getSaves().set("Players." + Utilities.getEntryPlayer(scriptEntry).getSaveName()
                 + ".Scripts." + script.getName().toUpperCase() + "." + "Current Step", step);
     }
