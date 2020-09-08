@@ -70,15 +70,14 @@ public class BukkitScriptProperties implements Property {
         });
 
         // <--[tag]
-        // @attribute <ScriptTag.step[<player>]>
+        // @attribute <ScriptTag.step[(<player>)]>
         // @returns ElementTag
         // @description
         // Returns the name of a script step that the player is currently on.
         // Must be an INTERACT script.
         // -->
         PropertyParser.<BukkitScriptProperties>registerTag("step", (attribute, script) -> {
-            PlayerTag player = (attribute.hasContext(1) ? attribute.contextAsType(1, PlayerTag.class)
-                    : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
+            PlayerTag player = attribute.hasContext(1) ? attribute.contextAsType(1, PlayerTag.class) : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer();
             if (player != null && player.isValid()) {
                 return new ElementTag(InteractScriptHelper.getCurrentStep(player, script.script.getContainer().getName()));
             }
@@ -88,12 +87,12 @@ public class BukkitScriptProperties implements Property {
         });
 
         // <--[tag]
-        // @attribute <ScriptTag.default_name>
+        // @attribute <ScriptTag.default_step>
         // @returns ElementTag
         // @description
         // Returns the name of the default step of an interact script.
         // -->
-        PropertyParser.<BukkitScriptProperties>registerTag("step", (attribute, script) -> {
+        PropertyParser.<BukkitScriptProperties>registerTag("default_step", (attribute, script) -> {
             String step = ((InteractScriptContainer) script.script.getContainer()).getDefaultStepName();
             return new ElementTag(step);
         });
