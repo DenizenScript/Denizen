@@ -115,7 +115,6 @@ public class InventoryTitle implements Property {
             }
             inventory.setContents(contents);
             InventoryTag.trackTemporaryInventory(inventory);
-            Debug.log("Set title: " + NMSHandler.getInstance().getTitle(inventory.getInventory()));
         }
 
     }

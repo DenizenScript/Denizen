@@ -182,6 +182,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             if (property.startsWith("holder=")) {
                 holder = ObjectFetcher.unescapeProperty(property.substring("holder=".length()));
             }
+            else if (property.startsWith("script_name=")) {
+                holder = ObjectFetcher.unescapeProperty(property.substring("script_name=".length()));
+            }
             else if (property.startsWith("uniquifier=")) {
                 String idText = property.substring("uniquifier=".length());
                 if (!ArgumentHelper.matchesInteger(idText)) {
@@ -325,7 +328,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             String description = ObjectFetcher.unescapeProperty(data.get(1));
             ElementTag descriptionElement = new ElementTag(description);
             Mechanism mechanism = new Mechanism(new ElementTag(data.get(0)), descriptionElement, context);
-            if (!name.equals("holder") && !name.equals("uniquifier") && !name.equals("size")) {
+            if (!name.equals("holder") && !name.equals("uniquifier") && !name.equals("size") && !name.equals("script_name")) {
                 result.safeAdjust(mechanism);
             }
         }
