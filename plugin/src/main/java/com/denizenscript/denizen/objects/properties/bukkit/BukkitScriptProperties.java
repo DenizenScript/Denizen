@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects.properties.bukkit;
 
 import com.denizenscript.denizen.scripts.commands.core.CooldownCommand;
+import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptHelper;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -84,6 +85,17 @@ public class BukkitScriptProperties implements Property {
             else {
                 return null;
             }
+        });
+
+        // <--[tag]
+        // @attribute <ScriptTag.default_name>
+        // @returns ElementTag
+        // @description
+        // Returns the name of the default step of an interact script.
+        // -->
+        PropertyParser.<BukkitScriptProperties>registerTag("step", (attribute, script) -> {
+            String step = ((InteractScriptContainer) script.script.getContainer()).getDefaultStepName();
+            return new ElementTag(step);
         });
     }
 
