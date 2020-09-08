@@ -184,6 +184,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             }
             else if (property.startsWith("script_name=")) {
                 holder = ObjectFetcher.unescapeProperty(property.substring("script_name=".length()));
+                typeName = "script";
             }
             else if (property.startsWith("uniquifier=")) {
                 String idText = property.substring("uniquifier=".length());
