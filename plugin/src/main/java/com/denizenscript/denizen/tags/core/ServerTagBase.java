@@ -403,6 +403,21 @@ public class ServerTagBase {
                 }
             }
 
+            // <--[tag]
+            // @attribute <server.scoreboard[(<board>)].team_names>
+            // @returns ListTag
+            // @description
+            // Returns a list of the names of all teams within the scoreboard.
+            // Optionally, specify which scoreboard to use.
+            // -->
+            if (attribute.startsWith("team_names")) {
+                ListTag result = new ListTag();
+                for (Team team : board.getTeams()) {
+                    result.add(team.getName());
+                }
+                event.setReplacedObject(result.getObjectAttribute(attribute.fulfill(1)));
+            }
+
             if (attribute.startsWith("team") && attribute.hasContext(1)) {
                 Team team = board.getTeam(attribute.getContext(1));
                 if (team == null) {
