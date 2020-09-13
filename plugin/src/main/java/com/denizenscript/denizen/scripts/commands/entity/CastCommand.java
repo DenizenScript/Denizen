@@ -113,11 +113,11 @@ public class CastCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-        // No targets specified, let's use defaults if available
-        scriptEntry.defaultObject("entities", (Utilities.entryHasPlayer(scriptEntry) ? Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()) : null),
-                (Utilities.entryHasNPC(scriptEntry) && Utilities.getEntryNPC(scriptEntry).isSpawned()
-                        ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null));
-        // No potion specified? Problem!
+        if (!scriptEntry.hasObject("entities")) {
+            scriptEntry.defaultObject("entities", (Utilities.entryHasPlayer(scriptEntry) ? Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()) : null),
+                    (Utilities.entryHasNPC(scriptEntry) && Utilities.getEntryNPC(scriptEntry).isSpawned()
+                            ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null));
+        }
         if (!scriptEntry.hasObject("effect")) {
             throw new InvalidArgumentsException("Must specify a valid PotionType!");
         }
@@ -140,7 +140,6 @@ public class CastCommand extends AbstractCommand {
         ElementTag showParticles = scriptEntry.getElement("show_particles");
         ElementTag ambient = scriptEntry.getElement("ambient");
         ElementTag showIcon = scriptEntry.getElement("show_icon");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     ArgumentHelper.debugObj("Target(s)", entities.toString())
@@ -151,12 +150,9 @@ public class CastCommand extends AbstractCommand {
                             + showParticles.debug()
                             + showIcon.debug());
         }
-
         boolean amb = ambient.asBoolean();
         boolean showP = showParticles.asBoolean();
         boolean icon = showIcon.asBoolean();
-
-        // Apply the PotionEffect to the targets!
         for (EntityTag entity : entities) {
             if (entity.getLivingEntity().hasPotionEffect(effect)) {
                 entity.getLivingEntity().removePotionEffect(effect);
