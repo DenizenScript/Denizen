@@ -21,7 +21,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     // <block> dispenses item
     // <block> dispenses <item>
     //
-    // @Regex ^on [^\s]+ dispense [^\s]+$
+    // @Regex ^on [^\s]+ dispenses [^\s]+$
     //
     // @Group Block
     //

@@ -93,7 +93,7 @@ public class InventoryContents implements Property {
 
     @Override
     public String getPropertyString() {
-        if (!inventory.isGeneric() || inventory.isSaving) {
+        if (!inventory.isGeneric() && !inventory.isSaving) {
             return null;
         }
         ListTag contents = getContents(false);
