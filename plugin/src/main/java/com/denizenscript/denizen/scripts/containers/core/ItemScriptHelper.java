@@ -82,6 +82,9 @@ public class ItemScriptHelper implements Listener {
     }
 
     public ItemStack[] textToItemArray(ItemScriptContainer container, String text) {
+        if (CoreUtilities.toLowerCase(text).equals("air")) {
+            return new ItemStack[0];
+        }
         List<String> ingredientText = splitByNonBracketedSlashes(text);
         ItemStack[] outputItems = new ItemStack[ingredientText.size()];
         for (int i = 0; i < outputItems.length; i++) {
@@ -144,7 +147,9 @@ public class ItemScriptHelper implements Listener {
             recipe = recipe.shape(shape1);
         }
         for (int i = 0; i < ingredients.size(); i++) {
-            NMSHandler.getItemHelper().setShapedRecipeIngredient(recipe, itemChars.charAt(i), ingredients.get(i), exacts.get(i));
+            if (ingredients.get(i).length != 0) {
+                NMSHandler.getItemHelper().setShapedRecipeIngredient(recipe, itemChars.charAt(i), ingredients.get(i), exacts.get(i));
+            }
         }
         Bukkit.addRecipe(recipe);
     }
