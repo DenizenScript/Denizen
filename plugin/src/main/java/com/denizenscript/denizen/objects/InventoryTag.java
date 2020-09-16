@@ -290,6 +290,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 return null;
             }
             result = ((InventoryScriptContainer) script.getContainer()).getInventoryFrom(context);
+            if (size != -1) {
+                result.setSize(size);
+            }
         }
         if (result == null) {
             ScriptTag script = ScriptTag.valueOf(holder, context);
@@ -510,6 +513,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             return;
         }
         int oldSize = inventory.getSize();
+        if (oldSize == size) {
+            return;
+        }
         ItemStack[] oldContents = inventory.getContents();
         ItemStack[] newContents = new ItemStack[size];
         if (oldSize > size) {

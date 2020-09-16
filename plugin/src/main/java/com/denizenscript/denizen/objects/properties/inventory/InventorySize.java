@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects.properties.inventory;
 
 import com.denizenscript.denizen.objects.InventoryTag;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -45,7 +46,7 @@ public class InventorySize implements Property {
 
     @Override
     public String getPropertyString() {
-        if (getSize() > 0 && inventory.getIdType().equals("generic") && inventory.getInventoryType() == InventoryType.CHEST) {
+        if (getSize() > 0 && (inventory.getIdType().equals("generic") || inventory.getIdType().equals("script")) && inventory.getInventoryType() == InventoryType.CHEST) {
             return String.valueOf(getSize());
         }
         else {
@@ -85,8 +86,13 @@ public class InventorySize implements Property {
         // @tags
         // <InventoryTag.size>
         // -->
-        if (mechanism.matches("size") && inventory.getIdType().equals("generic") && mechanism.requireInteger()) {
-            setSize(mechanism.getValue().asInt());
+        if (mechanism.matches("size") && mechanism.requireInteger()) {
+            if (inventory.getIdType().equals("generic") || inventory.getIdType().equals("script")) {
+                setSize(mechanism.getValue().asInt());
+            }
+            else {
+                Debug.echoError("Inventories of type '" + inventory.getIdType() + "' cannot have their size changed!");
+            }
         }
 
     }

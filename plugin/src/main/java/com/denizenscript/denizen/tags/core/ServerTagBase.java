@@ -2277,6 +2277,7 @@ public class ServerTagBase {
         // @description
         // Suggests to the internal systems that it's a good time to clean the memory.
         // Does NOT force a memory cleaning.
+        // This should generally not be used unless you have a very good specific reason to use it.
         // @tags
         // <server.ram_free>
         // -->
