@@ -365,6 +365,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         if (ScriptRegistry.containsScript(string, InventoryScriptContainer.class)) {
             return ScriptRegistry.getScriptContainerAs(string, InventoryScriptContainer.class).getInventoryFrom(context);
         }
+        if (new ElementTag(string).matchesEnum(InventoryType.values())) {
+            InventoryType type = InventoryType.valueOf(string.toUpperCase());
+            return new InventoryTag(type);
+        }
         if (context == null || context.showErrors()) {
             Debug.echoError("Value of InventoryTag returning null. Invalid InventoryTag specified: " + string);
         }

@@ -75,9 +75,7 @@ public class ShowFakeCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("players")
                     && arg.matchesPrefix("to", "players")) {
                 scriptEntry.addObject("players", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
@@ -101,45 +99,36 @@ public class ShowFakeCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         if (!scriptEntry.hasObject("players") && Utilities.entryHasPlayer(scriptEntry)) {
             scriptEntry.defaultObject("players", Arrays.asList(Utilities.getEntryPlayer(scriptEntry)));
         }
-
         if (!scriptEntry.hasObject("locations")) {
             throw new InvalidArgumentsException("Must specify at least one valid location!");
         }
-
         if (!scriptEntry.hasObject("players")) {
             throw new InvalidArgumentsException("Must have a valid, online player attached!");
         }
-
         if (!scriptEntry.hasObject("materials") && !scriptEntry.hasObject("cancel")) {
             throw new InvalidArgumentsException("Must specify valid material(s)!");
         }
-
         scriptEntry.defaultObject("duration", new DurationTag(10));
         scriptEntry.defaultObject("cancel", new ElementTag(false));
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         DurationTag duration = scriptEntry.getObjectTag("duration");
         ElementTag cancel = scriptEntry.getElement("cancel");
         List<MaterialTag> materials = (List<MaterialTag>) scriptEntry.getObject("materials");
         List<LocationTag> locations = (List<LocationTag>) scriptEntry.getObject("locations");
         List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), duration.debug() + cancel.debug()
                     + (materials != null ? ArgumentHelper.debugList("materials", materials) : "")
                     + ArgumentHelper.debugList("locations", locations)
                     + ArgumentHelper.debugList("players", players));
         }
-
         boolean shouldCancel = cancel.asBoolean();
-
         int i = 0;
         for (LocationTag loc : locations) {
             if (!shouldCancel) {
