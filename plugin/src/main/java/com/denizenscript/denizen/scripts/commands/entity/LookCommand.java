@@ -17,7 +17,6 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -87,9 +86,7 @@ public class LookCommand extends AbstractCommand {
             }
         }
         if (!scriptEntry.hasObject("entities")) {
-            scriptEntry.defaultObject("entities",
-                    Utilities.entryHasNPC(scriptEntry) && Utilities.getEntryNPC(scriptEntry).isSpawned() ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null,
-                    Utilities.entryHasPlayer(scriptEntry) && Utilities.getEntryPlayer(scriptEntry).isOnline() ? Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()) : null);
+            scriptEntry.defaultObject("entities", Utilities.entryDefaultEntityList(scriptEntry, false));
         }
         if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("cancel")) {
             throw new InvalidArgumentsException("Must specify a location or 'cancel'!");

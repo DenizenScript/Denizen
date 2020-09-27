@@ -89,9 +89,7 @@ public class SpawnCommand extends AbstractCommand {
             }
         }
         // Use the NPC or player's locations as the location if one is not specified
-        scriptEntry.defaultObject("location",
-                Utilities.entryHasNPC(scriptEntry) ? Utilities.getEntryNPC(scriptEntry).getLocation() : null,
-                Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getLocation() : null);
+        scriptEntry.defaultObject("location", Utilities.entryDefaultLocation(scriptEntry, false));
         if (!scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Must specify entity/entities!");
         }

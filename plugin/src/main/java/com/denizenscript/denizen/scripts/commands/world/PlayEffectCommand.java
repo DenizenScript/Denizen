@@ -181,9 +181,7 @@ public class PlayEffectCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-        scriptEntry.defaultObject("location",
-                Utilities.entryHasNPC(scriptEntry) && Utilities.getEntryNPC(scriptEntry).isSpawned() ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getLocation()) : null,
-                Utilities.entryHasPlayer(scriptEntry) && Utilities.getEntryPlayer(scriptEntry).isOnline() ? Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getLocation()) : null);
+        scriptEntry.defaultObject("location", Utilities.entryDefaultLocation(scriptEntry, false));
         scriptEntry.defaultObject("data", new ElementTag(0));
         scriptEntry.defaultObject("radius", new ElementTag(15));
         scriptEntry.defaultObject("qty", new ElementTag(1));
@@ -200,8 +198,6 @@ public class PlayEffectCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
-        // Extract objects from ScriptEntry
         List<LocationTag> locations = (List<LocationTag>) scriptEntry.getObject("location");
         List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
         Effect effect = (Effect) scriptEntry.getObject("effect");
@@ -215,7 +211,6 @@ public class PlayEffectCommand extends AbstractCommand {
         LocationTag offset = scriptEntry.getObjectTag("offset");
         ElementTag special_data = scriptEntry.getElement("special_data");
         LocationTag velocity = scriptEntry.getObjectTag("velocity");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), (effect != null ? ArgumentHelper.debugObj("effect", effect.name()) :
                     particleEffect != null ? ArgumentHelper.debugObj("special effect", particleEffect.getName()) :
@@ -230,13 +225,11 @@ public class PlayEffectCommand extends AbstractCommand {
                     (velocity != null ? velocity.debug() : "") +
                     (should_offset ? ArgumentHelper.debugObj("note", "Location will be offset 1 block-height upward (see documentation)") : ""));
         }
-
         for (LocationTag location : locations) {
             if (should_offset) {
                 // Slightly increase the location's Y so effects don't seem to come out of the ground
                 location = new LocationTag(location.clone().add(0, 1, 0));
             }
-
             // Play the Bukkit effect the number of times specified
             if (effect != null) {
                 for (int n = 0; n < qty.asInt(); n++) {
@@ -252,7 +245,6 @@ public class PlayEffectCommand extends AbstractCommand {
                     }
                 }
             }
-
             // Play a ParticleEffect
             else if (particleEffect != null) {
                 List<Player> players = new ArrayList<>();
@@ -320,7 +312,6 @@ public class PlayEffectCommand extends AbstractCommand {
                     }
                 }
             }
-
             // Play an iconcrack (item break) effect
             else {
                 List<Player> players = new ArrayList<>();

@@ -68,64 +68,48 @@ public class RotateCommand extends AbstractCommand implements Holdable {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("cancel")
                     && (arg.matches("cancel") || arg.matches("stop"))) {
-
                 scriptEntry.addObject("cancel", new ElementTag("true"));
             }
             else if (!scriptEntry.hasObject("infinite")
                     && arg.matches("infinite")) {
-
                 scriptEntry.addObject("infinite", new ElementTag("true"));
             }
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesArgumentType(DurationTag.class)
                     && arg.matchesPrefix("duration", "d")) {
-
                 scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
             else if (!scriptEntry.hasObject("frequency")
                     && arg.matchesArgumentType(DurationTag.class)
                     && arg.matchesPrefix("frequency", "f")) {
-
                 scriptEntry.addObject("frequency", arg.asType(DurationTag.class));
             }
             else if (!scriptEntry.hasObject("yaw")
                     && arg.matchesPrefix("yaw", "y", "rotation", "r")
                     && arg.matchesFloat()) {
-
                 scriptEntry.addObject("yaw", arg.asElement());
             }
             else if (!scriptEntry.hasObject("pitch")
                     && arg.matchesPrefix("pitch", "p", "tilt", "t")
                     && arg.matchesFloat()) {
-
                 scriptEntry.addObject("pitch", arg.asElement());
             }
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(EntityTag.class)) {
-
                 scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
             }
         }
-
-        // Use the NPC or the Player as the default entity
-        scriptEntry.defaultObject("entities",
-                (Utilities.entryHasPlayer(scriptEntry) ? Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()) : null),
-                (Utilities.entryHasNPC(scriptEntry) ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null));
-
+        scriptEntry.defaultObject("entities", Utilities.entryDefaultEntityList(scriptEntry, true));
         scriptEntry.defaultObject("yaw", new ElementTag(10));
         scriptEntry.defaultObject("pitch", new ElementTag(0));
         scriptEntry.defaultObject("duration", new DurationTag(20));
         scriptEntry.defaultObject("frequency", new DurationTag(1L));
-
-        // Check to make sure required arguments have been filled
         if (!scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Must specify entity/entities!");
         }
@@ -134,7 +118,6 @@ public class RotateCommand extends AbstractCommand implements Holdable {
     @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-
         final List<EntityTag> entities = new ArrayList<>((List<EntityTag>) scriptEntry.getObject("entities"));
         final DurationTag duration = scriptEntry.getObjectTag("duration");
         final DurationTag frequency = scriptEntry.getObjectTag("frequency");
@@ -142,7 +125,6 @@ public class RotateCommand extends AbstractCommand implements Holdable {
         final ElementTag pitch = scriptEntry.getElement("pitch");
         boolean cancel = scriptEntry.hasObject("cancel");
         final boolean infinite = scriptEntry.hasObject("infinite");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
                     ArgumentHelper.debugObj("entities", entities.toString()) +
@@ -151,9 +133,6 @@ public class RotateCommand extends AbstractCommand implements Holdable {
                     yaw.debug() +
                     pitch.debug());
         }
-
-        // Add entities to the rotatingEntities list or remove
-        // them from it
         for (EntityTag entity : entities) {
             if (cancel) {
                 rotatingEntities.remove(entity.getUUID());
@@ -162,21 +141,13 @@ public class RotateCommand extends AbstractCommand implements Holdable {
                 rotatingEntities.add(entity.getUUID());
             }
         }
-
-        // Go no further if we are canceling a rotation
         if (cancel) {
             return;
         }
-
-        // Run a task that will keep rotating the entities
         BukkitRunnable task = new BukkitRunnable() {
             int ticks = 0;
             int maxTicks = duration.getTicksAsInt();
-
-            // Track entities that are no longer used, to remove them from
-            // the regular list
             Collection<EntityTag> unusedEntities = new LinkedList<>();
-
             @Override
             public void run() {
 
@@ -196,15 +167,12 @@ public class RotateCommand extends AbstractCommand implements Holdable {
                             unusedEntities.add(entity);
                         }
                     }
-
-                    // Remove any entities that are no longer spawned
                     if (!unusedEntities.isEmpty()) {
                         for (EntityTag unusedEntity : unusedEntities) {
                             entities.remove(unusedEntity);
                         }
                         unusedEntities.clear();
                     }
-
                     ticks = (int) (ticks + frequency.getTicks());
                 }
                 else {

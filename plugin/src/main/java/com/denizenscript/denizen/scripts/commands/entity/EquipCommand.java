@@ -71,14 +71,10 @@ public class EquipCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         Map<String, ItemTag> equipment = new HashMap<>();
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(EntityTag.class)) {
-
                 scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
             else if (arg.matchesArgumentType(ItemTag.class)
@@ -109,7 +105,6 @@ public class EquipCommand extends AbstractCommand {
                     && arg.matchesPrefix("offhand")) {
                 equipment.put("offhand", ItemTag.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
             }
-
             // Default to item in hand if no prefix is used
             else if (arg.matchesArgumentType(ItemTag.class)) {
                 equipment.put("hand", ItemTag.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
@@ -122,45 +117,31 @@ public class EquipCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
-        // Make sure at least one equipment argument was used
         if (equipment.isEmpty()) {
             throw new InvalidArgumentsException("Must specify equipment!");
         }
-
         scriptEntry.addObject("equipment", equipment);
-
-        // Use player or NPC as default entity
-        scriptEntry.defaultObject("entities", (Utilities.entryHasNPC(scriptEntry) ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null),
-                (Utilities.entryHasPlayer(scriptEntry) ? Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()) : null));
+        scriptEntry.defaultObject("entities", Utilities.entryDefaultEntityList(scriptEntry, false));
 
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         Map<String, ItemTag> equipment = (Map<String, ItemTag>) scriptEntry.getObject("equipment");
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("entities", entities.toString()) +
                     ArgumentHelper.debugObj("equipment", equipment.toString()));
         }
-
         for (EntityTag entity : entities) {
-
             if (entity.isGeneric()) {
                 Debug.echoError(scriptEntry.getResidingQueue(), "Cannot equip generic entity " + entity.identify() + "!");
             }
             else if (entity.isCitizensNPC()) {
-
                 NPCTag npc = entity.getDenizenNPC();
-
                 if (npc != null) {
-
                     Equipment trait = npc.getEquipmentTrait();
-
                     if (equipment.get("hand") != null) {
                         trait.set(0, equipment.get("hand").getItemStack());
                     }
@@ -179,12 +160,9 @@ public class EquipCommand extends AbstractCommand {
                     if (equipment.get("offhand") != null) {
                         trait.set(5, equipment.get("offhand").getItemStack());
                     }
-
                     if (npc.isSpawned()) {
                         LivingEntity livingEntity = npc.getLivingEntity();
-
                         // TODO: Citizens API for this blob?
-
                         if (livingEntity.getType() == EntityType.HORSE) {
                             if (equipment.get("saddle") != null) {
                                 ((Horse) livingEntity).getInventory().setSaddle(equipment.get("saddle").getItemStack());
@@ -206,14 +184,10 @@ public class EquipCommand extends AbstractCommand {
                         }
                     }
                 }
-
             }
             else {
-
                 LivingEntity livingEntity = entity.getLivingEntity();
-
                 if (livingEntity != null) {
-
                     if (livingEntity.getType() == EntityType.HORSE) {
                         if (equipment.get("saddle") != null) {
                             ((Horse) livingEntity).getInventory().setSaddle(equipment.get("saddle").getItemStack());
@@ -234,7 +208,6 @@ public class EquipCommand extends AbstractCommand {
                         }
                     }
                     else {
-
                         if (equipment.get("hand") != null) {
                             livingEntity.getEquipment().setItemInMainHand(equipment.get("hand").getItemStack());
                         }

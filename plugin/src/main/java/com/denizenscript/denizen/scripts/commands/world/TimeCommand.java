@@ -80,9 +80,7 @@ public class TimeCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("type")
                     && arg.matchesEnum(Type.values())) {
                 scriptEntry.addObject("type", arg.asElement());
@@ -115,26 +113,13 @@ public class TimeCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
-        // Check to make sure required arguments have been filled
-
         if (!scriptEntry.hasObject("value") && !scriptEntry.hasObject("reset")) {
             throw new InvalidArgumentsException("Must specify a value!");
         }
-
-        // If the world has not been specified, try to use the NPC's or player's
-        // world, or default to "world" if necessary
         if (!scriptEntry.hasObject("world")) {
-            scriptEntry.addObject("world",
-                    Utilities.entryHasNPC(scriptEntry) ? new WorldTag(Utilities.getEntryNPC(scriptEntry).getWorld()) :
-                            (Utilities.entryHasPlayer(scriptEntry) ? new WorldTag(Utilities.getEntryPlayer(scriptEntry).getWorld()) : null));
+            scriptEntry.addObject("world", Utilities.entryDefaultWorld(scriptEntry, false));
         }
-
         scriptEntry.defaultObject("type", new ElementTag("GLOBAL"));
-
-        if (!scriptEntry.hasObject("world")) {
-            throw new InvalidArgumentsException("Must specify a valid world!");
-        }
     }
 
     public HashMap<UUID, Integer> resetTasks = new HashMap<>();
@@ -148,7 +133,6 @@ public class TimeCommand extends AbstractCommand {
         ElementTag reset = scriptEntry.getElement("reset");
         ElementTag freeze = scriptEntry.getElement("freeze");
         Type type = Type.valueOf(type_element.asString().toUpperCase());
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), type_element.debug()
                     + (reset != null ? reset.debug() : value.debug())
@@ -156,7 +140,6 @@ public class TimeCommand extends AbstractCommand {
                     + (resetAfter != null ? resetAfter.debug() : "")
                     + world.debug());
         }
-
         if (type.equals(Type.GLOBAL)) {
             world.getWorld().setTime(value.getTicks());
         }

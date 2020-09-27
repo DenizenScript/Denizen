@@ -53,9 +53,7 @@ public class OxygenCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("type")
                     && arg.matchesPrefix("type", "t")
                     && arg.matchesEnum(Type.values())) {
@@ -70,36 +68,26 @@ public class OxygenCommand extends AbstractCommand {
                     && arg.matchesInteger()) {
                 scriptEntry.addObject("amount", arg.asElement());
             }
-
         }
-
         if (!Utilities.entryHasPlayer(scriptEntry) || !Utilities.getEntryPlayer(scriptEntry).isValid()) {
             throw new InvalidArgumentsException("Must have player context!");
         }
-
         if (!scriptEntry.hasObject("amount")) {
             throw new InvalidArgumentsException("Must specify a valid amount!");
         }
-
         scriptEntry.defaultObject("type", new ElementTag("REMAINING")).defaultObject("mode", new ElementTag("SET"));
 
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         ElementTag type = scriptEntry.getElement("type");
         ElementTag mode = scriptEntry.getElement("mode");
         ElementTag amount = scriptEntry.getElement("amount");
-
         if (scriptEntry.dbCallShouldDebug()) {
-
             Debug.report(scriptEntry, getName(), type.debug() + mode.debug() + amount.debug());
-
         }
-
         PlayerTag player = Utilities.getEntryPlayer(scriptEntry);
-
         switch (Type.valueOf(type.asString().toUpperCase())) {
             case MAXIMUM:
                 switch (Mode.valueOf(mode.asString().toUpperCase())) {
@@ -113,22 +101,20 @@ public class OxygenCommand extends AbstractCommand {
                         player.setMaximumAir(player.getMaximumAir() - amount.asInt());
                         break;
                 }
-                return;
+                break;
             case REMAINING:
                 switch (Mode.valueOf(mode.asString().toUpperCase())) {
                     case SET:
                         player.setRemainingAir(amount.asInt());
                         break;
-
                     case ADD:
                         player.setRemainingAir(player.getRemainingAir() + amount.asInt());
                         break;
-
                     case REMOVE:
                         player.setRemainingAir(player.getRemainingAir() - amount.asInt());
                         break;
                 }
-                return;
+                break;
         }
     }
 }

@@ -81,6 +81,9 @@ public class InventoryCommand extends AbstractCommand {
     //
     // Using "close" closes any inventory that the currently attached player has opened.
     //
+    // The "adjust" option adjusts mechanisms on an item within a specific slot of an inventory (the "slot" parameter is required).
+    // Note that this is only for items, it does NOT adjust the inventory itself. Use <@link command adjust> to adjust an inventory mechanism.
+    //
     // Note that to add items to an inventory, you should usually use <@link command give>,
     // and to remove items from an inventory, you should usually use <@link command take>.
     //

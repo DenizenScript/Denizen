@@ -11,7 +11,6 @@ import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 
 import java.util.List;
@@ -60,9 +59,7 @@ public class RemoveCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(EntityTag.class)) {
                 scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
@@ -75,20 +72,10 @@ public class RemoveCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
-        // Check to make sure required arguments have been filled
-
         if (!scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Must specify entity/entities!");
         }
-
-        // If the world has not been specified, try to use the NPC's or player's
-        // world, or default to the specified world in the server properties if necessary
-
-        scriptEntry.defaultObject("world",
-                (Utilities.entryHasNPC(scriptEntry) && Utilities.getEntryNPC(scriptEntry).isSpawned()) ? new WorldTag(Utilities.getEntryNPC(scriptEntry).getWorld()) : null,
-                (Utilities.entryHasPlayer(scriptEntry) && Utilities.getEntryPlayer(scriptEntry).isOnline()) ? new WorldTag(Utilities.getEntryPlayer(scriptEntry).getWorld()) : null,
-                new WorldTag(Bukkit.getWorlds().get(0)));
+        scriptEntry.defaultObject("world", Utilities.entryDefaultWorld(scriptEntry, false));
     }
 
     @SuppressWarnings("unchecked")
@@ -96,20 +83,11 @@ public class RemoveCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         WorldTag world = scriptEntry.getObjectTag("world");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugList("entities", entities));
         }
-
-        // Go through all of our entities and remove them
-
         for (EntityTag entity : entities) {
-
-            // If this is a specific spawned entity, and all
-            // other applicable conditions are met, remove it
-
             if (!entity.isGeneric()) {
-
                 if (entity.isCitizensNPC()) {
                     entity.getDenizenNPC().getCitizen().destroy();
                 }
@@ -117,25 +95,9 @@ public class RemoveCommand extends AbstractCommand {
                     entity.remove();
                 }
             }
-
-            // If this is a generic unspawned entity, remove
-            // all entities of this type from the world (as
-            // long as they meet all other conditions)
-
             else {
-
-                // Note: getting the entities from each loaded chunk
-                // in the world (like in Essentials' /killall) has the
-                // exact same effect as the below
-
                 for (Entity worldEntity : world.getEntities()) {
-
-                    // If this entity from the world is of the same type
-                    // as our current EntityTag, and all other applicable
-                    // conditions are met, remove it
-
                     if (entity.getEntityType().equals(DenizenEntityType.getByEntity(worldEntity))) {
-
                         worldEntity.remove();
                     }
                 }

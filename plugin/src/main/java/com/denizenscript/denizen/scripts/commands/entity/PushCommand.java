@@ -83,12 +83,9 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("origin")
                     && arg.matchesPrefix("origin", "o", "source", "shooter", "s")) {
-
                 if (arg.matchesArgumentType(EntityTag.class)) {
                     scriptEntry.addObject("origin_entity", arg.asType(EntityTag.class));
                 }
@@ -102,19 +99,16 @@ public class PushCommand extends AbstractCommand implements Holdable {
             else if (!scriptEntry.hasObject("destination")
                     && arg.matchesArgumentType(LocationTag.class)
                     && arg.matchesPrefix("destination", "d")) {
-
                 scriptEntry.addObject("destination", arg.asType(LocationTag.class));
             }
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesArgumentType(DurationTag.class)
                     && arg.matchesPrefix("duration", "d")) {
-
                 scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
             else if (!scriptEntry.hasObject("speed")
                     && arg.matchesFloat()
                     && arg.matchesPrefix("speed", "s")) {
-
                 scriptEntry.addObject("speed", arg.asElement());
             }
             else if (!scriptEntry.hasObject("script")
@@ -154,27 +148,16 @@ public class PushCommand extends AbstractCommand implements Holdable {
                 arg.reportUnhandled();
             }
         }
-
-        // Use the NPC or player's locations as the origin if one is not specified
-
         if (!scriptEntry.hasObject("origin_location")) {
-
-            scriptEntry.defaultObject("origin_entity",
-                    Utilities.entryHasNPC(scriptEntry) ? Utilities.getEntryNPC(scriptEntry).getDenizenEntity() : null,
-                    Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getDenizenEntity() : null);
+            scriptEntry.defaultObject("origin_entity", Utilities.entryDefaultEntity(scriptEntry, false));
         }
-
         scriptEntry.defaultObject("speed", new ElementTag(1.5));
         scriptEntry.defaultObject("duration", new DurationTag(20));
         scriptEntry.defaultObject("force_along", new ElementTag(false));
         scriptEntry.defaultObject("precision", new ElementTag(2));
-
-        // Check to make sure required arguments have been filled
-
         if (!scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Must specify entity/entities!");
         }
-
         if (!scriptEntry.hasObject("origin_entity") && !scriptEntry.hasObject("origin_location")) {
             throw new InvalidArgumentsException("Must specify an origin location!");
         }
@@ -183,7 +166,6 @@ public class PushCommand extends AbstractCommand implements Holdable {
     @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-
         EntityTag originEntity = scriptEntry.getObjectTag("origin_entity");
         LocationTag originLocation = scriptEntry.hasObject("origin_location") ?
                 (LocationTag) scriptEntry.getObject("origin_location") :
@@ -192,16 +174,13 @@ public class PushCommand extends AbstractCommand implements Holdable {
                         .subtract(0, 0.4, 0));
         boolean no_rotate = scriptEntry.hasObject("no_rotate") && scriptEntry.getElement("no_rotate").asBoolean();
         final boolean no_damage = scriptEntry.hasObject("no_damage") && scriptEntry.getElement("no_damage").asBoolean();
-
-        // If there is no destination set, but there is a shooter, get a point
-        // in front of the shooter and set it as the destination
+        // If there is no destination set, but there is a shooter, get a point in front of the shooter and set it as the destination
         final LocationTag destination = scriptEntry.hasObject("destination") ?
                 (LocationTag) scriptEntry.getObject("destination") :
                 (originEntity != null ? new LocationTag(originEntity.getEyeLocation()
                         .add(originEntity.getEyeLocation().getDirection()
                                 .multiply(30)))
                         : null);
-
         // TODO: Should this be checked in argument parsing?
         if (destination == null) {
             if (scriptEntry.dbCallShouldDebug()) {
@@ -210,19 +189,15 @@ public class PushCommand extends AbstractCommand implements Holdable {
             scriptEntry.setFinished(true);
             return;
         }
-
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         final ScriptTag script = scriptEntry.getObjectTag("script");
         final ListTag definitions = scriptEntry.getObjectTag("definitions");
-
         final double speed = scriptEntry.getElement("speed").asDouble();
         final int maxTicks = ((DurationTag) scriptEntry.getObject("duration")).getTicksAsInt();
-
         ElementTag force_along = scriptEntry.getElement("force_along");
         ElementTag precision = scriptEntry.getElement("precision");
         ElementTag ignore_collision = scriptEntry.getElement("ignore_collision");
         final boolean ignoreCollision = ignore_collision != null && ignore_collision.asBoolean();
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("origin", originEntity != null ? originEntity : originLocation) +
                     ArgumentHelper.debugObj("entities", entities.toString()) +
@@ -237,53 +212,28 @@ public class PushCommand extends AbstractCommand implements Holdable {
                     (ignore_collision != null ? ignore_collision.debug() : "") +
                     (definitions != null ? definitions.debug() : ""));
         }
-
         final boolean forceAlong = force_along.asBoolean();
-
-        // Keep a ListTag of entities that can be called using <entry[name].pushed_entities>
-        // later in the script queue
+        // Keep a ListTag of entities that can be called using <entry[name].pushed_entities> later in the script queue
         final ListTag entityList = new ListTag();
-
-        // Go through all the entities, spawning/teleporting and rotating them
         for (EntityTag entity : entities) {
             entity.spawnAt(originLocation);
-
-            // Only add to entityList after the entities have been
-            // spawned, otherwise you'll get something like "e@skeleton"
-            // instead of "e@57" on it
-            entityList.add(entity.toString());
-
+            entityList.addObject(entity);
             if (!no_rotate) {
                 NMSHandler.getEntityHelper().faceLocation(entity.getBukkitEntity(), destination);
             }
-
-            // If the current entity is a projectile, set its shooter
-            // when applicable
             if (entity.isProjectile() && originEntity != null) {
                 entity.setShooter(originEntity);
             }
         }
-
-        // Add entities to context so that the specific entities created/spawned
-        // can be fetched.
         scriptEntry.addObject("pushed_entities", entityList);
-
         Position.mount(Conversion.convertEntities(entities));
-
-        // Get the entity at the bottom of the entity list, because
-        // only its gravity should be affected and tracked considering
-        // that the other entities will be mounted on it
         final EntityTag lastEntity = entities.get(entities.size() - 1);
-
         final Vector v2 = destination.toVector();
         final Vector Origin = originLocation.toVector();
-
         final int prec = precision.asInt();
-
         BukkitRunnable task = new BukkitRunnable() {
             int runs = 0;
             LocationTag lastLocation;
-
             @Override
             public void run() {
                 if (runs < maxTicks && lastEntity.isValid()) {
@@ -297,15 +247,13 @@ public class PushCommand extends AbstractCommand implements Holdable {
                     }
                     runs += prec;
                     // Check if the entity is close to its destination
-                    if (Math.abs(v2.getX() - v1.getX()) < 1.5f && Math.abs(v2.getY() - v1.getY()) < 1.5f
-                            && Math.abs(v2.getZ() - v1.getZ()) < 1.5f) {
+                    if (Math.abs(v2.getX() - v1.getX()) < 1.5f && Math.abs(v2.getY() - v1.getY()) < 1.5f && Math.abs(v2.getZ() - v1.getZ()) < 1.5f) {
                         runs = maxTicks;
                         return;
                     }
                     Vector newVel = v3.multiply(speed);
                     lastEntity.setVelocity(newVel);
-                    // Check if the entity has collided with something
-                    // using the most basic possible calculation
+                    // Check if the entity has collided with something using the most basic possible calculation
                     if (!ignoreCollision && (!isSafeBlock(lastEntity.getLocation().add(v3))
                             || !isSafeBlock(lastEntity.getLocation().add(newVel)))) {
                         runs = maxTicks;

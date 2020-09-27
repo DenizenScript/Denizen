@@ -92,9 +92,7 @@ public class MountCommand extends AbstractCommand {
                     }
                 }
             }
-            scriptEntry.defaultObject("location",
-                    Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getLocation() : null,
-                    Utilities.entryHasNPC(scriptEntry) ? Utilities.getEntryNPC(scriptEntry).getLocation() : null);
+            scriptEntry.defaultObject("location", Utilities.entryDefaultLocation(scriptEntry, true));
         }
         if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Must specify a location!");

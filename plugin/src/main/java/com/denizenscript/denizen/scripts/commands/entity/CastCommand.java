@@ -13,7 +13,6 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class CastCommand extends AbstractCommand {
@@ -114,9 +113,7 @@ public class CastCommand extends AbstractCommand {
             }
         }
         if (!scriptEntry.hasObject("entities")) {
-            scriptEntry.defaultObject("entities", (Utilities.entryHasPlayer(scriptEntry) ? Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()) : null),
-                    (Utilities.entryHasNPC(scriptEntry) && Utilities.getEntryNPC(scriptEntry).isSpawned()
-                            ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null));
+            scriptEntry.defaultObject("entities", Utilities.entryDefaultEntityList(scriptEntry, true));
         }
         if (!scriptEntry.hasObject("effect")) {
             throw new InvalidArgumentsException("Must specify a valid PotionType!");

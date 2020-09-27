@@ -60,9 +60,7 @@ public class LeashCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("cancel")
                     && arg.matches("cancel", "stop")) {
                 scriptEntry.addObject("cancel", "");
@@ -85,17 +83,11 @@ public class LeashCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
-        // Check to make sure required arguments have been filled
         if (!scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Must specify entity/entities!");
         }
-
         if (!scriptEntry.hasObject("cancel")) {
-
-            scriptEntry.defaultObject("holder",
-                    Utilities.entryHasNPC(scriptEntry) ? Utilities.getEntryNPC(scriptEntry).getDenizenEntity() : null,
-                    Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getDenizenEntity() : null);
+            scriptEntry.defaultObject("holder", Utilities.entryDefaultEntity(scriptEntry, false));
         }
     }
 
@@ -122,18 +114,14 @@ public class LeashCommand extends AbstractCommand {
                 return;
             }
         }
-        Boolean cancel = scriptEntry.hasObject("cancel");
-
+        boolean cancel = scriptEntry.hasObject("cancel");
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
                     ArgumentHelper.debugObj("entities", entities.toString()) +
                     (holder != null ? ArgumentHelper.debugObj("holder", holder) : ArgumentHelper.debugObj("holder", holderLoc)));
         }
-
-        // Go through all the entities and leash/unleash them
         for (EntityTag entity : entities) {
             if (entity.isSpawned() && entity.isLivingEntity()) {
-
                 if (cancel) {
                     entity.getLivingEntity().setLeashHolder(null);
                 }

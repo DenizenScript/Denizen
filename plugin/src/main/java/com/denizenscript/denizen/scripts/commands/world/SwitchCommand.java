@@ -81,7 +81,6 @@ public class SwitchCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("locations") &&
                     arg.matchesArgumentList(LocationTag.class)) {
                 scriptEntry.addObject("locations", arg.asType(ListTag.class));
@@ -98,11 +97,9 @@ public class SwitchCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         if (!scriptEntry.hasObject("locations")) {
             throw new InvalidArgumentsException("Must specify a location!");
         }
-
         scriptEntry.defaultObject("duration", new DurationTag(0));
         scriptEntry.defaultObject("switchstate", new ElementTag("TOGGLE"));
     }
@@ -112,7 +109,6 @@ public class SwitchCommand extends AbstractCommand {
         final ListTag interactLocations = scriptEntry.getObjectTag("locations");
         long duration = ((DurationTag) scriptEntry.getObject("duration")).getTicks();
         final SwitchState switchState = SwitchState.valueOf(scriptEntry.getElement("switchstate").asString());
-
         final Player player = Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getPlayerEntity() : null;
         // Switch the Block
         if (scriptEntry.dbCallShouldDebug()) {
@@ -120,10 +116,8 @@ public class SwitchCommand extends AbstractCommand {
                     + ArgumentHelper.debugObj("duration", duration + "t")
                     + ArgumentHelper.debugObj("switchstate", switchState.name()));
         }
-
         for (final LocationTag interactLocation : interactLocations.filter(LocationTag.class, scriptEntry)) {
             switchBlock(scriptEntry, interactLocation, switchState, player);
-
             // If duration set, schedule a delayed task.
             if (duration > 0) {
                 // If this block already had a delayed task, cancel it.
@@ -144,7 +138,6 @@ public class SwitchCommand extends AbstractCommand {
                         }, duration));
             }
         }
-
     }
 
     public static boolean switchState(Block b) {

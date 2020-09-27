@@ -60,18 +60,14 @@ public class AttackCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("cancel")
                     && arg.matches("cancel", "stop")) {
-
                 scriptEntry.addObject("cancel", "true");
             }
             else if (!scriptEntry.hasObject("target")
                     && arg.matchesArgumentType(EntityTag.class)
                     && arg.matchesPrefix("target", "t")) {
-                // Single entity arg
                 scriptEntry.addObject("target", arg.asType(EntityTag.class));
             }
             else if (!scriptEntry.hasObject("entities")
@@ -83,21 +79,13 @@ public class AttackCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
-        // Use the player as the target if one is not specified
         if (!scriptEntry.hasObject("target")) {
             scriptEntry.addObject("target", Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getDenizenEntity() : null);
         }
-
-        // Use the NPC as the attacking entity if one is not specified
-        scriptEntry.defaultObject("entities",
-                Utilities.entryHasNPC(scriptEntry) ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null);
-
-        // Check to make sure required arguments have been filled
+        scriptEntry.defaultObject("entities", Utilities.entryHasNPC(scriptEntry) ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null);
         if (!scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Must specify entity/entities!");
         }
-
         if (!scriptEntry.hasObject("target") && !scriptEntry.hasObject("cancel")) {
             throw new InvalidArgumentsException("Must specify a target!");
         }
@@ -109,20 +97,14 @@ public class AttackCommand extends AbstractCommand {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         EntityTag target = scriptEntry.getObjectTag("target");
         boolean cancel = scriptEntry.hasObject("cancel");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", "true") : "") +
                     ArgumentHelper.debugObj("entities", entities.toString()) +
                     (target != null ? ArgumentHelper.debugObj("target", target) : ""));
         }
-
-        // Go through all the entities and make them either attack
-        // the target or stop attacking
-
         for (EntityTag entity : entities) {
             if (entity.isCitizensNPC()) {
                 Navigator nav = entity.getDenizenNPC().getCitizen().getNavigator();
-
                 if (!cancel) {
                     nav.setTarget(target.getBukkitEntity(), true);
                 }
@@ -131,7 +113,6 @@ public class AttackCommand extends AbstractCommand {
                     if (nav.isNavigating()
                             && nav.getTargetType().equals(TargetType.ENTITY)
                             && nav.getEntityTarget().isAggressive()) {
-
                         nav.cancelNavigation();
                     }
                 }

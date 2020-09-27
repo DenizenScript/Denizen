@@ -1,13 +1,11 @@
 package com.denizenscript.denizen.utilities;
 
-import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.npc.traits.TriggerTrait;
-import com.denizenscript.denizen.objects.NPCTag;
-import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
@@ -31,6 +29,7 @@ import org.bukkit.util.Vector;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -443,6 +442,44 @@ public class Utilities {
 
     public static BukkitScriptEntryData getEntryData(ScriptEntry entry) {
         return (BukkitScriptEntryData) entry.entryData;
+    }
+
+    public static WorldTag entryDefaultWorld(ScriptEntry entry, boolean playerFirst) {
+        EntityTag entity = entryDefaultEntity(entry, playerFirst);
+        if (entity == null) {
+            return new WorldTag(Bukkit.getWorlds().get(0));
+        }
+        return new WorldTag(entity.getWorld());
+    }
+
+    public static LocationTag entryDefaultLocation(ScriptEntry entry, boolean playerFirst) {
+        EntityTag entity = entryDefaultEntity(entry, playerFirst);
+        if (entity == null) {
+            return null;
+        }
+        return entity.getLocation();
+    }
+
+    public static List<EntityTag> entryDefaultEntityList(ScriptEntry entry, boolean playerFirst) {
+        EntityTag entity = entryDefaultEntity(entry, playerFirst);
+        if (entity == null) {
+            return null;
+        }
+        return Collections.singletonList(entity);
+    }
+
+    public static EntityTag entryDefaultEntity(ScriptEntry entry, boolean playerFirst) {
+        BukkitScriptEntryData entryData = getEntryData(entry);
+        if (playerFirst && entryData.hasPlayer() && entryData.getPlayer().isOnline()) {
+            return entryData.getPlayer().getDenizenEntity();
+        }
+        if (entryData.hasNPC() && entryData.getNPC().isSpawned()) {
+            return entryData.getNPC().getDenizenEntity();
+        }
+        if (entryData.hasPlayer() && entryData.getPlayer().isOnline()) {
+            return entryData.getPlayer().getDenizenEntity();
+        }
+        return null;
     }
 
     public static boolean entryHasPlayer(ScriptEntry entry) {

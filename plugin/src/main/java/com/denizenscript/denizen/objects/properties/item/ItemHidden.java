@@ -80,7 +80,7 @@ public class ItemHidden implements Property {
         // @group properties
         // @description
         // Returns a list of item data types to be hidden from view on this item.
-        // Valid hide types include: ATTRIBUTES, DESTROYS, ENCHANTS, PLACED_ON, ITEM_DATA, and UNBREAKABLE
+        // Valid hide types include: ATTRIBUTES, DESTROYS, ENCHANTS, PLACED_ON, ITEM_DATA, UNBREAKABLE, and DYE
         // ITEM_DATA hides potion effects, banner patterns, etc.
         // -->
         if (attribute.startsWith("hides")) {
@@ -119,7 +119,7 @@ public class ItemHidden implements Property {
         // @input ListTag
         // @description
         // Sets the item's list of data types to hide.
-        // Valid hide types include: ATTRIBUTES, DESTROYS, ENCHANTS, PLACED_ON, ITEM_DATA, UNBREAKABLE, or ALL.
+        // Valid hide types include: ATTRIBUTES, DESTROYS, ENCHANTS, PLACED_ON, ITEM_DATA, UNBREAKABLE, DYE, or ALL.
         // ITEM_DATA hides potion effects, banner patterns, etc.
         // Use "ALL" to automatically hide all hideable item data.
         // @tags

@@ -75,9 +75,7 @@ public class FireworkCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(LocationTag.class)) {
                 scriptEntry.addObject("location", arg.asType(LocationTag.class));
@@ -116,12 +114,7 @@ public class FireworkCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
-        // Use the NPC or player's locations as the location if one is not specified
-        scriptEntry.defaultObject("location",
-                Utilities.entryHasNPC(scriptEntry) ? Utilities.getEntryNPC(scriptEntry).getLocation() : null,
-                Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getLocation() : null);
-
+        scriptEntry.defaultObject("location", Utilities.entryDefaultLocation(scriptEntry, false));
         scriptEntry.defaultObject("type", new ElementTag("ball"));
         scriptEntry.defaultObject("power", new ElementTag(1));
         scriptEntry.defaultObject("primary", Arrays.asList(new ColorTag(Color.YELLOW)));
@@ -130,18 +123,15 @@ public class FireworkCommand extends AbstractCommand {
     @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-
         final LocationTag location = scriptEntry.hasObject("location") ?
                 (LocationTag) scriptEntry.getObject("location") :
                 Utilities.getEntryNPC(scriptEntry).getLocation();
-
         ElementTag type = scriptEntry.getElement("type");
         ElementTag power = scriptEntry.getElement("power");
         boolean flicker = scriptEntry.hasObject("flicker");
         boolean trail = scriptEntry.hasObject("trail");
         List<ColorTag> primary = (List<ColorTag>) scriptEntry.getObject("primary");
         List<ColorTag> fade = (List<ColorTag>) scriptEntry.getObject("fade");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), location.debug() +
                     type.debug() +
@@ -151,14 +141,11 @@ public class FireworkCommand extends AbstractCommand {
                     ArgumentHelper.debugObj("primary colors", primary.toString()) +
                     (fade != null ? ArgumentHelper.debugObj("fade colors", fade.toString()) : ""));
         }
-
         Firework firework = location.getWorld().spawn(location, Firework.class);
         FireworkMeta fireworkMeta = firework.getFireworkMeta();
         fireworkMeta.setPower(power.asInt());
-
         Builder fireworkBuilder = FireworkEffect.builder();
         fireworkBuilder.with(FireworkEffect.Type.valueOf(type.asString().toUpperCase()));
-
         fireworkBuilder.withColor(Conversion.convertColors(primary));
         if (fade != null) {
             fireworkBuilder.withFade(Conversion.convertColors(fade));
@@ -169,10 +156,8 @@ public class FireworkCommand extends AbstractCommand {
         if (trail) {
             fireworkBuilder.withTrail();
         }
-
         fireworkMeta.addEffects(fireworkBuilder.build());
         firework.setFireworkMeta(fireworkMeta);
-
         scriptEntry.addObject("launched_firework", new EntityTag(firework));
     }
 }

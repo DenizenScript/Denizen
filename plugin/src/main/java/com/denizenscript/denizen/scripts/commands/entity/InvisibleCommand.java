@@ -56,7 +56,6 @@ public class InvisibleCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
             if (!scriptEntry.hasObject("state")
                     && arg.matchesEnum(Action.values())) {
@@ -80,11 +79,9 @@ public class InvisibleCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         if (!scriptEntry.hasObject("state")) {
             scriptEntry.addObject("state", new ElementTag("TRUE"));
         }
-
         if (!scriptEntry.hasObject("target") || !((EntityTag) scriptEntry.getObjectTag("target")).isValid()) {
             throw new InvalidArgumentsException("Must specify a valid target!");
         }
@@ -94,11 +91,9 @@ public class InvisibleCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
         ElementTag state = scriptEntry.getElement("state");
         EntityTag target = scriptEntry.getObjectTag("target");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), state.debug() + target.debug());
         }
-
         if (target.isCitizensNPC()) {
             NPC npc = target.getDenizenNPC().getCitizen();
             if (!npc.hasTrait(InvisibleTrait.class)) {

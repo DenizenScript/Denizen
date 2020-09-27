@@ -66,7 +66,6 @@ public class FollowCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
             if (!scriptEntry.hasObject("stop") &&
                     arg.matches("stop")) {
@@ -121,7 +120,6 @@ public class FollowCommand extends AbstractCommand {
                         new ListTag(Utilities.getEntryNPC(scriptEntry)));
             }
         }
-
         scriptEntry.defaultObject("stop", new ElementTag(false)).defaultObject("allow_wander", new ElementTag(false));
     }
 
@@ -134,7 +132,6 @@ public class FollowCommand extends AbstractCommand {
         ElementTag speed = scriptEntry.getElement("speed");
         ListTag entities = scriptEntry.getObjectTag("entities");
         EntityTag target = scriptEntry.getObjectTag("target");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     (Utilities.getEntryPlayer(scriptEntry) != null ? Utilities.getEntryPlayer(scriptEntry).debug() : "")
@@ -145,18 +142,15 @@ public class FollowCommand extends AbstractCommand {
                             + entities.debug()
                             + target.debug());
         }
-
         for (EntityTag entity : entities.filter(EntityTag.class, scriptEntry)) {
             if (entity.isCitizensNPC()) {
                 NPCTag npc = entity.getDenizenNPC();
                 if (lead != null) {
                     npc.getNavigator().getLocalParameters().distanceMargin(lead.asDouble());
                 }
-
                 if (speed != null) {
                     npc.getNavigator().getLocalParameters().speedModifier(speed.asFloat());
                 }
-
                 if (stop.asBoolean()) {
                     npc.getNavigator().cancelNavigation();
                 }
@@ -175,6 +169,5 @@ public class FollowCommand extends AbstractCommand {
                 }
             }
         }
-
     }
 }

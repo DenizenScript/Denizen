@@ -77,9 +77,7 @@ public class BossBarCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("title")
                     && arg.matchesPrefix("title", "t")) {
                 scriptEntry.addObject("title", arg.asElement());
@@ -120,11 +118,9 @@ public class BossBarCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         if (!scriptEntry.hasObject("id")) {
             throw new InvalidArgumentsException("Must specify an ID!");
         }
-
         if ((!scriptEntry.hasObject("action") || scriptEntry.getElement("action").asString().equalsIgnoreCase("CREATE"))
                 && !scriptEntry.hasObject("players")) {
             if (Utilities.entryHasPlayer(scriptEntry) && Utilities.getEntryPlayer(scriptEntry).isOnline()) {
@@ -134,7 +130,6 @@ public class BossBarCommand extends AbstractCommand {
                 throw new InvalidArgumentsException("Must specify valid player(s)!");
             }
         }
-
         scriptEntry.defaultObject("action", new ElementTag("CREATE"));
     }
 
@@ -142,7 +137,6 @@ public class BossBarCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         ElementTag id = scriptEntry.getElement("id");
         ElementTag action = scriptEntry.getElement("action");
         ListTag players = scriptEntry.getObjectTag("players");
@@ -151,9 +145,7 @@ public class BossBarCommand extends AbstractCommand {
         ElementTag color = scriptEntry.getElement("color");
         ElementTag style = scriptEntry.getElement("style");
         ListTag options = scriptEntry.getObjectTag("options");
-
         if (scriptEntry.dbCallShouldDebug()) {
-
             Debug.report(scriptEntry, getName(), id.debug() + action.debug()
                     + (players != null ? players.debug() : "")
                     + (title != null ? title.debug() : "")
@@ -161,11 +153,8 @@ public class BossBarCommand extends AbstractCommand {
                     + (color != null ? color.debug() : "")
                     + (style != null ? style.debug() : "")
                     + (options != null ? options.debug() : ""));
-
         }
-
         String idString = CoreUtilities.toLowerCase(id.asString());
-
         switch (Action.valueOf(action.asString().toUpperCase())) {
             case CREATE: {
                 if (bossBarMap.containsKey(idString)) {
@@ -196,7 +185,6 @@ public class BossBarCommand extends AbstractCommand {
                 bossBarMap.put(idString, bossBar);
                 break;
             }
-
             case UPDATE: {
                 if (!bossBarMap.containsKey(idString)) {
                     Debug.echoError("BossBar '" + idString + "' does not exist!");
@@ -237,7 +225,6 @@ public class BossBarCommand extends AbstractCommand {
                 }
                 break;
             }
-
             case REMOVE: {
                 if (!bossBarMap.containsKey(idString)) {
                     Debug.echoError("BossBar '" + idString + "' does not exist!");

@@ -71,9 +71,7 @@ public class HealthCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("target")
                     && arg.matches("player")) {
                 if (!Utilities.entryHasPlayer(scriptEntry)) {
@@ -101,7 +99,6 @@ public class HealthCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         if (!scriptEntry.hasObject("qty") && !scriptEntry.hasObject("action")) {
             throw new InvalidArgumentsException("Must specify a quantity!");
         }
@@ -116,29 +113,22 @@ public class HealthCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         ElementTag qty = scriptEntry.getElement("qty");
         ElementTag action = scriptEntry.getElement("action");
         ElementTag heal = scriptEntry.getElement("heal");
         List<EntityTag> targets = (List<EntityTag>) scriptEntry.getObject("target");
-
         if (scriptEntry.dbCallShouldDebug()) {
-
             Debug.report(scriptEntry, getName(), (qty != null ? qty.debug() : "") +
                     (action != null ? action.debug() : "") +
                     heal.debug() +
                     ArgumentHelper.debugObj("target", targets.toString()));
-
         }
-
         if (qty == null && action == null) {
             Debug.echoError(scriptEntry.getResidingQueue(), "Null quantity!");
         }
-
         if (action == null) {
             action = new ElementTag(true);
         }
-
         for (EntityTag target : targets) {
             if (target.isCitizensNPC()) {
                 if (action.asString().equalsIgnoreCase("true")) {
@@ -154,7 +144,6 @@ public class HealthCommand extends AbstractCommand {
                     target.getDenizenNPC().getCitizen().addTrait(HealthTrait.class);
                 }
             }
-
             if (qty != null) {
                 if (target.isCitizensNPC()) {
                     if (target.getDenizenNPC().getCitizen().hasTrait(HealthTrait.class)) {

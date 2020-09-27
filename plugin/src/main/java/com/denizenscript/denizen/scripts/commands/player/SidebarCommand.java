@@ -107,11 +107,8 @@ public class SidebarCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         Action action = Action.SET;
-
         for (Argument arg : ArgumentHelper.interpret(scriptEntry, scriptEntry.getOriginalArguments())) {
-
             if (!scriptEntry.hasObject("action")
                     && arg.matchesEnum(Action.values())) {
                 action = Action.valueOf(arg.getValue().toUpperCase());
@@ -148,24 +145,19 @@ public class SidebarCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         if (action == Action.ADD && !scriptEntry.hasObject("value")) {
             throw new InvalidArgumentsException("Must specify value(s) for that action!");
         }
-
         if (action == Action.SET && !scriptEntry.hasObject("value") && !scriptEntry.hasObject("title")
                 && !scriptEntry.hasObject("increment") && !scriptEntry.hasObject("start")) {
             throw new InvalidArgumentsException("Must specify at least one of: value(s), title, increment, or start for that action!");
         }
-
         if (action == Action.SET && scriptEntry.hasObject("scores") && !scriptEntry.hasObject("value")) {
             throw new InvalidArgumentsException("Must specify value(s) when setting scores!");
         }
-
         scriptEntry.addObject("action", new ElementTag(action.name()));
-
-        scriptEntry.defaultObject("per_player", new ElementTag(false))
-                .defaultObject("players", new ElementTag(Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).identify() : "li@"));
+        scriptEntry.defaultObject("per_player", new ElementTag(false));
+        scriptEntry.defaultObject("players", new ElementTag(Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).identify() : "li@"));
     }
 
     public static boolean hasScoreAlready(List<Sidebar.SidebarLine> lines, int score) {
@@ -179,7 +171,6 @@ public class SidebarCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         ElementTag action = scriptEntry.getElement("action");
         ElementTag elTitle = scriptEntry.getElement("title");
         ElementTag elScores = scriptEntry.getElement("scores");
@@ -188,24 +179,19 @@ public class SidebarCommand extends AbstractCommand {
         ElementTag elStart = scriptEntry.getElement("start");
         ElementTag elPlayers = scriptEntry.getElement("players");
         ElementTag elPerPlayer = scriptEntry.getElement("per_player");
-
         ListTag players = ListTag.valueOf(TagManager.tag(elPlayers.asString(), scriptEntry.getContext()), scriptEntry.getContext());
         boolean per_player = elPerPlayer.asBoolean();
-
         String perTitle = null;
         String perScores = null;
         String perValue = null;
         String perIncrement = null;
         String perStart = null;
-
         ElementTag title = null;
         ListTag scores = null;
         ListTag value = null;
         ElementTag increment = null;
         ElementTag start = null;
-
         String debug;
-
         if (per_player) {
             if (elTitle != null) {
                 perTitle = elTitle.asString();
@@ -251,13 +237,10 @@ public class SidebarCommand extends AbstractCommand {
                     (increment != null ? increment.debug() : "") +
                     (start != null ? start.debug() : "");
         }
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), action.debug() + debug + ArgumentHelper.debugObj("players", players.debuggable()));
         }
-
         switch (Action.valueOf(action.asString())) {
-
             case ADD:
                 for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
                     if (player == null || !player.isValid()) {
@@ -296,7 +279,6 @@ public class SidebarCommand extends AbstractCommand {
                     sidebar.sendUpdate();
                 }
                 break;
-
             case REMOVE:
                 for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
                     if (player == null || !player.isValid()) {
@@ -356,7 +338,6 @@ public class SidebarCommand extends AbstractCommand {
                     }
                 }
                 break;
-
             case SET_LINE:
                 for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
                     if (player == null || !player.isValid()) {
@@ -414,7 +395,6 @@ public class SidebarCommand extends AbstractCommand {
                     sidebar.sendUpdate();
                 }
                 break;
-
             case SET:
                 for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
                     if (player == null || !player.isValid()) {

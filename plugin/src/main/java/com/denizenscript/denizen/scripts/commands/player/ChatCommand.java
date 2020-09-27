@@ -68,12 +68,9 @@ public class ChatCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         boolean specified_targets = false;
         boolean specified_talker = false;
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-            // Default target is the attached Player, if none specified otherwise.
             if (arg.matchesPrefix("target", "targets", "t")) {
                 if (arg.matchesArgumentList(EntityTag.class)) {
                     scriptEntry.addObject("targets", arg.asType(ListTag.class));
@@ -83,14 +80,11 @@ public class ChatCommand extends AbstractCommand {
             else if (arg.matches("no_target")) {
                 scriptEntry.addObject("targets", new ListTag());
             }
-
-            // Default talker is the attached NPC, if none specified otherwise.
             else if (arg.matchesPrefix("talker", "talkers")) {
                 if (arg.matchesArgumentList(EntityTag.class)) {
                     scriptEntry.addObject("talkers", arg.asType(ListTag.class));
                 }
                 specified_talker = true;
-
             }
             else if (arg.matchesPrefix("range", "r")) {
                 if (arg.matchesFloat()) {
@@ -104,60 +98,40 @@ public class ChatCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
-        // Add default recipient as the attached Player if no recipients set otherwise
         if (!scriptEntry.hasObject("targets") && Utilities.entryHasPlayer(scriptEntry) && !specified_targets) {
             scriptEntry.defaultObject("targets", new ListTag(Utilities.getEntryPlayer(scriptEntry)));
         }
-
-        // Add default talker as the attached NPC if no recipients set otherwise
         if (!scriptEntry.hasObject("talkers") && Utilities.entryHasNPC(scriptEntry) && !specified_talker) {
             scriptEntry.defaultObject("talkers", new ListTag(Utilities.getEntryNPC(scriptEntry)));
         }
-
-        // Verify essential fields are set
         if (!scriptEntry.hasObject("targets")) {
             throw new InvalidArgumentsException("Must specify valid targets!");
         }
-
         if (!scriptEntry.hasObject("talkers")) {
             throw new InvalidArgumentsException("Must specify valid talkers!");
         }
-
         if (!scriptEntry.hasObject("message")) {
             throw new InvalidArgumentsException("Must specify a message!");
         }
-
         scriptEntry.defaultObject("range", new ElementTag(Settings.chatBystandersRange()));
-
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         ListTag talkers = scriptEntry.getObjectTag("talkers");
         ListTag targets = scriptEntry.getObjectTag("targets");
         ElementTag message = scriptEntry.getElement("message");
         ElementTag chatRange = scriptEntry.getElement("range");
-
         if (scriptEntry.dbCallShouldDebug()) {
-
             Debug.report(scriptEntry, getName(), talkers.debug() + targets.debug() + message.debug() + chatRange.debug());
-
         }
-
-        // Create new speech context
-        DenizenSpeechContext context = new DenizenSpeechContext(message.asString(),
-                scriptEntry, chatRange.asDouble());
-
+        DenizenSpeechContext context = new DenizenSpeechContext(message.asString(), scriptEntry, chatRange.asDouble());
         if (!targets.isEmpty()) {
             for (EntityTag ent : targets.filter(EntityTag.class, scriptEntry)) {
                 context.addRecipient(ent.getBukkitEntity());
             }
         }
-
         for (EntityTag talker : talkers.filter(EntityTag.class, scriptEntry)) {
-
             Entity entity = talker.getBukkitEntity();
             if (entity != null) {
                 context.setTalker(entity);
@@ -166,8 +140,6 @@ public class ChatCommand extends AbstractCommand {
             else {
                 Debug.echoDebug(scriptEntry, "Chat Talker is not spawned! Cannot talk.");
             }
-
         }
-
     }
 }

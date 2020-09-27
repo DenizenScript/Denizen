@@ -167,9 +167,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         }
         // Use the NPC or player's locations as the origin if one is not specified
         if (!scriptEntry.hasObject("origin_location")) {
-            scriptEntry.defaultObject("origin_entity",
-                    Utilities.entryHasNPC(scriptEntry) ? Utilities.getEntryNPC(scriptEntry).getDenizenEntity() : null,
-                    Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getDenizenEntity() : null);
+            scriptEntry.defaultObject("origin_entity", Utilities.entryDefaultEntity(scriptEntry, false));
         }
         scriptEntry.defaultObject("height", new ElementTag(3));
         if (!scriptEntry.hasObject("entities")) {

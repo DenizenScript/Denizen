@@ -64,11 +64,8 @@ public class StatisticCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         boolean specified_players = false;
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("action")
                     && arg.matchesEnum(Action.values())) {
                 scriptEntry.addObject("action", arg.asElement());
@@ -97,21 +94,16 @@ public class StatisticCommand extends AbstractCommand {
                     scriptEntry.addObject("entity", arg.asType(EntityTag.class));
                 }
             }
-
         }
-
         if (!scriptEntry.hasObject("action")) {
             throw new InvalidArgumentsException("Must specify a valid action!");
         }
-
         if (!scriptEntry.hasObject("statistic")) {
             throw new InvalidArgumentsException("Must specify a valid Statistic!");
         }
-
         if (!scriptEntry.hasObject("amount")) {
             scriptEntry.addObject("amount", new ElementTag(1));
         }
-
         Statistic.Type type = Statistic.valueOf(scriptEntry.getElement("statistic").asString().toUpperCase()).getType();
         if (type != Statistic.Type.UNTYPED) {
             if ((type == Statistic.Type.BLOCK || type == Statistic.Type.ITEM) && !scriptEntry.hasObject("material")) {
@@ -121,39 +113,30 @@ public class StatisticCommand extends AbstractCommand {
                 throw new InvalidArgumentsException("Must specify a valid ENTITY!");
             }
         }
-
         if (!scriptEntry.hasObject("players") && Utilities.entryHasPlayer(scriptEntry) && !specified_players) {
             scriptEntry.addObject("players", new ListTag(Utilities.getEntryPlayer(scriptEntry)));
         }
-
         if (!scriptEntry.hasObject("players")) {
             throw new InvalidArgumentsException("Must specify valid players!");
         }
-
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         ElementTag action = scriptEntry.getElement("action");
         ListTag players = scriptEntry.getObjectTag("players");
         ElementTag statistic = scriptEntry.getElement("statistic");
         ElementTag amount = scriptEntry.getElement("amount");
         MaterialTag material = scriptEntry.getObjectTag("material");
         EntityTag entity = scriptEntry.getObjectTag("entity");
-
         if (scriptEntry.dbCallShouldDebug()) {
-
             Debug.report(scriptEntry, getName(), action.debug() + statistic.debug() + amount.debug() + players.debug()
                     + (material != null ? material.debug() : entity != null ? entity.debug() : ""));
-
         }
-
         Action act = Action.valueOf(action.asString().toUpperCase());
         Statistic stat = Statistic.valueOf(statistic.asString().toUpperCase());
         int amt = amount.asInt();
         switch (stat.getType()) {
-
             case BLOCK:
             case ITEM:
                 Material mat = material.getMaterial();
@@ -175,7 +158,6 @@ public class StatisticCommand extends AbstractCommand {
                         break;
                 }
                 break;
-
             case ENTITY:
                 EntityType ent = entity.getBukkitEntityType();
                 switch (act) {
@@ -196,7 +178,6 @@ public class StatisticCommand extends AbstractCommand {
                         break;
                 }
                 break;
-
             case UNTYPED:
                 switch (act) {
                     case ADD:
@@ -217,6 +198,5 @@ public class StatisticCommand extends AbstractCommand {
                 }
                 break;
         }
-
     }
 }

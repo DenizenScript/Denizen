@@ -60,9 +60,7 @@ public class PoseCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (arg.matches("add", "assume", "remove")) {
                 scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));
             }
@@ -75,25 +73,17 @@ public class PoseCommand extends AbstractCommand {
             else if (arg.matchesArgumentType(LocationTag.class)) {
                 scriptEntry.addObject("pose_loc", arg.asType(LocationTag.class));
             }
-
         }
-
         // Even if the target is a player, this command requires an NPC to get the pose from.
         if (!Utilities.entryHasNPC(scriptEntry)) {
             throw new InvalidArgumentsException("This command requires an NPC!");
         }
-
-        // It also requires a pose ID
         if (!scriptEntry.hasObject("pose_id")) {
             throw new InvalidArgumentsException("No ID specified!");
         }
-
-        // Set default objects
         scriptEntry.defaultObject("target", TargetType.NPC);
         scriptEntry.defaultObject("action", Action.ASSUME);
-
-        // If the target is a player, it needs a player! However, you can't ADD/REMOVE poses
-        // from players, so only allow ASSUME.
+        // If the target is a player, it needs a player! However, you can't ADD/REMOVE poses from players, so only allow ASSUME.
         if (scriptEntry.getObject("target") == TargetType.PLAYER) {
             if (scriptEntry.getObject("action") != Action.ASSUME) {
                 throw new InvalidArgumentsException("You cannot add or remove poses from a player.");
@@ -102,7 +92,6 @@ public class PoseCommand extends AbstractCommand {
                 throw new InvalidArgumentsException("This command requires a linked player!");
             }
         }
-
     }
 
     @Override
@@ -112,7 +101,6 @@ public class PoseCommand extends AbstractCommand {
         Action action = (Action) scriptEntry.getObject("action");
         String id = (String) scriptEntry.getObject("pose_id");
         LocationTag pose_loc = scriptEntry.getObjectTag("pose_loc");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     ArgumentHelper.debugObj("Target", target.toString())
@@ -122,20 +110,15 @@ public class PoseCommand extends AbstractCommand {
                             + ArgumentHelper.debugObj("Id", id)
                             + (pose_loc != null ? pose_loc.debug() : ""));
         }
-
         if (!npc.getCitizen().hasTrait(Poses.class)) {
             npc.getCitizen().addTrait(Poses.class);
         }
-
         Poses poses = npc.getCitizen().getTrait(Poses.class);
-
         switch (action) {
-
             case ASSUME:
                 if (!poses.hasPose(id)) {
                     Debug.echoError("Pose \"" + id + "\" doesn't exist for " + npc.toString());
                 }
-
                 if (target.name().equals("NPC")) {
                     poses.assumePose(id);
                 }
@@ -144,26 +127,20 @@ public class PoseCommand extends AbstractCommand {
                     Location location = player.getLocation();
                     location.setYaw(poses.getPose(id).getYaw());
                     location.setPitch(poses.getPose(id).getPitch());
-
-                    // The only way to change a player's yaw and pitch in Bukkit
-                    // is to use teleport on him/her
+                    // The only way to change a player's yaw and pitch in Bukkit is to use teleport on them
                     player.teleport(location);
                 }
                 break;
-
             case ADD:
                 if (!poses.addPose(id, pose_loc)) {
                     Debug.echoError(npc.toString() + " already has that pose!");
                 }
                 break;
-
             case REMOVE:
                 if (!poses.removePose(id)) {
                     Debug.echoError(npc.toString() + " does not have that pose!");
                 }
                 break;
-
         }
-
     }
 }

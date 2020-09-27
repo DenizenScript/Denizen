@@ -94,9 +94,7 @@ public class ExplodeCommand extends AbstractCommand {
         scriptEntry.defaultObject("power", new ElementTag(1.0));
         scriptEntry.defaultObject("fire", new ElementTag(false));
         scriptEntry.defaultObject("breakblocks", new ElementTag(false));
-        scriptEntry.defaultObject("location",
-                Utilities.entryHasNPC(scriptEntry) ? Utilities.getEntryNPC(scriptEntry).getLocation() : null,
-                Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getLocation() : null);
+        scriptEntry.defaultObject("location", Utilities.entryDefaultLocation(scriptEntry, false));
         if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Missing location argument!");
         }

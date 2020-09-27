@@ -67,9 +67,7 @@ public class ActionBarCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : ArgumentHelper.interpret(scriptEntry, scriptEntry.getOriginalArguments())) {
-
             if (arg.matchesPrefix("format", "f")) {
                 String formatStr = TagManager.tag(arg.getValue(), scriptEntry.getContext());
                 FormatScriptContainer format = ScriptRegistry.getScriptContainer(formatStr);
@@ -89,15 +87,12 @@ public class ActionBarCommand extends AbstractCommand {
                 scriptEntry.addObject("text", new ElementTag(arg.raw_value));
             }
         }
-
         if (!scriptEntry.hasObject("text")) {
             throw new InvalidArgumentsException("Must specify a message!");
         }
-
         if (!scriptEntry.hasObject("targets") && !Utilities.entryHasPlayer(scriptEntry)) {
             throw new InvalidArgumentsException("Must specify target(s).");
         }
-
         if (!scriptEntry.hasObject("targets")) {
             if (!Utilities.entryHasPlayer(scriptEntry)) {
                 throw new InvalidArgumentsException("Must specify valid player Targets!");
@@ -114,13 +109,11 @@ public class ActionBarCommand extends AbstractCommand {
         String text = scriptEntry.getElement("text").asString();
         ScriptTag formatObj = scriptEntry.getObjectTag("format");
         ElementTag perPlayerObj = scriptEntry.getElement("per_player");
-
         boolean perPlayer = perPlayerObj != null && perPlayerObj.asBoolean();
         BukkitTagContext context = (BukkitTagContext) scriptEntry.getContext();
         if (!perPlayer) {
             text = TagManager.tag(text, context);
         }
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     ArgumentHelper.debugObj("Message", text)
@@ -128,9 +121,7 @@ public class ActionBarCommand extends AbstractCommand {
                             + (formatObj != null ? formatObj.debug() : "")
                             + (perPlayerObj != null ? perPlayerObj.debug() : ""));
         }
-
         FormatScriptContainer format = formatObj == null ? null : (FormatScriptContainer) formatObj.getContainer();
-
         for (PlayerTag player : targets) {
             if (player != null) {
                 if (!player.isOnline()) {

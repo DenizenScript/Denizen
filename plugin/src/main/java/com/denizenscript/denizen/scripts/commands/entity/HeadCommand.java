@@ -32,9 +32,7 @@ public class HeadCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("material")
                     && arg.matchesArgumentType(MaterialTag.class)
                     && !arg.matchesPrefix("skin", "s")) {
@@ -57,12 +55,7 @@ public class HeadCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
-        // Use the NPC or the Player as the default entity
-        scriptEntry.defaultObject("entities",
-                (Utilities.entryHasNPC(scriptEntry) ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null),
-                (Utilities.entryHasPlayer(scriptEntry) ? Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()) : null));
-
+        scriptEntry.defaultObject("entities", Utilities.entryDefaultEntityList(scriptEntry, false));
         if (!scriptEntry.hasObject("skin") && !scriptEntry.hasObject("material")) {
             throw new InvalidArgumentsException("Must specify a skin or material!");
         }
@@ -75,29 +68,21 @@ public class HeadCommand extends AbstractCommand {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         ElementTag skin = scriptEntry.getElement("skin");
         MaterialTag material = scriptEntry.getObjectTag("material");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     ArgumentHelper.debugObj("entities", entities.toString()) +
                             (skin != null ? skin.debug() : "") + (material != null ? material.debug() : ""));
         }
-
         ItemStack item = null;
-
-        // Create head item with chosen skin, or item/skin
         if (skin != null) {
             item = new ItemStack(Material.PLAYER_HEAD);
             ItemMeta itemMeta = item.getItemMeta();
             ((SkullMeta) itemMeta).setOwner(skin.asString());
             item.setItemMeta(itemMeta);
-
         }
         else if (material != null) {
             item = new ItemStack(material.getMaterial());
         }
-
-        // Loop through entities, apply the item/skin
-
         for (EntityTag entity : entities) {
             if (entity.isCitizensNPC()) {
                 if (!entity.getDenizenNPC().getCitizen().hasTrait(Equipment.class)) {
@@ -105,11 +90,9 @@ public class HeadCommand extends AbstractCommand {
                 }
                 Equipment trait = entity.getDenizenNPC().getCitizen().getTrait(Equipment.class);
                 trait.set(1, item);
-
             }
             else if (entity.isPlayer()) {
                 entity.getPlayer().getInventory().setHelmet(item);
-
             }
             else {
                 if (entity.isLivingEntity() && entity.getLivingEntity().getEquipment() != null) {
@@ -118,7 +101,6 @@ public class HeadCommand extends AbstractCommand {
                 else {
                     Debug.echoError(scriptEntry.getResidingQueue(), entity.identify() + " is not a living entity!");
                 }
-
             }
         }
     }

@@ -67,9 +67,7 @@ public class ToastCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("targets")
                     && arg.matchesPrefix("target", "targets", "t")
                     && arg.matchesArgumentList(PlayerTag.class)) {
@@ -96,11 +94,9 @@ public class ToastCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         if (!scriptEntry.hasObject("text")) {
             throw new InvalidArgumentsException("Must specify a message!");
         }
-
         if (!scriptEntry.hasObject("targets")) {
             if (!Utilities.entryHasPlayer(scriptEntry)) {
                 throw new InvalidArgumentsException("Must specify valid player targets!");
@@ -109,7 +105,6 @@ public class ToastCommand extends AbstractCommand {
                 scriptEntry.addObject("targets", Collections.singletonList(Utilities.getEntryPlayer(scriptEntry)));
             }
         }
-
         scriptEntry.defaultObject("icon", new ItemTag(Material.AIR));
         scriptEntry.defaultObject("frame", new ElementTag("TASK"));
         scriptEntry.defaultObject("background", new ElementTag("textures/gui/advancements/backgrounds/adventure.png"));
@@ -123,12 +118,10 @@ public class ToastCommand extends AbstractCommand {
         ElementTag background = scriptEntry.getElement("background");
         ItemTag icon = scriptEntry.getObjectTag("icon");
         final List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, name, text.debug() + frame.debug() + icon.debug()
                     + background.debug() + ArgumentHelper.debugList("targets", targets));
         }
-
         NamespacedKey backgroundKey;
         int index = background.asString().indexOf(':');
         if (index == -1) {
@@ -137,14 +130,11 @@ public class ToastCommand extends AbstractCommand {
         else {
             backgroundKey = new NamespacedKey(background.asString().substring(0, index), background.asString().substring(index + 1));
         }
-
         final Advancement advancement = new Advancement(true,
                 new NamespacedKey(DenizenAPI.getCurrentInstance(), UUID.randomUUID().toString()), null,
                 icon.getItemStack(), text.asString(), "", backgroundKey,
                 Advancement.Frame.valueOf(frame.asString().toUpperCase()), true, false, true, 0, 0);
-
         final AdvancementHelper advancementHelper = NMSHandler.getAdvancementHelper();
-
         for (PlayerTag target : targets) {
             Player player = target.getPlayerEntity();
             if (player != null) {

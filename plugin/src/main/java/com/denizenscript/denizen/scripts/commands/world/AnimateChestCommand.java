@@ -74,7 +74,6 @@ public class AnimateChestCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
             if (!scriptEntry.hasObject("action")
                     && arg.matchesEnum(ChestAction.values())) {
@@ -96,21 +95,16 @@ public class AnimateChestCommand extends AbstractCommand {
             else {
                 arg.reportUnhandled();
             }
-
         }
-
         if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Must specify a location!");
         }
-
         if (!scriptEntry.hasObject("action")) {
             scriptEntry.addObject("action", new ElementTag("OPEN"));
         }
-
         if (!scriptEntry.hasObject("sound")) {
             scriptEntry.addObject("sound", new ElementTag(true));
         }
-
         if (!scriptEntry.hasObject("players")) {
             if (Utilities.entryHasPlayer(scriptEntry)) {
                 scriptEntry.addObject("players", Arrays.asList(Utilities.getEntryPlayer(scriptEntry)));
@@ -124,12 +118,10 @@ public class AnimateChestCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         LocationTag location = scriptEntry.getObjectTag("location");
         ElementTag action = scriptEntry.getElement("action");
         ElementTag sound = scriptEntry.getElement("sound");
         List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), location.debug()
                     + ArgumentHelper.debugObj("block type", location.getBlock().getType().name())
@@ -137,9 +129,7 @@ public class AnimateChestCommand extends AbstractCommand {
                     + sound.debug()
                     + ArgumentHelper.debugObj("players", players.toString()));
         }
-
         PacketHelper packetHelper = NMSHandler.getPacketHelper();
-
         switch (ChestAction.valueOf(action.asString().toUpperCase())) {
             case OPEN:
                 for (PlayerTag player : players) {
@@ -151,7 +141,6 @@ public class AnimateChestCommand extends AbstractCommand {
                     packetHelper.showBlockAction(ent, location, 1, 1);
                 }
                 break;
-
             case CLOSE:
                 for (PlayerTag player : players) {
                     Player ent = player.getPlayerEntity();

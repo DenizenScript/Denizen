@@ -93,8 +93,7 @@ public class NarrateCommand extends AbstractCommand {
             }
         }
         if (!scriptEntry.hasObject("targets")) {
-            scriptEntry.addObject("targets",
-                    (Utilities.entryHasPlayer(scriptEntry) ? Arrays.asList(Utilities.getEntryPlayer(scriptEntry)) : null));
+            scriptEntry.addObject("targets", (Utilities.entryHasPlayer(scriptEntry) ? Arrays.asList(Utilities.getEntryPlayer(scriptEntry)) : null));
         }
         if (!scriptEntry.hasObject("text")) {
             throw new InvalidArgumentsException("Missing any text!");
@@ -111,13 +110,11 @@ public class NarrateCommand extends AbstractCommand {
         String text = scriptEntry.getElement("text").asString();
         ScriptTag formatObj = scriptEntry.getObjectTag("format");
         ElementTag perPlayerObj = scriptEntry.getElement("per_player");
-
         boolean perPlayer = perPlayerObj != null && perPlayerObj.asBoolean();
         BukkitTagContext context = (BukkitTagContext) scriptEntry.getContext();
         if (!perPlayer || targets == null) {
             text = TagManager.tag(text, context);
         }
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     ArgumentHelper.debugObj("Narrating", text)
@@ -125,13 +122,11 @@ public class NarrateCommand extends AbstractCommand {
                             + (formatObj != null ? formatObj.debug() : "")
                             + (perPlayerObj != null ? perPlayerObj.debug() : ""));
         }
-
         FormatScriptContainer format = formatObj == null ? null : (FormatScriptContainer) formatObj.getContainer();
         if (targets == null) {
             Bukkit.getServer().getConsoleSender().sendMessage(format != null ? format.getFormattedText(text, scriptEntry) : text);
             return;
         }
-
         for (PlayerTag player : targets) {
             if (player != null) {
                 if (!player.isOnline()) {

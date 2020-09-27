@@ -2080,6 +2080,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @group attributes
         // @description
         // Returns the target entity of the creature, if any.
+        // This is the entity that a hostile mob is currently trying to attack.
         // -->
         registerSpawnedOnlyTag("target", (attribute, object) -> {
             if (object.getBukkitEntity() instanceof Creature) {

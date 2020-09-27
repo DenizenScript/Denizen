@@ -17,7 +17,6 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.Holdable;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.List;
 
 public class MidiCommand extends AbstractCommand implements Holdable {
@@ -66,9 +65,7 @@ public class MidiCommand extends AbstractCommand implements Holdable {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("cancel")
                     && (arg.matches("cancel") || arg.matches("stop"))) {
                 scriptEntry.addObject("cancel", "");
@@ -105,44 +102,33 @@ public class MidiCommand extends AbstractCommand implements Holdable {
                 arg.reportUnhandled();
             }
         }
-
-        // Produce error if there is no file and the "cancel" argument was
-        // not used
         if (!scriptEntry.hasObject("file")
                 && !scriptEntry.hasObject("cancel")) {
             throw new InvalidArgumentsException("Missing file (Midi name) argument!");
         }
-
         if (!scriptEntry.hasObject("location")) {
-            scriptEntry.defaultObject("entities", (Utilities.entryHasPlayer(scriptEntry) ? Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()) : null),
-                    (Utilities.entryHasNPC(scriptEntry) ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null));
+            scriptEntry.defaultObject("entities", Utilities.entryDefaultEntityList(scriptEntry, true));
         }
-
         scriptEntry.defaultObject("tempo", new ElementTag(1)).defaultObject("volume", new ElementTag(10));
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-
         boolean cancel = scriptEntry.hasObject("cancel");
         File file = !cancel ? new File(scriptEntry.getElement("file").asString()) : null;
-
         if (!cancel && !Utilities.canReadFile(file)) {
             Debug.echoError("Server config denies reading files in that location.");
             return;
         }
-
         if (!cancel && !file.exists()) {
             Debug.echoError(scriptEntry.getResidingQueue(), "Invalid file " + scriptEntry.getElement("file").asString());
             return;
         }
-
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         LocationTag location = scriptEntry.getObjectTag("location");
         float tempo = scriptEntry.getElement("tempo").asFloat();
         float volume = scriptEntry.getElement("volume").asFloat();
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
                     (file != null ? ArgumentHelper.debugObj("file", file.getPath()) : "") +
@@ -151,7 +137,6 @@ public class MidiCommand extends AbstractCommand implements Holdable {
                     ArgumentHelper.debugObj("tempo", tempo) +
                     ArgumentHelper.debugObj("volume", volume));
         }
-
         // Play the midi
         if (!cancel) {
             NoteBlockReceiver rec;
