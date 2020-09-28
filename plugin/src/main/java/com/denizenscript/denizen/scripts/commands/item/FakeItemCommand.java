@@ -93,7 +93,7 @@ public class FakeItemCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("slot")) {
             throw new InvalidArgumentsException("Must specify a valid slot!");
         }
-        scriptEntry.defaultObject("duration", DurationTag.ZERO).defaultObject("player_only", new ElementTag(false))
+        scriptEntry.defaultObject("duration", new DurationTag(0)).defaultObject("player_only", new ElementTag(false))
                 .defaultObject("players", Arrays.asList(Utilities.getEntryPlayer(scriptEntry)));
     }
 

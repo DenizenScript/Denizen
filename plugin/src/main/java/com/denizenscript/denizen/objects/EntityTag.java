@@ -2756,7 +2756,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // <EntityTag.time_lived>
         // -->
         if (mechanism.matches("time_lived") && mechanism.requireObject(DurationTag.class)) {
-            entity.setTicksLived(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
+            NMSHandler.getEntityHelper().setTicksLived(entity, mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
         // <--[mechanism]

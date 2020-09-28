@@ -460,4 +460,8 @@ public abstract class EntityHelper {
     public List<Player> getPlayersThatSee(Entity entity) {
         throw new UnsupportedOperationException();
     }
+
+    public void setTicksLived(Entity entity, int ticks) {
+        entity.setTicksLived(ticks);
+    }
 }

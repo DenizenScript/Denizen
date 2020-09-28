@@ -146,7 +146,7 @@ public class CooldownCommand extends AbstractCommand {
         // Change to UPPERCASE so there's no case-sensitivity.
         scriptName = scriptName.toUpperCase();
 
-        DurationTag duration = DurationTag.ZERO;
+        DurationTag duration = new DurationTag(0);
 
         // Check current entry GLOBALLY, reset it if necessary
         if (DenizenAPI.getSaves().contains("Global.Scripts." + scriptName + ".Cooldown Time")) {

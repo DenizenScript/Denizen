@@ -121,7 +121,7 @@ public class ResetCommand extends AbstractCommand {
 
         // Deal with GLOBAL_COOLDOWN reset first, since there's no player/players involved
         if (type == Type.GLOBAL_COOLDOWN) {
-            CooldownCommand.setCooldown(null, DurationTag.ZERO, script.getName(), true);
+            CooldownCommand.setCooldown(null, new DurationTag(0), script.getName(), true);
             return;
         }
 
@@ -133,7 +133,7 @@ public class ResetCommand extends AbstractCommand {
 
                 switch (type) {
                     case PLAYER_COOLDOWN:
-                        CooldownCommand.setCooldown(resettable, DurationTag.ZERO, script.getName(), false);
+                        CooldownCommand.setCooldown(resettable, new DurationTag(0), script.getName(), false);
                         return;
 
                     case SAVES:

@@ -604,4 +604,13 @@ public class EntityHelperImpl extends EntityHelper {
             ((ChestedHorse) horse).setCarryingChest(carrying);
         }
     }
+
+    @Override
+    public void setTicksLived(Entity entity, int ticks) {
+        // Bypass Spigot's must-be-at-least-1-tick requirement, as negative tick counts are useful
+        ((CraftEntity) entity).getHandle().ticksLived = ticks;
+        if (entity instanceof CraftFallingBlock) {
+            ((CraftFallingBlock) entity).getHandle().ticksLived = ticks;
+        }
+    }
 }

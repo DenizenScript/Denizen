@@ -151,7 +151,7 @@ public class ZapCommand extends AbstractCommand implements Listener {
         }
         if (duration != null && duration.getSeconds() > 0) {
             scriptEntry.addObject("step", new ElementTag(currentStep));
-            scriptEntry.addObject("duration", DurationTag.ZERO);
+            scriptEntry.addObject("duration", new DurationTag(0));
             long delay = (long) (duration.getSeconds() * 20);
             Debug.log("Setting delayed task 'RESET ZAP' for '" + script.identify() + "'");
             durations.put(durationKey,
