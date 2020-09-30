@@ -84,7 +84,8 @@ public class RemoveCommand extends AbstractCommand {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         WorldTag world = scriptEntry.getObjectTag("world");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), ArgumentHelper.debugList("entities", entities));
+            Debug.report(scriptEntry, getName(), (world == null ? "" : world.debug())
+                    + ArgumentHelper.debugList("entities", entities));
         }
         for (EntityTag entity : entities) {
             if (!entity.isGeneric()) {
@@ -96,11 +97,14 @@ public class RemoveCommand extends AbstractCommand {
                 }
             }
             else {
+                int removed = 0;
                 for (Entity worldEntity : world.getEntities()) {
                     if (entity.getEntityType().equals(DenizenEntityType.getByEntity(worldEntity))) {
                         worldEntity.remove();
+                        removed++;
                     }
                 }
+                Debug.echoDebug(scriptEntry, "Removed " + removed + " entities from the world.");
             }
         }
     }
