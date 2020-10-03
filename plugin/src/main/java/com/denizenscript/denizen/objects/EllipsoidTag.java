@@ -224,6 +224,31 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
                 + (zbase * zbase) / (size.getZ() * size.getZ()) <= 1);
     }
 
+    public boolean intersects(ChunkTag chunk) {
+        int xMin = chunk.getX() * 16;
+        int zMin = chunk.getZ() * 16;
+        LocationTag locTest = chunk.getCenter();
+        // This mess gets a position within the chunk that is as closes as possible to the ellipsoid's center
+        locTest.setY(loc.getY());
+        if (loc.getX() > xMin) {
+            if (loc.getX() < xMin + 16) {
+                locTest.setX(loc.getX());
+            }
+            else {
+                locTest.setX(loc.getX());
+            }
+        }
+        if (loc.getZ() > zMin) {
+            if (loc.getZ() < zMin + 16) {
+                locTest.setZ(loc.getZ());
+            }
+            else {
+                locTest.setZ(loc.getZ());
+            }
+        }
+        return contains(locTest);
+    }
+
     String prefix = "ellipsoid";
 
     @Override
@@ -568,6 +593,35 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
                 }
             }
             return new ListTag(entities);
+        });
+
+        // <--[tag]
+        // @attribute <EllipsoidTag.chunks>
+        // @returns ListTag(ChunkTag)
+        // @description
+        // Returns a list of all chunks that this ellipsoid touches (note that no valid ellipsoid tag can ever totally contain a chunk, due to vertical limits and roundness).
+        // -->
+        registerTag("chunks", (attribute, object) -> {
+            ListTag chunks = new ListTag();
+            double minPossibleX = object.loc.getX() - object.size.getX();
+            double minPossibleZ = object.loc.getZ() - object.size.getZ();
+            double maxPossibleX = object.loc.getX() + object.size.getX();
+            double maxPossibleZ = object.loc.getZ() + object.size.getZ();
+            int minChunkX = (int) Math.floor(minPossibleX / 16);
+            int minChunkZ = (int) Math.floor(minPossibleZ / 16);
+            int maxChunkX = (int) Math.ceil(maxPossibleX / 16);
+            int maxChunkZ = (int) Math.ceil(maxPossibleZ / 16);
+            ChunkTag testChunk = new ChunkTag(object.loc);
+            for (int x = minChunkX; x <= maxChunkX; x++) {
+                testChunk.chunkX = x;
+                for (int z = minChunkZ; z <= maxChunkZ; z++) {
+                    testChunk.chunkZ = z;
+                    if (object.intersects(testChunk)) {
+                        chunks.addObject(new ChunkTag(testChunk.world, testChunk.chunkX, testChunk.chunkZ));
+                    }
+                }
+            }
+            return chunks;
         });
     }
 
