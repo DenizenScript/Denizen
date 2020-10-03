@@ -582,7 +582,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (!runAutomaticPlayerSwitches(path)) {
             return false;
         }
-        return true;
+        return super.matches(path);
     }
 
     // <--[language]

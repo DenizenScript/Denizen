@@ -274,6 +274,11 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     }
 
     @Override
+    public boolean serverHasFlag(String flag) {
+        return FlagManager.serverHasFlag(flag);
+    }
+
+    @Override
     public TagContext getTagContext(ScriptContainer container) {
         return new BukkitTagContext(container);
     }
