@@ -18,7 +18,7 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
     // @Events
     // player changes world (from <world>) (to <world>)
     //
-    // @Regex ^on player world( from [^\s]+)?( to [^\s]+)?$
+    // @Regex ^on player changes world( from [^\s]+)?( to [^\s]+)?$
     //
     // @Group Player
     //

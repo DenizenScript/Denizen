@@ -201,8 +201,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                     npc.getNavigator().getLocalParameters().speedModifier(speed.asFloat());
                 }
                 if (radius != null) {
-                    npc.getNavigator().getLocalParameters().addRunCallback(WalkCommandCitizensEvents
-                            .generateNewFlocker(npc.getCitizen(), radius.asDouble()));
+                    npc.getNavigator().getLocalParameters().addRunCallback(WalkCommandCitizensEvents.generateNewFlocker(npc.getCitizen(), radius.asDouble()));
                 }
             }
             else if (shouldStop) {

@@ -1564,7 +1564,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @group location
         // @description
         // Returns the location of the block the entity is looking at.
-        // Optionally, specify a maximum range to find the location from.
+        // Optionally, specify a maximum range to find the location from (defaults to 200).
         // This uses logic equivalent to <@link tag LocationTag.precise_cursor_on_block[(range)]>.
         // Note that this will return null if there is no solid block in range.
         // -->
