@@ -1175,6 +1175,25 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         });
 
         // <--[tag]
+        // @attribute <CuboidTag.shift[<vector>]>
+        // @returns CuboidTag
+        // @description
+        // Returns a copy of this cuboid, with the first member shifted by the given vector LocationTag.
+        // For example, a cuboid from 5,5,5 to 10,10,10, shifted 100,0,100, would return a cuboid from 105,5,105 to 110,10,110.
+        // -->
+        registerTag("shift", (attribute, cuboid) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("The tag CuboidTag.shift[...] must have a value.");
+                return null;
+            }
+            LocationTag vector = attribute.contextAsType(1, LocationTag.class);
+            if (vector != null) {
+                return cuboid.shifted(vector);
+            }
+            return null;
+        });
+
+        // <--[tag]
         // @attribute <CuboidTag.include[<location>/<cuboid>]>
         // @returns CuboidTag
         // @description
@@ -1503,6 +1522,14 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             Deprecations.cuboidFullTag.warn(attribute.context);
             return new ElementTag(cuboid.identifyFull());
         });
+    }
+
+    public CuboidTag shifted(LocationTag vec) {
+        CuboidTag cuboid = clone();
+        LocationTag low = cuboid.pairs.get(0).low.clone().add(vec);
+        LocationTag high = cuboid.pairs.get(0).high.clone().add(vec);
+        cuboid.pairs.get(0).regenerate(low, high);
+        return cuboid;
     }
 
     public CuboidTag including(Location loc) {
