@@ -115,7 +115,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         if (noteName != null) {
             return this;
         }
-        return new EllipsoidTag(loc.clone(), size.clone());
+        return new EllipsoidTag(center.clone(), size.clone());
     }
 
     @Override
@@ -127,8 +127,8 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     //   Constructors
     /////////////
 
-    public EllipsoidTag(LocationTag loc, LocationTag size) {
-        this.loc = loc;
+    public EllipsoidTag(LocationTag center, LocationTag size) {
+        this.center = center;
         this.size = size;
     }
 
@@ -136,7 +136,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     //   INSTANCE FIELDS/METHODS
     /////////////////
 
-    private LocationTag loc;
+    private LocationTag center;
 
     private LocationTag size;
 
@@ -147,10 +147,10 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     }
 
     public ListTag getBlocks(List<MaterialTag> materials, Attribute attribute) {
-        List<LocationTag> initial = new CuboidTag(new Location(loc.getWorld(),
-                loc.getX() - size.getX(), loc.getY() - size.getY(), loc.getZ() - size.getZ()),
-                new Location(loc.getWorld(),
-                        loc.getX() + size.getX(), loc.getY() + size.getY(), loc.getZ() + size.getZ()))
+        List<LocationTag> initial = new CuboidTag(new Location(center.getWorld(),
+                center.getX() - size.getX(), center.getY() - size.getY(), center.getZ() - size.getZ()),
+                new Location(center.getWorld(),
+                        center.getX() + size.getX(), center.getY() + size.getY(), center.getZ() + size.getZ()))
                 .getBlocks_internal(materials, attribute);
         ListTag list = new ListTag();
         for (LocationTag loc : initial) {
@@ -162,10 +162,10 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     }
 
     public List<LocationTag> getBlockLocationsUnfiltered() {
-        List<LocationTag> initial = new CuboidTag(new Location(loc.getWorld(),
-                loc.getX() - size.getX(), loc.getY() - size.getY(), loc.getZ() - size.getZ()),
-                new Location(loc.getWorld(),
-                        loc.getX() + size.getX(), loc.getY() + size.getY(), loc.getZ() + size.getZ()))
+        List<LocationTag> initial = new CuboidTag(new Location(center.getWorld(),
+                center.getX() - size.getX(), center.getY() - size.getY(), center.getZ() - size.getZ()),
+                new Location(center.getWorld(),
+                        center.getX() + size.getX(), center.getY() + size.getY(), center.getZ() + size.getZ()))
                 .getBlockLocationsUnfiltered();
         List<LocationTag> locations = new ArrayList<>();
         for (LocationTag loc : initial) {
@@ -180,9 +180,9 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         ListTag output = new ListTag();
         double yScale = size.getY();
         int maxY = (int) Math.floor(yScale);
-        output.addObject(new LocationTag(loc.getBlockX(), loc.getBlockY() - maxY, loc.getBlockZ(), loc.getWorldName()));
+        output.addObject(new LocationTag(center.getBlockX(), center.getBlockY() - maxY, center.getBlockZ(), center.getWorldName()));
         if (maxY != 0) {
-            output.addObject(new LocationTag(loc.getBlockX(), loc.getBlockY() + maxY, loc.getBlockZ(), loc.getWorldName()));
+            output.addObject(new LocationTag(center.getBlockX(), center.getBlockY() + maxY, center.getBlockZ(), center.getWorldName()));
         }
         for (int y = -maxY; y <= maxY; y++) {
             double yProgMin = Math.min(1.0, (Math.abs(y) + 1) / yScale);
@@ -198,15 +198,15 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
                     double scaleTestMin = (x * x) / (minX * minX) + (z * z) / (minZ * minZ);
                     double scaleTestMax = (x * x) / (maxX * maxX) + (z * z) / (maxZ * maxZ);
                     if (scaleTestMin >= 1.0 && scaleTestMax <= 1.0) {
-                        output.addObject(new LocationTag(loc.getBlockX() + x, loc.getBlockY() + y, loc.getBlockZ() + z, loc.getWorldName()));
+                        output.addObject(new LocationTag(center.getBlockX() + x, center.getBlockY() + y, center.getBlockZ() + z, center.getWorldName()));
                         if (x != 0) {
-                            output.addObject(new LocationTag(loc.getBlockX() - x, loc.getBlockY() + y, loc.getBlockZ() + z, loc.getWorldName()));
+                            output.addObject(new LocationTag(center.getBlockX() - x, center.getBlockY() + y, center.getBlockZ() + z, center.getWorldName()));
                         }
                         if (z != 0) {
-                            output.addObject(new LocationTag(loc.getBlockX() + x, loc.getBlockY() + y, loc.getBlockZ() - z, loc.getWorldName()));
+                            output.addObject(new LocationTag(center.getBlockX() + x, center.getBlockY() + y, center.getBlockZ() - z, center.getWorldName()));
                         }
                         if (x != 0 && z != 0) {
-                            output.addObject(new LocationTag(loc.getBlockX() - x, loc.getBlockY() + y, loc.getBlockZ() - z, loc.getWorldName()));
+                            output.addObject(new LocationTag(center.getBlockX() - x, center.getBlockY() + y, center.getBlockZ() - z, center.getWorldName()));
                         }
                     }
                 }
@@ -216,9 +216,9 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     }
 
     public boolean contains(Location test) {
-        double xbase = test.getX() - loc.getX();
-        double ybase = test.getY() - loc.getY();
-        double zbase = test.getZ() - loc.getZ();
+        double xbase = test.getX() - center.getX();
+        double ybase = test.getY() - center.getY();
+        double zbase = test.getZ() - center.getZ();
         return ((xbase * xbase) / (size.getX() * size.getX())
                 + (ybase * ybase) / (size.getY() * size.getY())
                 + (zbase * zbase) / (size.getZ() * size.getZ()) <= 1);
@@ -229,21 +229,21 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         int zMin = chunk.getZ() * 16;
         LocationTag locTest = chunk.getCenter();
         // This mess gets a position within the chunk that is as closes as possible to the ellipsoid's center
-        locTest.setY(loc.getY());
-        if (loc.getX() > xMin) {
-            if (loc.getX() < xMin + 16) {
-                locTest.setX(loc.getX());
+        locTest.setY(center.getY());
+        if (center.getX() > xMin) {
+            if (center.getX() < xMin + 16) {
+                locTest.setX(center.getX());
             }
             else {
-                locTest.setX(loc.getX());
+                locTest.setX(center.getX());
             }
         }
-        if (loc.getZ() > zMin) {
-            if (loc.getZ() < zMin + 16) {
-                locTest.setZ(loc.getZ());
+        if (center.getZ() > zMin) {
+            if (center.getZ() < zMin + 16) {
+                locTest.setZ(center.getZ());
             }
             else {
-                locTest.setZ(loc.getZ());
+                locTest.setZ(center.getZ());
             }
         }
         return contains(locTest);
@@ -294,7 +294,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         if (noteName != null) {
             return noteName.hashCode();
         }
-        return loc.hashCode() + size.hashCode();
+        return center.hashCode() + size.hashCode();
     }
 
     @Override
@@ -309,10 +309,10 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         if (noteName != null && !noteName.equals(ellipsoid2.noteName)) {
             return false;
         }
-        if (!loc.getWorldName().equals(ellipsoid2.loc.getWorldName())) {
+        if (!center.getWorldName().equals(ellipsoid2.center.getWorldName())) {
             return false;
         }
-        if (loc.distanceSquared(ellipsoid2.loc) >= 0.25) {
+        if (center.distanceSquared(ellipsoid2.center) >= 0.25) {
             return false;
         }
         if (size.distanceSquared(ellipsoid2.size) >= 0.25) {
@@ -342,7 +342,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     }
 
     public String identifyFull() {
-        return "ellipsoid@" + loc.getX() + "," + loc.getY() + "," + loc.getZ() + "," + loc.getWorldName()
+        return "ellipsoid@" + center.getX() + "," + center.getY() + "," + center.getZ() + "," + center.getWorldName()
                 + "," + size.getX() + "," + size.getY() + "," + size.getZ();
     }
 
@@ -394,7 +394,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // Returns the location of the ellipsoid.
         // -->
         registerTag("location", (attribute, object) -> {
-            return object.loc;
+            return object.center;
         });
 
         // <--[tag]
@@ -418,7 +418,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
                 attribute.echoError("ellipsoid.add[...] tag must have an input.");
                 return null;
             }
-            return new EllipsoidTag(object.loc.clone().add(attribute.contextAsType(1, LocationTag.class)), object.size.clone());
+            return new EllipsoidTag(object.center.clone().add(attribute.contextAsType(1, LocationTag.class)), object.size.clone());
         });
 
         // <--[tag]
@@ -451,12 +451,12 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
                 return object;
             }
             LocationTag size = object.size.clone();
-            Vector relative = target.toVector().subtract(object.loc.toVector());
+            Vector relative = target.toVector().subtract(object.center.toVector());
             // Cuboid minimum expansion
             size.setX(Math.max(size.getX(), Math.abs(relative.getX())));
             size.setY(Math.max(size.getY(), Math.abs(relative.getY())));
             size.setZ(Math.max(size.getZ(), Math.abs(relative.getZ())));
-            EllipsoidTag result = new EllipsoidTag(object.loc.clone(), new LocationTag(size));
+            EllipsoidTag result = new EllipsoidTag(object.center.clone(), new LocationTag(size));
             if (result.contains(target)) {
                 return result;
             }
@@ -510,7 +510,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
                 attribute.echoError("ellipsoid.with_size[...] tag must have an input.");
                 return null;
             }
-            return new EllipsoidTag(object.loc.clone(), attribute.contextAsType(1, LocationTag.class));
+            return new EllipsoidTag(object.center.clone(), attribute.contextAsType(1, LocationTag.class));
         });
 
         // <--[tag]
@@ -524,7 +524,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
                 attribute.echoError("ellipsoid.with_world[...] tag must have an input.");
                 return null;
             }
-            LocationTag loc = object.loc.clone();
+            LocationTag loc = object.center.clone();
             loc.setWorld(attribute.contextAsType(1, WorldTag.class).getWorld());
             return new EllipsoidTag(loc, object.size.clone());
         });
@@ -576,7 +576,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
             if (attribute.hasContext(1)) {
                 types = attribute.contextAsType(1, ListTag.class);
             }
-            for (Entity ent : new WorldTag(object.loc.getWorld()).getEntitiesForTag()) {
+            for (Entity ent : new WorldTag(object.center.getWorld()).getEntitiesForTag()) {
                 EntityTag current = new EntityTag(ent);
                 if (object.contains(ent.getLocation())) {
                     if (!types.isEmpty()) {
@@ -599,19 +599,19 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // @attribute <EllipsoidTag.chunks>
         // @returns ListTag(ChunkTag)
         // @description
-        // Returns a list of all chunks that this ellipsoid touches (note that no valid ellipsoid tag can ever totally contain a chunk, due to vertical limits and roundness).
+        // Returns a list of all chunks that this ellipsoid touches at all (note that no valid ellipsoid tag can ever totally contain a chunk, due to vertical limits and roundness).
         // -->
         registerTag("chunks", (attribute, object) -> {
             ListTag chunks = new ListTag();
-            double minPossibleX = object.loc.getX() - object.size.getX();
-            double minPossibleZ = object.loc.getZ() - object.size.getZ();
-            double maxPossibleX = object.loc.getX() + object.size.getX();
-            double maxPossibleZ = object.loc.getZ() + object.size.getZ();
+            double minPossibleX = object.center.getX() - object.size.getX();
+            double minPossibleZ = object.center.getZ() - object.size.getZ();
+            double maxPossibleX = object.center.getX() + object.size.getX();
+            double maxPossibleZ = object.center.getZ() + object.size.getZ();
             int minChunkX = (int) Math.floor(minPossibleX / 16);
             int minChunkZ = (int) Math.floor(minPossibleZ / 16);
             int maxChunkX = (int) Math.ceil(maxPossibleX / 16);
             int maxChunkZ = (int) Math.ceil(maxPossibleZ / 16);
-            ChunkTag testChunk = new ChunkTag(object.loc);
+            ChunkTag testChunk = new ChunkTag(object.center);
             for (int x = minChunkX; x <= maxChunkX; x++) {
                 testChunk.chunkX = x;
                 for (int z = minChunkZ; z <= maxChunkZ; z++) {
