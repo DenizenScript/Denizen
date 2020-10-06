@@ -111,6 +111,9 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         if (!couldMatchInArea(path.eventLower)) {
             return false;
         }
+        if (clickedOn.isEmpty()) {
+            Debug.echoError("'on player clicks:' is is not valid, use 'on player clicks block:' (for script '" + path.container.getName() + "').");
+        }
         return true;
     }
 
